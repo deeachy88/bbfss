@@ -1,0 +1,71 @@
+{% extends 'common_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<form method="post" id="applicationDetailsForm">
+    {% csrf_token %}
+    <div class="animated fadeIn">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <strong class="card-title">Apply Import Permit</strong>
+                    </div>
+                    <form method="post" id="permitForm">
+                         {% csrf_token %}
+                        <div class="card-body">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Application No</th>
+                                        <th scope="col">Application Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for movement_permit in new_movement_app %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>
+                                                <button type="button" class="btn btn-primary btn-link" onclick="viewDetails('{{movement_permit.Application_No}}')">{{movement_permit.Application_No}}</button>
+                                            </td>
+                                            <td>{{movement_permit.Action_Date|date:"d-m-Y"}}</td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                          <td colspan="2" class="text-center">No Data</td>
+                                        </tr>
+                                        {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<div id="application-details-modal" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Sample Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+
+            </div>
+             <div class="modal-body">
+             <div class="alert alert-danger" id="acceptError" style="display:none"></div>
+                 <div id="ApplicationDetails">
+
+                 </div>
+            </div>
+            <div class="modal-footer">
+
+             </div>
+             <div id="messageDiv" style="display:none"></div>
+          </div>
+    </div>
+</div>
+
+{% endblock %}

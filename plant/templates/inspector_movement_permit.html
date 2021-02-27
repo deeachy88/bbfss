@@ -1,0 +1,42 @@
+{% extends 'inspector_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="animated fadeIn">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <strong class="card-title">Movement Permit Plant And plant Product Details</strong>
+                </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Application No</th>
+                                    <th scope="col">Application Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for movement_permit in new_movement_app %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td><button class="btn btn-primary btn-link" onclick="viewAppDetails('{{movement_permit.Application_No}}')">{{movement_permit.Application_No}}</button></td>
+                                        <td>{{movement_permit.Action_Date|date:"d-m-Y"}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="2" class="text-center">No Data</td>
+                                    </tr>
+                                    {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="AppDetails">
+
+ </div>
+{% endblock %}

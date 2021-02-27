@@ -1,0 +1,195 @@
+{% extends 'common_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="animated fadeIn">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <strong class="card-title">User Manage</strong>
+                    <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#userModal">
+                        Add Users
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                    <table id="user-table" class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>EmpId</th>
+                                <th>Gender</th>
+                                <th>Email</th>
+                                <th>Mobile No</th>
+                                <th>Division</th>
+                                <th>Section</th>
+                                <th>Field Office</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for user in details %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{user.Name}}</td>
+                                <td>{{user.Employee_Id}}</td>
+                                {% if user.Gender == "M" %}
+                                <td>Male</td>
+                                {% else %}
+                                 <td>Female</td>
+                                {% endif %}
+                                <td>{{user.Email_Id}}</td>
+                                <td>{{user.Mobile_Number}}</td>
+                                <td>{{user.Division_Id}}</td>
+                                <td>{{user.Section_Id}}</td>
+                                <td>{{user.Field_Office_Id}}</td>
+                                <td>
+                                    <div class="btn-group">
+                                        {% if user.Is_Active == "Y" %}
+                                        <button  type="button" class="btn btn-primary btn--icon btn-sm" data-toggle="tooltip" title="Deactivate" ><i class="zmdi zmdi-lock"></i></button>
+                                        {% else %}
+                                        <button  type="button" class="btn btn-primary btn--icon btn-sm" data-toggle="tooltip" title="Activate" ><i class="zmdi zmdi-unlock"></i></button>
+                                        {% endif %}
+                                        <button  type="button" class="btn btn-primary btn--icon btn-sm" data-toggle="tooltip" title="Edit" ><i class="zmdi zmdi-edit"></i></button>
+                                        <button  type="button" class="btn btn-primary btn--icon btn-sm" data-toggle="tooltip" title="Reset Password" ><i class="zmdi zmdi-key"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<form method="post" id="my_form" class="form-horizontal form-label-left">
+    <div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Add User</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            {% csrf_token %}
+              <div class="col-lg-12">
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label for="name">Name</label>
+                                    <input type="text" name="name" class="form-control" id="name" required>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="empId">Employee_Id</label>
+                                    <input type="text" name="Employee_Id" class="form-control" id="empId" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <div class="form-check">
+                                        <label>Gender</label><br>
+                                        <label class="form-radio-label">
+                                            <input class="form-radio-input" type="radio" name="gender" value="M" checked="">
+                                            <span class="form-radio-sign">Male</span>
+                                        </label>
+                                        <label class="form-radio-label ml-3">
+                                            <input class="form-radio-input" type="radio" name="gender" value="F">
+                                            <span class="form-radio-sign">Female</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="email" class=" requiredField">
+                                        Email<span class="asteriskField">*</span>
+                                    </label>
+                                    <div class="">
+                                        <input type="email" name="email" maxlength="254" class="emailinput form-control" id="email" required>
+                                    </div>
+                                    <div id="errorEmailId" class="alert alert-danger" role="alert" style="display: none;">
+                                        A user with this email already exists.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label for="mobile">Mobile Number</label>
+                                    <input type="text" name="mobile" maxlength="8" minlength="8" class="form-control" id="mobile" required>
+                                </div>
+                                <div class="form-group col-md-6">
+                                     <label for="role">Role</label>
+                                     <select class="form-control select2-selection select2-selection--single" id="role" name="role" onchange="roleChange(this.value)" required>
+                                          <option value="">--SELECT ROLE--</option>
+                                        {% for role in role %}
+                                                <option value="{{ role.Role_Id }}">{{ role.Role_Name }}</option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6" id="divisionDiv">
+                                     <label for="division">Division</label>
+                                     <select class="form-control" id="division" name="division" onchange="getSection(this.value)">
+                                        <option value="">--SELECT DIVISION--</option>
+                                        {% for division in division %}
+                                                <option value="{{ division.Division_Id }}">{{ division.Division_Name }}</option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                                <div class="form-group col-md-6" id="sectionDiv">
+                                     <label for="section">Section</label>
+                                     <select class="form-control" id="section" name="section">
+                                        <option value="">--SELECT SECTION--</option>
+                                        {% for section in section %}
+                                                <option value="{{ section.Section_Id }}">{{ section.Section_Name }}</option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6" id="fieldDiv">
+                                     <label for="fieldOffice">Field Office</label>
+                                     <select class="form-control" id="fieldOffice" name="field">
+                                        <option value="">--SELECT Field Office--</option>
+                                        {% for field_office in field_office %}
+                                                <option value="{{ field_office.Field_Office_Id }}">{{ field_office.Field_Office }}</option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                            </div>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+</form>
+
+<div class="modal fade" id="modal-user">
+    <div class="modal-dialog">
+      <div class="modal-content edit">
+
+      </div>
+    </div>
+</div>
+
+<script>
+function getSection(division_id)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_section' %}",
+        data :{'division_id':division_id},
+        success : function(data) {
+            $('#section').html(data);
+        }
+    });
+}
+</script>
+{% endblock %}

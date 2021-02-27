@@ -1,0 +1,86 @@
+{% extends 'admin_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="animated fadeIn">
+    <div class="row">
+
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <strong class="card-title">Plant Fodder Variety Manage</strong>
+                    <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#roleModal">
+                        Add Plant Fodder Variety
+                    </button>
+                </div>
+                <div class="card-body">
+                    <table id="fodder-variety-table" class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Fodder Variety Name</th>
+                                 <th>Fodder Name</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for fodder_variety in fodder_variety %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{fodder_variety.Fodder_Variety_Name}}</td>
+                                <td>{{fodder_variety.Fodder_Id}}</td>
+                                <td>
+                                    <button type="button"
+                                          class="btn btn-warning btn-sm js-edit-fodder-variety"
+                                          data-url="{% url 'edit_fodder_variety' fodder_variety.Fodder_Variety_Id %}">
+                                          <i class="zmdi zmdi-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm js-delete-fodder-variety"
+                                          data-url="{% url 'delete_fodder_variety' fodder_variety.Fodder_Variety_Id %}">
+                                          <i class="zmdi zmdi-delete"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                              <td colspan="4" class="text-center">No Plant Fodder Variety</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<form action="plant_fodder_variety" method="post">
+    <div class="modal fade" id="roleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Add Plant Fodder Variety</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+
+            {% csrf_token %}
+            {{form|crispy}}
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+</form>
+<div class="modal fade" id="modal-fodder-variety">
+    <div class="modal-dialog">
+      <div class="modal-content edit">
+
+      </div>
+    </div>
+  </div>
+{% endblock %}

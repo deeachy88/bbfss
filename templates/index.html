@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>BAFRA | BBFSS </title>
+
+    <!-- Bootstrap -->
+    <link href="{% static 'styles/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="{% static 'styles/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="{% static 'styles/nprogress/nprogress.css' %}" rel="stylesheet">
+    <!-- Animate.css -->
+    <link href="{% static 'styles/animate.css/animate.min.css' %}" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link href="{% static 'assets/css/custom.min.css' %}" rel="stylesheet">
+  </head>
+
+  <body class="login">
+   {% block content %}
+    <div>
+      <a class="hiddenanchor" id="signup"></a>
+      <a class="hiddenanchor" id="signin"></a>
+
+      <div class="login_wrapper">
+        <div class="animate form login_form">
+          <section class="login_content">
+            <form action="{% url 'login' %}" id="loginForm" method="post">
+              {% csrf_token %}
+              <h1>Login Form</h1>
+              <h2 class="form-signin-heading">{{ message }}</h2>
+              <div>
+                <input type="text" name="username" class="form-control" placeholder="Username" required/>
+              </div>
+              <div>
+                <input type="password" name="password" class="form-control" placeholder="Password" required />
+              </div>
+              <div>
+                <button class="btn btn-default submit" href="index.html">Log in</button>
+                <a class="reset_pass" href="#">Lost your password?</a>
+              </div>
+
+              <div class="clearfix"></div>
+
+              <div class="separator">
+                <p class="change_link">New Client ?
+                  <a href="#signup" class="to_register"> Register </a>
+                </p>
+
+                <div class="clearfix"></div>
+                <br />
+
+                <div>
+                  <p>©2021 All Rights Reserved. Bhutan Bio Food Security System(BBFSS)</p>
+                </div>
+              </div>
+            </form>
+          </section>
+        </div>
+
+        <div id="register" class="animate form registration_form">
+          <section class="login_content">
+            <form>
+              <h1>Create Account</h1>
+              <div>
+                <input type="text" class="form-control" placeholder="Username" required="" />
+              </div>
+              <div>
+                <input type="email" class="form-control" placeholder="Email" required="" />
+              </div>
+              <div>
+                <input type="password" class="form-control" placeholder="Password" required="" />
+              </div>
+              <div>
+                <a class="btn btn-default submit" href="index.html">Submit</a>
+              </div>
+
+              <div class="clearfix"></div>
+
+              <div class="separator">
+                <p class="change_link">Already a member ?
+                  <a href="#signin" class="to_register"> Log in </a>
+                </p>
+        {% endblock %}
+                <div class="clearfix"></div>
+                <br />
+
+                <div>
+                  <p>©2021 All Rights Reserved. Bhutan Bio Food Security System(BBFSS)</p>
+                </div>
+              </div>
+            </form>
+          </section>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+<script src="{% static 'styles/jquery/dist/jquery.min.js' %}"></script>
+<script>
+ $(document).ready(function() {
+        $("#organizationDiv").hide();
+    });
+
+function isNumberKey(evt)
+{
+ var charCode = (evt.which) ? evt.which : event.keyCode
+ if (charCode > 31 && (charCode < 48 || charCode > 57))
+    return false;
+
+ return true;
+}
+
+function changeOnSelection(registrationType)
+{
+	if(registrationType == "I"){
+		$("#individualDiv").show();
+		$("#organizationDiv").hide();
+	}
+	else{
+		$("#organizationDiv").show();
+		$("#individualDiv").hide();
+	}
+}
+
+function register()
+{
+if($('#individual').prop('checked'))
+    {
+        var cid = $('#cid').val();
+        var name = $('#name').val();
+        var email = $('#email').val();
+        var contactnumber = $('#contactnumber').val();
+        var address = $('#address').val();
+        var cidCount = $('#cid').val().length;
+        var numbercount = $('#contactnumber').val().length;
+
+        if(cid == "")
+			{
+				$('#cidErrorMsg').html("Enter CID.");
+				$('#cidErrorMsg').show();
+				$('#cidErrorMsg').delay(2000).fadeOut('slow');
+			}
+			else if(cidCount < 11)
+			{
+				$('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits.");
+				$('#cidErrorMsg').show();
+				$('#cidErrorMsg').delay(2000).fadeOut('slow');
+			}
+			else if(name == "")
+			{
+				$('#nameErrorMsg').html("Enter Name.");
+				$('#nameErrorMsg').show();
+				$('#nameErrorMsg').delay(2000).fadeOut('slow');
+			}
+			else if(email == "")
+			{
+				$('#emailErrorMsg').html("Enter Email.");
+				$('#emailErrorMsg').show();
+				$('#emailErrorMsg').delay(2000).fadeOut('slow');
+			}
+			else if(contactnumber == "")
+			{
+				$('#contactErrorMsg').html("Enter Contact Number.");
+				$('#contactErrorMsg').show();
+				$('#contactErrorMsg').delay(2000).fadeOut('slow');
+			}
+			else if(address == "")
+			{
+				$('#addressErrorMsg').html("Enter Address.");
+				$('#addressErrorMsg').show();
+				$('#addressErrorMsg').delay(2000).fadeOut('slow');
+			}
+			else
+			{
+                $.ajax({
+                    type : "POST",
+                    url : "{% url 'register' %}",
+                    data : $('#registerForm').serialize(),
+                    cache : false,
+                    dataType : "html",
+                    success : function(responseText) {
+                        $('#registerForm')[0].reset();
+                        $('#cid').prop('checked',true);
+                    }
+                });
+			}
+    }
+    else
+    {
+        var contactPerson = $('#contactPerson').val();
+        var id_email = $('#id_email').val();
+        var mobile_number = $('#mobile_number').val();
+        var org_agency = $('#org_agency').val();
+        var org_license = $('#org_license').val();
+        var dzongkhag = $('#dzongkhag').val();
+        var gewog = $('#org_license').val();
+        var village = $('#dzongkhag').val();
+        var org_address = $('#org_license').val();
+        var number_count = $('#contactnumber').val().length;
+
+            if(contactPerson == "")
+			{
+				$('#contactPersonErrorMsg').html("Enter CID.");
+				$('#contactPersonErrorMsg').show();
+				$('#contactPersonErrorMsg').delay(2000).fadeOut('slow');
+			}
+			else if(id_email == "")
+			{
+				$('#id_emailErrorMsg').html("Enter Name.");
+				$('#id_emailErrorMsg').show();
+				$('#id_emailErrorMsg').delay(2000).fadeOut('slow');
+			}
+			else if(mobile_number == "")
+			{
+				$('#mobile_numberErrorMsg').html("Enter Contact Number.");
+				$('#mobile_numberErrorMsg').show();
+				$('#mobile_numberErrorMsg').delay(2000).fadeOut('slow');
+			}
+			else if(org_agency == "")
+			{
+				$('#org_agencyErrorMsg').html("Enter Address.");
+				$('#org_agencyErrorMsg').show();
+				$('#org_agencyErrorMsg').delay(2000).fadeOut('slow');
+
+			}
+			else if(org_license == "")
+			{
+				$('#org_licenseErrorMsg').html("Enter Address.");
+				$('#org_licenseErrorMsg').show();
+				$('#org_licenseErrorMsg').delay(2000).fadeOut('slow');
+			}
+			else if(dzongkhag == "")
+			{
+				$('#dzongkhagErrorMsg').html("Enter Address.");
+				$('#dzongkhagErrorMsg').show();
+				$('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
+			}
+			else if(gewog == "")
+			{
+				$('#gewogErrorMsg').html("Enter Address.");
+				$('#gewogErrorMsg').show();
+				$('#gewogErrorMsg').delay(2000).fadeOut('slow');
+			}
+			else if(village == "")
+			{
+				$('#villageErrorMsg').html("Enter Address.");
+				$('#villageErrorMsg').show();
+				$('#villageErrorMsg').delay(2000).fadeOut('slow');
+			}
+			else if(org_address == "")
+			{
+				$('#org_addressErrorMsg').html("Enter Address.");
+				$('#org_addressErrorMsg').show();
+				$('#org_addressErrorMsg').delay(2000).fadeOut('slow');
+			}
+			else if(number_count < 8)
+			{
+				$('#mobile_numberErrorMsg').html("Cannot Be Less Than Eight.");
+				$('#mobile_numberErrorMsg').show();
+				$('#mobile_numberErrorMsg').delay(2000).fadeOut('slow');
+			}
+			else
+			{
+                $.ajax({
+                    type : "POST",
+                    url : "{% url 'register' %}",
+                    data : $('#registerForm').serialize(),
+                    cache : false,
+                    dataType : "html",
+                    success : function(responseText) {
+                        $('#registerForm')[0].reset();
+                        $('#cid').prop('checked',true);
+                    }
+                });
+			}
+    }
+}
+
+function saveDetails()
+{
+
+    var new_password = $('#new_password').val();
+    var confirm_password = $('#confirm_password').val();
+    var pattern = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/;
+    var no = new_password.match(pattern);
+    var security_question = $('#security_question').val();
+    var answer = $('#Answer').val();
+
+        if(new_password == "")
+            {
+                $('#new_passwordErrorMsg').html("");
+                $('#new_passwordErrorMsg').html("New Password Cannot Be Empty");
+                $('#new_passwordErrorMsg').show();
+                $('#new_passwordErrorMsg').delay(2000).fadeOut('slow');
+                return;
+            }
+        if(no==null)
+            {
+                $('#new_passwordErrorMsg').html("");
+                $('#new_passwordErrorMsg').html("Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters");
+                $('#new_passwordErrorMsg').show();
+                $('#new_passwordErrorMsg').delay(2000).fadeOut('slow');
+                return;
+            }
+        if(confirm_password == "")
+            {
+                $('#confirm_passworderrorMsg').html("");
+                $('#confirm_passworderrorMsg').html("Confirm Password Cannot Be Empty");
+                $('#confirm_passworderrorMsg').show();
+                $('#confirm_passworderrorMsg').delay(2000).fadeOut('slow');
+                return;
+            }
+        if(new_password != confirm_password)
+            {
+                $('#confirm_passworderrorMsg').html("");
+                $('#confirm_passworderrorMsg').html("New password and Password Confirmation Does Not Match");
+                $('#confirm_passworderrorMsg').show();
+                $('#confirm_passworderrorMsg').delay(2000).fadeOut('slow');
+                $('#new_password').val("");
+                $('#confirm_password').val("");
+                $('#security_question').val("");
+                $('#Answer').val("");
+                return;
+            }
+        if(security_question == "")
+            {
+                $('#security_questionerrorMsg').html("");
+                $('#security_questionerrorMsg').html("Select Atleast One Security Question");
+                $('#security_questionerrorMsg').show();
+                $('#security_questionerrorMsg').delay(2000).fadeOut('slow');
+                return;
+            }
+        if(answer == "")
+            {
+                $('#AnswererrorMsg').html("");
+                $('#AnswererrorMsg').html("security answer cannot be empty");
+                $('#AnswererrorMsg').show();
+                $('#AnswererrorMsg').delay(2000).fadeOut('slow');
+                return;
+            }
+        else
+            {
+                $.ajax({
+                    type : "POST",
+                    url : "{% url 'password_update' %}",
+                    data : $('#passwordUpdateForm').serialize(),
+                    cache : false,
+                    dataType : "html",
+                    success : function(responseText)
+                    {
+                        $('#update_passwordMsg').show();
+                        $('#update_passwordMsg').delay(2000).fadeOut('slow');
+                        setTimeout('redirectPage()',2000);
+                    }
+                });
+            }
+}
+
+function redirectPage()
+{
+    var url = "{% url 'login' %}";
+    document.forms[0].action = url;
+    document.forms[0].submit();
+}
+</script>

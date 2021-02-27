@@ -1,0 +1,353 @@
+<form method="post" id="applicationForm">
+    {% csrf_token %}
+    <div class="animated fadeIn">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        {% for application_details in application_details %}
+                            {% if P == application_details.PemitType%}
+                            <div class="row justify-content-center">
+                                <div class="form-check text-center">
+                                    <label>Permit Type <font color="red">*</font></label><br>
+                                    <label class="form-radio-label">
+                                        <input class="form-radio-input" type="radio" name="permitType" checked disabled>
+                                        <span class="form-radio-sign">Plant And Plant Products</span>
+                                    </label>
+                                    <label class="form-radio-label ml-3">
+                                        <input class="form-radio-input" type="radio" name="permitType" disabled>
+                                        <span class="form-radio-sign">Agrochemicals</span>
+                                    </label>
+                                </div>
+                            </div>
+                            {% else %}
+                               <div class="row justify-content-center">
+                                    <div class="form-check text-center">
+                                        <label>Permit Type <font color="red">*</font></label><br>
+                                        <label class="form-radio-label">
+                                            <input class="form-radio-input" type="radio" name="permitType" disabled>
+                                            <span class="form-radio-sign">Plant And Plant Products</span>
+                                        </label>
+                                        <label class="form-radio-label ml-3">
+                                            <input class="form-radio-input" type="radio" name="permitType" checked disabled>
+                                            <span class="form-radio-sign">Agrochemicals</span>
+                                        </label>
+                                    </div>
+                               </div>
+                            {% endif%}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="regNo">Nursery Registration Number</label>
+                                        <input type="text" class="form-control" id="regNo" value="{{application_details.License_No}}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="companyName">Name of Seed Company or Nurseries</label>
+                                        <input type="text" class="form-control" id="companyName" value="{{application_details.Nursery_Name}}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="cid">Applicant CID</label>
+                                        <input type="number" class="form-control" id="cid" value="{{application_details.CID}}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="name">Name</label>
+                                        <input type="text" class="form-control" id="name" value="{{application_details.Applicant_Name}}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="contactNumber">Contact Number</label>
+                                        <input type="number" class="form-control" id="contactNumber" value="{{application_details.Contact_No}}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="email">Email</label>
+                                        <input type="email" class="form-control" id="email" value="{{application_details.Email}}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="dzongkhag">Dzongkhag</label>
+                                        <select class="form-control" name="dzongkhag" id="dzongkhag"  disabled>
+                                            <option value="">--SELECT DZONGKHAG--</option>
+                                            {% for dzongkhag in dzongkhag %}
+                                                    <option value="{{dzongkhag.Dzongkhag_Code}}"{% if application_details.Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>
+                                                {{ dzongkhag.Dzongkhag_Name }}
+                                            </option>
+                                            {% endfor %}
+
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="gewog">Gewog</label>
+                                        <select class="form-control" name="gewog" id="gewog" disabled>
+                                            <option value="">--SELECT GEWOG--</option>
+                                            {% for gewog in gewog %}
+                                                    <option value="{{ gewog.Gewog_Code }}"{% if application_details.Gewog_Code == gewog.Gewog_Code %}selected{% endif %}>{{ gewog.Gewog_Name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="village">Village</label>
+                                         <select class="form-control" name="village" id="village" disabled>
+                                            <option value="">--SELECT VILLAGE--</option>
+                                            {% for village in village %}
+                                                    <option value="{{ village.Village_Code }}" {% if application_details.Village_Code == village.Village_Code %}selected{% endif %}>{{ village.Village_Name }}</option>
+                                            {% endfor %}
+                                         </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="location">Location</label>
+                                         <select class="form-control" name="location_code" id="location" disabled>
+                                            <option value="">--SELECT LOCATION--</option>
+                                            {% for location in location %}
+                                                    <option value="{{ location.Location_Code }}" {% if application_details.Location_Code == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                            {% endfor %}
+                                         </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="fromDzongkhag">From Dzongkhag</label>
+                                         <select class="form-control" name="fromDzongkhag"  id="fromDzongkhag" disabled>
+                                            <option value="">--SELECT DZONGKHAG--</option>
+                                            {% for dzongkhag in dzongkhag %}
+                                                    <option value="{{ dzongkhag.Dzongkhag_Code }}" {% if application_details.From_Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>{{ dzongkhag.Dzongkhag_Name }}</option>
+                                            {% endfor %}
+                                         </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="toDzongkhag">To Dzongkhag</label>
+                                        <select class="form-control" name="toDzongkhag"  id="toDzongkhag" disabled>
+                                            <option value="">--SELECT DZONGKHAG--</option>
+                                            {% for dzongkhag in dzongkhag %}
+                                                    <option value="{{ dzongkhag.Dzongkhag_Code }}" {% if application_details.To_Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>{{ dzongkhag.Dzongkhag_Name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="route">Authorized Route</label>
+                                        <input type="text" class="form-control" id="route" value="{{application_details.Authorized_Route}}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="productSource">Source or Origin Of Products</label>
+                                        <input type="text" class="form-control" id="productSource" value="{{application_details.Source_Of_Product}}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="movementPurpose">Purpose Of Movement</label>
+                                        <input type="text" class="form-control" id="movementPurpose" value="{{application_details.Movement_Purpose}}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="conveyanceMeans">Means of Conveyance </label>
+                                        <select class="form-control form-control" id="conveyanceMeans" name="conveyanceMeans" disabled>
+                                            <option value="">-SELECT-</option>
+                                            {% if application_details.Conveyance_Means == "Air" %}
+                                            <option value="Air" selected>Air</option>
+                                             <option value="Vehicular">Vehicular</option>
+                                            {% else %}
+                                             <option value="Air">Air</option>
+                                            <option value="Vehicular" selected>Vehicular</option>
+                                            {% endif%}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <br><br>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Commodity</th>
+                                                <th scope="col">Quantity</th>
+                                                <th scope="col">Remarks</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                           {% for movement_permit in details_list %}
+                                                <tr>
+                                                    <td>{{ forloop.counter }}</td>
+                                                    <td>{{movement_permit.Commodity}}</td>
+                                                    <td>{{movement_permit.Qty}}</td>
+                                                    <td>{{movement_permit.Remarks}}</td>
+                                                </tr>
+                                                {% empty %}
+                                                <tr>
+                                                  <td colspan="3" class="text-center">No Data</td>
+                                                </tr>
+                                           {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <br><br>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Inspection Team Leader</label>
+                                        <select class="form-control" name="teamLeader"  id="teamLeader">
+                                            <option value="">--SELECT TEAM LEADER--</option>
+                                            {% for inspector_list in inspector_list %}
+                                                    <option value="{{ inspector_list.Login_Id }}">{{ inspector_list.Name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="insTeam">Inspection Team </label>
+                                        <textarea class="form-control" id="insTeam" rows="2"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <br><br>
+                            <div class="row">
+                                <div class="card col-md-12">
+                                    <div class="card-header">
+                                        <div class="card-head-row">
+                                            <div class="card-tools">
+                                                <a href="#" class="btn btn-info btn-border btn-round btn-sm" data-toggle="modal" data-target="#addModal">
+                                                    <span class="btn-label">
+                                                        <i class="fa fa-print"></i>
+                                                    </span>
+                                                    Add
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body" id="details">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Current Observation</th>
+                                                    <th scope="col">Decision Conformity Statement</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                               {% for import in movement_permit %}
+                                                        <tr>
+                                                            <td>{{ forloop.counter }}</td>
+                                                            <td>{{import.Current_Observation}}</td>
+                                                            <td>{{import.Decision_Conformity}}</td>
+                                                        </tr>
+                                                        {% empty %}
+                                                        <tr>
+                                                          <td colspan="3" class="text-center">No Data</td>
+                                                        </tr>
+                                               {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Date Of Inspection</label>
+                                    <input class="form-control" id="dateOfInspection">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Remarks</label>
+                                    <textarea class="form-control" id="remarks" rows="2"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                            <button type="button" class="btn btn-success" onclick="approveApplication('{{ application_details.Application_No }}')"><i class="ace-icon fas fa-arrow-right"></i>&nbsp;&nbsp;Approve</button>
+                            <button type="button" class="btn btn-flat btn-danger" onclick="rejectApplication('{{ application_details.Application_No }}')">
+                                <i class="ace-icon fa fa-times"></i>
+                                &nbsp;&nbsp;Reject
+                            </button>
+                            <button class="btn btn-flat btn-danger" data-dismiss="modal">
+                                <i class="ace-icon fa fa-times"></i>
+                                &nbsp;&nbsp;Cancel
+                            </button>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+<div id="addModal" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Application Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Current Observationr</label>
+                            <textarea class="form-control" id="currentObservation" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="conveyanceMeans">Decision Conformity Statement </label>
+                            <textarea class="form-control" id="decisionConform" rows="2"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-flat btn-primary" onclick="add_details('{{ application_details.Application_No }}')">
+                    <i class="ace-icon fa fa-times"></i>
+                    &nbsp;&nbsp;Add
+                </button>
+                <button class="btn btn-flat btn-danger" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>
+                    &nbsp;&nbsp;Cancel
+                </button>
+             </div>
+             <div id="messageDiv" style="display:none"></div>
+          </div>
+    </div>
+</div>
+</form>
