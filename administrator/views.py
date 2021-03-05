@@ -415,6 +415,7 @@ def crop_manage(request):
         form = CropForm(request.POST)
         if form.is_valid():
             form.save()
+            form = CropForm()
             crop = t_plant_crop_master.objects.all()
             return render(request, 'crop.html', {'form': form, 'crop': crop})
     else:
