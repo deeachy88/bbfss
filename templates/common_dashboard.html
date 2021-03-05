@@ -12,21 +12,13 @@
         <link rel="stylesheet" href="{% static 'assets/bower_components/animate.css/animate.min.css' %}">
         <link rel="stylesheet" href="{% static 'assets/bower_components/jquery.scrollbar/jquery.scrollbar.css' %}">
         <link rel="stylesheet" href="{% static 'assets/bower_components/fullcalendar/dist/fullcalendar.min.css' %}">
-
+        <link rel="stylesheet" href="{% static 'assets/bower_components/flatpickr/dist/flatpickr.min.css' %}" />
         <!-- App styles -->
         <link rel="stylesheet" href="{% static 'assets/css/app.min.css' %}">
     </head>
 
-    <body data-sa-theme="4">
+    <body data-sa-theme="4" id="body">
         <main class="main">
-            <div class="page-loader">
-                <div class="page-loader__spinner">
-                    <svg viewBox="25 25 50 50">
-                        <circle cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
-                    </svg>
-                </div>
-            </div>
-
             <header class="header">
                 <div class="navigation-trigger" data-sa-action="aside-open" data-sa-target=".sidebar">
                     <i class="zmdi zmdi-menu"></i>
@@ -483,57 +475,49 @@
         <script src="{% static 'assets/bower_components/salvattore/dist/salvattore.min.js' %}"></script>
         <script src="{% static 'assets/bower_components/flot/jquery.flot.js' %}"></script>
         <script src="{% static 'assets/bower_components/flot/jquery.flot.resize.js' %}"></script>
-
+        <script src="{% static 'assets/bower_components/flatpickr/dist/flatpickr.min.js' %}"></script>
         <script src="{% static 'assets/js/app.min.js' %}"></script>
 	    <script src="{% static 'assets/js/user.js' %}"></script>
 	    <script src="{% static 'assets/js/division.js' %}"></script>
-	    <script src="{% static 'assets/js/section.js' %}"></script>
-	    <script src="{% static 'assets/js/plant_crop.js' %}"></script>
-	    <script src="{% static 'assets/js/variety.js' %}"></script>
-	    <script src="{% static 'assets/js/chemical.js' %}"></script>
-	    <script src="{% static 'assets/js/species.js' %}"></script>
-	    <script src="{% static 'assets/js/ornamental.js' %}"></script>
-	    <script src="{% static 'assets/js/pesticide.js' %}"></script>
-	    <script src="{% static 'assets/js/product.js' %}"></script>
-	    <script src="{% static 'assets/js/plant_fodder.js' %}"></script>
-	    <script src="{% static 'assets/js/fodder_variety.js' %}"></script>
-	    <script src="{% static 'assets/js/field_office.js' %}"></script>
-	    <script src="{% static 'assets/js/location_mapping.js' %}"></script>
     <script>
     $(document).ready(function()
      {
         $("#agro").hide();
-        if($("#applicationNo").val() == ""){
-        $("#pills-profile-tab").prop('disabled', true);
+        if($("#applicationNo").val() == "")
+        {
+            $("#pills-profile-tab").prop('disabled', true);
+            $("#pills-profile-file").prop('disabled', true);
         }
     });
 
-        function changeOnSelection(permitType)
+    function changeOnSelection(permitType)
+    {
+        if(permitType == "P")
         {
-            if(permitType == "P"){
-                $("#plant").show();
-                $("#agro").hide();
-            }
-            else{
-                $("#agro").show();
-                $("#plant").hide();
-            }
+            $("#plant").show();
+            $("#agro").hide();
         }
+        else
+        {
+            $("#agro").show();
+            $("#plant").hide();
+        }
+    }
 
     function save()
     {
         if($('#plantRadio').prop('checked'))
         {
 
-                $.ajax({
-                    type : "POST",
-                    url : "{% url 'save_movement_permit' %}",
-                    data : $('#permitForm').serialize(),
-                    success : function(response) {
-                        $('.wrapper').html(response);
-                        $('#pills-tab a:last').tab('show');
-                    }
-                });
+            $.ajax({
+                type : "POST",
+                url : "{% url 'save_movement_permit' %}",
+                data : $('#permitForm').serialize(),
+                success : function(response) {
+                    $('#body').html(response);
+                    $('#pills-profile-tab').tab('show');
+                }
+            });
         }
         else
         {
@@ -705,16 +689,16 @@
                 type : "POST",
                 url : "{% url 'save' %}",
                 data : $('#save_form').serialize(),
-                cache : false,
-                dataType : "html",
                 success : function(responseText) {
-                   $('#addModal').modal('hide');
+                   $('#add_details').modal('hide');
                    $('#pills-profile').html(responseText);
                    $('.modal-backdrop').remove();
                 }
             });
         }
     }
+
+
 
     function viewDetails(application_id)
         {
@@ -808,6 +792,10 @@
                 }
             });
         }
+
+
+
+
     </script>
     </body>
 </html>

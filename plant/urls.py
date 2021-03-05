@@ -1,4 +1,7 @@
+from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import path
+
 
 from plant import views
 
@@ -21,4 +24,8 @@ urlpatterns = [
     path('approve_application', views.approve_application, name='approve_application'),
     path('reject_application', views.reject_application, name='reject_application'),
     path('add_details_ins', views.add_details_ins, name='add_details_ins'),
+    path('save_file', views.add_file, name="save_file"),
+    path('add_file_name', views.add_file_name, name='add_file_name')
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

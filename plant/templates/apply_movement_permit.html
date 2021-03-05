@@ -1,6 +1,11 @@
 {% extends 'common_dashboard.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+<style>
+option {
+    background-color: black !important;
+}
+</style>
 <div class="card">
     <div class="card-header">
         <h4 class="card-title">Apply Movement Permit For Plant And Plant Products</h4>
@@ -29,6 +34,9 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_details('{{ title }}')">Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="pills-profile-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_details('{{ title }}')">Attach File</a>
                         </li>
                     </ul>
                 </div>
@@ -198,17 +206,19 @@
                                     <div class="alert alert-danger" id="conveyanceMeansErrorMsg" style="display:none"></div>
                                 </div>
                             </div>
-                            <div class="fileUpload">
-                                #for fileUpload
-                            </div>
                             <div class="card-action">
-                                    <button type="button" class="btn btn-success" onclick="save()">Save</button>
+                                    <button type="button" class="btn btn-primary" onclick="save()">Save</button>
                             </div>
                             </div>
                     </div>
                     <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
                         <div id="Details">
                             {% include 'movement_page.html' %}
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="pills-profile-file">
+                        <div id="fileAttach">
+                            {% include 'file_attachment_page.html' %}
                         </div>
                     </div>
                 </div>
@@ -349,13 +359,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="date">Expected Date of Movement</label>
-                                <input type="text" class="form-control" id="date" name="date" placeholder="Expected Date">
+                                <input type="text" class="form-control date-picker flatpickr-input active" id="date" name="date"  placeholder="Pick a date" readonly="readonly">
                             </div>
                             <div class="alert alert-danger" id="dateErrorMsg" style="display:none"></div>
                         </div>
                     </div>
                     <div class="card-action">
-                        <button class="btn btn-success" onclick="save()">Save</button>
+                        <button class="btn btn-primary" onclick="save()">Save</button>
                     </div>
              </div>
         </form>
@@ -364,60 +374,97 @@
 <form method="post" id="save_form">
     {% csrf_token %}
     <input type="hidden" name="appNo" value="{{ title }}">
-<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                         <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Add User</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="col-lg-12">
-                                <div class="box box-primary">
-                                    <div class="box-body">
-                                        <div class="row">
-                                            <div class="form-group col-md-6">
-                                                <label for="commodity">Commodity</label>
-                                                <input type="text" name="commodity" class="form-control" id="commodity" required>
-                                                <div class="alert alert-danger" id="commodityErrorMsg" style="display:none"></div>
+    <div class="modal fade" id="add_details" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                             <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Add User</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                    </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="col-lg-12">
+                                    <div class="box box-primary">
+                                        <div class="box-body">
+                                            <div class="row">
+                                                <div class="form-group col-md-6">
+                                                    <label for="commodity">Commodity</label>
+                                                    <input type="text" name="commodity" class="form-control" id="commodity" required>
+                                                    <div class="alert alert-danger" id="commodityErrorMsg" style="display:none"></div>
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label for="qty">Quantity</label>
+                                                    <input type="number" name="qty" class="form-control" id="qty" required>
+                                                    <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
+                                                </div>
                                             </div>
-                                            <div class="form-group col-md-6">
-                                                <label for="qty">Quantity</label>
-                                                <input type="number" name="qty" class="form-control" id="qty" required>
-                                                <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="form-group col-md-6">
-                                                <label for="remarks">Remarks</label>
-                                                <input type="text" name="remarks" class="form-control" id="remarks" required>
-                                                <div class="alert alert-danger" id="remarksMeansErrorMsg" style="display:none"></div>
+                                            <div class="row">
+                                                <div class="form-group col-md-6">
+                                                    <label for="remarks">Remarks</label>
+                                                    <input type="text" name="remarks" class="form-control" id="remarks" required>
+                                                    <div class="alert alert-danger" id="remarksMeansErrorMsg" style="display:none"></div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" onclick="save_form()">Add</button>
                         </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" onclick="save_form()">Add</button>
+                    </div>
+            </div>
+    </div>
+</form>
+
+<form method="post" id="attachment_form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" name="appNo" id="appNo" value="{{ title }}">
+    <div class="modal fade" id="attachmentModal" tabindex="-1" role="dialog" aria-labelledby="attachmentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                 <div class="modal-header">
+                    <h5 class="modal-title" id="attachmentModalLabel">Attach Files</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label>Attach File</label>
+                                        <input type="file" name="document" id="document">
+                                        <div class="alert alert-danger" id="fileErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_attachment()"> Submit </button>
+                </div>
+            </div>
         </div>
-</div>
+    </div>
 </form>
+
+
 <script>
-
-
 function loadPage(appId)
 {
     $.ajax({
         type : "GET",
         url : "{% url 'movement_permit_app' %}",
         data :{'appId':appId},
-        success : function(response) {
+        success : function(response)
+        {
             $('#Details').html(response);
         }
     });
@@ -429,7 +476,8 @@ function loadPageDetails(appId)
         type : "GET",
         url : "{% url 'load_details_page' %}",
         data :{'application_id':appId},
-        success : function(response) {
+        success : function(response)
+        {
             $('#plant_details').html(response);
         }
     });
@@ -441,7 +489,8 @@ function getGewog(dzongkhag_id)
         type : "GET",
         url : "{% url 'load_gewog' %}",
         data :{'dzongkhag_id':dzongkhag_id},
-        success : function(data) {
+        success : function(data)
+        {
             $('#gewog').html(data);
         }
     });
@@ -453,7 +502,8 @@ function getVillage(gewog_id)
         type : "GET",
         url : "{% url 'load_village' %}",
         data :{'gewog_id':gewog_id},
-        success : function(data) {
+        success : function(data)
+        {
             $('#village').html(data);
         }
     });
@@ -477,11 +527,57 @@ function updateDetails()
         type : "POST",
         url : "{% url 'update_details' %}",
         data : $('#permitForm').serialize(),
-        success : function(response) {
+        success : function(response)
+        {
             $('.wrapper').html(response);
             $('#pills-tab a:last').tab('show');
         }
     });
 }
+
+function save_attachment()
+{
+    var appNo = "AA0";
+    var fileName = document.getElementById('document').files[0].name;
+    var fd = new FormData();
+    var file = document.getElementById('document').files[0];
+    fd.append('document', file);
+    token_value=$("input[name=csrfmiddlewaretoken]").val();
+    $.ajaxSetup
+    ({
+        beforeSend: function(xhr, settings)
+        {
+            xhr.setRequestHeader("X-CSRFToken", token_value);
+        }
+    });
+        $.ajax({
+        type : "POST",
+        url : "{% url 'save_file' %}",
+        data : fd,
+        dataType: 'json',
+        contentType: false,
+        processData: false,
+        success : function(data)
+        {
+            if (data.form_is_valid) {
+            var appNo = $('#appNo').val();
+            $.ajax
+                ({
+                    type : "POST",
+                    url : "{% url 'add_file_name' %}",
+                    data : {'appNo':appNo , 'filename':fileName},
+                    success : function(responseText)
+                    {
+                        $('#attachmentModal').modal('hide');
+                        $('#file-attachment').html(responseText);
+                        $('.modal-backdrop').remove();
+                    }
+                });
+            }
+        }
+    });
+
+}
+
 </script>
 {% endblock %}
