@@ -26,6 +26,6 @@ class ImportFormThree(forms.ModelForm):
 class FileAttachmentForm(forms.ModelForm):
     class Meta:
         model = t_file_attachment
-        fields = '__all__'
+        fields = ['Attachment']
 
 

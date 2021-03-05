@@ -1,6 +1,8 @@
 from datetime import date
 
+from django.core.files.storage import FileSystemStorage
 from django.db.models import Max
+from django.http import JsonResponse
 from django.shortcuts import render
 
 # Create your views here.
@@ -9,7 +11,7 @@ from django.utils import timezone
 from administrator.models import t_dzongkhag_master, t_gewog_master, t_village_master, t_location_field_office_mapping, \
     t_user_master, t_field_office_master
 from plant.models import t_plant_movement_permit_t2, t_plant_movement_permit_t1, t_workflow_details, \
-    t_plant_movement_permit_t3
+    t_plant_movement_permit_t3, t_file_attachment
 
 
 def apply_movement_permit(request):
@@ -131,7 +133,7 @@ def update_application_details(request):
     for application in field_id:
         Field_Office = application.Field_Office_Id
     field_id.update(Field_Office_Id=Field_Office)
-
+    field_id.update(Action_Date=date.today())
     imports_plant = t_plant_movement_permit_t2.objects.filter(Application_No=application_id)
     return render(request, 'apply_movement_permit_page.html', {'import': imports_plant, 'title': application_id})
 
@@ -146,7 +148,7 @@ def save(request):
                                                   Qty=qty,
                                                   Remarks=remarks)
         imports_plant = t_plant_movement_permit_t2.objects.filter(Application_No=appNo)
-    return render(request, 'apply_movement_permit_page.html', {'import': imports_plant, 'title': appNo})
+    return render(request, 'movement_page.html', {'import': imports_plant, 'title': appNo})
 
 
 def save_movement_permit(request):
@@ -258,8 +260,8 @@ def save_movement_permit(request):
         field_office_id = field_office.Field_Office_Id_id
     t_workflow_details.objects.create(Application_No=last_application_no, Applicant_Id=request.session['email'],
                                       Assigned_To=None, Field_Office_Id=field_office_id, Section="Plant",
-                                      Action_Date=None, Application_Status='P')
-    return render(request, 'apply_import_page.html', {'title': last_application_no})
+                                      Action_Date=date.today(), Application_Status='P')
+    return render(request, 'apply_movement_permit.html', {'title': last_application_no})
 
 
 def oic_app(request):
@@ -401,3 +403,28 @@ def get_permit_no(request):
         year = timezone.now().year
         newAppNo = Field_Code + "MPP" + "/" + str(year) + "/" + AppNo
     return newAppNo
+
+
+def add_file(request):
+    data = dict()
+    myFile = request.FILES['document']
+    fs = FileSystemStorage("attachments/plant/" + str(timezone.now().year))
+    fs.save(myFile.name, myFile)
+    data['form_is_valid'] = True
+    return JsonResponse(data)
+
+
+def add_file_name(request):
+    if request.method == 'POST':
+        Applicant_No = request.POST.get('appNo')
+        fileName = request.POST.get('filename')
+        Applicant_Id = request.session['email']
+        print(fileName)
+        print(Applicant_No)
+
+        t_file_attachment.objects.create(Application_No=Applicant_No, Applicant_Id=Applicant_Id,
+                                         Role_Id=None,
+                                         Attachment=fileName)
+
+        file_attach = t_file_attachment.objects.filter(Application_No=Applicant_No)
+    return render(request, 'file_attachment_page.html', {'file_attach': file_attach})

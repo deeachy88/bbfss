@@ -54,9 +54,11 @@ def login(request):
                             return render(request, 'update_password.html', {'security': security})
                         else:
                             if user.Login_Type == "C":
+                                client = "client"
                                 request.session['email'] = user.Email_Id
                                 request.session['name'] = user.Name
-                                return render(request, 'client_dashboard.html')
+                                request.session['role'] = client
+                                return render(request, 'common_dashboard.html')
                             else:
                                 mainrole = t_role_master.objects.filter(Role_Id=user.Role_Id_id)
                                 for mainroles in mainrole:
@@ -1089,11 +1091,10 @@ def register(request):
                                          Accept_Reject=None, Division_Id_id=None, Field_Office_Id_id=None)
         return render(request, 'client_register.html')
     else:
-        form = UserForm()
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
-        return render(request, 'client_register.html', {'form': form, 'dzongkhag': dzongkhag,
+        return render(request, 'client_register.html', {'dzongkhag': dzongkhag,
                                                         'gewog': gewog, 'village': village})
 
 

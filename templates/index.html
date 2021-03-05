@@ -50,9 +50,9 @@
               <div class="clearfix"></div>
 
               <div class="separator">
-                <p class="change_link">New Client ?
-                  <a href="#signup" class="to_register"> Register </a>
-                </p>
+                <a href="http://127.0.0.1:8000/register" class="font-small blue-text d-flex justify-content-center">
+                    Client Register
+                </a>
 
                 <div class="clearfix"></div>
                 <br />
@@ -67,26 +67,15 @@
 
         <div id="register" class="animate form registration_form">
           <section class="login_content">
-            <form>
+
               <h1>Create Account</h1>
-              <div>
-                <input type="text" class="form-control" placeholder="Username" required="" />
-              </div>
-              <div>
-                <input type="email" class="form-control" placeholder="Email" required="" />
-              </div>
-              <div>
-                <input type="password" class="form-control" placeholder="Password" required="" />
-              </div>
-              <div>
-                <a class="btn btn-default submit" href="index.html">Submit</a>
-              </div>
+
 
               <div class="clearfix"></div>
 
               <div class="separator">
                 <p class="change_link">Already a member ?
-                  <a href="#signin" class="to_register"> Log in </a>
+
                 </p>
         {% endblock %}
                 <div class="clearfix"></div>
@@ -96,7 +85,6 @@
                   <p>©2021 All Rights Reserved. Bhutan Bio Food Security System(BBFSS)</p>
                 </div>
               </div>
-            </form>
           </section>
         </div>
       </div>
@@ -369,5 +357,40 @@ function redirectPage()
     var url = "{% url 'login' %}";
     document.forms[0].action = url;
     document.forms[0].submit();
+}
+
+function getGewog(dzongkhag_id)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_gewog' %}",
+        data :{'dzongkhag_id':dzongkhag_id},
+        success : function(data) {
+            $('#gewog').html(data);
+        }
+    });
+}
+
+function getVillage(gewog_id)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_village' %}",
+        data :{'gewog_id':gewog_id},
+        success : function(data) {
+            $('#village').html(data);
+        }
+    });
+}
+
+function getRegistrationForm()
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'register' %}",
+        success : function(data) {
+            $('#regDiv').html(data);
+        }
+    });
 }
 </script>

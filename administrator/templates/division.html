@@ -49,7 +49,7 @@
         </div>
     </div>
 </div>
-<form action="division" method="post" class="form-horizontal form-label-left">
+<form id="division_add_form" method="post" class="form-horizontal form-label-left">
     <div class="modal fade" id="roleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -67,7 +67,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Add</button>
+            <button type="button" class="btn btn-primary" onclick="add_division()">Add</button>
           </div>
         </div>
       </div>
@@ -81,4 +81,21 @@
       </div>
     </div>
 </div>
+<script>
+    function add_division()
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'division' %}",
+            data : $('#division_add_form').serialize(),
+            cache : false,
+            dataType : "html",
+            success : function(responseText)
+            {
+                $("#roleModal").modal("hide");
+                location.reload();
+            }
+        });
+    }
+</script>
 {% endblock %}
