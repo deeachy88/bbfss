@@ -212,8 +212,22 @@ option {
                             </div>
                     </div>
                     <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-                        <div id="Details">
-                            {% include 'movement_page.html' %}
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-head-row">
+                                    <div class="card-tools pull-right">
+                                        <button type="button" class="btn btn-light" onclick="show_modal()">Add</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div id="Details">
+                                    {% include 'movement_page.html' %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-action">
+                            <button type="button" class="btn btn-success" onclick="save_details_form()">Save</button>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="pills-profile-file">
@@ -374,8 +388,8 @@ option {
 <form method="post" id="save_form">
     {% csrf_token %}
     <input type="hidden" name="appNo" value="{{ title }}">
-    <div class="modal fade" id="add_details" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document">
+    <div class="modal fade" id="add_details" tabindex="-1">
+            <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                              <div class="modal-header">
                                     <h5 class="modal-title" id="exampleModalLabel">Add User</h5>
@@ -422,8 +436,8 @@ option {
 <form method="post" id="attachment_form" enctype="multipart/form-data">
     {% csrf_token %}
     <input type="hidden" name="appNo" id="appNo" value="{{ title }}">
-    <div class="modal fade" id="attachmentModal" tabindex="-1" role="dialog" aria-labelledby="attachmentModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
+    <div class="modal fade" id="attachmentModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                  <div class="modal-header">
                     <h5 class="modal-title" id="attachmentModalLabel">Attach Files</h5>
@@ -559,9 +573,10 @@ function save_attachment()
         processData: false,
         success : function(data)
         {
-            if (data.form_is_valid) {
-            var appNo = $('#appNo').val();
-            $.ajax
+            if (data.form_is_valid)
+            {
+                var appNo = $('#appNo').val();
+                $.ajax
                 ({
                     type : "POST",
                     url : "{% url 'add_file_name' %}",
@@ -573,11 +588,17 @@ function save_attachment()
                         $('.modal-backdrop').remove();
                     }
                 });
+            }else
+            {
+                $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                $('#fileErrorMsg').show();
+                $('#fileErrorMsg').delay(2000).fadeOut('slow');
             }
         }
     });
 
 }
+
 
 </script>
 {% endblock %}

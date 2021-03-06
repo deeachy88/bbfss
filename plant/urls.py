@@ -25,7 +25,8 @@ urlpatterns = [
     path('reject_application', views.reject_application, name='reject_application'),
     path('add_details_ins', views.add_details_ins, name='add_details_ins'),
     path('save_file', views.add_file, name="save_file"),
-    path('add_file_name', views.add_file_name, name='add_file_name')
+    path('add_file_name', views.add_file_name, name='add_file_name'),
+    path('delete_file', views.delete_file, name='delete_file')
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

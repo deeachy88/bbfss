@@ -409,22 +409,34 @@ def add_file(request):
     data = dict()
     myFile = request.FILES['document']
     fs = FileSystemStorage("attachments/plant/" + str(timezone.now().year))
-    fs.save(myFile.name, myFile)
-    data['form_is_valid'] = True
+    if fs.exists(myFile.name):
+        data['form_is_valid'] = False
+    else:
+        fs.save(myFile.name, myFile)
+        data['form_is_valid'] = True
     return JsonResponse(data)
 
 
 def add_file_name(request):
     if request.method == 'POST':
-        Applicant_No = request.POST.get('appNo')
+        Application_No = request.POST.get('appNo')
         fileName = request.POST.get('filename')
         Applicant_Id = request.session['email']
-        print(fileName)
-        print(Applicant_No)
 
-        t_file_attachment.objects.create(Application_No=Applicant_No, Applicant_Id=Applicant_Id,
+        t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
                                          Role_Id=None,
                                          Attachment=fileName)
 
-        file_attach = t_file_attachment.objects.filter(Application_No=Applicant_No)
+        file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+    return render(request, 'file_attachment_page.html', {'file_attach': file_attach})
+
+
+def delete_file(request):
+    File_Id = request.GET.get('file_id')
+    Application_No = request.GET.get('appNo');
+
+    file = t_file_attachment.objects.filter(pk=File_Id)
+    file.delete()
+
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
     return render(request, 'file_attachment_page.html', {'file_attach': file_attach})
