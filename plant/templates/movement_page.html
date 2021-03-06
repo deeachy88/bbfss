@@ -1,62 +1,24 @@
-<div class="card">
-        <div class="card-header">
-            <div class="card-head-row">
-                <div class="card-tools">
-                    <button class="btn btn-light" data-toggle="modal" data-target="#modal-default">Default modal</button>
-                </div>
-            </div>
-        </div>
-        <div class="card-body">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Commodity</th>
-                        <th scope="col">Quantity</th>
-                        <th scope="col">Remarks</th>
-                    </tr>
-                </thead>
-                <tbody>
-                   {% for import in import %}
-                            <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td>{{import.Commodity}}</td>
-                                <td>{{import.Qty}}</td>
-                                <td>{{import.Remarks}}</td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                              <td colspan="4" class="text-center">No Data</td>
-                            </tr>
-                   {% endfor %}
-                </tbody>
-            </table>
-        </div>
-</div>
-
-<div class="modal fade" id="modal-default" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title pull-left">Default modal</h5>
-            </div>
-            <div class="modal-body">
-                Curabitur blandit mollis lacus. Nulla sit amet est. Suspendisse nisl elit, rhoncus eget, elementum ac, condimentum eget, diam. Donec mi odio, faucibus at, scelerisque quis, convallis in, nisi. Cras sagittis.
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-link">Save changes</button>
-                <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="card-action">
-    <button type="button" class="btn btn-success" onclick="save_form()">Save</button>
-</div>
-<script>
-function save_form()
-{
- $('#pills-tab a:last').tab('show');
-}
-</script>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Commodity</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Remarks</th>
+        </tr>
+    </thead>
+    <tbody>
+       {% for import in import %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{import.Commodity}}</td>
+                    <td>{{import.Qty}}</td>
+                    <td>{{import.Remarks}}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="4" class="text-center">No Data</td>
+                </tr>
+       {% endfor %}
+    </tbody>
+</table>

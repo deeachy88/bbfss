@@ -2,7 +2,7 @@
         <div class="card-header">
             <div class="card-head-row">
                 <div class="card-tools">
-                    <a href="#" class="btn btn-info btn-border btn-round btn-sm" data-toggle="modal" data-target="#attachmentModal">
+                    <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="show_attachmentModal()">
                         <span class="btn-label">
                             <i class="fa fa-print"></i>
                         </span>
@@ -24,10 +24,10 @@
                    {% for file_attach in file_attach %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-                                <td>{{file_attach.File_Name}}</td>
+                                <td>{{file_attach.Attachment}}</td>
                                 <td>
                                     <button type="button"
-									    class="btn btn-danger btn-sm js-delete-role">
+									    class="btn btn-danger btn-sm" onclick="DeleteAttachment('{{ file_attach.File_Id }}')">
 									    <i class="zmdi zmdi-delete"></i>
 								    </button>
                                 </td>
@@ -60,4 +60,16 @@ function save_details()
 	});
 }
 
+function DeleteAttachment(id)
+{
+   $.ajax({
+        type : "GET",
+        url : "{% url 'load_details_page' %}",
+        data :{'application_id':appId},
+        success : function(response)
+        {
+            $('#plant_details').html(response);
+        }
+    });
+}
 </script>
