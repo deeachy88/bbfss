@@ -7,7 +7,7 @@ import django.utils.timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('plant', '0002_t_file_attachment'),
+        ('plant', '0001_initial'),
     ]
 
     operations = [

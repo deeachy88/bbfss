@@ -109,11 +109,7 @@ var loadRoleForm = function () {
     });
     return false;
   };
-  
-  
 
-  
-  
 
   // Update user
   $("#user-table").on("click", ".js-update-book", loadForm);

@@ -9,11 +9,11 @@ $(function () {
       type: 'get',
       dataType: 'json',
       beforeSend: function () {
-        $("#modal-chemical .modal-content").html("");
-        $("#modal-chemical").modal("show");
+        $("#modal-variety .modal-content").html("");
+        $("#modal-variety").modal("show");
       },
       success: function (data) {
-        $("#modal-chemical .modal-content").html(data.html_form);
+        $("#modal-variety .modal-content").html(data.html_form);
       }
     });
   };
@@ -27,11 +27,11 @@ $(function () {
       dataType: 'json',
       success: function (data) {
         if (data.form_is_valid) {
-          $("#modal-chemical").modal("hide");
+          $("#modal-variety").modal("hide");
           location.reload();
         }
         else {
-          $("#modal-chemical .modal-content").html(data.html_form);
+          $("#modal-variety .modal-content").html(data.html_form);
         }
       }
     });
@@ -40,11 +40,12 @@ $(function () {
 
   /* Binding */
 
-  // Update Division
-  $("#chemical-table").on("click", ".js-edit-chemical", loadForm);
-  $("#modal-chemical").on("submit", ".js-chemical-update-form", saveForm);
+  // Update Crop Species
+  $("#variety-table").on("click", ".js-edit-variety", loadForm);
+  $("#modal-variety").on("submit", ".js-variety-update-form", saveForm);
 
-  // Delete Division
-  $("#chemical-table").on("click", ".js-delete-chemical", loadForm);
-  $("#modal-chemical").on("submit", ".js-chemical-delete-form", saveForm);
+  // Delete Crop Species
+  $("#variety-table").on("click", ".js-delete-variety", loadForm);
+  $("#modal-variety").on("submit", ".js-variety-delete-form", saveForm);
+
 });

@@ -7,8 +7,8 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <strong class="card-title">Plant Product Manage</strong>
-                    <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#roleModal">
+                    <strong class="card-title">Plant Product Master</strong>
+                    <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#productModal">
                         Add Plant Product
                     </button>
                 </div>
@@ -53,8 +53,8 @@
         </div>
     </div>
 </div>
-<form action="plant_product" method="post">
-    <div class="modal fade" id="roleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<form id="plant_product_add_form" method="post" class="form-horizontal form-label-left">
+    <div class="modal fade" id="productModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -67,11 +67,11 @@
 
             {% csrf_token %}
             {{form|crispy}}
-
+            <div class="alert alert-danger" id="productErrorMsg" style="display:none"></div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Add</button>
+            <button type="button" class="btn btn-primary" onclick="add_plant_product()">Add</button>
           </div>
         </div>
       </div>
@@ -84,4 +84,37 @@
       </div>
     </div>
   </div>
+<script>
+    function add_plant_product()
+    {
+    var id_Plant_Product_Name = $('#id_Plant_Product_Name').val();
+    var id_Product_Scientific_Name = $('#id_Product_Scientific_Name').val();
+    if(id_Plant_Product_Name == "")
+    {
+        $('#productErrorMsg').html("Enter Product Name.");
+        $('#productErrorMsg').show();
+        $('#productErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(id_Product_Scientific_Name == "")
+        {
+            $('#productErrorMsg').html("Enter Scientific Name.");
+            $('#productErrorMsg').show();
+            $('#productErrorMsg').delay(2000).fadeOut('slow');
+        }
+    else
+        $.ajax({
+            type : "POST",
+            url : "{% url 'plant_product' %}",
+            data : $('#plant_product_add_form').serialize(),
+            cache : false,
+            dataType : "html",
+            success : function(responseText)
+            {
+                $("#productModal").modal("hide");
+                location.reload();
+                $("#plant_product_add_form")[0].reset();
+            }
+        });
+    }
+</script>
 {% endblock %}

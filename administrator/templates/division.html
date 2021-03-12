@@ -6,7 +6,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <strong class="card-title">Division Manage</strong>
+                    <strong class="card-title">Division Master</strong>
                     <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#roleModal">
                         Add Division
                     </button>
@@ -63,7 +63,7 @@
 
             {% csrf_token %}
             {{form|crispy}}
-
+            <div class="alert alert-danger" id="divisionNameErrorMsg" style="display:none"></div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -73,7 +73,6 @@
       </div>
     </div>
 </form>
-
 <div class="modal fade" id="modal-common">
     <div class="modal-dialog">
       <div class="modal-content edit">
@@ -83,6 +82,14 @@
 </div>
 <script>
     function add_division()
+    {
+    var id_Division_Name = $('#id_Division_Name').val();
+    if(id_Division_Name == "")
+    {
+        $('#divisionNameErrorMsg').html("Enter Division Name.");
+        $('#divisionNameErrorMsg').show();
+        $('#divisionNameErrorMsg').delay(2000).fadeOut('slow');
+    }else
     {
         $.ajax({
             type : "POST",
@@ -94,8 +101,10 @@
             {
                 $("#roleModal").modal("hide");
                 location.reload();
+                $("#division_add_form")[0].reset();
             }
         });
+     }
     }
 </script>
 {% endblock %}

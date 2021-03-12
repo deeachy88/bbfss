@@ -3,13 +3,12 @@
 {% block content %}
 <div class="animated fadeIn">
     <div class="row">
-
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <strong class="card-title">Plant Crop Manage</strong>
+                    <strong class="card-title">Crop Master</strong>
                     <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#cropModal">
-                        Add Crop
+                        Add New Crop
                     </button>
                 </div>
                 <div class="card-body">
@@ -52,7 +51,7 @@
         </div>
     </div>
 </div>
-<form action="crop" method="post">
+<form id="crop_add_form" method="post" class="form-horizontal form-label-left">
     <div class="modal fade" id="cropModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -66,11 +65,11 @@
 
             {% csrf_token %}
             {{form|crispy}}
-
+            <div class="alert alert-danger" id="cropErrorMsg" style="display:none"></div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Add</button>
+            <button type="button" class="btn btn-primary" onclick="add_crop()">Add</button>
           </div>
         </div>
       </div>
@@ -83,4 +82,37 @@
       </div>
     </div>
   </div>
+<script>
+    function add_crop()
+    {
+    var id_Crop_Common_Name = $('#id_Crop_Common_Name').val();
+    var id_Crop_Scientific_Name = $('#id_Crop_Scientific_Name').val();
+    if(id_Crop_Common_Name == "")
+    {
+        $('#cropErrorMsg').html("Enter Common Name.");
+        $('#cropErrorMsg').show();
+        $('#cropErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(id_Crop_Scientific_Name == "")
+        {
+            $('#cropErrorMsg').html("Enter Scientific Name.");
+            $('#cropErrorMsg').show();
+            $('#cropErrorMsg').delay(2000).fadeOut('slow');
+        }
+    else
+        $.ajax({
+            type : "POST",
+            url : "{% url 'crop_page' %}",
+            data : $('#crop_add_form').serialize(),
+            cache : false,
+            dataType : "html",
+            success : function(responseText)
+            {
+                $("#roleModal").modal("hide");
+                location.reload();
+                $("#crop_add_form")[0].reset();
+            }
+        });
+    }
+</script>
 {% endblock %}

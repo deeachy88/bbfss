@@ -417,8 +417,8 @@ def crop_manage(request):
         form = CropForm(request.POST)
         if form.is_valid():
             form.save()
-            form = CropForm()
             crop = t_plant_crop_master.objects.all()
+            form = CropForm()
             return render(request, 'crop.html', {'form': form, 'crop': crop})
     else:
         crop = t_plant_crop_master.objects.all()
@@ -457,6 +457,7 @@ def crop_variety_manage(request):
         form = CropVarietyForm(request.POST)
         if form.is_valid():
             form.save()
+            form = CropVarietyForm()
             variety = t_plant_crop_variety_master.objects.all()
             return render(request, 'crop_variety.html', {'form': form, 'variety': variety})
     else:
@@ -496,6 +497,7 @@ def chemical_manage(request):
         form = ChemicalForm(request.POST)
         if form.is_valid():
             form.save()
+            form = ChemicalForm()
             chemical = t_plant_chemical_master.objects.all()
             return render(request, 'chemical.html', {'form': form, 'chemical': chemical})
     else:
@@ -535,6 +537,7 @@ def crop_species_manage(request):
         form = CropSpeciesForm(request.POST)
         if form.is_valid():
             form.save()
+            form = CropSpeciesForm()
             species = t_plant_crop_species_master.objects.all()
             return render(request, 'crop_species.html', {'form': form, 'species': species})
     else:
@@ -574,6 +577,7 @@ def ornamental_plant_manage(request):
         form = OrnamentalPlantForm(request.POST)
         if form.is_valid():
             form.save()
+            form = OrnamentalPlantForm()
             ornamental = t_plant_ornamental_master.objects.all()
             return render(request, 'plant_ornamental.html', {'form': form, 'ornamental': ornamental})
     else:
@@ -1217,6 +1221,3 @@ def password_update(request):
         reg_users.update(Last_Login_Date=today)
         t_forgot_password.objects.create(Login_Id=Login_Id, Security_Question_Id=security_question, Answer=Answer)
     return render(request, 'common_dashboard.html')
-
-
-

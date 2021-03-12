@@ -7,8 +7,8 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <strong class="card-title">Plant Pesticide Manage</strong>
-                    <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#roleModal">
+                    <strong class="card-title">Plant Pesticide Master</strong>
+                    <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#pesticideModal">
                         Add Plant Pesticide
                     </button>
                 </div>
@@ -53,8 +53,8 @@
         </div>
     </div>
 </div>
-<form action="pesticide" method="post">
-    <div class="modal fade" id="roleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<form id="crop_pesticide_add_form" method="post" class="form-horizontal form-label-left">
+    <div class="modal fade" id="pesticideModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -67,11 +67,11 @@
 
             {% csrf_token %}
             {{form|crispy}}
-
+            <div class="alert alert-danger" id="pesticideErrorMsg" style="display:none"></div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Add</button>
+            <button type="button" class="btn btn-primary" onclick="add_crop_pesticide()">Add</button>
           </div>
         </div>
       </div>
@@ -84,4 +84,44 @@
       </div>
     </div>
   </div>
+<script>
+    function add_crop_pesticide()
+    {
+    var id_Pesticide_Name = $('#id_Pesticide_Name').val();
+    var id_Description = $('#id_Description').val();
+    if(id_Pesticide_Name == "")
+    {
+        $('#pesticideErrorMsg').html("Enter Pesticide Name.");
+        $('#pesticideErrorMsg').show();
+        $('#pesticideErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(id_Description == "")
+        {
+            $('#pesticideErrorMsg').html("Enter Description.");
+            $('#pesticideErrorMsg').show();
+            $('#pesticideErrorMsg').delay(2000).fadeOut('slow');
+        }
+    else if(id_Description == "")
+        {
+            $('#cropChemicalErrorMsg').html("Enter Description.");
+            $('#cropChemicalErrorMsg').show();
+            $('#cropChemicalErrorMsg').delay(2000).fadeOut('slow');
+        }
+    else
+        $.ajax({
+            type : "POST",
+            url : "{% url 'pesticide_page' %}",
+            data : $('#crop_pesticide_add_form').serialize(),
+            cache : false,
+            dataType : "html",
+            success : function(responseText)
+            {
+                $("#pesticideModal").modal("hide");
+                location.reload();
+                $("#crop_pesticide_add_form")[0].reset();
+            }
+        });
+    }
+</script>
+
 {% endblock %}
