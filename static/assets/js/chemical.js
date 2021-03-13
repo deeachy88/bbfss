@@ -41,7 +41,7 @@ $(function () {
   /* Binding */
 
   // Update Division
-  $("#chemical -table").on("click", ".js-edit-chemical", loadForm);
+  $("#chemical-table").on("click", ".js-edit-chemical", loadForm);
   $("#modal-chemical").on("submit", ".js-chemical-update-form", saveForm);
 
   // Delete Division

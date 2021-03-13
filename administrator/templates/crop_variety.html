@@ -3,12 +3,11 @@
 {% block content %}
 <div class="animated fadeIn">
     <div class="row">
-
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <strong class="card-title">Crop Variety Manage</strong>
-                    <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#roleModal">
+                    <strong class="card-title">Crop Variety Master</strong>
+                    <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#cropVarietyModal">
                         Add Crop Variety
                     </button>
                 </div>
@@ -17,8 +16,8 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Crop Common Name</th>
                                 <th>Crop Variety Name</th>
+                                <th>Crop Common Name</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -26,8 +25,8 @@
                         {% for variety in variety %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-                                <td>{{variety.Crop_Id}}</td>
                                 <td>{{variety.Crop_Variety_Name}}</td>
+                                <td>{{variety.Crop_Id}}</td>
                                 <td>
                                     <button type="button"
                                           class="btn btn-warning btn-sm js-edit-variety"
@@ -48,8 +47,8 @@
         </div>
     </div>
 </div>
-<form action="crop_variety" method="post">
-    <div class="modal fade" id="roleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<form id="crop_variety_add_form" method="post" class="form-horizontal form-label-left">
+    <div class="modal fade" id="cropVarietyModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -59,14 +58,13 @@
             </button>
           </div>
           <div class="modal-body">
-
             {% csrf_token %}
             {{form|crispy}}
-
+            <div class="alert alert-danger" id="cropVarietyErrorMsg" style="display:none"></div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Add</button>
+            <button type="button" class="btn btn-primary" onclick="add_crop_variety()">Add</button>
           </div>
         </div>
       </div>
@@ -79,4 +77,37 @@
       </div>
     </div>
   </div>
+<script>
+    function add_crop_variety()
+    {
+    var id_Crop_Variety_Name = $('#id_Crop_Variety_Name').val();
+    var id_Crop_Id = $('#id_Crop_Id').val();
+    if(id_Crop_Variety_Name == "")
+    {
+        $('#cropVarietyErrorMsg').html("Enter Variety Name.");
+        $('#cropVarietyErrorMsg').show();
+        $('#cropVarietyErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(id_Crop_Id == "")
+        {
+            $('#cropVarietyErrorMsg').html("Enter Crop.");
+            $('#cropVarietyErrorMsg').show();
+            $('#cropVarietyErrorMsg').delay(2000).fadeOut('slow');
+        }
+    else
+        $.ajax({
+            type : "POST",
+            url : "{% url 'crop_variety_page' %}",
+            data : $('#crop_variety_add_form').serialize(),
+            cache : false,
+            dataType : "html",
+            success : function(responseText)
+            {
+                $("#roleModal").modal("hide");
+                location.reload();
+                $("#crop_variety_add_form")[0].reset();
+            }
+        });
+    }
+</script>
 {% endblock %}

@@ -7,8 +7,8 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <strong class="card-title">Ornamental Plant Manage</strong>
-                    <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#roleModal">
+                    <strong class="card-title">Ornamental Plant Master</strong>
+                    <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#ornamentalModal">
                         Add Ornamental Plant
                     </button>
                 </div>
@@ -52,8 +52,8 @@
         </div>
     </div>
 </div>
-<form action="ornamental_plant" method="post">
-    <div class="modal fade" id="roleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<form id="crop_ornamental_add_form" method="post" class="form-horizontal form-label-left">
+    <div class="modal fade" id="ornamentalModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -63,14 +63,13 @@
             </button>
           </div>
           <div class="modal-body">
-
             {% csrf_token %}
             {{form|crispy}}
-
+            <div class="alert alert-danger" id="cropOrnamentalErrorMsg" style="display:none"></div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Add</button>
+            <button type="button" class="btn btn-primary" onclick="add_crop_ornamental()">Add</button>
           </div>
         </div>
       </div>
@@ -83,4 +82,37 @@
       </div>
     </div>
   </div>
+<script>
+    function add_crop_ornamental()
+    {
+    var id_Ornamental_Common_Name = $('#id_Ornamental_Common_Name').val();
+    var id_Ornamental_Scientific_Name = $('#id_Ornamental_Scientific_Name').val();
+    if(id_Ornamental_Common_Name == "")
+    {
+        $('#cropOrnamentalErrorMsg').html("Enter Common Name.");
+        $('#cropOrnamentalErrorMsg').show();
+        $('#cropOrnamentalErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(id_Ornamental_Scientific_Name == "")
+        {
+            $('#cropOrnamentalErrorMsg').html("Enter Scientific Name.");
+            $('#cropOrnamentalErrorMsg').show();
+            $('#cropOrnamentalErrorMsg').delay(2000).fadeOut('slow');
+        }
+    else
+        $.ajax({
+            type : "POST",
+            url : "{% url 'ornamental_plant_page' %}",
+            data : $('#crop_ornamental_add_form').serialize(),
+            cache : false,
+            dataType : "html",
+            success : function(responseText)
+            {
+                $("#roleModal").modal("hide");
+                location.reload();
+                $("#crop_ornamental_add_form")[0].reset();
+            }
+        });
+    }
+</script>
 {% endblock %}

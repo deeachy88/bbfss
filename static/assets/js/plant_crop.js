@@ -40,11 +40,11 @@ $(function () {
 
   /* Binding */
 
-  // Update Division
+  // Update Crop
   $("#crop-table").on("click", ".js-edit-crop", loadForm);
   $("#modal-crop").on("submit", ".js-crop-update-form", saveForm);
 
-  // Delete Division
+  // Delete Crop
   $("#crop-table").on("click", ".js-delete-crop", loadForm);
   $("#modal-crop").on("submit", ".js-crop-delete-form", saveForm);
 

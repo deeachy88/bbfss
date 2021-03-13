@@ -6,8 +6,8 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <strong class="card-title">Plant Chemical Manage</strong>
-                    <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#roleModal">
+                    <strong class="card-title">Plant Chemical Master</strong>
+                    <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#chemicalModal">
                         Add Plant Chemical
                     </button>
                 </div>
@@ -49,8 +49,8 @@
         </div>
     </div>
 </div>
-<form action="chemical" method="post">
-    <div class="modal fade" id="roleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<form id="crop_chemical_add_form" method="post" class="form-horizontal form-label-left">
+    <div class="modal fade" id="chemicalModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -60,24 +60,63 @@
             </button>
           </div>
           <div class="modal-body">
-
             {% csrf_token %}
             {{form|crispy}}
-
+            <div class="alert alert-danger" id="cropChemicalErrorMsg" style="display:none"></div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Add</button>
+            <button type="button" class="btn btn-primary" onclick="add_crop_chemical()">Add</button>
           </div>
         </div>
       </div>
     </div>
 </form>
-<div class="modal fade" id="modal-role">
+<div class="modal fade" id="modal-chemical">
     <div class="modal-dialog">
       <div class="modal-content edit">
 
       </div>
     </div>
   </div>
+<script>
+    function add_crop_chemical()
+    {
+    var id_Chemical_Type = $('#id_Chemical_Type').val();
+    var id_Chemical_Name = $('#id_Chemical_Name').val();
+    var id_Description = $('#id_Description').val();
+    if(id_Chemical_Type == "")
+    {
+        $('#cropChemicalErrorMsg').html("Enter Chemical Type.");
+        $('#cropChemicalErrorMsg').show();
+        $('#cropChemicalErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(id_Chemical_Name == "")
+        {
+            $('#cropChemicalErrorMsg').html("Enter Chemical Name.");
+            $('#cropChemicalErrorMsg').show();
+            $('#cropChemicalErrorMsg').delay(2000).fadeOut('slow');
+        }
+    else if(id_Description == "")
+        {
+            $('#cropChemicalErrorMsg').html("Enter Description.");
+            $('#cropChemicalErrorMsg').show();
+            $('#cropChemicalErrorMsg').delay(2000).fadeOut('slow');
+        }
+    else
+        $.ajax({
+            type : "POST",
+            url : "{% url 'chemical_page' %}",
+            data : $('#crop_chemical_add_form').serialize(),
+            cache : false,
+            dataType : "html",
+            success : function(responseText)
+            {
+                $("#roleModal").modal("hide");
+                location.reload();
+                $("#crop_chemical_add_form")[0].reset();
+            }
+        });
+    }
+</script>
 {% endblock %}
