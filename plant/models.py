@@ -9,7 +9,7 @@ class t_plant_movement_permit_t1(models.Model):
     Application_No = models.CharField(max_length=20, primary_key=True)
     Permit_Type = models.CharField(max_length=1, default=None)
     License_No = models.CharField(max_length=100)
-    Nursery_Name = models.CharField(max_length=100)
+    Nursery_Name = models.CharField(max_length=100, default=None, blank=True, null=True)
     CID = models.BigIntegerField()
     Applicant_Name = models.CharField(max_length=250)
     Contact_No = models.IntegerField()

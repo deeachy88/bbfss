@@ -6,7 +6,7 @@ option {
     background-color: black !important;
 }
 </style>
-<input type="text" id="applicationNo" name="applicationNo" value="{{ applicationNo }}">
+<input type="text" id="applicationNo" name="applicationNo" value="{{ applicationNo }}" style="display:none">
 <div class="card">
     <div class="card-header">
         <h4 class="card-title">Movement Permit For Plant And Plant Products</h4>
@@ -65,7 +65,7 @@ option {
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="cid">Applicant CID</label>
-                                        <input type="number" class="form-control" id="cid" name="cid" maxlength="11" placeholder="Applicant CID">
+                                        <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" placeholder="Applicant CID" onkeypress="return isNumberKey(event)">
                                     </div>
                                     <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
                                 </div>
@@ -81,7 +81,7 @@ option {
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="contactNumber">Contact Number</label>
-                                        <input type="number" class="form-control" id="contactNumber" name="contactNumber" maxlength="8" placeholder="Contact Number">
+                                        <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" name="contactNumber" maxlength="8" placeholder="Contact Number" onkeypress="return isNumberKey(event)">
                                     </div>
                                     <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
                                 </div>
