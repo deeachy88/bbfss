@@ -1,0 +1,80 @@
+<div class="scrollbar-inner">
+    {% if request.session.role == 'Agency Admin' %}
+        <ul class="navigation">
+            <li class="navigation__active"><a href="index-2.html"><i class="zmdi zmdi-home"></i> Home</a></li>
+
+            <li class="@@typeactive"><a href="http://127.0.0.1:8000/user"><i class="zmdi zmdi-format-underlined"></i> Users</a></li>
+
+            <li class="navigation__sub @@tableactive">
+                <a href="#"><i class="zmdi zmdi-view-list"></i> Masters</a>
+
+                <ul>
+                    <li class="@@normaltableactive"><a href="{% url 'role_page' %}">Role</a></li>
+                    <li class="@@datatableactive"><a href="{% url 'division' %}">Division</a></li>
+                    <li class="@@datatableactive"><a href="{% url 'section_page' %}">Section</a></li>
+                    <li class="@@datatableactive"><a href="{% url 'service_page' %}">Service</a></li>
+                    <li class="@@normaltableactive"><a href="{% url 'crop_page' %}">Plant Crop</a></li>
+                    <li class="@@datatableactive"><a href="{% url 'crop_variety_page' %}">Crop Variety</a></li>
+                    <li class="@@datatableactive"><a href="{% url 'chemical_page' %}">Plant Chemical</a></li>
+                    <li class="@@datatableactive"><a href="{% url 'plant_crop_species_page' %}">Plant Crop Species</a></li>
+                    <li class="@@normaltableactive"><a href="{% url 'ornamental_plant_page' %}">Ornamental Plant</a></li>
+                    <li class="@@datatableactive"><a href="{% url 'pesticide_page' %}">Plant Pesticide</a></li>
+                    <li class="@@datatableactive"><a href="{% url 'plant_product' %}">Plant Product</a></li>
+                    <li class="@@datatableactive"><a href="{% url 'plant_fodder_page' %}">Plant Fodder</a></li>
+                    <li class="@@normaltableactive"><a href="{% url 'plant_fodder_variety' %}">Plant Fodder Variety</a></li>
+                    <li class="@@datatableactive"><a href="{% url 'field_office' %}">BAFRA Field Office</a></li>
+                    <li class="@@datatableactive"><a href="{% url 'location_field' %}">Location Field Office Mapping</a></li>
+                </ul>
+            </li>
+
+            <li class="navigation__sub @@formactive">
+                <a href="#"><i class="zmdi zmdi-collection-text"></i> Client Manage</a>
+
+                <ul>
+                    <li class="@@datatableactive"><a href="{% url 'new_registration' %}">New Registration</a></li>
+                    <li class="@@datatableactive"><a href="{% url 'registered_clients' %}">Registered Clients</a></li>
+                </ul>
+            </li>
+        </ul>
+    {% elif request.session.role == 'Focal Officer' %}
+    {% elif request.session.role == 'Complaint Officer' %}
+    {% elif request.session.role == 'OIC' %}
+        <ul class="navigation">
+            <li class="navigation__active"><a href="index-2.html"><i class="zmdi zmdi-home"></i> Home</a></li>
+
+            <li class="navigation__sub @@formactive">
+                <a href="#"><i class="zmdi zmdi-collection-text"></i> Plant</a>
+
+                <ul>
+                    <li class="@@datatableactive"><a href="{% url 'movement_permit_app_oic' %}">Movement Permit Application</a></li>
+                </ul>
+            </li>
+        </ul>
+    {% elif request.session.role == 'Inspector' %}
+        <ul class="navigation">
+            <li class="navigation__active"><a href="index-2.html"><i class="zmdi zmdi-home"></i> Home</a></li>
+
+            <li class="navigation__sub @@formactive">
+                <a href="#"><i class="zmdi zmdi-collection-text"></i> Plant</a>
+
+                <ul>
+                    <li class="@@datatableactive"><a href="{% url 'movement_permit_app_ins' %}">Movement Permit Application</a></li>
+                </ul>
+            </li>
+        </ul>
+    {% elif request.session.role == 'Chief' %}
+    {% elif request.session.role == 'DG' %}
+    {% else %}
+        <ul class="navigation">
+            <li class="navigation__active"><a href="index-2.html"><i class="zmdi zmdi-home"></i> Home</a></li>
+
+            <li class="navigation__sub @@formactive">
+                <a href="#"><i class="zmdi zmdi-collection-text"></i> Plant</a>
+
+                <ul>
+                    <li class="@@datatableactive"><a href="{% url 'apply_movement_permit' %}">Apply Movement Permit</a></li>
+                </ul>
+            </li>
+        </ul>
+    {% endif %}
+</div>
