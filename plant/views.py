@@ -1,8 +1,9 @@
+import os
 from datetime import date
 
 from django.core.files.storage import FileSystemStorage
 from django.db.models import Max
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render
 
 # Create your views here.
@@ -135,7 +136,7 @@ def update_application_details(request):
     field_id.update(Field_Office_Id=Field_Office)
     field_id.update(Action_Date=date.today())
     imports_plant = t_plant_movement_permit_t2.objects.filter(Application_No=application_id)
-    return render(request, 'apply_movement_permit_page.html', {'import': imports_plant, 'title': application_id})
+    return render(request, 'apply_movement_permit.html', {'import': imports_plant, 'title': application_id})
 
 
 def save(request):
@@ -261,7 +262,7 @@ def save_movement_permit(request):
     t_workflow_details.objects.create(Application_No=last_application_no, Applicant_Id=request.session['email'],
                                       Assigned_To=None, Field_Office_Id=field_office_id, Section="Plant",
                                       Action_Date=date.today(), Application_Status='P')
-    return render(request, 'apply_movement_permit.html', {'title': last_application_no})
+    return render(request,'apply_movement_permit.html', {'applicationNo': last_application_no})
 
 
 def oic_app(request):
@@ -436,6 +437,10 @@ def delete_file(request):
     Application_No = request.GET.get('appNo');
 
     file = t_file_attachment.objects.filter(pk=File_Id)
+    for file in file:
+        fileName = file.Attachment
+        fs = FileSystemStorage("attachments/plant/" + str(timezone.now().year))
+        fs.delete(str(fileName))
     file.delete()
 
     file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
