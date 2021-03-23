@@ -6,7 +6,7 @@
                 <div class="card">
                     <div class="card-body">
                         {% for application_details in application_details %}
-                            {% if P == application_details.PermitType%}
+                            {% if P == application_details.PemitType%}
                             <div class="row justify-content-center">
                                 <div class="form-check text-center">
                                     <label>Permit Type <font color="red">*</font></label><br>
@@ -218,83 +218,15 @@
                                     </table>
                                 </div>
                             </div>
-                            <br><br>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Inspection Team Leader</label>
-                                        <select class="form-control" name="teamLeader"  id="teamLeader">
-                                            <option value="">--SELECT TEAM LEADER--</option>
-                                            {% for inspector_list in inspector_list %}
-                                                    <option value="{{ inspector_list.Login_Id }}">{{ inspector_list.Name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="insTeam">Inspection Team </label>
-                                        <textarea class="form-control" id="insTeam" rows="2"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                            <br><br>
-                            <div class="row">
-                                <div class="card col-md-12">
-                                    <div class="card-header">
-                                        <div class="card-head-row">
-                                            <div class="card-tools">
-                                                <a data-toggle="modal" href="#myModal2" class="btn btn-primary">Launch modal</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="card-body" id="details">
-                                        <table class="table table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <th scope="col">#</th>
-                                                    <th scope="col">Current Observation</th>
-                                                    <th scope="col">Decision Conformity Statement</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                               {% for import in movement_permit %}
-                                                        <tr>
-                                                            <td>{{ forloop.counter }}</td>
-                                                            <td>{{import.Current_Observation}}</td>
-                                                            <td>{{import.Decision_Conformity}}</td>
-                                                        </tr>
-                                                        {% empty %}
-                                                        <tr>
-                                                          <td colspan="3" class="text-center">No Data</td>
-                                                        </tr>
-                                               {% endfor %}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Date Of Inspection</label>
-                                    <input class="form-control" id="dateOfInspection">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Remarks</label>
-                                    <textarea class="form-control" id="remarks" rows="2"></textarea>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                     <div class="modal-footer">
-                            <button type="button" class="btn btn-success" onclick="approveApplication('{{ application_details.Application_No }}')"><i class="ace-icon fas fa-arrow-right"></i>&nbsp;&nbsp;Approve</button>
-                            <button type="button" class="btn btn-flat btn-danger" onclick="rejectApplication('{{ application_details.Application_No }}')">
-                                <i class="ace-icon fa fa-times"></i>
-                                &nbsp;&nbsp;Reject
-                            </button>
+                            <select class="form-control" name="forwardTo"  id="forwardTo">
+                                <option value="">--SELECT INSPECTOR--</option>
+                                {% for inspector_list in inspector_list %}
+                                        <option value="{{ inspector_list.Login_Id }}">{{ inspector_list.Name }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="button" class="btn btn-success" onclick="forwardApplication('{{ application_details.Application_No }}')"><i class="ace-icon fas fa-arrow-right"></i>&nbsp;&nbsp;Forward</button>
                             <button class="btn btn-flat btn-danger" data-dismiss="modal">
                                 <i class="ace-icon fa fa-times"></i>
                                 &nbsp;&nbsp;Cancel
@@ -305,20 +237,4 @@
             </div>
         </div>
     </div>
-<div class="modal" id="myModal2">
-	<div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">Modal title</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        </div><div class="container"></div>
-        <div class="modal-body">
-          <div id="details_import"></div>
-        </div>
-        <div class="modal-footer">
-          <a href="#" data-dismiss="modal" class="btn">Close</a>
-        </div>
-      </div>
-    </div>
-</div>
 </form>

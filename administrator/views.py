@@ -6,12 +6,12 @@ from datetime import date
 
 from django.contrib.auth.hashers import make_password, check_password
 from django.core.mail import send_mail
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 
 # Create your views here.
 from django.template.loader import render_to_string
-from django.urls import reverse
+
 
 from administrator.forms import UserForm, LocationFieldMappingForm, FieldOfficeForm, FodderVarietyForm, PlantFodderForm, \
     PlantProductForm, PesticideForm, OrnamentalPlantForm, CropSpeciesForm, ChemicalForm, CropVarietyForm, CropForm, \
@@ -58,6 +58,7 @@ def login(request):
                                 request.session['email'] = user.Email_Id
                                 request.session['name'] = user.Name
                                 request.session['role'] = client
+                                request.session['login_id'] = user.Login_Id
                                 return render(request, 'common_dashboard.html')
                             else:
                                 mainrole = t_role_master.objects.filter(Role_Id=user.Role_Id_id)
@@ -71,13 +72,13 @@ def login(request):
                                     DG = "DG"
                                     if admin == str(mainroles.Role_Name):
                                         request.session['role'] = admin
-                                        return render(request, 'common_dashboard.html')
                                     elif DG == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
                                         request.session['role'] = DG
                                     elif focal_officer == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
                                         request.session['role'] = focal_officer
+                                        request.session['section'] = user.Section_Id_id
                                     elif complaint_officer == str(mainroles.Role_Name):
                                         request.session['username'] = user.name
                                         request.session['role'] = complaint_officer
@@ -95,7 +96,7 @@ def login(request):
                                         request.session['username'] = user.Name
                                         request.session['role'] = Chief
                                         request.session['Division_Id'] = user.Division_Id_id
-
+                                return render(request, 'common_dashboard.html')
                     else:
                         _message = 'Your account is not activated'
                 else:

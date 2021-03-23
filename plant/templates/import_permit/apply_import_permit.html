@@ -1,0 +1,1091 @@
+{% extends 'common_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<style>
+option {
+    background-color: black !important;
+}
+</style>
+
+<div class="card">
+    <div class="card-header">
+        <h4 class="card-title">Import Permit For Plant And Plant Products</h4>
+    </div>
+    <div class="card-body">
+        <form method="post" id="importForm">
+            {% csrf_token %}
+            <input type="text" id="applicationNo" name="applicationNo" value="{{ applNo }}" style="display:none">
+            <div class="row justify-content-center">
+                <div class="form-check text-center">
+                    <label>Import Type <font color="red">*</font></label><br>
+                    <label class="form-radio-label">
+                        <input class="form-radio-input" type="radio" name="importType" id="plantRadio" value="P" onclick="changeSelection(this.value)"  checked>
+                        <span class="form-radio-sign">Plant And Plant Products</span>
+                    </label>
+                    <label class="form-radio-label ml-3">
+                        <input class="form-radio-input" type="radio" name="importType" id="agroRadio" value="A" onclick="changeSelection(this.value)">
+                        <span class="form-radio-sign">Agrochemicals</span>
+                    </label>
+                </div>
+            </div>
+            <div id="plant">
+                <div class="row justify-content-center">
+                    <ul class="nav nav-pills nav-secondary" id="pills-tab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadPageDetails('{{ title }}')">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_details('{{ title }}')">Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="pills-profile-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_details('{{ title }}')">Attach File</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="tab-content mt-2 mb-3" id="pills-tabContent">
+                    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                        <div id="plant_details">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="regNo">License Number</label>
+                                        <input type="text" class="form-control" id="regNo" name="p_regNo">
+                                    </div>
+                                    <div class="alert alert-danger" id="regNoErrorMsg" style="display:none"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="business_name">Business Name</label>
+                                        <input type="text" class="form-control" id="business_name" name="p_businessName">
+                                    </div>
+                                    <div class="alert alert-danger" id="business_nameErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="cid">Applicant CID</label>
+                                        <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="p_cid_number" maxlength="11" onkeypress="return isNumberKey(event)">
+                                    </div>
+                                    <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="name">Applicant Name</label>
+                                        <input type="text" class="form-control" id="name" name="p_Name">
+                                    </div>
+                                    <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="presentAddress">Present Address</label>
+                                        <textarea class="form-control" rows="5" id="presentAddress" name="p_presentAddress"></textarea>
+                                    </div>
+                                    <div class="alert alert-danger" id="presentAddressErrorMsg" style="display:none"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="contactNumber">Contact Number</label>
+                                        <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="p_contactNo" maxlength="8" onkeypress="return isNumberKey(event)">
+                                    </div>
+                                    <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="email">Email</label>
+                                        <input type="email" class="form-control" id="email" name="p_email">
+                                    </div>
+                                    <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="supplier">Name And Address Supplier</label>
+                                        <textarea class="form-control" rows="5" id="supplier" name="p_supplier"></textarea>
+                                    </div>
+                                    <div class="alert alert-danger" id="supplierErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="conveyanceMeans">Means of Conveyance </label>
+                                        <select class="form-control form-control" id="conveyanceMeans" name="p_conveyanceMeans">
+                                            <option value="">-SELECT-</option>
+                                            <option value="Air">Air</option>
+                                            <option value="Vehicular">Vehicular</option>
+                                        </select>
+                                    </div>
+                                    <div class="alert alert-danger" id="convMeansErrorMsg" style="display:none"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="entryPlace">Place Of Entry</label>
+                                         <select class="form-control" name="p_entry_point"  id="entryPlace">
+                                            <option value="">--SELECT--</option>
+                                            {% for location in location %}
+                                                    <option value="{{ location.Location_Code }}">{{ location.Location_Name }}</option>
+                                            {% endfor %}
+                                         </select>
+                                    </div>
+                                    <div class="alert alert-danger" id="entryPlaceErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="movementPurpose">Purpose</label>
+                                        <textarea class="form-control" rows="5" id="movementPurpose" name="p_movementPurpose"></textarea>
+                                    </div>
+                                    <div class="alert alert-danger" id="movementPurposeErrorMsg" style="display:none"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="finalDestination">Final Destination</label>
+                                        <input type="text" class="form-control" id="finalDestination" name="p_final_Destination">
+                                    </div>
+                                    <div class="alert alert-danger" id="finalDestinationErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="expectedDate">Expected Arrival Date</label>
+                                        <input type="text" class="form-control date-picker flatpickr-input active" id="expectedDate" name="p_expected_arrival_date"  placeholder="Pick a date" readonly="readonly">
+                                    </div>
+                                    <div class="alert alert-danger" id="dateErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                            <div class="card-action">
+                                <button type="button" class="btn btn-primary" onclick="import_save()">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-head-row">
+                                    <div class="card-tools pull-right">
+                                        <button type="button" class="btn btn-light" onclick="show_plant_modal()">Add</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div id="Details">
+                                    {% include 'import_permit/import_page_plant.html' %}
+                                </div>
+                            </div>
+                            <div class="card-action">
+                                <button type="button" class="btn btn-success" onclick="plant_import_save()">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="pills-profile-file">
+                        <div id="fileAttachPlant">
+                            {% include 'import_permit/plant_attachment_page.html' %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="agro_import">
+                <div class="row justify-content-center">
+                    <ul class="nav nav-pills nav-secondary" id="agro-tab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="agro-home-tab" data-toggle="pill" href="#agro-home" role="tab" aria-controls="agro-home" aria-selected="true" onclick="loadPageDetails('{{ title }}')">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="agro-profile-tab" data-toggle="pill" href="#agro-details" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_details('{{ title }}')">Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="agro-profile-file" data-toggle="pill" href="#agro-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_details('{{ title }}')">Attach File</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="tab-content mt-2 mb-3" id="agro-tabContent">
+                    <div class="tab-pane fade show active" id="agro-home" role="tabpanel" aria-labelledby="agro-home-tab">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="reg_No">License Number</label>
+                                    <input type="text" class="form-control" id="reg_No" name="a_regNo">
+                                </div>
+                                <div class="alert alert-danger" id="reg_NoErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="businessName">Business Name</label>
+                                    <input type="text" class="form-control" id="businessName" name="a_businessName">
+                                </div>
+                                <div class="alert alert-danger" id="businessNameErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="app_cid">Applicant CID</label>
+                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="app_cid" name="a_cid_number" maxlength="11" onkeypress="return isNumberKey(event)">
+                                </div>
+                                <div class="alert alert-danger" id="app_cidErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="app_name">Applicant Name</label>
+                                    <input type="text" class="form-control" id="app_name" name="a_Name">
+                                </div>
+                                <div class="alert alert-danger" id="app_nameErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="present_address">Present Address</label>
+                                    <textarea class="form-control" rows="5" id="present_address" name="a_presentAddress"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="present_addressErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="contact_number">Contact Number</label>
+                                    <input type="number" class="form-control" id="contact_number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="a_contactNo"  maxlength="8" onkeypress="return isNumberKey(event)">
+                                </div>
+                                <div class="alert alert-danger" id="contact_numberErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="emailId">Email</label>
+                                    <input type="email" class="form-control" id="emailId" name="a_email">
+                                </div>
+                                <div class="alert alert-danger" id="emailIdErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="agro_supplier">Name And Address Supplier</label>
+                                    <textarea class="form-control" rows="5" id="agro_supplier" name="a_supplier"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="agro_supplierErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="agro_conveyanceMeans">Means of Conveyance </label>
+                                    <select class="form-control form-control" id="agro_conveyanceMeans" name="a_conveyanceMeans">
+                                        <option value="">-SELECT-</option>
+                                        <option value="Air">Air</option>
+                                        <option value="Vehicular">Vehicular</option>
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="agro_conveyanceMeansErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="entry_place">Place Of Entry</label>
+                                     <select class="form-control" name="a_entry_point"  id="entry_place">
+                                        <option value="">--SELECT--</option>
+                                        {% for location in location %}
+                                                <option value="{{ location.Location_Code }}">{{ location.Location_Name }}</option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                                <div class="alert alert-danger" id="entry_placeErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="movement_Purpose">Purpose</label>
+                                    <textarea class="form-control" rows="5" id="movement_Purpose" name="a_movementPurpose"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="movement_PurposeErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="final_Destination">Final Destination</label>
+                                    <input type="text" class="form-control" id="final_Destination" name="a_final_Destination">
+                                </div>
+                                <div class="alert alert-danger" id="final_DestinationErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="expected_Date">Expected Arrival Date</label>
+                                    <input type="text" class="form-control date-picker flatpickr-input active" id="expected_Date" name="a_expected_arrival_date" readonly="readonly">
+                                </div>
+                                <div class="alert alert-danger" id="expected_DateErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="card-action">
+                                <button type="button" class="btn btn-primary" onclick="import_save()">Save</button>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="agro-details" role="tabpanel" aria-labelledby="pills-profile-tab">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-head-row">
+                                    <div class="card-tools pull-right">
+                                        <button type="button" class="btn btn-light" onclick="show_agro_modal()">Add</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div id="AgroDetails">
+                                    {% include 'import_permit/import_page_agro.html' %}
+                                </div>
+                            </div>
+                            <div class="card-action">
+                                <button type="button" class="btn btn-success" onclick="agro_import_save()">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="agro-attachment" role="tabpanel" aria-labelledby="pills-profile-file">
+                        <div id="agro_fileAttach">
+                            {% include 'import_permit/agro_attachment_page.html' %}
+                        </div>
+                    </div>
+				</div>
+
+
+            </div>
+        </form>
+    </div>
+</div>
+<form method="post" id="save_plant_form">
+    {% csrf_token %}
+    <input type="hidden" name="appNo" id="plant_applicationNo" value="{{ applicationNo }}">
+    <div class="modal fade" id="add_plant_details" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                             <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Add Details</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                    </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="col-lg-12">
+                                    <div class="box box-primary">
+                                        <div class="box-body">
+                                            <input type="text" name="importType" value="P" style="display:none"/>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="plant_import_category">Import Category </label>
+                                                        <select class="form-control form-control" id="plant_import_category" name="plant_import_category">
+                                                            <option value="">-SELECT-</option>
+                                                            <option value="Seed">Seed</option>
+                                                            <option value="Plant">Plant</option>
+                                                            <option value="Plant Products">Plant Products</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="alert alert-danger" id="plant_import_categoryErrorMsg" style="display:none"></div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="crop_id">Crop</label>
+                                                        <select class="form-control" name="crop_id"  id="crop_id" onchange="getVariety(this.value)">
+                                                            <option value="">--SELECT--</option>
+                                                            {% for crop in crop %}
+                                                                    <option value="{{ crop.Crop_Id }}">{{ crop.Crop_Common_Name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                    <div class="alert alert-danger" id="crop_idErrorMsg" style="display:none"></div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="crop_variety">Crop Variety</label>
+                                                        <select class="form-control" name="crop_variety_id"  id="crop_variety">
+                                                            <option value="">--SELECT--</option>
+                                                            {% for variety in variety %}
+                                                                    <option value="{{ variety.Crop_Variety_Id }}">{{ variety.Crop_Variety_Name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                    <div class="alert alert-danger" id="crop_varietyErrorMsg" style="display:none"></div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="unit">Unit </label>
+                                                        <input type="text" class="form-control" id="unit" name="unit">
+                                                    </div>
+                                                    <div class="alert alert-danger" id="unitErrorMsg" style="display:none"></div>
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="qty">Quantity</label>
+                                                        <input type="text" class="form-control" id="qty" name="qty">
+                                                    </div>
+                                                    <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" onclick="save_details_plant()">Add</button>
+                        </div>
+                    </div>
+            </div>
+    </div>
+</form>
+<form method="post" id="save_agro_form">
+    {% csrf_token %}
+    <input type="hidden" name="appNo" id="agro_applicationNo" value="{{ title }}">
+    <div class="modal fade" id="add_agro_details" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                             <div class="modal-header">
+                                    <h5 class="modal-title">Add Details</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                    </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="col-lg-12">
+                                    <div class="box box-primary">
+                                        <div class="box-body">
+                                            <input type="text" name="importType" value="A" style="display:none"/>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="agro_import_category">Import Category </label>
+                                                        <select class="form-control form-control" id="agro_import_category" name="agro_import_category">
+                                                            <option value="">-SELECT-</option>
+                                                            <option value="Seed">Pesticides</option>
+                                                            <option value="Plant">Bio-Pesticides</option>
+                                                            <option value="Plant Products">Plant Products</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="alert alert-danger" id="agro_import_categoryErrorMsg" style="display:none"></div>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="pesticide_id">Pesticide</label>
+                                                        <select class="form-control" name="pesticide_id"  id="pesticide_id">
+                                                            <option value="">--SELECT--</option>
+                                                            {% for pesticide in pesticide %}
+                                                                    <option value="{{ pesticide.Pesticide_Id }}">{{ pesticide.Pesticide_Name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                    <div class="alert alert-danger" id="pesticide_idErrorMsg" style="display:none"></div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="description">Description</label>
+                                                        <textarea class="form-control" rows="5" id="description" name="description"></textarea>
+                                                    </div>
+                                                    <div class="alert alert-danger" id="descriptionErrorMsg" style="display:none"></div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="agro_unit">Unit </label>
+                                                        <input type="text" class="form-control" id="agro_unit" name="agro_unit">
+                                                    </div>
+                                                    <div class="alert alert-danger" id="agro_unitErrorMsg" style="display:none"></div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="agro_qty">Quantity</label>
+                                                        <input type="text" class="form-control" id="agro_qty" name="agro_qty">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" onclick="save_details_agro()">Add</button>
+                        </div>
+                    </div>
+            </div>
+    </div>
+</form>
+
+<form method="post" id="plant_attachment_form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="text" id="plant_attachment_applicationNo" name="appNo" value="{{ applNo }}" style="display:none">
+    <div class="modal fade" id="plant_attachmentModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                 <div class="modal-header">
+                    <h5 class="modal-title" id="plant_attachmentModalLabel">Attach Files</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label>Attach File</label>
+                                        <input type="file" name="plant_document" id="plant_document">
+                                        <div class="alert alert-danger" id="plant_documentErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_plant_attachment()"> Submit </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form method="post" id="agro_attachment_form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="text" id="agro_attachment_applicationNo" name="appNo" value="{{ applNo }}" style="display:none">
+    <div class="modal fade" id="agro_attachmentModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                 <div class="modal-header">
+                    <h5 class="modal-title" id="agro_attachmentModalLabel">Attach Files</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label>Attach File</label>
+                                        <input type="file" name="agro_document" id="agro_document">
+                                        <div class="alert alert-danger" id="agro_documentErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_agro_attachment()"> Submit </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    function changeSelection(importType)
+    {
+        if(importType == "P")
+        {
+            $("#plant").show();
+            $("#agro_import").hide();
+        }
+        else
+        {
+            $("#agro_import").show();
+            $("#plant").hide();
+            $("#agro-profile-tab").prop('disabled', true);
+            $("#agro-profile-file").prop('disabled', true);
+        }
+    }
+
+    function import_save()
+    {
+        if($('#plantRadio').prop('checked'))
+        {
+            var regNo = $('#regNo').val();
+            var business_name = $('#business_name').val();
+            var cid = $('#cid').val();
+            var name = $('#name').val();
+            var presentAddress = $('#presentAddress').val();
+            var contactNumber = $('#contactNumber').val();
+            var email = $('#email').val();
+            var supplier = $('#supplier').val();
+            var convMeans = $('#conveyanceMeans').val();
+            var entryPlace = $('#entryPlace').val();
+            var movementPurpose = $('#movementPurpose').val();
+            var finalDestination = $('#finalDestination').val();
+            var date = $('#expectedDate').val();
+            var cidCount = $('#cid').val().length;
+            var number_count = $('#contactNumber').val().length;
+
+            if(regNo == "")
+            {
+                $('#regNoErrorMsg').html("Enter CID.");
+                $('#regNoErrorMsg').show();
+                $('#regNoErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(business_name == "")
+            {
+                $('#business_nameErrorMsg').html("Enter Contact Number.");
+                $('#business_nameErrorMsg').show();
+                $('#business_nameErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(cid == "")
+            {
+                $('#cidErrorMsg').html("Enter Contact Number.");
+                $('#cidErrorMsg').show();
+                $('#cidErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(name == "")
+            {
+                $('#nameErrorMsg').html("Enter Contact Number.");
+                $('#nameErrorMsg').show();
+                $('#nameErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(presentAddress == "")
+            {
+                $('#presentAddressErrorMsg').html("Enter Contact Number.");
+                $('#presentAddressErrorMsg').show();
+                $('#presentAddressErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(contactNumber == "")
+            {
+                $('#contactNumberErrorMsg').html("Select Place Of Entry.");
+                $('#contactNumberErrorMsg').show();
+                $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(email == "")
+            {
+                $('#emailErrorMsg').html("Enter Contact Number.");
+                $('#emailErrorMsg').show();
+                $('#emailErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(supplier == "")
+            {
+                $('#supplierErrorMsg').html("Enter Contact Number.");
+                $('#supplierErrorMsg').show();
+                $('#supplierErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(convMeans == "")
+            {
+                $('#convMeansErrorMsg').html("Select Means Of Conveyance.");
+                $('#convMeansErrorMsg').show();
+                $('#convMeansErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(entryPlace == "")
+            {
+                $('#entryPlaceErrorMsg').html("Select Place Of Entry.");
+                $('#entryPlaceErrorMsg').show();
+                $('#entryPlaceErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(movementPurpose == "")
+            {
+                $('#movementPurposeErrorMsg').html("Enter Purpose Of Movement.");
+                $('#movementPurposeErrorMsg').show();
+                $('#movementPurposeErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(finalDestination == "")
+            {
+                $('#finalDestinationErrorMsg').html("Enter Final Destination.");
+                $('#finalDestinationErrorMsg').show();
+                $('#finalDestinationErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(date == "")
+            {
+                $('#dateErrorMsg').html("Select A Date.");
+                $('#dateErrorMsg').show();
+                $('#dateErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(cidCount < 11)
+            {
+                $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits.");
+                $('#cidErrorMsg').show();
+                setTimeout('hideStatus("cidErrorMsg")',2000);
+            }
+            else if(number_count < 8)
+            {
+                $('#contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
+                $('#contactNumberErrorMsg').show();
+                setTimeout('hideStatus("contactNumberErrorMsg")',2000);
+            }
+            else
+            {
+                $.ajax({
+                    type : "POST",
+                    url : "{% url 'save_import_permit' %}",
+                    data : $('#importForm').serialize(),
+                    success : function(data) {
+                        $('#applicationNo').val(data.applNo);
+                        $('#plant_applicationNo').val(data.applNo);
+
+                        $('#pills-profile-tab').tab('show');
+                    }
+                });
+            }
+        }
+        else
+        {
+            var regNo = $('#reg_No').val();
+            var business_name = $('#businessName').val();
+            var cid = $('#app_cid').val();
+            var name = $('#app_name').val();
+            var presentAddress = $('#present_address').val();
+            var contactNumber = $('#contact_number').val();
+            var email = $('#emailId').val();
+            var supplier = $('#agro_supplier').val();
+            var convMeans = $('#agro_conveyanceMeans').val();
+            var entryPlace = $('#entry_place').val();
+            var movementPurpose = $('#movement_Purpose').val();
+            var finalDestination = $('#final_Destination').val();
+            var date = $('#expected_Date').val();
+            var cidCount = $('#app_cid').val().length;
+            var number_count = $('#contact_number').val().length;
+
+            if(regNo == "")
+            {
+                $('#reg_NoErrorMsg').html("Enter CID.");
+                $('#reg_NoErrorMsg').show();
+                $('#reg_NoErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(business_name == "")
+            {
+                $('#businessNameErrorMsg').html("Enter Contact Number.");
+                $('#businessNameErrorMsg').show();
+                $('#businessNameErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(cid == "")
+            {
+                $('#app_cidErrorMsg').html("Enter CID.");
+                $('#app_cidErrorMsg').show();
+                $('#app_cidErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(name == "")
+            {
+                $('#app_nameErrorMsg').html("Enter Contact Number.");
+                $('#app_nameErrorMsg').show();
+                $('#app_nameErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(presentAddress == "")
+            {
+                $('#present_addressErrorMsg').html("Enter Contact Number.");
+                $('#present_addressErrorMsg').show();
+                $('#present_addressErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(contactNumber == "")
+            {
+                $('#contact_numberErrorMsg').html("Select Place Of Entry.");
+                $('#contact_numberErrorMsg').show();
+                $('#contact_numberErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(email == "")
+            {
+                $('#emailIdErrorMsg').html("Enter Contact Number.");
+                $('#emailIdErrorMsg').show();
+                $('#emailIdErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(supplier == "")
+            {
+                $('#agro_supplierErrorMsg').html("Enter Contact Number.");
+                $('#agro_supplierErrorMsg').show();
+                $('#agro_supplierErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(convMeans == "")
+            {
+                $('#agro_conveyanceMeansErrorMsg').html("Select Means Of Conveyance.");
+                $('#agro_conveyanceMeansErrorMsg').show();
+                $('#agro_conveyanceMeansErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(entryPlace == "")
+            {
+                $('#entry_placeErrorMsg').html("Select Place Of Entry.");
+                $('#entry_placeErrorMsg').show();
+                $('#entry_placeErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(movementPurpose == "")
+            {
+                $('#movement_PurposeErrorMsg').html("Enter Purpose Of Movement.");
+                $('#movement_PurposeErrorMsg').show();
+                $('#movement_PurposeErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(finalDestination == "")
+            {
+                $('#final_DestinationErrorMsg').html("Enter Final Destination.");
+                $('#final_DestinationErrorMsg').show();
+                $('#final_DestinationErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(date == "")
+            {
+                $('#expected_DateErrorMsg').html("Select A Date.");
+                $('#expected_DateErrorMsg').show();
+                $('#expected_DateErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else
+            {
+                $.ajax({
+                        type : "POST",
+                        url : "{% url 'save_import_permit' %}",
+                        data : $('#importForm').serialize(),
+                        cache : false,
+                        dataType : "html",
+                        success : function(responseText)
+                        {
+                            $('#applicationNo').val(data.applNo);
+                            $('#agro_applicationNo').val(data.applNo);
+                            $('#agro-profile-tab').tab('show');
+                        }
+                });
+            }
+        }
+    }
+
+    function getVariety(crop_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_variety' %}",
+            data :{'crop_id':crop_id},
+            success : function(data)
+            {
+                $('#crop_variety').html(data);
+            }
+        });
+    }
+
+    function plant_import_save()
+    {
+        $('#pills-tab a:last').tab('show');
+    }
+
+    function agro_import_save()
+    {
+        $('#agro-tab a:last').tab('show');
+    }
+
+    function show_plant_modal()
+    {
+        $('#add_plant_details').modal('show');
+    }
+
+    function show_agro_modal()
+    {
+        $('#add_agro_details').modal('show');
+    }
+
+    function show_plant_attachment_modal()
+    {
+        $('#plant_attachmentModal').modal('show');
+    }
+
+    function show_agro_attachment_modal()
+    {
+        $('#agro_attachmentModal').modal('show');
+    }
+
+    function save_details_plant()
+    {
+            var plant_import_category = $('#plant_import_category').val();
+            var crop_id = $('#crop_id').val();
+            var crop_variety = $('#crop_variety').val();
+            var unit = $('#unit').val();
+            var qty = $('#qty').val();
+
+            if(plant_import_category == "")
+            {
+                $('#plant_import_categoryErrorMsg').html("Select Import Category.");
+                $('#plant_import_categoryErrorMsg').show();
+                $('#plant_import_categoryErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(crop_variety == "")
+            {
+                $('#crop_varietyErrorMsg').html("Select Crop Variety.");
+                $('#crop_varietyErrorMsg').show();
+                $('#crop_varietyErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(unit == "")
+            {
+                $('#unitErrorMsg').html("Enter Unit.");
+                $('#unitErrorMsg').show();
+                $('#unitErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(qty == "")
+            {
+                $('#qtyErrorMsg').html("Enter Quantity.");
+                $('#qtyErrorMsg').show();
+                $('#qtyErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else
+            {
+                $.ajax({
+                    type : "POST",
+                    url : "{% url 'save_import_plant' %}",
+                    data : $('#save_plant_form').serialize(),
+                    success : function(responseText) {
+                       $('#add_plant_details').modal('hide');
+                       $('#Details').html(responseText);
+                       $('#pills-profile-tab').tab('show');
+                       $('.modal-backdrop').remove();
+                    }
+                });
+            }
+    }
+
+    function save_details_agro()
+    {
+        var agro_import_category = $('#agro_import_category').val();
+        var pesticide_id = $('#pesticide_id').val();
+        var description = $('#description').val();
+        var agro_unit = $('#agro_unit').val();
+        var agro_qty = $('#agro_qty').val();
+
+        if(agro_import_category == "")
+            {
+                $('#agro_import_categoryErrorMsg').html("Enter Commodity.");
+                $('#agro_import_categoryErrorMsg').show();
+                $('#agro_import_categoryErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(pesticide_id == "")
+            {
+                $('#pesticide_idErrorMsg').html("Enter Quantity.");
+                $('#pesticide_idErrorMsg').show();
+                $('#pesticide_idErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(description == "")
+            {
+                $('#descriptionErrorMsg').html("Enter Remarks.");
+                $('#descriptionErrorMsg').show();
+                $('#descriptionErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(agro_unit == "")
+            {
+                $('#agro_unitErrorMsg').html("Enter Unit.");
+                $('#agro_unitErrorMsg').show();
+                $('#agro_unitErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(agro_qty == "")
+            {
+                $('#agro_qtyErrorMsg').html("Enter Quantity.");
+                $('#agro_qtyErrorMsg').show();
+                $('#agro_qtyErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else
+            {
+                $.ajax({
+                    type : "POST",
+                    url : "{% url 'save_import_agro' %}",
+                    data : $('#save_agro_form').serialize(),
+                    success : function(responseText) {
+                       $('#add_agro_details').modal('hide');
+                       $('#AgroDetails').html(responseText);
+                       $('#agro-profile-tab').tab('show');
+                       $('.modal-backdrop').remove();
+                    }
+                });
+            }
+    }
+
+    function save_plant_attachment()
+    {
+        var fileName = document.getElementById('plant_document').files[0].name;
+        var fd = new FormData();
+        var file = document.getElementById('plant_document').files[0];
+        fd.append('plant_document', file);
+        token_value=$("input[name=csrfmiddlewaretoken]").val();
+        $.ajaxSetup
+        ({
+            beforeSend: function(xhr, settings)
+            {
+                xhr.setRequestHeader("X-CSRFToken", token_value);
+            }
+        });
+            $.ajax({
+            type : "POST",
+            url : "{% url 'add_plant_import_file' %}",
+            data : fd,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            success : function(data)
+            {
+                if (data.form_is_valid)
+                {
+                    var appNo = $('#applicationNo').val();
+                    alert(appNo);
+                    $.ajax
+                    ({
+                        type : "POST",
+                        url : "{% url 'add_plant_attach' %}",
+                        data : {'appNo':appNo , 'filename':fileName},
+                        success : function(responseText)
+                        {
+                            $('#plant_attachmentModal').modal('hide');
+                            $('#file-attachment').html(responseText);
+                            $('.modal-backdrop').remove();
+                        }
+                    });
+                }else
+                {
+                    $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                    $('#fileErrorMsg').show();
+                    $('#fileErrorMsg').delay(2000).fadeOut('slow');
+                }
+            }
+        });
+
+    }
+
+    function save_agro_attachment()
+    {
+        var fileName = document.getElementById('agro_document').files[0].name;
+        var fd = new FormData();
+        var file = document.getElementById('agro_document').files[0];
+        fd.append('agro_document', file);
+        token_value=$("input[name=csrfmiddlewaretoken]").val();
+        $.ajaxSetup
+        ({
+            beforeSend: function(xhr, settings)
+            {
+                xhr.setRequestHeader("X-CSRFToken", token_value);
+            }
+        });
+            $.ajax({
+            type : "POST",
+            url : "{% url 'add_agro_import_file' %}",
+            data : fd,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            success : function(data)
+            {
+                if (data.form_is_valid)
+                {
+                    var appNo = $('#applicationNo').val();
+                    $.ajax
+                    ({
+                        type : "POST",
+                        url : "{% url 'add_agro_attach' %}",
+                        data : {'appNo':appNo , 'filename':fileName},
+                        success : function(responseText)
+                        {
+                            $('#agro_attachmentModal').modal('hide');
+                            $('#file-attachment').html(responseText);
+                            $('.modal-backdrop').remove();
+                        }
+                    });
+                }else
+                {
+                    $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                    $('#fileErrorMsg').show();
+                    $('#fileErrorMsg').delay(2000).fadeOut('slow');
+                }
+            }
+        });
+    }
+</script>
+{% endblock %}
