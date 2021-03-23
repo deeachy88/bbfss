@@ -1,32 +1,38 @@
 {% extends 'common_dashboard.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+<div id="AppDetails">
 <div class="animated fadeIn">
     <div class="row">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <strong class="card-title">Movement Permit Plant And plant Product Details</strong>
+                    <strong class="card-title">Pending Applications</strong>
                 </div>
                     <div class="card-body">
                         <table class="table table-bordered">
+
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
                                     <th scope="col">Application No</th>
+                                    <th scope="col">Service Name</th>
+                                    <th scope="col">Applicant</th>
                                     <th scope="col">Application Date</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for movement_permit in new_movement_app %}
+                                {% for movement_permit in application_details %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td><button class="btn btn-primary btn-link" onclick="viewAppDetails('{{movement_permit.Application_No}}')">{{movement_permit.Application_No}}</button></td>
+                                        <td><button class="btn btn-primary btn-link" onclick="viewApplicationDetails('{{movement_permit.Application_No}}','{{movement_permit.Service_Code}}')">{{movement_permit.Application_No}}</button></td>
+                                        <td>{{service_name}}</td>
+                                        <td>{{movement_permit.Applicant_Id}}</td>
                                         <td>{{movement_permit.Action_Date|date:"d-m-Y"}}</td>
                                     </tr>
                                     {% empty %}
                                     <tr>
-                                      <td colspan="2" class="text-center">No Data</td>
+                                      <td colspan="5" class="text-center">No Data</td>
                                     </tr>
                                     {% endfor %}
                             </tbody>
@@ -36,7 +42,20 @@
         </div>
     </div>
 </div>
-<div id="AppDetails">
+</div>
 
- </div>
+<script>
+    function viewApplicationDetails(appId,service_code)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'view_application_details' %}",
+            data :{'application_id':appId, 'service_code':service_code},
+            success : function(data)
+            {
+                $('#AppDetails').html(data);
+            }
+        });
+    }
+</script>
 {% endblock %}

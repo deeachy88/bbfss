@@ -344,12 +344,12 @@
             </aside>
 
             <section class="content">
+
                 {% block content %}
-                    <div id="apply_div"></div>
+
                 {% endblock %}
             </section>
         </main>
-
         <!-- Older IE warning message -->
             <!--[if IE]>
                 <div class="ie-warning">
@@ -408,8 +408,10 @@
         <script src="{% static 'assets/js/product.js' %}"></script>
         <script src="{% static 'assets/js/plant_fodder.js' %}"></script>
         <script src="{% static 'assets/js/fodder_variety.js' %}"></script>
+
         <script src="{% static 'styles/datatables.net/js/jquery.dataTables.min.js' %}"></script>
     <script>
+
     function isNumberKey(evt)
     {
         var charCode = (evt.which) ? evt.which : evt.keyCode
@@ -420,18 +422,22 @@
 
     $(document).ready(function()
      {
-      $("#user-table").DataTable();
-      $("#role-table").DataTable();
-      $("#pesticide-table").DataTable();
-      $("#crop-table").DataTable();
-      $("#species-table").DataTable();
-      $("#chemical-table").DataTable();
-      $("#variety-table").DataTable();
-      $("#fodder-variety-table").DataTable();
-      $("#plant-fodder-table").DataTable();
-      $("#ornamental-table").DataTable();
-      $("#product-table").DataTable();
+        $("#sectionDiv").hide();
+        $("#divisionDiv").hide();
+        $("#fieldDiv").hide();
+        $("#user-table").DataTable();
+        $("#role-table").DataTable();
+        $("#pesticide-table").DataTable();
+        $("#crop-table").DataTable();
+        $("#species-table").DataTable();
+        $("#chemical-table").DataTable();
+        $("#variety-table").DataTable();
+        $("#fodder-variety-table").DataTable();
+        $("#plant-fodder-table").DataTable();
+        $("#ornamental-table").DataTable();
+        $("#product-table").DataTable();
         $("#agro").hide();
+        $("#agro_import").hide();
         if($("#applicationNo").val() == "")
         {
             $("#pills-profile-tab").prop('disabled', true);
@@ -652,19 +658,6 @@
       $('#add_details').modal('show');
     }
 
-    function viewDetails(application_id)
-        {
-            $.ajax({
-                type : "GET",
-                url : "{% url 'get_application_details' %}",
-                data :{'application_id':application_id},
-                success : function(data) {
-                    $('#ApplicationDetails').html(data);
-                    $('#application-details-modal').modal('show');
-                }
-            });
-        }
-
     function forwardApplication(application_id)
         {
             forwardTo = $('#forwardTo').val();
@@ -680,18 +673,6 @@
             });
         }
 
-    function viewAppDetails(application_id)
-        {
-            $.ajax({
-                type : "GET",
-                url : "{% url 'view_app_details_ins' %}",
-                data :{'application_id':application_id},
-                success : function(data) {
-                    $('#AppDetails').html(data);
-                    $('#AppDetails').show();
-                }
-            });
-        }
 
         function approveApplication(application_id)
         {

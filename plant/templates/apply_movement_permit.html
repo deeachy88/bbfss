@@ -6,7 +6,7 @@ option {
     background-color: black !important;
 }
 </style>
-<input type="text" id="applicationNo" name="applicationNo" value="{{ applicationNo }}" style="display:none">
+<input type="text" id="applicationNo" name="applicationNo" value="{{ applicationNo }}">
 <div class="card">
     <div class="card-header">
         <h4 class="card-title">Movement Permit For Plant And Plant Products</h4>
@@ -81,7 +81,7 @@ option {
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="contactNumber">Contact Number</label>
-                                        <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" name="contactNumber" maxlength="8" placeholder="Contact Number" onkeypress="return isNumberKey(event)">
+                                        <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" placeholder="Contact Number" onkeypress="return isNumberKey(event)">
                                     </div>
                                     <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
                                 </div>
@@ -243,7 +243,7 @@ option {
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="appcid">Applicant CID</label>
-                                <input type="text" class="form-control" id="appcid" name="appcid" placeholder="Applicant CID" maxlength="11">
+                                <input type="text" class="form-control" id="appcid" name="appcid" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" placeholder="Applicant CID" maxlength="11" onkeypress="return isNumberKey(event)">
                             </div>
                             <div class="alert alert-danger" id="appcidErrorMsg" style="display:none"></div>
                         </div>
@@ -259,7 +259,7 @@ option {
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="phoneNumber">Contact Number</label>
-                                <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Contact Number" maxlength="8">
+                                <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Contact Number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="8" onkeypress="return isNumberKey(event)">
                             </div>
                             <div class="alert alert-danger" id="mobile_numberErrorMsg" style="display:none"></div>
                         </div>
@@ -290,18 +290,6 @@ option {
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="agro_location">Location</label>
-                                 <select class="form-control" name="location"  id="agro_location">
-                                    <option value="">--SELECT LOCATION--</option>
-                                    {% for location in location %}
-                                            <option value="{{location.Location_Code }}">{{location.Location_Name}}</option>
-                                    {% endfor %}
-                                 </select>
-                            </div>
-                            <div class="alert alert-danger" id="agro_locationErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
                                 <label for="from_Dzongkhag">From Dzongkhag</label>
                                  <select class="form-control" name="from_Dzongkhag"  id="from_Dzongkhag">
                                     <option value="">--SELECT DZONGKHAG--</option>
@@ -312,8 +300,6 @@ option {
                                 <div class="alert alert-danger" id="fromDzongkhagErrorMsg" style="display:none"></div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="Dzongkhag_to">To Dzongkhag</label>
@@ -325,6 +311,20 @@ option {
                                 </select>
                             </div>
                             <div class="alert alert-danger" id="Dzongkhag_toErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="agro_location">Location</label>
+                                 <select class="form-control" name="location"  id="agro_location">
+                                    <option value="">--SELECT LOCATION--</option>
+                                    {% for location in location %}
+                                            <option value="{{location.Location_Code }}">{{location.Location_Name}}</option>
+                                    {% endfor %}
+                                 </select>
+                            </div>
+                            <div class="alert alert-danger" id="agro_locationErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
@@ -380,7 +380,7 @@ option {
                         </div>
                     </div>
                     <div class="card-action">
-                        <button class="btn btn-primary" onclick="save()">Save</button>
+                        <button type="button" class="btn btn-primary" onclick="save()">Save</button>
                     </div>
              </div>
         </form>
@@ -393,7 +393,7 @@ option {
             <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                              <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Add User</h5>
+                                    <h5 class="modal-title" id="exampleModalLabel">Add Details</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                     </button>

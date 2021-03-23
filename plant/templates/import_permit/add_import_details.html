@@ -1,0 +1,73 @@
+<table id="book-table" class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Current Observationss</th>
+            <th scope="col">Decision Conformity</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+       {% for import_permit in import_permit %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{import_permit.Current_Observation}}</td>
+                <td>{{import_permit.Decision_Conformity}}</td>
+                <td>
+                    <button type="button"
+                    class="btn btn-primary btn--icon btn-sm js-update-book"
+                    data-url="{% url 'edit_decision' import_permit.Record_Id %}">
+                    <i class="zmdi zmdi-edit"></i>
+                    </button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="3" class="text-center">No Data</td>
+            </tr>
+       {% endfor %}
+    </tbody>
+</table>
+<script>
+$(function () {
+  var loadForm = function () {
+    var btn = $(this);
+    $.ajax({
+      url: btn.attr("data-url"),
+      type: 'get',
+      dataType: 'json',
+      beforeSend: function () {
+        $("#modal-decision").modal("show");
+      },
+      success: function (data) {
+        $("#modal-decision .modal-content").html(data.html_form);
+      }
+    });
+  };
+
+  var saveForm = function () {
+    var form = $(this);
+    $.ajax({
+      url: form.attr("action"),
+      data: form.serialize(),
+      type: form.attr("method"),
+      dataType: 'json',
+      success: function (data) {
+        if (data.form_is_valid) {
+          $("#modal-decision").modal("hide");
+        }
+        else {
+          $("#modal-decision .modal-content").html(data.html_form);
+        }
+      }
+    });
+    return false;
+  };
+
+
+  // Update book
+  $("#book-table").on("click", ".js-update-book", loadForm);
+  $("#modal-book").on("submit", ".js-book-update-form", saveForm);
+
+});
+</script>
