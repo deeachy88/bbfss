@@ -1122,8 +1122,8 @@ def accept_registration(request, Email_Id, Name):
     reg_clients.update(Accept_Reject="A")
     reg_clients.update(Is_Active="Y")
     reg_clients.update(Password=password_value)
-    clients = reg_clients.filter(Accept_Reject=None)
     accept_mail(request, Name, Email_Id, password)
+    clients = reg_clients.filter(Accept_Reject=None)
     return render(request, 'registered_clients.html', {'reg_clients': clients})
 
 
