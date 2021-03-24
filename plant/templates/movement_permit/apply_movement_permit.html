@@ -6,7 +6,7 @@ option {
     background-color: black !important;
 }
 </style>
-<input type="text" id="applicationNo" name="applicationNo" value="{{ applicationNo }}">
+
 <div class="card">
     <div class="card-header">
         <h4 class="card-title">Movement Permit For Plant And Plant Products</h4>
@@ -14,6 +14,7 @@ option {
     <div class="card-body">
          <form method="post" id="permitForm">
              {% csrf_token %}
+            <input type="hidden" id="applicationNo" name="applicationNo" value="{{ applicationNo }}">
             <div class="row justify-content-center">
                 <div class="form-check text-center">
                     <label>Permit Type <font color="red">*</font></label><br>
@@ -223,7 +224,7 @@ option {
                             </div>
                             <div class="card-body">
                                 <div id="Details">
-                                    {% include 'movement_page.html' %}
+                                    {% include 'movement_permit/movement_page.html' %}
                                 </div>
                             </div>
                         </div>
@@ -233,7 +234,7 @@ option {
                     </div>
                     <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="pills-profile-file">
                         <div id="fileAttach">
-                            {% include 'file_attachment_page.html' %}
+                            {% include 'movement_permit/file_attachment_page.html' %}
                         </div>
                     </div>
                 </div>
@@ -388,7 +389,7 @@ option {
 </div>
 <form method="post" id="save_form">
     {% csrf_token %}
-    <input type="hidden" name="appNo" value="{{ title }}">
+    <input type="hidden" id="applNo" name="appNo" value="{{ title }}">
     <div class="modal fade" id="add_details" tabindex="-1">
             <div class="modal-dialog modal-lg">
                     <div class="modal-content">

@@ -10,7 +10,7 @@ from django.utils import timezone
 
 from administrator.models import t_dzongkhag_master, t_gewog_master, t_village_master, t_location_field_office_mapping, \
     t_user_master, t_field_office_master, t_plant_crop_master, t_plant_pesticide_master, t_plant_crop_variety_master, \
-    t_service_master
+    t_service_master, t_country_master
 from bbfss import settings
 from plant.forms import ImportFormThree, ImportFormTwo
 from plant.models import t_workflow_details, t_plant_movement_permit_t2, t_plant_movement_permit_t1, \
@@ -55,22 +55,24 @@ def apply_movement_permit(request):
     village = t_village_master.objects.all()
     location = t_location_field_office_mapping.objects.all()
 
-    return render(request, 'apply_movement_permit.html',
+    return render(request, 'movement_permit/apply_movement_permit.html',
                   {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village,
                    'location': location})
 
 
 def save_details(request):
-    if request.method == 'POST':
-        commodity = request.POST['commodity']
-        appNo = request.POST['appNo']
-        qty = request.POST['qty']
-        remarks = request.POST['remarks']
-        t_plant_movement_permit_t2.objects.create(Application_No=appNo, Commodity=commodity,
-                                                  Qty=qty,
-                                                  Remarks=remarks)
-        imports_plant = t_plant_movement_permit_t2.objects.filter(Application_No=appNo)
-    return render(request, 'apply_movement_permit_page.html', {'import': imports_plant, 'title': appNo})
+    appNo = request.POST.get('applicationNo')
+    print(appNo)
+    workflow_details = t_workflow_details.objects.filter(Application_No=appNo)
+    workflow_details.update(Action_Date=date.today())
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    location = t_location_field_office_mapping.objects.all()
+
+    return render(request, 'movement_permit/apply_movement_permit.html',
+                  {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village,
+                   'location': location})
 
 
 def save_movement_permit(request):
@@ -221,13 +223,13 @@ def load_location(request):
     dzongkhag_id = request.GET.get('dzongkhag_id')
     location_list = t_location_field_office_mapping.objects.filter(Dzongkhag_Code_id=dzongkhag_id).order_by(
         'Location_Name')
-    return render(request, 'location_list.html', {'location_list': location_list})
+    return render(request, 'movement_permit/location_list.html', {'location_list': location_list})
 
 
 def movement_permit_app(request):
     appNo = request.GET.get('appId')
     imports_plant = t_plant_movement_permit_t2.objects.filter(Application_No=appNo)
-    return render(request, 'apply_movement_permit_page.html', {'import': imports_plant, 'title': appNo})
+    return render(request, 'movement_permit/apply_movement_permit_page.html', {'import': imports_plant, 'title': appNo})
 
 
 def load_details_page(request):
@@ -237,7 +239,7 @@ def load_details_page(request):
     location = t_location_field_office_mapping.objects.all()
     application_id = request.GET.get('application_id')
     application_details = t_plant_movement_permit_t1.objects.filter(Application_No=application_id)
-    return render(request, 'movement_permit_details.html',
+    return render(request, 'movement_permit/movement_permit_details.html',
                   {'application_details': application_details, 'dzongkhag': dzongkhag, 'gewog': gewog,
                    'village': village,
                    'location': location})
@@ -287,7 +289,8 @@ def update_application_details(request):
     field_id.update(Field_Office_Id=Field_Office)
     field_id.update(Action_Date=date.today())
     imports_plant = t_plant_movement_permit_t2.objects.filter(Application_No=application_id)
-    return render(request, 'apply_movement_permit.html', {'import': imports_plant, 'title': application_id})
+    return render(request, 'movement_permit/apply_movement_permit.html',
+                  {'import': imports_plant, 'title': application_id})
 
 
 def save(request):
@@ -299,7 +302,7 @@ def save(request):
         t_plant_movement_permit_t2.objects.create(Application_No=appNo, Commodity=commodity,
                                                   Qty=qty, Remarks=remarks)
         imports_plant = t_plant_movement_permit_t2.objects.filter(Application_No=appNo)
-    return render(request, 'movement_page.html', {'import': imports_plant, 'title': appNo})
+    return render(request, 'movement_permit/movement_page.html', {'import': imports_plant, 'title': appNo})
 
 
 def forward_application(request):
@@ -312,7 +315,7 @@ def forward_application(request):
     Field_Office_Id = request.session['field_office_id']
     Role_Id = request.session['Role_Id']
     new_movement_app = t_workflow_details.objects.filter(Assigned_To=Role_Id, Field_Office_Id=Field_Office_Id)
-    return render(request, 'new_movement_permit.html', {'new_movement_app': new_movement_app})
+    return render(request, 'movement_permit/new_movement_permit.html', {'new_movement_app': new_movement_app})
 
 
 def view_application_details(request):
@@ -373,7 +376,7 @@ def approve_application(request):
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='A')
 
-    return render(request, 'application_details.html', {'application_details': application_details})
+    return render(request, 'movement_permit/application_details.html', {'application_details': application_details})
 
 
 def reject_application(request):
@@ -394,7 +397,7 @@ def reject_application(request):
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='R')
-    return render(request, 'application_details.html', {'application_details': application_details})
+    return render(request, 'movement_permit/application_details.html', {'application_details': application_details})
 
 
 def add_details_ins(request):
@@ -405,7 +408,7 @@ def add_details_ins(request):
                                               Current_Observation=currentObservation,
                                               Decision_Conformity=decisionConform)
     movement_permit = t_plant_movement_permit_t3.objects.filter(Application_No=application_id)
-    return render(request, 'add_application_details.html', {'movement_permit': movement_permit})
+    return render(request, 'movement_permit/add_application_details.html', {'movement_permit': movement_permit})
 
 
 def get_permit_no(request):
@@ -452,7 +455,7 @@ def add_file_name(request):
                                          Attachment=fileName)
 
         file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
-    return render(request, 'file_attachment_page.html', {'file_attach': file_attach})
+    return render(request, 'movement_permit/file_attachment_page.html', {'file_attach': file_attach})
 
 
 def delete_file(request):
@@ -467,7 +470,7 @@ def delete_file(request):
     file.delete()
 
     file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
-    return render(request, 'file_attachment_page.html', {'file_attach': file_attach})
+    return render(request, 'movement_permit/ile_attachment_page.html', {'file_attach': file_attach})
 
 
 # import permit
@@ -1141,3 +1144,17 @@ def clearance_ref_no(request):
 
 def certificate_print(request):
     return render(request, 'certificate_printing.html')
+
+
+# Export Permit
+def apply_export_permit(request):
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    location = t_location_field_office_mapping.objects.all()
+    country = t_country_master.objects.all()
+    entry_point = t_field_office_master.objects.filter(Is_Entry_Point='Y')
+
+    return render(request, 'export_permit/apply_permit.html',
+                  {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village,
+                   'location': location, 'entry_point': entry_point, 'country': country})

@@ -135,3 +135,19 @@ class t_plant_import_permit_t3(models.Model):
     Application_No = models.CharField(max_length=20)
     Current_Observation = models.TextField()
     Decision_Conformity = models.TextField()
+
+
+class t_plant_export_certificate_plant_plant_products_t1(models.Model):
+    Application_No = models.CharField(max_length=30, primary_key=True)
+    Applicant_Type = models.CharField(max_length=100, blank=True, null=True)
+    Certificate_Type = models.CharField(max_length=1)
+    License_No = models.CharField(max_length=100)
+    CID = models.BigIntegerField()
+    Exporter_Name = models.CharField(max_length=250)
+    Exporter_Address = models.TextField()
+    Contact_No = models.IntegerField()
+    Email = models.EmailField()
+    Dzongkhag_Code = models.IntegerField()
+    Locatipn_Code = models.IntegerField()
+    Consingee_Name_Address = models.TextField()
+    Botanical_Name = models.CharField(max_length=250)
