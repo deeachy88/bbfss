@@ -468,8 +468,10 @@
                 type : "POST",
                 url : "{% url 'save_movement_permit' %}",
                 data : $('#permitForm').serialize(),
-                success : function(response) {
-                    $('#apply_div').html(response);
+                success : function(data) {
+                    $('#applicationNo').val(data.applicationNo);
+                    $('#applNo').val(data.applicationNo);
+                    $('#appNo').val(data.applicationNo);
                     $('#pills-profile-tab').tab('show');
                 }
             });
@@ -605,9 +607,9 @@
                             data : $('#permitForm').serialize(),
                             cache : false,
                             dataType : "html",
-                            success : function(responseText)
+                            success : function(data)
                             {
-
+                                $('#applicationNo').val(data.applicationNo);
                             }
                     });
                 }

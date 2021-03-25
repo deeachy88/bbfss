@@ -58,7 +58,10 @@ urlpatterns = [
     path('submit_application', views.submit_application, name='submit_application'),
 
     # certificate Printing
-    path('certificate_print', views.certificate_print, name='certificate_print')
+    path('certificate_print', views.certificate_print, name='certificate_print'),
+
+    # Export Permit
+    path('apply_export_certificate', views.apply_export_permit, name='apply_export_certificate')
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
