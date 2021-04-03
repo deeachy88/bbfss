@@ -438,10 +438,13 @@
         $("#product-table").DataTable();
         $("#agro").hide();
         $("#agro_import").hide();
+        $("#Cordyceps").hide();
         if($("#applicationNo").val() == "")
         {
             $("#pills-profile-tab").prop('disabled', true);
             $("#pills-profile-file").prop('disabled', true);
+            $("#pills-phyto-file").prop('disabled', true);
+            $("#cordyceps-file-attachment").prop('disabled', true);
         }
     });
 
@@ -451,11 +454,14 @@
         {
             $("#plant").show();
             $("#agro").hide();
+            $("#pills-profile-tab").prop('disabled', true);
+            $("#pills-profile-file").prop('disabled', true);
         }
         else
         {
             $("#agro").show();
             $("#plant").hide();
+            $("#pills-agro-file").prop('disabled', true);
         }
     }
 
@@ -605,11 +611,12 @@
                             type : "POST",
                             url : "{% url 'save_movement_permit' %}",
                             data : $('#permitForm').serialize(),
-                            cache : false,
-                            dataType : "html",
                             success : function(data)
                             {
+                                alert(data.applicationNo);
                                 $('#applicationNo').val(data.applicationNo);
+                                $('#agro_appNo').val(data.applicationNo);
+                                $('#pills-tab-agro a:last').tab('show');
                             }
                     });
                 }
@@ -736,6 +743,11 @@ function save_details_form()
 function show_attachmentModal()
 {
     $('#attachmentModal').modal('show');
+}
+
+function show_agro_attachmentModal()
+{
+    $('#agro_attachmentModal').modal('show');
 }
     </script>
     </body>

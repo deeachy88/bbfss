@@ -32,13 +32,13 @@ option {
                 <div class="row justify-content-center">
                     <ul class="nav nav-pills nav-secondary" id="pills-tab" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadPageDetails('{{ title }}')">Home</a>
+                            <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadPageDetails()">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_details('{{ title }}')">Profile</a>
+                            <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_details()">Profile</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="pills-profile-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_details('{{ title }}')">Attach File</a>
+                            <a class="nav-link" id="pills-profile-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_details()">Attach File</a>
                         </li>
                     </ul>
                 </div>
@@ -211,7 +211,7 @@ option {
                             <div class="card-action">
                                     <button type="button" class="btn btn-primary" onclick="save()">Save</button>
                             </div>
-                            </div>
+                        </div>
                     </div>
                     <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
                         <div class="card">
@@ -239,157 +239,178 @@ option {
                     </div>
                 </div>
             </div>
-             <div id="agro">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="appcid">Applicant CID</label>
-                                <input type="text" class="form-control" id="appcid" name="appcid" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" placeholder="Applicant CID" maxlength="11" onkeypress="return isNumberKey(event)">
+            <div id="agro">
+                <div class="row justify-content-center">
+                    <ul class="nav nav-pills nav-secondary" id="pills-tab-agro" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="pills-agro-tab" data-toggle="pill" href="#agro-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadAgroDetails()">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="pills-agro-file" data-toggle="pill" href="#agro-file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false">Attach File</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="tab-content mt-2 mb-3" id="pills-tab-agro-tabContent">
+                    <div class="tab-pane fade show active" id="agro-home" role="tabpanel" aria-labelledby="pills-agro-tab">
+                        <div id="movement_agro_details">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="appcid">Applicant CID</label>
+                                        <input type="text" class="form-control" id="appcid" name="appcid" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" placeholder="Applicant CID" maxlength="11" onkeypress="return isNumberKey(event)">
+                                    </div>
+                                    <div class="alert alert-danger" id="appcidErrorMsg" style="display:none"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="appName">Applicant Name</label>
+                                        <input type="text" class="form-control" id="appName" name="appName" placeholder="Applicant Name">
+                                    </div>
+                                    <div class="alert alert-danger" id="appNameErrorMsg" style="display:none"></div>
+                                </div>
                             </div>
-                            <div class="alert alert-danger" id="appcidErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="appName">Applicant Name</label>
-                                <input type="text" class="form-control" id="appName" name="appName" placeholder="Applicant Name">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="phoneNumber">Contact Number</label>
+                                        <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Contact Number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="8" onkeypress="return isNumberKey(event)">
+                                    </div>
+                                    <div class="alert alert-danger" id="mobile_numberErrorMsg" style="display:none"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="emailId">Email</label>
+                                        <input type="email" class="form-control" id="emailId" name="emailId" placeholder="EmailID">
+                                    </div>
+                                    <div class="alert alert-danger" id="emailIdErrorMsg" style="display:none"></div>
+                                </div>
                             </div>
-                            <div class="alert alert-danger" id="appNameErrorMsg" style="display:none"></div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="mfdUnit">Manufacturing Unit Registration Number</label>
+                                        <input type="text" class="form-control" id="mfdUnit" name="mfdUnit_regNo" placeholder="Manufacturing Unit Registration Number">
+                                    </div>
+                                    <div class="alert alert-danger" id="mfdUnitErrorMsg" style="display:none"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="agroName">Name and Description Agrochemicals</label>
+                                        <input type="text" class="form-control" id="agroName" name="agroName" placeholder="Name and Description Agrochemicals">
+                                    </div>
+                                    <div class="alert alert-danger" id="agroNameErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="from_Dzongkhag">From Dzongkhag</label>
+                                         <select class="form-control" name="from_Dzongkhag"  id="from_Dzongkhag">
+                                            <option value="">--SELECT DZONGKHAG--</option>
+                                            {% for dzongkhag in dzongkhag %}
+                                                    <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                            {% endfor %}
+                                         </select>
+                                        <div class="alert alert-danger" id="fromDzongkhagErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="Dzongkhag_to">To Dzongkhag</label>
+                                        <select class="form-control" name="Dzongkhag_to"  id="Dzongkhag_to">
+                                            <option value="">--SELECT DZONGKHAG--</option>
+                                            {% for dzongkhag in dzongkhag %}
+                                                    <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="alert alert-danger" id="Dzongkhag_toErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="agro_location">Location</label>
+                                         <select class="form-control" name="location"  id="agro_location">
+                                            <option value="">--SELECT LOCATION--</option>
+                                            {% for location in location %}
+                                                    <option value="{{location.Location_Code }}">{{location.Location_Name}}</option>
+                                            {% endfor %}
+                                         </select>
+                                    </div>
+                                    <div class="alert alert-danger" id="agro_locationErrorMsg" style="display:none"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="auth_route">Authorized Route</label>
+                                        <input type="text" class="form-control" id="auth_route" name="auth_route" placeholder="Authorized Route">
+                                    </div>
+                                    <div class="alert alert-danger" id="auth_routeErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="Origin">Source or Origin Of Products</label>
+                                        <input type="text" class="form-control" id="Origin" name="Origin" placeholder="Source or Origin Of Products">
+                                    </div>
+                                    <div class="alert alert-danger" id="OriginErrorMsg" style="display:none"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="Purpose">Purpose Of Movement</label>
+                                        <input type="text" class="form-control" id="Purpose" name="Purpose" placeholder="Authorized Route">
+                                    </div>
+                                    <div class="alert alert-danger" id="PurposeErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="convMeans">Means of Conveyance </label>
+                                        <select class="form-control form-control" id="convMeans" name="convMeans">
+                                            <option value="">-SELECT-</option>
+                                            <option value="Air">Air</option>
+                                            <option value="Vehicular">Vehicular</option>
+                                        </select>
+                                    </div>
+                                    <div class="alert alert-danger" id="convMeansErrorMsg" style="display:none"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="vehicleNo">Vehicle No</label>
+                                        <input type="text" class="form-control" id="vehicleNo" name="vehicleNo" placeholder="Vehicle No">
+                                    </div>
+                                    <div class="alert alert-danger" id="vehicleNoErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="date">Expected Date of Movement</label>
+                                        <input type="text" class="form-control date-picker flatpickr-input active" id="date" name="date"  placeholder="Pick a date" readonly="readonly">
+                                    </div>
+                                    <div class="alert alert-danger" id="dateErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                            <div class="card-action">
+                                <button type="button" class="btn btn-primary" onclick="save()">Save</button>
+                            </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="phoneNumber">Contact Number</label>
-                                <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Contact Number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="8" onkeypress="return isNumberKey(event)">
-                            </div>
-                            <div class="alert alert-danger" id="mobile_numberErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="emailId">Email</label>
-                                <input type="email" class="form-control" id="emailId" name="emailId" placeholder="EmailID">
-                            </div>
-                            <div class="alert alert-danger" id="emailIdErrorMsg" style="display:none"></div>
+                    <div class="tab-pane fade" id="agro-file-attachment" role="tabpanel" aria-labelledby="pills-agro-file">
+                        <div id="agroAttach">
+                            {% include 'movement_permit/agro_file_attachment_page.html' %}
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="mfdUnit">Manufacturing Unit Registration Number</label>
-                                <input type="text" class="form-control" id="mfdUnit" name="mfdUnit_regNo" placeholder="Manufacturing Unit Registration Number">
-                            </div>
-                            <div class="alert alert-danger" id="mfdUnitErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="agroName">Name and Description Agrochemicals</label>
-                                <input type="text" class="form-control" id="agroName" name="agroName" placeholder="Name and Description Agrochemicals">
-                            </div>
-                            <div class="alert alert-danger" id="agroNameErrorMsg" style="display:none"></div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="from_Dzongkhag">From Dzongkhag</label>
-                                 <select class="form-control" name="from_Dzongkhag"  id="from_Dzongkhag">
-                                    <option value="">--SELECT DZONGKHAG--</option>
-                                    {% for dzongkhag in dzongkhag %}
-                                            <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
-                                    {% endfor %}
-                                 </select>
-                                <div class="alert alert-danger" id="fromDzongkhagErrorMsg" style="display:none"></div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="Dzongkhag_to">To Dzongkhag</label>
-                                <select class="form-control" name="Dzongkhag_to"  id="Dzongkhag_to">
-                                    <option value="">--SELECT DZONGKHAG--</option>
-                                    {% for dzongkhag in dzongkhag %}
-                                            <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="alert alert-danger" id="Dzongkhag_toErrorMsg" style="display:none"></div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="agro_location">Location</label>
-                                 <select class="form-control" name="location"  id="agro_location">
-                                    <option value="">--SELECT LOCATION--</option>
-                                    {% for location in location %}
-                                            <option value="{{location.Location_Code }}">{{location.Location_Name}}</option>
-                                    {% endfor %}
-                                 </select>
-                            </div>
-                            <div class="alert alert-danger" id="agro_locationErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="auth_route">Authorized Route</label>
-                                <input type="text" class="form-control" id="auth_route" name="auth_route" placeholder="Authorized Route">
-                            </div>
-                            <div class="alert alert-danger" id="auth_routeErrorMsg" style="display:none"></div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="Origin">Source or Origin Of Products</label>
-                                <input type="text" class="form-control" id="Origin" name="Origin" placeholder="Source or Origin Of Products">
-                            </div>
-                            <div class="alert alert-danger" id="OriginErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="Purpose">Purpose Of Movement</label>
-                                <input type="text" class="form-control" id="Purpose" name="Purpose" placeholder="Authorized Route">
-                            </div>
-                            <div class="alert alert-danger" id="PurposeErrorMsg" style="display:none"></div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="convMeans">Means of Conveyance </label>
-                                <select class="form-control form-control" id="convMeans" name="convMeans">
-                                    <option value="">-SELECT-</option>
-                                    <option value="Air">Air</option>
-                                    <option value="Vehicular">Vehicular</option>
-                                </select>
-                            </div>
-                            <div class="alert alert-danger" id="convMeansErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="vehicleNo">Vehicle No</label>
-                                <input type="text" class="form-control" id="vehicleNo" name="vehicleNo" placeholder="Vehicle No">
-                            </div>
-                            <div class="alert alert-danger" id="vehicleNoErrorMsg" style="display:none"></div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="date">Expected Date of Movement</label>
-                                <input type="text" class="form-control date-picker flatpickr-input active" id="date" name="date"  placeholder="Pick a date" readonly="readonly">
-                            </div>
-                            <div class="alert alert-danger" id="dateErrorMsg" style="display:none"></div>
-                        </div>
-                    </div>
-                    <div class="card-action">
-                        <button type="button" class="btn btn-primary" onclick="save()">Save</button>
-                    </div>
-             </div>
+                </div>
+            </div>
         </form>
     </div>
 </div>
 <form method="post" id="save_form">
     {% csrf_token %}
-    <input type="hidden" id="applNo" name="appNo" value="{{ title }}">
+    <input type="hidden" id="applNo" name="appNo">
     <div class="modal fade" id="add_details" tabindex="-1">
             <div class="modal-dialog modal-lg">
                     <div class="modal-content">
@@ -437,7 +458,7 @@ option {
 
 <form method="post" id="attachment_form" enctype="multipart/form-data">
     {% csrf_token %}
-    <input type="hidden" name="appNo" id="appNo" value="{{ title }}">
+    <input type="hidden" name="appNo" id="appNo">
     <div class="modal fade" id="attachmentModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -471,6 +492,42 @@ option {
     </div>
 </form>
 
+<form method="post" id="agro_attachment_form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" name="appNo" id="agro_appNo">
+    <div class="modal fade" id="agro_attachmentModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                 <div class="modal-header">
+                    <h5 class="modal-title" id="agro_attachmentModalLabel">Attach Files</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label>Attach File</label>
+                                        <input type="file" name="document" id="document_agro">
+                                        <div class="alert alert-danger" id="document_agroErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_attachment_agro()"> Submit </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
 
 <script>
 function loadPage(appId)
@@ -486,15 +543,34 @@ function loadPage(appId)
     });
 }
 
-function loadPageDetails(appId)
+function loadPageDetails()
 {
+    var appNo = $('#applicationNo').val();
     $.ajax({
         type : "GET",
         url : "{% url 'load_details_page' %}",
-        data :{'application_id':appId},
+        data :{'application_id':appNo},
         success : function(response)
         {
             $('#plant_details').html(response);
+            $("#pills-profile-tab").prop('disabled', false);
+            $("#pills-profile-file").prop('disabled', false);
+        }
+    });
+}
+
+function loadAgroDetails()
+{
+    var appNo = $('#applicationNo').val();
+    alert(appNo);
+    $.ajax({
+        type : "GET",
+        url : "{% url 'agro_details_page' %}",
+        data :{'application_id':appNo},
+        success : function(response)
+        {
+            $('#movement_agro_details').html(response);
+            $("#pills-agro-file").prop('disabled', false);
         }
     });
 }
@@ -545,7 +621,7 @@ function updateDetails()
         data : $('#permitForm').serialize(),
         success : function(response)
         {
-            $('.wrapper').html(response);
+            $('#Details').html(responseText);
             $('#pills-tab a:last').tab('show');
         }
     });
@@ -576,16 +652,17 @@ function save_attachment()
         {
             if (data.form_is_valid)
             {
+                var file_url = data.file_url
                 var appNo = $('#appNo').val();
                 $.ajax
                 ({
                     type : "POST",
                     url : "{% url 'add_file_name' %}",
-                    data : {'appNo':appNo , 'filename':fileName},
+                    data : {'appNo':appNo , 'filename':fileName , 'file_url':file_url},
                     success : function(responseText)
                     {
                         $('#attachmentModal').modal('hide');
-                        $('#file-attachment').html(responseText);
+                        $('#fileAttach').html(responseText);
                         $('.modal-backdrop').remove();
                     }
                 });
@@ -600,6 +677,53 @@ function save_attachment()
 
 }
 
+function save_attachment_agro()
+{
+    var fileName = document.getElementById('document_agro').files[0].name;
+    var fd = new FormData();
+    var file = document.getElementById('document_agro').files[0];
+    fd.append('document', file);
+    token_value=$("input[name=csrfmiddlewaretoken]").val();
+    $.ajaxSetup
+    ({
+        beforeSend: function(xhr, settings)
+        {
+            xhr.setRequestHeader("X-CSRFToken", token_value);
+        }
+    });
+        $.ajax({
+        type : "POST",
+        url : "{% url 'save_movement_file' %}",
+        data : fd,
+        dataType: 'json',
+        contentType: false,
+        processData: false,
+        success : function(data)
+        {
+            if (data.form_is_valid)
+            {
+                var appNo = $('#agro_appNo').val();
+                $.ajax
+                ({
+                    type : "POST",
+                    url : "{% url 'movement_agro_file_name' %}",
+                    data : {'appNo':appNo , 'filename':fileName},
+                    success : function(responseText)
+                    {
+                        $('#agro_attachmentModal').modal('hide');
+                        $('#agroAttach').html(responseText);
+                        $('.modal-backdrop').remove();
+                    }
+                });
+            }else
+            {
+                $('#document_agroErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                $('#document_agroErrorMsg').show();
+                $('#document_agroErrorMsg').delay(2000).fadeOut('slow');
+            }
+        }
+    });
 
+}
 </script>
 {% endblock %}

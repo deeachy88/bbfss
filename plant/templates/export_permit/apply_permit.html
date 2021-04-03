@@ -18,7 +18,7 @@ option {
     font-size: 17px;
 }
 </style>
-<input type="hidden" id="applicationNo" name="applicationNo" value="{{ applicationNo }}">
+<input type="hidden" id="applicationNo" name="applicationNo">
 <div class="card">
     <div class="card-header">
         <h4 class="card-title">Export Certificate For Plant And Plant Products</h4>
@@ -30,273 +30,964 @@ option {
                 <div class="form-check text-center">
                     <label>Certificate Type <font color="red">*</font></label><br>
                     <label class="form-radio-label">
-                        <input class="form-radio-input" type="radio" name="permitType" id="plantRadio" value="P" onclick="changeOnSelection(this.value)"  checked>
+                        <input class="form-radio-input" type="radio" name="certificateType" id="phytoRadio" value="P" checked onchange="changeExportType(this.value)">
                         <span class="form-radio-sign">Phytosanitary</span>
                     </label>
                     <label class="form-radio-label ml-3">
-                        <input class="form-radio-input" type="radio" name="permitType" id="agroRadio" value="C" onclick="changeOnSelection(this.value)">
+                        <input class="form-radio-input" type="radio" name="certificateType" id="cordycepRadio" value="C" onchange="changeExportType(this.value)">
                         <span class="form-radio-sign">Cordyceps</span>
                     </label>
                 </div>
             </div>
             <div id='Phytosanitary'>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>License No</label>
-                            <input type="text" class="form-control" id="p_License_No" name="p_License_No">
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>CID</label>
-                            <input type="text" class="form-control" id="p_cid" name="p_cid">
-                        </div>
-                    </div>
+                <div class="row justify-content-center">
+                    <ul class="nav nav-pills nav-secondary" id="pills-tab-phyto" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="pills-phyto-tab" data-toggle="pill" href="#phyto-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadPageDetails('{{ title }}')">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="pills-phyto-file" data-toggle="pill" href="#phyto-file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_details('{{ title }}')">Attach File</a>
+                        </li>
+                    </ul>
                 </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>Exporter Name</label>
-                            <input type="text" class="form-control" id="p_Exporter_Name" name="p_Exporter_Name">
+                <div class="tab-content mt-2 mb-3" id="pills-tab-phyto-tabContent">
+                    <div class="tab-pane fade show active" id="phyto-home" role="tabpanel" aria-labelledby="pills-phyto-tab">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label>License No</label>
+                                    <input type="text" class="form-control" id="p_License_No" name="p_License_No">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label>CID</label>
+                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="p_cid" name="p_cid" maxlength="11" onkeypress="return isNumberKey(event)">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label>Exporter Name</label>
+                                    <input type="text" class="form-control" id="p_Exporter_Name" name="p_Exporter_Name">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label>Exporter Address</label>
+                                    <textarea class="form-control" id="p_Exporter_Address" name="p_Exporter_Address" rows="3"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label>Contact Number</label>
+                                    <input type="number" class="form-control" id="p_Contact_No" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="p_Contact_No" maxlength="8" onkeypress="return isNumberKey(event)">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" class="form-control" id="p_Email" name="p_Email">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label>Dzongkhag</label>
+                                    <select class="form-control" name="p_Dzongkhag_Code"  id="p_Dzongkhag_Code" onchange="getLocation(this.value),getLocation(this.value)">
+                                        <option value="">--SELECT DZONGKHAG--</option>
+                                        {% for dzongkhag in dzongkhag %}
+                                                <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label>Location</label>
+                                    <select class="form-control" name="p_Location_Code"  id="p_Location_Code">
+                                        <option value="">--SELECT LOCATION--</option>
+                                        {% for location in location %}
+                                            <option value="{{ location.Location_Code }}">{{ location.Location_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label>Name & Address of Consignee</label>
+                                    <textarea class="form-control" id="p_Name_Address" name="p_Name_Address" rows="3"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Botanical name of the commodity</label>
+                                    <input type="text" class="form-control" id="p_Botanical_Name" name="p_Botanical_Name">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Description of the Commodity</label>
+                                    <textarea class="form-control" id="p_Description" name="p_Description" rows="3"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Quantity (Gross Weight)</label>
+                                    <input type="number" class="form-control" id="p_Qty_Gross" name="p_Qty_Gross">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="clearfix mb-4" style="margin-bottom: 2.5rem!important;"></div>
+                                <div class="form-check text-center">
+                                    <label class="form-radio-label">
+                                        <input class="form-radio-input" type="radio" name="p_Unit_Gross"  value="MT(s)" >
+                                        <span class="form-radio-sign">MT(s)</span>
+                                    </label>
+                                    <label class="form-radio-label ml-3">
+                                        <input class="form-radio-input" type="radio" name="p_Unit_Gross" value="Kg(s)">
+                                        <span class="form-radio-sign">Kg(s)</span>
+                                    </label>
+                                    <label class="form-radio-label ml-3">
+                                        <input class="form-radio-input" type="radio" name="p_Unit_Gross" value="Gram(s)">
+                                        <span class="form-radio-sign">Gram(s)</span>
+                                    </label>
+                                    <label class="form-radio-label ml-3">
+                                        <input class="form-radio-input" type="radio" name="p_Unit_Gross" value="Unit(s)">
+                                        <span class="form-radio-sign">Unit(s)</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Quantity (Net Weight)</label>
+                                    <input type="number" class="form-control" id="p_Qty_Net" name="p_Qty_Net">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="clearfix mb-4" style="margin-bottom: 2.5rem!important;"></div>
+                                <div class="form-check text-center">
+                                    <label class="form-radio-label">
+                                        <input class="form-radio-input" type="radio" name="p_Unit_Net"  value="MT(s)" >
+                                        <span class="form-radio-sign">MT(s)</span>
+                                    </label>
+                                    <label class="form-radio-label ml-3">
+                                        <input class="form-radio-input" type="radio" name="p_Unit_Net" value="Kg(s)">
+                                        <span class="form-radio-sign">Kg(s)</span>
+                                    </label>
+                                    <label class="form-radio-label ml-3">
+                                        <input class="form-radio-input" type="radio" name="p_Unit_Net" value="Gram(s)">
+                                        <span class="form-radio-sign">Gram(s)</span>
+                                    </label>
+                                    <label class="form-radio-label ml-3">
+                                        <input class="form-radio-input" type="radio" name="p_Unit_Net" value="Unit(s)">
+                                        <span class="form-radio-sign">Unit(s)</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label>Country</label>
+                                <select class="form-control" name="p_Country_Code"  id="p_Country_Code">
+                                    <option value="">--SELECT COUNTRY--</option>
+                                    {% for country in country %}
+                                        <option value="{{ country.Country_Code }}">{{ country.Country_Name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Declared point of Entry</label>
+                                    <select class="form-control" name="p_Entry_Point"  id="p_Entry_Point">
+                                        <option value="">--SELECT--</option>
+                                        {% for entry_point in entry_point %}
+                                        <option value="{{ entry_point.Field_Office_Id }}">{{ entry_point.Field_Office }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label>Number of Packages</label>
+                                    <textarea class="form-control" id="p_Package_number" name="p_Package_number" rows="3"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label>Description of Packages</label>
+                                    <textarea class="form-control" id="p_Package_description" name="p_Package_description" rows="3"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label>Distinguishing Marks</label>
+                                    <input type="text" class="form-control" id="p_Distinguish_Marks" name="p_Distinguish_Marks">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label>Purpose/End Use</label>
+                            </div>
+                            <div class="col-sm-10 justify-content-center">
+                                <div class="form-check text-center">
+                                    <label class="form-radio-label">
+                                        <input class="form-radio-input" type="radio" name="p_purpose"  value="Propagation">
+                                        <span class="form-radio-sign">Propagation</span>
+                                    </label>
+                                    <label class="form-radio-label ml-3">
+                                        <input class="form-radio-input" type="radio" name="p_purpose" value="Wood">
+                                        <span class="form-radio-sign">Wood</span>
+                                    </label>
+                                    <label class="form-radio-label ml-3">
+                                        <input class="form-radio-input" type="radio" name="p_purpose" value="Industrial Products">
+                                        <span class="form-radio-sign">Industrial Products</span>
+                                    </label>
+                                    <label class="form-radio-label ml-3">
+                                        <input class="form-radio-input" type="radio" name="p_purpose" value="Consumption">
+                                        <span class="form-radio-sign">Consumption</span>
+                                    </label>
+                                    <label class="form-radio-label ml-3">
+                                        <input class="form-radio-input" type="radio" name="p_purpose" value="Dunnage">
+                                        <span class="form-radio-sign">Dunnage(Wooden packing material)</span>
+                                    </label>
+                                    <label class="form-radio-label ml-3">
+                                        <input class="form-radio-input" type="radio" name="p_purpose" value="laboratory">
+                                        <span class="form-radio-sign">Laboratory specimens, Micro organisms, Micro biological, Biocontrolagents</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Mode of conveyance </label>
+                                    <select class="form-control form-control" id="p_conveyanceMeans" name="p_conveyanceMeans">
+                                        <option value="">-SELECT-</option>
+                                        <option value="Sea">Sea</option>
+                                        <option value="Air">Air</option>
+                                        <option value="Road">Road</option>
+                                        <option value="Rail">Rail</option>
+                                        <option value="Passenger">Passenger</option>
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="conveyanceMeansErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Conveyance Name</label>
+                                    <input type="text" class="form-control" id="p_Conveyance_Name" name="p_Conveyance_Name">
+                                </div>
+                                <div class="alert alert-danger" id="p_Conveyance_NameErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Additional Declaration (required by importing country)</label>
+                                    <textarea class="form-control" id="p_additional_declaration" name="p_additional_declaration" rows="4"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                <span class="px-2 small text-muted font-weight-bold text-muted" style="margin-right: -11px;">Pre-</span>
+                                <span class="px-2 small text-muted font-weight-bold text-muted">Application</span>
+                                <span class="px-1 small text-muted font-weight-bold text-muted">Treatment</span>
+                            <span class="px-1 small text-muted font-weight-bold text-muted"> Details</span>
+                            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="form-check text-center">
+                                <label class="form-radio-label">
+                                    <input class="form-radio-input" type="radio" name="treatmentType"  value="Chemical" onclick="showOthers('Chemical')">
+                                    <span class="form-radio-sign">Chemical</span>
+                                </label>
+                                <label class="form-radio-label ml-3">
+                                    <input class="form-radio-input" type="radio" name="treatmentType" value="Irradiation" onclick="showOthers('Irradiation')">
+                                    <span class="form-radio-sign">Irradiation</span>
+                                </label>
+                                <label class="form-radio-label ml-3">
+                                    <input class="form-radio-input" type="radio" name="treatmentType" value="Hot Water" onclick="showOthers('Hot Water')">
+                                    <span class="form-radio-sign">Hot Water</span>
+                                </label>
+                                <label class="form-radio-label ml-3">
+                                    <input class="form-radio-input" type="radio" name="treatmentType" value="Vapour Heat" onclick="showOthers('Vapour Heat')">
+                                    <span class="form-radio-sign">Vapour Heat</span>
+                                </label>
+                                <label class="form-radio-label ml-3">
+                                    <input class="form-radio-input" type="radio" name="treatmentType" value="Cold Treatment" onclick="showOthers('Cold Treatment')">
+                                    <span class="form-radio-sign">Cold Treatment</span>
+                                </label>
+                                <label class="form-radio-label ml-3">
+                                    <input class="form-radio-input" type="radio" name="treatmentType" value="Others" onclick="showOthers('Others')">
+                                    <span class="form-radio-sign">Others</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row" id="others_pre" style="display:none">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Others</label>
+                                    <input type="text" class="form-control" id="p_others_pre" name="p_others_treatment">
+                                </div>
+                                <div class="alert alert-danger" id="p_others_preErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Chemical Name</label>
+                                    <input type="text" class="form-control" id="p_chemcial_name" name="p_chemcial_name">
+                                </div>
+                                <div class="alert alert-danger" id="p_chemcial_nameErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Treatment </label>
+                                    <select class="form-control form-control" id="p_treatment" name="p_treatment" onchange="showValue(this.value)">
+                                        <option value="">-SELECT-</option>
+                                        <option value="Fumigation">Fumigation</option>
+                                        <option value="Spray">Spray</option>
+                                        <option value="Seed treatment">Seed Treatment</option>
+                                        <option value="others">Others(Specify)</option>
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="p_treatmentErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Concentration</label>
+                                    <input type="text" class="form-control" id="p_Concentration" name="p_Concentration">
+                                </div>
+                                <div class="alert alert-danger" id="p_ConcentrationErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row" id="others" style="display:none">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Others</label>
+                                    <input type="text" class="form-control" id="p_others" name="p_others">
+                                </div>
+                                <div class="alert alert-danger" id="p_othersErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Duration & Temperature</label>
+                                    <input type="text" class="form-control" id="p_Duration_Temperature" name="p_Duration_Temperature">
+                                </div>
+                                <div class="alert alert-danger" id="p_Duration_TemperatureErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Treated By</label>
+                                    <input type="text" class="form-control" id="p_treated_by" name="p_treated_by">
+                                </div>
+                                <div class="alert alert-danger" id="p_treated_byErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Treatment Supervised By</label>
+                                    <input type="text" class="form-control" id="p_treatment_supervised" name="p_treatment_supervised">
+                                </div>
+                                <div class="alert alert-danger" id="p_treatment_supervisedErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Additional Information</label>
+                                    <textarea id="p_additional_Info" name="p_additional_Info" rows="4" cols="50"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="p_additional_Info_ErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button type="button" class="btn btn-primary" onclick="save_export_permit()">Save</button>
                         </div>
                     </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>Exporter Address</label>
-                            <textarea class="form-control" id="p_Exporter_Address" name="p_Exporter_Address" rows="3"></textarea>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>Contact Number</label>
-                            <input type="number" class="form-control" id="p_Contact_No" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="p_Contact_No" maxlength="8" onkeypress="return isNumberKey(event)">
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" class="form-control" id="p_Email" name="p_Email">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>Dzongkhag</label>
-                            <select class="form-control" name="p_Dzongkhag_Code"  id="p_Dzongkhag_Code" onchange="getLocation(this.value),getLocation(this.value)">
-                                <option value="">--SELECT DZONGKHAG--</option>
-                                {% for dzongkhag in dzongkhag %}
-                                        <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>Location</label>
-                            <select class="form-control" name="p_Location_Code"  id="p_Location_Code">
-                                <option value="">--SELECT LOCATION--</option>
-                                {% for location in location %}
-                                    <option value="{{ location.Location_Code }}">{{ location.Location_Name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>Name & Address of Consignee</label>
-                            <textarea class="form-control" id="p_Name_Address" name="p_Name_Address" rows="3"></textarea>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>Botanical name of the commodity</label>
-                            <input type="text" class="form-control" id="p_Botanical_Name" name="p_Botanical_Name">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>Description of the Commodity</label>
-                            <textarea class="form-control" id="p_Description" name="p_Description" rows="3"></textarea>
-                        </div>
-                    </div>
-                </div>
-                <hr>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>Quantity (Gross Weight)</label>
-                            <input type="text" class="form-control" id="p_Qty_Gross" name="p_Qty_Gross">
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="clearfix mb-4" style="margin-bottom: 2.5rem!important;"></div>
-                        <div class="form-check text-center">
-                            <label class="form-radio-label">
-                                <input class="form-radio-input" type="radio" name="treatmentType"  value="P" >
-                                <span class="form-radio-sign">MT(s)</span>
-                            </label>
-                            <label class="form-radio-label ml-3">
-                                <input class="form-radio-input" type="radio" name="treatmentType" value="C">
-                                <span class="form-radio-sign">Kg(s)</span>
-                            </label>
-                            <label class="form-radio-label ml-3">
-                                <input class="form-radio-input" type="radio" name="treatmentType" value="C">
-                                <span class="form-radio-sign">Gram(s)</span>
-                            </label>
-                            <label class="form-radio-label ml-3">
-                                <input class="form-radio-input" type="radio" name="treatmentType" value="C">
-                                <span class="form-radio-sign">Unit(s)</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>Quantity (Net Weight)</label>
-                            <input type="text" class="form-control" id="p_Qty_Net" name="p_Qty_Gross">
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="clearfix mb-4" style="margin-bottom: 2.5rem!important;"></div>
-                        <div class="form-check text-center">
-                            <label class="form-radio-label">
-                                <input class="form-radio-input" type="radio" name="treatmentType"  value="P" >
-                                <span class="form-radio-sign">MT(s)</span>
-                            </label>
-                            <label class="form-radio-label ml-3">
-                                <input class="form-radio-input" type="radio" name="treatmentType" value="C">
-                                <span class="form-radio-sign">Kg(s)</span>
-                            </label>
-                            <label class="form-radio-label ml-3">
-                                <input class="form-radio-input" type="radio" name="treatmentType" value="C">
-                                <span class="form-radio-sign">Gram(s)</span>
-                            </label>
-                            <label class="form-radio-label ml-3">
-                                <input class="form-radio-input" type="radio" name="treatmentType" value="C">
-                                <span class="form-radio-sign">Unit(s)</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <label>Country</label>
-                        <select class="form-control" name="p_Country_Code"  id="p_Country_Code">
-                            <option value="">--SELECT COUNTRY--</option>
-                            {% for country in country %}
-                                <option value="{{ country.Country_Code }}">{{ country.Country_Name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>Declared point of Entry</label>
-                            <select class="form-control" name="p_Entry_Point"  id="p_Entry_Point">
-                                <option value="">--SELECT--</option>
-                                {% for entry_point in entry_point %}
-                                <option value="{{ entry_point.Field_Office_Id }}">{{ entry_point.Field_Office }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>Number & Description of Packages</label>
-                            <textarea class="form-control" id="p_Package_details" name="p_Package_details" rows="3"></textarea>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>Distinguishing Marks</label>
-                            <input type="text" class="form-control" id="p_Distinguish_Marks" name="p_Distinguish_Marks">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-2">
-                        <label>Purpose/End Use</label>
-                    </div>
-                    <div class="col-sm-10">
-                        <label class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" value="Propagation" name="">
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">Propagation</span>
-                        </label>
-                        <label class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input">
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">Wood</span>
-                        </label>
-                        <label class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input">
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">Industrial Products</span>
-                        </label>
-                        <label class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input">
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">Consumption</span>
-                        </label>
-                        <label class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input">
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">Dunnage(Wooden packing material)</span>
-                        </label>
-
-                        <label class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input">
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">Laboratory specimens, Micro organisms, Micro biological, Biocontrolagents</span>
-                        </label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Mode of conveyance </label>
-                            <select class="form-control form-control" id="p_conveyanceMeans" name="p_conveyanceMeans">
-                                <option value="">-SELECT-</option>
-                                <option value="Sea">Sea</option>
-                                <option value="Air">Air</option>
-                                <option value="Road">Road</option>
-                                <option value="Rail">Rail</option>
-                                <option value="Passenger">Passenger</option>
-                            </select>
-                        </div>
-                        <div class="alert alert-danger" id="conveyanceMeansErrorMsg" style="display:none"></div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Conveyance Name</label>
-                            <input type="text" class="form-control" id="p_Conveyance_Name" name="p_Conveyance_Name">
-                        </div>
-                        <div class="alert alert-danger" id="p_Conveyance_NameErrorMsg" style="display:none"></div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Additional Declaration (required by importing country)</label>
-                            <textarea class="form-control" id="p_additional_declaration" name="p_additional_declaration" rows="3"></textarea>
+                    <div class="tab-pane fade" id="phyto-file-attachment" role="tabpanel" aria-labelledby="pills-phyto-file">
+                        <div id="phytoAttach">
+                            {% include 'export_permit/phyto_file_attachment_page.html' %}
                         </div>
                     </div>
                 </div>
             </div>
-            <div id='Cordyceps'>
-
+            <div id="Cordyceps">
+                <div class="row justify-content-center">
+                    <ul class="nav nav-pills nav-secondary" id="pills-tab-cordyceps" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="pills-cordyceps-tab" data-toggle="pill" href="#cordyceps-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadPageDetails('{{ title }}')">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="pills-cordyceps-file" data-toggle="pill" href="#cordyceps-file-attachment" role="tab" aria-controls="pills-cordyceps-file" aria-selected="false" onclick="load_details('{{ title }}')">Attach File</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="tab-content mt-2 mb-3" id="pills-tab-cordyceps-tabContent">
+                    <div class="tab-pane fade show active" id="cordyceps-home" role="tabpanel" aria-labelledby="pills-phyto-tab">
+                        <div class="row justify-content-center">
+                            <div class="form-check text-center">
+                                <label>Applicant Type <font color="red">*</font></label><br>
+                                <label class="form-radio-label">
+                                    <input class="form-radio-input" type="radio" name="ApplicantType" id="bothRadio" value="bothRadio" onclick="changeRadio(this.value)"  checked>
+                                    <span class="form-radio-sign">Both Export and Retail </span>
+                                </label>
+                                <label class="form-radio-label ml-3">
+                                    <input class="form-radio-input" type="radio" name="ApplicantType" id="directRadio" value="directRadio" onclick="changeRadio(this.value)">
+                                    <span class="form-radio-sign">Direct Export Only</span>
+                                </label>
+                                <label class="form-radio-label ml-3">
+                                    <input class="form-radio-input" type="radio" name="ApplicantType" id="retailRadio" value="retailRadio" onclick="changeRadio(this.value)">
+                                    <span class="form-radio-sign">Retail Outlets Only</span>
+                                </label>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label>CID</label>
+                                    <input type="text" class="form-control" id="c_cid" name="c_cid">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label>Name</label>
+                                    <input type="text" class="form-control" id="c_Exporter_Name" name="c_Exporter_Name">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" class="form-control" id="c_Email" name="c_Email">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label>Contact Number</label>
+                                    <input type="number" class="form-control" id="c_Contact_No" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="c_Contact_No" maxlength="8" onkeypress="return isNumberKey(event)">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label>Dzongkhag</label>
+                                    <select class="form-control" name="c_Dzongkhag_Code"  id="c_Dzongkhag_Code" onchange="getLocation(this.value),getLocation(this.value)">
+                                        <option value="">--SELECT DZONGKHAG--</option>
+                                        {% for dzongkhag in dzongkhag %}
+                                                <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label>Location</label>
+                                    <select class="form-control" name="c_Location_Code"  id="c_Location_Code">
+                                        <option value="">--SELECT LOCATION--</option>
+                                        {% for location in location %}
+                                            <option value="{{ location.Location_Code }}">{{ location.Location_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div id="bothRadioContent">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Current Address</label>
+                                        <textarea class="form-control" id="c_current_address" name="c_current_address" rows="4"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Permanent Address(if different from the current address)</label>
+                                        <textarea class="form-control" id="c_permanent_address" name="c_permanent_address" rows="4"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Date Of Inspection Requested</label>
+                                        <input type="text" class="form-control date-picker flatpickr-input active" id="date" name="date_for_Inspection"  placeholder="Pick a date" readonly="readonly">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Place Of Inspection Requested</label>
+                                        <input type="text" class="form-control" id="c_requested_place" name="requested_place">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="directContent" style="display:none">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Trade License No. (For Licensed Cordyceps Exporters only)</label>
+                                        <input type="text" class="form-control" id="c_License_No" name="c_License_No">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-4 col-form-label">Gross Weight (Weight of Cordyceps and package)</label>
+                                <div class="col-sm-4">
+                                    <div class="input-group">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" id="gross_weight_gms" name="gross_weight_gms">
+                                            <i class="form-group__bar"></i>
+                                        </div>
+                                        <span class="input-group-addon">Gm(s)</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="input-group">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" id="gross_weight_pieces" name="gross_weight_pieces">
+                                            <i class="form-group__bar"></i>
+                                        </div>
+                                        <span class="input-group-addon">Pieces</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-4 col-form-label">Net Weight (Weight of Cordycep only)</label>
+                                <div class="col-sm-4">
+                                    <div class="input-group">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" id="net_weight_gms" name="net_weight_gms">
+                                            <i class="form-group__bar"></i>
+                                        </div>
+                                        <span class="input-group-addon">Gm(s)</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="input-group">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" id="net_weight_pieces" name="net_weight_pieces">
+                                            <i class="form-group__bar"></i>
+                                        </div>
+                                        <span class="input-group-addon">Pieces</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>No Of Packages</label>
+                                        <input type="text" class="form-control" id="c_package" name="c_package">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>Importing Country</label>
+                                        <input type="text" class="form-control" id="c_country" name="c_country">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>Name & Address of Consignee</label>
+                                        <textarea class="form-control" id="c_Name_Address" name="c_Name_Address" rows="3"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>Mode of conveyance </label>
+                                        <select class="form-control form-control" id="c_conveyanceMeans" name="c_conveyanceMeans">
+                                            <option value="">-SELECT-</option>
+                                            <option value="Sea">Sea</option>
+                                            <option value="Air">Air</option>
+                                            <option value="Road">Road</option>
+                                            <option value="Rail">Rail</option>
+                                            <option value="Passenger">Passenger</option>
+                                        </select>
+                                    </div>
+                                    <div class="alert alert-danger" id="c_conveyanceMeansErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="retailContent" style="display:none">
+                            <div class="form-group row">
+                                <label class="col-sm-4 col-form-label">Gross Weight (Weight of Cordyceps and package)</label>
+                                <div class="col-sm-4">
+                                    <div class="input-group">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" id="retail_gross_weight_gms" name="retail_gross_weight_gms">
+                                            <i class="form-group__bar"></i>
+                                        </div>
+                                        <span class="input-group-addon">Gm(s)</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="input-group">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" id="retail_gross_weight_pieces" name="retail_gross_weight_pieces">
+                                            <i class="form-group__bar"></i>
+                                        </div>
+                                        <span class="input-group-addon">Pieces</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-4 col-form-label">Net Weight (Weight of Cordycep only)</label>
+                                <div class="col-sm-4">
+                                    <div class="input-group">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" id="retail_net_weight_gms" name="retail_net_weight_gms">
+                                            <i class="form-group__bar"></i>
+                                        </div>
+                                        <span class="input-group-addon">Gm(s)</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="input-group">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" id="retail_net_weight_pieces" name="net_weight_pieces">
+                                            <i class="form-group__bar"></i>
+                                        </div>
+                                        <span class="input-group-addon">Pieces</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>Total No Of Packages</label>
+                                        <input type="text" class="form-control" id="c_retail_package" name="c_retail_package">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>Name Of The Outlet</label>
+                                        <input type="text" class="form-control" id="c_outlet_name" name="c_outlet_name">
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>Contact No of the outlet owner</label>
+                                        <input type="text" class="form-control" id="c_phoneNumber" name="c_phoneNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="8" onkeypress="return isNumberKey(event)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Address of the outlet</label>
+                                        <textarea class="form-control" rows="5" id="c_address" name="c_address"></textarea>
+                                    </div>
+                                    <div class="alert alert-danger" id="c_addressErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <p>Declaration</p>
+                            <p>1.	I/We the exporter/.authorized agent of the exporter declare that the information furnished
+                                in this form, to the best of our knowledge and belief, is true, correct and complete in every respect.</p>
+                            <p>2.	I/We shall provide any relevant information and related documents connected with export of
+                            consignment for issuance of the Export Certificate</p>.
+                        </div>
+                        <div class="card-footer">
+                            <button type="button" class="btn btn-primary" onclick="save_export_permit()">Save</button>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="cordyceps-file-attachment" role="tabpanel" aria-labelledby="pills-cordyceps-file">
+                        <div id="cordycepsAttach">
+                            {% include 'export_permit/cordyceps_file_attachment_page.html' %}
+                        </div>
+                    </div>
+                </div>
             </div>
         </form>
     </div>
 </div>
+<form method="post" id="phyto_attachment_form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="text" id="phyto_attachment_applicationNo" name="appNo" style="display:none">
+    <div class="modal fade" id="phyto_attachmentModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                 <div class="modal-header">
+                    <h5 class="modal-title" id="phyto_attachmentModalLabel">Attach Files</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label>Attach File</label>
+                                        <input type="file" name="phyto_document" id="phyto_document">
+                                        <div class="alert alert-danger" id="phyto_documentErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_phyto_attachment()"> Submit </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<form method="post" id="cordyceps_attachment_form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="text" id="cordyceps_attachment_applicationNo" name="appNo" style="display:none">
+    <div class="modal fade" id="cordyceps_attachmentModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                 <div class="modal-header">
+                    <h5 class="modal-title" id="cordyceps_attachmentModalLabel">Attach Files</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label>Attach File</label>
+                                        <input type="file" name="cordyceps_document" id="cordyceps_document">
+                                        <div class="alert alert-danger" id="cordyceps_documentErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_cordyceps_attachment()"> Submit </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    function showOthers(value)
+    {
+        if(value == "Others")
+        {
+            $("#others_pre").show();
+        }
+        else
+        {
+            $("#others_pre").hide();
+        }
+
+    }
+    function showValue(value)
+    {
+        if(value == "others")
+        {
+            $("#others").show();
+        }
+        else
+        {
+            $("#others").hide();
+        }
+    }
+
+    function changeExportType(exportType)
+    {
+        if(exportType == "P")
+        {
+            $("#Phytosanitary").show();
+            $("#Cordyceps").hide();
+            $("#pills-phyto-file").prop('disabled', true);
+        }
+        else
+        {
+            $("#Cordyceps").show();
+            $("#Phytosanitary").hide();
+            $("#pills-cordyceps-file").prop('disabled', true);
+        }
+    }
+
+    function changeRadio(applicantType)
+    {
+        if(applicantType == "bothRadio")
+        {
+            $("#bothRadioContent").show();
+            $("#directContent").hide();
+            $("#retailContent").hide();
+        }
+        else if(applicantType == "directRadio")
+        {
+            $("#bothRadioContent").hide();
+            $("#directContent").show();
+            $("#retailContent").hide();
+        }
+        else
+        {
+            $("#bothRadioContent").hide();
+            $("#directContent").hide();
+            $("#retailContent").show();
+        }
+    }
+    function save_export_permit()
+    {
+        if($('#phytoRadio').prop('checked'))
+        {
+
+            $.ajax({
+                    type : "POST",
+                    url : "{% url 'submit_export' %}",
+                    data : $('#permitForm').serialize(),
+                    cache : false,
+                    dataType : "html",
+                    success : function(data)
+                    {
+                        $('#applicationNo').val(data.applicationNo);
+                        $('#phyto_attachment_applicationNo').val(data.applicationNo);
+                        $('#pills-tab-phyto a:last').tab('show');
+                    }
+            });
+
+        }
+        else
+        {
+
+
+                $.ajax({
+                        type : "POST",
+                        url : "{% url 'submit_export' %}",
+                        data : $('#permitForm').serialize(),
+                        cache : false,
+                        dataType : "html",
+                        success : function(data)
+                        {
+                            $('#applicationNo').val(data.applicationNo);
+                            $('#cordyceps_attachment_applicationNo').val(data.applicationNo);
+                            $('#pills-tab-cordyceps a:last').tab('show');
+                        }
+                });
+        }
+    }
+
+    function save_phyto_attachment()
+    {
+        var fileName = document.getElementById('phyto_document').files[0].name;
+        var fd = new FormData();
+        var file = document.getElementById('phyto_document').files[0];
+        fd.append('phyto_document', file);
+        token_value=$("input[name=csrfmiddlewaretoken]").val();
+        $.ajaxSetup
+        ({
+            beforeSend: function(xhr, settings)
+            {
+                xhr.setRequestHeader("X-CSRFToken", token_value);
+            }
+        });
+            $.ajax({
+            type : "POST",
+            url : "{% url 'add_file_phyto' %}",
+            data : fd,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            success : function(data)
+            {
+                if (data.form_is_valid)
+                {
+                    var appNo = $('#phyto_attachment_applicationNo').val();
+                    $.ajax
+                    ({
+                        type : "POST",
+                        url : "{% url 'add_file_name_phyto' %}",
+                        data : {'appNo':appNo , 'filename':fileName},
+                        success : function(responseText)
+                        {
+                            $('#phyto_attachmentModal').modal('hide');
+                            $('#phytoAttach').html(responseText);
+                            $('.modal-backdrop').remove();
+                        }
+                    });
+                }else
+                {
+                    $('#phyto_documentErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                    $('#phyto_documentErrorMsg').show();
+                    $('#phyto_documentErrorMsg').delay(2000).fadeOut('slow');
+                }
+            }
+        });
+    }
+
+    function save_cordyceps_attachment()
+    {
+        var fileName = document.getElementById('cordyceps_document').files[0].name;
+        var fd = new FormData();
+        var file = document.getElementById('cordyceps_document').files[0];
+        fd.append('cordyceps_document', file);
+        token_value=$("input[name=csrfmiddlewaretoken]").val();
+        $.ajaxSetup
+        ({
+            beforeSend: function(xhr, settings)
+            {
+                xhr.setRequestHeader("X-CSRFToken", token_value);
+            }
+        });
+            $.ajax({
+            type : "POST",
+            url : "{% url 'add_file_cordyceps' %}",
+            data : fd,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            success : function(data)
+            {
+
+                if (data.form_is_valid)
+                {
+                    var appNo = $('#cordyceps_attachment_applicationNo').val();
+
+                    $.ajax
+                    ({
+                        type : "POST",
+                        url : "{% url 'add_file_name_cordyceps' %}",
+                        data : {'appNo':appNo , 'filename':fileName},
+                        success : function(responseText)
+                        {
+                            $('#cordyceps_attachmentModal').modal('hide');
+                            $('#cordycepsAttach').html(responseText);
+                            $('.modal-backdrop').remove();
+                        }
+                    });
+                }else
+                {
+                    $('#cordyceps_documentErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                    $('#cordyceps_documentErrorMsg').show();
+                    $('#cordyceps_documentErrorMsg').delay(2000).fadeOut('slow');
+                }
+            }
+        });
+    }
+</script>
 {% endblock %}
