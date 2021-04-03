@@ -15,12 +15,12 @@ from django.template.loader import render_to_string
 
 from administrator.forms import UserForm, LocationFieldMappingForm, FieldOfficeForm, FodderVarietyForm, PlantFodderForm, \
     PlantProductForm, PesticideForm, OrnamentalPlantForm, CropSpeciesForm, ChemicalForm, CropVarietyForm, CropForm, \
-    ServiceForm, DivisionForm, SectionForm, RoleForm
+    ServiceForm, DivisionForm, SectionForm, RoleForm, CropCategoryForm
 from administrator.models import t_user_master, t_security_question_master, t_role_master, t_forgot_password, \
     t_section_master, t_village_master, t_gewog_master, t_dzongkhag_master, t_location_field_office_mapping, \
     t_field_office_master, t_plant_fodder_variety_master, t_plant_fodder_master, t_plant_product_master, \
     t_plant_pesticide_master, t_plant_ornamental_master, t_plant_crop_species_master, t_plant_chemical_master, \
-    t_plant_crop_variety_master, t_plant_crop_master, t_service_master, t_division_master
+    t_plant_crop_variety_master, t_plant_crop_master, t_service_master, t_division_master, t_plant_crop_category_master
 from bbfss import settings
 
 
@@ -374,6 +374,57 @@ def save_division_form(request, form, template_name):
     data['html_form'] = render_to_string(template_name, context, request=request)
     return JsonResponse(data)
 
+def crop_category_manage(request):
+    if request.method == 'POST':
+        form = CropCategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            crop_category = t_plant_crop_category_master.objects.all()
+            return render(request, 'plant_crop_category.html', {'form': form, 'crop_category': crop_category})
+    else:
+        crop_category = t_plant_crop_category_master.objects.all()
+        form = CropCategoryForm()
+        return render(request, 'plant_crop_category.html', {'form': form, 'crop_category': crop_category})
+
+
+def edit_crop_category(request, Crop_Category_Id):
+    crop_category = get_object_or_404(t_plant_crop_category_master, pk=Crop_Category_Id)
+    if request.method == 'POST':
+        form = CropCategoryForm(request.POST, instance=crop_category)
+    else:
+        form = CropCategoryForm(instance=crop_category)
+    return save_crop_category_form(request, form, 'edit_crop_category.html')
+
+
+def save_crop_category_form(request, form, template_name):
+    data = dict()
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            data['form_is_valid'] = True
+            crop_category = t_plant_crop_category_master.objects.all()
+            data['html_crop_category_list'] = render_to_string('plant_crop_category.html', {
+                'crop_category': crop_category
+            })
+        else:
+            data['form_is_valid'] = False
+    context = {'form': form}
+    data['html_form'] = render_to_string(template_name, context, request=request)
+    return JsonResponse(data)
+
+def delete_crop_category(request, Crop_Category_Id):
+    print("test check delete")
+    crop_category = get_object_or_404(t_plant_crop_category_master, pk=Crop_Category_Id)
+    data = dict()
+    if request.method == 'POST':
+        crop_category.delete()
+        data['form_is_valid'] = True  # This is just to play along with the existing code
+        crop_category = t_plant_crop_category_master.objects.all()
+        data['html_form'] = render_to_string('plant_crop_category.html', {'crop_category': crop_category})
+    else:
+        context = {'crop_category': crop_category}
+        data['html_form'] = render_to_string('crop_category_delete.html', context, request=request)
+    return JsonResponse(data)
 
 def service_manage(request):
     if request.method == 'POST':

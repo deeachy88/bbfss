@@ -3,7 +3,7 @@ from django import forms
 from administrator.models import t_user_master, t_role_master, t_section_master, t_division_master, t_service_master, \
     t_plant_crop_master, t_plant_crop_variety_master, t_plant_chemical_master, t_plant_crop_species_master, \
     t_plant_ornamental_master, t_plant_pesticide_master, t_plant_product_master, t_plant_fodder_master, \
-    t_plant_fodder_variety_master, t_field_office_master, t_location_field_office_mapping
+    t_plant_fodder_variety_master, t_field_office_master, t_location_field_office_mapping, t_plant_crop_category_master
 
 
 class UserForm(forms.ModelForm):
@@ -71,6 +71,10 @@ class PesticideForm(forms.ModelForm):
         model = t_plant_pesticide_master
         fields = '__all__'
 
+class CropCategoryForm(forms.ModelForm):
+    class Meta:
+        model = t_plant_crop_category_master
+        fields = '__all__'
 
 class PlantProductForm(forms.ModelForm):
     class Meta:

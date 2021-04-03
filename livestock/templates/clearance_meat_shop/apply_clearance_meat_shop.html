@@ -12,20 +12,16 @@ option {
         <h4 class="card-title">Clearance for Meat Shop</h4>
     </div>
     <div class="card-body">
-         <form method="post" id="permitForm">
+         <form method="post" id="meatShopClearanceForm">
              {% csrf_token %}
-
             <div id="plant">
-                <div class="row justify-content-center">
+                <div class="row justify-content-left">
                     <ul class="nav nav-pills nav-secondary" id="pills-tab" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadPageDetails('{{ title }}')">Home</a>
+                            <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadDetails()">Application Form</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_details('{{ title }}')">Profile</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="pills-profile-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_details('{{ title }}')">Attach File</a>
+                            <a class="nav-link" id="pills-profile-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
                         </li>
                     </ul>
                 </div>
@@ -34,54 +30,87 @@ option {
                         <div id="applicant_details">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="scope">Scope</label>
-                                        <select class="form-control form-control" id="scope" name="scope">
-                                            <option value="">-SELECT-</option>
-                                            <option value="Retail Meat Shop">Retail Meat Shop</option>
-                                            <option value="Wholesale">Wholesale</option>
-                                            <option value="Cold Storage">Cold Storage</option>
-                                        </select>
-                                    </div>
-                                    <div class="alert alert-danger" id="regNoErrorMsg" style="display:none"></div>
+                                  <div class="form-group">
+                                    <label>Scope</label>
+                                        <div class="form-check" id="scope">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="scope" value="Retail Meat Shop">
+                                              <label class="form-check-label">Retail Meat Shop</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="scope" value="Wholesale">
+                                                <label class="form-check-label">Whole Sale</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="scope" value="Cold Storage">
+                                                <label class="form-check-label">Cold Storage</label>
+                                            </div>
+                                        </div>
+                                    <div class="alert alert-danger" id="scopeErrorMsg" style="display:none"></div>
+                                  </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="purpose">Purpose</label>
-                                        <select class="form-control form-control" id="purpose" name="purpose">
-                                            <option value="">-SELECT-</option>
-                                            <option value="Conditional Clearance">Conditional Clearance</option>
-                                            <option value="Operation of Meat Shop">Operation of Meat Shop</option>
-                                        </select>
+                                   <div class="form-group">
+                                    <label>Purpose</label>
+                                        <div class="form-check" id="purpose">
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" name="purpose"  value="Conditional Clearance">
+                                              <label class="form-check-label" >Conditional Clearance</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" name="purpose" value="Operation of Meat Shop">
+                                              <label class="form-check-label" >Operation of Meat Shop</label>
+                                            </div>
+                                        </div>
+                                        <div class="alert alert-danger" id="purposeErrorMsg" style="display:none"></div>
                                     </div>
-                                    <div class="alert alert-danger" id="companyNameErrorMsg" style="display:none"></div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="shopname">Name of the Meat Shop</label>
-                                        <input type="text" class="form-control" id="shopname" name="ShopName" placeholder="Applicant Name">
+                                        <label >Name of the Meat Shop</label>
+                                        <input type="text" class="form-control" id="shopName" name="shopName">
                                     </div>
-                                    <div class="alert alert-danger" id="meatshopnameErrorMsg" style="display:none"></div>
+                                    <div class="alert alert-danger" id="shopNameErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-md-6">
-
-
+                                    <div class="form-group">
+                                    <label>Ownership Type</label>
+                                        <div class="form-check" id="ownership">
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" name="ownership" value="Government">
+                                              <label class="form-check-label" >Government</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" name="ownership" value="Private">
+                                              <label class="form-check-label" >Private</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" name="ownership" value="Corporative">
+                                              <label class="form-check-label" >Corporative</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" name="ownership" value="Joint">
+                                              <label class="form-check-label" >Joint</label>
+                                            </div>
+                                        </div>
+                                        <div class="alert alert-danger" id="ownershipErrorMsg" style="display:none"></div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="cid">Applicant CID</label>
-                                        <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" placeholder="Applicant CID" onkeypress="return isNumberKey(event)">
+                                        <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)">
                                     </div>
                                     <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="name">Name</label>
-                                        <input type="text" class="form-control" id="name" name="Name" placeholder="Applicant Name">
+                                        <input type="text" class="form-control" id="name" name="Name">
                                     </div>
                                     <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
                                 </div>
@@ -90,14 +119,14 @@ option {
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="contactNumber">Contact Number</label>
-                                        <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" placeholder="Contact Number" onkeypress="return isNumberKey(event)">
+                                        <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)">
                                     </div>
                                     <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="email">Email</label>
-                                        <input type="email" class="form-control" id="email" name="email" placeholder="EmailID">
+                                        <input type="email" class="form-control" id="email" name="email">
                                     </div>
                                     <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
                                 </div>
@@ -151,98 +180,67 @@ option {
                                             {% endfor %}
                                          </select>
                                     </div>
-                                    <div class="alert alert-danger" id="locationNameErrorMsg" style="display:none"></div>
+                                    <div class="alert alert-danger" id="locationErrorMsg" style="display:none"></div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="fromDzongkhag">From Dzongkhag</label>
-                                         <select class="form-control" name="fromDzongkhag"  id="fromDzongkhag">
-                                            <option value="">--SELECT DZONGKHAG--</option>
-                                            {% for dzongkhag in dzongkhag %}
-                                                    <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
-                                            {% endfor %}
-                                         </select>
+                                    <label>Clearance from the local government/community/house owner</label>
+                                        <div class="form-check" id="clearance">
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" name="clearance" value="Yes">
+                                              <label class="form-check-label">Yes</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" name="clearance" value="No">
+                                              <label class="form-check-label">No</label>
+                                            </div>
+                                        </div>
+                                        <div class="alert alert-danger" id="clearanceErrorMsg" style="display:none"></div>
                                     </div>
-                                    <div class="alert alert-danger" id="from_dzongkhagErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="toDzongkhag">To Dzongkhag</label>
-                                        <select class="form-control" name="toDzongkhag"  id="toDzongkhag">
-                                            <option value="">--SELECT DZONGKHAG--</option>
-                                            {% for dzongkhag in dzongkhag %}
-                                                    <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
-                                            {% endfor %}
-                                        </select>
+                                    <label>Any proceedings by BAFRA in the past suspension or cancellation or  withdrawal of approvals</label>
+                                        <div class="form-check" id="proceeding" name="proceeding">
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" name="proceeding" value="Yes">
+                                              <label class="form-check-label">Yes</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" name="proceeding" value="No">
+                                              <label class="form-check-label">No</label>
+                                            </div>
+                                        </div>
+                                        <div class="alert alert-danger" id="proceedingErrorMsg" style="display:none"></div>
                                     </div>
-                                    <div class="alert alert-danger" id="to_dzongkhagErrorMsg" style="display:none"></div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="route">Authorized Route</label>
-                                        <input type="text" class="form-control" id="route" name="route" placeholder="Authorized Route">
-                                    </div>
-                                    <div class="alert alert-danger" id="routeErrorMsg" style="display:none"></div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="productSource">Source or Origin Of Products</label>
-                                        <input type="text" class="form-control" id="productSource" name="productSource" placeholder="Source or Origin Of Products">
-                                    </div>
-                                    <div class="alert alert-danger" id="sourceErrorMsg" style="display:none"></div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="movementPurpose">Purpose Of Movement</label>
-                                        <input type="text" class="form-control" id="movementPurpose" name="movementPurpose" placeholder="Authorized Route">
+                                        <label for="proceedingReason">If yes, state reason?</label>
+                                        <input type="text" class="form-control" id="proceedingReason" name="proceedingReason">
                                     </div>
-                                    <div class="alert alert-danger" id="movementPurposeErrorMsg" style="display:none"></div>
+                                    <div class="alert alert-danger" id="proceedingReasonErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="conveyanceMeans">Means of Conveyance </label>
-                                        <select class="form-control form-control" id="conveyanceMeans" name="conveyanceMeans">
-                                            <option value="">-SELECT-</option>
-                                            <option value="Air">Air</option>
-                                            <option value="Vehicular">Vehicular</option>
-                                        </select>
+                                        <label for="inspectionDate">Request Date for Inspection</label>
+                                         <input type="date" name="inspectionDate" id="inspectionDate" class="form-control date-picker flatpickr-input active">
                                     </div>
-                                    <div class="alert alert-danger" id="conveyanceMeansErrorMsg" style="display:none"></div>
+                                    <div class="alert alert-danger" id="inspectionDateErrorMsg" style="display:none"></div>
                                 </div>
                             </div>
                             <div class="card-action">
-                                    <button type="button" class="btn btn-primary" onclick="save()">Save</button>
+                                <button type="button" class="btn btn-primary" value="Submit" onclick="saveform(this.form)">Save</button>
                             </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="card-head-row">
-                                    <div class="card-tools pull-right">
-                                        <button type="button" class="btn btn-light" onclick="show_modal()">Add</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div id="Details">
-                                    {% include 'movement_page.html' %}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-action">
-                            <button type="button" class="btn btn-success" onclick="save_details_form()">Save</button>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="pills-profile-file">
                         <div id="fileAttach">
-                            {% include 'file_attachment_page.html' %}
+                            {% include 'clearance_meat_shop/meat_shop_file_attachment_page.html' %}
                         </div>
                     </div>
                 </div>
@@ -250,53 +248,6 @@ option {
         </form>
     </div>
 </div>
-<form method="post" id="save_form">
-    {% csrf_token %}
-    <input type="hidden" name="appNo" value="{{ title }}">
-    <div class="modal fade" id="add_details" tabindex="-1">
-            <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                             <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Add Details</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                    </button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="col-lg-12">
-                                    <div class="box box-primary">
-                                        <div class="box-body">
-                                            <div class="row">
-                                                <div class="form-group col-md-6">
-                                                    <label for="commodity">Commodity</label>
-                                                    <input type="text" name="commodity" class="form-control" id="commodity" required>
-                                                    <div class="alert alert-danger" id="commodityErrorMsg" style="display:none"></div>
-                                                </div>
-                                                <div class="form-group col-md-6">
-                                                    <label for="qty">Quantity</label>
-                                                    <input type="number" name="qty" class="form-control" id="qty" required>
-                                                    <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="form-group col-md-6">
-                                                    <label for="remarks">Remarks</label>
-                                                    <input type="text" name="remarks" class="form-control" id="remarks" required>
-                                                    <div class="alert alert-danger" id="remarksMeansErrorMsg" style="display:none"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" onclick="save_form()">Add</button>
-                        </div>
-                    </div>
-            </div>
-    </div>
-</form>
 
 <form method="post" id="attachment_form" enctype="multipart/form-data">
     {% csrf_token %}
@@ -333,31 +284,168 @@ option {
         </div>
     </div>
 </form>
-
-
 <script>
-function loadPage(appId)
-{
-    $.ajax({
-        type : "GET",
-        url : "{% url 'movement_permit_app' %}",
-        data :{'appId':appId},
-        success : function(response)
-        {
-            $('#Details').html(response);
-        }
-    });
-}
+function saveform(form)
+    {
+        var shopName = $('#shopName').val();
+        var cid = $('#cid').val();
+        var name = $('#name').val();
+        var contactNumber = $('#contactNumber').val();
+        var email = $('#email').val();
+        var dzongkhag = $('#dzongkhag').val();
+        var gewog = $('#gewog').val();
+        var village = $('#village').val();
+        var location = $('#location').val();
+        var clearance = $('#clearance').val();
+        var proceeding = $('#proceeding').val();
+        var proceedingReason = $('#proceedingReason').val();
+        var inspectionDate = $('#inspectionDate').val();
+        var cidCount = $('#cid').val().length;
+        var number_count = $('#contactNumber').val().length;
 
-function loadPageDetails(appId)
+        if ((form.scope[0].checked == false) && (form.scope[1].checked == false) && (form.scope[2].checked == false))
+        {
+            $('#scopeErrorMsg').html("Select Scope.");
+            $('#scopeErrorMsg').show();
+            $('#scopeErrorMsg').delay(2000).fadeOut('slow');
+            return false;
+        }
+
+        else if ((form.purpose[0].checked == false) && (form.purpose[1].checked == false))
+        {
+            $('#purposeErrorMsg').html("Select Purpose.");
+            $('#purposeErrorMsg').show();
+            $('#purposeErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(shopName == "")
+        {
+            $('#shopNameErrorMsg').html("Enter Name of the Meat Shop.");
+            $('#shopNameErrorMsg').show();
+            $('#shopNameErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if ((form.ownership[0].checked == false) && (form.ownership[1].checked == false) && (form.ownership[2].checked == false) && (form.ownership[3].checked == false))
+        {
+            $('#ownershipErrorMsg').html("Select Ownership.");
+            $('#ownershipErrorMsg').show();
+            $('#ownershipErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(cid == "")
+        {
+            $('#cidErrorMsg').html("Enter CID Number.");
+            $('#cidErrorMsg').show();
+            $('#cidErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(name == "")
+        {
+            $('#nameErrorMsg').html("Enter Name .");
+            $('#nameErrorMsg').show();
+            $('#nameErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(contactNumber == "")
+        {
+            $('#contactNumberErrorMsg').html("Enter Contact Number.");
+            $('#contactNumberErrorMsg').show();
+            $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(email == "")
+        {
+            $('#emailErrorMsg').html("Enter Contact Number.");
+            $('#emailErrorMsg').show();
+            $('#emailErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(dzongkhag == "")
+        {
+            $('#dzongkhagErrorMsg').html("Select Dzongkhag.");
+            $('#dzongkhagErrorMsg').show();
+            $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(gewog == "")
+        {
+            $('#gewogErrorMsg').html("Select Gewog.");
+            $('#gewogErrorMsg').show();
+            $('#gewogErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(village == "")
+        {
+            $('#villageErrorMsg').html("Select Village.");
+            $('#villageErrorMsg').show();
+            $('#villageErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(location == "")
+        {
+            $('#locationErrorMsg').html("Select Location.");
+            $('#locationErrorMsg').show();
+            $('#locationErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if ((form.clearance[0].checked == false) && (form.clearance[1].checked == false))
+        {
+            $('#clearanceErrorMsg').html("Select Clearance.");
+            $('#clearanceErrorMsg').show();
+            $('#clearanceErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if ((form.proceeding[0].checked == false) && (form.proceeding[1].checked == false))
+        {
+            $('#proceedingErrorMsg').html("Select Proceeding.");
+            $('#proceedingErrorMsg').show();
+            $('#proceedingErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(inspectionDate == "")
+        {
+            $('#inspectionDateErrorMsg').html("Select Date.");
+            $('#inspectionDateErrorMsg').show();
+            $('#inspectionDateErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(cidCount < 11)
+        {
+            $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits.");
+            $('#cidErrorMsg').show();
+            setTimeout('hideStatus("cidErrorMsg")',2000);
+        }
+        else if(number_count < 8)
+        {
+            $('#contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
+            $('#contactNumberErrorMsg').show();
+            setTimeout('hideStatus("contactNumberErrorMsg")',2000);
+        }
+        else
+        {
+            $.ajax({
+                type : "POST",
+                url : "{% url 'save_meat_shop_clearance' %}",
+                data : $('#meatShopClearanceForm').serialize(),
+                success : function(data) {
+                    $('#applicationNo').val(data.applNo);
+                    $('#meatshop_applicationNo').val(data.applNo);
+                    $('#pills-profile-file').tab('show');
+                }
+            });
+        }
+    }
+
+function loadDetails()
 {
+    var appid = $('#applicationNo').val();
     $.ajax({
         type : "GET",
-        url : "{% url 'load_details_page' %}",
-        data :{'application_id':appId},
+        url : "{% url 'load_application_details' %}",
+        data :{'application_id':appid},
         success : function(response)
         {
             $('#applicant_details').html(response);
+
+        }
+    });
+}
+function load_attachment_details()
+{
+    var appid = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_attachment_details' %}",
+        data :{'application_id':appid},
+        success : function(response)
+        {
+            $('#fileAttach').html(response);
         }
     });
 }
@@ -430,7 +518,7 @@ function save_attachment()
     });
         $.ajax({
         type : "POST",
-        url : "{% url 'save_file' %}",
+        url : "{% url 'save_meat_shop_file' %}",
         data : fd,
         dataType: 'json',
         contentType: false,
@@ -439,11 +527,12 @@ function save_attachment()
         {
             if (data.form_is_valid)
             {
-                var appNo = $('#appNo').val();
+                var appNo = $('#applicationNo').val();
+
                 $.ajax
                 ({
                     type : "POST",
-                    url : "{% url 'add_file_name' %}",
+                    url : "{% url 'add_meat_shop_file_name' %}",
                     data : {'appNo':appNo , 'filename':fileName},
                     success : function(responseText)
                     {
