@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'crispy_forms',
     'administrator',
     'plant',
+    'livestock',
+
 ]
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 MIDDLEWARE = [
