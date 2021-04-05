@@ -403,8 +403,7 @@ def save_crop_category_form(request, form, template_name):
             form.save()
             data['form_is_valid'] = True
             crop_category = t_plant_crop_category_master.objects.all()
-            data['html_crop_category_list'] = render_to_string('plant_crop_category.html', {
-                'crop_category': crop_category
+            return render(request, 'plant_crop_category.html', {'form': form, 'crop_category': crop_category
             })
         else:
             data['form_is_valid'] = False
