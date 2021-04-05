@@ -1,0 +1,149 @@
+
+{% for application_details in application_details %}
+        <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="appcid">Applicant CID</label>
+                <input type="text" class="form-control" id="appcid" name="appcid" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" placeholder="Applicant CID" maxlength="11" onkeypress="return isNumberKey(event)" value="{{application_details.CID}}">
+            </div>
+            <div class="alert alert-danger" id="appcidErrorMsg" style="display:none"></div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="appName">Applicant Name</label>
+                <input type="text" class="form-control" id="appName" name="appName" placeholder="Applicant Name" value="{{application_details.Applicant_Name}}">
+            </div>
+            <div class="alert alert-danger" id="appNameErrorMsg" style="display:none"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="phoneNumber">Contact Number</label>
+                <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Contact Number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="8" onkeypress="return isNumberKey(event)" value="{{application_details.Contact_No}}">
+            </div>
+            <div class="alert alert-danger" id="mobile_numberErrorMsg" style="display:none"></div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="emailId">Email</label>
+                <input type="email" class="form-control" id="emailId" name="emailId" placeholder="EmailID" value="{{application_details.Email}}">
+            </div>
+            <div class="alert alert-danger" id="emailIdErrorMsg" style="display:none"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="mfdUnit">Manufacturing Unit Registration Number</label>
+                <input type="text" class="form-control" id="mfdUnit" name="mfdUnit_regNo" placeholder="Manufacturing Unit Registration Number" value="{{application_details.License_No}}">
+            </div>
+            <div class="alert alert-danger" id="mfdUnitErrorMsg" style="display:none"></div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="agroName">Name and Description Agrochemicals</label>
+                <input type="text" class="form-control" id="agroName" name="agroName" placeholder="Name and Description Agrochemicals" value="{{application_details.Name_And_Description}}">
+            </div>
+            <div class="alert alert-danger" id="agroNameErrorMsg" style="display:none"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="fromDzongkhag">From Dzongkhag</label>
+                 <select class="form-control" name="fromDzongkhag"  id="fromDzongkhag">
+                    <option value="">--SELECT DZONGKHAG--</option>
+                    {% for dzongkhag in dzongkhag %}
+                            <option value="{{ dzongkhag.Dzongkhag_Code }}" {% if application_details.From_Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>{{ dzongkhag.Dzongkhag_Name }}</option>
+                    {% endfor %}
+                 </select>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="toDzongkhag">To Dzongkhag</label>
+                <select class="form-control" name="toDzongkhag"  id="toDzongkhag">
+                    <option value="">--SELECT DZONGKHAG--</option>
+                    {% for dzongkhag in dzongkhag %}
+                            <option value="{{ dzongkhag.Dzongkhag_Code }}" {% if application_details.To_Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>{{ dzongkhag.Dzongkhag_Name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="location">Location</label>
+                 <select class="form-control" name="location_code" id="location">
+                    <option value="">--SELECT LOCATION--</option>
+                    {% for location in location %}
+                            <option value="{{ location.Location_Code }}" {% if application_details.Location_Code == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                    {% endfor %}
+                 </select>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="auth_route">Authorized Route</label>
+                <input type="text" class="form-control" id="auth_route" name="auth_route" placeholder="Authorized Route" value="{{application_details.Authorized_Route}}">
+            </div>
+            <div class="alert alert-danger" id="auth_routeErrorMsg" style="display:none"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Origin">Source or Origin Of Products</label>
+                <input type="text" class="form-control" id="Origin" name="Origin" placeholder="Source or Origin Of Products" value="{{application_details.Source_Of_Product}}">
+            </div>
+            <div class="alert alert-danger" id="OriginErrorMsg" style="display:none"></div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Purpose">Purpose Of Movement</label>
+                <input type="text" class="form-control" id="Purpose" name="Purpose" placeholder="Purpose" value="{{application_details.Movement_Purpose}}">
+            </div>
+            <div class="alert alert-danger" id="PurposeErrorMsg" style="display:none"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="conveyanceMeans">Means of Conveyance </label>
+                <select class="form-control form-control" id="conveyanceMeans" name="conveyanceMeans">
+                    <option value="">-SELECT-</option>
+                    {% if application_details.Conveyance_Means == "Air" %}
+                    <option value="Air" selected>Air</option>
+                     <option value="Vehicular">Vehicular</option>
+                    {% else %}
+                     <option value="Air">Air</option>
+                    <option value="Vehicular" selected>Vehicular</option>
+                    {% endif%}
+                </select>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="vehicleNo">Vehicle No</label>
+                <input type="text" class="form-control" id="vehicleNo" name="vehicleNo" placeholder="Vehicle No" value="{{application_details.Vehicle_No}}">
+            </div>
+            <div class="alert alert-danger" id="vehicleNoErrorMsg" style="display:none"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="date">Expected Date of Movement</label>
+                <input type="text" class="form-control date-picker flatpickr-input active" id="date" name="date"  placeholder="Pick a date" readonly="readonly" value="{{application_details.Movement_Date}}">
+            </div>
+            <div class="alert alert-danger" id="dateErrorMsg" style="display:none"></div>
+        </div>
+    </div>
+</div>
+<div class="card-footer">
+        <button type="button" class="btn btn-success" onclick="updateAgroDetails()"><i class="ace-icon fas fa-arrow-right"></i>&nbsp;&nbsp;Update</button>
+</div>
+{% endfor %}
+

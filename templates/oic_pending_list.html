@@ -6,7 +6,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <strong class="card-title">Call For Inspection Application</strong>
+                    <strong class="card-title">Application Lists</strong>
                 </div>
                     <div class="card-body">
                         <table class="table table-bordered">
@@ -42,11 +42,11 @@
 </div>
 <form method="post" id="import_details_form" enctype="multipart/form-data">
     {% csrf_token %}
-    <div class="modal fade" id="import_detailsModal" tabindex="-1">
+    <div class="modal fade" id="application-details-modal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                  <div class="modal-header">
-                    <h5 class="modal-title" id="agro_attachmentModalLabel">Apply Import Permit Details</h5>
+                    <h5 class="modal-title" id="agro_attachmentModalLabel">Application Details</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                     </button>
@@ -55,7 +55,7 @@
                     <div class="col-lg-12">
                         <div class="box box-primary">
                             <div class="box-body">
-                                <div id="details_import">
+                                <div id="details_application">
 
                                 </div>
                             </div>
@@ -75,10 +75,11 @@
             data :{'application_id':appId, 'service_code':service_code},
             success : function(data)
             {
-                $('#details_import').html(data);
-                $('#import_detailsModal').modal('show');
+                $('#details_application').html(data);
+                $('#application-details-modal').modal('show');
             }
         });
     }
+
 </script>
 {% endblock %}

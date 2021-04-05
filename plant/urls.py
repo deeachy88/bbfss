@@ -16,6 +16,7 @@ urlpatterns = [
     path('load_location', views.load_location, name='load_location'),
     path('movement_permit_app', views.movement_permit_app, name='movement_permit_app'),
     path('load_details_page', views.load_details_page, name='load_details_page'),
+    path('agro_details_page', views.agro_details_page, name='agro_details_page'),
     path('update_application_details', views.update_application_details, name='update_details'),
     path('save', views.save, name='save'),
     path('forward_application', views.forward_application, name='forward_application'),
@@ -24,6 +25,8 @@ urlpatterns = [
     path('add_details_ins', views.add_details_ins, name='add_details_ins'),
     path('save_file', views.add_file, name="save_file"),
     path('add_file_name', views.add_file_name, name='add_file_name'),
+    path('save_movement_file', views.save_movement_file, name="save_movement_file"),
+    path('movement_agro_file_name', views.movement_agro_file_name, name='movement_agro_file_name'),
     path('delete_file', views.delete_file, name='delete_file'),
 
     # for import of plant and plant products
@@ -56,12 +59,25 @@ urlpatterns = [
     path('edit_decision/<int:Record_Id>', views.edit_decision, name='edit_decision'),
     path('view_application_details', views.view_application_details, name='view_application_details'),
     path('submit_application', views.submit_application, name='submit_application'),
+    path('load_import_details', views.load_import_details, name='load_import_details'),
 
     # certificate Printing
     path('certificate_print', views.certificate_print, name='certificate_print'),
 
     # Export Permit
-    path('apply_export_certificate', views.apply_export_permit, name='apply_export_certificate')
+    path('apply_export_certificate', views.apply_export_permit, name='apply_export_certificate'),
+    path('submit_export', views.submit_export, name='submit_export'),
+    path('add_file_phyto', views.add_file_phyto, name='add_file_phyto'),
+    path('add_file_name_phyto', views.add_file_name_phyto, name='add_file_name_phyto'),
+    path('add_file_cordyceps', views.add_file_cordyceps, name='add_file_cordyceps'),
+    path('add_file_name_cordyceps', views.add_file_name_cordyceps, name='add_file_name_cordyceps'),
+    path('export_complete',views.export_complete, name='export_complete'),
+
+    # Registration Of Nursery/Seed Growers
+    path('registration_application', views.registration_application, name='registration_application'),
+
+    # Seed Certification
+    path('seed_certificate_application', views.seed_certificate_application, name='seed_certificate_application'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
