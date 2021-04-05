@@ -1,7 +1,7 @@
 {% extends 'common_dashboard.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-<input type="hidden" id="applicationNo" name="applicationNo">
+
 <div class="card">
     <div class="card-header">
         <h4 class="card-title">Registration Form For Seed Grower (Private/Government)</h4>
@@ -9,6 +9,7 @@
     <div class="card-body">
         <form method="post" id="seedForm">
         {% csrf_token %}
+            <input type="hidden" id="applicationNo" name="applicationNo">
             <div class="row justify-content-center">
                 <ul class="nav nav-pills nav-secondary" id="pills-tab-seed" role="tablist">
                     <li class="nav-item">
@@ -80,7 +81,7 @@
                         <div class="col-sm-4">
                             <div class="form-group">
                                 <label for="contactNumber">Contact Number</label>
-                                <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="p_contactNo" maxlength="8" onkeypress="return isNumberKey(event)">
+                                <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNo" maxlength="8" onkeypress="return isNumberKey(event)">
                             </div>
                             <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
                         </div>
@@ -162,17 +163,16 @@
                                 <label>Nursery Type</label>
                                 <select class="form-control form-control" id="Nursery_Type" name="Nursery_Type">
                                     <option value="">-SELECT-</option>
-                                    <option value="Agro-Forestry">Agro-Forestry</option>
-                                    <option value="Ornamental">Ornamental</option>
-                                    <option value="Fruits and Nuts">Fruits and Nuts</option>
-                                    <option value="Fodder">Fodder</option>
+                                    <option value="Bi-annual">Bi-annual</option>
+                                    <option value="Annual">Annual</option>
+                                    <option value="Perennial">Perennial</option>
                                 </select>
                             </div>
                             <div class="alert alert-danger" id="Nursery_TypeErrorMsg" style="display:none"></div>
                         </div>
                     </div>
                     <div class="card-footer">
-                        <button type="button" class="btn btn-primary" onclick="save_form()">Save</button>
+                        <button type="button" class="btn btn-primary" onclick="save_nursery_form()">Save</button>
                     </div>
                 </div>
                 <div class="tab-pane fade" id="seed-reg-details" role="tabpanel" aria-labelledby="pills-seed-details">
@@ -288,7 +288,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="save_form()">Add</button>
+                    <button type="button" class="btn btn-primary" onclick="save_nursery_form()">Add</button>
                 </div>
             </div>
         </div>
@@ -374,6 +374,21 @@ function getLocation(dzongkhag_id)
     });
 }
 
+function save_nursery_form()
+{
+    $.ajax({
+        type : "POST",
+        url : "{% url 'save_nursery_reg' %}",
+        data : $('#seedForm').serialize(),
+        success : function(data) {
+            $('#applicationNo').val(data.applNo);
+            $('#plant_applicationNo').val(data.applNo);
+
+            $('#pills-profile-tab').tab('show');
+        }
+    });
+}
+
 function save_attachment()
 {
     var fileName = document.getElementById('document').files[0].name;
@@ -390,7 +405,7 @@ function save_attachment()
     });
         $.ajax({
         type : "POST",
-        url : "{% url 'add_file_cordyceps' %}",
+        url : "{% url 'add_file_reg' %}",
         data : fd,
         dataType: 'json',
         contentType: false,
@@ -403,7 +418,7 @@ function save_attachment()
                 $.ajax
                 ({
                     type : "POST",
-                    url : "{% url 'add_file_name_cordyceps' %}",
+                    url : "{% url 'add_file_name_reg' %}",
                     data : {'appNo':appNo , 'filename':fileName},
                     success : function(responseText)
                     {

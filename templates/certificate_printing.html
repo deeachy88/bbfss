@@ -22,17 +22,17 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="input-group">
-                                        <input type="text" class="form-control" name="movement_permit_no" placeholder="Enter Movement Permit No">
+                                        <input type="text" class="form-control" id="movement_permit_no" placeholder="Enter Movement Permit No">
                                         <div class="input-group-append">
-                                            <button class="btn btn-default btn-border" type="button" onclick="interpretationDetails()"><i class="zmdi zmdi-print"></i></button>
+                                            <button type="button" class="btn btn-default btn-border" type="button" onclick="print_cerificate('MPP')"><i class="zmdi zmdi-print"></i></button>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="input-group">
-                                        <input type="text" class="form-control" name="clearance_ref_no" placeholder="Enter Clearance Reference No">
+                                        <input type="text" class="form-control" id="clearance_ref_no" placeholder="Enter Clearance Reference No">
                                         <div class="input-group-append">
-                                            <button class="btn btn-default btn-border" type="button" onclick="interpretationDetails()"><i class="zmdi zmdi-print"></i></button>
+                                            <button type="button" class="btn btn-default btn-border" type="button" onclick="print_cerificate('IPP')"><i class="zmdi zmdi-print"></i></button>
                                         </div>
                                     </div>
                                 </div>
@@ -85,17 +85,36 @@
 
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-link">Save changes</button>
-                <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
-            </div>
         </div>
     </div>
 </div>
 <script>
-    function print_cerificate()
+    function print_cerificate(serviceCode)
     {
-
+        if(serviceCode == 'MPP')
+        {
+            app_No = $('#movement_permit_no').val();
+            $.ajax({
+                type : "POST",
+                url : "{% url 'get_certificate_details' %}",
+                data : data :{'application_id':app_No ,'service_code':serviceCode, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(response) {
+                    $('#cerificate_details').html(response);
+                }
+            });
+        }
+        else if(serviceCode == 'IPP')
+        {
+            app_No = $('#movement_permit_no').val();
+            $.ajax({
+                type : "POST",
+                url : "{% url 'get_certificate_details' %}",
+                data : data :{'application_id':app_No ,'service_code':serviceCode, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(response) {
+                    $('#cerificate_details').html(response);
+                }
+            });
+        }
     }
 </script>
 {% endblock %}

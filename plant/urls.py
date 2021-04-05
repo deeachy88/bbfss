@@ -63,6 +63,7 @@ urlpatterns = [
 
     # certificate Printing
     path('certificate_print', views.certificate_print, name='certificate_print'),
+    path('get_certificate_details', views.get_certificate_details, name='get_certificate_details'),
 
     # Export Permit
     path('apply_export_certificate', views.apply_export_permit, name='apply_export_certificate'),
@@ -75,6 +76,9 @@ urlpatterns = [
 
     # Registration Of Nursery/Seed Growers
     path('registration_application', views.registration_application, name='registration_application'),
+    path('save_nursery_reg',views.save_nursery_reg, name='save_nursery_reg'),
+    path('add_file_reg', views.add_file_reg, name="add_file_reg"),
+    path('add_file_name_reg', views.add_file_name_reg, name='add_file_name_reg'),
 
     # Seed Certification
     path('seed_certificate_application', views.seed_certificate_application, name='seed_certificate_application'),

@@ -1,0 +1,202 @@
+ <form method="post" id="seed_oic_form">
+        {% csrf_token %}
+    <div class="container">
+      <h3>Inspector Application Details</h3>
+    {% for application_details in application_details %}
+      <div class="accordion" id="exampleAccordion">
+        <div class="card">
+          <div class="card-header" id="exItem1Header">
+            <h5 class="mb-0">
+              <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#exItem1" aria-expanded="false" aria-controls="exItem1">Application Details</button>
+            </h5>
+          </div>
+          <div id="exItem1" class="collapse" aria-labelledby="exItem1Header" data-parent="#exampleAccordion">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>Nursery Category</label>
+                            <select class="form-control form-control" id="Nursery_Category" name="Nursery_Category">
+                                <option value="">-SELECT-</option>
+                                <option value="Agro-Forestry">Agro-Forestry</option>
+                                <option value="Ornamental">Ornamental</option>
+                                <option value="Fruits and Nuts">Fruits and Nuts</option>
+                                <option value="Fodder">Fodder</option>
+                            </select>
+                        </div>
+                        <div class="alert alert-danger" id="Nursery_CategoryErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>License No</label>
+                            <input type="text" class="form-control" id="License_No" name="License_No">
+                        </div>
+                        <div class="alert alert-danger" id="License_NoErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>Company Name</label>
+                            <input type="text" class="form-control" id="Company_Name" name="Company_Name">
+                        </div>
+                        <div class="alert alert-danger" id="Company_NameErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>Company_Address</label>
+                            <textarea class="form-control" id="Company_Address" name="Company_Address" rows="4"></textarea>
+                        </div>
+                        <div class="alert alert-danger" id="Company_AddressErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>CID</label>
+                            <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="CID" name="CID" maxlength="11" onkeypress="return isNumberKey(event)">
+                        </div>
+                        <div class="alert alert-danger" id="CIDErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>Owner Name</label>
+                            <input type="text" class="form-control" id="Owner_Name" name="Owner_Name">
+                        </div>
+                        <div class="alert alert-danger" id="Owner_NameErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label for="contactNumber">Contact Number</label>
+                            <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNo" maxlength="8" onkeypress="return isNumberKey(event)">
+                        </div>
+                        <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="email">
+                        </div>
+                        <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>Unit Area</label>
+                            <input type="text" class="form-control" id="Unit_Area" name="Unit_Area">
+                        </div>
+                        <div class="alert alert-danger" id="Unit_AreaErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>Area</label>
+                            <input type="text" class="form-control" id="Area" name="Area">
+                        </div>
+                        <div class="alert alert-danger" id="AreaErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="dzongkhag">Dzongkhag</label>
+                            <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value),getLocation(this.value)">
+                                <option value="">--SELECT DZONGKHAG--</option>
+                                {% for dzongkhag in dzongkhag %}
+                                        <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="gewog">Gewog</label>
+                            <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                <option value="">--SELECT GEWOG--</option>
+                                {% for gewog in gewog %}
+                                        <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="village">Village</label>
+                             <select class="form-control" name="village" id="village">
+                                <option value="">--SELECT VILLAGE--</option>
+                                {% for village in village %}
+                                        <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
+                                {% endfor %}
+                             </select>
+                        </div>
+                        <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="location">Location</label>
+                             <select class="form-control" name="location_code"  id="location">
+                                <option value="">--SELECT LOCATION--</option>
+                                {% for location in location %}
+                                        <option value="{{ location.Location_Code }}">{{ location.Location_Name }}</option>
+                                {% endfor %}
+                             </select>
+                        </div>
+                        <div class="alert alert-danger" id="locationNameErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>Nursery Type</label>
+                            <select class="form-control form-control" id="Nursery_Type" name="Nursery_Type">
+                                <option value="">-SELECT-</option>
+                                <option value="Bi-annual">Bi-annual</option>
+                                <option value="Annual">Annual</option>
+                                <option value="Perennial">Perennial</option>
+                            </select>
+                        </div>
+                        <div class="alert alert-danger" id="Nursery_TypeErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+                <br>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">File</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                       {% for file_attach in file %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{file_attach.Attachment}}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                  <td colspan="3" class="text-center">No Data</td>
+                                </tr>
+                       {% endfor %}
+                    </tbody>
+                </table>
+                <br>
+                <div class="modal-footer">
+                    <select class="form-control" name="forwardTo"  id="forwardTo">
+                        <option value="">--SELECT INSPECTOR--</option>
+                        {% for inspector_list in inspector_list %}
+                                <option value="{{ inspector_list.Login_Id }}">{{ inspector_list.Name }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="button" class="btn btn-success" onclick="forwardApplication('{{ application_details.Application_No }}')"><i class="ace-icon fas fa-arrow-right"></i>&nbsp;&nbsp;Forward</button>
+                    <button class="btn btn-flat btn-danger" data-dismiss="modal">
+                        <i class="ace-icon fa fa-times"></i>
+                        &nbsp;&nbsp;Cancel
+                    </button>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+    </div>
+ </form>

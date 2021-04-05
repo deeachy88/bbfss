@@ -69,12 +69,14 @@ class t_country_master(models.Model):
     def __str__(self):
         return self.Country_Name
 
+
 class t_plant_crop_category_master(models.Model):
     Crop_Category_Id = models.AutoField(primary_key=True)
     Crop_Category_Name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.Crop_Category_Name
+
 
 class t_plant_crop_master(models.Model):
     Crop_Id = models.AutoField(primary_key=True)
@@ -83,7 +85,7 @@ class t_plant_crop_master(models.Model):
     Crop_Category_Id = models.ForeignKey(t_plant_crop_category_master, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
-        return self.Crop_Category_Name
+        return self.Crop_Common_Name
 
 
 class t_plant_crop_variety_master(models.Model):

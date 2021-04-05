@@ -15,7 +15,8 @@ from bbfss import settings
 from plant.forms import ImportFormThree, ImportFormTwo
 from plant.models import t_workflow_details, t_plant_movement_permit_t2, t_plant_movement_permit_t1, \
     t_plant_movement_permit_t3, t_file_attachment, t_plant_import_permit_t1, t_plant_import_permit_t2, \
-    t_plant_import_permit_t3, t_plant_export_certificate_plant_plant_products_t1
+    t_plant_import_permit_t3, t_plant_export_certificate_plant_plant_products_t1, \
+    t_plant_clearence_nursery_seed_grower_t1, t_plant_clearence_nursery_seed_grower_t2, t_plant_seed_certification_t1
 
 
 def focal_officer_application(request):
@@ -380,7 +381,7 @@ def view_application_details(request):
                        'location': location, 'import': details_list, 'inspector_list': user_role_list,
                        'file': file, 'import_permit': import_permit})
     elif service_code == 'EPP':
-        application_details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(
+        application_details = t_plant_clearence_nursery_seed_grower_t1.objects.filter(
             Application_No=application_id)
         location = t_location_field_office_mapping.objects.all()
         dzongkhag = t_dzongkhag_master.objects.all()
@@ -393,6 +394,43 @@ def view_application_details(request):
                       {'application_details': application_details,
                        'location': location, 'inspector_list': user_role_list,
                        'file': file, 'dzongkhag': dzongkhag})
+    elif service_code == 'RNS':
+        application_details = t_plant_movement_permit_t1.objects.filter(Application_No=application_id)
+        dzongkhag = t_dzongkhag_master.objects.all()
+        gewog = t_gewog_master.objects.all()
+        village = t_village_master.objects.all()
+        location = t_location_field_office_mapping.objects.all()
+        details_list = t_plant_clearence_nursery_seed_grower_t2.objects.filter(Application_No=application_id)
+        file = t_file_attachment.objects.filter(Application_No=application_id)
+        workflow_details = t_workflow_details.objects.filter(Application_No=application_id)
+        for application in workflow_details:
+            Field_Office = application.Field_Office_Id
+        user_role_list = t_user_master.objects.filter(Role_Id='5', Field_Office_Id_id=Field_Office)
+        movement_permit = t_plant_movement_permit_t3.objects.filter(Application_No=application_id)
+
+        return render(request, 'nursery_registration/inspector_details.html',
+                      {'application_details': application_details, 'dzongkhag': dzongkhag, 'gewog': gewog,
+                       'village': village, 'location': location, 'details_list': details_list,
+                       'inspector_list': user_role_list, 'file': file, 'movement_permit': movement_permit})
+
+    elif service_code == 'RSC':
+        application_details = t_plant_movement_permit_t1.objects.filter(Application_No=application_id)
+        dzongkhag = t_dzongkhag_master.objects.all()
+        gewog = t_gewog_master.objects.all()
+        village = t_village_master.objects.all()
+        location = t_location_field_office_mapping.objects.all()
+        details_list = t_plant_clearence_nursery_seed_grower_t2.objects.filter(Application_No=application_id)
+        file = t_file_attachment.objects.filter(Application_No=application_id)
+        workflow_details = t_workflow_details.objects.filter(Application_No=application_id)
+        for application in workflow_details:
+            Field_Office = application.Field_Office_Id
+        user_role_list = t_user_master.objects.filter(Role_Id='5', Field_Office_Id_id=Field_Office)
+        movement_permit = t_plant_movement_permit_t3.objects.filter(Application_No=application_id)
+
+        return render(request, 'seed_cerification/inspector_details.html',
+                      {'application_details': application_details, 'dzongkhag': dzongkhag, 'gewog': gewog,
+                       'village': village, 'location': location, 'details_list': details_list,
+                       'inspector_list': user_role_list, 'file': file, 'movement_permit': movement_permit})
 
 
 def approve_application(request):
@@ -810,6 +848,42 @@ def view_oic_details(request):
                       {'application_details': application_details, 'file': file, 'dzongkhag': dzongkhag,
                        'location': location,
                        'inspector_list': user_role_list})
+    elif service_code == 'RNS':
+        application_id = request.GET.get('application_id')
+        application_details = t_plant_clearence_nursery_seed_grower_t1.objects.filter(Application_No=application_id)
+        dzongkhag = t_dzongkhag_master.objects.all()
+        gewog = t_gewog_master.objects.all()
+        village = t_village_master.objects.all()
+        location = t_location_field_office_mapping.objects.all()
+        details_list = t_plant_clearence_nursery_seed_grower_t2.objects.filter(Application_No=application_id)
+        workflow_details = t_workflow_details.objects.filter(Application_No=application_id)
+        file = t_file_attachment.objects.filter(Application_No=application_id)
+        for application in workflow_details:
+            Field_Office = application.Field_Office_Id
+        user_role_list = t_user_master.objects.filter(Role_Id='4', Field_Office_Id_id=Field_Office)
+
+        return render(request, 'nursery_registration/oic_application_details.html',
+                      {'application_details': application_details, 'dzongkhag': dzongkhag, 'gewog': gewog,
+                       'village': village, 'location': location, 'details_list': details_list,
+                       'file': file, 'inspector_list': user_role_list})
+    elif service_code == 'RSC':
+        application_id = request.GET.get('application_id')
+        application_details = t_plant_clearence_nursery_seed_grower_t1.objects.filter(Application_No=application_id)
+        dzongkhag = t_dzongkhag_master.objects.all()
+        gewog = t_gewog_master.objects.all()
+        village = t_village_master.objects.all()
+        location = t_location_field_office_mapping.objects.all()
+        details_list = t_plant_clearence_nursery_seed_grower_t2.objects.filter(Application_No=application_id)
+        workflow_details = t_workflow_details.objects.filter(Application_No=application_id)
+        file = t_file_attachment.objects.filter(Application_No=application_id)
+        for application in workflow_details:
+            Field_Office = application.Field_Office_Id
+        user_role_list = t_user_master.objects.filter(Role_Id='4', Field_Office_Id_id=Field_Office)
+
+        return render(request, 'seed_cerification/oic_application_details.html',
+                      {'application_details': application_details, 'dzongkhag': dzongkhag, 'gewog': gewog,
+                       'village': village, 'location': location, 'details_list': details_list,
+                       'file': file, 'inspector_list': user_role_list})
 
 
 def view_inspector_details(request):
@@ -1240,10 +1314,6 @@ def load_import_details(request):
                   {'application_details': application_details, 'dzongkhag': dzongkhag, 'gewog': gewog,
                    'village': village,
                    'location': location})
-
-
-def certificate_print(request):
-    return render(request, 'certificate_printing.html')
 
 
 # Export Permit
@@ -1799,18 +1869,13 @@ def get_export_permit_no(request):
 
 def export_complete(request):
     Login_Id = request.session['login_id']
-    print(Login_Id)
     export_permit = get_export_permit_no(request)
-    print(export_permit)
     Application_No = request.POST.get('appNo')
-    print(Application_No)
     Inspection_Date = request.POST.get('date')
-    print(Inspection_Date)
     no_of_sample_drawn = request.POST.get('no_of_sample_drawn')
     total_sample_size = request.POST.get('total_sample_size')
     sample_drawn_by = request.POST.get('sample_drawn_by')
     inspection_method = request.POST.getlist('inspection_method')
-    print(inspection_method)
     pest_detected = request.POST.get('pest_detected')
     pest_category = request.POST.get('pest_category')
 
@@ -1933,6 +1998,135 @@ def registration_application(request):
                    'location': location})
 
 
+def save_nursery_reg(request):
+    data = dict()
+    service_code = "RNS"
+    nursery_reg_app_no(service_code)
+    print(nursery_reg_app_no)
+    Nursery_Category = request.POST.get('Nursery_Category')
+    License_No = request.POST.get('Nursery_Category')
+    Company_Name = request.POST.get('License_No')
+    Company_Address = request.POST.get('Company_Address')
+    CID = request.POST.get('CID')
+    Owner_Name = request.POST.get('Owner_Name')
+    contactNo = request.POST.get('contactNo')
+    email = request.POST.get('email')
+    Unit_Area = request.POST.get('Unit_Area')
+    Area = request.POST.get('Area')
+    dzongkhag = request.POST.get('dzongkhag')
+    gewog = request.POST.get('gewog')
+    village = request.POST.get('village')
+    location_code = request.POST.get('location_code')
+    Nursery_Type = request.POST.get('Nursery_Type')
+
+    t_plant_clearence_nursery_seed_grower_t1.objects.create(
+        Application_No=nursery_reg_app_no,
+        Nursery_Category=Nursery_Category,
+        License_No=License_No,
+        Company_Name=Company_Name,
+        Company_Address=Company_Address,
+        CID=CID,
+        Owner_Name=Owner_Name,
+        contactNo=contactNo,
+        email=email,
+        Unit_Area=Unit_Area,
+        Area=Area,
+        dzongkhag=dzongkhag,
+        gewog=gewog,
+        village=village,
+        location_code=location_code,
+        Nursery_Type=Nursery_Type,
+        Inspection_Date=None,
+        Inspection_Leader=None,
+        Inspection_Team=None,
+        Facilities_Land=None,
+        Facilities_Nursery_House=None,
+        Facilities_Irrigation=None,
+        Facilities_Tools=None,
+        Facilities_Store=None,
+        Manpower_Labour=None,
+        Manpower_Skilled=None,
+        Seed_Type=None,
+        Technical_Clearance=None,
+        Recommendation=None,
+        Resubmit_Remarks=None,
+        Resubmit_Date=None,
+        Clearance_Number=None
+    )
+    field_id = t_location_field_office_mapping.objects.filter(pk=location_code)
+    for field_office in field_id:
+        field_office_id = field_office.Field_Office_Id_id
+    t_workflow_details.objects.create(Application_No=nursery_reg_app_no, Applicant_Id=request.session['email'],
+                                      Assigned_To=None, Field_Office_Id=field_office_id, Section='Plant',
+                                      Assigned_Role_Id='4',
+                                      Action_Date=None, Application_Status='P',
+                                      Service_Code=serviceCode)
+    data['applicationNo'] = nursery_reg_app_no
+    return JsonResponse(data)
+
+
+def nursery_reg_app_no(serviceCode):
+    last_export_application_no = t_plant_clearence_nursery_seed_grower_t1.objects.aggregate(
+        Max('Application_No'))
+    last_application_no = last_export_application_no['Application_No__max']
+    if not last_application_no:
+        year = timezone.now().year
+        newApplicationNo = serviceCode + "/" + str(year) + "/" + "0001"
+    else:
+        substring = str(last_application_no)[9:13]
+        substring = int(substring) + 1
+        AppNo = str(substring).zfill(4)
+        year = timezone.now().year
+        newApplicationNo = serviceCode + "/" + str(year) + "/" + AppNo
+    return newApplicationNo
+
+
+def add_file_reg(request):
+    data = dict()
+    myFile = request.FILES['document']
+    fs = FileSystemStorage("attachments/plant/nursery_registration" + str(timezone.now().year))
+    if fs.exists(myFile.name):
+        data['form_is_valid'] = False
+    else:
+        fs.save(myFile.name, myFile)
+        data['form_is_valid'] = True
+    return JsonResponse(data)
+
+
+def add_file_name_reg(request):
+    if request.method == 'POST':
+        Application_No = request.POST.get('appNo')
+        fileName = request.POST.get('filename')
+        Applicant_Id = request.session['email']
+
+        t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
+                                         Role_Id=None,
+                                         Attachment=fileName)
+        file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+    return render(request, 'nursery_registration/file_attachment_page.html', {'file_attach': file_attach})
+
+
+def get_nursery_clearnace_no(request):
+    global Field_Code
+    Field_Office_Id = request.session['field_office_id']
+    code = t_field_office_master.objects.filter(pk=Field_Office_Id)
+    for code in code:
+        Field_Code = code.Field_Office_Code
+
+    last_export_permit = t_plant_clearence_nursery_seed_grower_t1.objects.aggregate(Max('Clearance_Number'))
+    last_export_permit_no = last_export_permit['Clearance_Number__max']
+    if not last_export_permit_no:
+        year = timezone.now().year
+        new_clearnace_no = Field_Code + "/" + "RNS" + "/" + str(year) + "/" + "0001"
+    else:
+        substring = str(last_export_permit_no)[13:17]
+        substring = int(substring) + 1
+        AppNo = str(substring).zfill(4)
+        year = timezone.now().year
+        new_clearnace_no = Field_Code + "/" + "RNS" + "/" + str(year) + "/" + AppNo
+    return new_clearnace_no
+
+
 # Seed Certification
 def seed_certificate_application(request):
     dzongkhag = t_dzongkhag_master.objects.all()
@@ -1943,3 +2137,157 @@ def seed_certificate_application(request):
     return render(request, 'seed_certification/apply_seed_certification.html',
                   {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village,
                    'location': location})
+
+
+def save_seed_cert(request):
+    data = dict()
+    serviceCode = "RSC"
+    certifcate_app_no(serviceCode)
+    Nursery_Category = request.POST.get('Nursery_Category')
+    License_No = request.POST.get('Nursery_Category')
+    Company_Name = request.POST.get('License_No')
+    Company_Address = request.POST.get('Company_Address')
+    CID = request.POST.get('CID')
+    Owner_Name = request.POST.get('Owner_Name')
+    contactNo = request.POST.get('contactNo')
+    email = request.POST.get('email')
+    Unit_Area = request.POST.get('Unit_Area')
+    Area = request.POST.get('Area')
+    dzongkhag = request.POST.get('dzongkhag')
+    gewog = request.POST.get('gewog')
+    village = request.POST.get('village')
+
+    t_plant_seed_certification_t1.objects.create(
+        Application_No=certifcate_app_no,
+        Nursery_Category=Nursery_Category,
+        License_No=License_No,
+        Company_Name=Company_Name,
+        Company_Address=Company_Address,
+        CID=CID,
+        Owner_Name=Owner_Name,
+        contactNo=contactNo,
+        email=email,
+        Unit_Area=Unit_Area,
+        Area=Area,
+        dzongkhag=dzongkhag,
+        gewog=gewog,
+        village=village,
+        Inspection_Date=None,
+        Inspection_Leader=None,
+        Inspection_Team=None,
+        Recommendation=None,
+        Seed_Certificate=None,
+        Certificate_Date=None
+    )
+
+
+def certifcate_app_no(serviceCode):
+    last_export_application_no = t_plant_export_certificate_plant_plant_products_t1.objects.aggregate(
+        Max('Application_No'))
+    last_application_no = last_export_application_no['Application_No__max']
+    if not last_application_no:
+        year = timezone.now().year
+        newApplicationNo = serviceCode + "/" + str(year) + "/" + "0001"
+    else:
+        substring = str(last_application_no)[9:13]
+        substring = int(substring) + 1
+        AppNo = str(substring).zfill(4)
+        year = timezone.now().year
+        newApplicationNo = serviceCode + "/" + str(year) + "/" + AppNo
+    return newApplicationNo
+
+
+def add_file_certificate(request):
+    data = dict()
+    myFile = request.FILES['cordyceps_document']
+    fs = FileSystemStorage("attachments/plant/export_permit" + str(timezone.now().year))
+    if fs.exists(myFile.name):
+        data['form_is_valid'] = False
+    else:
+        fs.save(myFile.name, myFile)
+        data['form_is_valid'] = True
+    return JsonResponse(data)
+
+
+def add_file_name_certificate(request):
+    if request.method == 'POST':
+        Application_No = request.POST.get('appNo')
+        fileName = request.POST.get('filename')
+        Applicant_Id = request.session['email']
+
+        t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
+                                         Role_Id=None,
+                                         Attachment=fileName)
+        file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+    return render(request, 'export_permit/cordyceps_file_attachment_page.html', {'file_attach': file_attach})
+
+
+def get_seed_cerficate_no(request):
+    global Field_Code
+    Field_Office_Id = request.session['field_office_id']
+    code = t_field_office_master.objects.filter(pk=Field_Office_Id)
+    for code in code:
+        Field_Code = code.Field_Office_Code
+
+    last_export_permit = t_plant_seed_certification_t1.objects.aggregate(Max('Seed_Certificate'))
+    last_export_permit_no = last_export_permit['Seed_Certificate__max']
+    if not last_export_permit_no:
+        year = timezone.now().year
+        new_cerficate_no = Field_Code + "/" + "RSC" + "/" + str(year) + "/" + "0001"
+    else:
+        substring = str(last_export_permit_no)[13:17]
+        substring = int(substring) + 1
+        AppNo = str(substring).zfill(4)
+        year = timezone.now().year
+        new_cerficate_no = Field_Code + "/" + "RSC" + "/" + str(year) + "/" + AppNo
+    return new_cerficate_no
+
+
+# certificates
+def certificate_print(request):
+    return render(request, 'certificate_printing.html')
+
+
+def get_certificate_details(request):
+    application_No = request.POST.get('application_id')
+    service_code = request.POST.get('service_code')
+    if service_code == 'MPP':
+        application_details = t_workflow_details.objects.filter(Application_No=application_No, Application_Status='A')
+        if application_details.exists():
+            details = t_plant_movement_permit_t1.objects.filter(Application_No=application_No, Permit_Type='P')
+            if details.exists():
+                certificate_details = t_plant_movement_permit_t1.objects.filter(Application_No=application_No)
+                return render(request, 'certificate_printing.html', {'certificate_details': certificate_details})
+            else:
+                certificate_details = t_plant_movement_permit_t1.objects.filter(Application_No=application_No,
+                                                                                Permit_Type='A')
+                return render(request, 'certificate_printing.html', {'certificate_details': certificate_details})
+        else:
+            details = t_plant_movement_permit_t1.objects.filter(Movement_Permit_No=application_No)
+            if details.exists():
+                certificate_details = t_plant_movement_permit_t1.objects.filter(Application_No=application_No)
+                return render(request, 'certificate_printing.html', {'certificate_details': certificate_details})
+            else:
+                certificate_details = t_plant_movement_permit_t1.objects.filter(Application_No=application_No,
+                                                                                Permit_Type='A')
+                return render(request, 'certificate_printing.html', {'certificate_details': certificate_details})
+    elif service_code == 'IPP':
+        application_details = t_workflow_details.objects.filter(Application_No=application_No, Application_Status='A')
+        if application_details.exists():
+            details = t_plant_import_permit_t1.objects.filter(Application_No=application_No, Permit_Type='P')
+            if details.exists():
+                certificate_details = t_plant_import_permit_t1.objects.filter(Application_No=application_No)
+                return render(request, 'certificate_printing.html', {'certificate_details': certificate_details})
+            else:
+                certificate_details = t_plant_import_permit_t1.objects.filter(Application_No=application_No,
+                                                                              Permit_Type='A')
+                return render(request, 'certificate_printing.html', {'certificate_details': certificate_details})
+        else:
+            details = t_plant_import_permit_t1.objects.filter(Movement_Permit_No=application_No)
+            if details.exists():
+                certificate_details = t_plant_import_permit_t1.objects.filter(Application_No=application_No)
+                return render(request, 'certificate_printing.html', {'certificate_details': certificate_details})
+            else:
+                certificate_details = t_plant_import_permit_t1.objects.filter(Application_No=application_No,
+                                                                              Permit_Type='A')
+                return render(request, 'certificate_printing.html', {'certificate_details': certificate_details})
