@@ -13,166 +13,168 @@
             <div class="row justify-content-center">
                 <ul class="nav nav-pills nav-secondary" id="pills-tab-seed" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="pills-seed-tab" data-toggle="pill" href="#seed-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadPageDetails('{{ title }}')">Home</a>
+                        <a class="nav-link active" id="pills-seed-tab" data-toggle="pill" href="#seed-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadPageDetails()">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-seed-details" data-toggle="pill" href="#seed-reg-details" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_details('{{ title }}')">Details</a>
+                        <a class="nav-link" id="pills-seed-details" data-toggle="pill" href="#seed-reg-details" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_details()">Details</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-seed-file" data-toggle="pill" href="#seed-file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_details('{{ title }}')">Attach File</a>
+                        <a class="nav-link" id="pills-seed-file" data-toggle="pill" href="#seed-file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment()">Attach File</a>
                     </li>
                 </ul>
             </div>
             <div class="tab-content mt-2 mb-3" id="pills-tab-seed-tabContent">
                 <div class="tab-pane fade show active" id="seed-home" role="tabpanel" aria-labelledby="pills-seed-tab">
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <label>Nursery Category</label>
-                                <select class="form-control form-control" id="Nursery_Category" name="Nursery_Category">
-                                    <option value="">-SELECT-</option>
-                                    <option value="Agro-Forestry">Agro-Forestry</option>
-                                    <option value="Ornamental">Ornamental</option>
-                                    <option value="Fruits and Nuts">Fruits and Nuts</option>
-                                    <option value="Fodder">Fodder</option>
-                                </select>
+                    <div id="seed_app_details">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="form-label">Nursery Category</label>
+                                    <select class="form-control form-control" id="Nursery_Category" name="Nursery_Category">
+                                        <option value="">-SELECT-</option>
+                                        <option value="Agro-Forestry">Agro-Forestry</option>
+                                        <option value="Ornamental">Ornamental</option>
+                                        <option value="Fruits and Nuts">Fruits and Nuts</option>
+                                        <option value="Fodder">Fodder</option>
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="Nursery_CategoryErrorMsg" style="display:none"></div>
                             </div>
-                            <div class="alert alert-danger" id="Nursery_CategoryErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <label>License No</label>
-                                <input type="text" class="form-control" id="License_No" name="License_No">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="form-label">License No</label>
+                                    <input type="text" class="form-control" id="License_No" name="License_No">
+                                </div>
+                                <div class="alert alert-danger" id="License_NoErrorMsg" style="display:none"></div>
                             </div>
-                            <div class="alert alert-danger" id="License_NoErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <label>Company Name</label>
-                                <input type="text" class="form-control" id="Company_Name" name="Company_Name">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="form-label">Company Name</label>
+                                    <input type="text" class="form-control" id="Company_Name" name="Company_Name">
+                                </div>
+                                <div class="alert alert-danger" id="Company_NameErrorMsg" style="display:none"></div>
                             </div>
-                            <div class="alert alert-danger" id="Company_NameErrorMsg" style="display:none"></div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <label>Company_Address</label>
-                                <textarea class="form-control" id="Company_Address" name="Company_Address" rows="4"></textarea>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="form-label">Company_Address</label>
+                                    <textarea class="form-control" id="Company_Address" name="Company_Address" rows="4"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="Company_AddressErrorMsg" style="display:none"></div>
                             </div>
-                            <div class="alert alert-danger" id="Company_AddressErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <label>CID</label>
-                                <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="CID" name="CID" maxlength="11" onkeypress="return isNumberKey(event)">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="form-label">CID</label>
+                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="CID" name="CID" maxlength="11" onkeypress="return isNumberKey(event)">
+                                </div>
+                                <div class="alert alert-danger" id="CIDErrorMsg" style="display:none"></div>
                             </div>
-                            <div class="alert alert-danger" id="CIDErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <label>Owner Name</label>
-                                <input type="text" class="form-control" id="Owner_Name" name="Owner_Name">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="form-label">Owner Name</label>
+                                    <input type="text" class="form-control" id="Owner_Name" name="Owner_Name">
+                                </div>
+                                <div class="alert alert-danger" id="Owner_NameErrorMsg" style="display:none"></div>
                             </div>
-                            <div class="alert alert-danger" id="Owner_NameErrorMsg" style="display:none"></div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <label for="contactNumber">Contact Number</label>
-                                <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNo" maxlength="8" onkeypress="return isNumberKey(event)">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="form-label">Contact Number</label>
+                                    <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNo" maxlength="8" onkeypress="return isNumberKey(event)">
+                                </div>
+                                <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
                             </div>
-                            <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="email">Email</label>
-                                <input type="email" class="form-control" id="email" name="email">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email">
+                                </div>
+                                <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
                             </div>
-                            <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <label>Unit Area</label>
-                                <input type="text" class="form-control" id="Unit_Area" name="Unit_Area">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="form-label">Unit Area</label>
+                                    <input type="text" class="form-control" id="Unit_Area" name="Unit_Area">
+                                </div>
+                                <div class="alert alert-danger" id="Unit_AreaErrorMsg" style="display:none"></div>
                             </div>
-                            <div class="alert alert-danger" id="Unit_AreaErrorMsg" style="display:none"></div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <label>Area</label>
-                                <input type="text" class="form-control" id="Area" name="Area">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="form-label">Area</label>
+                                    <input type="text" class="form-control" id="Area" name="Area">
+                                </div>
+                                <div class="alert alert-danger" id="AreaErrorMsg" style="display:none"></div>
                             </div>
-                            <div class="alert alert-danger" id="AreaErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="dzongkhag">Dzongkhag</label>
-                                <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value),getLocation(this.value)">
-                                    <option value="">--SELECT DZONGKHAG--</option>
-                                    {% for dzongkhag in dzongkhag %}
-                                            <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
-                                    {% endfor %}
-                                </select>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Dzongkhag</label>
+                                    <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value),getLocation(this.value)">
+                                        <option value="">--SELECT DZONGKHAG--</option>
+                                        {% for dzongkhag in dzongkhag %}
+                                                <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
                             </div>
-                            <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="gewog">Gewog</label>
-                                <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
-                                    <option value="">--SELECT GEWOG--</option>
-                                    {% for gewog in gewog %}
-                                            <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
-                                    {% endfor %}
-                                </select>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Gewog</label>
+                                    <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                        <option value="">--SELECT GEWOG--</option>
+                                        {% for gewog in gewog %}
+                                                <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
                             </div>
-                            <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="village">Village</label>
-                                 <select class="form-control" name="village" id="village">
-                                    <option value="">--SELECT VILLAGE--</option>
-                                    {% for village in village %}
-                                            <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
-                                    {% endfor %}
-                                 </select>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Village</label>
+                                     <select class="form-control" name="village" id="village">
+                                        <option value="">--SELECT VILLAGE--</option>
+                                        {% for village in village %}
+                                                <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                                <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
                             </div>
-                            <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="location">Location</label>
-                                 <select class="form-control" name="location_code"  id="location">
-                                    <option value="">--SELECT LOCATION--</option>
-                                    {% for location in location %}
-                                            <option value="{{ location.Location_Code }}">{{ location.Location_Name }}</option>
-                                    {% endfor %}
-                                 </select>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Location</label>
+                                     <select class="form-control" name="location_code"  id="location">
+                                        <option value="">--SELECT LOCATION--</option>
+                                        {% for location in location %}
+                                                <option value="{{ location.Location_Code }}">{{ location.Location_Name }}</option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                                <div class="alert alert-danger" id="locationNameErrorMsg" style="display:none"></div>
                             </div>
-                            <div class="alert alert-danger" id="locationNameErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <label>Nursery Type</label>
-                                <select class="form-control form-control" id="Nursery_Type" name="Nursery_Type">
-                                    <option value="">-SELECT-</option>
-                                    <option value="Bi-annual">Bi-annual</option>
-                                    <option value="Annual">Annual</option>
-                                    <option value="Perennial">Perennial</option>
-                                </select>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="form-label">Nursery Type</label>
+                                    <select class="form-control form-control" id="Nursery_Type" name="Nursery_Type">
+                                        <option value="">-SELECT-</option>
+                                        <option value="Bi-annual">Bi-annual</option>
+                                        <option value="Annual">Annual</option>
+                                        <option value="Perennial">Perennial</option>
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="Nursery_TypeErrorMsg" style="display:none"></div>
                             </div>
-                            <div class="alert alert-danger" id="Nursery_TypeErrorMsg" style="display:none"></div>
                         </div>
-                    </div>
                     <div class="card-footer">
                         <button type="button" class="btn btn-primary" onclick="save_nursery_form()">Save</button>
+                    </div>
                     </div>
                 </div>
                 <div class="tab-pane fade" id="seed-reg-details" role="tabpanel" aria-labelledby="pills-seed-details">
@@ -191,7 +193,7 @@
                         </div>
                     </div>
                     <div class="card-action">
-                        <button type="button" class="btn btn-success" onclick="save_details_form()">Save</button>
+                        <button type="button" class="btn btn-success" onclick="save_form()">Save</button>
                     </div>
                 </div>
                 <div class="tab-pane fade" id="seed-file-attachment" role="tabpanel" aria-labelledby="pills-seed-file">
@@ -204,7 +206,7 @@
     </div>
 </div>
 
-<form method="post" id="save_form">
+<form method="post" id="save_nursery_form">
     {% csrf_token %}
     <input type="hidden" id="applNo" name="appNo">
     <div class="modal fade" id="add_details" tabindex="-1">
@@ -221,30 +223,35 @@
                         <div class="box box-primary">
                             <div class="box-body">
                                 <div class="row">
-                                    <div class="form-group col-md-4">
-                                        <label for="crop_category">Crop Category</label>
-                                        <input type="text" name="category_id" class="form-control" id="crop_category" required>
-                                        <div class="alert alert-danger" id="commodityErrorMsg" style="display:none"></div>
-                                    </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="crop_id">Crop</label>
+                                            <label class="form-label">Crop</label>
                                             <select class="form-control" name="crop_id"  id="crop_id" onchange="getVariety(this.value)">
                                                 <option value="">--SELECT--</option>
                                                 {% for crop in crop %}
-                                                        <option value="{{ crop.Crop_Id }}">{{ crop.Crop_Common_Name }}</option>
+                                                        <option value="{{ crop.Crop_Common_Name }}">{{ crop.Crop_Common_Name }}</option>
                                                 {% endfor %}
                                             </select>
                                         </div>
                                         <div class="alert alert-danger" id="crop_idErrorMsg" style="display:none"></div>
                                     </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Crop Category</label>
+                                         <select class="form-control" name="crop_category_id"  id="crop_category_id" onchange="getVariety(this.value)">
+                                            <option value="">--SELECT--</option>
+                                            {% for crop_category in crop_category %}
+                                                    <option value="{{ crop_category.Crop_Category_Name }}">{{ crop_category.Crop_Category_Name }}</option>
+                                            {% endfor %}
+                                         </select>
+                                        <div class="alert alert-danger" id="commodityErrorMsg" style="display:none"></div>
+                                    </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="crop_sci_id">Crop Scientific Name</label>
+                                            <label class="form-label">Crop Scientific Name</label>
                                             <select class="form-control" name="crop_sci_id"  id="crop_sci_id" onchange="getVariety(this.value)">
                                                 <option value="">--SELECT--</option>
                                                 {% for crop in crop %}
-                                                        <option value="{{ crop.Crop_Id }}">{{ crop.Crop_Scientific_Name }}</option>
+                                                        <option value="{{ crop.Crop_Scientific_Name }}">{{ crop.Crop_Scientific_Name }}</option>
                                                 {% endfor %}
                                             </select>
                                         </div>
@@ -254,30 +261,30 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="crop_variety">Crop Variety</label>
+                                            <label class="form-label">Crop Variety</label>
                                             <select class="form-control" name="crop_variety_id"  id="crop_variety">
                                                 <option value="">--SELECT--</option>
                                                 {% for variety in variety %}
-                                                        <option value="{{ variety.Crop_Variety_Id }}">{{ variety.Crop_Variety_Name }}</option>
+                                                        <option value="{{ variety.Crop_Variety_Name }}">{{ variety.Crop_Variety_Name }}</option>
                                                 {% endfor %}
                                             </select>
                                         </div>
                                         <div class="alert alert-danger" id="crop_varietyErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label for="crop_category">Source</label>
+                                        <label class="form-label">Source</label>
                                         <input type="text" name="Source" class="form-control" id="Source" required>
                                         <div class="alert alert-danger" id="SourceErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label for="crop_category">Quantity</label>
-                                        <input type="text" name="qty" class="form-control" id="qty" required>
+                                        <label class="form-label">Quantity</label>
+                                        <input type="number" name="qty" class="form-control" id="qty" required>
                                         <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label for="remarks">Remarks</label>
+                                        <label class="form-label">Remarks</label>
                                         <textarea class="form-control" id="remarks" name="remarks" rows="3"></textarea>
                                         <div class="alert alert-danger" id="remarksMeansErrorMsg" style="display:none"></div>
                                     </div>
@@ -288,7 +295,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="save_nursery_form()">Add</button>
+                    <button type="button" class="btn btn-primary" onclick="save_nursery_details()">Add</button>
                 </div>
             </div>
         </div>
@@ -313,7 +320,7 @@
                             <div class="box-body">
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label>Attach File</label>
+                                        <label class="form-label">Attach File</label>
                                         <input type="file" name="document" id="document">
                                         <div class="alert alert-danger" id="fileErrorMsg" style="display:none"></div>
                                     </div>
@@ -383,8 +390,7 @@ function save_nursery_form()
         success : function(data) {
             $('#applicationNo').val(data.applNo);
             $('#plant_applicationNo').val(data.applNo);
-
-            $('#pills-profile-tab').tab('show');
+            $('#pills-seed-details').tab('show');
         }
     });
 }
@@ -436,6 +442,84 @@ function save_attachment()
         }
     });
 }
+
+function save_nursery_details()
+{
+    $.ajax({
+        type : "POST",
+        url : "{% url 'add_reg_details' %}",
+        data : $('#save_nursery_form').serialize(),
+        success : function(responseText) {
+           $('#add_details').modal('hide');
+           $('#seed-details').html(responseText);
+           $('#pills-seed-details').tab('show');
+           $('.modal-backdrop').remove();
+        }
+    });
+}
+
+function save_form()
+{
+    $('#agro-tab a:last').tab('show');
+}
+
+function loadPageDetails()
+{
+    var appNo = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_nursery_details' %}",
+        data :{'application_id':appNo},
+        success : function(response)
+        {
+            $('#seed_app_details').html(response);
+            $("#pills-seed-details").prop('disabled', false);
+            $("#pills-seed-file").prop('disabled', false);
+        }
+    });
+}
+
+function load_details()
+{
+    var appNo = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_details' %}",
+        data :{'application_id':appNo},
+        success : function(response)
+        {
+            $('#seed-details').html(response);
+        }
+    });
+}
+
+function load_attachment()
+{
+    var appNo = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_file_details' %}",
+        data :{'application_id':appNo},
+        success : function(response)
+        {
+            $('#seed_app_details').html(response);
+        }
+    });
+}
+
+function update_nursery_details()
+{
+    $.ajax({
+        type : "POST",
+        url : "{% url 'update_nursery_details' %}",
+        data : $('#seedForm').serialize(),
+        success : function(data)
+        {
+            $('#pills-seed-details').tab('show');
+        }
+    });
+}
+
 
 </script>
 {% endblock %}

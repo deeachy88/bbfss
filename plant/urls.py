@@ -28,6 +28,11 @@ urlpatterns = [
     path('save_movement_file', views.save_movement_file, name="save_movement_file"),
     path('movement_agro_file_name', views.movement_agro_file_name, name='movement_agro_file_name'),
     path('delete_file', views.delete_file, name='delete_file'),
+    path('update_movement_details', views.update_movement_details, name='update_movement_details'),
+    path('mov_plant_details', views.mov_plant_details, name='mov_plant_details'),
+    path('mov_plant_attachment', views.mov_plant_attachment, name='mov_plant_attachment'),
+    path('mov_agro_attachment', views.mov_agro_attachment, name='mov_agro_attachment'),
+
 
     # for import of plant and plant products
     path('apply_import_permit', views.apply_import_permit, name='apply_import_permit'),
@@ -36,14 +41,11 @@ urlpatterns = [
     path('save_import_agro', views.save_import_agro, name='save_import_agro'),
     path('save_import_plant', views.save_import_plant, name='save_import_plant'),
     path('view_fo_details', views.fo_app_details, name='view_fo_details'),
-    path('call_for_inspection', views.call_for_inspection, name='call_for_inspection'),
-    path('call_for_inspection_details', views.call_for_inspection_details, name='call_for_inspection_details'),
     path('print_imp_permit', views.print_import_details, name='print_imp_permit'),
     path('view_oic_details', views.view_oic_details, name='view_oic_details'),
     path('add_import_details_ins', views.add_import_details_ins, name='add_import_details_ins'),
     path('approve_import_application', views.approve_application, name='approve_import_application'),
     path('reject_import_application', views.reject_application, name='reject_import_application'),
-    path('update_permit_details', views.update_permit_details, name='update_permit_details'),
     path('add_plant_import_file', views.add_plant_import_file, name="add_plant_import_file"),
     path('add_agro_import_file', views.add_agro_import_file, name="add_agro_import_file"),
     path('add_plant_attach', views.add_plant_attach, name='add_plant_attach'),
@@ -60,6 +62,13 @@ urlpatterns = [
     path('view_application_details', views.view_application_details, name='view_application_details'),
     path('submit_application', views.submit_application, name='submit_application'),
     path('load_import_details', views.load_import_details, name='load_import_details'),
+    path('agro_details_permit', views.load_import_details_agro, name='agro_details_permit'),
+    path('permit_attachment_plant', views.permit_attachment_plant, name='permit_attachment_plant'),
+    path('permit_attachment_agro', views.permit_attachment_agro, name='permit_attachment_agro'),
+    path('details_plant', views.details_plant, name='details_plant'),
+    path('details_agro', views.details_agro, name='details_agro'),
+    path('plant_import_update', views.plant_import_update, name='plant_import_update'),
+    path('agro_import_update', views.agro_import_update, name='agro_import_update'),
 
     # certificate Printing
     path('certificate_print', views.certificate_print, name='certificate_print'),
@@ -72,16 +81,53 @@ urlpatterns = [
     path('add_file_name_phyto', views.add_file_name_phyto, name='add_file_name_phyto'),
     path('add_file_cordyceps', views.add_file_cordyceps, name='add_file_cordyceps'),
     path('add_file_name_cordyceps', views.add_file_name_cordyceps, name='add_file_name_cordyceps'),
-    path('export_complete',views.export_complete, name='export_complete'),
+    path('export_complete', views.export_complete, name='export_complete'),
+    path('permit_plant_details', views.permit_plant_details, name='permit_plant_details'),
+    path('permit_agro_details', views.permit_agro_details, name='permit_agro_details'),
+    path('update_nursery_details', views.update_nursery_details, name='update_nursery_details'),
+    path('plant_file_details', views.plant_file_details, name='plant_file_details'),
+    path('cordyceps_file_details', views.cordyceps_file_details, name='cordyceps_file_details'),
 
     # Registration Of Nursery/Seed Growers
     path('registration_application', views.registration_application, name='registration_application'),
-    path('save_nursery_reg',views.save_nursery_reg, name='save_nursery_reg'),
+    path('save_nursery_reg', views.save_nursery_reg, name='save_nursery_reg'),
     path('add_file_reg', views.add_file_reg, name="add_file_reg"),
     path('add_file_name_reg', views.add_file_name_reg, name='add_file_name_reg'),
+    path('add_reg_details', views.add_reg_details, name='add_reg_details'),
+    path('submit_nursery_details', views.submit_nursery_details, name='submit_nursery_details'),
+    path('approve_nursery_application', views.approve_nursery_application, name='approve_nursery_application'),
+    path('reject_nursery_application', views.reject_nursery_application, name='reject_nursery_application'),
+    path('resubmit_nursery_application', views.resubmit_nursery_application, name='resubmit_nursery_application'),
+    path('add_details_nursery', views.add_details_nursery, name='add_details_nursery'),
+    path('load_nursery_details', views.load_nursery_details, name='load_nursery_details'),
+    path('update_nursery_details', views.update_nursery_details, name='update_nursery_details'),
+    path('load_details', views.load_details, name='load_details'),
+    path('load_file_details', views.load_file_details, name='load_file_details'),
+
 
     # Seed Certification
     path('seed_certificate_application', views.seed_certificate_application, name='seed_certificate_application'),
+    path('save_certificate', views.save_seed_cert, name='save_certificate'),
+    path('add_file_certificate', views.add_file_certificate, name="add_file_certificate"),
+    path('add_file_name_certificate', views.add_file_name_certificate, name='add_file_name_certificate'),
+    path('add_certificate_details', views.add_certificate_details, name='add_certificate_details'),
+    path('submit_certificate_details', views.submit_certificate_details, name='submit_certificate_details'),
+    path('approve_certificate_app', views.approve_certificate_application, name='approve_certificate_app'),
+    path('reject_certificate_app', views.reject_certificate_application, name='reject_certificate_app'),
+    path('add_details_ins_certificate', views.add_details_ins_certificate, name='add_details_ins_certificate'),
+    path('add_recommendation_details', views.add_recommendation_details, name='add_recommendation_details'),
+    path('load_certificate_details', views.load_certificate_details, name='load_certificate_details'),
+    path('update_certificate_details', views.update_certificate_details, name='update_certificate_details'),
+    path('certificate_details', views.certificate_details, name='certificate_details'),
+    path('certificate_file_details', views.certificate_file_details, name='certificate_file_details'),
+
+    # Common Details
+    path('application_status', views.application_status, name='application_status'),
+    path('resubmit_application', views.resubmit_application, name='resubmit_application'),
+    path('call_for_inspection', views.call_for_inspection, name='call_for_inspection'),
+    path('call_for_inspection_details', views.call_for_inspection_details, name='call_for_inspection_details'),
+    path('update_inspection_call_details', views.update_inspection_call_details, name='update_inspection_call_details'),
+    path('resubmit_app_details', views.resubmit_app_details, name='resubmit_app_details')
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

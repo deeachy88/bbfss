@@ -1,0 +1,144 @@
+{% extends 'common_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="animated fadeIn">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <strong class="card-title">Call For Inspection Application</strong>
+                </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Application No</th>
+                                    <th scope="col">Application Date</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for application_details in application_details %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td><button class="btn btn-primary btn-link" onclick="viewImportDetails('{{application_details.Application_No}}')">{{application_details.Application_No}}</button></td>
+                                        <td>{{application_details.Action_Date|date:"d-m-Y"}}</td>
+                                        <td><button  type="button" class="btn btn-primary btn--icon btn-sm" onclick="printImportDetails('{{application_details.Application_No}}')" data-toggle="tooltip" title="Print" ><i class="zmdi zmdi-print"></i></button></td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="4" class="text-center">No Data</td>
+                                    </tr>
+                                    {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+<form method="post" id="import_details_form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="modal fade" id="import_detailsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                 <div class="modal-header">
+                    <h5 class="modal-title" id="agro_attachmentModalLabel">Call For Inspection</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div id="details_import">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="update_details()"> Submit </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="modal fade" id="import_printModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                 <div class="modal-header">
+                    <h5 class="modal-title">Print</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div id="print_import">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="update_details()"> Submit </button>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+
+function viewImportDetails(appId)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'call_for_inspection_details' %}",
+            data :{'application_id':appId},
+            success : function(data)
+            {
+                $('#details_import').html(data);
+                $('#import_detailsModal').modal('show');
+
+            }
+        });
+    }
+
+    function printImportDetails(appId)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'print_imp_permit' %}",
+            data :{'application_id':appId},
+            success : function(data)
+            {
+                $('#print_import').html(data);
+                $('#import_printModal').modal('show');
+            }
+        });
+    }
+
+    function update_details()
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'update_inspection_call_details' %}",
+            data : $('#import_details_form').serialize(),
+            success : function(response) {
+                $('#apply_div').html(response);
+                $('#pills-profile-tab').tab('show');
+            }
+        });
+    }
+</script>
+{% endblock %}

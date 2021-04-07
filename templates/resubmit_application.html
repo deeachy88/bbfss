@@ -7,7 +7,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <strong class="card-title">Call For Inspection Application</strong>
+                    <strong class="card-title">Resubmit Application Lists</strong>
                 </div>
                     <div class="card-body">
                         <table class="table table-bordered">
@@ -16,7 +16,6 @@
                                     <th scope="col">#</th>
                                     <th scope="col">Application No</th>
                                     <th scope="col">Application Date</th>
-                                    <th scope="col">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -25,13 +24,13 @@
                                         <td>{{ forloop.counter }}</td>
                                         <td><button class="btn btn-primary btn-link" onclick="viewImportDetails('{{application_details.Application_No}}')">{{application_details.Application_No}}</button></td>
                                         <td>{{application_details.Action_Date|date:"d-m-Y"}}</td>
-                                        <td><button  type="button" class="btn btn-primary btn--icon btn-sm" onclick="printImportDetails('{{application_details.Application_No}}')" data-toggle="tooltip" title="Print" ><i class="zmdi zmdi-print"></i></button></td>
+                                        <!--<td><button  type="button" class="btn btn-primary btn&#45;&#45;icon btn-sm" onclick="printImportDetails('{{application_details.Application_No}}')" data-toggle="tooltip" title="Print" ><i class="zmdi zmdi-print"></i></button></td>-->
                                     </tr>
                                     {% empty %}
                                     <tr>
                                       <td colspan="4" class="text-center">No Data</td>
                                     </tr>
-                                    {% endfor %}
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
@@ -45,7 +44,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                  <div class="modal-header">
-                    <h5 class="modal-title" id="agro_attachmentModalLabel">Call FOr Inspection</h5>
+                    <h5 class="modal-title" id="agro_attachmentModalLabel">Application Resubmit Details</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                     </button>
@@ -54,7 +53,7 @@
                     <div class="col-lg-12">
                         <div class="box box-primary">
                             <div class="box-body">
-                                <div id="details_import">
+                                <div id="resubmit_details">
 
                                 </div>
                             </div>
@@ -63,7 +62,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="update_details()"> Submit </button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="resubmit_details()"> Re-Submit </button>
                 </div>
             </div>
         </div>
@@ -132,11 +131,10 @@ function viewImportDetails(appId)
     {
         $.ajax({
             type : "POST",
-            url : "{% url 'update_permit_details' %}",
-            data : $('#import_details_form').serialize(),
+            url : "{% url 'resubmit_application' %}",
+            data : $('#resubmit_form').serialize(),
             success : function(response) {
-                $('#apply_div').html(response);
-                $('#pills-profile-tab').tab('show');
+                location.reload();
             }
         });
     }

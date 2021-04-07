@@ -1,5 +1,6 @@
-{% for application_details in application_details %}
-<form method="post" id="nursery_inspector_form">
+ {% for application_details in application_details %}
+<form method="post" id="certificate_inspector_form">
+     <input type="text" name="application_id" value="">
     <div class="container">
       <h3>Inspector Application Details</h3>
       <div class="accordion" id="exampleAccordion">
@@ -27,71 +28,65 @@
                                 {% endif %}
                             </select>
                         </div>
+                        <div class="alert alert-danger" id="Nursery_CategoryErrorMsg" style="display:none"></div>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label class="form-label">License No</label>
-                            <input type="text" class="form-control" value="{{application_details.License_No}}" disabled>
+                            <input type="text" class="form-control" value="{{application_details}}" disabled>
                         </div>
+                        <div class="alert alert-danger" id="License_NoErrorMsg" style="display:none"></div>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label class="form-label">Company Name</label>
-                            <input type="text" class="form-control" value="{{application_details.Company_Name}}" disabled>
+                            <input type="text" class="form-control" value="{{application_details}}" disabled>
                         </div>
+                        <div class="alert alert-danger" id="Company_NameErrorMsg" style="display:none"></div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label class="form-label">Company_Address</label>
-                            <textarea class="form-control" disabled rows="4">{{application_details.Company_Address}}</textarea>
+                            <textarea disabled class="form-control" id="Company_Address" name="Company_Address" rows="4">{{application_details}}</textarea>
                         </div>
+                        <div class="alert alert-danger" id="Company_AddressErrorMsg" style="display:none"></div>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label class="form-label">CID</label>
-                            <input type="text" class="form-control" value="{{application_details.CID}}" disabled>
+                            <input type="number" class="form-control"  value="{{application_details}}" disabled>
                         </div>
+                        <div class="alert alert-danger" id="CIDErrorMsg" style="display:none"></div>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label class="form-label">Owner Name</label>
-                            <input type="text" class="form-control" value="{{application_details.Owner_Name}}" disabled>
+                            <input type="text" class="form-control" value="{{application_details}}" disabled>
                         </div>
+                        <div class="alert alert-danger" id="Owner_NameErrorMsg" style="display:none"></div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label class="form-label">Contact Number</label>
-                            <input type="number" class="form-control" value="{{application_details.contactNo}}" disabled>
+                            <input type="number" class="form-control" value="{{application_details}}" disabled>
                         </div>
+                        <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="form-label">Email</label>
-                            <input type="email" class="form-control" value="{{application_details.email}}" disabled>
+                            <input type="email" class="form-control" value="{{application_details}}" disabled>
                         </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <label class="form-label">Unit Area</label>
-                            <input type="text" class="form-control" value="{{application_details.Unit_Area}}" disabled>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <label class="form-label">Area</label>
-                            <input type="text" class="form-control" id="Area" name="Area" value="{{application_details.Area}}" disabled>
-                        </div>
+                        <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="form-label">Dzongkhag</label>
-                            <select class="form-control" name="dzongkhag"  id="dzongkhag" disabled>
+                            <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value),getLocation(this.value)">
                                 <option value="">--SELECT DZONGKHAG--</option>
                                 {% for dzongkhag in dzongkhag %}
                                     <option value="{{dzongkhag.Dzongkhag_Code}}"{% if application_details.Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>
@@ -100,11 +95,14 @@
                                 {% endfor %}
                             </select>
                         </div>
+                        <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
                     </div>
+                </div>
+                <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="form-label">Gewog</label>
-                            <select class="form-control" name="gewog" id="gewog" disabled>
+                            <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
                                 <option value="">--SELECT GEWOG--</option>
                                 {% for gewog in gewog %}
                                     <option value="{{ gewog.Gewog_Code }}"{% if application_details.Gewog_Code == gewog.Gewog_Code %}selected{% endif %}>{{ gewog.Gewog_Name }}</option>
@@ -113,12 +111,10 @@
                         </div>
                         <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
                     </div>
-                </div>
-                <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="form-label">Village</label>
-                             <select class="form-control" name="village" id="village" disabled>
+                             <select class="form-control" name="village" id="village">
                                 <option value="">--SELECT VILLAGE--</option>
                                 {% for village in village %}
                                         <option value="{{ village.Village_Code }}" {% if application_details.Village_Code == village.Village_Code %}selected{% endif %}>{{ village.Village_Name }}</option>
@@ -126,37 +122,10 @@
                              </select>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="form-label">Location</label>
-                             <select class="form-control" name="location_code"  id="location">
-                                <option value="">--SELECT LOCATION--</option>
-                                {% for location in location %}
-                                        <option value="{{ location.Location_Code }}">{{ location.Location_Name }}</option>
-                                {% endfor %}
-                             </select>
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <label class="form-label">Nursery Type</label>
-                            <select class="form-control form-control" id="Nursery_Type" name="Nursery_Type">
-                                {% if application_details.Nursery_Type == "Bi-annual" %}
-                                <option value="Bi-annual" selected>Bi-annual</option>
-                                {% elif application_details.Nursery_Category == "Annual" %}
-                                <option value="Annual"selected>Annual</option>
-                                {% elif application_details.Nursery_Category == "Perennial" %}
-                                <option value="Perennial"selected>Perennial</option>
-                                {% endif %}
-                            </select>
-                        </div>
-                        <div class="alert alert-danger" id="Nursery_TypeErrorMsg" style="display:none"></div>
-                    </div>
                 </div>
             </div>
           </div>
         </div>
-
         <div class="card">
           <div class="card-header" id="exItem2Header">
             <h5 class="mb-0">
@@ -197,126 +166,6 @@
           </div>
           <div id="exItem3" class="collapse" aria-labelledby="exItem3Header" data-parent="#exampleAccordion">
             <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-label">1. Facilities</label>
-                            <p class="form-label">a.Land</p>
-                            <p class="form-label">Min requirement:</p>
-                            <p class="form-label">Fruit Plants = 0.25 Acre</p>
-                            <p class="form-label">Ornamental = 0.05 Acre</p>
-                            <p class="form-label">Forest/Fodder = 0.10 Acre</p>
-                            <p class="form-label">Integrated = 0.50 Acre</p>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-label">Facilities_Land</label>
-                            <textarea class="form-control" id="Facilities_Land" name="Facilities_Land" rows="3"></textarea>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-label">b.Nursery House (e.g. poly-house, sheds, etc.)</label>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-label">Facilities Nursery House</label>
-                            <textarea class="form-control" id="Facilities_Nursery_House" name="Facilities_Nursery_House" rows="3"></textarea>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-label">c.Reliable irrigation facilities and water source</label>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-label">Facilities Irrigation</label>
-                            <textarea class="form-control" id="Facilities_Irrigation" name="Facilities_Nursery_House" rows="3"></textarea>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-label">d.Adequate tools and implement</label>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-label">Facilities Tools</label>
-                            <textarea class="form-control" id="Facilities_Tools" name="Facilities_Tools" rows="3"></textarea>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-label">e.Store facilities for seed dealers</label>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-label">Facilities Tools</label>
-                            <textarea class="form-control" id="Facilities_Store" name="Facilities_Store" rows="3"></textarea>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-label">2.Manpower</label>
-                            <p>a.Labour (family or hired)</p>
-                            <p>b.Skilled labour with basic knowledge on nursery production and operation</p>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-label">Manpower</label>
-                            <textarea class="form-control" id="Manpower" name="Manpower" rows="2"></textarea>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-label">3.Type of seeds/seedlings intended to trade</label>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <textarea class="form-control" id="Seed_Type" name="Seed_Type" rows="2"></textarea>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>4.Technical clearance from concerned Department</label>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <textarea class="form-control" id="Technical_Clearance" name="Technical_Clearance" rows="2"></textarea>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-label">Recommendation</label>
-                            <textarea class="form-control" id="Recommendation" name="Recommendation" rows="2"></textarea>
-                        </div>
-                    </div>
-                </div>
-                <br>
-                <hr>
                 <div class="card-tools">
                     <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="openDecisionModal()">
                         <span class="btn-label">
@@ -384,12 +233,59 @@
                             <input type="text" class="form-control date-picker flatpickr-input active" id="dateOfInspection" name="date"  placeholder="Pick a date" readonly="readonly">
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-label">Remarks</label>
-                            <textarea class="form-control" id="remarks" rows="2"></textarea>
-                        </div>
-                    </div>
+                </div>
+                <div class="card-tools">
+                    <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="open_recommendationModal()">
+                        <span class="btn-label">
+                            <i class="fa fa-print"></i>
+                        </span>
+                        Add
+                    </a>
+                </div>
+                <br>
+                <div id="recommendation_details">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Crop</th>
+                                <th scope="col">Variety</th>
+                                <th scope="col">Seed Source</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Unit</th>
+                                <th scope="col">Purpose</th>
+                                <th scope="col">Quantity Certified</th>
+                                <th scope="col">Value_Certified</th>
+                                <th scope="col">Quantity Rejected</th>
+                                <th scope="col">Unit Rejected</th>
+                                <th scope="col">Value Rejected</th>
+                                <th scope="col">Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           {% for recommendation in recommendation %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{recommendation.Crop}}</td>
+                                        <td>{{recommendation.Variety}}</td>
+                                        <td>{{recommendation.Seed_Source}}</td>
+                                        <td>{{recommendation.Quantity}}</td>
+                                        <td>{{recommendation.Unit}}</td>
+                                        <td>{{recommendation.Purpose<}}/td>
+                                        <td>{{recommendation.Qty_Certified}}</td>
+                                        <td>{{recommendation.Value_Certified}}</td>
+                                        <td>{{recommendation.Qty_Rejected}}</td>
+                                        <td>{{recommendation.Unit_Rejected}}</td>
+                                        <td>{{recommendation.Value_Rejected}}</td>
+                                        <td>{{recommendation.Remarks}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="13" class="text-center">No Data</td>
+                                    </tr>
+                           {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-flat btn-primary" onclick="approve_application('{{ application_details.Application_No }}')">
@@ -418,6 +314,7 @@
                         <button type="button" class="close" onclick="closeModal()">
                             <span aria-hidden="true">&times;</span>
                         </button>
+
                     </div>
                     <div class="modal-body">
                         <div class="row">
@@ -446,6 +343,126 @@
                   </div>
             </div>
         </div>
+     <div id="recommendModal" class="modal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"></h5>
+                    <button type="button" class="close" onclick="closeModal()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Planting Material</label>
+                                <select class="form-control" name="crop_id"  id="crop" onchange="getVariety(this.value)">
+                                    <option value="">--SELECT--</option>
+                                    {% for crop in crop %}
+                                            <option value="{{ crop.Crop_Common_Name }}">{{ crop.Crop_Common_Name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="alert alert-danger" id="cropErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Crop Variety</label>
+                                <select class="form-control" name="crop_variety_id"  id="crop_variety">
+                                    <option value="">--SELECT--</option>
+                                    {% for variety in variety %}
+                                            <option value="{{ variety.Crop_Variety_Name }}">{{ variety.Crop_Variety_Name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="alert alert-danger" id="crop_varietyErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Seed Source</label>
+                                <input type="text" class="form-control" id="seed_source" name="seed_source">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Quantity</label>
+                                <input type="number" class="form-control" id="quantity" name="quantity">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Unit</label>
+                                <input type="number" class="form-control" id="unit" name="unit">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Purpose</label>
+                                <input type="text" class="form-control" id="purpose" name="purpose">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Quantity Certified</label>
+                                <input type="text" class="form-control" id="quantitiy_certified" name="quantitiy_certified">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Value Certified</label>
+                                <input type="text" class="form-control" id="value_certified" name="value_certified">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Quantity Rejected</label>
+                                <input type="number" class="form-control" id="quantitiy_rejected" name="quantitiy_rejected">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Unit Rejected</label>
+                                <input type="number" class="form-control" id="unit_rejected" name="unit_rejected">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Value Rejected</label>
+                                <input type="text" class="form-control" id="value_rejected" name="value_rejected">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Remarks</label>
+                                <select class="form-control form-control" id="remarks" name="remarks">
+                                    <option value="">-SELECT-</option>
+                                    <option value="Research">Research</option>
+                                    <option value="Commercial">Commercial</option>
+                                    <option value="Self Use">Self Use</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-flat btn-primary" onclick="add_recommend_details('{{ application_details.Application_No }}')">
+                        <i class="ace-icon fa fa-times"></i>
+                        &nbsp;&nbsp;Add
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="closeModal()">Close Modal</button>
+                 </div>
+              </div>
+        </div>
+    </div>
  </form>
 {% endfor %}
  <script>
@@ -456,7 +473,7 @@ function add_details_ins(application_id)
 
     $.ajax({
         type : "GET",
-        url : "{% url 'add_details_nursery' %}",
+        url : "{% url 'add_details_ins_certificate' %}",
         data :{'application_id':application_id,'currentObservation':currentObservation,'decisionConform':decisionConform},
         success : function(data) {
             $('#details').html(data);
@@ -470,8 +487,8 @@ function approve_application(application_id)
 
    $.ajax({
         type : "GET",
-        url : "{% url 'approve_nursery_application' %}",
-        data :$('#nursery_inspector_form').serialize(),
+        url : "{% url 'approve_certificate_app' %}",
+        data :$('#certificate_inspector_form').serialize(),
         success : function(data) {
             location.reload();
         }
@@ -482,25 +499,28 @@ function reject_application(application_id)
 {
    $.ajax({
         type : "GET",
-        url : "{% url 'reject_nursery_application' %}",
-        data :$('#nursery_inspector_form').serialize(),
+        url : "{% url 'reject_certificate_app' %}",
+        data :$('#certificate_inspector_form').serialize(),
         success : function(data) {
             location.reload();
         }
     });
 }
 
-function resubmit_application(application_id)
+
+function add_recommend_details(application_id)
 {
 
    $.ajax({
         type : "GET",
         url : "{% url 'resubmit_nursery_application' %}",
-        data :$('#nursery_inspector_form').serialize(),
+        data :$('#add_recommendation_details').serialize(),
         success : function(data) {
-            location.reload();
+            $('#recommendation_details').html(data);
+            $('#recommendation_details').show();
         }
     });
 }
+
 
  </script>

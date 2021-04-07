@@ -38,7 +38,7 @@ option {
                             <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_details()">Profile</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="pills-profile-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_details()">Attach File</a>
+                            <a class="nav-link" id="pills-profile-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="plant_attachment()">Attach File</a>
                         </li>
                     </ul>
                 </div>
@@ -49,7 +49,7 @@ option {
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="regNo">Nursery Registration Number</label>
+                                        <label class="form-label">Nursery Registration Number</label>
                                         <input type="text" class="form-control" id="regNo" name="regNo" placeholder="Nursery Registration Number">
                                     </div>
                                     <div class="alert alert-danger" id="regNoErrorMsg" style="display:none"></div>
@@ -65,14 +65,14 @@ option {
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="cid">Applicant CID</label>
+                                        <label class="form-label">Applicant CID</label>
                                         <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" placeholder="Applicant CID" onkeypress="return isNumberKey(event)">
                                     </div>
                                     <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="name">Name</label>
+                                        <label class="form-label">Name</label>
                                         <input type="text" class="form-control" id="name" name="Name" placeholder="Applicant Name">
                                     </div>
                                     <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
@@ -81,14 +81,14 @@ option {
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="contactNumber">Contact Number</label>
+                                        <label class="form-label">Contact Number</label>
                                         <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" placeholder="Contact Number" onkeypress="return isNumberKey(event)">
                                     </div>
                                     <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="email">Email</label>
+                                        <label class="form-label">Email</label>
                                         <input type="email" class="form-control" id="email" name="email" placeholder="EmailID">
                                     </div>
                                     <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
@@ -97,7 +97,7 @@ option {
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="dzongkhag">Dzongkhag</label>
+                                        <label class="form-label">Dzongkhag</label>
                                         <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value),getLocation(this.value)">
                                             <option value="">--SELECT DZONGKHAG--</option>
                                             {% for dzongkhag in dzongkhag %}
@@ -109,7 +109,7 @@ option {
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="gewog">Gewog</label>
+                                        <label class="form-label">Gewog</label>
                                         <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
                                             <option value="">--SELECT GEWOG--</option>
                                             {% for gewog in gewog %}
@@ -123,7 +123,7 @@ option {
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="village">Village</label>
+                                        <label class="form-label">Village</label>
                                          <select class="form-control" name="village" id="village">
                                             <option value="">--SELECT VILLAGE--</option>
                                             {% for village in village %}
@@ -135,7 +135,7 @@ option {
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="location">Location</label>
+                                        <label class="form-label">Location</label>
                                          <select class="form-control" name="location_code"  id="location">
                                             <option value="">--SELECT LOCATION--</option>
                                             {% for location in location %}
@@ -149,7 +149,7 @@ option {
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="fromDzongkhag">From Dzongkhag</label>
+                                        <label class="form-label">From Dzongkhag</label>
                                          <select class="form-control" name="fromDzongkhag"  id="fromDzongkhag">
                                             <option value="">--SELECT DZONGKHAG--</option>
                                             {% for dzongkhag in dzongkhag %}
@@ -161,7 +161,7 @@ option {
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="toDzongkhag">To Dzongkhag</label>
+                                        <label class="form-label">To Dzongkhag</label>
                                         <select class="form-control" name="toDzongkhag"  id="toDzongkhag">
                                             <option value="">--SELECT DZONGKHAG--</option>
                                             {% for dzongkhag in dzongkhag %}
@@ -175,14 +175,14 @@ option {
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="route">Authorized Route</label>
+                                        <label class="form-label">Authorized Route</label>
                                         <input type="text" class="form-control" id="route" name="route" placeholder="Authorized Route">
                                     </div>
                                     <div class="alert alert-danger" id="routeErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="productSource">Source or Origin Of Products</label>
+                                        <label class="form-label">Source or Origin Of Products</label>
                                         <input type="text" class="form-control" id="productSource" name="productSource" placeholder="Source or Origin Of Products">
                                     </div>
                                     <div class="alert alert-danger" id="sourceErrorMsg" style="display:none"></div>
@@ -191,14 +191,14 @@ option {
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="movementPurpose">Purpose Of Movement</label>
+                                        <label class="form-label">Purpose Of Movement</label>
                                         <input type="text" class="form-control" id="movementPurpose" name="movementPurpose" placeholder="Authorized Route">
                                     </div>
                                     <div class="alert alert-danger" id="movementPurposeErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="conveyanceMeans">Means of Conveyance </label>
+                                        <label class="form-label">Means of Conveyance </label>
                                         <select class="form-control form-control" id="conveyanceMeans" name="conveyanceMeans">
                                             <option value="">-SELECT-</option>
                                             <option value="Air">Air</option>
@@ -246,7 +246,7 @@ option {
                             <a class="nav-link active" id="pills-agro-tab" data-toggle="pill" href="#agro-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadAgroDetails()">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="pills-agro-file" data-toggle="pill" href="#agro-file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false">Attach File</a>
+                            <a class="nav-link" id="pills-agro-file" data-toggle="pill" href="#agro-file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="agro_attachment()">Attach File</a>
                         </li>
                     </ul>
                 </div>
@@ -256,14 +256,14 @@ option {
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="appcid">Applicant CID</label>
+                                        <label class="form-label">Applicant CID</label>
                                         <input type="text" class="form-control" id="appcid" name="appcid" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" placeholder="Applicant CID" maxlength="11" onkeypress="return isNumberKey(event)">
                                     </div>
                                     <div class="alert alert-danger" id="appcidErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="appName">Applicant Name</label>
+                                        <label class="form-label">Applicant Name</label>
                                         <input type="text" class="form-control" id="appName" name="appName" placeholder="Applicant Name">
                                     </div>
                                     <div class="alert alert-danger" id="appNameErrorMsg" style="display:none"></div>
@@ -272,14 +272,14 @@ option {
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="phoneNumber">Contact Number</label>
+                                        <label class="form-label">Contact Number</label>
                                         <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Contact Number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="8" onkeypress="return isNumberKey(event)">
                                     </div>
                                     <div class="alert alert-danger" id="mobile_numberErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="emailId">Email</label>
+                                        <label class="form-label">Email</label>
                                         <input type="email" class="form-control" id="emailId" name="emailId" placeholder="EmailID">
                                     </div>
                                     <div class="alert alert-danger" id="emailIdErrorMsg" style="display:none"></div>
@@ -288,14 +288,14 @@ option {
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="mfdUnit">Manufacturing Unit Registration Number</label>
+                                        <label class="form-label">Manufacturing Unit Registration Number</label>
                                         <input type="text" class="form-control" id="mfdUnit" name="mfdUnit_regNo" placeholder="Manufacturing Unit Registration Number">
                                     </div>
                                     <div class="alert alert-danger" id="mfdUnitErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="agroName">Name and Description Agrochemicals</label>
+                                        <label class="form-label">Name and Description Agrochemicals</label>
                                         <input type="text" class="form-control" id="agroName" name="agroName" placeholder="Name and Description Agrochemicals">
                                     </div>
                                     <div class="alert alert-danger" id="agroNameErrorMsg" style="display:none"></div>
@@ -304,7 +304,7 @@ option {
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="from_Dzongkhag">From Dzongkhag</label>
+                                        <label class="form-label">From Dzongkhag</label>
                                          <select class="form-control" name="from_Dzongkhag"  id="from_Dzongkhag">
                                             <option value="">--SELECT DZONGKHAG--</option>
                                             {% for dzongkhag in dzongkhag %}
@@ -316,7 +316,7 @@ option {
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="Dzongkhag_to">To Dzongkhag</label>
+                                        <label class="form-label">To Dzongkhag</label>
                                         <select class="form-control" name="Dzongkhag_to"  id="Dzongkhag_to">
                                             <option value="">--SELECT DZONGKHAG--</option>
                                             {% for dzongkhag in dzongkhag %}
@@ -330,7 +330,7 @@ option {
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="agro_location">Location</label>
+                                        <label class="form-label">Location</label>
                                          <select class="form-control" name="location"  id="agro_location">
                                             <option value="">--SELECT LOCATION--</option>
                                             {% for location in location %}
@@ -342,7 +342,7 @@ option {
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="auth_route">Authorized Route</label>
+                                        <label class="form-label">Authorized Route</label>
                                         <input type="text" class="form-control" id="auth_route" name="auth_route" placeholder="Authorized Route">
                                     </div>
                                     <div class="alert alert-danger" id="auth_routeErrorMsg" style="display:none"></div>
@@ -351,14 +351,14 @@ option {
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="Origin">Source or Origin Of Products</label>
+                                        <label class="form-label">Source or Origin Of Products</label>
                                         <input type="text" class="form-control" id="Origin" name="Origin" placeholder="Source or Origin Of Products">
                                     </div>
                                     <div class="alert alert-danger" id="OriginErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="Purpose">Purpose Of Movement</label>
+                                        <label class="form-label">Purpose Of Movement</label>
                                         <input type="text" class="form-control" id="Purpose" name="Purpose" placeholder="Authorized Route">
                                     </div>
                                     <div class="alert alert-danger" id="PurposeErrorMsg" style="display:none"></div>
@@ -367,7 +367,7 @@ option {
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="convMeans">Means of Conveyance </label>
+                                        <label class="form-label">Means of Conveyance </label>
                                         <select class="form-control form-control" id="convMeans" name="convMeans">
                                             <option value="">-SELECT-</option>
                                             <option value="Air">Air</option>
@@ -378,7 +378,7 @@ option {
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="vehicleNo">Vehicle No</label>
+                                        <label class="form-label">Vehicle No</label>
                                         <input type="text" class="form-control" id="vehicleNo" name="vehicleNo" placeholder="Vehicle No">
                                     </div>
                                     <div class="alert alert-danger" id="vehicleNoErrorMsg" style="display:none"></div>
@@ -387,7 +387,7 @@ option {
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="date">Expected Date of Movement</label>
+                                        <label class="form-label">Expected Date of Movement</label>
                                         <input type="text" class="form-control date-picker flatpickr-input active" id="date" name="date"  placeholder="Pick a date" readonly="readonly">
                                     </div>
                                     <div class="alert alert-danger" id="dateErrorMsg" style="display:none"></div>
@@ -621,8 +621,20 @@ function updateDetails()
         data : $('#permitForm').serialize(),
         success : function(response)
         {
-            $('#Details').html(responseText);
-            $('#pills-tab a:last').tab('show');
+            $('#pills-profile-tab').tab('show');
+        }
+    });
+}
+
+function updateAgroDetails()
+{
+    $.ajax({
+        type : "POST",
+        url : "{% url 'update_movement_details' %}",
+        data : $('#permitForm').serialize(),
+        success : function(response)
+        {
+            $('#pills-profile-tab').tab('show');
         }
     });
 }
@@ -725,5 +737,48 @@ function save_attachment_agro()
     });
 
 }
+
+function agro_attachment()
+{
+    var appNo = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'mov_agro_attachment' %}",
+        data :{'application_id':appNo},
+        success : function(response)
+        {
+            $('#agroAttach').html(response);
+        }
+    });
+}
+
+function load_details()
+{
+    var appNo = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'mov_plant_details' %}",
+        data :{'application_id':appNo},
+        success : function(response)
+        {
+            $('#Details').html(response);
+        }
+    });
+}
+
+function plant_attachment()
+{
+    var appNo = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'mov_plant_attachment' %}",
+        data :{'application_id':appNo},
+        success : function(response)
+        {
+            $('#fileAttach').html(response);
+        }
+    });
+}
+
 </script>
 {% endblock %}

@@ -1,0 +1,134 @@
+<div class="animated fadeIn">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    {% for application_details in application_details %}
+                    <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="regNo">License Number</label>
+                                    <input type="text" class="form-control" id="regNo" name="p_regNo" value="{{application_details.License_No}}">
+                                </div>
+                                <div class="alert alert-danger" id="regNoErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="business_name">Business Name</label>
+                                    <input type="text" class="form-control" id="business_name" name="p_businessName" value="{{application_details.Business_Name}}">
+                                </div>
+                                <div class="alert alert-danger" id="business_nameErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="cid">Applicant CID</label>
+                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="p_cid_number" maxlength="11" onkeypress="return isNumberKey(event)" value="{{application_details.CID}}">
+                                </div>
+                                <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="name">Applicant Name</label>
+                                    <input type="text" class="form-control" id="name" name="p_Name" value="{{application_details.Applicant_Name}}">
+                                </div>
+                                <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="presentAddress">Present Address</label>
+                                    <textarea class="form-control" rows="5" id="presentAddress" name="p_presentAddress">{{application_details.Present_Address}}</textarea>
+                                </div>
+                                <div class="alert alert-danger" id="presentAddressErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="contactNumber">Contact Number</label>
+                                    <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="p_contactNo" maxlength="8" onkeypress="return isNumberKey(event)" value="{{application_details.Contact_No}}">
+                                </div>
+                                <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input type="email" class="form-control" id="email" name="p_email" value="{{application_details.Email}}">
+                                </div>
+                                <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="supplier">Name And Address Supplier</label>
+                                    <textarea class="form-control" rows="5" id="supplier" name="p_supplier">{{application_details.Name_Address_Supplier}}</textarea>
+                                </div>
+                                <div class="alert alert-danger" id="supplierErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="conveyanceMeans">Means of Conveyance </label>
+                                    <select class="form-control form-control" id="conveyanceMeans" name="conveyanceMeans">
+                                        <option value="">-SELECT-</option>
+                                        {% if application_details.Means_of_Conveyance == "Air" %}
+                                        <option value="Air" selected>Air</option>
+                                         <option value="Vehicular">Vehicular</option>
+                                        {% else %}
+                                         <option value="Air">Air</option>
+                                        <option value="Vehicular" selected>Vehicular</option>
+                                        {% endif%}
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="convMeansErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="entryPlace">Place Of Entry</label>
+                                     <select class="form-control" name="p_entry_point"  id="entryPlace">
+                                        <option value="">--SELECT--</option>
+                                        {% for location in location %}
+                                                <option value="{{ location.Location_Code }}" {% if application_details.Place_of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                                <div class="alert alert-danger" id="entryPlaceErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="movementPurpose">Purpose</label>
+                                    <textarea class="form-control" rows="5" id="movementPurpose" name="p_movementPurpose">{{application_details.Purpose}}</textarea>
+                                </div>
+                                <div class="alert alert-danger" id="movementPurposeErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="finalDestination">Final Destination</label>
+                                    <input type="text" class="form-control" id="finalDestination" name="p_final_Destination" value="{{application_details.Final_Destination}}">
+                                </div>
+                                <div class="alert alert-danger" id="finalDestinationErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="expectedDate">Expected Arrival Date</label>
+                                    <input type="text" class="form-control date-picker flatpickr-input active" id="expectedDate" name="p_expected_arrival_date"  placeholder="Pick a date" readonly="readonly" value="{{application_details.Expected_Arrival_Date}}">
+                                </div>
+                                <div class="alert alert-danger" id="dateErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                </div>
+                <div class="card-footer">
+                        <button type="button" class="btn btn-success" onclick="updateDetails()"><i class="ace-icon fas fa-arrow-right"></i>&nbsp;&nbsp;Update</button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>

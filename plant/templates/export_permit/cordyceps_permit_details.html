@@ -1,0 +1,304 @@
+<form method="post" id="permitForm">
+    {% for application_details in application_details %}
+        {% if application_details.Applicant_Type == 'bothRadio' %}
+            <div class="row justify-content-center">
+                <div class="form-check text-center">
+                    <label>Applicant Type <font color="red">*</font></label><br>
+                    <label class="form-radio-label">
+                        <input class="form-radio-input" type="radio" checked>
+                        <span class="form-radio-sign">Both Export and Retail </span>
+                    </label>
+                    <label class="form-radio-label ml-3">
+                        <input class="form-radio-input" type="radio" disabled>
+                        <span class="form-radio-sign">Direct Export Only</span>
+                    </label>
+                    <label class="form-radio-label ml-3">
+                        <input class="form-radio-input" type="radio" disabled>
+                        <span class="form-radio-sign">Retail Outlets Only</span>
+                    </label>
+                </div>
+            </div>
+            {% elif application_details.Applicant_Type == 'directRadio' %}
+                <div class="row justify-content-center">
+                    <div class="form-check text-center">
+                        <label>Applicant Type <font color="red">*</font></label><br>
+                        <label class="form-radio-label">
+                            <input class="form-radio-input" type="radio" disabled>
+                            <span class="form-radio-sign">Both Export and Retail </span>
+                        </label>
+                        <label class="form-radio-label ml-3">
+                            <input class="form-radio-input" type="radio" checked>
+                            <span class="form-radio-sign">Direct Export Only</span>
+                        </label>
+                        <label class="form-radio-label ml-3">
+                            <input class="form-radio-input" type="radio" disabled>
+                            <span class="form-radio-sign">Retail Outlets Only</span>
+                        </label>
+                    </div>
+                </div>
+            {% else %}
+                <div class="row justify-content-center">
+                    <div class="form-check text-center">
+                        <label>Applicant Type <font color="red">*</font></label><br>
+                        <label class="form-radio-label">
+                            <input class="form-radio-input" type="radio" disabled>
+                            <span class="form-radio-sign">Both Export and Retail </span>
+                        </label>
+                        <label class="form-radio-label ml-3">
+                            <input class="form-radio-input" type="radio" disabled>
+                            <span class="form-radio-sign">Direct Export Only</span>
+                        </label>
+                        <label class="form-radio-label ml-3">
+                            <input class="form-radio-input" type="radio" checked>
+                            <span class="form-radio-sign">Retail Outlets Only</span>
+                        </label>
+                    </div>
+                </div>
+            {% endif %}
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label>CID</label>
+                        <input type="text" class="form-control" id="c_cid" name="p_cid" value="{{application_details.CID}}" disabled>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text" class="form-control" id="c_Name" name="c_Exporter_Name" value="{{application_details.Exporter_Name}}" disabled>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" class="form-control" id="c_Email" name="c_Email" value="{{application_details.Email}}" disabled>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label>Contact Number</label>
+                        <input type="number" class="form-control" id="c_Contact_No" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="c_Contact_No" maxlength="8" onkeypress="return isNumberKey(event)" value="{{application_details.Contact_No}}" disabled>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label>Dzongkhag</label>
+                        <select class="form-control" name="c_Dzongkhag_Code"  id="c_Dzongkhag_Code" disabled>
+                            <option value="">--SELECT DZONGKHAG--</option>
+                            {% for dzongkhag in dzongkhag %}
+                                <option value="{{dzongkhag.Dzongkhag_Code}}"{% if application_details.Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>
+                                    {{ dzongkhag.Dzongkhag_Name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label>Location</label>
+                        <select class="form-control" disabled>
+                            <option value="">--SELECT LOCATION--</option>
+                            {% for location in location %}
+                                <option value="{{ location.Location_Code }}" {% if application_details.Locatipn_Code == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            {% if application_details.Applicant_Type == 'bothRadio' %}
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Current Address</label>
+                            <textarea disabled class="form-control" id="c_current_address" name="c_current_address" rows="4">{{application_details.Exporter_Address}}</textarea>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Permanent Address(if different from the current address)</label>
+                            <textarea disabled class="form-control" id="c_permanent_address" name="c_permanent_address" rows="4">{{application_details.Permanent_Address}}</textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Date Of Inspection Requested</label>
+                            <input type="text" class="form-control date-picker flatpickr-input active" id="date" name="date_for_Inspection"  placeholder="Pick a date" readonly="readonly" value="{{application_details.Desired_Inspection_Date}}" disabled>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Place Of Inspection Requested</label>
+                            <input type="text" class="form-control" id="c_requested_place" value="{{application_details.Desired_Inspection_Place}}" disabled>
+                        </div>
+                    </div>
+                </div>
+            {% elif application_details.Applicant_Type == 'directRadio' %}
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Trade License No. (For Licensed Cordyceps Exporters only)</label>
+                            <input type="text" class="form-control" id="c_License_No" name="c_License_No">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Gross Weight (Weight of Cordyceps and package)</label>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="gross_weight_gms" name="gross_weight_gms">
+                                <i class="form-group__bar"></i>
+                            </div>
+                            <span class="input-group-addon">Gm(s)</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="gross_weight_pieces" name="gross_weight_pieces">
+                                <i class="form-group__bar"></i>
+                            </div>
+                            <span class="input-group-addon">Pieces</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Net Weight (Weight of Cordycep only)</label>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="net_weight_gms" name="net_weight_gms">
+                                <i class="form-group__bar"></i>
+                            </div>
+                            <span class="input-group-addon">Gm(s)</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="net_weight_pieces" name="net_weight_pieces">
+                                <i class="form-group__bar"></i>
+                            </div>
+                            <span class="input-group-addon">Pieces</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>No Of Packages</label>
+                            <input type="text" class="form-control" id="c_package" name="c_package">
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>Importing Country</label>
+                            <input type="text" class="form-control" id="c_country" name="c_country">
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>Name & Address of Consignee</label>
+                            <textarea class="form-control" id="c_Name_Address" name="c_Name_Address" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>Mode of conveyance </label>
+                            <select class="form-control form-control" id="c_conveyanceMeans" name="c_conveyanceMeans">
+                                <option value="">-SELECT-</option>
+                                <option value="Sea">Sea</option>
+                                <option value="Air">Air</option>
+                                <option value="Road">Road</option>
+                                <option value="Rail">Rail</option>
+                                <option value="Passenger">Passenger</option>
+                            </select>
+                        </div>
+                        <div class="alert alert-danger" id="c_conveyanceMeansErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Gross Weight (Weight of Cordyceps and package)</label>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="retail_gross_weight_gms" name="retail_gross_weight_gms">
+                                <i class="form-group__bar"></i>
+                            </div>
+                            <span class="input-group-addon">Gm(s)</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="retail_gross_weight_pieces" name="retail_gross_weight_pieces">
+                                <i class="form-group__bar"></i>
+                            </div>
+                            <span class="input-group-addon">Pieces</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Net Weight (Weight of Cordycep only)</label>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="retail_net_weight_gms" name="retail_net_weight_gms">
+                                <i class="form-group__bar"></i>
+                            </div>
+                            <span class="input-group-addon">Gm(s)</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="retail_net_weight_pieces" name="net_weight_pieces">
+                                <i class="form-group__bar"></i>
+                            </div>
+                            <span class="input-group-addon">Pieces</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>Total No Of Packages</label>
+                            <input type="text" class="form-control" id="c_retail_package" name="c_retail_package">
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>Name Of The Outlet</label>
+                            <input type="text" class="form-control" id="c_outlet_name" name="c_outlet_name">
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>Contact No of the outlet owner</label>
+                            <input type="text" class="form-control" id="c_phoneNumber" name="c_phoneNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="8" onkeypress="return isNumberKey(event)">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Address of the outlet</label>
+                            <textarea class="form-control" rows="5" id="c_address" name="c_address"></textarea>
+                        </div>
+                        <div class="alert alert-danger" id="c_addressErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+    <div class="card-footer">
+        <button type="button" class="btn btn-primary" onclick="update_cord_details()">Update</button>
+    </div>
+</form>
