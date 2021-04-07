@@ -128,6 +128,8 @@ def save_movement_permit(request):
     agroName = request.POST.get('agroName')
     vehicleNo = request.POST.get('vehicleNo')
     mov_date = request.POST.get('date')
+    agro_qty = request.POST.get('agro_qty')
+    agro_unit = request.POST.get('agro_unit')
 
     if permitType == "P":
         t_plant_movement_permit_t1.objects.create(
@@ -159,7 +161,9 @@ def save_movement_permit(request):
             Movement_Permit_No=None,
             Remarks=None,
             Application_Date=None,
-            Applicant_Id=Applicant_Id
+            Applicant_Id=Applicant_Id,
+            Qty=None,
+            Unit=None
         )
         field_id = t_location_field_office_mapping.objects.filter(pk=location_code)
     else:
@@ -192,7 +196,9 @@ def save_movement_permit(request):
             Movement_Permit_No=None,
             Remarks=None,
             Application_Date=None,
-            Applicant_Id=Applicant_Id
+            Applicant_Id=Applicant_Id,
+            Qty=agro_qty,
+            Unit=agro_unit
         )
         field_id = t_location_field_office_mapping.objects.filter(pk=location)
     for field_office in field_id:
@@ -311,7 +317,6 @@ def update_application_details(request):
     application_details.update(Conveyance_Means=conveyanceMeans)
     data['success'] = "Success"
     return JsonResponse(data)
-
 
 
 def save(request):
@@ -642,10 +647,11 @@ def apply_import_permit(request):
     pesticide = t_plant_pesticide_master.objects.all()
     variety = t_plant_crop_variety_master.objects.all()
     location = t_field_office_master.objects.filter(Is_Entry_Point="Y")
+    country = t_country_master.objects.all()
 
     return render(request, 'import_permit/apply_import_permit.html',
                   {'crop': crop, 'pesticide': pesticide, 'variety': variety,
-                   'location': location})
+                   'location': location, 'country': country})
 
 
 def save_import_permit(request):
@@ -683,7 +689,8 @@ def save_import_permit(request):
     a_movementPurpose = request.POST.get('a_movementPurpose')
     a_final_Destination = request.POST.get('a_final_Destination')
     a_expected_arrival_date = request.POST.get('a_expected_arrival_date')
-
+    Country_Of_Origin = request.POST.get('Country_Of_Origin')
+    Agro_Country_Of_Origin = request.POST.get('Agro_Country_Of_Origin')
     if importType == "P":
         t_plant_import_permit_t1.objects.create(
             Application_No=last_application_no,
@@ -713,7 +720,8 @@ def save_import_permit(request):
             Clearance_Ref_No=None,
             Expected_Arrival_Date=expectedDate,
             FO_Remarks=None,
-            Inspection_Remarks=None
+            Inspection_Remarks=None,
+            Country_Of_Origin=Country_Of_Origin
         )
     else:
         t_plant_import_permit_t1.objects.create(
@@ -744,7 +752,8 @@ def save_import_permit(request):
             Clearance_Ref_No=None,
             Expected_Arrival_Date=a_expected_arrival_date,
             FO_Remarks=None,
-            Inspection_Remarks=None
+            Inspection_Remarks=None,
+            Country_Of_Origin=Agro_Country_Of_Origin
         )
     t_workflow_details.objects.create(Application_No=last_application_no, Applicant_Id=request.session['email'],
                                       Assigned_To=None, Field_Office_Id=None, Section='Plant',
@@ -835,7 +844,7 @@ def print_import_details(request):
     print_details = t_plant_import_permit_t1.objects.filter(Application_No=application_no)
     for print_import in print_details:
         finalDestination = print_import.Final_Destination
-    return render(request, 'import_permit/print_import_permit.html',
+    return render(request, 'import_permit/plant_import_permit.html',
                   {'Final_Destination': finalDestination})
 
 
@@ -1114,7 +1123,6 @@ def delete_agro_file(request):
 
 def save_details_import(request):
     Application_No = request.POST.get('applicationNo');
-    print(Application_No)
     details = t_workflow_details.objects.filter(Application_No=Application_No)
     details.update(Action_Date=date.today())
 
@@ -2912,64 +2920,315 @@ def certificate_print(request):
     return render(request, 'certificate_printing.html')
 
 
-def get_certificate_details(request):
-    application_No = request.POST.get('application_id')
-    service_code = request.POST.get('service_code')
+def view_certificate_details(request):
+    service_code = request.GET.get('service_code')
+    login_id = request.session['email']
     if service_code == 'MPP':
+        application_details = t_plant_movement_permit_t1.objects.filter(Applicant_Id=login_id,
+                                                                        Movement_Permit_No__isnull=False)
+        return render(request, 'certificates/movement_certificate_printing_details.html',
+                      {'application_details': application_details})
+    elif service_code == 'IPP':
+        application_details = t_plant_import_permit_t1.objects.filter(Applicant_Id=login_id,
+                                                                      Import_Permit_No__isnull=False)
+        return render(request, 'certificates/import_certificate_printing_details.html',
+                      {'application_details': application_details})
+    elif service_code == 'EPP':
+        application_details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(Applicant_Id=login_id,
+                                                                                                Export_Permit__isnull=False)
+        return render(request, 'certificates/export_certificate_printing_details.html',
+                      {'application_details': application_details})
+    elif service_code == 'RNS':
+        application_details = t_plant_clearence_nursery_seed_grower_t1.objects.filter(Applicant_Id=login_id,
+                                                                                      Clearance_Number__isnull=False)
+        return render(request, 'certificates/nursery_certificate_printing_details.html',
+                      {'application_details': application_details})
+    elif service_code == 'RSC':
+        application_details = t_plant_seed_certification_t1.objects.filter(Applicant_Id=login_id,
+                                                                           Seed_Certificate__isnull=False)
+        return render(request, 'certificates/seed_certificate_printing_details.html',
+                      {'application_details': application_details})
+
+
+def get_certificate_details(request):
+    application_No = request.GET.get('application_id')
+    service_code = request.GET.get('service_code')
+    current_date = date.today()
+    if service_code == 'MPP':
+        details = t_plant_movement_permit_t1.objects.filter(Application_No=application_No, Permit_Type='P', )
         application_details = t_workflow_details.objects.filter(Application_No=application_No, Application_Status='A')
-        if application_details.exists():
-            details = t_plant_movement_permit_t1.objects.filter(Application_No=application_No, Permit_Type='P')
-            if details.exists():
-                certificate_details = t_plant_movement_permit_t1.objects.filter(Application_No=application_No)
-                return render(request, 'certificates/movement_permit_plant.html',
-                              {'certificate_details': certificate_details})
-            else:
-                certificate_details = t_plant_movement_permit_t1.objects.filter(Application_No=application_No,
-                                                                                Permit_Type='A')
-                return render(request, 'certificates/movement_permit_agro.html',
-                              {'certificate_details': certificate_details})
+        if details.exists():
+            certificate_details = t_plant_movement_permit_t1.objects.filter(Application_No=application_No)
+            for det in certificate_details:
+                dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.Dzongkhag_Code)
+                for det_dz in dzongkhag_code:
+                    dzongkhag_code_name = det_dz.Dzongkhag_Name
+                village_code = t_village_master.objects.filter(Village_Code=det.Village_Code)
+                for name_vill in village_code:
+                    village_code_name = name_vill.Village_Name
+                gewog_code = t_gewog_master.objects.filter(Gewog_Code=det.Gewog_Code)
+                for gew in gewog_code:
+                    gewog_code_name = gew.Gewog_Name
+                from_dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.From_Dzongkhag_Code)
+                for from_dz in from_dzongkhag_code:
+                    from_dzongkhag = from_dz.Dzongkhag_Name
+                to_dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.To_Dzongkhag_Code)
+                for to_dz in to_dzongkhag_code:
+                    to_dzongkhag = to_dz.Dzongkhag_Name
+            details_permit = t_plant_movement_permit_t2.objects.filter(Application_No=application_No)
+            for date_approved in application_details:
+                approved_date = date_approved.Action_Date
+            return render(request, 'certificates/movement_permit_plant.html',
+                          {'certificate_details': certificate_details, 'date': current_date,
+                           'Dzongkhag': dzongkhag_code_name, 'Village': village_code_name, 'Gewog': gewog_code_name,
+                           'From_Dzongkhag': from_dzongkhag, 'To_Dzongkhag': to_dzongkhag,
+                           'details_permit': details_permit, 'approved_date': approved_date})
         else:
-            details = t_plant_movement_permit_t1.objects.filter(Movement_Permit_No=application_No)
-            if details.exists():
-                certificate_details = t_plant_movement_permit_t1.objects.filter(Application_No=application_No)
-                return render(request, 'certificates/movement_permit_plant.html',
-                              {'certificate_details': certificate_details})
-            else:
-                certificate_details = t_plant_movement_permit_t1.objects.filter(Application_No=application_No,
-                                                                                Permit_Type='A')
-                return render(request, 'certificates/movement_permit_agro.html',
-                              {'certificate_details': certificate_details})
+            certificate_details = t_plant_movement_permit_t1.objects.filter(Application_No=application_No,
+                                                                            Permit_Type='A')
+            for det in certificate_details:
+                dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.Dzongkhag_Code)
+                for det_dz in dzongkhag_code:
+                    dzongkhag_code_name = det_dz.Dzongkhag_Name
+                village_code = t_village_master.objects.filter(Village_Code=det.Village_Code)
+                for name_vill in village_code:
+                    village_code_name = name_vill.Village_Name
+                gewog_code = t_gewog_master.objects.filter(Gewog_Code=det.Gewog_Code)
+                for gew in gewog_code:
+                    gewog_code_name = gew.Gewog_Name
+                from_dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.From_Dzongkhag_Code)
+                for from_dz in from_dzongkhag_code:
+                    from_dzongkhag = from_dz.Dzongkhag_Name
+                to_dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.To_Dzongkhag_Code)
+                for to_dz in to_dzongkhag_code:
+                    to_dzongkhag = to_dz.Dzongkhag_Name
+            details_permit = t_plant_movement_permit_t2.objects.filter(Application_No=application_No)
+            for date_approved in application_details:
+                approved_date = date_approved.Action_Date
+            return render(request, 'certificates/movement_permit_agro.html',
+                          {'certificate_details': certificate_details, 'date': current_date,
+                           'Dzongkhag': dzongkhag_code_name, 'Village': village_code_name, 'Gewog': gewog_code_name,
+                           'From_Dzongkhag': from_dzongkhag, 'To_Dzongkhag': to_dzongkhag,
+                           'details_permit': details_permit, 'approved_date': approved_date})
     elif service_code == 'IPP':
         application_details = t_workflow_details.objects.filter(Application_No=application_No, Application_Status='A')
         if application_details.exists():
             certificate_details = t_plant_import_permit_t1.objects.filter(Application_No=application_No)
+            for det in certificate_details:
+                dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.Dzongkhag_Code)
+                for det_dz in dzongkhag_code:
+                    dzongkhag_code_name = det_dz.Dzongkhag_Name
+                village_code = t_village_master.objects.filter(Village_Code=det.Village_Code)
+                for name_vill in village_code:
+                    village_code_name = name_vill.Village_Name
+                gewog_code = t_gewog_master.objects.filter(Gewog_Code=det.Gewog_Code)
+                for gew in gewog_code:
+                    gewog_code_name = gew.Gewog_Name
+                from_dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.From_Dzongkhag_Code)
+                for from_dz in from_dzongkhag_code:
+                    from_dzongkhag = from_dz.Dzongkhag_Name
+                to_dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.To_Dzongkhag_Code)
+                for to_dz in to_dzongkhag_code:
+                    to_dzongkhag = to_dz.Dzongkhag_Name
+            details_permit = t_plant_movement_permit_t2.objects.filter(Application_No=application_No)
+            for date_approved in application_details:
+                approved_date = date_approved.Action_Date
+            return render(request, 'certificates/release_form.html',
+                          {'certificate_details': certificate_details, 'date': current_date,
+                           'Dzongkhag': dzongkhag_code_name, 'Village': village_code_name, 'Gewog': gewog_code_name,
+                           'From_Dzongkhag': from_dzongkhag, 'To_Dzongkhag': to_dzongkhag,
+                           'details_permit': details_permit, 'approved_date': approved_date})
         else:
             certificate_details = t_plant_import_permit_t1.objects.filter(Import_Permit_No=application_No)
-        return render(request, 'certificates/release_form.html', {'certificate_details': certificate_details})
+            for det in certificate_details:
+                dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.Dzongkhag_Code)
+                for det_dz in dzongkhag_code:
+                    dzongkhag_code_name = det_dz.Dzongkhag_Name
+                village_code = t_village_master.objects.filter(Village_Code=det.Village_Code)
+                for name_vill in village_code:
+                    village_code_name = name_vill.Village_Name
+                gewog_code = t_gewog_master.objects.filter(Gewog_Code=det.Gewog_Code)
+                for gew in gewog_code:
+                    gewog_code_name = gew.Gewog_Name
+                from_dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.From_Dzongkhag_Code)
+                for from_dz in from_dzongkhag_code:
+                    from_dzongkhag = from_dz.Dzongkhag_Name
+                to_dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.To_Dzongkhag_Code)
+                for to_dz in to_dzongkhag_code:
+                    to_dzongkhag = to_dz.Dzongkhag_Name
+            details_permit = t_plant_movement_permit_t2.objects.filter(Application_No=application_No)
+            for date_approved in application_details:
+                approved_date = date_approved.Action_Date
+        return render(request, 'certificates/release_form.html',
+                      {'certificate_details': certificate_details, 'date': current_date,
+                       'Dzongkhag': dzongkhag_code_name, 'Village': village_code_name, 'Gewog': gewog_code_name,
+                       'From_Dzongkhag': from_dzongkhag, 'To_Dzongkhag': to_dzongkhag,
+                       'details_permit': details_permit, 'approved_date': approved_date})
     elif service_code == 'EPP':
         application_details = t_workflow_details.objects.filter(Application_No=application_No, Application_Status='A')
         if application_details.exists():
             certificate_details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(
                 Application_No=application_No)
+            for det in certificate_details:
+                dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.Dzongkhag_Code)
+                for det_dz in dzongkhag_code:
+                    dzongkhag_code_name = det_dz.Dzongkhag_Name
+                village_code = t_village_master.objects.filter(Village_Code=det.Village_Code)
+                for name_vill in village_code:
+                    village_code_name = name_vill.Village_Name
+                gewog_code = t_gewog_master.objects.filter(Gewog_Code=det.Gewog_Code)
+                for gew in gewog_code:
+                    gewog_code_name = gew.Gewog_Name
+                from_dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.From_Dzongkhag_Code)
+                for from_dz in from_dzongkhag_code:
+                    from_dzongkhag = from_dz.Dzongkhag_Name
+                to_dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.To_Dzongkhag_Code)
+                for to_dz in to_dzongkhag_code:
+                    to_dzongkhag = to_dz.Dzongkhag_Name
+            details_permit = t_plant_movement_permit_t2.objects.filter(Application_No=application_No)
+            for date_approved in application_details:
+                approved_date = date_approved.Action_Date
+            return render(request, 'certificates/release_form.html',
+                          {'certificate_details': certificate_details, 'date': current_date,
+                           'Dzongkhag': dzongkhag_code_name, 'Village': village_code_name, 'Gewog': gewog_code_name,
+                           'From_Dzongkhag': from_dzongkhag, 'To_Dzongkhag': to_dzongkhag,
+                           'details_permit': details_permit, 'approved_date': approved_date})
         else:
             certificate_details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(
                 Import_Permit_No=application_No)
-        return render(request, 'certificates/certificate_printing.html', {'certificate_details': certificate_details})
+            for det in certificate_details:
+                dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.Dzongkhag_Code)
+                for det_dz in dzongkhag_code:
+                    dzongkhag_code_name = det_dz.Dzongkhag_Name
+                village_code = t_village_master.objects.filter(Village_Code=det.Village_Code)
+                for name_vill in village_code:
+                    village_code_name = name_vill.Village_Name
+                gewog_code = t_gewog_master.objects.filter(Gewog_Code=det.Gewog_Code)
+                for gew in gewog_code:
+                    gewog_code_name = gew.Gewog_Name
+                from_dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.From_Dzongkhag_Code)
+                for from_dz in from_dzongkhag_code:
+                    from_dzongkhag = from_dz.Dzongkhag_Name
+                to_dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.To_Dzongkhag_Code)
+                for to_dz in to_dzongkhag_code:
+                    to_dzongkhag = to_dz.Dzongkhag_Name
+            details_permit = t_plant_movement_permit_t2.objects.filter(Application_No=application_No)
+            for date_approved in application_details:
+                approved_date = date_approved.Action_Date
+        return render(request, 'certificates/release_form.html',
+                      {'certificate_details': certificate_details, 'date': current_date,
+                       'Dzongkhag': dzongkhag_code_name, 'Village': village_code_name, 'Gewog': gewog_code_name,
+                       'From_Dzongkhag': from_dzongkhag, 'To_Dzongkhag': to_dzongkhag,
+                       'details_permit': details_permit, 'approved_date': approved_date})
     elif service_code == 'RNS':
         application_details = t_workflow_details.objects.filter(Application_No=application_No, Application_Status='A')
         if application_details.exists():
             certificate_details = t_plant_clearence_nursery_seed_grower_t1.objects.filter(Application_No=application_No)
+            for det in certificate_details:
+                dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.Dzongkhag_Code)
+                for det_dz in dzongkhag_code:
+                    dzongkhag_code_name = det_dz.Dzongkhag_Name
+                village_code = t_village_master.objects.filter(Village_Code=det.Village_Code)
+                for name_vill in village_code:
+                    village_code_name = name_vill.Village_Name
+                gewog_code = t_gewog_master.objects.filter(Gewog_Code=det.Gewog_Code)
+                for gew in gewog_code:
+                    gewog_code_name = gew.Gewog_Name
+                from_dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.From_Dzongkhag_Code)
+                for from_dz in from_dzongkhag_code:
+                    from_dzongkhag = from_dz.Dzongkhag_Name
+                to_dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.To_Dzongkhag_Code)
+                for to_dz in to_dzongkhag_code:
+                    to_dzongkhag = to_dz.Dzongkhag_Name
+            details_permit = t_plant_movement_permit_t2.objects.filter(Application_No=application_No)
+            for date_approved in application_details:
+                approved_date = date_approved.Action_Date
+            return render(request, 'certificates/release_form.html',
+                          {'certificate_details': certificate_details, 'date': current_date,
+                           'Dzongkhag': dzongkhag_code_name, 'Village': village_code_name, 'Gewog': gewog_code_name,
+                           'From_Dzongkhag': from_dzongkhag, 'To_Dzongkhag': to_dzongkhag,
+                           'details_permit': details_permit, 'approved_date': approved_date})
         else:
             certificate_details = t_plant_clearence_nursery_seed_grower_t1.objects.filter(
                 Import_Permit_No=application_No)
-        return render(request, 'certificates/nursery_clearance.html', {'certificate_details': certificate_details})
+            for det in certificate_details:
+                dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.Dzongkhag_Code)
+                for det_dz in dzongkhag_code:
+                    dzongkhag_code_name = det_dz.Dzongkhag_Name
+                village_code = t_village_master.objects.filter(Village_Code=det.Village_Code)
+                for name_vill in village_code:
+                    village_code_name = name_vill.Village_Name
+                gewog_code = t_gewog_master.objects.filter(Gewog_Code=det.Gewog_Code)
+                for gew in gewog_code:
+                    gewog_code_name = gew.Gewog_Name
+                from_dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.From_Dzongkhag_Code)
+                for from_dz in from_dzongkhag_code:
+                    from_dzongkhag = from_dz.Dzongkhag_Name
+                to_dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.To_Dzongkhag_Code)
+                for to_dz in to_dzongkhag_code:
+                    to_dzongkhag = to_dz.Dzongkhag_Name
+            details_permit = t_plant_movement_permit_t2.objects.filter(Application_No=application_No)
+            for date_approved in application_details:
+                approved_date = date_approved.Action_Date
+        return render(request, 'certificates/release_form.html',
+                      {'certificate_details': certificate_details, 'date': current_date,
+                       'Dzongkhag': dzongkhag_code_name, 'Village': village_code_name, 'Gewog': gewog_code_name,
+                       'From_Dzongkhag': from_dzongkhag, 'To_Dzongkhag': to_dzongkhag,
+                       'details_permit': details_permit, 'approved_date': approved_date})
     elif service_code == 'RSC':
         application_details = t_workflow_details.objects.filter(Application_No=application_No, Application_Status='A')
         if application_details.exists():
             certificate_details = t_plant_seed_certification_t1.objects.filter(Application_No=application_No)
+            for det in certificate_details:
+                dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.Dzongkhag_Code)
+                for det_dz in dzongkhag_code:
+                    dzongkhag_code_name = det_dz.Dzongkhag_Name
+                village_code = t_village_master.objects.filter(Village_Code=det.Village_Code)
+                for name_vill in village_code:
+                    village_code_name = name_vill.Village_Name
+                gewog_code = t_gewog_master.objects.filter(Gewog_Code=det.Gewog_Code)
+                for gew in gewog_code:
+                    gewog_code_name = gew.Gewog_Name
+                from_dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.From_Dzongkhag_Code)
+                for from_dz in from_dzongkhag_code:
+                    from_dzongkhag = from_dz.Dzongkhag_Name
+                to_dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.To_Dzongkhag_Code)
+                for to_dz in to_dzongkhag_code:
+                    to_dzongkhag = to_dz.Dzongkhag_Name
+            details_permit = t_plant_movement_permit_t2.objects.filter(Application_No=application_No)
+            for date_approved in application_details:
+                approved_date = date_approved.Action_Date
+            return render(request, 'certificates/release_form.html',
+                          {'certificate_details': certificate_details, 'date': current_date,
+                           'Dzongkhag': dzongkhag_code_name, 'Village': village_code_name, 'Gewog': gewog_code_name,
+                           'From_Dzongkhag': from_dzongkhag, 'To_Dzongkhag': to_dzongkhag,
+                           'details_permit': details_permit, 'approved_date': approved_date})
         else:
             certificate_details = t_plant_seed_certification_t1.objects.filter(Import_Permit_No=application_No)
-        return render(request, 'certificates/seed_certificate.html', {'certificate_details': certificate_details})
+            for det in certificate_details:
+                dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.Dzongkhag_Code)
+                for det_dz in dzongkhag_code:
+                    dzongkhag_code_name = det_dz.Dzongkhag_Name
+                village_code = t_village_master.objects.filter(Village_Code=det.Village_Code)
+                for name_vill in village_code:
+                    village_code_name = name_vill.Village_Name
+                gewog_code = t_gewog_master.objects.filter(Gewog_Code=det.Gewog_Code)
+                for gew in gewog_code:
+                    gewog_code_name = gew.Gewog_Name
+                from_dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.From_Dzongkhag_Code)
+                for from_dz in from_dzongkhag_code:
+                    from_dzongkhag = from_dz.Dzongkhag_Name
+                to_dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.To_Dzongkhag_Code)
+                for to_dz in to_dzongkhag_code:
+                    to_dzongkhag = to_dz.Dzongkhag_Name
+            details_permit = t_plant_movement_permit_t2.objects.filter(Application_No=application_No)
+            for date_approved in application_details:
+                approved_date = date_approved.Action_Date
+        return render(request, 'certificates/release_form.html',
+                      {'certificate_details': certificate_details, 'date': current_date,
+                       'Dzongkhag': dzongkhag_code_name, 'Village': village_code_name, 'Gewog': gewog_code_name,
+                       'From_Dzongkhag': from_dzongkhag, 'To_Dzongkhag': to_dzongkhag,
+                       'details_permit': details_permit, 'approved_date': approved_date})
 
 
 # Common Details
@@ -2992,16 +3251,10 @@ def call_for_inspection(request):
 def application_status(request):
     login_id = request.session['email']
     application_details = t_workflow_details.objects.filter(Applicant_Id=login_id)
-    if application_details.exists():
-        for service_code in application_details:
-            code = service_code.Service_Code
-        service = t_service_master.objects.filter(Service_Code=code)
-        for service in service:
-            service_name = service.Service_Name
-    else:
-        service_name = None
+    service_details = t_service_master.objects.all()
+
     return render(request, 'application_status.html', {'application_details': application_details,
-                                                       'service_name': service_name})
+                                                       'service_details': service_details})
 
 
 def resubmit_application(request):

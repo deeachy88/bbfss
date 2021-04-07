@@ -1,37 +1,58 @@
 <div class="card">
     <div class="card-header">
-        <h4 class="card-title">MOVEMENT PERMIT FOR AGROCHEMICALS</h4>
-    </div>
+		<div class="card-head-row float-left">
+            <div class="card-tools">
+                <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Test Report';printClientTable()">
+                    <span class="btn-label">
+                        <i class="zmdi zmdi-print"></i>
+                    </span>
+                    Print
+                </a>
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="card-title text-center">
+            <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
+        </div>
+        <h6 class="text-center">MOVEMENT PERMIT FOR AGROCHEMICALS</h6>
+	</div>
     <div class="card-body">
+        <div class="row d-flex justify-content-between details">
+            {% for certificate_details in certificate_details %}
+			    <h6>Office Ref.No.&nbsp;&nbsp;{{certificate_details.Movement_Permit_No}}</h6>
+            {% endfor %}
+			<h6>Date&nbsp;:&nbsp;{{date}}</h6>
+		</div>
         <div class="row">
-            <p>This is to certify that the consignment belonging
-                to Mr./Mrs.………..……………………...holding Registration No…………………….................
-                for his/her manufacturing unit located at…………………………..is
-                hereby granted an approval to move the consignment from ………………………… to…………………………
-                as per the details specified below:
-            </p>
+            {% for certificate_details in certificate_details %}
+                <p>This is to certify that the consignment belonging
+                    to Mr./Mrs. {{certificate_details.Applicant_Name}}, M/S {{certificate_details.Nursery_Name}}
+                    holding Registration No {{certificate_details.License_No}}
+                    for his/her manufacturing unit located at {{ Village}} under Gewog: {{ Gewog }}
+                    Dzongkhag: {{ Dzongkhag }} ishereby granted an approval to move the consignment from
+                    {{ From_Dzongkhag }} Dzongkhag to {{ To_Dzongkhag }} Dzongkhag
+                    as per the details specified below:
+                </p>
+
         </div>
         <div class="row">
             <table>
                 <thead>
                     <tr>
                         <th scope="col">Sl.No</th>
-                        <th scope="col">Name of Agrochemicals</th>
-                        <th scope="col">Quantity (Unit)</th>
-                        <th scope="col">Description (active ingredient/formulation)</th>
+                        <th scope="col">Name and Description of Agrochemicals </th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Unit</th>
                     </tr>
                 </thead>
                 <tbody>
-                   {% for certificate_form in certificate_form %}
-                        <tr>
-                            <td>{{ forloop.counter }}</td>
-                            <td>{{file_attach.Attachment}}</td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                          <td colspan="3" class="text-center">No Data</td>
-                        </tr>
-                   {% endfor %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{certificate_details.Name_And_Description}}</td>
+                        <td>{{certificate_details.Qty}}</td>
+                        <td>{{certificate_details.Unit}}</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -42,10 +63,11 @@
             </p>
         </div>
         <div class="row">
-            Date of Issue &nbsp;:&nbsp;&nbsp;
+            Date of Issue &nbsp;:&nbsp;&nbsp;{{ approved_date }}
         </div>
         <div class="row">
             Expiry Date &nbsp;:&nbsp;&nbsp;
         </div>
+        {% endfor %}
     </div>
 </div>

@@ -23,6 +23,8 @@ class t_plant_movement_permit_t1(models.Model):
     Movement_Purpose = models.CharField(max_length=100)
     Conveyance_Means = models.CharField(max_length=20)
     Name_And_Description = models.CharField(max_length=250, default=None, blank=True, null=True)
+    Qty = models.IntegerField(default=None, blank=True, null=True)
+    Unit = models.CharField(max_length=20, default=None, blank=True, null=True)
     Vehicle_No = models.CharField(max_length=100, default=None, blank=True, null=True)
     Movement_Date = models.DateField(blank=True, null=True)
     Inspection_Date = models.DateField(blank=True, null=True)
@@ -115,6 +117,7 @@ class t_plant_import_permit_t1(models.Model):
     Expected_Arrival_Date = models.DateField(blank=True, null=True)
     FO_Remarks = models.TextField(blank=True, null=True)
     Inspection_Remarks = models.TextField(blank=True, null=True)
+    Country_Of_Origin = models.TextField(blank=True, null=True)
 
 
 class t_plant_import_permit_t2(models.Model):
@@ -319,5 +322,3 @@ class t_plant_seed_certification_t3(models.Model):
     Application_No = models.CharField(max_length=30, primary_key=True)
     Observation = models.TextField(blank=True, null=True)
     Action = models.TextField(blank=True, null=True)
-
-

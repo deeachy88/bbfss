@@ -72,6 +72,7 @@ urlpatterns = [
 
     # certificate Printing
     path('certificate_print', views.certificate_print, name='certificate_print'),
+    path('view_certificate_details', views.view_certificate_details, name='view_certificate_details'),
     path('get_certificate_details', views.get_certificate_details, name='get_certificate_details'),
 
     # Export Permit
