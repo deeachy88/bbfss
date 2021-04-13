@@ -81,7 +81,7 @@ DATABASES = {
         'NAME': 'bbfss_db',
         'USER': 'postgres',
         'PASSWORD': 'root',
-        'HOST': 'localhost'
+        'HOST': '192.168.1.103'
     }
 }
 
