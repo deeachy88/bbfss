@@ -10,7 +10,8 @@ from django.utils import timezone
 
 from administrator.models import t_dzongkhag_master, t_gewog_master, t_village_master, t_location_field_office_mapping, \
     t_user_master, t_field_office_master, t_plant_crop_master, t_plant_pesticide_master, t_plant_crop_variety_master, \
-    t_service_master, t_country_master, t_plant_crop_category_master, t_unit_master, t_section_master
+    t_service_master, t_country_master, t_plant_crop_category_master, t_unit_master, t_section_master, \
+    t_inspection_type_master
 from bbfss import settings
 from livestock.models import t_livestock_clearence_meat_shop_t1
 from plant.forms import ImportFormThree, ImportFormTwo
@@ -377,6 +378,7 @@ def view_application_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_location_field_office_mapping.objects.all()
         village = t_village_master.objects.all()
+        inspection_type = t_inspection_type_master.object.all()
         file = t_file_attachment.objects.filter(Application_No=application_id)
         workflow_details = t_workflow_details.objects.filter(Application_No=application_id)
         for application in workflow_details:
@@ -384,7 +386,8 @@ def view_application_details(request):
         user_role_list = t_user_master.objects.filter(Role_Id='5', Field_Office_Id_id=Field_Office)
         return render(request, 'clearance_meat_shop/inspector_clearance.html',
                       {'application_details': application_details, 'dzongkhag': dzongkhag, 'gewog': gewog,
-                       'village': village, 'inspector_list': user_role_list, 'file': file})
+                       'village': village, 'inspector_list': user_role_list, 'file': file,
+                       'inspection_type': inspection_type})
 
 
 def approve_application(request):

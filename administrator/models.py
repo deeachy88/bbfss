@@ -268,3 +268,8 @@ class t_forgot_password(models.Model):
     Login_Id = models.IntegerField()
     Security_Question_Id = models.IntegerField()
     Answer = models.CharField(max_length=250)
+
+
+class t_inspection_type_master(models.Model):
+    Inspection_Type_Id = models.AutoField(primary_key=True)
+    Inspection_Type = models.CharField(max_length=100)

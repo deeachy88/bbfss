@@ -427,7 +427,12 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Inspection Type</label>
-                                <textarea class="form-control" id="ins_type" rows="2"></textarea>
+                                <select class="form-control" name="inspection_type"  id="inspection_type" onchange="getGewog(this.value)">
+                                    <option value="">--SELECT--</option>
+                                    {% for inspection_type in inspection_type %}
+                                            <option value="{{ inspection_type.Inspection_Type_Id }}">{{ inspection_type.Inspection_Type }}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
                         </div>
                     </div>
