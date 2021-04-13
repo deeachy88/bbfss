@@ -370,28 +370,20 @@
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">Current Observation</th>
-                                    <th scope="col">Decision Conformity Statement</th>
+                                    <th scope="col">Observation</th>
                                     <th scope="col">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                               {% for import in movement_permit %}
+                               {% for observation in observation %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td>{{import.Current_Observation}}</td>
-                                        <td>{{import.Decision_Conformity}}</td>
-                                        <td>
-                                            <button type="button"
-                                            class="btn btn-primary btn--icon btn-sm js-edit"
-                                            data-url="{% url 'edit_decision' import.Record_Id %}">
-                                            <i class="zmdi zmdi-edit"></i>
-                                            </button>
-                                        </td>
+                                        <td>{{observation.Observation}}</td>
+                                        <td>{{observation.Action}}</td>
                                     </tr>
                                     {% empty %}
                                     <tr>
-                                      <td colspan="4" class="text-center">No Data</td>
+                                      <td colspan="3" class="text-center">No Data</td>
                                     </tr>
                                {% endfor %}
                             </tbody>
@@ -430,7 +422,7 @@
                                 <select class="form-control" name="inspection_type"  id="inspection_type" onchange="getGewog(this.value)">
                                     <option value="">--SELECT--</option>
                                     {% for inspection_type in inspection_type %}
-                                            <option value="{{ inspection_type.Inspection_Type_Id }}">{{ inspection_type.Inspection_Type }}</option>
+                                            <option value="{{ inspection_type.Inspection_Type }}">{{ inspection_type.Inspection_Type }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -451,34 +443,50 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label>Remarks</label>
                                 <textarea class="form-control" id="remarks" rows="2"></textarea>
                             </div>
                         </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Validity Of Clearance</label>
+                                <input type="number" class="form-control" id="validity" name="validity">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alert alert-info" id="messageDiv" style="display:none">
+                        Application Approved
+                    </div>
+                    <div class="alert alert-info" id="reject_messageDiv" style="display:none">
+                        Application Rejected
+                    </div>
+                    <div class="alert alert-info" id="resubmit_messageDiv" style="display:none">
+                        Application Sent For Resubmission
                     </div>
                     <hr>
-                    <div class="card-action text-center">
-                        <button type="button" class="btn btn-flat btn-primary" onclick="approve_details('{{application_details.Application_No}}')">
-                            <i class="ace-icon fa fa-times"></i>
-                            &nbsp;&nbsp;Approve
-                        </button>
-                        <button type="button" class="btn btn-flat btn-primary" onclick="reject_details('{{application_details.Application_No}}')">
-                            <i class="ace-icon fa fa-times"></i>
-                            &nbsp;&nbsp;Reject
-                        </button>
-                        <button type="button" class="btn btn-flat btn-danger">
-                            <i class="ace-icon fa fa-times"></i>
-                            &nbsp;&nbsp;Cancel
-                        </button>
-                        <div id="messageDiv" style="display:none">
-                            Application Approved
+                    {% for application_details in application_details %}
+                        <div class="card-action text-center">
+                            <button type="button" class="btn btn-flat btn-primary" onclick="approve_details('{{application_details.Application_No}}')">
+                                <i class="ace-icon fa fa-times"></i>
+                                &nbsp;&nbsp;Approve
+                            </button>
+                            <button type="button" class="btn btn-flat btn-primary" onclick="resubmit_details('{{application_details.Application_No}}')">
+                                <i class="ace-icon fa fa-times"></i>
+                                &nbsp;&nbsp;Resubmit
+                            </button>
+                            <button type="button" class="btn btn-flat btn-primary" onclick="reject_details('{{application_details.Application_No}}')">
+                                <i class="ace-icon fa fa-times"></i>
+                                &nbsp;&nbsp;Reject
+                            </button>
+                            <button type="button" class="btn btn-flat btn-danger">
+                                <i class="ace-icon fa fa-times"></i>
+                                &nbsp;&nbsp;Cancel
+                            </button>
+
                         </div>
-                        <div id="reject_messageDiv" style="display:none">
-                            Application Rejected
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -508,11 +516,14 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="modal-footer">
+                        {% for application_details in application_details %}
                         <button type="button" class="btn btn-flat btn-primary" onclick="add_details_ins('{{ application_details.Application_No }}')">
                             <i class="ace-icon fa fa-times"></i>
                             &nbsp;&nbsp;Add
                         </button>
+                        {% endfor %}
                         <button type="button" class="btn btn-primary" onclick="closeModal()">Close Modal</button>
                      </div>
 
@@ -564,22 +575,29 @@ function add_details_ins(application_id)
 
 function approve_details(application_id)
 {
-
+    alert(application_id);
     Inspection_Leader = $('#teamLeader').val();
     Inspection_Team = $('#insTeam').val();
     remarks = $('#remarks').val();
     dateOfInspection = $('#dateOfInspection').val();
     ins_type = $('#ins_type').val();
+    identification_No = $('#identification_No').val();
+    revision_no = $('#revision_no').val();
+    validity = $('#validity').val();
 
    $.ajax({
         type : "GET",
         url : "{% url 'approve_application_cms' %}",
-        data :{'application_no':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks , 'dateOfInspection':dateOfInspection, 'ins_type':ins_type},
+        data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks ,
+        'dateOfInspection':dateOfInspection, 'ins_type':ins_type, 'identification_No':identification_No, 'revision_no':revision_no, 'validity':validity},
         success : function(data) {
             $('#messageDiv').show();
             setTimeout(function() {
                 $("#messageDiv").hide('blind', {}, 500)
             }, 2000);
+            setTimeout(function() {
+                location.reload();
+            }, 3000);
         }
     });
 }
@@ -592,16 +610,50 @@ function reject_details(application_id)
     remarks = $('#remarks').val();
     dateOfInspection = $('#dateOfInspection').val();
     ins_type = $('#ins_type').val();
+    identification_No = $('#identification_No').val();
+    revision_no = $('#revision_no').val();
 
    $.ajax({
         type : "GET",
         url : "{% url 'reject_application_cms' %}",
-        data :{'application_no':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks , 'dateOfInspection':dateOfInspection, 'ins_type':ins_type},
+        data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks ,
+        'dateOfInspection':dateOfInspection, 'ins_type':ins_type, 'identification_No':identification_No, 'revision_no':revision_no},
         success : function(data) {
             $('#messageDiv').show();
             setTimeout(function() {
                 $("#reject_messageDiv").hide('blind', {}, 500)
             }, 2000);
+             setTimeout(function() {
+                location.reload();
+            }, 3000);
+        }
+    });
+}
+
+function resubmit_details(application_id)
+{
+
+    Inspection_Leader = $('#teamLeader').val();
+    Inspection_Team = $('#insTeam').val();
+    remarks = $('#remarks').val();
+    dateOfInspection = $('#dateOfInspection').val();
+    ins_type = $('#ins_type').val();
+    identification_No = $('#identification_No').val();
+    revision_no = $('#revision_no').val();
+
+   $.ajax({
+        type : "GET",
+        url : "{% url 'resubmit_application_cms' %}",
+        data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks ,
+        'dateOfInspection':dateOfInspection, 'ins_type':ins_type, 'identification_No':identification_No, 'revision_no':revision_no},
+        success : function(data) {
+            $('#resubmit_messageDiv').show();
+            setTimeout(function() {
+                $("#resubmit_messageDiv").hide('blind', {}, 500)
+            }, 2000);
+             setTimeout(function() {
+                location.reload();
+            }, 3000);
         }
     });
 }

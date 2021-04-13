@@ -1,9 +1,9 @@
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from django.core.files.storage import FileSystemStorage
 from django.core.mail import send_mail
 from django.db.models import Max
 from django.http import JsonResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.dateformat import DateFormat
@@ -17,6 +17,7 @@ from bbfss import settings
 from livestock.forms import MeatShopClearanceFormOne, MeatShopClearanceFormTwo
 from livestock.models import t_livestock_clearence_meat_shop_t1, t_livestock_clearence_meat_shop_t2
 from plant.models import t_workflow_details, t_file_attachment, t_payment_details
+from plant.views import inspector_application
 
 
 def apply_clearance_meat_shop(request):
@@ -226,54 +227,119 @@ def details_ins_cms(request):
     currentObservation = request.GET.get('currentObservation')
     decisionConform = request.GET.get('decisionConform')
     t_livestock_clearence_meat_shop_t2.objects.create(Application_No=application_id,
-                                                      Current_Observation=currentObservation,
-                                                      Decision_Conformity=decisionConform)
+                                                      Observation=currentObservation,
+                                                      Action=decisionConform)
     observation = t_livestock_clearence_meat_shop_t2.objects.filter(Application_No=application_id)
-    return render(request, 'movement_permit/add_application_details.html', {'observation': observation})
+    return render(request, 'clearance_meat_shop/observation_details.html', {'observation': observation})
 
 
 def approve_application_cms(request):
-    application_id = request.POST.get('application_id')
-    Inspection_Leader = request.POST.get('Inspection_Leader')
-    Inspection_Team = request.POST.get('Inspection_Team')
-    remarks = request.POST.get('remarks')
-    dateOfInspection = request.POST.get('dateOfInspection')
+    application_id = request.GET.get('application_id')
+    Inspection_Leader = request.GET.get('Inspection_Leader')
+    Inspection_Team = request.GET.get('Inspection_Team')
+    remarks = request.GET.get('remarks')
+    dateOfInspection = request.GET.get('dateOfInspection')
     Meat_Shop_Clearance_No = meat_shop_clearance_no(request)
+    identification_No = request.GET.get('identification_No')
+    revision_no = request.GET.get('revision_no')
+    validity = request.GET.get('validity')
+    date_format_ins = datetime.strptime(dateOfInspection, '%d-%m-%Y').date()
     details = t_livestock_clearence_meat_shop_t1.objects.filter(Application_No=application_id)
-    for email_id in details:
-        email = email_id.Email
+
     if remarks is not None:
         details.update(Remarks_Inspection=remarks)
     else:
         details.update(Remarks_Inspection=None)
+    if revision_no is not None:
+        details.update(Revision_No=revision_no)
+    else:
+        details.update(Revision_No=None)
+
     details.update(Inspection_Leader=Inspection_Leader)
     details.update(Inspection_Team=Inspection_Team)
-    details.update(Inspection_Date=dateOfInspection)
+    details.update(Inspection_Date=date_format_ins)
     details.update(Meat_Shop_Clearance_No=Meat_Shop_Clearance_No)
+    details.update(Identification_No=identification_No)
+    details.update(Validity_Period=validity)
+    details.update(Approved_Date=date.today())
+    details.update(Application_Status='A')
+    d = timedelta(days=int(validity))
+    validity_date = date.today() + d
+    details.update(Validity=validity_date)
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='A')
-    send_cms_approve_email(Meat_Shop_Clearance_No, email)
-    update_payment(application_id, Meat_Shop_Clearance_No, 'CMS')
+    for email_id in details:
+        emailId = email_id.Email
+        send_cms_approve_email(Meat_Shop_Clearance_No, emailId, validity_date)
+    update_payment(application_id, Meat_Shop_Clearance_No, 'CMS', validity_date)
+    return redirect(inspector_application)
 
 
 def reject_application_cms(request):
-    application_id = request.POST.get('application_id')
-    Inspection_Leader = request.POST.get('Inspection_Leader')
-    Inspection_Team = request.POST.get('Inspection_Team')
-    remarks = request.POST.get('remarks')
-    dateOfInspection = request.POST.get('dateOfInspection')
+    application_id = request.GET.get('application_id')
+    Inspection_Leader = request.GET.get('Inspection_Leader')
+    Inspection_Team = request.GET.get('Inspection_Team')
+    remarks = request.GET.get('remarks')
+    dateOfInspection = request.GET.get('dateOfInspection')
+    identification_No = request.GET.get('identification_No')
+    revision_no = request.GET.get('revision_no')
+    date_format_ins = datetime.strptime(dateOfInspection, '%d-%m-%Y').date()
     details = t_livestock_clearence_meat_shop_t1.objects.filter(Application_No=application_id)
     for email_id in details:
         email = email_id.Email
+    if revision_no is not None:
+        details.update(Revision_No=revision_no)
+    else:
+        details.update(Revision_No=None)
     details.update(Remarks_Inspection=remarks)
     details.update(Inspection_Leader=Inspection_Leader)
     details.update(Inspection_Team=Inspection_Team)
-    details.update(Inspection_Date=dateOfInspection)
+    details.update(Inspection_Date=date_format_ins)
+    details.update(Identification_No=identification_No)
+    details.update(Application_Status='R')
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
-    application_details.update(Application_Status='A')
-    send_cms_reject_email(remarks, email)
+    application_details.update(Application_Status='R')
+    send_cms_reject_email(remarks, details.Email)
+    return redirect(inspector_application)
+
+
+def resubmit_application_cms(request):
+    application_id = request.GET.get('application_id')
+    Inspection_Leader = request.GET.get('Inspection_Leader')
+    Inspection_Team = request.GET.get('Inspection_Team')
+    remarks = request.GET.get('remarks')
+    dateOfInspection = request.GET.get('dateOfInspection')
+    identification_No = request.GET.get('identification_No')
+    revision_no = request.GET.get('revision_no')
+
+    date_format_ins = datetime.strptime(dateOfInspection, '%d-%m-%Y').date()
+    details = t_livestock_clearence_meat_shop_t1.objects.filter(Application_No=application_id)
+
+    if revision_no is not None:
+        details.update(Revision_No=revision_no)
+    else:
+        details.update(Revision_No=None)
+    details.update(Remarks_Inspection=remarks)
+    details.update(Inspection_Leader=Inspection_Leader)
+    details.update(Inspection_Team=Inspection_Team)
+    details.update(Inspection_Date=date_format_ins)
+    details.update(Identification_No=identification_No)
+    details.update(Application_Status='RS')
+    application_details = t_workflow_details.objects.filter(Application_No=application_id)
+    application_details.update(Action_Date=date.today())
+    application_details.update(Application_Status='RS')
+    for login in application_details:
+        login_id = login.Applicant_Id
+    app_det = t_user_master.objects.filter(Email_Id=login_id)
+    for app in app_det:
+        user_id = app.Login_Id
+    application_details.update(Assigned_To=user_id)
+    for email_id in details:
+        email = email_id.Email
+        send_cms_resubmit_email(remarks, email)
+    return redirect(inspector_application)
 
 
 def meat_shop_clearance_no(request):
@@ -289,7 +355,7 @@ def meat_shop_clearance_no(request):
         year = timezone.now().year
         newAppNo = Field_Code + "/" + "CMS" + "/" + str(year) + "/" + "0001"
     else:
-        substring = str(lastAppNo)[9:13]
+        substring = str(lastAppNo)[14:17]
         substring = int(substring) + 1
         AppNo = str(substring).zfill(4)
         year = timezone.now().year
@@ -297,10 +363,13 @@ def meat_shop_clearance_no(request):
     return newAppNo
 
 
-def send_cms_approve_email(new_meat_shop_clearance, Email):
+def send_cms_approve_email(new_meat_shop_clearance, Email, validity_date):
+    valid_till = validity_date.strftime('%d-%m-%Y')
+
     subject = 'APPLICATION APPROVED'
-    message = "Dear Sir Your Application for Clearance of meat shop Has Been Approved. Your " \
-              "Import Permit No is:" + new_meat_shop_clearance + " Please Login To BBFSS and Download The Permit. "
+    message = "Dear Sir, Your Application for Clearance of meat shop Has Been Approved. Your " \
+              "Registration No is:" + new_meat_shop_clearance + " And is Valid Till " + str(valid_till) + \
+              "." + " Please Make Payment Before Validity Expires. "
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
     send_mail(subject, message, email_from, recipient_list)
@@ -314,14 +383,24 @@ def send_cms_reject_email(remarks, Email):
     send_mail(subject, message, email_from, recipient_list)
 
 
-def update_payment(application_id, Meat_Shop_Clearance_No, Service_Id):
+def send_cms_resubmit_email(remarks, Email):
+    subject = 'APPLICATION RESUBMIT'
+    message = "Dear " + "Sir" + " You Are Required To Resubmit Your Application For Clearance of meat shop Because " + remarks + ""
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = [Email]
+    send_mail(subject, message, email_from, recipient_list)
+
+
+def update_payment(application_id, Meat_Shop_Clearance_No, Service_Id, Validity):
     t_payment_details.objects.create(Application_No=application_id,
                                      Application_Date=date.today(),
                                      Permit_No=Meat_Shop_Clearance_No,
                                      Service_Id=Service_Id,
-                                     Validity=None,
+                                     Validity=Validity,
                                      Payment_Type=None,
                                      Instrument_No=None,
                                      Amount=None,
                                      Receipt_No=None,
-                                     Receipt_Date=None)
+                                     Receipt_Date=None,
+                                     Updated_By=None,
+                                     Updated_On=None)

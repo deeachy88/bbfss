@@ -20,6 +20,7 @@ urlpatterns = [
     path('details_ins_CMS', views.details_ins_cms, name='details_ins_CMS'),
     path('approve_application_cms', views.approve_application_cms, name='approve_application_cms'),
     path('reject_application_cms', views.reject_application_cms, name='reject_application_cms'),
+    path('resubmit_application_cms', views.resubmit_application_cms, name='resubmit_application_cms')
 
 
     # import permit for live animal and fish
