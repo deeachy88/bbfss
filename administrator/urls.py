@@ -65,5 +65,6 @@ urlpatterns = [
     path('load_gewog', views.load_gewog, name='load_gewog'),
     path('load_village', views.load_village, name='load_village'),
     path('load_section', views.load_section, name='load_section'),
-    path('password_update', views.password_update, name='password_update')
+    path('password_update', views.password_update, name='password_update'),
+    path('update_payment_details', views.update_payment_details, name='update_payment_details')
 ]

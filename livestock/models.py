@@ -32,16 +32,18 @@ class t_livestock_clearence_meat_shop_t1(models.Model):
     Remarks_Inspection = models.TextField(blank=True, null=True)
     Inspection_Leader = models.CharField(max_length=100, default=None, blank=True, null=True)
     Inspection_Team = models.CharField(max_length=100, default=None, blank=True, null=True)
-    Application_Status = models.CharField(max_length=1, default=None, blank=True, null=True)
+    Application_Status = models.CharField(max_length=3, default=None, blank=True, null=True)
     Meat_Shop_Clearance_No = models.CharField(max_length=100, default=None, blank=True, null=True)
     Approved_Date = models.DateField(default=None, blank=True, null=True)
     Validity_Period = models.CharField(default=None, max_length=10, blank=True, null=True)
     Validity = models.DateField(default=None, blank=True, null=True)
+    Identification_No = models.CharField(max_length=100, default=None, blank=True, null=True)
+    Revision_No = models.CharField(max_length=100, default=None, blank=True, null=True)
+    Inspection_Type = models.CharField(max_length=20, default=None, blank=True, null=True)
 
 
 class t_livestock_clearence_meat_shop_t2(models.Model):
     Record_Id = models.AutoField(primary_key=True)
     Application_No = models.CharField(max_length=20)
-    Inspection_Type = models.CharField(max_length=20)
     Observation = models.TextField(blank=True, null=True)
     Action = models.TextField(blank=True, null=True)

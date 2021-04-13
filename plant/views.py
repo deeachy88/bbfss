@@ -378,7 +378,7 @@ def view_application_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_location_field_office_mapping.objects.all()
         village = t_village_master.objects.all()
-        inspection_type = t_inspection_type_master.object.all()
+        inspection_type = t_inspection_type_master.objects.all()
         file = t_file_attachment.objects.filter(Application_No=application_id)
         workflow_details = t_workflow_details.objects.filter(Application_No=application_id)
         for application in workflow_details:

@@ -70,7 +70,7 @@ class t_workflow_details(models.Model):
     Section = models.CharField(max_length=20, default=None, blank=True, null=True)
     Assigned_Role_Id = models.IntegerField(blank=True, null=True)
     Action_Date = models.DateField(blank=True, null=True)
-    Application_Status = models.CharField(max_length=1, default=None, blank=True, null=True)
+    Application_Status = models.CharField(max_length=3, default=None, blank=True, null=True)
 
 
 class t_workflow_details_audit(models.Model):
@@ -84,7 +84,7 @@ class t_workflow_details_audit(models.Model):
     Section = models.CharField(max_length=20, default=None, blank=True, null=True)
     Assigned_Role_Id = models.CharField(max_length=20, blank=True, null=True)
     Action_Date = models.DateField(blank=True, null=True)
-    Application_Status = models.CharField(max_length=1, default=None, blank=True, null=True)
+    Application_Status = models.CharField(max_length=3, default=None, blank=True, null=True)
 
 
 class t_file_attachment(models.Model):
@@ -359,8 +359,10 @@ class t_payment_details(models.Model):
     Permit_No = models.CharField(max_length=100)
     Service_Id = models.CharField(max_length=5)
     Validity = models.DateField()
-    Payment_Type = models.CharField(max_length=30)
-    Instrument_No = models.CharField(max_length=50)
-    Amount = models.IntegerField()
-    Receipt_No = models.CharField(max_length=30)
-    Receipt_Date = models.DateField()
+    Payment_Type = models.CharField(max_length=30, default=None, blank=True, null=True)
+    Instrument_No = models.CharField(max_length=50, default=None, blank=True, null=True)
+    Amount = models.IntegerField(default=None, blank=True, null=True)
+    Receipt_No = models.CharField(max_length=30, default=None, blank=True, null=True)
+    Receipt_Date = models.DateField(default=None, blank=True, null=True)
+    Updated_By = models.CharField(max_length=100, default=None, blank=True, null=True)
+    Updated_On = models.DateField(default=None, blank=True, null=True)

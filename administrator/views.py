@@ -22,6 +22,7 @@ from administrator.models import t_user_master, t_security_question_master, t_ro
     t_plant_pesticide_master, t_plant_ornamental_master, t_plant_crop_species_master, t_plant_chemical_master, \
     t_plant_crop_variety_master, t_plant_crop_master, t_service_master, t_division_master, t_plant_crop_category_master
 from bbfss import settings
+from plant.models import t_payment_details
 
 
 def home(request):
@@ -1273,3 +1274,13 @@ def password_update(request):
         reg_users.update(Last_Login_Date=today)
         t_forgot_password.objects.create(Login_Id=Login_Id, Security_Question_Id=security_question, Answer=Answer)
     return render(request, 'common_dashboard.html')
+
+
+def payment_list(request):
+    application_details = t_payment_details.objects.filter(Movement_Permit_No__isnull=False)
+    return render(request, 'payment_details_list.html')
+
+def update_payment_details(request):
+    application_details = t_payment_details.objects.filter(Movement_Permit_No__isnull=False)
+    return render(request, 'payment_details_list.html')
+
