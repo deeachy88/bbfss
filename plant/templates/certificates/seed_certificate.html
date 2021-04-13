@@ -1,43 +1,73 @@
+{% load static %}
+<style>
+    .header-card {
+    background-color: white;
+}
+</style>
 <div class="card">
-    <div class="card-header">
-        <h4 class="card-title">SEED CERTIFICATE</h4>
-    </div>
-    <div class="card-body">
-        <div class="row">
-            <p class="float-left">Serial No.</p>
-            <p class="float-right">Date:</p>
+    <div class="card-header header-card">
+		<div class="card-head-row float-left">
+            <div class="card-tools">
+                <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Test Report';printClientTable()">
+                    <span class="btn-label">
+                        <i class="zmdi zmdi-print"></i>
+                    </span>
+                    Print
+                </a>
+            </div>
         </div>
-        <div class="row justify-content-center">
-            <h2>SEED CERTIFICATE</h2>
+        <br>
+        <br>
+        <div class="card-title text-center">
+            <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
+        </div>
+        <h6 class="text-center"><font color='black'><b>SEED CERTIFICATE</b></font></h6>
+	</div>
+    <div class="card-body">
+     {% for certificate_details in certificate_details %}
+        <div class="row justify-content-between">
+            <h6>Office Ref No.&nbsp;&nbsp;{{certificate_details.Seed_Certificate}}</h6>
+            <h6>Date&nbsp;:&nbsp;{{date}}</h6>
         </div>
         <div class="row">
             <p>
-                This certificate is hereby granted to Mr./Mrs.………………………………….. holder of Trade
-                License	No………………………………………………….……...and	Nursery	Registration
-                No……………………………………..of …………….……….. (Name of BAFRA Office) for
+                This certificate is hereby granted to Mr./Mrs.{{certificate_details.Applicant_Name}}. holder of Trade
+                License	No {{ certificate_details.License_No }}, M/S {{ certificate_details.Company_Name }}
+                of {{ Dzongkhag }} for
                 internal/external supply of seed /planting materials.
                 This certificate has been issued for complying with the Minimum Seed Standard of Bhutan,
                 2019 for the following seed/planting materials:
             </p>
         </div>
         <div class="row">
-            <p>
-                Crop:
-            </p>
+           <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Crop</th>
+                        <th scope="col">Crop Variety</th>
+                        <th scope="col">Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for certification_details in certification_details %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{certification_details.Crop}}</td>
+                            <td>{{certification_details.Variety}}</td>
+                            <td>{{certification_details.Qty_Certified}}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center">No Data</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
         <div class="row">
             <p>
-                 Variety:
-            </p>
-        </div>
-        <div class="row">
-            <p>
-                  Quantity:
-            </p>
-        </div>
-        <div class="row">
-            <p>
-                  Date of issue:
+                  Date of issue: {{Approved_Date}}
             </p>
         </div>
         <div class="row">
@@ -45,30 +75,6 @@
                   Expiry Date:
             </p>
         </div>
-        <div class="row">
-            <p>
-                Certification Officer
-            </p>
-        </div>
-        <div class="row">
-            <p>
-                 BAFRA
-            </p>
-        </div>
-        <div class="row">
-            <p>
-                  Name:
-            </p>
-        </div>
-        <div class="row">
-            <p>
-                  Designation:
-            </p>
-        </div>
-        <div class="row">
-            <p>
-                  Official Seal
-            </p>
-        </div>
+    {% endfor %}
     </div>
 </div>

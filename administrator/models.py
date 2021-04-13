@@ -18,6 +18,14 @@ class t_division_master(models.Model):
         return self.Division_Name
 
 
+class t_unit_master(models.Model):
+    Unit_Id = models.AutoField(primary_key=True)
+    Unit = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.Unit
+
+
 class t_section_master(models.Model):
     Section_Id = models.AutoField(primary_key=True)
     Section_Name = models.CharField(max_length=100)
@@ -260,3 +268,8 @@ class t_forgot_password(models.Model):
     Login_Id = models.IntegerField()
     Security_Question_Id = models.IntegerField()
     Answer = models.CharField(max_length=250)
+
+
+class t_inspection_type_master(models.Model):
+    Inspection_Type_Id = models.AutoField(primary_key=True)
+    Inspection_Type = models.CharField(max_length=100)

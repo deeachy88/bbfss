@@ -23,7 +23,7 @@
                                 {% for application_details in application_details %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td><button class="btn btn-primary btn-link" onclick="viewImportDetails('{{application_details.Application_No}}')">{{application_details.Application_No}}</button></td>
+                                        <td><button class="btn btn-primary btn-link" onclick="viewImportDetails('{{application_details.Application_No}}','{{application_details.Service_Code}}')">{{application_details.Application_No}}</button></td>
                                         <td>{{application_details.Action_Date|date:"d-m-Y"}}</td>
                                         <td><button  type="button" class="btn btn-primary btn--icon btn-sm" onclick="printImportDetails('{{application_details.Application_No}}')" data-toggle="tooltip" title="Print" ><i class="zmdi zmdi-print"></i></button></td>
                                     </tr>
@@ -99,15 +99,15 @@
     </div>
 <script>
 
-function viewImportDetails(appId)
+function viewImportDetails(appId, service_code)
     {
         $.ajax({
             type : "GET",
             url : "{% url 'call_for_inspection_details' %}",
-            data :{'application_id':appId},
-            success : function(data)
+            data :{'application_id':appId, 'service_code':service_code},
+            success : function(response)
             {
-                $('#details_import').html(data);
+                $('#details_import').html(response);
                 $('#import_detailsModal').modal('show');
 
             }
@@ -120,9 +120,9 @@ function viewImportDetails(appId)
             type : "GET",
             url : "{% url 'print_imp_permit' %}",
             data :{'application_id':appId},
-            success : function(data)
+            success : function(response)
             {
-                $('#print_import').html(data);
+                $('#print_import').html(response);
                 $('#import_printModal').modal('show');
             }
         });
@@ -135,8 +135,7 @@ function viewImportDetails(appId)
             url : "{% url 'update_inspection_call_details' %}",
             data : $('#import_details_form').serialize(),
             success : function(response) {
-                $('#apply_div').html(response);
-                $('#pills-profile-tab').tab('show');
+                location.reload();
             }
         });
     }

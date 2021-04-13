@@ -20,11 +20,15 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for application_details in new_import_app %}
+                                {% for application_details in application_details %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td><button class="btn btn-primary btn-link" onclick="viewImportDetails('{{application_details.Application_No}}','{{application_details.Service_Code}}')">{{application_details.Application_No}}</button></td>
-                                        <td>{{service_name}}</td>
+                                        <td><button class="btn btn-primary btn-link" onclick="viewApplicationDetails('{{application_details.Application_No}}','{{application_details.Service_Code}}')">{{application_details.Application_No}}</button></td>
+                                        {% for service_details in service_details %}
+                                            {% if application_details.Service_Code == service_details.Service_Code %}
+                                                <td>{{service_details.Service_Name}}</td>
+                                            {% endif %}
+                                        {% endfor %}
                                         <td>{{application_details.Applicant_Id}}</td>
                                         <td>{{application_details.Action_Date|date:"d-m-Y"}}</td>
                                     </tr>
@@ -43,7 +47,7 @@
 <form method="post" id="import_details_form" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="modal fade" id="import_detailsModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
                  <div class="modal-header">
                     <h5 class="modal-title" id="agro_attachmentModalLabel">Apply Import Permit Details</h5>
@@ -68,12 +72,12 @@
     </div>
 </form>
 <script>
-    function viewImportDetails(appId)
+    function viewApplicationDetails(appId, Service_Id)
     {
         $.ajax({
             type : "GET",
             url : "{% url 'view_fo_details' %}",
-            data :{'application_id':appId},
+            data :{'application_id':appId, 'service_code':Service_Id},
             success : function(data)
             {
                 $('#details_import').html(data);

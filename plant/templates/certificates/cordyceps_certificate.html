@@ -1,0 +1,131 @@
+{% load static %}
+<style>
+    .header-card {
+    background-color: white;
+}
+</style>
+<div class="card">
+    <div class="card-header header-card">
+		<div class="card-head-row float-right">
+            <div class="card-tools">
+                <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Test Report';printClientTable()">
+                    <span class="btn-label">
+                        <i class="zmdi zmdi-print"></i>
+                    </span>
+                    Print
+                </a>
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="card-title text-center">
+            <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
+        </div>
+        <h6 class="text-center"><font color='black'><b>PHYTOSANITARY CERTIFICATE</b></font></h6>
+	</div>
+    <div class="card-body">
+        {% for certificate_details in certificate_details %}
+        <div class="row d-flex justify-content-between details">
+
+			    <h6>EC NO.&nbsp;&nbsp;{{certificate_details.Export_Permit}}</h6>
+
+		</div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>From : Bhutan Agriculture and Food Regulatory Authority (concerned authority of the exporting country)</label>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>To : Concerned authority of the importing country</label>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <h2>I.DESCRIPTION OF CONSIGNMENT</h2>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Name and Address of exporter</label>
+                    {{certificate_details.Exporter_Name}}&nbsp;&nbsp;{{certificate_details.Exporter_Address}}
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Declared name and address of consignee</label>
+                    {{certificate_details.Consingee_Name_Address}}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Number and description of packages</label>
+                    {{certificate_details.Packages_No}}&nbsp;&nbsp;{{certificate_details.Packages_Description}}
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Distinguishing marks</label>
+                    {{certificate_details.Distinguishing_Marks}}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label>Place Of Origin</label>
+                    {{certificate_details.Dzongkhag}}
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label>Declared means of conveyance</label>
+                    {{certificate_details.Consingee_Name_Address}}
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label>Declared point of entry</label>
+                    {{certificate_details.Entry_Point}}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <p>Net Weight:{{certificate_details.Qty_Net }}&nbsp;Gms/&nbsp;{{certificate_details.Pieces_Net}}&nbsp; Pieces </p>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <p>Gross Weight:{{certificate_details.Qty_Gross }}&nbsp;Gms/&nbsp;{{certificate_details.Pieces_Gross}}&nbsp; Pieces </p>
+                </div>
+            </div>
+        </div>
+        <p>This is to certify that the article described has been inspected according to appropriate official procedures</p>
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label>Date of Issue &nbsp;:&nbsp;</label>
+                </div>
+            </div>
+            <!--<div class="col-sm-4">
+                <div class="form-group">
+                    <label>Official seal</label>
+                </div>
+            </div>
+            <div class="col-sm-5">
+                <div class="form-group">
+                    <label>Name and Signature of Authorized Officer</label>
+                </div>
+            </div>-->
+        </div>
+        <div class="row">
+            Expiry Date &nbsp;:&nbsp;&nbsp;
+        </div>
+        {% endfor %}
+    </div>
+</div>

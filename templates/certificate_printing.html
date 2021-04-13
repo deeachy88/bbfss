@@ -1,6 +1,26 @@
 {% extends 'common_dashboard.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+<style>
+    .notes__item>a {
+    height: 15px;
+    background-color: rgba(0,0,0,.2);
+    display: block;
+    padding: 1.8rem 2rem;
+    position: relative;
+    color: rgba(255,255,255,.75);
+}
+.notes__title {
+    color: #fff;
+    margin-bottom: 1.1rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-top: -9px;
+}
+</style>
 <form id="certificate_form" method="post">
     {% csrf_token %}
     <div class="card">
@@ -8,65 +28,58 @@
             <strong class="card-title">Print Certificates</strong>
         </div>
         <div class="card-body">
-            <div class="btn-demo">
-                <a class="btn btn-light collapsed" data-toggle="collapse" href="#plant" aria-expanded="false" data-target="#plant"  aria-controls="plant">Plant Certificates</a>
-                <a class="btn btn-light collapsed" data-toggle="collapse" href="#animal" aria-expanded="false" data-target="#animal"  aria-controls="animal">Animal Certificates</a>
-                <a class="btn btn-light collapsed" data-toggle="collapse" href="#food" aria-expanded="false" aria-controls="food">Food Certificates</a>
-                <a class="btn btn-light collapsed" data-toggle="collapse" href="#certification" aria-expanded="false" aria-controls="certification">Certifications</a>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <div class="collapse" id="plant" style="">
-                        <hr>
-                        <div class="card card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" id="movement_permit_no" placeholder="Enter Movement Permit No">
-                                        <div class="input-group-append">
-                                            <button type="button" class="btn btn-default btn-border" type="button" onclick="print_cerificate('MPP')"><i class="zmdi zmdi-print"></i></button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" id="clearance_ref_no" placeholder="Enter Clearance Reference No">
-                                        <div class="input-group-append">
-                                            <button type="button" class="btn btn-default btn-border" type="button" onclick="print_cerificate('IPP')"><i class="zmdi zmdi-print"></i></button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+            <div class="row notes">
+                <div class="col-sm-4 col-md-3 notes__item">
+                    <a href="#edit-note" onclick="print_details('IPP')">
+                        <div class="notes__title text-center">
+                            Import Permit
                         </div>
-                    </div>
+                    </a>
+                </div>
+
+                <div class="col-sm-4 col-md-3 notes__item notes__item--blue">
+                    <a href="#edit-note" onclick="print_details('RF')">
+                        <div class="notes__title text-center">Release Form</div>
+                    </a>
+                </div>
+
+                <div class="col-sm-4 col-md-3 notes__item notes__item--blue">
+                    <a href="#edit-note" onclick="print_details('NC')">
+                        <div class="notes__title text-center">Nursery Clearance</div>
+                    </a>
+                </div>
+
+                <div class="col-sm-4 col-md-3 notes__item notes__item--amber">
+                    <a href="#edit-note" onclick="print_details('RSC')">
+                        <div class="notes__title text-center">Seed Certificate</div>
+                    </a>
+                </div>
+
+                <div class="col-sm-4 col-md-4 notes__item">
+                    <a href="#edit-note" onclick="print_details('MPP')">
+                        <div class="notes__title text-center">In-Country Movement Permit</div>
+                    </a>
+
+                </div>
+
+                <div class="col-sm-4 col-md-4 notes__item">
+                    <a href="#edit-note" onclick="print_details('EPP')">
+                        <div class="notes__title text-center">Export Certitficate</div>
+                    </a>
+                </div>
+
+                <div class="col-sm-4 col-md-4 notes__item">
+                    <a href="#edit-note" onclick="print_details('FFC')">
+                        <div class="notes__title text-center">Fit For Consumption Certitficate</div>
+                    </a>
                 </div>
             </div>
             <div class="row">
-                <div class="col">
-                    <div class="collapse" id="animal" style="">
-                        <hr>
-                        <div class="card card-body">
-                            Animal
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <div class="collapse" id="food" style="">
-                        <hr>
-                        <div class="card card-body">
-                           Food
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <div class="collapse" id="certification" style="">
-                        <hr>
-                        <div class="card card-body">
-                            Certifications
+                <div class="col" style="display:none";>
+                    <hr>
+                    <div class="card card-body">
+                        <div id="print_details">
+
                         </div>
                     </div>
                 </div>
@@ -74,14 +87,14 @@
         </div>
     </div>
 </form>
-<div class="modal fade" id="modal-xl" tabindex="-1" style="display: none;" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
+<div class="modal fade" id="certificate_detailsModal" tabindex="-1" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title pull-left"></h5>
             </div>
             <div class="modal-body">
-                <div id="cerificate_details">
+                <div id="certificate_details">
 
                 </div>
             </div>
@@ -89,32 +102,30 @@
     </div>
 </div>
 <script>
-    function print_cerificate(serviceCode)
+    function print_certificate(serviceCode,application_No)
     {
-        if(serviceCode == 'MPP')
-        {
-            app_No = $('#movement_permit_no').val();
-            $.ajax({
-                type : "POST",
-                url : "{% url 'get_certificate_details' %}",
-                data : data :{'application_id':app_No ,'service_code':serviceCode, csrfmiddlewaretoken: '{{ csrf_token }}'},
-                success : function(response) {
-                    $('#cerificate_details').html(response);
-                }
-            });
-        }
-        else if(serviceCode == 'IPP')
-        {
-            app_No = $('#movement_permit_no').val();
-            $.ajax({
-                type : "POST",
-                url : "{% url 'get_certificate_details' %}",
-                data : data :{'application_id':app_No ,'service_code':serviceCode, csrfmiddlewaretoken: '{{ csrf_token }}'},
-                success : function(response) {
-                    $('#cerificate_details').html(response);
-                }
-            });
-        }
+        $.ajax({
+            type : "GET",
+            url : "{% url 'get_certificate_details' %}",
+            data : {'application_id':application_No ,'service_code':serviceCode},
+            success : function(response) {
+                $('#certificate_details').html(response);
+                $('#certificate_detailsModal').modal('show');
+            }
+        });
+    }
+
+    function print_details(serviceCode)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'view_certificate_details' %}",
+            data : {'service_code':serviceCode},
+            success : function(response) {
+                $('.col').show();
+                $('#print_details').html(response);
+            }
+        });
     }
 </script>
 {% endblock %}

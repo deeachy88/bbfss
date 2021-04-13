@@ -1,7 +1,28 @@
+{% load static %}
+<style>
+    .header-card {
+    background-color: white;
+}
+</style>
 <div class="card">
-    <div class="card-header">
-        <h4 class="card-title">CLEARANCE FOR LICENSING OF NURSERY ESTABLISHMENT</h4>
-    </div>
+    <div class="card-header header-card">
+		<div class="card-head-row float-left">
+            <div class="card-tools">
+                <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Test Report';printClientTable()">
+                    <span class="btn-label">
+                        <i class="zmdi zmdi-print"></i>
+                    </span>
+                    Print
+                </a>
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="card-title text-center">
+            <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
+        </div>
+        <h6 class="text-center"><font color='black'><b>CLEARANCE FOR LICENSING OF NURSERY ESTABLISHMENT</b></font></h6>
+	</div>
     <div class="card-body">
         <div class="row">
             <p class="float-left">Office ref. no.</p>
@@ -28,31 +49,33 @@
             </p>
         </div>
         <div class="row">
+            {% for certificate_details in certificate_details %}
             <p>
                 This is to inform that in accordance with the Seed Act of Bhutan 2000
-                and the Seed Rules and Regulations of Bhutan 2018, (Name of Dzongkhag),
+                and the Seed Rules and Regulations of Bhutan 2018, {{ Dzongkhag }},
                 BAFRA Office had conducted feasibility inspection of nursery facilities of the proponent
-                mentioned below on dated (Date of onsite inspection):
+                mentioned below on dated {{certificate_details.Inspection_Date }}:
+            </p>
+
+        </div>
+        <div class="row">
+            <p>
+                Name & Address of the Applicant&nbsp;:&nbsp;{{certificate_details.Inspection_Date }}
             </p>
         </div>
         <div class="row">
             <p>
-                Name & Address of the Applicant:
+                Contact Number&nbsp;:&nbsp;
             </p>
         </div>
         <div class="row">
             <p>
-                Contact Number:
+                CID Number&nbsp;:&nbsp;
             </p>
         </div>
         <div class="row">
             <p>
-                CID Number:
-            </p>
-        </div>
-        <div class="row">
-            <p>
-                Category of Nursery (Agro-Forestry/ Ornamental/Fruits and Nuts, Fodder):
+                Category of Nursery (Agro-Forestry/ Ornamental/Fruits and Nuts, Fodder)&nbsp;:&nbsp;
             </p>
         </div>
         <div class="row">
@@ -65,10 +88,10 @@
         <br><br><br><br><br><br><br><br><br><br><br>
         <div class="row">
             <p>
-                Officer In-charge:
+                Officer In-charge&nbsp;:&nbsp;
             </p>
             <p>
-                Bafra:
+                Bafra&nbsp;:&nbsp;
             </p>
         </div>
         <div class="row">
@@ -80,5 +103,6 @@
                2.	Concern individual for necessary action.
             </p>
         </div>
+        {% endfor %}
     </div>
 </div>

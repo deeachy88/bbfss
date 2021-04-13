@@ -6,7 +6,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <strong class="card-title">Import Permit Application</strong>
+                    <strong class="card-title">Application Status</strong>
                 </div>
                     <div class="card-body">
                         <table class="table table-bordered">
@@ -16,15 +16,29 @@
                                     <th scope="col">Application No</th>
                                     <th scope="col">Service Name</th>
                                     <th scope="col">Application Date</th>
+                                    <th scope="col">Application Status</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for application_details in new_import_app %}
+                                {% for application_details in application_details %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td><button class="btn btn-primary btn-link" onclick="viewImportDetails('{{application_details.Application_No}}','{{application_details.Service_Code}}')">{{application_details.Application_No}}</button></td>
-                                        <td>{{service_name}}</td>
+                                        <td>{{application_details.Application_No}}</td>
+                                        {% for service_details in service_details %}
+                                            {% if application_details.Service_Code == service_details.Service_Code %}
+                                                <td>{{service_details.Service_Name}}</td>
+                                            {% endif %}
+                                        {% endfor %}
                                         <td>{{application_details.Action_Date|date:"d-m-Y"}}</td>
+                                        {% if application_details.Application_Status == 'P' %}
+                                            <td>Pending</td>
+                                        {% elif application_details.Application_Status == 'R' %}
+                                            <td>Pending</td>
+                                        {% elif application_details.Application_Status == 'RS' %}
+                                            <td>Resubmit</td>
+                                        {% elif application_details.Application_Status == 'A' %}
+                                            <td>Approved</td>
+                                        {% endif %}
                                     </tr>
                                     {% empty %}
                                     <tr>

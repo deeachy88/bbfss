@@ -1,0 +1,145 @@
+{% load static %}
+<style>
+    .header-card {
+    background-color: white;
+}
+</style>
+<div class="animated fadeIn">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header header-card">
+                    <div class="card-head-row float-right">
+                        <div class="card-tools">
+                            <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Test Report';printClientTable()">
+                                <span class="btn-label">
+                                    <i class="zmdi zmdi-print"></i>
+                                </span>
+                                Print
+                            </a>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                    <div class="card-title text-center">
+                        <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
+                    </div>
+                    <h6 class="text-center"><font color='black'><b>IMPORT PERMIT FOR AGROCHEMICALS</b></font></h6>
+                </div>
+                {% for certificate_details in certificate_details %}
+                <div class="card-body">
+                    <p class="float-right">Permit No&nbsp;:&nbsp;{{certificate_details.Import_Permit_No}}</p>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Name and Address of the Importer</label>
+                                {{certificate_details.Applicant_Name}}&nbsp;&nbsp;{{certificate_details.Present_Address}}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Name and Address of the Exporter</label>
+                                {{certificate_details.Name_And_Address_Supplier}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Entry Point</label>
+                                {{certificate_details.Entry_Point}}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Country of origin</label>
+                                {{certificate_details.Country_Of_Origin}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Crop Common Name</th>
+                                    <th scope="col">Crop Variety Name</th>
+                                    <th scope="col">Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for import in import %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{import.Crop_Id}}</td>
+                                        <td>{{import.Variety_Id}}</td>
+                                        <td>{{import.Quantity}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="6" class="text-center">No Data</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Final Destination</label>
+                                {{certificate_details.Final_Destination}}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Expected date of arrival</label>
+                                {{certificate_details.Expected_Arrival_Date}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <p><b>General Entry Conditions</b></p>
+                        <p>The consignment of pesticides should be:</p>
+                        <p>(i)&nbsp;Properly packed and labeled in accordance with the provisions of Pesticides Rules and Regulations of Bhutan 2019.</p>
+                        <p>(ii)&nbsp;Accompanied by Import Permit</p>
+                    </div>
+                    <div class="row">
+                        <p><b>Special Entry Conditions/ Additional Declaration: NA</b></p>
+                    </div>
+                    <div class="row">
+                        <p>This permit shall be valid for seven (7) month after date of issue.</p>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="row">
+                             <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Date of Issue</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                             <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Validity</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                             <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Place of Issue</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Name and signature of Authorized Officer</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>

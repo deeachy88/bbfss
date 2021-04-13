@@ -132,5 +132,5 @@ EMAIL_HOST_PASSWORD = 'Bafra@2020!'
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/attachments/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'attachments')

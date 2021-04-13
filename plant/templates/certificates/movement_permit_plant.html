@@ -1,67 +1,97 @@
+{% load static %}
+<style>
+    .header-card {
+    background-color: white;
+}
+</style>
 <div class="card">
-    <div class="card-header">
-        <h4 class="card-title">IN-COUNTRY MOVEMENT PERMIT FOR PLANT AND PLANT PRODUCTS</h4>
-    </div>
+    <div class="card-header header-card">
+		<div class="card-head-row float-left">
+            <div class="card-tools">
+                <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Test Report';printClientTable()">
+                    <span class="btn-label">
+                        <i class="zmdi zmdi-print"></i>
+                    </span>
+                    Print
+                </a>
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="card-title text-center">
+            <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
+        </div>
+        <h6 class="text-center"><font color='black'><b>IN-COUNTRY MOVEMENT PERMIT FOR PLANT AND PLANT PRODUCTS</b></font></h6>
+	</div>
     <div class="card-body">
+        <div class="row d-flex justify-content-between details">
+            {% for certificate_details in certificate_details %}
+			    <h6>Serial No.&nbsp;&nbsp;{{certificate_details.Movement_Permit_No}}</h6>
+            {% endfor %}
+			<h6>Date&nbsp;:&nbsp;{{date}}</h6>
+		</div>
+        <br>
         <div class="row">
-            <p class="float-left">Serial No.</p>
-            <p class="float-right">Date:</p>
-        </div>
-        <div class="row">
+            {% for certificate_details in certificate_details %}
             <p>
-                Permission is hereby granted to Mr./Ms. ....……………………………bearing
-                Citizen ID No./Nursery registration No./Official (head of agency)……………. …of………………..
-                village under………………Gewog ………………Dzongkhag……………………to move following Plants and Plant Products
-                from…………………..Dzongkhag to…………………….Dzongkhag:
+                Permission is hereby granted to Mr./Ms. {{certificate_details.Applicant_Name}} bearing
+                Citizen ID No {{certificate_details.CIS}},M/S {{certificate_details.Nursery_Name}}
+                of village: {{ Village}} under Gewog: {{ Gewog }}
+                Dzongkhag: {{ Dzongkhag }} to move following Plants and Plant Products
+                from {{ From_Dzongkhag }} Dzongkhag to {{ To_Dzongkhag }} Dzongkhag:
             </p>
+            {% endfor %}
         </div>
         <div class="row">
-            <table>
+            <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th scope="col">Sl.No</th>
-                        <th scope="col">Commodities</th>
+                        <th scope="col">#</th>
+                        <th scope="col">Commodity</th>
                         <th scope="col">Quantity</th>
                         <th scope="col">Remarks</th>
                     </tr>
                 </thead>
                 <tbody>
-                   {% for certificate_form in certificate_form %}
-                        <tr>
-                            <td>{{ forloop.counter }}</td>
-                            <td>{{file_attach.Attachment}}</td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                          <td colspan="3" class="text-center">No Data</td>
-                        </tr>
+                   {% for import in details_permit %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{import.Commodity}}</td>
+                                <td>{{import.Qty}}</td>
+                                <td>{{import.Remarks}}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                              <td colspan="4" class="text-center">No Data</td>
+                            </tr>
                    {% endfor %}
                 </tbody>
             </table>
         </div>
+        {% for certificate_details in certificate_details %}
         <div class="row">
             <p>
-                Authorized route…………………………..
+                Authorized route {{certificate_details.Authorized_Route}}.
             </p>
         </div>
         <div class="row">
             <p>
-                 SOURCE/ORIGIN OF PRODUCTS:…………………………………………………………..
+                 SOURCE/ORIGIN OF PRODUCTS&nbsp;:&nbsp;{{certificate_details.Source_Of_Product}}.
             </p>
         </div>
         <div class="row">
             <p>
-                  PURPOSE OF MOVEMENT:…………………………………………………………………..
+                  PURPOSE OF MOVEMENT&nbsp;:&nbsp;{{certificate_details.Movement_Purpose}}..
             </p>
         </div>
         <div class="row">
             <p>
-                  MEANS OF COVEYANCE: BY VEHICLE/AIR …………………………………………….
+                  MEANS OF COVEYANCE&nbsp;:&nbsp; BY &nbsp; {{certificate_details.Conveyance_Means}}.
             </p>
         </div>
         <div class="row">
             <p>
-                  HIS PERMIT IS VALID FOR A PERIOD OF………………DAYS FROM THE DATE OF ISSUE.
+                  HIS PERMIT IS VALID FOR A PERIOD OF ……………… DAYS FROM THE DATE OF ISSUE.
             </p>
         </div>
         <div class="row">
@@ -71,10 +101,18 @@
                    Ministry of Agriculture and Forests, Thimphu, Bhutan.
             </p>
         </div>
+
         <div class="row">
             Copy to:
-            1.	The Director General , Bhutan Agriculture and Food Regulatory Authority, MoAF, Thimphu
-            2.	The Officer In charge, BAFRA, ………………………….Dzongkhag for necessary information
         </div>
+        <div class="row">
+            <p>1.The Director General , Bhutan Agriculture and Food Regulatory Authority, MoAF, Thimphu</p>
+        </div>
+        <div class="row">
+            <p>2.The Officer In charge, BAFRA, {{ Dzongkhag }} .Dzongkhag for necessary information</p>
+        </div>
+
+
+        {% endfor %}
     </div>
 </div>

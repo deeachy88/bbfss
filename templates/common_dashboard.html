@@ -409,7 +409,8 @@
         <script src="{% static 'assets/js/product.js' %}"></script>
         <script src="{% static 'assets/js/plant_fodder.js' %}"></script>
         <script src="{% static 'assets/js/fodder_variety.js' %}"></script>
-
+        <script src="{% static 'assets/js/location_mapping.js' %}"></script>
+        <script src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js'></script>
         <script src="{% static 'styles/datatables.net/js/jquery.dataTables.min.js' %}"></script>
     <script>
 
@@ -437,6 +438,8 @@
         $("#plant-fodder-table").DataTable();
         $("#ornamental-table").DataTable();
         $("#product-table").DataTable();
+        $("#location-table").DataTable();
+        $("#details-table").DataTable();
         $("#agro").hide();
         $("#agro_import").hide();
         $("#Cordyceps").hide();
@@ -449,187 +452,12 @@
         }
     });
 
-    function changeOnSelection(permitType)
-    {
-        if(permitType == "P")
-        {
-            $("#plant").show();
-            $("#agro").hide();
-            $("#pills-profile-tab").prop('disabled', true);
-            $("#pills-profile-file").prop('disabled', true);
-        }
-        else
-        {
-            $("#agro").show();
-            $("#plant").hide();
-            $("#pills-agro-file").prop('disabled', true);
-        }
-    }
-
-    function save()
-    {
-        if($('#plantRadio').prop('checked'))
-        {
-
-            $.ajax({
-                type : "POST",
-                url : "{% url 'save_movement_permit' %}",
-                data : $('#permitForm').serialize(),
-                success : function(data) {
-                    $('#applicationNo').val(data.applicationNo);
-                    $('#applNo').val(data.applicationNo);
-                    $('#appNo').val(data.applicationNo);
-                    $('#pills-profile-tab').tab('show');
-                }
-            });
-        }
-        else
-        {
-            var appcid = $('#appcid').val();
-            var appName = $('#appName').val();
-            var mobile_number = $('#phoneNumber').val();
-            var emailId = $('#emailId').val();
-            var mfdUnit = $('#mfdUnit').val();
-            var agroName = $('#agroName').val();
-            var agro_location = $('#agro_location').val();
-            var agro_location = $('#agro_location').val();
-            var from_Dzongkhag = $('#from_Dzongkhag').val();
-            var Dzongkhag_to = $('#Dzongkhag_to').val();
-            var auth_route = $('#auth_route').val();
-            var Origin = $('#Origin').val();
-            var cidCount = $('#appcid').val().length;
-            var number_count = $('#phoneNumber').val().length;
-            var Purpose = $('#Purpose').val();
-            var convMeans = $('#convMeans').val();
-            var vehicleNo = $('#vehicleNo').val();
-            var date = $('#date').val();
-
-                if(appcid == "")
-                {
-                    $('#appcidErrorMsg').html("Enter CID.");
-                    $('#appcidErrorMsg').show();
-                    setTimeout('hideStatus("appcidErrorMsg")',2000);
-                }
-                else if(appName == "")
-                {
-                    $('#appNameErrorMsg').html("Enter Applicant Name.");
-                    $('#appNameErrorMsg').show();
-                    setTimeout('hideStatus("appNameErrorMsg")',2000);
-                }
-                else if(mobile_number == "")
-                {
-                    $('#mobile_numberErrorMsg').html("Enter Contact Number.");
-                    $('#mobile_numberErrorMsg').show();
-                    setTimeout('hideStatus("mobile_numberErrorMsg")',2000);
-                }
-                else if(emailId == "")
-                {
-                    $('#emailIdErrorMsg').html("Enter Email.");
-                    $('#emailIdErrorMsg').show();
-                    setTimeout('hideStatus("emailIdErrorMsg")',2000);
-                }
-                else if(mfdUnit == "")
-                {
-                    $('#mfdUnitErrorMsg').html("Enter Registration No.");
-                    $('#mfdUnitErrorMsg').show();
-                    setTimeout('hideStatus("mfdUnitErrorMsg")',2000);
-                }
-                else if(agroName == "")
-                {
-                    $('#agroNameErrorMsg').html("Enter Name and Description.");
-                    $('#agroNameErrorMsg').show();
-                    setTimeout('hideStatus("agroNameErrorMsg")',2000);
-                }
-                else if(agro_location == "")
-                {
-                    $('#agro_locationErrorMsg').html("Select Location.");
-                    $('#agro_locationErrorMsg').show();
-                    setTimeout('hideStatus("agro_locationErrorMsg")',2000);
-                }
-                else if(from_Dzongkhag == "")
-                {
-                    $('#fromDzongkhagErrorMsg').html("Select From Dzongkhag.");
-                    $('#from_DzongkhagErrorMsg').show();
-                    setTimeout('hideStatus("from_DzongkhagErrorMsg")',2000);
-                }
-                else if(Dzongkhag_to == "")
-                {
-                    $('#Dzongkhag_toErrorMsg').html("Select To Dzongkhag.");
-                    $('#Dzongkhag_toErrorMsg').show();
-                    setTimeout('hideStatus("Dzongkhag_toErrorMsg")',2000);
-                }
-                else if(auth_route == "")
-                {
-                    $('#auth_routeErrorMsg').html("Enter Authorized Route.");
-                    $('#auth_routeErrorMsg').show();
-                    setTimeout('hideStatus("auth_routeErrorMsg")',2000);
-                }
-                else if(Origin == "")
-                {
-                    $('#OriginErrorMsg').html("Enter Source Or Origin.");
-                    $('#OriginErrorMsg').show();
-                    setTimeout('hideStatus("OriginErrorMsg")',2000);
-                }
-                else if(Purpose == "")
-                {
-                    $('#PurposeErrorMsg').html("Enter Source Or Origin.");
-                    $('#PurposeErrorMsg').show();
-                    setTimeout('hideStatus("PurposeErrorMsg")',2000);
-                }
-                else if(convMeans == "")
-                {
-                    $('#convMeansErrorMsg').html("Enter Conveyance Means.");
-                    $('#convMeansErrorMsg').show();
-                    setTimeout('hideStatus("convMeansErrorMsg")',2000);
-                }
-                else if(vehicleNo == "")
-                {
-                    $('#vehicleNoErrorMsg').html("Enter Vehicle No.");
-                    $('#vehicleNoErrorMsg').show();
-                    setTimeout('hideStatus("vehicleNoErrorMsg")',2000);
-                }
-                else if(date == "")
-                {
-                    $('#dateErrorMsg').html("Enter Expected Date.");
-                    $('#dateErrorMsg').show();
-                    setTimeout('hideStatus("dateErrorMsg")',2000);
-                }
-                else if(cidCount < 11)
-                {
-                    $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits.");
-                    $('#cidErrorMsg').show();
-                    setTimeout('hideStatus("cidErrorMsg")',2000);
-                }
-                else if(number_count < 8)
-                {
-                    $('#mobile_numberErrorMsg').html("Cannot Be Less Than Eight.");
-                    $('#mobile_numberErrorMsg').show();
-                    setTimeout('hideStatus("mobile_numberErrorMsg")',2000);
-                }
-                else
-                {
-                    $.ajax({
-                            type : "POST",
-                            url : "{% url 'save_movement_permit' %}",
-                            data : $('#permitForm').serialize(),
-                            success : function(data)
-                            {
-                                alert(data.applicationNo);
-                                $('#applicationNo').val(data.applicationNo);
-                                $('#agro_appNo').val(data.applicationNo);
-                                $('#pills-tab-agro a:last').tab('show');
-                            }
-                    });
-                }
-        }
-    }
-
-
     function save_form()
     {
         var commodity = $('#commodity').val();
         var qty = $('#qty').val();
         var remarks = $('#remarks').val();
+        var unit = $('#unit').val();
 
         if(commodity == "")
         {
@@ -649,10 +477,16 @@
             $('#remarksErrorMsg').show();
             $('#remarksErrorMsg').delay(2000).fadeOut('slow');
         }
+        else if(unit == "")
+        {
+            $('#unitErrorMsg').html("Select Unit.");
+            $('#unitErrorMsg').show();
+            $('#unitErrorMsg').delay(2000).fadeOut('slow');
+        }
         else{
             $.ajax({
                 type : "POST",
-                url : "{% url 'save' %}",
+                url : "{% url 'save_details_movement' %}",
                 data : $('#save_form').serialize(),
                 success : function(responseText) {
                    $('#add_details').modal('hide');
@@ -664,77 +498,86 @@
         }
     }
 
-    function show_modal(){
-      $('#add_details').modal('show');
-    }
+
 
     function forwardApplication(application_id)
-        {
-            forwardTo = $('#forwardTo').val();
+    {
+        forwardTo = $('#forwardTo').val();
 
-            $.ajax({
-                type : "POST",
-                url : "{% url 'forward_application' %}",
-                data :{'application_id':application_id ,'forwardTo':forwardTo, csrfmiddlewaretoken: '{{ csrf_token }}'},
-                success : function(data) {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'forward_application' %}",
+            data :{'application_id':application_id ,'forwardTo':forwardTo, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success : function(data) {
+                $('#application-details-modal').modal('hide');
+                $('#submitMsg').show();
+                setTimeout(function() {
+                    $("#submitMsg").hide('blind', {}, 500)
+                }, 2000);
+                setTimeout(function() {
                     $('#application-details-modal').modal('hide');
+                }, 3000);
+                setTimeout(function()
+                {
                     location.reload();
-                }
-            });
-        }
+                }, 3000);
+
+            }
+        });
+    }
 
 
-        function approveApplication(application_id)
-        {
-            Inspection_Leader = $('#teamLeader').val();
-            Inspection_Team = $('#insTeam').val();
-            remarks = $('#remarks').val();
-            dateOfInspection = $('#dateOfInspection').val();
+    function approveApplication(application_id)
+    {
+        Inspection_Leader = $('#teamLeader').val();
+        Inspection_Team = $('#insTeam').val();
+        remarks = $('#remarks').val();
+        dateOfInspection = $('#dateOfInspection').val();
 
-            $.ajax({
-                type : "POST",
-                url : "{% url 'approve_application' %}",
-                data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks , 'dateOfInspection':dateOfInspection , csrfmiddlewaretoken: '{{ csrf_token }}'},
-                success : function(data) {
-                    $('#application-details-modal').modal('hide');
-                    location.reload();
-                }
-            });
-        }
-        function rejectApplication(application_id)
-        {
-            Inspection_Leader = $('#teamLeader').val();
-            Inspection_Team = $('#insTeam').val();
-            remarks = $('#remarks').val();
-            dateOfInspection = $('#dateOfInspection').val();
+        $.ajax({
+            type : "POST",
+            url : "{% url 'approve_application' %}",
+            data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks , 'dateOfInspection':dateOfInspection , csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success : function(data) {
+                location.reload();
+            }
+        });
+    }
 
-            $.ajax({
-                type : "POST",
-                url : "{% url 'reject_application' %}",
-                data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks , 'dateOfInspection':dateOfInspection , csrfmiddlewaretoken: '{{ csrf_token }}'},
-                success : function(data) {
-                    $('#application-details-modal').modal('hide');
-                    location.reload();
-                }
-            });
-        }
+    function rejectApplication(application_id)
+    {
+        Inspection_Leader = $('#teamLeader').val();
+        Inspection_Team = $('#insTeam').val();
+        remarks = $('#remarks').val();
+        dateOfInspection = $('#dateOfInspection').val();
 
-        function add_details(application_id)
-        {
-            currentObservation = $('#currentObservation').val();
-            decisionConform = $('#decisionConform').val();
+        $.ajax({
+            type : "POST",
+            url : "{% url 'reject_application' %}",
+            data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks , 'dateOfInspection':dateOfInspection , csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success : function(data) {
+                $('#application-details-modal').modal('hide');
+                location.reload();
+            }
+        });
+    }
 
-            $.ajax({
-                type : "GET",
-                url : "{% url 'add_details_ins' %}",
-                data :{'application_id':application_id,'currentObservation':currentObservation,'decisionConform':decisionConform},
-                success : function(data) {
-                    $('#details').html(data);
-                    $('#details').show();
-                    $('#addModal').modal('hide');
-                }
-            });
-        }
+    function add_details(application_id)
+    {
+        currentObservation = $('#currentObservation').val();
+        decisionConform = $('#decisionConform').val();
+
+        $.ajax({
+            type : "GET",
+            url : "{% url 'add_details_ins' %}",
+            data :{'application_id':application_id,'currentObservation':currentObservation,'decisionConform':decisionConform},
+            success : function(data) {
+                $('#details').html(data);
+                $('#details').show();
+                $('#addModal').modal('hide');
+            }
+        });
+    }
 
 function save_details_form()
 {

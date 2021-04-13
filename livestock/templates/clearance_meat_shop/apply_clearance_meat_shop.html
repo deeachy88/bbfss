@@ -135,7 +135,7 @@ option {
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-label">Dzongkhag</label>
-                                        <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value),getLocation(this.value)">
+                                        <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
                                             <option value="">--SELECT DZONGKHAG--</option>
                                             {% for dzongkhag in dzongkhag %}
                                                     <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
@@ -149,8 +149,8 @@ option {
                                         <label class="form-label">Gewog</label>
                                         <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
                                             <option value="">--SELECT GEWOG--</option>
-                                            {% for gewog in gewog %}
-                                                    <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
+                                            {% for location in location %}
+                                                    <option value="{{ location.Location_Code }}">{{ location.Location_Name }}</option>
                                             {% endfor %}
                                         </select>
                                     </div>
@@ -169,18 +169,6 @@ option {
                                          </select>
                                     </div>
                                     <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Location</label>
-                                         <select class="form-control" name="location_code"  id="location">
-                                            <option value="">--SELECT LOCATION--</option>
-                                            {% for location in location %}
-                                                    <option value="{{ location.Location_Code }}">{{ location.Location_Name }}</option>
-                                            {% endfor %}
-                                         </select>
-                                    </div>
-                                    <div class="alert alert-danger" id="locationErrorMsg" style="display:none"></div>
                                 </div>
                             </div>
                             <div class="row">
@@ -232,6 +220,9 @@ option {
                                     </div>
                                     <div class="alert alert-danger" id="inspectionDateErrorMsg" style="display:none"></div>
                                 </div>
+                            </div>
+                            <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+                                Save SuccessFul
                             </div>
                             <div class="card-action">
                                 <button type="button" class="btn btn-primary" value="Submit" onclick="saveform(this.form)">Save</button>
@@ -416,7 +407,14 @@ function saveform(form)
                 success : function(data) {
                     $('#applicationNo').val(data.applNo);
                     $('#meatshop_applicationNo').val(data.applNo);
-                    $('#pills-profile-file').tab('show');
+                    $('#submitMsg').show();
+                    setTimeout(function() {
+                        $("#submitMsg").hide('blind', {}, 500)
+                    }, 2000);
+                     setTimeout(function() {
+                         $('#pills-profile-file').tab('show');
+                    }, 3000);
+
                 }
             });
         }

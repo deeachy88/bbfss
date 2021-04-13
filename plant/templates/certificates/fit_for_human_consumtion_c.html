@@ -1,0 +1,93 @@
+{% load static %}
+<style>
+    .header-card {
+    background-color: white;
+}
+</style>
+<div class="card">
+    <div class="card-header header-card">
+		<div class="card-head-row float-right">
+            <div class="card-tools">
+                <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Test Report';printClientTable()">
+                    <span class="btn-label">
+                        <i class="zmdi zmdi-print"></i>
+                    </span>
+                    Print
+                </a>
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="card-title text-center">
+            <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
+        </div>
+        <h6 class="text-center"><font color='black'><b>FIT FOR HUMAN CONSUMPTION CERTIFICATE</b></font></h6>
+	</div>
+    <div class="card-body">
+        {% for certificate_details in certificate_details %}
+        <div class="row d-flex justify-content-between details">
+			    <h6>Reference No.&nbsp;&nbsp;{{certificate_details.Export_Permit}}</h6>
+                <h6>Date&nbsp;:&nbsp;{{date}}</h6>
+		</div>
+        <div class="row justify-content-center">
+            <h2>Description of Consignment</h2>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Name and Address of exporter</label>
+                    {{certificate_details.Exporter_Name}}&nbsp;&nbsp;{{certificate_details.Exporter_Address}}
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Name and address of importer</label>
+                    {{certificate_details.Consingee_Name_Address}}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Number and description of packages</label>
+                    {{certificate_details.Packages_No}}&nbsp;&nbsp;{{certificate_details.Packages_Description}}
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Declared point of entry</label>
+                    {{certificate_details.Entry_Point}}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <label>Name of produce and quantity declared</label>
+                {{certificate_details.Description}}
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Place Of Origin</label>
+                    {{certificate_details.Dzongkhag}}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <p>
+                Declaration:
+            </p>
+            <p>
+                The consignment described herein have been inspected and it is Fit for Human Consumption.
+            </p>
+        </div>
+        <div class="row">
+            Inspection Date &nbsp;:&nbsp;&nbsp;
+        </div>
+        <div class="row">
+            Validity&nbsp;:&nbsp;days &nbsp;
+        </div>
+        <div class="row">
+            Place of issue &nbsp;:&nbsp;&nbsp;
+        </div>
+    </div>
+</div>

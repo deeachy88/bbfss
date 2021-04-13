@@ -1,7 +1,6 @@
  <form method="post" id="seed_oic_form">
         {% csrf_token %}
     <div class="container">
-      <h3>Inspector Application Details</h3>
     {% for application_details in application_details %}
       <div class="accordion" id="exampleAccordion">
         <div class="card">
@@ -29,14 +28,14 @@
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label>License No</label>
-                            <input type="text" class="form-control" id="License_No" name="License_No">
+                            <input type="text" class="form-control" id="License_No" name="License_No" value="{{application_details.License_No}}">
                         </div>
                         <div class="alert alert-danger" id="License_NoErrorMsg" style="display:none"></div>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label>Company Name</label>
-                            <input type="text" class="form-control" id="Company_Name" name="Company_Name">
+                            <input type="text" class="form-control" value="{{application_details.License_No}}" disabled>
                         </div>
                         <div class="alert alert-danger" id="Company_NameErrorMsg" style="display:none"></div>
                     </div>
@@ -45,21 +44,21 @@
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label>Company_Address</label>
-                            <textarea class="form-control" id="Company_Address" name="Company_Address" rows="4"></textarea>
+                            <textarea disabled class="form-control" id="Company_Address" name="Company_Address" rows="4">{{application_details.Company_Address}}</textarea>
                         </div>
                         <div class="alert alert-danger" id="Company_AddressErrorMsg" style="display:none"></div>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label>CID</label>
-                            <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="CID" name="CID" maxlength="11" onkeypress="return isNumberKey(event)">
+                            <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="CID" name="CID" maxlength="11" value="{{application_details.CID}}" disabled>
                         </div>
                         <div class="alert alert-danger" id="CIDErrorMsg" style="display:none"></div>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label>Owner Name</label>
-                            <input type="text" class="form-control" id="Owner_Name" name="Owner_Name">
+                            <input type="text" class="form-control" id="Owner_Name" name="Owner_Name" value="{{application_details.Owner_Name}}" disabled>
                         </div>
                         <div class="alert alert-danger" id="Owner_NameErrorMsg" style="display:none"></div>
                     </div>
@@ -68,21 +67,21 @@
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label for="contactNumber">Contact Number</label>
-                            <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNo" maxlength="8" onkeypress="return isNumberKey(event)">
+                            <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNo" value="{{application_details.contactNo}}" disabled>
                         </div>
                         <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="email">Email</label>
-                            <input type="email" class="form-control" id="email" name="email">
+                            <input type="email" class="form-control" id="email" name="email" value="{{application_details.email}}">
                         </div>
                         <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label>Unit Area</label>
-                            <input type="text" class="form-control" id="Unit_Area" name="Unit_Area">
+                            <input type="text" class="form-control" id="Unit_Area" name="Unit_Area" value="{{application_details.Unit_Area}}">
                         </div>
                         <div class="alert alert-danger" id="Unit_AreaErrorMsg" style="display:none"></div>
                     </div>
@@ -91,7 +90,7 @@
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label>Area</label>
-                            <input type="text" class="form-control" id="Area" name="Area">
+                            <input type="text" class="form-control" id="Area" name="Area" value="{{application_details.Area}}">
                         </div>
                         <div class="alert alert-danger" id="AreaErrorMsg" style="display:none"></div>
                     </div>
@@ -101,7 +100,9 @@
                             <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value),getLocation(this.value)">
                                 <option value="">--SELECT DZONGKHAG--</option>
                                 {% for dzongkhag in dzongkhag %}
-                                        <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                    <option value="{{dzongkhag.Dzongkhag_Code}}"{% if application_details.Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>
+                                        {{ dzongkhag.Dzongkhag_Name }}
+                                    </option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -113,13 +114,19 @@
                             <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
                                 <option value="">--SELECT GEWOG--</option>
                                 {% for gewog in gewog %}
-                                        <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
+                                    <option value="{{ gewog.Gewog_Code }}"{% if application_details.Gewog_Code == gewog.Gewog_Code %}selected{% endif %}>{{ gewog.Gewog_Name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
                         <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
                     </div>
                 </div>
+                {% if Resubmit_Remarks %}
+                <div class="row">
+                    <label for="gewog">Resubmit_Remarks</label>
+                    {{application_details.Resubmit_Remarks}}
+                </div>
+                {%endif%}
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
@@ -127,7 +134,7 @@
                              <select class="form-control" name="village" id="village">
                                 <option value="">--SELECT VILLAGE--</option>
                                 {% for village in village %}
-                                        <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
+                                        <option value="{{ village.Village_Code }}" {% if application_details.Village_Code == village.Village_Code %}selected{% endif %}>{{ village.Village_Name }}</option>
                                 {% endfor %}
                              </select>
                         </div>
@@ -139,8 +146,8 @@
                              <select class="form-control" name="location_code"  id="location">
                                 <option value="">--SELECT LOCATION--</option>
                                 {% for location in location %}
-                                        <option value="{{ location.Location_Code }}">{{ location.Location_Name }}</option>
-                                {% endfor %}
+                                                    <option value="{{ location.Location_Code }}" {% if application_details.Location_Code == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                            {% endfor %}
                              </select>
                         </div>
                         <div class="alert alert-danger" id="locationNameErrorMsg" style="display:none"></div>

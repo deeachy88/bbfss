@@ -1,8 +1,35 @@
+{% load static %}
+<style>
+    .header-card {
+    background-color: white;
+}
+</style>
 <div class="card">
-    <div class="card-header">
-        <h4 class="card-title">PHYTOSANITARY CERTIFICATE</h4>
-    </div>
+    <div class="card-header header-card">
+		<div class="card-head-row float-left">
+            <div class="card-tools">
+                <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Test Report';printClientTable()">
+                    <span class="btn-label">
+                        <i class="zmdi zmdi-print"></i>
+                    </span>
+                    Print
+                </a>
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="card-title text-center">
+            <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
+        </div>
+        <h6 class="text-center"><font color='black'><b>PHYTOSANITARY CERTIFICATE</b></font></h6>
+	</div>
     <div class="card-body">
+        {% for certificate_details in certificate_details %}
+        <div class="row d-flex justify-content-between details">
+
+			    <h6>PSC NO.&nbsp;&nbsp;{{certificate_details.Export_Permit}}</h6>
+
+		</div>
         <div class="row">
             <div class="col-sm-6">
                 <div class="form-group">
@@ -22,11 +49,13 @@
             <div class="col-sm-6">
                 <div class="form-group">
                     <label>Name and Address of exporter</label>
+                    {{certificate_details.Exporter_Name}}&nbsp;&nbsp;{{certificate_details.Exporter_Address}}
                 </div>
             </div>
             <div class="col-sm-6">
                 <div class="form-group">
                     <label>Declared name and address of consignee</label>
+                    {{certificate_details.Consingee_Name_Address}}
                 </div>
             </div>
         </div>
@@ -34,11 +63,13 @@
             <div class="col-sm-6">
                 <div class="form-group">
                     <label>Number and description of packages</label>
+                    {{certificate_details.Packages_No}}&nbsp;&nbsp;{{certificate_details.Packages_Description}}
                 </div>
             </div>
             <div class="col-sm-6">
                 <div class="form-group">
                     <label>Distinguishing marks</label>
+                    {{certificate_details.Distinguishing_Marks}}
                 </div>
             </div>
         </div>
@@ -46,16 +77,19 @@
             <div class="col-sm-4">
                 <div class="form-group">
                     <label>Place Of Origin</label>
+                    {{certificate_details.Dzongkhag}}
                 </div>
             </div>
             <div class="col-sm-4">
                 <div class="form-group">
                     <label>Declared means of conveyance</label>
+                    {{certificate_details.Consingee_Name_Address}}
                 </div>
             </div>
             <div class="col-sm-4">
                 <div class="form-group">
                     <label>Declared point of entry</label>
+                    {{certificate_details.Entry_Point}}
                 </div>
             </div>
         </div>
@@ -63,11 +97,13 @@
             <div class="col-sm-6">
                 <div class="form-group">
                     <label>Name of produce and quantity declared</label>
+                    {{certificate_details.Description}}
                 </div>
             </div>
             <div class="col-sm-6">
                 <div class="form-group">
                     <label>Botanical name of plants</label>
+                    {{certificate_details.Botanical_Name}}
                 </div>
             </div>
         </div>
@@ -81,23 +117,19 @@
             </p>
         </div>
         <div class="row justify-content-center">
-            <h2>II. ADDITIONAL DECLARATION</h2>
+            <h4>II. ADDITIONAL DECLARATION</h4>
         </div>
         <div class="row justify-content-center">
-            <h2>NIL</h2>
+            <p>{{certificate_details.Additional_Declaring}}</p>
         </div>
         <div class="row justify-content-center">
-            <h2>III. DISINFESTATION AND/ OR DISINFECTION TREATMENT</h2>
+            <h4>III. DISINFESTATION AND/ OR DISINFECTION TREATMENT</h4>
         </div>
         <div class="row">
             <div class="col-sm-6">
                 <div class="form-group">
-                    <label>Treatment Date</label>
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="form-group">
                     <label>Treatment</label>
+                    {{certificate_details.Treatment_Pre}}
                 </div>
             </div>
         </div>
@@ -105,11 +137,13 @@
             <div class="col-sm-6">
                 <div class="form-group">
                     <label>Chemical (Active ingredients)</label>
+                    {{certificate_details.Chemical_Name_Pre}}
                 </div>
             </div>
             <div class="col-sm-6">
                 <div class="form-group">
                     <label>Duration and Temperature</label>
+                    {{certificate_details.Duration_Temperature_Pre}}
                 </div>
             </div>
         </div>
@@ -117,11 +151,13 @@
             <div class="col-sm-6">
                 <div class="form-group">
                     <label>Concentration</label>
+                    {{certificate_details.Concentration_Pre}}
                 </div>
             </div>
             <div class="col-sm-6">
                 <div class="form-group">
                     <label>Additional Information</label>
+                    {{certificate_details.Additional_Information_Pre}}
                 </div>
             </div>
         </div>
@@ -131,7 +167,7 @@
                     <label>Date of Issue &nbsp;:&nbsp;</label>
                 </div>
             </div>
-            <div class="col-sm-4">
+            <!--<div class="col-sm-4">
                 <div class="form-group">
                     <label>Official seal</label>
                 </div>
@@ -140,10 +176,8 @@
                 <div class="form-group">
                     <label>Name and Signature of Authorized Officer</label>
                 </div>
-            </div>
+            </div>-->
         </div>
-        <div class="row">
-            Expiry Date &nbsp;:&nbsp;&nbsp;
-        </div>
+        {% endfor %}
     </div>
 </div>
