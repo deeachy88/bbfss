@@ -1,7 +1,6 @@
  <form method="post" id="seed_oic_form">
         {% csrf_token %}
     <div class="container">
-      <h3>Inspector Application Details</h3>
     {% for application_details in application_details %}
       <div class="accordion" id="exampleAccordion">
         <div class="card">
@@ -28,15 +27,15 @@
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">
-                            <label class="form-label">License No</label>
-                            <input type="text" class="form-control" value="{{application_details}}" disabled>
+                            <label class="form-label">Licenses No</label>
+                            <input type="text" class="form-control" value="{{application_details.License_No}}" disabled>
                         </div>
                         <div class="alert alert-danger" id="License_NoErrorMsg" style="display:none"></div>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label class="form-label">Company Name</label>
-                            <input type="text" class="form-control" value="{{application_details}}" disabled>
+                            <input type="text" class="form-control" value="{{application_details.Company_Name}}" disabled>
                         </div>
                         <div class="alert alert-danger" id="Company_NameErrorMsg" style="display:none"></div>
                     </div>
@@ -45,21 +44,21 @@
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label class="form-label">Company_Address</label>
-                            <textarea disabled class="form-control" id="Company_Address" name="Company_Address" rows="4">{{application_details}}</textarea>
+                            <textarea disabled class="form-control" id="Company_Address" name="Company_Address" rows="4">{{application_details.Company_Address}}</textarea>
                         </div>
                         <div class="alert alert-danger" id="Company_AddressErrorMsg" style="display:none"></div>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label class="form-label">CID</label>
-                            <input type="number" class="form-control"  value="{{application_details}}" disabled>
+                            <input type="number" class="form-control"  value="{{application_details.CID}}" disabled>
                         </div>
                         <div class="alert alert-danger" id="CIDErrorMsg" style="display:none"></div>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label class="form-label">Owner Name</label>
-                            <input type="text" class="form-control" value="{{application_details}}" disabled>
+                            <input type="text" class="form-control" value="{{application_details.Owner_Name}}" disabled>
                         </div>
                         <div class="alert alert-danger" id="Owner_NameErrorMsg" style="display:none"></div>
                     </div>
@@ -68,21 +67,21 @@
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label class="form-label">Contact Number</label>
-                            <input type="number" class="form-control" value="{{application_details}}" disabled>
+                            <input type="number" class="form-control" value="{{application_details.Contact_No}}" disabled>
                         </div>
                         <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="form-label">Email</label>
-                            <input type="email" class="form-control" value="{{application_details}}" disabled>
+                            <input type="email" class="form-control" value="{{application_details.Email}}" disabled>
                         </div>
                         <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="form-label">Dzongkhag</label>
-                            <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value),getLocation(this.value)">
+                            <select class="form-control" name="dzongkhag"  id="dzongkhag">
                                 <option value="">--SELECT DZONGKHAG--</option>
                                 {% for dzongkhag in dzongkhag %}
                                     <option value="{{dzongkhag.Dzongkhag_Code}}"{% if application_details.Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>

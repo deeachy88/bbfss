@@ -18,7 +18,7 @@ urlpatterns = [
     path('load_details_page', views.load_details_page, name='load_details_page'),
     path('agro_details_page', views.agro_details_page, name='agro_details_page'),
     path('update_application_details', views.update_application_details, name='update_details'),
-    path('save', views.save, name='save'),
+    path('save_details_movement', views.save_details_movement, name='save_details_movement'),
     path('forward_application', views.forward_application, name='forward_application'),
     path('approve_application', views.approve_application, name='approve_application'),
     path('reject_application', views.reject_application, name='reject_application'),
@@ -32,7 +32,7 @@ urlpatterns = [
     path('mov_plant_details', views.mov_plant_details, name='mov_plant_details'),
     path('mov_plant_attachment', views.mov_plant_attachment, name='mov_plant_attachment'),
     path('mov_agro_attachment', views.mov_agro_attachment, name='mov_agro_attachment'),
-
+    path('get_unit_master', views.get_unit_master, name='get_unit_master'),
 
     # for import of plant and plant products
     path('apply_import_permit', views.apply_import_permit, name='apply_import_permit'),
@@ -105,7 +105,6 @@ urlpatterns = [
     path('load_details', views.load_details, name='load_details'),
     path('load_file_details', views.load_file_details, name='load_file_details'),
 
-
     # Seed Certification
     path('seed_certificate_application', views.seed_certificate_application, name='seed_certificate_application'),
     path('save_certificate', views.save_seed_cert, name='save_certificate'),
@@ -128,7 +127,10 @@ urlpatterns = [
     path('call_for_inspection', views.call_for_inspection, name='call_for_inspection'),
     path('call_for_inspection_details', views.call_for_inspection_details, name='call_for_inspection_details'),
     path('update_inspection_call_details', views.update_inspection_call_details, name='update_inspection_call_details'),
-    path('resubmit_app_details', views.resubmit_app_details, name='resubmit_app_details')
+    path('resubmit_app_details', views.resubmit_app_details, name='resubmit_app_details'),
+    path('update_resubmit_details', views.update_resubmit_details, name='update_resubmit_details'),
+    path('get_variety', views.get_variety, name='get_variety'),
+    path('get_crop', views.get_crop, name='get_crop')
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

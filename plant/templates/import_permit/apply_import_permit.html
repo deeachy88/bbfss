@@ -14,7 +14,7 @@ option {
     <div class="card-body">
         <form method="post" id="importForm">
             {% csrf_token %}
-            <input type="text" id="applicationNo" name="applicationNo" value="{{ applNo }}" style="display:none">
+            <input type="text" id="applicationNo" name="applicationNo" style="display:none">
             <div class="row justify-content-center">
                 <div class="form-check text-center">
                     <label class="form-label">Import Type <font color="red">*</font></label><br>
@@ -46,46 +46,44 @@ option {
                     <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
                         <div id="plant_details">
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">License Number</label>
                                         <input type="text" class="form-control" id="regNo" name="p_regNo">
                                     </div>
                                     <div class="alert alert-danger" id="regNoErrorMsg" style="display:none"></div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Business Name</label>
                                         <input type="text" class="form-control" id="business_name" name="p_businessName">
                                     </div>
                                     <div class="alert alert-danger" id="business_nameErrorMsg" style="display:none"></div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Applicant CID</label>
                                         <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="p_cid_number" maxlength="11" onkeypress="return isNumberKey(event)">
                                     </div>
                                     <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
                                 </div>
-                                <div class="col-md-6">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Applicant Name</label>
                                         <input type="text" class="form-control" id="name" name="p_Name">
                                     </div>
                                     <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Present Address</label>
-                                        <textarea class="form-control" rows="5" id="presentAddress" name="p_presentAddress"></textarea>
+                                        <textarea class="form-control" rows="3" id="presentAddress" name="p_presentAddress"></textarea>
                                     </div>
                                     <div class="alert alert-danger" id="presentAddressErrorMsg" style="display:none"></div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Contact Number</label>
                                         <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="p_contactNo" maxlength="8" onkeypress="return isNumberKey(event)">
@@ -94,23 +92,21 @@ option {
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Email</label>
                                         <input type="email" class="form-control" id="email" name="p_email">
                                     </div>
                                     <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Name And Address Supplier</label>
                                         <textarea class="form-control" rows="5" id="supplier" name="p_supplier"></textarea>
                                     </div>
                                     <div class="alert alert-danger" id="supplierErrorMsg" style="display:none"></div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Country Of Origin</label>
                                          <select class="form-control" name="Country_Of_Origin"  id="Country_Of_Origin">
@@ -122,7 +118,12 @@ option {
                                         <div class="alert alert-danger" id="Country_Of_OriginErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                            </div>
+                            <div class="row">
+
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Means of Conveyance </label>
                                         <select class="form-control form-control" id="conveyanceMeans" name="p_conveyanceMeans">
@@ -133,9 +134,7 @@ option {
                                     </div>
                                     <div class="alert alert-danger" id="convMeansErrorMsg" style="display:none"></div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Place Of Entry</label>
                                          <select class="form-control" name="p_entry_point"  id="entryPlace">
@@ -147,10 +146,10 @@ option {
                                     </div>
                                     <div class="alert alert-danger" id="entryPlaceErrorMsg" style="display:none"></div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Purpose</label>
-                                        <textarea class="form-control" rows="5" id="movementPurpose" name="p_movementPurpose"></textarea>
+                                        <textarea class="form-control" rows="3" id="movementPurpose" name="p_movementPurpose"></textarea>
                                     </div>
                                     <div class="alert alert-danger" id="movementPurposeErrorMsg" style="display:none"></div>
                                 </div>
@@ -220,46 +219,44 @@ option {
                     <div class="tab-pane fade show active" id="agro-home" role="tabpanel" aria-labelledby="agro-home-tab">
                         <div id="agro_details">
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">License Number</label>
                                         <input type="text" class="form-control" id="reg_No" name="a_regNo">
                                     </div>
                                     <div class="alert alert-danger" id="reg_NoErrorMsg" style="display:none"></div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Business Name</label>
                                         <input type="text" class="form-control" id="businessName" name="a_businessName">
                                     </div>
                                     <div class="alert alert-danger" id="businessNameErrorMsg" style="display:none"></div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Applicant CID</label>
                                         <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="app_cid" name="a_cid_number" maxlength="11" onkeypress="return isNumberKey(event)">
                                     </div>
                                     <div class="alert alert-danger" id="app_cidErrorMsg" style="display:none"></div>
                                 </div>
-                                <div class="col-md-6">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Applicant Name</label>
                                         <input type="text" class="form-control" id="app_name" name="a_Name">
                                     </div>
                                     <div class="alert alert-danger" id="app_nameErrorMsg" style="display:none"></div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Present Address</label>
-                                        <textarea class="form-control" rows="5" id="present_address" name="a_presentAddress"></textarea>
+                                        <textarea class="form-control" rows="3" id="present_address" name="a_presentAddress"></textarea>
                                     </div>
                                     <div class="alert alert-danger" id="present_addressErrorMsg" style="display:none"></div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Contact Number</label>
                                         <input type="number" class="form-control" id="contact_number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="a_contactNo"  maxlength="8" onkeypress="return isNumberKey(event)">
@@ -268,23 +265,21 @@ option {
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Email</label>
                                         <input type="email" class="form-control" id="emailId" name="a_email">
                                     </div>
                                     <div class="alert alert-danger" id="emailIdErrorMsg" style="display:none"></div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Name And Address Supplier</label>
-                                        <textarea class="form-control" rows="5" id="agro_supplier" name="a_supplier"></textarea>
+                                        <textarea class="form-control" rows="3" id="agro_supplier" name="a_supplier"></textarea>
                                     </div>
                                     <div class="alert alert-danger" id="agro_supplierErrorMsg" style="display:none"></div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Country Of Origin</label>
                                          <select class="form-control" name="Agro_Country_Of_Origin"  id="Agro_Country_Of_Origin">
@@ -296,7 +291,9 @@ option {
                                         <div class="alert alert-danger" id="Agro_Country_Of_OriginErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Means of Conveyance </label>
                                         <select class="form-control form-control" id="agro_conveyanceMeans" name="a_conveyanceMeans">
@@ -307,9 +304,7 @@ option {
                                     </div>
                                     <div class="alert alert-danger" id="agro_conveyanceMeansErrorMsg" style="display:none"></div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Place Of Entry</label>
                                          <select class="form-control" name="a_entry_point"  id="entry_place">
@@ -321,10 +316,10 @@ option {
                                     </div>
                                     <div class="alert alert-danger" id="entry_placeErrorMsg" style="display:none"></div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Purpose</label>
-                                        <textarea class="form-control" rows="5" id="movement_Purpose" name="a_movementPurpose"></textarea>
+                                        <textarea class="form-control" rows="3" id="movement_Purpose" name="a_movementPurpose"></textarea>
                                     </div>
                                     <div class="alert alert-danger" id="movement_PurposeErrorMsg" style="display:none"></div>
                                 </div>

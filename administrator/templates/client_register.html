@@ -1,207 +1,211 @@
 {% extends 'index.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-<br><br>
-<div class="container">
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="container-fluid">
-                <div class="row d-flex justify-content-center">
-                    <div class="col-lg-10">
-                        <div class="card">
-                            <div class="card-body">
-                                <div id="loginBox">
-                                      <div class="modal-header text-center">
-                                        <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3" id="myModalLabel"><strong><i class="fa fa-user"></i>
-                                                                                &nbsp;Client Registration</strong></h3>
-                                      </div>
-                                      <form method="post" id="registerForm">
-                                                    {% csrf_token %}
-                                          <div align="center" id="successMessage" class="alert alert-success" role="alert" style="display:none">
-                                            Client Registration Successfull
-                                          </div>
-                                          <div class="form-check text-center">
-                                            <label>Registration Type <font color="red">*</font></label><br>
-                                            <label class="form-radio-label">
-                                                <input class="form-radio-input" type="radio" name="client" value="I" id="individual" onclick="changeOnSelection(this.value)"  checked>
-                                                <span class="form-radio-sign">Individial</span>
-                                            </label>
-                                            <label class="form-radio-label ml-3">
-                                                <input class="form-radio-input" type="radio" name="client" value="O" id="organization" onclick="changeOnSelection(this.value)">
-                                                <span class="form-radio-sign">Organization</span>
-                                            </label>
-                                          </div>
-                                            <div id="individualDiv">
-                                                <div class="row">
-                                                    <div class="form-group col-md-6">
-                                                        <label for="cid">CID</label>
-                                                        <input type="text" name="cid" class="form-control" id="cid" minlength="11" maxlength="11" onkeypress="return isNumberKey(event)">
-                                                        <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
-                                                    </div>
-                                                    <div class="form-group col-md-6">
-                                                        <label for="name">Name</label>
-                                                        <input type="text" name="name" maxlength="254" class="form-control" id="name">
-                                                        <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
-                                                    </div>
-                                                </div>
-                                                <div class="form-row">
-                                                    <div class="form-group col-md-6 mb-0">
-                                                        <div class="form-check">
-                                                            <label>Gender</label><br>
-                                                            <label class="form-radio-label">
-                                                                <input class="form-radio-input" type="radio" name="gender" value="M" checked="">
-                                                                <span class="form-radio-sign">Male</span>
-                                                            </label>
-                                                            <label class="form-radio-label ml-3">
-                                                                <input class="form-radio-input" type="radio" name="gender" value="F">
-                                                                <span class="form-radio-sign">Female</span>
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group col-md-6 mb-0">
-                                                        <label for="email" class=" requiredField">
-                                                            Email<span class="asteriskField">*</span>
-                                                        </label>
-                                                        <div class="">
-                                                            <input type="email" name="email" class="form-control" pattern=".+@globex.com" id="email">
-                                                        </div>
-                                                        <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="form-group col-md-6">
-                                                        <label for="address">Contact Number</label>
-                                                        <input type="text" name="contactnumber" maxlength="254" class="form-control" id="contactnumber">
-                                                        <div class="alert alert-danger" id="contactErrorMsg" style="display:none"></div>
-                                                    </div>
-                                                    <div class="form-group col-md-6">
-                                                        <label for="address">Address</label>
-                                                        <textarea class="form-control" name="address" id="address" rows="5"></textarea>
-                                                        <div class="alert alert-danger" id="addressErrorMsg" style="display:none"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                           <div id="organizationDiv">
-                                                <div class="form-row">
-                                                    <div class="form-group col-md-6 mb-0">
-                                                        <label for="contactPerson" class=" requiredField">
-                                                            Contact Person<span class="asteriskField">*</span>
-                                                        </label>
-                                                        <div class="">
-                                                            <input type="text" name="contactPerson" class="form-control" id="contactPerson">
-                                                        </div>
-                                                        <div class="alert alert-danger" id="contactPersonErrorMsg" style="display:none"></div>
-                                                    </div>
-                                                    <div class="form-group col-md-6 mb-0">
-                                                        <label for="id_email" class=" requiredField">
-                                                            Email<span class="asteriskField">*</span>
-                                                        </label>
-                                                        <div class="">
-                                                            <input type="email" name="emailId" maxlength="254" class="emailinput form-control" id="id_email">
-                                                        </div>
-                                                        <div class="alert alert-danger" id="id_emailPersonErrorMsg" style="display:none"></div>
-                                                    </div>
-                                                </div>
-                                                <div class="form-row">
-                                                        <div class="form-group col-md-6">
-                                                            <label for="mobile_number">Contact Number</label>
-                                                            <input type="text" name="mobile_number" class="form-control" id="mobile_number">
-                                                        </div>
-                                                        <div class="alert alert-danger" id="mobile_numberErrorMsg" style="display:none"></div>
-                                                </div>
-                                                <div class="form-row">
-                                                    <div class="form-group col-md-6 mb-0">
-                                                        <label for="org_agency">
-                                                            Agency<span class="asteriskField">*</span>
-                                                        </label>
-                                                        <div class="">
-                                                            <input type="text" name="org_agency" class="form-control" id="org_agency">
-                                                        </div>
-                                                        <div class="alert alert-danger" id="org_agencyErrorMsg" style="display:none"></div>
-                                                    </div>
-                                                    <div class="form-group col-md-6 mb-0">
-                                                        <label for="org_license">
-                                                            License No<span class="asteriskField">*</span>
-                                                        </label>
-                                                        <div class="">
-                                                            <input type="text" name="org_license" class="form-control" id="org_license">
-                                                        </div>
-                                                        <div class="alert alert-danger" id="org_licenseErrorMsg" style="display:none"></div>
-                                                    </div>
-                                                </div>
-                                                <div class="form-row">
-                                                    <div class="form-group col-md-6 mb-0">
-                                                        <label for="dzongkhag">
-                                                            Dzongkhag<span class="asteriskField">*</span>
-                                                        </label>
-                                                        <div class="">
-                                                            <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
-                                                                <option value="">--SELECT DZONGKHAG--</option>
-                                                                {% for dzongkhag in dzongkhag %}
-                                                                        <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
-                                                                {% endfor %}
-                                                            </select>
-                                                        </div>
-                                                        <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
-                                                    </div>
-                                                    <div class="form-group col-md-6 mb-0">
-                                                        <label for="gewog">
-                                                            Gewog<span class="asteriskField">*</span>
-                                                        </label>
-                                                        <div class="">
-                                                            <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
-                                                                <option value="">--SELECT GEWOG--</option>
-                                                                {% for gewog in gewog %}
-                                                                        <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
-                                                                {% endfor %}
-                                                            </select>
-                                                        </div>
-                                                        <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
-                                                    </div>
-                                                </div>
-                                                <div class="form-row">
-                                                    <div class="form-group col-md-6 mb-0">
-                                                        <label for="village" class=" requiredField">
-                                                            Village<span class="asteriskField">*</span>
-                                                        </label>
-                                                        <div class="">
-                                                            <select class="form-control" name="village" id="village">
-                                                                <option value="">--SELECT VILLAGE--</option>
-                                                                {% for village in village %}
-                                                                        <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
-                                                                {% endfor %}
-                                                            </select>
-                                                        </div>
-                                                        <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
-                                                    </div>
-                                                    <div class="form-group col-md-6">
-                                                        <label for="org_address">Address</label>
-                                                        <textarea class="form-control" name="org_address" id="org_address" rows="5"></textarea>
-                                                        <div class="alert alert-danger" id="org_addressErrorMsg" style="display:none"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            </form>
-                                            <div class="modal-footer mx-5 pt-3 mb-1 justify-content-center">
-                                                <div class="custom-control custom-checkbox custom-control-inline"> <button type="button" onclick="register()" class="btn btn-blue text-center">Register</button>  </div> <small class="ml-auto mb-0 font-weight-bold">Already have an account? <a class="text-danger" href="http://127.0.0.1:8000/login">Login</a></small>
-                                            </div>
-                                            {% if messages %}
-                                              <ul class="messages">
-                                                {% for message in messages %}
-                                                  <li class="{{ message.tags }}">{{ message }}</li>
-                                                {% endfor %}
-                                              </ul>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                 </div>
+<style>
+    .card {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #2a3f54;
+    background-clip: border-box;
+    border: 0px solid rgba(0,0,0,.125);
+    border-radius: .25rem;
+}
+</style>
+<div class="col-lg-10  text-center">
+<div class="card">
+    <div class="card-body">
+        <div id="loginBox">
+              <div class="modal-header text-center">
+                <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3" id="myModalLabel"><strong><i class="fa fa-user"></i>
+                                                        &nbsp;Client Registration</strong></h3>
+              </div>
+              <form method="post" id="registerForm">
+                            {% csrf_token %}
+                  <div align="center" id="successMessage" class="alert alert-success" role="alert" style="display:none">
+                    Client Registration Successfull
+                  </div>
+                  <div class="form-check text-center">
+                    <label>Registration Type <font color="red">*</font></label><br>
+                    <label class="form-radio-label">
+                        <input class="form-radio-input" type="radio" name="client" value="I" id="individual" onclick="changeOnSelection(this.value)"  checked>
+                        <span class="form-radio-sign">Individial</span>
+                    </label>
+                    <label class="form-radio-label ml-3">
+                        <input class="form-radio-input" type="radio" name="client" value="O" id="organization" onclick="changeOnSelection(this.value)">
+                        <span class="form-radio-sign">Organization</span>
+                    </label>
+                  </div>
+                    <div id="individualDiv">
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label for="cid">CID</label>
+                                <input type="text" name="cid" class="form-control" id="cid" minlength="11" maxlength="11" onkeypress="return isNumberKey(event)">
+                                <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
                             </div>
+                            <div class="form-group col-md-6">
+                                <label for="name">Name</label>
+                                <input type="text" name="name" maxlength="254" class="form-control" id="name">
+                                <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6 mb-0">
+                                <div class="form-check">
+                                    <label>Gender</label><br>
+                                    <label class="form-radio-label">
+                                        <input class="form-radio-input" type="radio" name="gender" value="M" checked="">
+                                        <span class="form-radio-sign">Male</span>
+                                    </label>
+                                    <label class="form-radio-label ml-3">
+                                        <input class="form-radio-input" type="radio" name="gender" value="F">
+                                        <span class="form-radio-sign">Female</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6 mb-0">
+                                <label for="email" class=" requiredField">
+                                    Email<span class="asteriskField">*</span>
+                                </label>
+                                <div class="">
+                                    <input type="email" name="email" class="form-control" pattern=".+@globex.com" id="email">
+                                </div>
+                                <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label for="address">Contact Number</label>
+                                <input type="text" name="contactnumber" maxlength="254" class="form-control" id="contactnumber">
+                                <div class="alert alert-danger" id="contactErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="address">Address</label>
+                                <textarea class="form-control" name="address" id="address" rows="5"></textarea>
+                                <div class="alert alert-danger" id="addressErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
                     </div>
+                   <div id="organizationDiv">
+                        <div class="form-row">
+                            <div class="form-group col-md-6 mb-0">
+                                <label for="contactPerson" class=" requiredField">
+                                    Contact Person<span class="asteriskField">*</span>
+                                </label>
+                                <div class="">
+                                    <input type="text" name="contactPerson" class="form-control" id="contactPerson">
+                                </div>
+                                <div class="alert alert-danger" id="contactPersonErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="form-group col-md-6 mb-0">
+                                <label for="id_email" class=" requiredField">
+                                    Email<span class="asteriskField">*</span>
+                                </label>
+                                <div class="">
+                                    <input type="email" name="emailId" maxlength="254" class="emailinput form-control" id="id_email">
+                                </div>
+                                <div class="alert alert-danger" id="id_emailPersonErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="mobile_number">Contact Number</label>
+                                    <input type="text" name="mobile_number" class="form-control" id="mobile_number">
+                                </div>
+                                <div class="alert alert-danger" id="mobile_numberErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6 mb-0">
+                                <label for="org_agency">
+                                    Agency<span class="asteriskField">*</span>
+                                </label>
+                                <div class="">
+                                    <input type="text" name="org_agency" class="form-control" id="org_agency">
+                                </div>
+                                <div class="alert alert-danger" id="org_agencyErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="form-group col-md-6 mb-0">
+                                <label for="org_license">
+                                    License No<span class="asteriskField">*</span>
+                                </label>
+                                <div class="">
+                                    <input type="text" name="org_license" class="form-control" id="org_license">
+                                </div>
+                                <div class="alert alert-danger" id="org_licenseErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6 mb-0">
+                                <label for="dzongkhag">
+                                    Dzongkhag<span class="asteriskField">*</span>
+                                </label>
+                                <div class="">
+                                    <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
+                                        <option value="">--SELECT DZONGKHAG--</option>
+                                        {% for dzongkhag in dzongkhag %}
+                                                <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="form-group col-md-6 mb-0">
+                                <label for="gewog">
+                                    Gewog<span class="asteriskField">*</span>
+                                </label>
+                                <div class="">
+                                    <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                        <option value="">--SELECT GEWOG--</option>
+                                        {% for gewog in gewog %}
+                                                <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6 mb-0">
+                                <label for="village" class=" requiredField">
+                                    Village<span class="asteriskField">*</span>
+                                </label>
+                                <div class="">
+                                    <select class="form-control" name="village" id="village">
+                                        <option value="">--SELECT VILLAGE--</option>
+                                        {% for village in village %}
+                                                <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="org_address">Address</label>
+                                <textarea class="form-control" name="org_address" id="org_address" rows="5"></textarea>
+                                <div class="alert alert-danger" id="org_addressErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                    </div>
+                    </form>
+                    <div class="modal-footer mx-5 pt-3 mb-1 justify-content-center">
+                        <div class="custom-control custom-checkbox custom-control-inline"> <button type="button" onclick="register()" class="btn btn-blue text-center">Register</button>  </div> <small class="ml-auto mb-0 font-weight-bold">Already have an account? <a class="text-danger" href="http://127.0.0.1:8000/login">Login</a></small>
+                    </div>
+                    {% if messages %}
+                      <ul class="messages">
+                        {% for message in messages %}
+                          <li class="{{ message.tags }}">{{ message }}</li>
+                        {% endfor %}
+                      </ul>
+                    {% endif %}
                 </div>
             </div>
-        </div>
+         </div>
     </div>
-</div>
+
 <script>
 function getGewog(dzongkhag_id)
 {

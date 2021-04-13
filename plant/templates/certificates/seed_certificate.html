@@ -1,5 +1,11 @@
+{% load static %}
+<style>
+    .header-card {
+    background-color: white;
+}
+</style>
 <div class="card">
-    <div class="card-header">
+    <div class="card-header header-card">
 		<div class="card-head-row float-left">
             <div class="card-tools">
                 <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Test Report';printClientTable()">
@@ -15,19 +21,19 @@
         <div class="card-title text-center">
             <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
         </div>
-        <h6 class="text-center">SEED CERTIFICATE</h6>
+        <h6 class="text-center"><font color='black'><b>SEED CERTIFICATE</b></font></h6>
 	</div>
     <div class="card-body">
      {% for certificate_details in certificate_details %}
-        <div class="row">
-            <h6>Office Ref No.&nbsp;&nbsp;{{certificate_details.Export_Permit}}</h6>
+        <div class="row justify-content-between">
+            <h6>Office Ref No.&nbsp;&nbsp;{{certificate_details.Seed_Certificate}}</h6>
             <h6>Date&nbsp;:&nbsp;{{date}}</h6>
         </div>
         <div class="row">
             <p>
                 This certificate is hereby granted to Mr./Mrs.{{certificate_details.Applicant_Name}}. holder of Trade
                 License	No {{ certificate_details.License_No }}, M/S {{ certificate_details.Company_Name }}
-                of {{ certificate_details.Dzongkhag }} (Name of BAFRA Office) for
+                of {{ Dzongkhag }} for
                 internal/external supply of seed /planting materials.
                 This certificate has been issued for complying with the Minimum Seed Standard of Bhutan,
                 2019 for the following seed/planting materials:
@@ -66,8 +72,9 @@
         </div>
         <div class="row">
             <p>
-                  Expiry Date:?
+                  Expiry Date:
             </p>
         </div>
+    {% endfor %}
     </div>
 </div>

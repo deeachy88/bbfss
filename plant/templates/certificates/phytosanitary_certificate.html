@@ -1,5 +1,11 @@
+{% load static %}
+<style>
+    .header-card {
+    background-color: white;
+}
+</style>
 <div class="card">
-    <div class="card-header">
+    <div class="card-header header-card">
 		<div class="card-head-row float-left">
             <div class="card-tools">
                 <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Test Report';printClientTable()">
@@ -15,7 +21,7 @@
         <div class="card-title text-center">
             <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
         </div>
-        <h6 class="text-center">PHYTOSANITARY CERTIFICATE</h6>
+        <h6 class="text-center"><font color='black'><b>PHYTOSANITARY CERTIFICATE</b></font></h6>
 	</div>
     <div class="card-body">
         {% for certificate_details in certificate_details %}
@@ -111,13 +117,13 @@
             </p>
         </div>
         <div class="row justify-content-center">
-            <h2>II. ADDITIONAL DECLARATION</h2>
+            <h4>II. ADDITIONAL DECLARATION</h4>
         </div>
         <div class="row justify-content-center">
-            <h2>NIL</h2>
+            <p>{{certificate_details.Additional_Declaring}}</p>
         </div>
         <div class="row justify-content-center">
-            <h2>III. DISINFESTATION AND/ OR DISINFECTION TREATMENT</h2>
+            <h4>III. DISINFESTATION AND/ OR DISINFECTION TREATMENT</h4>
         </div>
         <div class="row">
             <div class="col-sm-6">
@@ -171,9 +177,6 @@
                     <label>Name and Signature of Authorized Officer</label>
                 </div>
             </div>-->
-        </div>
-        <div class="row">
-            Expiry Date &nbsp;:&nbsp;&nbsp;
         </div>
         {% endfor %}
     </div>

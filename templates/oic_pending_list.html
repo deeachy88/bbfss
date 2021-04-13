@@ -24,7 +24,11 @@
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
                                         <td><button class="btn btn-primary btn-link" onclick="viewApplicationDetails('{{application_details.Application_No}}','{{application_details.Service_Code}}')">{{application_details.Application_No}}</button></td>
-                                        <td>{{service_name}}</td>
+                                        {% for service_details in service_details %}
+                                            {% if application_details.Service_Code == service_details.Service_Code %}
+                                                <td>{{service_details.Service_Name}}</td>
+                                            {% endif %}
+                                        {% endfor %}
                                         <td>{{application_details.Applicant_Id}}</td>
                                         <td>{{application_details.Action_Date|date:"d-m-Y"}}</td>
                                     </tr>
@@ -43,7 +47,7 @@
 <form method="post" id="import_details_form" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="modal fade" id="application-details-modal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
                  <div class="modal-header">
                     <h5 class="modal-title" id="agro_attachmentModalLabel">Application Details</h5>

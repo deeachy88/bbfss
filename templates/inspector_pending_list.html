@@ -26,7 +26,11 @@
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
                                         <td><button class="btn btn-primary btn-link" onclick="viewApplicationDetails('{{movement_permit.Application_No}}','{{movement_permit.Service_Code}}')">{{movement_permit.Application_No}}</button></td>
-                                        <td>{{service_name}}</td>
+                                        {% for service_details in service_details %}
+                                            {% if movement_permit.Service_Code == service_details.Service_Code %}
+                                                <td>{{service_details.Service_Name}}</td>
+                                            {% endif %}
+                                        {% endfor %}
                                         <td>{{movement_permit.Applicant_Id}}</td>
                                         <td>{{movement_permit.Action_Date|date:"d-m-Y"}}</td>
                                     </tr>

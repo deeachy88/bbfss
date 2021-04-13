@@ -17,6 +17,9 @@ urlpatterns = [
     path('add_meat_shop_file_name', views.add_meat_shop_file_name, name='add_meat_shop_file_name'),
     path('delete_meat_shop_file', views.delete_meat_shop_file, name='delete_meat_shop_file'),
     path('submit_details', views.submit_details, name='submit_details'),
+    path('details_ins_CMS', views.details_ins_cms, name='details_ins_CMS'),
+    path('approve_application_cms', views.approve_application_cms, name='approve_application_cms'),
+    path('reject_application_cms', views.reject_application_cms, name='reject_application_cms'),
 
 
     # import permit for live animal and fish

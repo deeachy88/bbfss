@@ -78,6 +78,7 @@ def login(request):
                                     elif focal_officer == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
                                         request.session['role'] = focal_officer
+                                        request.session['Role_Id'] = mainroles.Role_Id
                                         request.session['section'] = user.Section_Id_id
                                     elif complaint_officer == str(mainroles.Role_Name):
                                         request.session['username'] = user.name

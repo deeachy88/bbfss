@@ -15,27 +15,15 @@ option {
          <form method="post" id="permitForm">
              {% csrf_token %}
             <input type="hidden" id="applicationNo" name="applicationNo" value="{{ applicationNo }}">
-            <div class="row justify-content-center">
-                <div class="form-check text-center">
-                    <label>Permit Type <font color="red">*</font></label><br>
-                    <label class="form-radio-label">
-                        <input class="form-radio-input" type="radio" name="permitType" id="plantRadio" value="P" onclick="changeOnSelection(this.value)"  checked>
-                        <span class="form-radio-sign">Plant And Plant Products</span>
-                    </label>
-                    <label class="form-radio-label ml-3">
-                        <input class="form-radio-input" type="radio" name="permitType" id="agroRadio" value="A" onclick="changeOnSelection(this.value)">
-                        <span class="form-radio-sign">Agrochemicals</span>
-                    </label>
-                </div>
-            </div>
+
             <div id="plant">
-                <div class="row justify-content-center">
+                <div class="row align-left">
                     <ul class="nav nav-pills nav-secondary" id="pills-tab" role="tablist">
                         <li class="nav-item">
                             <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadPageDetails()">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_details()">Profile</a>
+                            <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_details()">Details</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" id="pills-profile-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="plant_attachment()">Attach File</a>
@@ -47,55 +35,75 @@ option {
                     <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
                         <div id="plant_details">
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-sm-2">
+                                    <label class="form-label">Permit Type</label>
+                                </div>
+                                <div class="col-sm-10 justify-content-center">
+                                    <div class="form-check">
+                                        <label class="form-radio-label">
+                                            <input class="form-radio-input" type="radio" name="permitType" id="plantRadio" value="P" onclick="changeOnSelection(this.value)">
+                                            <span class="form-radio-sign">Plant And Plant Products</span>
+                                        </label>
+                                        <label class="form-radio-label ml-3">
+                                            <input class="form-radio-input" type="radio" name="permitType" id="agroRadio" value="A" onclick="changeOnSelection(this.value)">
+                                            <span class="form-radio-sign">Agrochemicals</span>
+                                        </label>
+                                        <label class="form-radio-label ml-3">
+                                            <input class="form-radio-input" type="radio" name="permitType" id="others" value="O" onclick="changeOnSelection(this.value)">
+                                            <span class="form-radio-sign">Others</span>
+                                        </label>
+                                    </div>
+                                    <div class="alert alert-danger" id="permitErrorMsg" style="display:none"></div>
+                                </div>
+                            </div><br>
+                            <div class="row">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Nursery Registration Number</label>
-                                        <input type="text" class="form-control" id="regNo" name="regNo" placeholder="Nursery Registration Number">
+                                        <input type="text" class="form-control" id="regNo" name="regNo">
                                     </div>
                                     <div class="alert alert-danger" id="regNoErrorMsg" style="display:none"></div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="companyName">Name of Seed Company or Nurseries</label>
-                                        <input type="text" class="form-control" id="companyName" name="companyName" placeholder="Name of Seed Company or Nurseries">
+                                        <label class="form-label">Name of Seed Company or Nurseries</label>
+                                        <input type="text" class="form-control" id="companyName" name="companyName">
                                     </div>
                                     <div class="alert alert-danger" id="companyNameErrorMsg" style="display:none"></div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Applicant CID</label>
-                                        <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" placeholder="Applicant CID" onkeypress="return isNumberKey(event)">
+                                        <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)">
                                     </div>
                                     <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
                                 </div>
-                                <div class="col-md-6">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Name</label>
-                                        <input type="text" class="form-control" id="name" name="Name" placeholder="Applicant Name">
+                                        <input type="text" class="form-control" id="name" name="Name">
                                     </div>
                                     <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Contact Number</label>
-                                        <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" placeholder="Contact Number" onkeypress="return isNumberKey(event)">
+                                        <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
                                     </div>
                                     <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Email</label>
-                                        <input type="email" class="form-control" id="email" name="email" placeholder="EmailID">
+                                        <input type="email" class="form-control" id="email" name="email" onchange="validateemailId(this.value)">
                                     </div>
                                     <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Dzongkhag</label>
                                         <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value),getLocation(this.value)">
@@ -107,7 +115,7 @@ option {
                                     </div>
                                     <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Gewog</label>
                                         <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
@@ -119,9 +127,7 @@ option {
                                     </div>
                                     <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Village</label>
                                          <select class="form-control" name="village" id="village">
@@ -133,36 +139,45 @@ option {
                                     </div>
                                     <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Location</label>
-                                         <select class="form-control" name="location_code"  id="location">
-                                            <option value="">--SELECT LOCATION--</option>
-                                            {% for location in location %}
-                                                    <option value="{{ location.Location_Code }}">{{ location.Location_Name }}</option>
-                                            {% endfor %}
-                                         </select>
-                                    </div>
-                                    <div class="alert alert-danger" id="locationNameErrorMsg" style="display:none"></div>
-                                </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">From Dzongkhag</label>
-                                         <select class="form-control" name="fromDzongkhag"  id="fromDzongkhag">
+                                        <select class="form-control" name="from_dzongkhag"  id="from_dzongkhag" onchange="getFromGewog(this.value)">
                                             <option value="">--SELECT DZONGKHAG--</option>
                                             {% for dzongkhag in dzongkhag %}
                                                     <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
                                             {% endfor %}
-                                         </select>
+                                        </select>
                                     </div>
                                     <div class="alert alert-danger" id="from_dzongkhagErrorMsg" style="display:none"></div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">From Gewog</label>
+                                        <select class="form-control" name="from_gewog"  id="from_gewog">
+                                            <option value="">--SELECT LOCATION--</option>
+                                            {% for location in location %}
+                                                    <option value="{{ location.Location_Code }}">{{ location.Location_Name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="alert alert-danger" id="from_gewogErrorMsg" style="display:none"></div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">From Location</label>
+                                        <input type="text" class="form-control" id="from_location" name="from_location">
+                                    </div>
+                                    <div class="alert alert-danger" id="from_locationErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">To Dzongkhag</label>
-                                        <select class="form-control" name="toDzongkhag"  id="toDzongkhag">
+                                        <select class="form-control" name="to_dzongkhag"  id="to_dzongkhag" onchange="getToGewog(this.value),getLocation(this.value)">
                                             <option value="">--SELECT DZONGKHAG--</option>
                                             {% for dzongkhag in dzongkhag %}
                                                     <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
@@ -171,35 +186,38 @@ option {
                                     </div>
                                     <div class="alert alert-danger" id="to_dzongkhagErrorMsg" style="display:none"></div>
                                 </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">To Gewog</label>
+                                        <select class="form-control" name="to_gewog"  id="to_gewog">
+                                            <option value="">--SELECT LOCATION--</option>
+                                            {% for location in location %}
+                                                    <option value="{{ location.Location_Code }}">{{ location.Location_Name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="alert alert-danger" id="to_gewogErrorMsg" style="display:none"></div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">To Location</label>
+                                        <input type="text" class="form-control" id="to_exact_location" name="to_exact_location">
+                                    </div>
+                                    <div class="alert alert-danger" id="to_exact_locationErrorMsg" style="display:none"></div>
+                                </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Authorized Route</label>
-                                        <input type="text" class="form-control" id="route" name="route" placeholder="Authorized Route">
+                                        <input type="text" class="form-control" id="route" name="route">
                                     </div>
                                     <div class="alert alert-danger" id="routeErrorMsg" style="display:none"></div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Source or Origin Of Products</label>
-                                        <input type="text" class="form-control" id="productSource" name="productSource" placeholder="Source or Origin Of Products">
-                                    </div>
-                                    <div class="alert alert-danger" id="sourceErrorMsg" style="display:none"></div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Purpose Of Movement</label>
-                                        <input type="text" class="form-control" id="movementPurpose" name="movementPurpose" placeholder="Authorized Route">
-                                    </div>
-                                    <div class="alert alert-danger" id="movementPurposeErrorMsg" style="display:none"></div>
-                                </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Means of Conveyance </label>
-                                        <select class="form-control form-control" id="conveyanceMeans" name="conveyanceMeans">
+                                        <select class="form-control form-control" id="conveyanceMeans" name="conveyanceMeans" onchange="conveyanceChange(this.value)">
                                             <option value="">-SELECT-</option>
                                             <option value="Air">Air</option>
                                             <option value="Vehicular">Vehicular</option>
@@ -207,6 +225,32 @@ option {
                                     </div>
                                     <div class="alert alert-danger" id="conveyanceMeansErrorMsg" style="display:none"></div>
                                 </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Vehicle No</label>
+                                        <input type="text" class="form-control" id="vehicleNo" name="vehicleNo">
+                                    </div>
+                                    <div class="alert alert-danger" id="vehicleNoErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                             <div class="row">
+                                 <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Purpose Of Movement</label>
+                                        <input type="text" class="form-control" id="movementPurpose" name="movementPurpose">
+                                    </div>
+                                    <div class="alert alert-danger" id="movementPurposeErrorMsg" style="display:none"></div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Expected Date of Movement</label>
+                                        <input type="text" class="form-control date-picker flatpickr-input active" id="date" name="date"  placeholder="Pick a date" readonly="readonly">
+                                    </div>
+                                    <div class="alert alert-danger" id="dateErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                            <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+                                Save SuccessFul
                             </div>
                             <div class="card-action">
                                     <button type="button" class="btn btn-primary" onclick="save()">Save</button>
@@ -218,7 +262,7 @@ option {
                             <div class="card-header">
                                 <div class="card-head-row">
                                     <div class="card-tools pull-right">
-                                        <button type="button" class="btn btn-light" onclick="show_modal()">Add</button>
+                                        <button type="button" class="btn btn-light" onclick="show_modal()">Add Details</button>
                                     </div>
                                 </div>
                             </div>
@@ -239,192 +283,6 @@ option {
                     </div>
                 </div>
             </div>
-            <div id="agro">
-                <div class="row justify-content-center">
-                    <ul class="nav nav-pills nav-secondary" id="pills-tab-agro" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" id="pills-agro-tab" data-toggle="pill" href="#agro-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadAgroDetails()">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="pills-agro-file" data-toggle="pill" href="#agro-file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="agro_attachment()">Attach File</a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="tab-content mt-2 mb-3" id="pills-tab-agro-tabContent">
-                    <div class="tab-pane fade show active" id="agro-home" role="tabpanel" aria-labelledby="pills-agro-tab">
-                        <div id="movement_agro_details">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Applicant CID</label>
-                                        <input type="text" class="form-control" id="appcid" name="appcid" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" placeholder="Applicant CID" maxlength="11" onkeypress="return isNumberKey(event)">
-                                    </div>
-                                    <div class="alert alert-danger" id="appcidErrorMsg" style="display:none"></div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Applicant Name</label>
-                                        <input type="text" class="form-control" id="appName" name="appName" placeholder="Applicant Name">
-                                    </div>
-                                    <div class="alert alert-danger" id="appNameErrorMsg" style="display:none"></div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Contact Number</label>
-                                        <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Contact Number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="8" onkeypress="return isNumberKey(event)">
-                                    </div>
-                                    <div class="alert alert-danger" id="mobile_numberErrorMsg" style="display:none"></div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Email</label>
-                                        <input type="email" class="form-control" id="emailId" name="emailId" placeholder="EmailID">
-                                    </div>
-                                    <div class="alert alert-danger" id="emailIdErrorMsg" style="display:none"></div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Manufacturing Unit Registration Number</label>
-                                        <input type="text" class="form-control" id="mfdUnit" name="mfdUnit_regNo" placeholder="Manufacturing Unit Registration Number">
-                                    </div>
-                                    <div class="alert alert-danger" id="mfdUnitErrorMsg" style="display:none"></div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Name and Description Agrochemicals</label>
-                                        <input type="text" class="form-control" id="agroName" name="agroName">
-                                    </div>
-                                    <div class="alert alert-danger" id="agroNameErrorMsg" style="display:none"></div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Quantity</label>
-                                        <input type="number" class="form-control" id="agro_qty" name="agro_qty">
-                                    </div>
-                                    <div class="alert alert-danger" id="agro_qtyErrorMsg" style="display:none"></div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Unit</label>
-                                        <select class="form-control form-control" id="agro_unit" name="agro_unit">
-                                            <option value="">-SELECT-</option>
-                                            <option value="kg">Kg</option>
-                                            <option value="MT">MT</option>
-                                        </select>
-                                    </div>
-                                    <div class="alert alert-danger" id="agro_unitErrorMsg" style="display:none"></div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">From Dzongkhag</label>
-                                         <select class="form-control" name="from_Dzongkhag"  id="from_Dzongkhag">
-                                            <option value="">--SELECT DZONGKHAG--</option>
-                                            {% for dzongkhag in dzongkhag %}
-                                                    <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
-                                            {% endfor %}
-                                         </select>
-                                        <div class="alert alert-danger" id="fromDzongkhagErrorMsg" style="display:none"></div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">To Dzongkhag</label>
-                                        <select class="form-control" name="Dzongkhag_to"  id="Dzongkhag_to">
-                                            <option value="">--SELECT DZONGKHAG--</option>
-                                            {% for dzongkhag in dzongkhag %}
-                                                    <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                    <div class="alert alert-danger" id="Dzongkhag_toErrorMsg" style="display:none"></div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Location</label>
-                                         <select class="form-control" name="location"  id="agro_location">
-                                            <option value="">--SELECT LOCATION--</option>
-                                            {% for location in location %}
-                                                    <option value="{{location.Location_Code }}">{{location.Location_Name}}</option>
-                                            {% endfor %}
-                                         </select>
-                                    </div>
-                                    <div class="alert alert-danger" id="agro_locationErrorMsg" style="display:none"></div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Authorized Route</label>
-                                        <input type="text" class="form-control" id="auth_route" name="auth_route" placeholder="Authorized Route">
-                                    </div>
-                                    <div class="alert alert-danger" id="auth_routeErrorMsg" style="display:none"></div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Source or Origin Of Products</label>
-                                        <input type="text" class="form-control" id="Origin" name="Origin" placeholder="Source or Origin Of Products">
-                                    </div>
-                                    <div class="alert alert-danger" id="OriginErrorMsg" style="display:none"></div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Purpose Of Movement</label>
-                                        <input type="text" class="form-control" id="Purpose" name="Purpose" placeholder="Authorized Route">
-                                    </div>
-                                    <div class="alert alert-danger" id="PurposeErrorMsg" style="display:none"></div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Means of Conveyance </label>
-                                        <select class="form-control form-control" id="convMeans" name="convMeans">
-                                            <option value="">-SELECT-</option>
-                                            <option value="Air">Air</option>
-                                            <option value="Vehicular">Vehicular</option>
-                                        </select>
-                                    </div>
-                                    <div class="alert alert-danger" id="convMeansErrorMsg" style="display:none"></div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Vehicle No</label>
-                                        <input type="text" class="form-control" id="vehicleNo" name="vehicleNo" placeholder="Vehicle No">
-                                    </div>
-                                    <div class="alert alert-danger" id="vehicleNoErrorMsg" style="display:none"></div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Expected Date of Movement</label>
-                                        <input type="text" class="form-control date-picker flatpickr-input active" id="date" name="date"  placeholder="Pick a date" readonly="readonly">
-                                    </div>
-                                    <div class="alert alert-danger" id="dateErrorMsg" style="display:none"></div>
-                                </div>
-                            </div>
-                            <div class="card-action">
-                                <button type="button" class="btn btn-primary" onclick="save()">Save</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="agro-file-attachment" role="tabpanel" aria-labelledby="pills-agro-file">
-                        <div id="agroAttach">
-                            {% include 'movement_permit/agro_file_attachment_page.html' %}
-                        </div>
-                    </div>
-                </div>
-            </div>
         </form>
     </div>
 </div>
@@ -432,47 +290,52 @@ option {
     {% csrf_token %}
     <input type="hidden" id="applNo" name="appNo">
     <div class="modal fade" id="add_details" tabindex="-1">
-            <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                             <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Add Details</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                    </button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="col-lg-12">
-                                    <div class="box box-primary">
-                                        <div class="box-body">
-                                            <div class="row">
-                                                <div class="form-group col-md-6">
-                                                    <label for="commodity">Commodity</label>
-                                                    <input type="text" name="commodity" class="form-control" id="commodity" required>
-                                                    <div class="alert alert-danger" id="commodityErrorMsg" style="display:none"></div>
-                                                </div>
-                                                <div class="form-group col-md-6">
-                                                    <label for="qty">Quantity</label>
-                                                    <input type="number" name="qty" class="form-control" id="qty" required>
-                                                    <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="form-group col-md-6">
-                                                    <label for="remarks">Remarks</label>
-                                                    <input type="text" name="remarks" class="form-control" id="remarks" required>
-                                                    <div class="alert alert-danger" id="remarksMeansErrorMsg" style="display:none"></div>
-                                                </div>
-                                            </div>
-                                        </div>
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label for="commodity">Commodity</label>
+                                        <input type="text" name="commodity" class="form-control" id="commodity" required>
+                                        <div class="alert alert-danger" id="commodityErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="qty">Quantity</label>
+                                        <input type="number" name="qty" class="form-control" id="qty" required>
+                                        <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label >Unit</label>
+                                        <select class="form-control" name="unit"  id="unit"></select>
+                                        <div class="alert alert-danger" id="unitErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="remarks">Remarks</label>
+                                        <input type="text" name="remarks" class="form-control" id="remarks" required>
+                                        <div class="alert alert-danger" id="remarksMeansErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                             </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" onclick="save_form()">Add</button>
                         </div>
                     </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="save_form()">Add</button>
+                </div>
             </div>
+        </div>
     </div>
 </form>
 
@@ -507,49 +370,198 @@ option {
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_attachment()"> Submit </button>
                 </div>
+
             </div>
         </div>
     </div>
 </form>
-
-<form method="post" id="agro_attachment_form" enctype="multipart/form-data">
-    {% csrf_token %}
-    <input type="hidden" name="appNo" id="agro_appNo">
-    <div class="modal fade" id="agro_attachmentModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                 <div class="modal-header">
-                    <h5 class="modal-title" id="agro_attachmentModalLabel">Attach Files</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="col-lg-12">
-                        <div class="box box-primary">
-                            <div class="box-body">
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label>Attach File</label>
-                                        <input type="file" name="document" id="document_agro">
-                                        <div class="alert alert-danger" id="document_agroErrorMsg" style="display:none"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_attachment_agro()"> Submit </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</form>
-
-
 <script>
+function save()
+{
+    var regNo = $('#regNo').val();
+    var companyName = $('#companyName').val();
+    var cid = $('#cid').val();
+    var name = $('#name').val();
+    var contactNumber = $('#contactNumber').val();
+    var email = $('#email').val();
+    var dzongkhag = $('#dzongkhag').val();
+    var gewog = $('#gewog').val();
+    var village = $('#village').val();
+    var from_dzongkhag = $('#from_dzongkhag').val();
+    var from_gewog = $('#from_gewog').val().length;
+    var from_location = $('#from_location').val().length;
+    var to_dzongkhag = $('#Purpose').val();
+    var to_gewog = $('#to_gewog').val();
+    var to_exact_location = $('#to_exact_location').val();
+    var route = $('#route').val();
+    var conveyanceMeans = $('#conveyanceMeans').val();
+    var vehicleNo = $('#vehicleNo').val();
+    var movementPurpose = $('#movementPurpose').val();
+    var date = $('#date').val();
+    var numbcount = $('#contactNumber').val().length;
+    var cidCount = $('#cid').val().length;
+    var permitType = $("input[name=permitType]:checked").length;
+
+    if(permitType < 1)
+    {
+        $('#permitErrorMsg').html("Please Check One Permit Type.");
+        $('#permitErrorMsg').show();
+        $('#permitErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(regNo == "")
+    {
+        $('#regNoErrorMsg').html("Enter Nursery Registration Number.");
+        $('#regNoErrorMsg').show();
+        $('#regNoErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(companyName == "")
+    {
+        $('#companyNameErrorMsg').html("Enter Company/Nursery.");
+        $('#companyNameErrorMsg').show();
+        $('#companyNameErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(cid == "")
+    {
+        $('#cidErrorMsg').html("Enter CID.");
+        $('#cidErrorMsg').show();
+        $('#cidErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(name == "")
+    {
+        $('#nameErrorMsg').html("Enter Name.");
+        $('#nameErrorMsg').show();
+        $('#nameErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(contactNumber == "")
+    {
+        $('#contactNumberErrorMsg').html("Enter Contact Number.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(email == "")
+    {
+        $('#emailErrorMsg').html("Enter Email.");
+        $('#emailErrorMsg').show();
+        $('#emailErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(dzongkhag == "")
+    {
+        $('#dzongkhagErrorMsg').html("Select Dzongkhag.");
+        $('#dzongkhagErrorMsg').show();
+        $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(gewog == "")
+    {
+        $('#gewogErrorMsg').html("Select Gewog.");
+        $('#gewogErrorMsg').show();
+        $('#gewogErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(village == "")
+    {
+        $('#villageErrorMsg').html("Select Village.");
+        $('#villageErrorMsg').show();
+        $('#villageErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(from_dzongkhag == "")
+    {
+        $('#from_dzongkhagErrorMsg').html("Select From Dzongkhag.");
+        $('#from_dzongkhagErrorMsg').show();
+        $('#from_dzongkhagErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(from_gewog == "")
+    {
+        $('#from_gewogErrorMsg').html("Select From Gewog.");
+        $('#from_gewogErrorMsg').show();
+        $('#from_gewog').delay(2000).fadeOut('slow');
+    }
+    else if(from_location == "")
+    {
+        $('#from_locationErrorMsg').html("Select From Location.");
+        $('#from_locationErrorMsg').show();
+        $('#from_locationErrorMsg').delay(2000).fadeOut('slow');
+    }
+     else if(to_dzongkhag == "")
+    {
+        $('#from_dzongkhagErrorMsg').html("Select To Dzongkhag.");
+        $('#from_dzongkhagErrorMsg').show();
+        $('#from_dzongkhagErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(to_gewog == "")
+    {
+        $('#from_gewogErrorMsg').html("Select To Gewog.");
+        $('#from_gewogErrorMsg').show();
+        $('#from_gewogErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(to_exact_location == "")
+    {
+        $('#to_exact_locationErrorMsg').html("Enter To Location.");
+        $('#to_exact_locationErrorMsg').show();
+        $('#to_exact_locationErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(route == "")
+    {
+        $('#routeErrorMsg').html("Enter Authorized Route.");
+        $('#routeErrorMsg').show();
+        $('#routeErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(conveyanceMeans == "")
+    {
+        $('#conveyanceMeansErrorMsg').html("Select To Exact Location.");
+        $('#conveyanceMeansErrorMsg').show();
+        $('#conveyanceMeansErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(movementPurpose == "")
+    {
+        $('#movementPurposeErrorMsg').html("Enter Movement Purpose.");
+        $('#movementPurposeErrorMsg').show();
+        $('#movementPurposeErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(date == "")
+    {
+        $('#dateErrorMsg').html("Select Date Of Movement.");
+        $('#dateErrorMsg').show();
+        $('#dateErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(conveyanceMeans == "Vehicular" && vehicleNo == "")
+    {
+        $('#vehicleNoErrorMsg').html("Enter Vehicle No.");
+        $('#vehicleNoErrorMsg').show();
+        $('#vehicleNoErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(cidCount < 11)
+    {
+        $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits.");
+        $('#cidErrorMsg').show();
+        $('#cidErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(numbcount < 8)
+    {
+        $('#contactNumberErrorMsg').html("Connot Be Less Than Eight Digits.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'save_movement_permit' %}",
+            data : $('#permitForm').serialize(),
+            success : function(data) {
+                $('#applicationNo').val(data.applicationNo);
+                $('#applNo').val(data.applicationNo);
+                $('#appNo').val(data.applicationNo);
+                $('#submitMsg').show();
+                setTimeout(function() {
+                    $("#submitMsg").hide('blind', {}, 500)
+                }, 2000);
+                 setTimeout(function() {
+                    $('#pills-profile-tab').tab('show');
+                }, 3000);
+            }
+        });
+    }
+}
+
 function loadPage(appId)
 {
     $.ajax({
@@ -579,22 +591,6 @@ function loadPageDetails()
     });
 }
 
-function loadAgroDetails()
-{
-    var appNo = $('#applicationNo').val();
-    alert(appNo);
-    $.ajax({
-        type : "GET",
-        url : "{% url 'agro_details_page' %}",
-        data :{'application_id':appNo},
-        success : function(response)
-        {
-            $('#movement_agro_details').html(response);
-            $("#pills-agro-file").prop('disabled', false);
-        }
-    });
-}
-
 function getGewog(dzongkhag_id)
 {
     $.ajax({
@@ -607,6 +603,47 @@ function getGewog(dzongkhag_id)
         }
     });
 }
+
+function getFromGewog(dzongkhag_id)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_location' %}",
+        data :{'dzongkhag_id':dzongkhag_id},
+        success : function(data)
+        {
+            $('#from_gewog').html(data);
+        }
+    });
+}
+
+function getToGewog(dzongkhag_id)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_location' %}",
+        data :{'dzongkhag_id':dzongkhag_id},
+        success : function(data)
+        {
+            $('#to_gewog').html(data);
+        }
+    });
+}
+
+function getToGewog(dzongkhag_id)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_gewog' %}",
+        data :{'dzongkhag_id':dzongkhag_id},
+        success : function(data)
+        {
+            $('#to_gewog').html(data);
+        }
+    });
+}
+
+
 
 function getVillage(gewog_id)
 {
@@ -638,19 +675,6 @@ function updateDetails()
     $.ajax({
         type : "POST",
         url : "{% url 'update_details' %}",
-        data : $('#permitForm').serialize(),
-        success : function(response)
-        {
-            $('#pills-profile-tab').tab('show');
-        }
-    });
-}
-
-function updateAgroDetails()
-{
-    $.ajax({
-        type : "POST",
-        url : "{% url 'update_movement_details' %}",
         data : $('#permitForm').serialize(),
         success : function(response)
         {
@@ -709,68 +733,8 @@ function save_attachment()
 
 }
 
-function save_attachment_agro()
-{
-    var fileName = document.getElementById('document_agro').files[0].name;
-    var fd = new FormData();
-    var file = document.getElementById('document_agro').files[0];
-    fd.append('document', file);
-    token_value=$("input[name=csrfmiddlewaretoken]").val();
-    $.ajaxSetup
-    ({
-        beforeSend: function(xhr, settings)
-        {
-            xhr.setRequestHeader("X-CSRFToken", token_value);
-        }
-    });
-        $.ajax({
-        type : "POST",
-        url : "{% url 'save_movement_file' %}",
-        data : fd,
-        dataType: 'json',
-        contentType: false,
-        processData: false,
-        success : function(data)
-        {
-            if (data.form_is_valid)
-            {
-                var appNo = $('#agro_appNo').val();
-                $.ajax
-                ({
-                    type : "POST",
-                    url : "{% url 'movement_agro_file_name' %}",
-                    data : {'appNo':appNo , 'filename':fileName},
-                    success : function(responseText)
-                    {
-                        $('#agro_attachmentModal').modal('hide');
-                        $('#agroAttach').html(responseText);
-                        $('.modal-backdrop').remove();
-                    }
-                });
-            }else
-            {
-                $('#document_agroErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-                $('#document_agroErrorMsg').show();
-                $('#document_agroErrorMsg').delay(2000).fadeOut('slow');
-            }
-        }
-    });
 
-}
 
-function agro_attachment()
-{
-    var appNo = $('#applicationNo').val();
-    $.ajax({
-        type : "GET",
-        url : "{% url 'mov_agro_attachment' %}",
-        data :{'application_id':appNo},
-        success : function(response)
-        {
-            $('#agroAttach').html(response);
-        }
-    });
-}
 
 function load_details()
 {
@@ -800,5 +764,76 @@ function plant_attachment()
     });
 }
 
+function conveyanceChange(value)
+{
+    if (value == "Air")
+    {
+        $('#vehicleNo').attr("disabled", "disabled");
+    }
+    else
+    {
+        $('#vehicleNo').removeAttr("disabled");
+    }
+}
+
+function show_modal()
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'get_unit_master' %}",
+        success : function(data)
+        {
+            $('#add_details').modal('show');
+             $('#unit').html(data);
+        }
+    });
+
+}
+
+function validateemailId(emailId)
+{
+    var pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+    var no=emailId.match(pattern);
+
+    if(no==null)
+    {
+        $('#emailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
+        $('#email').val("");
+        $('#emailErrorMsg').show();
+        $('#emailErrorMsg').delay(2000).fadeOut('slow');
+    }else{
+     $('#emailErrorMsg').hide();
+    }
+
+}
+
+function checkContact(value)
+{
+    var firstDigit = value.charAt(0);
+    var secondDigit = value.charAt(1);
+
+    if(firstDigit != 7 && firstDigit != 1){
+        $('#contactNumberErrorMsg').html("Must Start with either 1 or 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 1 && secondDigit != 6 && secondDigit != 7){
+        $('#contactNumberErrorMsg').html("Second Digit Must Start with either 6 or 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 7 && secondDigit == 6){
+        $('#contactNumberErrorMsg').html("Second Digit Cannot be 6.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 7 && secondDigit != 7){
+        $('#contactNumberErrorMsg').html("Second Digit Must Start with 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }
+
+}
 </script>
 {% endblock %}

@@ -1,7 +1,9 @@
+from django.core.files.storage import FileSystemStorage
 from django.db import models
 
-
 # Create your models here.
+fs = FileSystemStorage()
+
 
 class t_plant_movement_permit_t1(models.Model):
     Application_No = models.CharField(max_length=20, primary_key=True)
@@ -15,14 +17,16 @@ class t_plant_movement_permit_t1(models.Model):
     Dzongkhag_Code = models.IntegerField(default=None, blank=True, null=True)
     Gewog_Code = models.IntegerField(default=None, blank=True, null=True)
     Village_Code = models.IntegerField(default=None, blank=True, null=True)
-    Location_Code = models.IntegerField()
-    From_Dzongkhag_Code = models.IntegerField()
-    To_Dzongkhag_Code = models.IntegerField()
+    From_Dzongkhag_Code = models.IntegerField(default=None, blank=True, null=True)
+    From_Gewog_Code = models.IntegerField(default=None, blank=True, null=True)
+    From_Location = models.CharField(max_length=100)
+    To_Dzongkhag_Code = models.IntegerField(default=None, blank=True, null=True)
+    To_Gewog_Code = models.IntegerField(default=None, blank=True, null=True)
+    To_Location = models.CharField(max_length=100, default=None, blank=True, null=True)
     Authorized_Route = models.CharField(max_length=100)
     Source_Of_Product = models.CharField(max_length=100)
     Movement_Purpose = models.CharField(max_length=100)
     Conveyance_Means = models.CharField(max_length=20)
-    Name_And_Description = models.CharField(max_length=250, default=None, blank=True, null=True)
     Qty = models.IntegerField(default=None, blank=True, null=True)
     Unit = models.CharField(max_length=20, default=None, blank=True, null=True)
     Vehicle_No = models.CharField(max_length=100, default=None, blank=True, null=True)
@@ -35,6 +39,9 @@ class t_plant_movement_permit_t1(models.Model):
     Remarks = models.TextField(blank=True, null=True)
     Application_Date = models.DateField(blank=True, null=True)
     Applicant_Id = models.CharField(max_length=100)
+    Approved_Date = models.DateField(default=None, blank=True, null=True)
+    Validity_Period = models.CharField(default=None, max_length=10, blank=True, null=True)
+    Validity = models.DateField(default=None, blank=True, null=True)
 
 
 class t_plant_movement_permit_t2(models.Model):
@@ -42,6 +49,7 @@ class t_plant_movement_permit_t2(models.Model):
     Application_No = models.CharField(max_length=20)
     Commodity = models.CharField(max_length=100)
     Qty = models.IntegerField()
+    Unit = models.CharField(default=None, max_length=10, blank=True, null=True)
     Remarks = models.TextField()
 
 
@@ -85,7 +93,7 @@ class t_file_attachment(models.Model):
     Applicant_Id = models.CharField(max_length=20, blank=True, null=True)
     Role_Id = models.IntegerField(blank=True, null=True)
     File_Path = models.CharField(max_length=250)
-    Attachment = models.FileField(upload_to='media/files/%Y-%m-%d')
+    Attachment = models.FileField(storage=fs)
 
 
 class t_plant_import_permit_t1(models.Model):
@@ -118,6 +126,11 @@ class t_plant_import_permit_t1(models.Model):
     FO_Remarks = models.TextField(blank=True, null=True)
     Inspection_Remarks = models.TextField(blank=True, null=True)
     Country_Of_Origin = models.TextField(blank=True, null=True)
+    Application_Date = models.DateField(blank=True, null=True)
+    Applicant_Id = models.CharField(max_length=100)
+    Approved_Date = models.DateField(default=None, blank=True, null=True)
+    Validity_Period = models.CharField(default=None, max_length=10, blank=True, null=True)
+    Validity = models.DateField(default=None, blank=True, null=True)
 
 
 class t_plant_import_permit_t2(models.Model):
@@ -234,6 +247,11 @@ class t_plant_export_certificate_plant_plant_products_t1(models.Model):
     Feasibility_Status = models.CharField(max_length=5, default=None, blank=True, null=True)
     Inspection_Remarks = models.TextField(blank=True, null=True)
     Export_Permit = models.CharField(max_length=20, default=None, blank=True, null=True)
+    Application_Date = models.DateField(blank=True, null=True)
+    Applicant_Id = models.CharField(max_length=100)
+    Approved_Date = models.DateField(default=None, blank=True, null=True)
+    Validity_Period = models.CharField(default=None, max_length=10, blank=True, null=True)
+    Validity = models.DateField(default=None, blank=True, null=True)
 
 
 class t_plant_clearence_nursery_seed_grower_t1(models.Model):
@@ -270,6 +288,11 @@ class t_plant_clearence_nursery_seed_grower_t1(models.Model):
     Remarks = models.TextField(blank=True, null=True)
     Desired_Inspection_Date = models.DateField(blank=True, null=True)
     Clearance_Number = models.CharField(max_length=20, default=None, blank=True, null=True)
+    Application_Date = models.DateField(blank=True, null=True)
+    Applicant_Id = models.CharField(max_length=100)
+    Approved_Date = models.DateField(default=None, blank=True, null=True)
+    Validity_Period = models.CharField(default=None, max_length=10, blank=True, null=True)
+    Validity = models.DateField(default=None, blank=True, null=True)
 
 
 class t_plant_clearence_nursery_seed_grower_t2(models.Model):
@@ -300,6 +323,11 @@ class t_plant_seed_certification_t1(models.Model):
     Inspection_Leader = models.CharField(max_length=250, default=None, blank=True, null=True)
     Inspection_Team = models.TextField(default=None, blank=True, null=True)
     Seed_Certificate = models.CharField(max_length=100, default=None, blank=True, null=True)
+    Application_Date = models.DateField(blank=True, null=True)
+    Applicant_Id = models.CharField(max_length=100)
+    Approved_Date = models.DateField(default=None, blank=True, null=True)
+    Validity_Period = models.CharField(default=None, max_length=10, blank=True, null=True)
+    Validity = models.DateField(default=None, blank=True, null=True)
 
 
 class t_plant_seed_certification_t2(models.Model):
@@ -322,3 +350,17 @@ class t_plant_seed_certification_t3(models.Model):
     Application_No = models.CharField(max_length=30, primary_key=True)
     Observation = models.TextField(blank=True, null=True)
     Action = models.TextField(blank=True, null=True)
+
+
+class t_payment_details(models.Model):
+    Record_Id = models.AutoField(primary_key=True)
+    Application_No = models.CharField(max_length=30)
+    Application_Date = models.DateField()
+    Permit_No = models.CharField(max_length=100)
+    Service_Id = models.CharField(max_length=5)
+    Validity = models.DateField()
+    Payment_Type = models.CharField(max_length=30)
+    Instrument_No = models.CharField(max_length=50)
+    Amount = models.IntegerField()
+    Receipt_No = models.CharField(max_length=30)
+    Receipt_Date = models.DateField()

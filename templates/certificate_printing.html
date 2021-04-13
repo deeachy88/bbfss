@@ -1,6 +1,26 @@
 {% extends 'common_dashboard.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+<style>
+    .notes__item>a {
+    height: 15px;
+    background-color: rgba(0,0,0,.2);
+    display: block;
+    padding: 1.8rem 2rem;
+    position: relative;
+    color: rgba(255,255,255,.75);
+}
+.notes__title {
+    color: #fff;
+    margin-bottom: 1.1rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-top: -9px;
+}
+</style>
 <form id="certificate_form" method="post">
     {% csrf_token %}
     <div class="card">
@@ -8,24 +28,60 @@
             <strong class="card-title">Print Certificates</strong>
         </div>
         <div class="card-body">
-            <div class="btn-demo">
-                <a class="btn btn-light collapsed" onclick="print_details('MPP')"  href="#">Movement Permit</a>
-                <a class="btn btn-light collapsed" onclick="print_details('EPP')" href="#">Export Permit</a>
-                <a class="btn btn-light collapsed" onclick="print_details('RSC')" href="#">Fit For Consumption Certificate</a>
-                <a class="btn btn-light collapsed" onclick="print_details('RNS')" href="#">Nursery Clearnace</a>
-                <a class="btn btn-light collapsed" onclick="print_details('RSC')" href="#">Import Certificate</a>
-                <a class="btn btn-light collapsed" onclick="print_details('IPP')" href="#">Release Form</a>
-                <a class="btn btn-light collapsed" onclick="print_details('RSC')" href="#">Seed Certificate</a>
+            <div class="row notes">
+                <div class="col-sm-4 col-md-3 notes__item">
+                    <a href="#edit-note" onclick="print_details('IPP')">
+                        <div class="notes__title text-center">
+                            Import Permit
+                        </div>
+                    </a>
+                </div>
 
+                <div class="col-sm-4 col-md-3 notes__item notes__item--blue">
+                    <a href="#edit-note" onclick="print_details('RF')">
+                        <div class="notes__title text-center">Release Form</div>
+                    </a>
+                </div>
+
+                <div class="col-sm-4 col-md-3 notes__item notes__item--blue">
+                    <a href="#edit-note" onclick="print_details('NC')">
+                        <div class="notes__title text-center">Nursery Clearance</div>
+                    </a>
+                </div>
+
+                <div class="col-sm-4 col-md-3 notes__item notes__item--amber">
+                    <a href="#edit-note" onclick="print_details('RSC')">
+                        <div class="notes__title text-center">Seed Certificate</div>
+                    </a>
+                </div>
+
+                <div class="col-sm-4 col-md-4 notes__item">
+                    <a href="#edit-note" onclick="print_details('MPP')">
+                        <div class="notes__title text-center">In-Country Movement Permit</div>
+                    </a>
+
+                </div>
+
+                <div class="col-sm-4 col-md-4 notes__item">
+                    <a href="#edit-note" onclick="print_details('EPP')">
+                        <div class="notes__title text-center">Export Certitficate</div>
+                    </a>
+                </div>
+
+                <div class="col-sm-4 col-md-4 notes__item">
+                    <a href="#edit-note" onclick="print_details('FFC')">
+                        <div class="notes__title text-center">Fit For Consumption Certitficate</div>
+                    </a>
+                </div>
             </div>
             <div class="row">
                 <div class="col" style="display:none";>
-                        <hr>
-                        <div class="card card-body">
-                            <div id="print_details">
+                    <hr>
+                    <div class="card card-body">
+                        <div id="print_details">
 
-                            </div>
                         </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -58,6 +114,7 @@
             }
         });
     }
+
     function print_details(serviceCode)
     {
         $.ajax({

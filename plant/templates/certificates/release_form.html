@@ -1,19 +1,46 @@
+{% load static %}
+<style>
+    .header-card {
+    background-color: white;
+}
+</style>
 <div class="card">
-    <div class="card-header">
-        <h4 class="card-title">Release Form</h4>
+    <div class="card-header header-card">
+        <div class="card-head-row float-right">
+            <div class="card-tools">
+                <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Test Report';printClientTable()">
+                    <span class="btn-label">
+                        <i class="zmdi zmdi-print"></i>
+                    </span>
+                    Print
+                </a>
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="card-title text-center">
+            <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
+        </div>
+        <h6 class="text-center"><font color='black'><b>RELEASE FORM</b></font></h6>
     </div>
     <div class="card-body">
         <div class="row justify-content-center">
             <p>The following consignment is released to </p>
         </div>
-        <div class="row justify-content-center">
-            <label>Mr/Ms:</label>
+        {% for certificate_details in certificate_details %}
+        <div class="row justify-content-between">
+            <label>Ref.No&nbsp;:&nbsp;{{certificate_details.Clearance_Ref_No}}</label>
+            <label>Import Permit&nbsp;:&nbsp;{{certificate_details.Import_Permit_No}}</label>
         </div>
         <div class="row justify-content-center">
-            <label>Address:</label>
+            <label>Mr/Ms&nbsp;:&nbsp;{{certificate_details.Applicant_Name}}</label>
         </div>
+        <div class="row justify-content-center">
+            <label>Address&nbsp;:&nbsp;{{certificate_details.Present_Address}}</label>
+        </div>
+        {% endfor %}
         <div class="row">
-            <table>
+            <table  class="table table-bordered">
                 <thead>
                     <tr>
                         <th scope="col">Sl.No</th>
@@ -26,18 +53,20 @@
                    {% for release_form in release_form %}
                         <tr>
                             <td>{{ forloop.counter }}</td>
-                            <td>{{file_attach.Attachment}}</td>
+                            <td></td>
+                            <td>{{release_form.Crop}}</td>
+                            <td>{{release_form.Quantity_Released}}</td>
                         </tr>
                         {% empty %}
                         <tr>
-                          <td colspan="3" class="text-center">No Data</td>
+                          <td colspan="4" class="text-center">No Data</td>
                         </tr>
                    {% endfor %}
                 </tbody>
             </table>
         </div>
         <div class="row">
-            Date of Issue &nbsp;:&nbsp;&nbsp;
+            Date of Issue &nbsp;:&nbsp;&nbsp;{{approved_date}}
         </div>
     </div>
 </div>

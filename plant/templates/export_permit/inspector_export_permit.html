@@ -23,8 +23,7 @@ option {
                     <div id="collapseOne" class="collapse" data-parent="#accordionExample" style="">
                         <div class="card-body">
                             {% for application_details in application_details %}
-                                <input type="text" value="{{ application_details.Application_No }}" name="appNo" style="display:none">
-                                {% if application_details.Certificate_Type == 'P' %}
+                                {% if P == application_details.Certificate_Type  %}
                                     <div class="row justify-content-center">
                                         <div class="form-check text-center">
                                             <label>Certificate Type <font color="red">*</font></label><br>
@@ -53,7 +52,7 @@ option {
                                         </div>
                                     </div>
                                 {% endif %}
-                                {% if application_details.Certificate_Type == 'P' %}
+                                {% if P == application_details.Certificate_Type%}
                                 <div class="row">
                                     <div class="col-sm-4">
                                         <div class="form-group">
@@ -716,6 +715,7 @@ option {
                         <a class="collapsed" data-toggle="collapse" data-target="#collapseTwo">Attachments</a>
                     </div>
                     <div id="collapseTwo" class="collapse" data-parent="#accordionExample">
+
                         <div class="card-body">
                             <table class="table table-bordered">
                                 <thead>
@@ -745,6 +745,7 @@ option {
                         <a class="collapsed" data-toggle="collapse" data-target="#collapseThree">Inspectors Details</a>
                     </div>
                     <div id="collapseThree" class="collapse" data-parent="#accordionExample">
+                        {% for application_details in application_details %}
                         {% if application_details.Certificate_Type == 'P' %}
                             <div class="card-body">
                                 <div class="row">
@@ -1154,17 +1155,17 @@ option {
                                                         <option value="Spray">Spray</option>
                                                         <option value="Seed treatment">Seed Treatment</option>
                                                         <option value="others">Others(Specify)</option>
-                                                    {% if application_details.Treatment_Pre == "Spray" %}
+                                                    {% elif application_details.Treatment_Pre == "Spray" %}
                                                         <option value="Fumigation">Fumigation</option>
                                                         <option value="Spray" selected>Spray</option>
                                                         <option value="Seed treatment">Seed Treatment</option>
                                                         <option value="others">Others(Specify)</option>
-                                                    {% if application_details.Treatment_Pre == "Seed Treatment" %}
+                                                    {% elif application_details.Treatment_Pre == "Seed Treatment" %}
                                                         <option value="Fumigation">Fumigation</option>
                                                         <option value="Spray">Spray</option>
                                                         <option value="Seed treatment" selected>Seed Treatment</option>
                                                         <option value="others">Others(Specify)</option>
-                                                    {% if application_details.Treatment_Pre == "others" %}
+                                                    {% elif application_details.Treatment_Pre == "others" %}
                                                         <option value="Fumigation">Fumigation</option>
                                                         <option value="Spray">Spray</option>
                                                         <option value="Seed treatment">Seed Treatment</option>
@@ -1253,7 +1254,9 @@ option {
                                     </div>
                                 </div>
                             </div>
-                         {% endif %}
+                            <button type="button" class="btn btn-success" onclick="export_complete()"><i class="ace-icon fas fa-arrow-right"></i>&nbsp;&nbsp;Complete</button>
+                        {% endif %}
+                        {% endfor%}
                     </div>
                 </div>
             </div>
@@ -1286,7 +1289,6 @@ option {
                     $location.reload();
                 }
             });
-
     }
     function showDiv(value)
     {
