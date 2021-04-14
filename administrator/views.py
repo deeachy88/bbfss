@@ -12,7 +12,6 @@ from django.shortcuts import render, get_object_or_404, redirect
 # Create your views here.
 from django.template.loader import render_to_string
 
-
 from administrator.forms import UserForm, LocationFieldMappingForm, FieldOfficeForm, FodderVarietyForm, PlantFodderForm, \
     PlantProductForm, PesticideForm, OrnamentalPlantForm, CropSpeciesForm, ChemicalForm, CropVarietyForm, CropForm, \
     ServiceForm, DivisionForm, SectionForm, RoleForm, CropCategoryForm
@@ -376,6 +375,7 @@ def save_division_form(request, form, template_name):
     data['html_form'] = render_to_string(template_name, context, request=request)
     return JsonResponse(data)
 
+
 def crop_category_manage(request):
     if request.method == 'POST':
         form = CropCategoryForm(request.POST)
@@ -406,12 +406,13 @@ def save_crop_category_form(request, form, template_name):
             data['form_is_valid'] = True
             crop_category = t_plant_crop_category_master.objects.all()
             return render(request, 'plant_crop_category.html', {'form': form, 'crop_category': crop_category
-            })
+                                                                })
         else:
             data['form_is_valid'] = False
     context = {'form': form}
     data['html_form'] = render_to_string(template_name, context, request=request)
     return JsonResponse(data)
+
 
 def delete_crop_category(request, Crop_Category_Id):
     print("test check delete")
@@ -426,6 +427,7 @@ def delete_crop_category(request, Crop_Category_Id):
         context = {'crop_category': crop_category}
         data['html_form'] = render_to_string('crop_category_delete.html', context, request=request)
     return JsonResponse(data)
+
 
 def service_manage(request):
     if request.method == 'POST':
@@ -1277,10 +1279,21 @@ def password_update(request):
 
 
 def payment_list(request):
-    application_details = t_payment_details.objects.filter(Movement_Permit_No__isnull=False)
-    return render(request, 'payment_details_list.html')
+    application_details = t_payment_details.objects.filter(Receipt_No__isnull=True)
+    service_details = t_service_master.objects.all()
+    return render(request, 'payment_details_list.html', {'application_details': application_details,
+                                                         'service_details': service_details})
+
 
 def update_payment_details(request):
-    application_details = t_payment_details.objects.filter(Movement_Permit_No__isnull=False)
-    return render(request, 'payment_details_list.html')
-
+    Application_No = request.POST['application_no']
+    Payment_Type = request.POST['Payment_Type']
+    Instrument_No = request.POST['Instrument_No']
+    Amount = request.POST['Amount']
+    Receipt_No = request.POST['Receipt_No']
+    Receipt_Date = request.POST['Receipt_Date']
+    application_details = t_payment_details.objects.filter(Application_No=Application_No)
+    application_details.update(Payment_Type=Payment_Type, Instrument_No=Instrument_No, Amount=Amount,
+                               Receipt_No=Receipt_No, Receipt_Date=Receipt_Date,
+                               Updated_By=request.session['email'], Updated_On=date.today())
+    return redirect(payment_list)

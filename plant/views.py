@@ -13,7 +13,7 @@ from administrator.models import t_dzongkhag_master, t_gewog_master, t_village_m
     t_service_master, t_country_master, t_plant_crop_category_master, t_unit_master, t_section_master, \
     t_inspection_type_master
 from bbfss import settings
-from livestock.models import t_livestock_clearence_meat_shop_t1
+from livestock.models import t_livestock_clearance_meat_shop_t1
 from plant.forms import ImportFormThree, ImportFormTwo
 from plant.models import t_workflow_details, t_plant_movement_permit_t2, t_plant_movement_permit_t1, \
     t_plant_movement_permit_t3, t_file_attachment, t_plant_import_permit_t1, t_plant_import_permit_t2, \
@@ -374,7 +374,7 @@ def view_application_details(request):
                        'village': village, 'location': location, 'details_list': details_list,
                        'inspector_list': user_role_list, 'file': file})
     elif service_code == 'CMS':
-        application_details = t_livestock_clearence_meat_shop_t1.objects.filter(Application_No=application_id)
+        application_details = t_livestock_clearance_meat_shop_t1.objects.filter(Application_No=application_id)
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_location_field_office_mapping.objects.all()
         village = t_village_master.objects.all()
@@ -938,7 +938,7 @@ def view_oic_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         village = t_village_master.objects.all()
         location = t_location_field_office_mapping.objects.all()
-        meat_shop_clearance = t_livestock_clearence_meat_shop_t1.objects.filter(Application_No=application_id)
+        meat_shop_clearance = t_livestock_clearance_meat_shop_t1.objects.filter(Application_No=application_id)
         file = t_file_attachment.objects.filter(Application_No=application_id)
         workflow_details = t_workflow_details.objects.filter(Application_No=application_id)
         for application in workflow_details:
@@ -947,7 +947,6 @@ def view_oic_details(request):
         return render(request, 'clearance_meat_shop/oic_clearance.html',
                       {'application_details': meat_shop_clearance, 'file': file, 'dzongkhag': dzongkhag,
                        'village': village, 'location': location, 'inspector_list': user_role_list})
-
 
 
 def view_inspector_details(request):
@@ -3240,6 +3239,6 @@ def resubmit_app_details(request):
         return render(request, 'nursery_registration/resubmit_application.html',
                       {'application_details': application_details})
 
-def add_payment_details(request):
-    t_payment_details.objects.create(Application_No='',Permit_No='')
 
+def add_payment_details(request):
+    t_payment_details.objects.create(Application_No='', Permit_No='')

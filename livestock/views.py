@@ -15,7 +15,7 @@ from administrator.models import t_dzongkhag_master, t_gewog_master, t_village_m
     t_service_master
 from bbfss import settings
 from livestock.forms import MeatShopClearanceFormOne, MeatShopClearanceFormTwo
-from livestock.models import t_livestock_clearence_meat_shop_t1, t_livestock_clearence_meat_shop_t2
+from livestock.models import t_livestock_clearance_meat_shop_t1, t_livestock_clearance_meat_shop_t2
 from plant.models import t_workflow_details, t_file_attachment, t_payment_details
 from plant.views import inspector_application
 
@@ -53,7 +53,7 @@ def save_meat_shop_clearance(request):
     inspectionDate = request.POST.get('inspectionDate')
     date_format_ins = datetime.strptime(inspectionDate, '%d-%m-%Y').date()
 
-    t_livestock_clearence_meat_shop_t1.objects.create(
+    t_livestock_clearance_meat_shop_t1.objects.create(
         Application_No=last_application_no,
         Applicant_Id=applicant_Id,
         Scope=scope,
@@ -101,7 +101,7 @@ def save_meat_shop_clearance(request):
 
 
 def get_meat_shop_application_no(request, service_code):
-    last_application_no = t_livestock_clearence_meat_shop_t1.objects.aggregate(Max('Application_No'))
+    last_application_no = t_livestock_clearance_meat_shop_t1.objects.aggregate(Max('Application_No'))
     lastAppNo = last_application_no['Application_No__max']
     if not lastAppNo:
         year = timezone.now().year
@@ -121,7 +121,7 @@ def load_application_details(request):
     village = t_village_master.objects.all()
     location = t_location_field_office_mapping.objects.all()
     application_id = request.GET.get('application_id')
-    application_details = t_livestock_clearence_meat_shop_t1.objects.filter(Application_No=application_id)
+    application_details = t_livestock_clearance_meat_shop_t1.objects.filter(Application_No=application_id)
     print(application_id)
     return render(request, 'clearance_meat_shop/details_meat_shop.html',
                   {'application_details': application_details, 'dzongkhag': dzongkhag, 'gewog': gewog,
@@ -139,7 +139,7 @@ def load_attachment_details(request):
 
 def meat_shop_clearance_app(request):
     appNo = request.GET.get('appId')
-    meat_shop_inspection = t_livestock_clearence_meat_shop_t2.objects.filter(Application_No=appNo)
+    meat_shop_inspection = t_livestock_clearance_meat_shop_t2.objects.filter(Application_No=appNo)
     return render(request, 'clearance_meat_shop/apply_clearance_meat_shop.html',
                   {'meat_shop_inspection': meat_shop_inspection, 'title': appNo})
 
@@ -226,10 +226,10 @@ def details_ins_cms(request):
     application_id = request.GET.get('application_id')
     currentObservation = request.GET.get('currentObservation')
     decisionConform = request.GET.get('decisionConform')
-    t_livestock_clearence_meat_shop_t2.objects.create(Application_No=application_id,
+    t_livestock_clearance_meat_shop_t2.objects.create(Application_No=application_id,
                                                       Observation=currentObservation,
                                                       Action=decisionConform)
-    observation = t_livestock_clearence_meat_shop_t2.objects.filter(Application_No=application_id)
+    observation = t_livestock_clearance_meat_shop_t2.objects.filter(Application_No=application_id)
     return render(request, 'clearance_meat_shop/observation_details.html', {'observation': observation})
 
 
@@ -244,7 +244,7 @@ def approve_application_cms(request):
     revision_no = request.GET.get('revision_no')
     validity = request.GET.get('validity')
     date_format_ins = datetime.strptime(dateOfInspection, '%d-%m-%Y').date()
-    details = t_livestock_clearence_meat_shop_t1.objects.filter(Application_No=application_id)
+    details = t_livestock_clearance_meat_shop_t1.objects.filter(Application_No=application_id)
 
     if remarks is not None:
         details.update(Remarks_Inspection=remarks)
@@ -285,7 +285,7 @@ def reject_application_cms(request):
     identification_No = request.GET.get('identification_No')
     revision_no = request.GET.get('revision_no')
     date_format_ins = datetime.strptime(dateOfInspection, '%d-%m-%Y').date()
-    details = t_livestock_clearence_meat_shop_t1.objects.filter(Application_No=application_id)
+    details = t_livestock_clearance_meat_shop_t1.objects.filter(Application_No=application_id)
     for email_id in details:
         email = email_id.Email
     if revision_no is not None:
@@ -315,7 +315,7 @@ def resubmit_application_cms(request):
     revision_no = request.GET.get('revision_no')
 
     date_format_ins = datetime.strptime(dateOfInspection, '%d-%m-%Y').date()
-    details = t_livestock_clearence_meat_shop_t1.objects.filter(Application_No=application_id)
+    details = t_livestock_clearance_meat_shop_t1.objects.filter(Application_No=application_id)
 
     if revision_no is not None:
         details.update(Revision_No=revision_no)
@@ -349,7 +349,7 @@ def meat_shop_clearance_no(request):
     for code in code:
         Field_Code = code.Field_Office_Code
 
-    last_application_no = t_livestock_clearence_meat_shop_t1.objects.aggregate(Max('Meat_Shop_Clearance_No'))
+    last_application_no = t_livestock_clearance_meat_shop_t1.objects.aggregate(Max('Meat_Shop_Clearance_No'))
     lastAppNo = last_application_no['Meat_Shop_Clearance_No__max']
     if not lastAppNo:
         year = timezone.now().year

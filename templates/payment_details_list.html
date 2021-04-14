@@ -13,24 +13,28 @@
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">Application No</th>
+                                    <th scope="col">Permit/Reference No</th>
                                     <th scope="col">Service Name</th>
-                                    <th scope="col">Applicant</th>
+                                    <!--<th scope="col">Applicant</th>-->
                                     <th scope="col">Application Date</th>
+                                    <th scope="col">Validity</th>
+                                    <th scope="col">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for application_details in application_details %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td><button class="btn btn-primary btn-link" onclick="viewApplicationDetails('{{application_details.Application_No}}','{{application_details.Service_Code}}')">{{application_details.Application_No}}</button></td>
+                                        <td><button class="btn btn-primary btn-link" data-toggle="modal" data-target="#payment-modal">{{application_details.Application_No}}</button></td>
                                         {% for service_details in service_details %}
-                                            {% if application_details.Service_Code == service_details.Service_Code %}
+                                            {% if application_details.Service_Id == service_details.Service_Code %}
                                                 <td>{{service_details.Service_Name}}</td>
                                             {% endif %}
                                         {% endfor %}
-                                        <td>{{application_details.Applicant_Id}}</td>
-                                        <td>{{application_details.Action_Date|date:"d-m-Y"}}</td>
+                                        <!--<td>{{application_details.Applicant_Name}}</td>-->
+                                        <td>{{application_details.Application_Date|date:"d-m-Y"}}</td>
+                                        <td>{{application_details.Validity}}</td>
+                                        <td>Status</td>
                                     </tr>
                                     {% empty %}
                                     <tr>
@@ -44,27 +48,59 @@
         </div>
     </div>
 </div>
-<form method="post" id="import_details_form" enctype="multipart/form-data">
+<form method="post" id="payment_form">
     {% csrf_token %}
-    <div class="modal fade" id="application-details-modal" tabindex="-1">
-        <div class="modal-dialog modal-xl">
+    {% for application_details in application_details %}
+        <input type="text" name="application_no" value="{{application_details.Application_No}}">
+    {% endfor %}
+    <div class="modal fade" id="payment-modal" tabindex="-1" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                 <div class="modal-header">
-                    <h5 class="modal-title" id="agro_attachmentModalLabel">Payment Details</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                    </button>
+                <div class="modal-header">
+                    <h5 class="modal-title pull-left">Large modal</h5>
                 </div>
                 <div class="modal-body">
-                    <div class="col-lg-12">
-                        <div class="box box-primary">
-                            <div class="box-body">
-                                <div id="details_application">
-
-                                </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Payment Type</label>
+                                <input type="text" name="Payment_Type" id="Payment_Type">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Instrument No</label>
+                                <input type="text" name="Instrument_No" id="Instrument_No">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Amount</label>
+                                <input type="text" name="Amount" id="Amount">
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Receipt No</label>
+                                <input type="text" name="Receipt_No" id="Receipt_No">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Receipt Date</label>
+                                <input type="text" name="Receipt_Date" id="Receipt_Date">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+                    Payment Updated
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" onclick="update_payment_details()">Save changes</button>
+                    <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -74,13 +110,15 @@
     function update_payment_details(appId,service_code)
     {
         $.ajax({
-            type : "GET",
+            type : "POST",
             url : "{% url 'update_payment_details' %}",
-            data :{'application_id':appId, 'service_code':service_code},
-            success : function(data)
+            data :$('#payment_form').serialize(),,
+            success : function(response)
             {
-                $('#details_application').html(data);
-                $('#application-details-modal').modal('show');
+                $('#submitMsg').show();
+                setTimeout(function() {
+                    $("#submitMsg").hide('blind', {}, 500)
+                }, 2000);
             }
         });
     }

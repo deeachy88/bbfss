@@ -356,6 +356,7 @@ class t_payment_details(models.Model):
     Record_Id = models.AutoField(primary_key=True)
     Application_No = models.CharField(max_length=30)
     Application_Date = models.DateField()
+    Applicant_Name = models.CharField(max_length=100, default=None, blank=True, null=True)
     Permit_No = models.CharField(max_length=100)
     Service_Id = models.CharField(max_length=5)
     Validity = models.DateField()
