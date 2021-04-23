@@ -2,7 +2,7 @@ import hashlib
 import os
 import random
 import string
-from datetime import date
+from datetime import date, datetime
 
 from django.contrib.auth.hashers import make_password, check_password
 from django.core.mail import send_mail
@@ -1286,14 +1286,15 @@ def payment_list(request):
 
 
 def update_payment_details(request):
-    Application_No = request.POST['application_no']
-    Payment_Type = request.POST['Payment_Type']
-    Instrument_No = request.POST['Instrument_No']
-    Amount = request.POST['Amount']
-    Receipt_No = request.POST['Receipt_No']
-    Receipt_Date = request.POST['Receipt_Date']
+    Application_No = request.POST.get('application_no')
+    Payment_Type = request.POST.get('Payment_Type')
+    Instrument_No = request.POST.get('Instrument_No')
+    Amount = request.POST.get('Amount')
+    Receipt_No = request.POST.get('Receipt_No')
+    Receipt_Date = request.POST.get('Receipt_Date')
+    receipt_date = datetime.strptime(Receipt_Date, '%d-%m-%Y').date()
     application_details = t_payment_details.objects.filter(Application_No=Application_No)
     application_details.update(Payment_Type=Payment_Type, Instrument_No=Instrument_No, Amount=Amount,
-                               Receipt_No=Receipt_No, Receipt_Date=Receipt_Date,
+                               Receipt_No=Receipt_No, Receipt_Date=receipt_date,
                                Updated_By=request.session['email'], Updated_On=date.today())
     return redirect(payment_list)

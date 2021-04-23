@@ -1,0 +1,32 @@
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Species</th>
+            <th scope="col">Breed</th>
+            <th scope="col">Age</th>
+            <th scope="col">Sex</th>
+            <th scope="col">Description</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Unit</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for import in export_details %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{import.Species}}</td>
+                <td>{{import.Breed}}</td>
+                <td>{{import.Age}}</td>
+                <td>{{import.Sex}}</td>
+                <td>{{import.Description}}</td>
+                <td>{{import.Quantity}}</td>
+                <td>{{import.Unit}}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="8" class="text-center">No Data</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

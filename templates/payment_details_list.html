@@ -15,7 +15,6 @@
                                     <th scope="col">#</th>
                                     <th scope="col">Permit/Reference No</th>
                                     <th scope="col">Service Name</th>
-                                    <!--<th scope="col">Applicant</th>-->
                                     <th scope="col">Application Date</th>
                                     <th scope="col">Validity</th>
                                     <th scope="col">Status</th>
@@ -31,9 +30,8 @@
                                                 <td>{{service_details.Service_Name}}</td>
                                             {% endif %}
                                         {% endfor %}
-                                        <!--<td>{{application_details.Applicant_Name}}</td>-->
                                         <td>{{application_details.Application_Date|date:"d-m-Y"}}</td>
-                                        <td>{{application_details.Validity}}</td>
+                                        <td>{{application_details.Validity|date:"d-m-Y"}}</td>
                                         <td>Status</td>
                                     </tr>
                                     {% empty %}
@@ -51,32 +49,38 @@
 <form method="post" id="payment_form">
     {% csrf_token %}
     {% for application_details in application_details %}
-        <input type="text" name="application_no" value="{{application_details.Application_No}}">
+        <input type="hidden" name="application_no" value="{{application_details.Application_No}}">
     {% endfor %}
-    <div class="modal fade" id="payment-modal" tabindex="-1" aria-hidden="true" style="display: none;">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
+        <div id="payment-modal" class="modal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title pull-left">Large modal</h5>
+                    <h5 class="modal-title pull-left">Update Payment Details</h5>
                 </div>
                 <div class="modal-body">
+                    <div class="col-md-12">
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Payment Type</label>
-                                <input type="text" name="Payment_Type" id="Payment_Type">
+                                <select class="form-control" name="Payment_Type" id="Payment_Type">
+                                    <option value="">--SELECT--</option>
+                                    <option value="Cash">Cash</option>
+                                    <option value="Cheque">Cheque</option>
+                                    <option value="Online">Online</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Instrument No</label>
-                                <input type="text" name="Instrument_No" id="Instrument_No">
+                                <input type="text" class="form-control" name="Instrument_No" id="Instrument_No">
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Amount</label>
-                                <input type="text" name="Amount" id="Amount">
+                                <input type="text" class="form-control" name="Amount" id="Amount">
                             </div>
                         </div>
                     </div>
@@ -84,44 +88,51 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Receipt No</label>
-                                <input type="text" name="Receipt_No" id="Receipt_No">
+                                <input type="text" class="form-control" name="Receipt_No" id="Receipt_No">
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Receipt Date</label>
-                                <input type="text" name="Receipt_Date" id="Receipt_Date">
+                                <input type="text" class="form-control date-picker flatpickr-input active" id="dateOfInspection" name="Receipt_Date"  placeholder="Pick a date" readonly="readonly">
                             </div>
                         </div>
+                    </div>
                     </div>
                 </div>
                 <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
                     Payment Updated
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-link" onclick="update_payment_details()">Save changes</button>
-                    <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="update_payment()">Update Payment</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
     </div>
 </form>
 <script>
-    function update_payment_details(appId,service_code)
+    function update_payment()
     {
         $.ajax({
             type : "POST",
             url : "{% url 'update_payment_details' %}",
-            data :$('#payment_form').serialize(),,
-            success : function(response)
+            data :$('#payment_form').serialize(),
+            success : function()
             {
                 $('#submitMsg').show();
                 setTimeout(function() {
                     $("#submitMsg").hide('blind', {}, 500)
                 }, 2000);
+                setTimeout(function() {
+                    $("#payment-modal").modal('hide')
+                }, 3000);
+                setTimeout(function() {
+                    location.reload();
+                }, 3000);
             }
         });
-    }
 
+    }
 </script>
 {% endblock %}

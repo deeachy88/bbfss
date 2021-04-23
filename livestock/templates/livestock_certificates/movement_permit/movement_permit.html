@@ -1,0 +1,165 @@
+{% load static %}
+<style>
+    .header-card {
+    background-color: white;
+}
+</style>
+<div class="card">
+    <div class="card-header header-card">
+		<div class="card-head-row float-right">
+            <div class="card-tools">
+                <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Test Report';printClientTable()">
+                    <span class="btn-label">
+                        <i class="zmdi zmdi-print"></i>
+                    </span>
+                    Print
+                </a>
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="card-title text-center">
+            <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
+        </div>
+        <h6 class="text-center"><font color='black'><b>MOVEMENT PERMIT FOR ANIMALS</b></font></h6>
+	</div>
+    <div class="card-body">
+        <div class="row d-flex justify-content-between details">
+            {% for certificate_details in certificate_details %}
+			    <h6>Serial No.&nbsp;&nbsp;</h6>
+
+			<h6>Date&nbsp;:&nbsp;{{certificate_details.Approved_Date}}</h6>
+
+		</div>
+        <div class="row">
+            <h6>Registration no./ Application no.&nbsp;&nbsp;{{certificate_details.Movement_Permit_No}}</h6>
+            {% endfor %}
+        </div>
+        <div class="row">
+            {% for certificate_details in certificate_details %}
+                <p>
+                    Permission is hereby granted to Mr./Ms. {{certificate_details.Applicant_Name}}
+                    bearing Citizen ID No. {{certificate_details.CID}}
+                    of {{ Village}} village under {{ Gewog }} Geog of {{ Dzongkhag }} Dzongkhag/
+                    holder of Trade License No. {{certificate_details.License_No}} of meat shop,
+                    {{From_Gewog }}/{{certificate_details.From_Location}}
+                    village/ town,{{From_Dzongkhag }}Dzongkhag to move following animals:
+                </p>
+            {% endfor %}
+        </div>
+        <div class="row">
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Sl.No</th>
+                        <th scope="col">Species </th>
+                        <th scope="col">Number</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for movement_details in movement_details %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{movement_details.Species}}</td>
+                        <td>{{movement_details.No_Of_Animal}}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="row">
+            <p>FROM {{From_Dzongkhag }} DZONGKHAG TO {{To_Dzongkhag }} DZONGKHAG for the
+                purpose of BREEDING/ MIGRATION/ SLAUGHTER provided that the following conditions are met:</p>
+        </div>
+        <div class="row">
+            <p>1.Source(s) of origin of animal(s) is/ are free from an outbreak of any notifiable disease.</p>
+            <p>2.	Animal do not pass through areas where there is an active outbreak of notifiable diseases indicated against the animal below:</p>
+        </div>
+        <div class="row">
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Sl.No</th>
+                        <th scope="col">Species </th>
+                        <th scope="col">Animal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Anthrax & FMD</td>
+                        <td>Cattle, Buffalo, Yak, Mithun, Goat, Sheep, Pig</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Rinderpest</td>
+                        <td>Cattle, sheep, Goat and others</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Swine Fever</td>
+                        <td>Pig</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Rabies</td>
+                        <td>Cattle, Buffalo, Yak, Goat, Sheep, Pig, Horse, dog,</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>Hemorrhagic Septicaemia & Black Quarter</td>
+                        <td>Cattle, others</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>Contagious Bovine Pleuro Pneumonia</td>
+                        <td>Cattle</td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td>Sheep Pox</td>
+                        <td>Sheep</td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td>Glanders & Dourine</td>
+                        <td>Horse, Donkey</td>
+                    </tr>
+                    <tr>
+                        <td>9</td>
+                        <td>New Castle Disease & IBD</td>
+                        <td>Poultry</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="row">
+            <p>
+                3.DLO/ Veterinarian-in-charge of the area will identify a migratory routes for those herds with disease outbreaks if they require isolation and vaccination.
+            </p>
+        </div>
+        {% for certificate_details in certificate_details %}
+        <div class="row">
+            <p>MEANS OF TRAVEL&nbsp;:&nbsp; {{ certificate_details.Conveyance_Means}}</p>&nbsp;&nbsp;
+            {% if certificate_details.Conveyance_Means == 'Vehicular' %}
+                <p>Vehicle No&nbsp;:&nbsp;{{ certificate_details.Vehicle_No}}</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+        {% for certificate_details in certificate_details %}
+         <div class="row">
+             <p>ROUTE AUTHORISED {{certificate_details.Authorized_Route}}
+             </p>
+         </div>
+         <div class="row">
+             <p>THIS PERMIT IS VALID FOR A PERIOD OF {{certificate_details.Validity_Period }} DAYS FROM THE DATE OF ISSUE.</p>
+         </div>
+        {% endfor %}
+         <div class="row">
+             <p>THIS PERMIT IS SUBJECT TO CANCELLATION AT THE DISCRETION OF THE DIRECTOR GENERAL OF
+                 BHUTAN AGRICULTURE AND FOOD REGULATORY AUTHORITY, MINISTRY OF AGRICULTURE AND FORESTS,
+                 THIMPHU, BHUTAN.
+             </p>
+        </div>
+    </div>
+</div>

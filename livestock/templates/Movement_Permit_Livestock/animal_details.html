@@ -1,0 +1,28 @@
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Common Name</th>
+            <th scope="col">Scientific Name</th>
+            <th scope="col">Age</th>
+            <th scope="col">No Of Animals</th>
+            <th scope="col">Remarks</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for import in import %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{import.Common_Name}}</td>
+                <td>{{import.Scientfic_Name}}</td>
+                <td>{{import.Age}}</td>
+                <td>{{import.No_Of_Animal}}</td>
+                <td>{{import.Remarks}}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="8" class="text-center">No Data</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

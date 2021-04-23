@@ -1,0 +1,35 @@
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Import Permit No</th>
+            <th scope="col">Application No</th>
+            <th scope="col">Application Date</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% now "Y-m-d" as todays_date %}
+            {% for payment_details in payment_details %}
+                {% for application_details in application_details %}
+                    {% if todays_date < application_details.Validity or payment_details.Receipt_No == None %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{application_details.Import_Permit_No}}</td>
+                            <td>{{application_details.Approved_Date|date:"dd-mm-Y"}}</td>
+                            <td>{{application_details.Validity}}</td>
+                            <td>Invalid</td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{application_details.Clearance_Ref_No}}</td>
+                            <td>{{application_details.Approved_Date|date:"d-m-Y"}}</td>
+                            <td>{{application_details.Validity|date:"d-m-Y"}}</td>
+                            <td><button  class="btn btn-default btn-border" type="button" onclick="print_certificate('RFAF','{{application_details.Application_No}}')"><i class="zmdi zmdi-print"></i></button></td>
+                        </tr>
+                    {% endif %}
+            {% endfor %}
+        {% endfor %}
+    </tbody>
+</table>

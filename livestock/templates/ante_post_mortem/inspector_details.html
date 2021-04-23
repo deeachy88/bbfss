@@ -1,0 +1,586 @@
+{% load static %}
+<style>
+    .row {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -2px;
+}
+</style>
+        <div class="card">
+            <div class="card-header" role="tab" id="headingOne">
+                <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed">
+                    Collapsible Group Item #1
+                </a>
+            </div>
+
+            <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion" style="">
+                <div class="card-body">
+                    {% for application_details in application_details %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Scope</label>
+                                    {% if application_details.Inspection_Type == 'P' %}
+                                        <div class="row">
+                                            <div class="col-sm-2">
+                                                <label class="form-label">Inspection Type</label>
+                                            </div>
+                                            <div class="col-sm-4 justify-content-center">
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio" class="custom-control-input" checked>
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Ante-mortem</span>
+                                                </label>
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio" class="custom-control-input" disabled>
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Post-mortem</span>
+                                                </label>
+                                            </div>
+                                        </div><br>
+                                    {% else %}
+                                        <div class="row">
+                                            <div class="col-sm-2">
+                                                <label class="form-label">Inspection Type</label>
+                                            </div>
+                                            <div class="col-sm-4 justify-content-center">
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio" class="custom-control-input" disabled>
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Ante-mortem</span>
+                                                </label>
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio" class="custom-control-input" checked>
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Post-mortem</span>
+                                                </label>
+                                            </div>
+                                        </div><br>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Applicant CID</label>
+                                    <input type="number"  class="form-control" value="{{ application_details.CID }}" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Name</label>
+                                    <input type="text" class="form-control" value="{{ application_details.Applicant_Name }}" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Dzongkhag</label>
+                                    <select class="form-control" disabled>
+                                        {% for dzongkhag in dzongkhag %}
+                                            <option value="{{ dzongkhag.Dzongkhag_Code }}" {% if application_details.Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>{{ dzongkhag.Dzongkhag_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Gewog</label>
+                                    <select class="form-control" disabled>
+                                        {% for gewog in gewog %}
+                                            <option value="{{ gewog.Gewog_Code }}" {% if application_details.Gewog_Code == gewog.Gewog_Code %}selected{% endif %}>{{ gewog.Gewog_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Village</label>
+                                     <select class="form-control" disabled>
+                                        {% for village in village %}
+                                            <option value="{{ village.Village_Code }}" {% if application_details.Village_Code == village.Village_Code %}selected{% endif %}>{{ village.Village_Name }}</option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Address</label>
+                                    <textarea class="form-control" disabled>{{application_details.Address}}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Contact Number</label>
+                                    <input type="number" class="form-control" value="{{application_details.Contact_No}}" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" value="{{application_details.Email}}" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Location_Dzongkhag_Code</label>
+                                    <select class="form-control" disabled>
+                                        {% for dzongkhag in dzongkhag %}
+                                            <option value="{{ dzongkhag.Dzongkhag_Code }}" {% if application_details.Location_Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>{{ dzongkhag.Dzongkhag_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Location Code</label>
+                                     <select class="form-control" disabled>
+                                        {% for location in location %}
+                                            <option value="{{ location.Location_Code }}" {% if application_details.Location_Code == dzongkhag.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Exact Location</label>
+                                    <input type="text" class="form-control" value="{{application_details.Exact_Location}}" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Request Date for Inspection</label>
+                                     <input type="date"  class="form-control" value="{{application_details.Inspection_Date_Requested}}" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header" role="tab" id="headingTwo">
+                <a class="collapsed" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    Attachments
+                </a>
+            </div>
+            <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">File</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           {% for file_attach in file %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{file_attach.Attachment}}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                  <td colspan="3" class="text-center">No Data</td>
+                                </tr>
+                           {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header" role="tab" id="headingThree">
+                <a class="collapsed" data-toggle="collapse" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    Inspector Details
+                </a>
+            </div>
+            <form method="post" id="ins_form">
+                {% csrf_token %}
+                <div id="collapseThree" class="active" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion" style="">
+                    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Ante-</span>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">mortem </span>&nbsp;
+                            <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Examination</span>
+                        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <label class="form-label">Abnormalities in Respiration (If the breathing pattern is different from normal the animal should be segregated as a suspect)</label>
+                        </div>
+                        <div class="col-sm-8 justify-content-center">
+                            <label class="custom-control custom-radio">
+                                <input type="radio" name="Respiration_Abnormalities" class="custom-control-input" value="Yes">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Yes</span>
+                            </label>
+                            <label class="custom-control custom-radio">
+                                <input type="radio" name="Respiration_Abnormalities" class="custom-control-input" value="No">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">No</span>
+                            </label>
+                            <div class="alert alert-danger" id="Respiration_AbnormalitiesErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <label class="form-label">Abnormalities in behaviour</label>
+                        </div>
+                        <div class="col-sm-8 justify-content-center">
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" name="Abnormalities_Behaviour" value="1">
+                              <label class="form-check-label">
+                                Animal is calm, active and do not show any uncharacteristic behaviour
+                              </label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" name="Abnormalities_Behaviour" value="2">
+                              <label class="form-check-label">
+                                Animal walk in circle or show an abnormal gait or posture
+                              </label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" name="Abnormalities_Behaviour" value="3">
+                              <label class="form-check-label">
+                                pushing its head against a wall
+                              </label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" name="Abnormalities_Behaviour" value="4">
+                              <label class="form-check-label">
+                                showing a dull and anxious expression in the eyes
+                              </label>
+                            </div>
+                            <div class="alert alert-danger" id="Abnormalities_behaviourErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <label class="form-label">Abnormalities in structure</label>
+                        </div>
+                        <div class="col-sm-8 justify-content-center">
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" name="Abnormalities_Structure" value="1">
+                              <label class="form-check-label">
+                                swellings (abscesses) seen commonly in swine
+                              </label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" name="Abnormalities_Structure" value="2">
+                              <label class="form-check-label">
+                                enlarged joints
+                              </label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" name="Abnormalities_Structure" value="3">
+                              <label class="form-check-label">
+                                umbilical swelling
+                              </label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" name="Abnormalities_Structure" value="4">
+                              <label class="form-check-label">
+                                enlarged jaw (“lumpy jaw”)
+                              </label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" name="Abnormalities_Structure" value="5">
+                              <label class="form-check-label">
+                                Abdominal distension
+                              </label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" name="Abnormalities_Structure" value="6">
+                              <label class="form-check-label">
+                                Any lesions
+                              </label>
+                            </div>
+                            <div class="alert alert-danger" id="Abnormalities_structureErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <label class="form-label">An abnormal gait (associated with pain in the legs, chest or abdomen or is an indication of nervous disease)</label>
+                        </div>
+                        <div class="col-sm-8 justify-content-center">
+                            <label class="custom-control custom-radio">
+                                <input type="radio" name="gait" class="custom-control-input" value="Yes">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Yes</span>
+                            </label>
+                            <label class="custom-control custom-radio">
+                                <input type="radio" name="gait" class="custom-control-input" value="No">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">No</span>
+                            </label>
+                            <div class="alert alert-danger" id="gaitErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <label class="form-label">Abnormalities in posture (Downer animals should be handled with caution in order to prevent further suffering)</label>
+                        </div>
+                        <div class="col-sm-8 justify-content-center">
+                            <label class="custom-control custom-radio">
+                                <input type="radio" name="posture" class="custom-control-input" value="Yes">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Yes</span>
+                            </label>
+                            <label class="custom-control custom-radio">
+                                <input type="radio" name="posture" class="custom-control-input" value="No">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">No</span>
+                            </label>
+                            <div class="alert alert-danger" id="postureErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <label class="form-label">Abnormal discharges or protrusions from the body</label>
+                        </div>
+                        <div class="col-sm-8 justify-content-center">
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" name="Discharge_Abnormalities" value="1">
+                              <label class="form-check-label">
+                                discharges from the nose, excessive saliva from the mouth
+                              </label>
+                            </div>
+                             <div class="form-check">
+                              <input class="form-check-input" type="checkbox" name="Discharge_Abnormalities" value="2">
+                              <label class="form-check-label">
+                                protruding from the vulva, intestine, vagina, rectum and uterus
+                              </label>
+                            </div>
+                             <div class="form-check">
+                              <input class="form-check-input" type="checkbox" name="Discharge_Abnormalities" value="3">
+                              <label class="form-check-label">
+                                growths on the eye and bloody diarrhoea
+                              </label>
+                            </div>
+                            <div class="alert alert-danger" id="Abnormal_DischargeErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <label class="form-label">Abnormal colour (black areas on horses and swine, red areas on light coloured skin (inflammation), dark blue areas on the skin or udder (gangrene).</label>
+                        </div>
+                        <div class="col-sm-8 justify-content-center">
+                            <label class="custom-control custom-radio">
+                                <input type="radio" name="colour" class="custom-control-input" value="Yes">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Yes</span>
+                            </label>
+                            <label class="custom-control custom-radio">
+                                <input type="radio" name="colour" class="custom-control-input" value="No">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">No</span>
+                            </label>
+                            <div class="alert alert-danger" id="colourErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <label class="form-label">An abnormal odour (odour of an abscess, a medicinal odour, stinkweed odour or an acetone odour of ketosis)</label>
+                        </div>
+                        <div class="col-sm-8 justify-content-center">
+                            <label class="custom-control custom-radio">
+                                <input type="radio" name="odour" class="custom-control-input" value="Yes">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Yes</span>
+                            </label>
+                            <label class="custom-control custom-radio">
+                                <input type="radio" name="odour" class="custom-control-input" value="No">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">No</span>
+                            </label>
+                            <div class="alert alert-danger" id="odourErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Decision</span>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">of</span>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">the </span>&nbsp;
+                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Ante</span>
+                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">-</span>
+                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">mortem</span>
+                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">inspection</span>
+                        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Animal passed as Fit for Slaughter without restrictions (Animals with no obvious diseases or abnormal conditions)</label>
+                                <input type="number" class="form-control" id="fit_for_slaughter" name="fit_for_slaughter">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>No. of animals permitted for slaughter but under close supervision (Animals suspected for anemia, jaundice, oedema, ecthyma,  etc.)</label>
+                                <input type="number" class="form-control" id="fit_for_slaughter_supervision" name="fit_for_slaughter_supervision">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>No. of animals withheld for slaughter (In the opinion of inspector, the animal with a disease or condition would likely respond to a delay in slaughtering or to a suitable treatment such as metaboli disease, disturbance to CNS etc.)</label>
+                                <input type="number" class="form-control" id="withheld_for_slaughter" name="withheld_for_slaughter">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Emergency slaughter of animals(Animals which are in acute pain from a condition where a delay in slaughter will compromise the animal welfare.)</label>
+                                <input type="number" class="form-control" id="emergency_slaughter" name="emergency_slaughter">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Unfit for Human Consumption (Animals with infectious disseases such as tetanus, Hemorrhagic septicemina, swine fever, botulism, etc.)</label>
+                                <input type="number" class="form-control" id="unfifit_for_consumption" name="unfifit_for_consumption">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Inspection Team Leader</label>
+                                <select class="form-control" name="Inspection_Leader"  id="teamLeader">
+                                    <option value="">--SELECT TEAM LEADER--</option>
+                                    {% for inspector_list in inspector_list %}
+                                            <option value="{{ inspector_list.Login_Id }}">{{ inspector_list.Name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="insTeam">Inspection Team </label>
+                                <textarea class="form-control" name="Inspection_Team" id="insTeam" rows="2"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Date Of Inspection</label>
+                                <input type="text" class="form-control date-picker flatpickr-input active" id="dateOfInspection" name="dateOfInspection"  placeholder="Pick a date" readonly="readonly">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Remarks</label>
+                                <textarea class="form-control" id="remarks" rows="2"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Validity</label>
+                                <input type="number" class="form-control" id="validity" name="validity">
+                            </div>
+                        </div>
+                        {% for application_details in application_details %}
+                            <input type="hidden" value="{{application_details.Application_No}}" name="application_id">
+                        {% endfor %}
+                    </div>
+                    <div class="alert alert-info" id="messageDiv" style="display:none">
+                        Application Approved
+                    </div>
+                    <div class="alert alert-info" id="reject_messageDiv" style="display:none">
+                        Application Rejected
+                    </div>
+                    <hr>
+                    {% for application_details in application_details %}
+                        <div class="card-action text-center">
+                            <button type="button" class="btn btn-flat btn-primary" onclick="approve_details()">
+                                <i class="ace-icon fa fa-times"></i>
+                                &nbsp;&nbsp;Approve
+                            </button>
+                            <button type="button" class="btn btn-flat btn-primary" onclick="resubmit_details('{{application_details.Application_No}}')">
+                                <i class="ace-icon fa fa-times"></i>
+                                &nbsp;&nbsp;Resubmit
+                            </button>
+                            <button type="button" class="btn btn-flat btn-primary" onclick="reject_details('{{application_details.Application_No}}')">
+                                <i class="ace-icon fa fa-times"></i>
+                                &nbsp;&nbsp;Reject
+                            </button>
+                            <button type="button" class="btn btn-flat btn-danger">
+                                <i class="ace-icon fa fa-times"></i>
+                                &nbsp;&nbsp;Cancel
+                            </button>
+
+                        </div>
+                    {% endfor %}
+                    </div>
+            </form>
+            </div>
+        </div>
+<script src="{% static 'assets/js/app.min.js' %}"></script>
+<script>
+function approve_details(application_id)
+{
+   $.ajax({
+        type : "POST",
+        url : "{% url 'approve_application_apm' %}",
+        data :$('#ins_form').serialize(),
+        success : function(data) {
+            $('#messageDiv').show();
+            setTimeout(function() {
+                $("#messageDiv").hide('blind', {}, 500)
+            }, 2000);
+            setTimeout(function() {
+                location.reload();
+            }, 3000);
+        }
+    });
+}
+
+function reject_details(application_id)
+{
+
+    Inspection_Leader = $('#teamLeader').val();
+    Inspection_Team = $('#insTeam').val();
+    remarks = $('#remarks').val();
+    dateOfInspection = $('#dateOfInspection').val();
+    ins_type = $('#ins_type').val();
+    identification_No = $('#identification_No').val();
+    revision_no = $('#revision_no').val();
+
+   $.ajax({
+        type : "GET",
+        url : "{% url 'reject_application_apm' %}",
+        data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks ,
+        'dateOfInspection':dateOfInspection, 'ins_type':ins_type, 'identification_No':identification_No, 'revision_no':revision_no},
+        success : function(data) {
+            $('#messageDiv').show();
+            setTimeout(function() {
+                $("#reject_messageDiv").hide('blind', {}, 500)
+            }, 2000);
+             setTimeout(function() {
+                location.reload();
+            }, 3000);
+        }
+    });
+}
+</script>

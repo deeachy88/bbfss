@@ -1,0 +1,317 @@
+<form method="post" id="applicationForm">
+    {% csrf_token %}
+    <div class="animated fadeIn">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        {% for application_details in application_details %}
+                            {% if application_details.PermitType == A %}
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <label class="form-label">Permit Type</label>
+                                </div>
+                                <div class="col-sm-10 justify-content-center">
+                                    <div class="form-check">
+                                        <label class="form-radio-label">
+                                            <input class="form-radio-input" type="radio" checked>
+                                            <span class="form-radio-sign">Animal</span>
+                                        </label>
+                                        <label class="form-radio-label ml-3">
+                                            <input class="form-radio-input" type="radio" disabled>
+                                            <span class="form-radio-sign">Animal Products</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            {% else %}
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <label class="form-label">Permit Type</label>
+                                </div>
+                                <div class="col-sm-10 justify-content-center">
+                                    <div class="form-check">
+                                        <label class="form-radio-label">
+                                            <input class="form-radio-input" type="radio" disabled>
+                                            <span class="form-radio-sign">Animal</span>
+                                        </label>
+                                        <label class="form-radio-label ml-3">
+                                            <input class="form-radio-input" type="radio" disabled>
+                                            <span class="form-radio-sign">Animal Products</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif%}
+                            <br>
+                            <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Applicant CID</label>
+                                    <input type="number" value="{{application_details.CID}}" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Applicant Name</label>
+                                    <input type="text" class="form-control" value="{{application_details.Applicant_Name}}" readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Dzongkhag</label>
+                                    <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value),getLocation(this.value)">
+                                        {% for dzongkhag in dzongkhag %}
+                                            <option value="{{dzongkhag.Dzongkhag_Code}}"{% if application_details.Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>
+                                                {{ dzongkhag.Dzongkhag_Name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Gewog</label>
+                                    <select class="form-control" disabled>
+                                        {% for gewog in gewog %}
+                                            <option value="{{ gewog.Gewog_Code }}"{% if application_details.Gewog_Code == gewog.Gewog_Code %}selected{% endif %}>{{ gewog.Gewog_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Village</label>
+                                     <select class="form-control" disabled>
+                                        {% for village in village %}
+                                            <option value="{{ village.Village_Code }}" {% if application_details.Village_Code == village.Village_Code %}selected{% endif %}>{{ village.Village_Name }}</option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                            </div>
+                             <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Contact Number</label>
+                                    <input type="number" class="form-control" value="{{application_details.Contact_No}}" readonly="readonly">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" value="{{application_details.Email}}" readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">License Number</label>
+                                    <input type="text" class="form-control" value="{{application_details.License_No}}" readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Business Name</label>
+                                    <input type="text" class="form-control" value="{{application_details.Business_Name}}" readonly="readonly">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">From Dzongkhag</label>
+                                    <select class="form-control" disabled>
+                                        {% for dzongkhag in dzongkhag %}
+                                            <option value="{{ dzongkhag.Dzongkhag_Code }}" {% if application_details.From_Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>{{ dzongkhag.Dzongkhag_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">From Gewog</label>
+                                    <select class="form-control" disabled>
+                                        {% for location in location %}
+                                            <option value="{{ location.Location_Code }}" {% if application_details.From_Gewog_Code == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">From Location</label>
+                                    <input type="text" class="form-control" value="{{ application_details.From_Location }}" readonly="readonly">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">To Dzongkhag</label>
+                                    <select class="form-control" disabled>
+                                        {% for dzongkhag in dzongkhag %}
+                                            <option value="{{ dzongkhag.Dzongkhag_Code }}" {% if application_details.To_Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>{{ dzongkhag.Dzongkhag_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">To Gewog</label>
+                                    <select class="form-control" disabled>
+                                        {% for location in location %}
+                                            <option value="{{ location.Location_Code }}" {% if application_details.To_Gewog_Code == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">To Location</label>
+                                    <input type="text" class="form-control" value="{{ application_details.To_Location }}" readonly="readonly">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Authorized Route</label>
+                                        <input type="text" class="form-control" value="{{ application_details.Authorized_Route }}" readonly="readonly">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Means of Conveyance </label>
+                                        <select class="form-control form-control" id="conveyanceMeans" name="conveyanceMeans" disabled>
+                                            <option value="">-SELECT-</option>
+                                            {% if application_details.Conveyance_Means == "Air" %}
+                                            <option value="Air" selected>Air</option>
+                                             <option value="Vehicular">Vehicular</option>
+                                            {% else %}
+                                             <option value="Air">Air</option>
+                                            <option value="Vehicular" selected>Vehicular</option>
+                                            {% endif%}
+                                        </select>
+                                    </div>
+                                </div>
+                                {% if application_details.Conveyance_Means == "Vehicular" %}
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Vehicle No</label>
+                                            <input type="text" class="form-control" value="{{ application_details.Authorized_Route }}" readonly="readonly">
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Purpose Of Movement</label>
+                                            <input type="text" class="form-control" value="{{ application_details.Movement_Purpose }}" readonly="readonly">
+                                        </div>
+                                    </div>
+                                {% endif%}
+                            </div>
+                             <div class="row">
+                                 {% if application_details.Conveyance_Means == "Vehicular" %}
+                                     <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Purpose Of Movement</label>
+                                            <input type="text" class="form-control" value="{{ application_details.Movement_Purpose }}" readonly="readonly">
+                                        </div>
+                                    </div>
+                                 {% endif%}
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Expected Date of Movement</label>
+                                        <input type="text" class="form-control date-picker flatpickr-input active" value="{{ application_details.Movement_Date }}" readonly="readonly">
+                                    </div>
+                                </div>
+                            </div>
+                         <br><br>
+                        {% if application_details.PermitType == A %}
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Species</th>
+                                        <th scope="col">Breed</th>
+                                        <th scope="col">Age</th>
+                                        <th scope="col">Sex</th>
+                                        <th scope="col">Description</th>
+                                        <th scope="col">Quantity</th>
+                                        <th scope="col">Unit</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for import in import %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{import.Import_Category}}</td>
+                                            <td>{{import.Pesticide_Id}}</td>
+                                            <td>{{import.Description}}</td>
+                                            <td>{{import.Unit}}</td>
+                                            <td>{{import.Quantity}}</td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                          <td colspan="8" class="text-center">No Data</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            {% else %}
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Particulars</th>
+                                        <th scope="col">Company_Name</th>
+                                        <th scope="col">Description</th>
+                                        <th scope="col">Quantity</th>
+                                        <th scope="col">Unit</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for import in import %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{import.Import_Category}}</td>
+                                            <td>{{import.Pesticide_Id}}</td>
+                                            <td>{{import.Description}}</td>
+                                            <td>{{import.Unit}}</td>
+                                            <td>{{import.Quantity}}</td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                          <td colspan="6" class="text-center">No Data</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            {% endif%}
+                        {% endfor %}
+                    </div>
+                        <div class="modal-footer">
+                            <select class="form-control" name="forwardTo"  id="forwardTo">
+                                <option value="">--SELECT INSPECTOR--</option>
+                                {% for inspector_list in inspector_list %}
+                                        <option value="{{ inspector_list.Login_Id }}">{{ inspector_list.Name }}</option>
+                                {% endfor %}
+                            </select>
+                            {% for application_details in application_details %}
+                                <button type="button" class="btn btn-success" onclick="forwardApplication('{{ application_details.Application_No }}')"><i class="ace-icon fas fa-arrow-right"></i>&nbsp;&nbsp;Forward</button>
+                            {% endfor %}
+                            <button class="btn btn-flat btn-danger" data-dismiss="modal">
+                                <i class="ace-icon fa fa-times"></i>
+                                &nbsp;&nbsp;Cancel
+                            </button>
+                        </div>
+                        <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+                            Application Forwarded Successfully
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

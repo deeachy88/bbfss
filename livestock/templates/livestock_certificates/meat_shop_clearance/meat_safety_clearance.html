@@ -1,0 +1,59 @@
+{% load static %}
+<style>
+    .header-card {
+    background-color: white;
+}
+</style>
+<div class="card">
+    <div class="card-header header-card">
+		<div class="card-head-row float-right">
+            <div class="card-tools">
+                <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Test Report';printClientTable()">
+                    <span class="btn-label">
+                        <i class="zmdi zmdi-print"></i>
+                    </span>
+                    Print
+                </a>
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="card-title text-center">
+            <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
+        </div>
+        <h6 class="text-center"><font color='black'><b>FOOD SAFETY LICENSE</b></font></h6>
+	</div>
+    <div class="card-body">
+        {% now "Y-m-d" as todays_date %}
+        <div class="row d-flex justify-content-between details">
+                <h6>Letter No.&nbsp;&nbsp;</h6>
+			    <h6>Date.&nbsp;&nbsp;{% todays_date %}</h6>
+		</div>
+        <div class="row d-flex justify-content-between details">
+			    <h6>MEAT  SAFETY  LICENCE</h6>
+		</div>
+        <div class="row">
+            {% for certificate_details in certificate_details %}
+                <p>
+                    Bhutan Agriculture and Food Regulatory Authority (BAFRA), Ministry of Agriculture and Forests
+                    (MoAF) is pleased to issue Food Safety License to {{certificate_details.Name_Meat_Shop}}
+                    {{certificate_details.Scope}} (Name and Scope-)
+                    at …………………..(Location-) based on BAFRA GHP/GMP Criteria for
+                    Licensing of Food and Licensing Process for Food Business version
+                    This License is issued in accordance with the Food Act of Bhutan 2005 and its Regulation 2017.
+
+                </p>
+            {% endfor %}
+        </div>
+        <br>
+        <p>This License is subject to the following General Terms and Conditions:</p>
+
+        <p>1.This License is valid only for M/s……………… Dzongkhag…………….. and not at any other location.</p>
+        <p>2.Promoter should abide by any food safety measures implemented by BAFRA.</p>
+        <p>3.The establishment shall comply at all times with the Criteria for Good Hygienic Practices (GHP) and Good Manufacturing Practices (GMP) for Licensing of Food Business.</p>
+        <p>4.The ingredients used are approved by BAFRA based on the applicable Legislations.</p>
+        <p>5.The scope of this License is limited to Food Safety only and do not substitute the clearances required by other agencies</p>
+        <p>6.The establishment will be subjected to periodic inspection and monitoring by BAFRA.</p>
+
+    </div>
+</div>

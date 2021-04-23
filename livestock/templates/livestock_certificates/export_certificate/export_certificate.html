@@ -1,0 +1,91 @@
+{% load static %}
+<style>
+    .header-card {
+    background-color: white;
+}
+</style>
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header header-card">
+		<div class="card-head-row float-right">
+            <div class="card-tools">
+                <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Test Report';printClientTable()">
+                    <span class="btn-label">
+                        <i class="zmdi zmdi-print"></i>
+                    </span>
+                    Print
+                </a>
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="card-title text-center">
+            <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
+        </div>
+        <h6 class="text-center"><font color='black'><b>INTERNATIONAL VETERINARY CERTIFICATE</b></font></h6>
+	</div>
+        {% for certificate_details in certificate_details %}
+            <table class="table table-bordered">
+                <tbody>
+                  <tr>
+                    <td class="tg-0pky" colspan="2" rowspan="3">To: {{certificate_details.Applicant_Name}} &nbsp;CID : {{certificate_details.CID}}</td>
+                    <td class="tg-0pky" colspan="2">Certificate No: {{certificate_details.Export_Permit_No}}</td>
+                  </tr>
+                  <tr>
+                    <td class="tg-0pky" colspan="2">Place of Issue: {{ Dzongkhag }}</td>
+                  </tr>
+                  <tr>
+                    <td class="tg-0pky" colspan="2">Date of Issue:{{ certificate_details.Approve_Date }}</td>
+                  </tr>
+                  <tr>
+                    <td class="tg-0pky" colspan="2" rowspan="3">Name and Address of the Exporter {{certificate_details.Applicant_Name}}<br>&nbsp;&nbsp;{{certificate_details.Present_Address}}</td>
+                    <td class="tg-0pky">Country of origin: Bhutan</td>
+                    <td class="tg-0pky">Place of shipment:{{certificate_details.Place_of_Exit}}</td>
+                  </tr>
+                  <tr>
+                    <td class="tg-0pky" rowspan="2">Place of origin:{{certificate_details.Origin_Source_Products}}</td>
+                    <td class="tg-0pky">Date of shipment:{{certificate_details.Export_Expected_Date}}</td>
+                  </tr>
+                  <tr>
+                    <td class="tg-0pky">Declared Point of Exit:{{certificate_details.Place_of_Exit}}</td>
+                  </tr>
+                  <tr>
+                    <td class="tg-0pky" colspan="2">Name &amp; Address of consignee  {{certificate_details.Importer_Name_Address}}</td>
+                    <td class="tg-0pky">Country of Destination: {{certificate_details.Final_Destination}}</td>
+                    <td class="tg-0pky">Means of transport:{{certificate_details.Conveyance_Means}}</td>
+                  </tr>
+                </tbody>
+            </table>
+        {% endfor %}
+         <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Particulars</th>
+                    <th scope="col">Company Name</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Unit</th>
+                    <th scope="col">Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for import in export_details %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{import.Particulars}}</td>
+                        <td>{{import.Company_Name}}</td>
+                        <td>{{import.Quantity}}</td>
+                        <td>{{import.Unit}}</td>
+                        <td>{{import.Remarks}}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                      <td colspan="6" class="text-center">No Data</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+

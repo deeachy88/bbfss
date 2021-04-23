@@ -1,0 +1,319 @@
+{% load static %}
+<style>
+    .header-card {
+    background-color: white;
+}
+</style>
+<div class="card">
+    <div class="card-header header-card">
+		<div class="card-head-row float-right">
+            <div class="card-tools">
+                <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Test Report';printClientTable()">
+                    <span class="btn-label">
+                        <i class="zmdi zmdi-print"></i>
+                    </span>
+                    Print
+                </a>
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="card-title text-center">
+            <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
+        </div>
+        <h6 class="text-center"><font color='black'><b>POST-MORTEM INSPECTION REPORT FOR FOOD ANIMALS</b></font></h6>
+	</div>
+    <div class="card-body">
+        <div class="row">
+            <h4>A.General Instruction for post-mortem inspection</h4>
+            <ol>
+                <li>Routine postmortem examination of a carcass should be carried out as soon as possible after the completion of dressing in order to detect any abnormalities so that products only conditionally fit for human consumption are not passed as food.</li>
+                <li>All organs and carcass portions should be kept together and correlated for inspection before they are removed from the slaughter floor</li>
+                <li>The inspector should ensure that the premises, equipment and facilities required to conduct examination is conducive and available. </li>
+                <li>In order to prevent the contamination of carcass, heads and viscera, it is essential that the basic requirements of hygiene are strictly enforced.</li>
+                <li>All carcass or parts thereof shall be properly dressed and cleaned prior to inspection or evisceration. All hair, scurf and dirt shall be removed from hog carcass.</li>
+                <li>Carcass should be separated from each other to avoid contact and contamination once the removal of hide, skin or pelt has commenced. Separation of carcass, heads and viscera should be maintained until they have been examined and passed by the inspector.</li>
+            </ol>
+        </div>
+        <div class="row">
+            <h4>B.Information OF Animals</h4>
+            <table>
+                {% for certificate_details in certificate_details %}
+                <tr>
+                    <td>
+                        Date of inspection
+                    </td>
+                    <td>
+                        {{certificate_details.Inspection_Date}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Name of the Owner
+                    </td>
+                    <td>
+                        {{certificate_details.Applicant_Name}}
+                    </td>
+                </tr>
+                <tr>
+                    <td rowspan="4">Location of the slaughter house/meat shop</td>
+                    <td>Dzongkhag</td>
+                    <td>{{certificate_details.Location_Dzongkhag_Code}}</td>
+                </tr>
+                <tr>
+                    <td>Gewog</td>
+                    <td>{{certificate_details.Location_Code}}</td>
+                </tr>
+                <tr>
+                    <td>Location</td>
+                    <td>{{certificate_details.Exact_Location}}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="row">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Species</th>
+                        <th scope="col">Nos</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for mortem in mortem %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{mortem.Species}}</td>
+                            <td>{{mortem.Nos}}</td>
+                            <td>{{mortem.Quantity}}</td>
+                            <td>{{mortem.Remarks}}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center">No Data</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Ante-mortem</span>
+                <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Examination</span>
+            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <label class="form-label">Abnormalities in Respiration (If the breathing pattern is different from normal the animal should be segregated as a suspect)</label>
+            </div>
+            <div class="col-sm-8 justify-content-center">
+                <label class="custom-control custom-radio">
+                    <input type="radio" name="Respiration_Abnormalities" class="custom-control-input" value="Yes">
+                    <span class="custom-control-indicator"></span>
+                    <span class="custom-control-description">Yes</span>
+                </label>
+                <label class="custom-control custom-radio">
+                    <input type="radio" name="Respiration_Abnormalities" class="custom-control-input" value="No">
+                    <span class="custom-control-indicator"></span>
+                    <span class="custom-control-description">No</span>
+                </label>
+                <div class="alert alert-danger" id="Respiration_AbnormalitiesErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <label class="form-label">Abnormalities in behaviour</label>
+            </div>
+            <div class="col-sm-8 justify-content-center">
+                <div class="custom-control custom-checkbox custom-control-inline">
+                    <input type="checkbox" class="custom-control-input" name="Abnormalities_Behaviour">
+                    <label class="custom-control-label">Animal is calm, active and do not show any uncharacteristic behaviour</label>
+                </div>
+                <div class="custom-control custom-checkbox custom-control-inline">
+                    <input type="checkbox" class="custom-control-input" name="Abnormalities_Behaviour">
+                    <label class="custom-control-label">Animal walk in circle or show an abnormal gait or posture</label>
+                </div>
+                <div class="custom-control custom-checkbox custom-control-inline">
+                    <input type="checkbox" class="custom-control-input" name="Abnormalities_Behaviour">
+                    <label class="custom-control-label">pushing its head against a wall</label>
+                </div>
+                <div class="custom-control custom-checkbox custom-control-inline">
+                    <input type="checkbox" class="custom-control-input" name="Abnormalities_Behaviour">
+                    <label class="custom-control-label">showing a dull and anxious expression in the eyes</label>
+                </div>
+                <div class="alert alert-danger" id="Abnormalities_behaviourErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <label class="form-label">Abnormalities in structure</label>
+            </div>
+            <div class="col-sm-8 justify-content-center">
+                <div class="custom-control custom-checkbox custom-control-inline">
+                    <input type="checkbox" class="custom-control-input" name="Abnormalities_Structure">
+                    <label class="custom-control-label">swellings (abscesses) seen commonly in swine</label>
+                </div>
+                <div class="custom-control custom-checkbox custom-control-inline">
+                    <input type="checkbox" class="custom-control-input" name="Abnormalities_Structure">
+                    <label class="custom-control-label">enlarged joints</label>
+                </div>
+                <div class="custom-control custom-checkbox custom-control-inline">
+                    <input type="checkbox" class="custom-control-input" name="Abnormalities_Structure">
+                    <label class="custom-control-label">umbilical swelling</label>
+                </div>
+                <div class="custom-control custom-checkbox custom-control-inline">
+                    <input type="checkbox" class="custom-control-input" name="Abnormalities_Structure">
+                    <label class="custom-control-label">enlarged jaw (“lumpy jaw”)</label>
+                </div>
+                <div class="custom-control custom-checkbox custom-control-inline">
+                    <input type="checkbox" class="custom-control-input" name="Abnormalities_Structure">
+                    <label class="custom-control-label">Abdominal distension </label>
+                </div>
+                <div class="custom-control custom-checkbox custom-control-inline">
+                    <input type="checkbox" class="custom-control-input" name="Abnormalities_Structure">
+                    <label class="custom-control-label">Any lesions </label>
+                </div>
+                <div class="alert alert-danger" id="Abnormalities_structureErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <label class="form-label">An abnormal gait (associated with pain in the legs, chest or abdomen or is an indication of nervous disease)</label>
+            </div>
+            <div class="col-sm-8 justify-content-center">
+                <label class="custom-control custom-radio">
+                    <input type="radio" name="gait" class="custom-control-input" value="Yes">
+                    <span class="custom-control-indicator"></span>
+                    <span class="custom-control-description">Yes</span>
+                </label>
+                <label class="custom-control custom-radio">
+                    <input type="radio" name="gait" class="custom-control-input" value="No">
+                    <span class="custom-control-indicator"></span>
+                    <span class="custom-control-description">No</span>
+                </label>
+                <div class="alert alert-danger" id="gaitErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <label class="form-label">Abnormalities in posture (Downer animals should be handled with caution in order to prevent further suffering)</label>
+            </div>
+            <div class="col-sm-8 justify-content-center">
+                <label class="custom-control custom-radio">
+                    <input type="radio" name="posture" class="custom-control-input" value="Yes">
+                    <span class="custom-control-indicator"></span>
+                    <span class="custom-control-description">Yes</span>
+                </label>
+                <label class="custom-control custom-radio">
+                    <input type="radio" name="posture" class="custom-control-input" value="No">
+                    <span class="custom-control-indicator"></span>
+                    <span class="custom-control-description">No</span>
+                </label>
+                <div class="alert alert-danger" id="postureErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <label class="form-label">Abnormalities in structure</label>
+            </div>
+            <div class="col-sm-8 justify-content-center">
+                <div class="custom-control custom-checkbox custom-control-inline">
+                    <input type="checkbox" class="custom-control-input" name="Abnormal_Discharge">
+                    <label class="custom-control-label">discharges from the nose, excessive saliva from the mouth</label>
+                </div>
+                <div class="custom-control custom-checkbox custom-control-inline">
+                    <input type="checkbox" class="custom-control-input" name="Abnormal_Discharge">
+                    <label class="custom-control-label">protruding from the vulva, intestine, vagina, rectum and uterus</label>
+                </div>
+                <div class="custom-control custom-checkbox custom-control-inline">
+                    <input type="checkbox" class="custom-control-input" name="Abnormal_Discharge">
+                    <label class="custom-control-label">growths on the eye and bloody diarrhoea</label>
+                </div>
+                <div class="alert alert-danger" id="Abnormal_DischargeErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <label class="form-label">Abnormal colour (black areas on horses and swine, red areas on light coloured skin (inflammation), dark blue areas on the skin or udder (gangrene).</label>
+            </div>
+            <div class="col-sm-8 justify-content-center">
+                <label class="custom-control custom-radio">
+                    <input type="radio" name="colour" class="custom-control-input" value="Yes">
+                    <span class="custom-control-indicator"></span>
+                    <span class="custom-control-description">Yes</span>
+                </label>
+                <label class="custom-control custom-radio">
+                    <input type="radio" name="colour" class="custom-control-input" value="No">
+                    <span class="custom-control-indicator"></span>
+                    <span class="custom-control-description">No</span>
+                </label>
+                <div class="alert alert-danger" id="colourErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <label class="form-label">An abnormal odour (odour of an abscess, a medicinal odour, stinkweed odour or an acetone odour of ketosis)</label>
+            </div>
+            <div class="col-sm-8 justify-content-center">
+                <label class="custom-control custom-radio">
+                    <input type="radio" name="odour" class="custom-control-input" value="Yes">
+                    <span class="custom-control-indicator"></span>
+                    <span class="custom-control-description">Yes</span>
+                </label>
+                <label class="custom-control custom-radio">
+                    <input type="radio" name="odour" class="custom-control-input" value="No">
+                    <span class="custom-control-indicator"></span>
+                    <span class="custom-control-description">No</span>
+                </label>
+                <div class="alert alert-danger" id="odourErrorMsg" style="display:none"></div>
+            </div>
+        </div>
+        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Decision</span>
+                <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">of the </span>
+                <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Ante-mortem</span>
+                <span class="px-1 small text-muted font-weight-bold text-muted form-label">inspection</span>
+            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Animal passed as Fit for Slaughter without restrictions (Animals with no obvious diseases or abnormal conditions)</label>
+                    <input type="number" class="form-control" id="fit_for_slaughter" name="fit_for_slaughter">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>No. of animals permitted for slaughter but under close supervision (Animals suspected for anemia, jaundice, oedema, ecthyma,  etc.)</label>
+                    <input type="number" class="form-control" id="fit_for_slaughter_supervision" name="fit_for_slaughter_supervision">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>No. of animals withheld for slaughter (In the opinion of inspector, the animal with a disease or condition would likely respond to a delay in slaughtering or to a suitable treatment such as metaboli disease, disturbance to CNS etc.)</label>
+                    <input type="number" class="form-control" id="withheld_for_slaughter" name="withheld_for_slaughter">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Emergency slaughter of animals(Animals which are in acute pain from a condition where a delay in slaughter will compromise the animal welfare.)</label>
+                    <input type="number" class="form-control" id="emergency_slaughter" name="emergency_slaughter">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Unfit for Human Consumption (Animals with infectious disseases such as tetanus, Hemorrhagic septicemina, swine fever, botulism, etc.)</label>
+                    <input type="number" class="form-control" id="unfifit_for_consumption" name="unfifit_for_consumption">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -13,7 +13,13 @@ from administrator.models import t_dzongkhag_master, t_gewog_master, t_village_m
     t_service_master, t_country_master, t_plant_crop_category_master, t_unit_master, t_section_master, \
     t_inspection_type_master
 from bbfss import settings
-from livestock.models import t_livestock_clearance_meat_shop_t1
+from livestock.models import t_livestock_clearance_meat_shop_t1, t_livestock_ante_post_mortem_t2, \
+    t_livestock_ante_post_mortem_t1, t_livestock_movement_permit_t1, t_livestock_movement_permit_t2, \
+    t_livestock_export_certificate_t1, t_livestock_export_certificate_t2, \
+    t_livestock_import_permit_animal_inspection_t1, t_livestock_import_permit_animal_inspection_t2, \
+    t_livestock_import_permit_product_inspection_t1, t_livestock_import_permit_product_inspection_t2, \
+    t_livestock_import_permit_animal_t1, t_livestock_import_permit_animal_t2, t_livestock_import_permit_product_t1, \
+    t_livestock_import_permit_product_t2, t_livestock_clearance_meat_shop_t2
 from plant.forms import ImportFormThree, ImportFormTwo
 from plant.models import t_workflow_details, t_plant_movement_permit_t2, t_plant_movement_permit_t1, \
     t_plant_movement_permit_t3, t_file_attachment, t_plant_import_permit_t1, t_plant_import_permit_t2, \
@@ -388,6 +394,89 @@ def view_application_details(request):
                       {'application_details': application_details, 'dzongkhag': dzongkhag, 'gewog': gewog,
                        'village': village, 'inspector_list': user_role_list, 'file': file,
                        'inspection_type': inspection_type})
+    elif service_code == 'APM':
+        dzongkhag = t_dzongkhag_master.objects.all()
+        village = t_village_master.objects.all()
+        location = t_location_field_office_mapping.objects.all()
+        application_details = t_livestock_ante_post_mortem_t1.objects.filter(Application_No=application_id)
+        details = t_livestock_ante_post_mortem_t2.objects.filter(Application_No=application_id)
+        file = t_file_attachment.objects.filter(Application_No=application_id)
+        workflow_details = t_workflow_details.objects.filter(Application_No=application_id)
+        for application in workflow_details:
+            Field_Office = application.Field_Office_Id
+        user_role_list = t_user_master.objects.filter(Role_Id='5', Field_Office_Id_id=Field_Office)
+        return render(request, 'ante_post_mortem/inspector_details.html',
+                      {'application_details': application_details, 'file': file, 'dzongkhag': dzongkhag,
+                       'village': village, 'location': location, 'mortem': details,
+                       'inspector_list': user_role_list})
+    elif service_code == 'LMP':
+        dzongkhag = t_dzongkhag_master.objects.all()
+        village = t_village_master.objects.all()
+        location = t_location_field_office_mapping.objects.all()
+        application_details = t_livestock_movement_permit_t1.objects.filter(Application_No=application_id)
+        details = t_livestock_movement_permit_t2.objects.filter(Application_No=application_id)
+        file = t_file_attachment.objects.filter(Application_No=application_id)
+        workflow_details = t_workflow_details.objects.filter(Application_No=application_id)
+        for application in workflow_details:
+            Field_Office = application.Field_Office_Id
+        user_role_list = t_user_master.objects.filter(Role_Id='5', Field_Office_Id_id=Field_Office)
+        return render(request, 'Movement_Permit_Livestock/inspector_movement_details.html',
+                      {'application_details': application_details, 'file': file, 'dzongkhag': dzongkhag,
+                       'village': village, 'location': location, 'mortem': details,
+                       'inspector_list': user_role_list})
+    elif service_code == 'LEC':
+        dzongkhag = t_dzongkhag_master.objects.all()
+        village = t_village_master.objects.all()
+        location = t_location_field_office_mapping.objects.all()
+        application_details = t_livestock_export_certificate_t1.objects.filter(Application_No=application_id)
+        details = t_livestock_export_certificate_t2.objects.filter(Application_No=application_id)
+        file = t_file_attachment.objects.filter(Application_No=application_id)
+        workflow_details = t_workflow_details.objects.filter(Application_No=application_id)
+        for application in workflow_details:
+            Field_Office = application.Field_Office_Id
+        user_role_list = t_user_master.objects.filter(Role_Id='5', Field_Office_Id_id=Field_Office)
+        return render(request, 'Export_Certificate/inspector_export_details.html',
+                      {'application_details': application_details, 'file': file, 'dzongkhag': dzongkhag,
+                       'village': village, 'location': location, 'mortem': details,
+                       'inspector_list': user_role_list})
+    elif service_code == 'ILP':
+        dzongkhag = t_dzongkhag_master.objects.all()
+        village = t_village_master.objects.all()
+        location = t_location_field_office_mapping.objects.all()
+        application_details = t_livestock_import_permit_product_inspection_t1.objects.filter(
+            Application_No=application_id)
+        details = t_livestock_import_permit_product_inspection_t2.objects.filter(Application_No=application_id)
+        for import_LP in details:
+            Product_Record_Id = import_LP.Product_Record_Id
+            balance = int(import_LP.Quantity_Balance) - int(import_LP.Quantity_Released)
+        file = t_file_attachment.objects.filter(Application_No=application_id)
+        workflow_details = t_workflow_details.objects.filter(Application_No=application_id)
+        for application in workflow_details:
+            Field_Office = application.Field_Office_Id
+        user_role_list = t_user_master.objects.filter(Role_Id='5', Field_Office_Id_id=Field_Office)
+        return render(request, 'Livestock_Import/inspector_details.html',
+                      {'application_details': application_details, 'file': file, 'dzongkhag': dzongkhag,
+                       'village': village, 'location': location, 'import': details,
+                       'inspector_list': user_role_list, 'balance': balance})
+    elif service_code == 'IAF':
+        dzongkhag = t_dzongkhag_master.objects.all()
+        village = t_village_master.objects.all()
+        location = t_location_field_office_mapping.objects.all()
+        application_details = t_livestock_import_permit_animal_inspection_t1.objects.filter(
+            Application_No=application_id)
+        details = t_livestock_import_permit_animal_inspection_t2.objects.filter(Application_No=application_id)
+        for import_LP in details:
+            Product_Record_Id = import_LP.Product_Record_Id
+            balance = int(import_LP.Quantity_Balance) - int(import_LP.Quantity_Released)
+        file = t_file_attachment.objects.filter(Application_No=application_id)
+        workflow_details = t_workflow_details.objects.filter(Application_No=application_id)
+        for application in workflow_details:
+            Field_Office = application.Field_Office_Id
+        user_role_list = t_user_master.objects.filter(Role_Id='5', Field_Office_Id_id=Field_Office)
+        return render(request, 'Animal_Fish_Import/inspector_details.html',
+                      {'application_details': application_details, 'file': file, 'dzongkhag': dzongkhag,
+                       'village': village, 'location': location, 'import': details,
+                       'inspector_list': user_role_list})
 
 
 def approve_application(request):
@@ -807,7 +896,9 @@ def save_import_agro(request):
 
 def fo_app_details(request):
     Application_No = request.GET.get('application_id')
+    print(Application_No)
     service_code = request.GET.get('service_code')
+    print(service_code)
     dzongkhag = t_dzongkhag_master.objects.all()
     village = t_village_master.objects.all()
     location = t_location_field_office_mapping.objects.all()
@@ -817,6 +908,22 @@ def fo_app_details(request):
         file = t_file_attachment.objects.filter(Application_No=Application_No)
         return render(request, 'import_permit/fo_import_permit.html',
                       {'new_import_app': new_import_app, 'details': details, 'file': file, 'dzongkhag': dzongkhag,
+                       'village': village, 'location': location})
+    elif service_code == 'IAF':
+        application_details = t_livestock_import_permit_animal_t1.objects.filter(Application_No=Application_No)
+        details = t_livestock_import_permit_animal_t2.objects.filter(Application_No=Application_No)
+        file = t_file_attachment.objects.filter(Application_No=Application_No)
+        return render(request, 'Animal_Fish_Import/fo_details.html',
+                      {'application_details': application_details, 'details': details, 'file': file,
+                       'dzongkhag': dzongkhag,
+                       'village': village, 'location': location})
+    elif service_code == 'ILP':
+        application_details = t_livestock_import_permit_product_t1.objects.filter(Application_No=Application_No)
+        details = t_livestock_import_permit_product_t2.objects.filter(Application_No=Application_No)
+        file = t_file_attachment.objects.filter(Application_No=Application_No)
+        return render(request, 'Livestock_Import/fo_details.html',
+                      {'application_details': application_details, 'details': details, 'file': file,
+                       'dzongkhag': dzongkhag,
                        'village': village, 'location': location})
 
 
@@ -934,7 +1041,7 @@ def view_oic_details(request):
                       {'application_details': application_details, 'dzongkhag': dzongkhag, 'gewog': gewog,
                        'village': village, 'location': location, 'details_list': details_list,
                        'file': file, 'inspector_list': user_role_list})
-    if service_code == 'CMS':
+    elif service_code == 'CMS':
         dzongkhag = t_dzongkhag_master.objects.all()
         village = t_village_master.objects.all()
         location = t_location_field_office_mapping.objects.all()
@@ -947,6 +1054,82 @@ def view_oic_details(request):
         return render(request, 'clearance_meat_shop/oic_clearance.html',
                       {'application_details': meat_shop_clearance, 'file': file, 'dzongkhag': dzongkhag,
                        'village': village, 'location': location, 'inspector_list': user_role_list})
+    elif service_code == 'APM':
+        dzongkhag = t_dzongkhag_master.objects.all()
+        village = t_village_master.objects.all()
+        location = t_location_field_office_mapping.objects.all()
+        application_details = t_livestock_ante_post_mortem_t1.objects.filter(Application_No=application_id)
+        details = t_livestock_ante_post_mortem_t2.objects.filter(Application_No=application_id)
+        file = t_file_attachment.objects.filter(Application_No=application_id)
+        workflow_details = t_workflow_details.objects.filter(Application_No=application_id)
+        for application in workflow_details:
+            Field_Office = application.Field_Office_Id
+        user_role_list = t_user_master.objects.filter(Role_Id='5', Field_Office_Id_id=Field_Office)
+        return render(request, 'ante_post_mortem/oic_details.html',
+                      {'application_details': application_details, 'file': file, 'dzongkhag': dzongkhag,
+                       'village': village, 'location': location, 'mortem': details,
+                       'inspector_list': user_role_list})
+    elif service_code == 'LMP':
+        dzongkhag = t_dzongkhag_master.objects.all()
+        village = t_village_master.objects.all()
+        location = t_location_field_office_mapping.objects.all()
+        application_details = t_livestock_movement_permit_t1.objects.filter(Application_No=application_id)
+        details = t_livestock_movement_permit_t2.objects.filter(Application_No=application_id)
+        file = t_file_attachment.objects.filter(Application_No=application_id)
+        workflow_details = t_workflow_details.objects.filter(Application_No=application_id)
+        for application in workflow_details:
+            Field_Office = application.Field_Office_Id
+        user_role_list = t_user_master.objects.filter(Role_Id='5', Field_Office_Id_id=Field_Office)
+        return render(request, 'Movement_Permit_Livestock/oic_movement_details.html',
+                      {'application_details': application_details, 'file': file, 'dzongkhag': dzongkhag,
+                       'village': village, 'location': location, 'mortem': details,
+                       'inspector_list': user_role_list})
+    elif service_code == 'LEC':
+        dzongkhag = t_dzongkhag_master.objects.all()
+        village = t_village_master.objects.all()
+        location = t_location_field_office_mapping.objects.all()
+        application_details = t_livestock_export_certificate_t1.objects.filter(Application_No=application_id)
+        details = t_livestock_export_certificate_t2.objects.filter(Application_No=application_id)
+        file = t_file_attachment.objects.filter(Application_No=application_id)
+        workflow_details = t_workflow_details.objects.filter(Application_No=application_id)
+        for application in workflow_details:
+            Field_Office = application.Field_Office_Id
+        user_role_list = t_user_master.objects.filter(Role_Id='5', Field_Office_Id_id=Field_Office)
+        return render(request, 'Export_Certificate/oic_export_details.html',
+                      {'application_details': application_details, 'file': file, 'dzongkhag': dzongkhag,
+                       'village': village, 'location': location, 'mortem': details,
+                       'inspector_list': user_role_list})
+    elif service_code == 'IAF':
+        dzongkhag = t_dzongkhag_master.objects.all()
+        village = t_village_master.objects.all()
+        location = t_location_field_office_mapping.objects.all()
+        application_details = t_livestock_import_permit_animal_t1.objects.filter(Application_No=application_id)
+        details = t_livestock_import_permit_animal_t2.objects.filter(Application_No=application_id)
+        file = t_file_attachment.objects.filter(Application_No=application_id)
+        workflow_details = t_workflow_details.objects.filter(Application_No=application_id)
+        for application in workflow_details:
+            Field_Office = application.Field_Office_Id
+        user_role_list = t_user_master.objects.filter(Role_Id='5', Field_Office_Id_id=Field_Office)
+        return render(request, 'Animal_Fish_Import/oic_details.html',
+                      {'application_details': application_details, 'file': file, 'dzongkhag': dzongkhag,
+                       'village': village, 'location': location, 'import': details,
+                       'inspector_list': user_role_list})
+    elif service_code == 'ILP':
+        dzongkhag = t_dzongkhag_master.objects.all()
+        village = t_village_master.objects.all()
+        location = t_location_field_office_mapping.objects.all()
+        application_details = t_livestock_import_permit_product_inspection_t1.objects.filter(
+            Application_No=application_id)
+        details = t_livestock_import_permit_product_inspection_t2.objects.filter(Application_No=application_id)
+        file = t_file_attachment.objects.filter(Application_No=application_id)
+        workflow_details = t_workflow_details.objects.filter(Application_No=application_id)
+        for application in workflow_details:
+            Field_Office = application.Field_Office_Id
+        user_role_list = t_user_master.objects.filter(Role_Id='5', Field_Office_Id_id=Field_Office)
+        return render(request, 'Livestock_Import/oic_details.html',
+                      {'application_details': application_details, 'file': file, 'dzongkhag': dzongkhag,
+                       'village': village, 'location': location, 'import': details,
+                       'inspector_list': user_role_list})
 
 
 def view_inspector_details(request):
@@ -1023,28 +1206,195 @@ def reject_import_application(request):
 
 def update_inspection_call_details(request):
     service_code = request.POST.get('service_code')
-    appNo = request.POST.get('appNo')
+    appNo = request.POST.get('application_No')
     date_requested = request.POST.get('date')
     entry_point = request.POST.get('entry_point')
     remarks = request.POST.get('remarks')
+    if service_code == 'IPP':
+        details = t_plant_import_permit_t1.objects.filter(Application_No=appNo)
+        details.update(Actual_Point_Of_Entry=entry_point)
+        details.update(Proposed_Inspection_Date=date_requested)
+        details.update(Inspection_Request_Remarks=remarks)
 
-    details = t_plant_import_permit_t1.objects.filter(Application_No=appNo)
-    details.update(Actual_Point_Of_Entry=entry_point)
-    details.update(Proposed_Inspection_Date=date_requested)
-    details.update(Inspection_Request_Remarks=remarks)
+        oic_details = t_user_master.objects.filter(Field_Office_Id_id=entry_point)
+        for oic in oic_details:
+            oic_user = oic.Login_Id
+        workflow_details = t_workflow_details.objects.filter(Application_No=appNo)
+        workflow_details.update(Assigned_To=oic_user)
+        workflow_details.update(Assigned_Role_Id='4')
+        workflow_details.update(Action_Date=date.today())
+        workflow_details.update(Field_Office_Id=entry_point)
+    elif service_code == 'IAF':
+        detail = t_livestock_import_permit_animal_t1.objects.filter(Application_No=appNo)
+        import_app = t_livestock_import_permit_animal_t2.objects.filter(Application_No=appNo)
 
-    oic_details = t_user_master.objects.filter(Field_Office_Id_id=entry_point)
-    for oic in oic_details:
-        oic_user = oic.Login_Id
-    workflow_details = t_workflow_details.objects.filter(Application_No=appNo)
-    workflow_details.update(Assigned_To=oic_user)
-    workflow_details.update(Assigned_Role_Id='4')
-    workflow_details.update(Action_Date=date.today())
-    workflow_details.update(Field_Office_Id=entry_point)
+        new_import_application_no = new_animal_fish_import_application_no(service_code)
+        for details in detail:
+            t_livestock_import_permit_animal_inspection_t1.objects.create(
+                Application_No=new_import_application_no,
+                Application_Date=date.today(),
+                Approve_Date=None,
+                Import_Permit_No=details.Import_Permit_No,
+                Validity_Period=None,
+                Validity=None,
+                Application_Type=details.Application_Type,
+                Import_Type=details.Import_Type,
+                License_No=details.License_No,
+                Business_Name=details.Business_Name,
+                Nationality=details.Nationality,
+                Country=details.Country,
+                CID=details.CID,
+                Applicant_Name=details.Applicant_Name,
+                Dzongkhag_Code=details.Dzongkhag_Code,
+                Gewog_Code=details.Gewog_Code,
+                Village_Code=details.Village_Code,
+                Present_Address=details.Present_Address,
+                Contact_No=details.Contact_No,
+                Email=details.Email,
+                Origin_Source_Products=details.Origin_Source_Products,
+                Name_And_Address_Supplier=details.Name_And_Address_Supplier,
+                Means_of_Conveyance=details.Means_of_Conveyance,
+                Place_Of_Entry=details.Place_Of_Entry,
+                Final_Destination=details.Final_Destination,
+                Expected_Arrival_Date=details.Expected_Arrival_Date,
+                Proposed_Inspection_Date=date_requested,
+                Actual_Point_Of_Entry=entry_point,
+                Inspection_Request_Remarks=remarks,
+                Inspection_Date=None,
+                Inspection_Type=None,
+                Inspection_Time=None,
+                Inspection_Leader=None,
+                Inspection_Team=None,
+                Clearance_Ref_No=None,
+                FO_Remarks=details.FO_Remarks,
+                Inspection_Remarks=None,
+                Quarantine_Facilities=details.Quarantine_Facilities
+            )
+        for import_details in import_app:
+            t_livestock_import_permit_animal_inspection_t2.objects.create(
+                Application_No=new_import_application_no,
+                Species=import_details.Species,
+                Breed=import_details.Breed,
+                Age=import_details.Age,
+                Sex=import_details.Sex,
+                Description=import_details.Description,
+                Quantity=import_details.Quantity,
+                Quantity_Released=0,
+                Remarks=import_details.Remarks,
+                Quantity_Balance=import_details.Quantity_Balance,
+                Product_Record_Id=import_details.pk
+            )
+        field = t_location_field_office_mapping.objects.filter(Location_Code=entry_point)
+        for field_office in field:
+            field_office_id = field_office.Field_Office_Id_id
+        t_workflow_details.objects.create(Application_No=new_import_application_no,
+                                          Applicant_Id=request.session['email'],
+                                          Assigned_To=None, Field_Office_Id=field_office_id, Section='Livestock',
+                                          Assigned_Role_Id='4', Action_Date=None, Application_Status='P',
+                                          Service_Code=service_code)
+        login_id = request.session['login_id']
+        application_details = t_workflow_details.objects.filter(Assigned_To=login_id)
+        return render(request, 'inspection_call.html', {'application_details': application_details})
+    elif service_code == 'ILP':
+        detail = t_livestock_import_permit_product_t1.objects.filter(Application_No=appNo)
+        import_details = t_livestock_import_permit_product_t2.objects.filter(Application_No=appNo)
 
-    login_id = request.session['login_id']
-    application_details = t_workflow_details.objects.filter(Assigned_To=login_id)
-    return render(request, 'inspection_call.html', {'application_details': application_details})
+        new_import_application_no = new_livestock_product_import_application_no(service_code)
+        for details in detail:
+            t_livestock_import_permit_product_inspection_t1.objects.create(
+                Application_No=new_import_application_no,
+                Application_Date=date.today(),
+                Approve_Date=None,
+                Validity_Period=None,
+                Validity=None,
+                Application_Type=details.Application_Type,
+                Import_Type=details.Import_Type,
+                License_No=details.License_No,
+                Business_Name=details.Business_Name,
+                Nationality=details.Nationality,
+                Country=details.Country,
+                CID=details.CID,
+                Applicant_Name=details.Applicant_Name,
+                Dzongkhag_Code=details.Dzongkhag_Code,
+                Gewog_Code=details.Gewog_Code,
+                Village_Code=details.Village_Code,
+                Present_Address=details.Present_Address,
+                Contact_No=details.Contact_No,
+                Email=details.Email,
+                Origin_Source_Products=details.Origin_Source_Products,
+                Name_And_Address_Supplier=details.Name_And_Address_Supplier,
+                Means_of_Conveyance=details.Means_of_Conveyance,
+                Place_Of_Entry=details.Place_Of_Entry,
+                Final_Destination=details.Final_Destination,
+                Expected_Arrival_Date=details.Expected_Arrival_Date,
+                Proposed_Inspection_Date=date_requested,
+                Actual_Point_Of_Entry=entry_point,
+                Inspection_Request_Remarks=remarks,
+                Inspection_Date=None,
+                Inspection_Type=None,
+                Inspection_Time=None,
+                Inspection_Leader=None,
+                Inspection_Team=None,
+                Clearance_Ref_No=None,
+                FO_Remarks=details.FO_Remarks,
+                Inspection_Remarks=None,
+                Import_Permit_No=details.Import_Permit_No
+            )
+        for import_details_ILP in import_details:
+            t_livestock_import_permit_product_inspection_t2.objects.create(
+                Application_No=new_import_application_no,
+                Particulars=import_details_ILP.Particulars,
+                Company_Name=import_details_ILP.Company_Name,
+                Description=import_details_ILP.Description,
+                Quantity=import_details_ILP.Quantity,
+                Unit=import_details_ILP.Unit,
+                Quantity_Released=0,
+                Remarks=import_details_ILP.Remarks,
+                Quantity_Balance=import_details_ILP.Quantity_Balance,
+                Product_Record_Id=import_details_ILP.pk
+            )
+
+        field = t_location_field_office_mapping.objects.filter(Location_Code=entry_point)
+        for field_office in field:
+            field_office_id = field_office.Field_Office_Id_id
+        t_workflow_details.objects.create(Application_No=new_import_application_no,
+                                          Applicant_Id=request.session['email'],
+                                          Assigned_To=None, Field_Office_Id=field_office_id, Section='Livestock',
+                                          Assigned_Role_Id='4', Action_Date=None, Application_Status='P',
+                                          Service_Code=service_code)
+        login_id = request.session['login_id']
+        application_details = t_workflow_details.objects.filter(Assigned_To=login_id)
+        return render(request, 'inspection_call.html', {'application_details': application_details})
+
+
+def new_animal_fish_import_application_no(service_code):
+    last_application_no = t_livestock_import_permit_animal_inspection_t1.objects.aggregate(Max('Application_No'))
+    lastAppNo = last_application_no['Application_No__max']
+    if not lastAppNo:
+        year = timezone.now().year
+        newAppNo = service_code + "/I/" + str(year) + "/" + "0001"
+    else:
+        substring = str(lastAppNo)[9:15]
+        substring = int(substring) + 1
+        AppNo = str(substring).zfill(4)
+        year = timezone.now().year
+        newAppNo = service_code + "/I/" + str(year) + "/" + AppNo
+    return newAppNo
+
+
+def new_livestock_product_import_application_no(service_code):
+    last_application_no = t_livestock_import_permit_product_inspection_t1.objects.aggregate(Max('Application_No'))
+    lastAppNo = last_application_no['Application_No__max']
+    if not lastAppNo:
+        year = timezone.now().year
+        newAppNo = service_code + "/I/" + str(year) + "/" + "0001"
+    else:
+        substring = str(lastAppNo)[9:15]
+        substring = int(substring) + 1
+        AppNo = str(substring).zfill(4)
+        year = timezone.now().year
+        newAppNo = service_code + "/I/" + str(year) + "/" + AppNo
+    return newAppNo
 
 
 def update_resubmit_details(request):
@@ -2955,7 +3305,9 @@ def certificate_print(request):
 
 def view_certificate_details(request):
     service_code = request.GET.get('service_code')
+    print(service_code)
     login_id = request.session['email']
+    print(login_id)
     if service_code == 'MPP':
         application_details = t_plant_movement_permit_t1.objects.filter(Applicant_Id=login_id,
                                                                         Movement_Permit_No__isnull=False)
@@ -2996,6 +3348,69 @@ def view_certificate_details(request):
                                                                       Clearance_Ref_No__isnull=False)
         return render(request, 'certificates/release_form_details.html',
                       {'application_details': application_details})
+    # LIVESTOCK_CERTIFICATE_DETAILS
+    elif service_code == 'APM':
+        application_details = t_livestock_ante_post_mortem_t1.objects.filter(Applicant_Id=login_id,
+                                                                             Clearance_No__isnull=False)
+        for application in application_details:
+            app_no = application.Clearance_No
+            payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+        return render(request, 'livestock_certificates/ante_post_mortem/certificate_list.html',
+                      {'application_details': application_details, 'payment_details': payment_details})
+    elif service_code == 'CMS':
+        application_details = t_livestock_clearance_meat_shop_t1.objects.filter(Applicant_Id=login_id,
+                                                                                Meat_Shop_Clearance_No__isnull=False)
+        for application in application_details:
+            app_no = application.Meat_Shop_Clearance_No
+            payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+        return render(request, 'livestock_certificates/meat_shop_clearance/clearance_list.html',
+                      {'application_details': application_details, 'payment_details': payment_details})
+    elif service_code == 'LMP':
+        application_details = t_livestock_movement_permit_t1.objects.filter(Applicant_Id=login_id,
+                                                                            Movement_Permit_No__isnull=False)
+        for application in application_details:
+            app_no = application.Movement_Permit_No
+            payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+        return render(request, 'livestock_certificates/movement_permit/movement_permit_list.html',
+                      {'application_details': application_details, 'payment_details': payment_details})
+    elif service_code == 'RFAF':
+        application_details = t_livestock_import_permit_animal_t1.objects.filter(Applicant_Id=login_id,
+                                                                                 Import_Permit_No__isnull=False)
+        for application in application_details:
+            app_no = application.Import_Permit_No
+            payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+        return render(request, 'livestock_certificates/import/release_form_list_animal.html',
+                      {'application_details': application_details, 'payment_details': payment_details})
+    elif service_code == 'RFLP':
+        application_details = t_livestock_import_permit_product_inspection_t1.objects.filter(
+            Import_Permit_No__isnull=False)
+        for application in application_details:
+            app_no = application.Import_Permit_No
+            payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+        return render(request, 'livestock_certificates/import/release_form_list.html',
+                      {'application_details': application_details, 'payment_details': payment_details})
+    elif service_code == 'IAF':
+        application_details = t_livestock_import_permit_animal_t1.objects.filter(Applicant_Id=login_id,
+                                                                                 Clearance_Ref_No__isnull=False)
+        for application in application_details:
+            app_no = application.Clearance_Ref_No
+            payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+        return render(request, 'livestock_certificates/import/import_cert_list.html',
+                      {'application_details': application_details, 'payment_details': payment_details})
+    elif service_code == 'ILP':
+        application_details = t_livestock_import_permit_product_t1.objects.filter(Import_Permit_No__isnull=False)
+        for application in application_details:
+            app_no = application.Import_Permit_No
+            payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+        return render(request, 'livestock_certificates/import/import_cert_list.html',
+                      {'application_details': application_details, 'payment_details': payment_details})
+    elif service_code == 'LEC':
+        application_details = t_livestock_export_certificate_t1.objects.filter(Export_Permit_No__isnull=False)
+        for application in application_details:
+            app_no = application.Export_Permit_No
+            payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+        return render(request, 'livestock_certificates/export_certificate/export_cert_list.html',
+                      {'application_details': application_details, 'payment_details': payment_details})
 
 
 def oic_inspector_certificate_details(request):
@@ -3023,7 +3438,7 @@ def oic_inspector_certificate_details(request):
                       {'application_details': application_details})
 
 
-def get_certificate_details(request):
+def get_certificate_details(request, t_livestock_import_permit_product_inspection_2=None):
     application_No = request.GET.get('application_id')
     service_code = request.GET.get('service_code')
     current_date = date.today()
@@ -3163,22 +3578,131 @@ def get_certificate_details(request):
             return render(request, 'certificates/release_form.html',
                           {'certificate_details': details, 'release_form': details_permit,
                            'approved_date': approved_date})
+    elif service_code == 'APM':
+        details = t_livestock_ante_post_mortem_t1.objects.filter(Application_No=application_No)
+        application_details = t_workflow_details.objects.filter(Application_No=application_No)
+        details_permit = t_livestock_ante_post_mortem_t2.objects.filter(Application_No=application_No)
+        if details.exists():
+            for date_approved in application_details:
+                approved_date = date_approved.Action_Date
+            return render(request, 'livestock_certificates/ante_post_mortem/certificate.html',
+                          {'certificate_details': details, 'mortem': details_permit,
+                           'approved_date': approved_date})
+    elif service_code == 'LMP':
+        details = t_livestock_movement_permit_t1.objects.filter(Application_No=application_No)
+        for det in details:
+            dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.Dzongkhag_Code)
+            for det_dz in dzongkhag_code:
+                dzongkhag_code_name = det_dz.Dzongkhag_Name
+            village_code = t_village_master.objects.filter(Village_Code=det.Village_Code)
+            for name_vill in village_code:
+                village_code_name = name_vill.Village_Name
+            gewog_code = t_gewog_master.objects.filter(Gewog_Code=det.Gewog_Code)
+            for gew in gewog_code:
+                gewog_code_name = gew.Gewog_Name
+            from_dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.From_Dzongkhag_Code)
+            for from_dz in from_dzongkhag_code:
+                from_dzongkhag = from_dz.Dzongkhag_Name
+            to_dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.To_Dzongkhag_Code)
+            for to_dz in to_dzongkhag_code:
+                to_dzongkhag = to_dz.Dzongkhag_Name
+        details_permit = t_livestock_movement_permit_t2.objects.filter(Application_No=application_No)
+        return render(request, 'livestock_certificates/movement_permit/movement_permit.html',
+                      {'certificate_details': details, 'Dzongkhag': dzongkhag_code_name,
+                       'Village': village_code_name, 'Gewog': gewog_code_name,
+                       'From_Dzongkhag': from_dzongkhag, 'To_Dzongkhag': to_dzongkhag,
+                       'movement_details': details_permit})
+    elif service_code == 'CMS':
+        details = t_livestock_clearance_meat_shop_t1.objects.filter(Application_No=application_No)
+        for det in details:
+            dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.Dzongkhag_Code)
+            for det_dz in dzongkhag_code:
+                dzongkhag_code_name = det_dz.Dzongkhag_Name
+            village_code = t_village_master.objects.filter(Village_Code=det.Village_Code)
+            for name_vill in village_code:
+                village_code_name = name_vill.Village_Name
+            gewog_code = t_gewog_master.objects.filter(Gewog_Code=det.Gewog_Code)
+            for gew in gewog_code:
+                gewog_code_name = gew.Gewog_Name
+        return render(request, 'livestock_certificates/meat_shop_clearance/conditional_clearance.html',
+                      {'certificate_details': details, 'Dzongkhag': dzongkhag_code_name,
+                       'Village': village_code_name, 'Gewog': gewog_code_name})
+    elif service_code == 'LEC':
+        details = t_livestock_export_certificate_t1.objects.filter(Application_No=application_No)
+        for det in details:
+            dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.Dzongkhag_Code)
+            for det_dz in dzongkhag_code:
+                dzongkhag_code_name = det_dz.Dzongkhag_Name
+            village_code = t_village_master.objects.filter(Village_Code=det.Village_Code)
+            for name_vill in village_code:
+                village_code_name = name_vill.Village_Name
+            gewog_code = t_gewog_master.objects.filter(Gewog_Code=det.Gewog_Code)
+            for gew in gewog_code:
+                gewog_code_name = gew.Gewog_Name
+        return render(request, 'livestock_certificates/export_certificate/export_certificate.html',
+                      {'certificate_details': details, 'Dzongkhag': dzongkhag_code_name,
+                       'Village': village_code_name, 'Gewog': gewog_code_name})
+    elif service_code == 'ILP':
+        details = t_livestock_import_permit_product_t1.objects.filter(Application_No=application_No)
+        import_details = t_livestock_import_permit_product_t2.objects.filter(Application_No=application_No)
+        return render(request, 'livestock_certificates/import/import_permit.html',
+                      {'certificate_details': details, 'import': import_details})
+    elif service_code == 'IAF':
+        details = t_livestock_import_permit_animal_inspection_t1.objects.filter(Application_No=application_No)
+        for det in details:
+            dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.Dzongkhag_Code)
+            for det_dz in dzongkhag_code:
+                dzongkhag_code_name = det_dz.Dzongkhag_Name
+            village_code = t_village_master.objects.filter(Village_Code=det.Village_Code)
+            for name_vill in village_code:
+                village_code_name = name_vill.Village_Name
+            gewog_code = t_gewog_master.objects.filter(Gewog_Code=det.Gewog_Code)
+            for gew in gewog_code:
+                gewog_code_name = gew.Gewog_Name
+        return render(request, 'livestock_certificates/import/import_permit_animal.html',
+                      {'certificate_details': details, 'Dzongkhag': dzongkhag_code_name,
+                       'Village': village_code_name, 'Gewog': gewog_code_name})
+    elif service_code == 'RFAF':
+        details = t_livestock_import_permit_animal_t1.objects.filter(Application_No=application_No)
+        for det in details:
+            dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.Dzongkhag_Code)
+            for det_dz in dzongkhag_code:
+                dzongkhag_code_name = det_dz.Dzongkhag_Name
+            village_code = t_village_master.objects.filter(Village_Code=det.Village_Code)
+            for name_vill in village_code:
+                village_code_name = name_vill.Village_Name
+            gewog_code = t_gewog_master.objects.filter(Gewog_Code=det.Gewog_Code)
+            for gew in gewog_code:
+                gewog_code_name = gew.Gewog_Name
+        return render(request, 'livestock_certificates/import/release_form_animal_fish.html',
+                      {'certificate_details': details, 'Dzongkhag': dzongkhag_code_name,
+                       'Village': village_code_name, 'Gewog': gewog_code_name})
+    elif service_code == 'RFLP':
+        details = t_livestock_import_permit_product_inspection_t1.objects.filter(Application_No=application_No)
+        import_details = t_livestock_import_permit_product_inspection_t2.objects.filter(Application_No=application_No)
+        for det in details:
+            dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.Dzongkhag_Code)
+            for det_dz in dzongkhag_code:
+                dzongkhag_code_name = det_dz.Dzongkhag_Name
+            village_code = t_village_master.objects.filter(Village_Code=det.Village_Code)
+            for name_vill in village_code:
+                village_code_name = name_vill.Village_Name
+            gewog_code = t_gewog_master.objects.filter(Gewog_Code=det.Gewog_Code)
+            for gew in gewog_code:
+                gewog_code_name = gew.Gewog_Name
+        return render(request, 'livestock_certificates/import/release_form.html',
+                      {'certificate_details': details, 'Dzongkhag': dzongkhag_code_name,
+                       'Village': village_code_name, 'Gewog': gewog_code_name, 'import': import_details})
 
 
 # Common Details
 def call_for_inspection(request):
     login_id = request.session['login_id']
     application_details = t_workflow_details.objects.filter(Assigned_To=login_id)
-    if application_details.exists():
-        for service_code in application_details:
-            code = service_code.Service_Code
-        service = t_service_master.objects.filter(Service_Code=code)
-        for service in service:
-            service_name = service.Service_Name
-    else:
-        service_name = None
-    return render(request, 'inspection_call.html', {'application_details': application_details,
-                                                    'service_name': service_name})
+    service_details = t_service_master.objects.all()
+    payment_details = t_payment_details.objects.all()
+    return render(request, 'inspection_call.html',
+                  {'application_details': application_details, 'service_details': service_details})
 
 
 def application_status(request):
@@ -3208,6 +3732,9 @@ def resubmit_application(request):
 def call_for_inspection_details(request):
     application_no = request.GET.get('application_id')
     service_id = request.GET.get('service_code')
+    dzongkhag = t_dzongkhag_master.objects.all()
+    village = t_village_master.objects.all()
+    location = t_location_field_office_mapping.objects.all()
     if service_id == 'IPP':
         location_details = t_field_office_master.objects.filter(Is_Entry_Point='Y')
         return render(request, 'import_permit/inspection_call_details.html', {'application_no': application_no,
@@ -3216,6 +3743,24 @@ def call_for_inspection_details(request):
         location_details = t_field_office_master.objects.filter(Is_Entry_Point='Y')
         return render(request, 'nursery_registration/inspection_call_details.html', {'application_no': application_no,
                                                                                      'location': location_details})
+    elif service_id == 'ILP':
+        application_details = t_livestock_import_permit_product_t1.objects.filter(Application_No=application_no)
+        details = t_livestock_import_permit_product_t2.objects.filter(Application_No=application_no)
+        file = t_file_attachment.objects.filter(Application_No=application_no)
+        location_details = t_field_office_master.objects.filter(Is_Entry_Point='Y')
+        return render(request, 'Livestock_Import/call_for_inspection_details.html',
+                      {'application_details': application_details, 'details': details, 'file': file,
+                       'dzongkhag': dzongkhag, 'village': village, 'location': location,
+                       'location_details': location_details})
+    elif service_id == 'IAF':
+        application_details = t_livestock_import_permit_animal_t1.objects.filter(Application_No=application_no)
+        details = t_livestock_import_permit_animal_t2.objects.filter(Application_No=application_no)
+        file = t_file_attachment.objects.filter(Application_No=application_no)
+        location_details = t_field_office_master.objects.filter(Is_Entry_Point='Y')
+        return render(request, 'Animal_Fish_Import/call_for_inspection_details.html',
+                      {'application_details': application_details, 'details': details, 'file': file,
+                       'dzongkhag': dzongkhag, 'village': village, 'location': location,
+                       'location_details': location_details})
 
 
 def resubmit_app_details(request):
@@ -3238,7 +3783,3 @@ def resubmit_app_details(request):
         application_details = t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
         return render(request, 'nursery_registration/resubmit_application.html',
                       {'application_details': application_details})
-
-
-def add_payment_details(request):
-    t_payment_details.objects.create(Application_No='', Permit_No='')

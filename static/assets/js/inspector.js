@@ -9,11 +9,11 @@ $(function () {
       type: 'get',
       dataType: 'json',
       beforeSend: function () {
-        $("#modal-common .modal-content").html("");
-        $('#modal-common').modal('show');
+        $("#modal-book .modal-content").html("");
+        $('#modal-book').modal('show');
       },
       success: function (data) {
-        $("#modal-common .modal-content").html(data.html_form);
+        $("#modal-book .modal-content").html(data.html_form);
       }
     });
   };
@@ -26,13 +26,8 @@ $(function () {
       type: form.attr("method"),
       dataType: 'json',
       success: function (data) {
-        if (data.form_is_valid) {
-          $("#modal-common").modal("hide");
-
-        }
-        else {
-          $("#modal-common .modal-content").html(data.html_form);
-        }
+          $("#details-table tbody").html(data.html_book_list);
+          $("#modal-book").modal("hide");
       }
     });
     return false;
@@ -42,6 +37,6 @@ $(function () {
 
   // Update Division
   $("#details-table").on("click", ".js-edit-details", loadForm);
-  $("#modal-common").on("submit", ".js-details-update-form", saveForm);
+  $("#modal-book").on("submit", ".js-details-update-form", saveForm);
 
 });

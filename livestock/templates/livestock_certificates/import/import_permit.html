@@ -1,0 +1,104 @@
+{% load static %}
+<style>
+    .header-card {
+    background-color: white;
+}
+</style>
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header header-card">
+		<div class="card-head-row float-right">
+            <div class="card-tools">
+                <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Test Report';printClientTable()">
+                    <span class="btn-label">
+                        <i class="zmdi zmdi-print"></i>
+                    </span>
+                    Print
+                </a>
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="card-title text-center">
+            <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
+        </div>
+        <h6 class="text-center"><font color='black'><b>IMPORT PERMIT FOR LIVESTOCK PRODUCTS AND ANIMAL FEEDS</b></font></h6>
+	</div>
+        {% for certificate_details in certificate_details %}
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <td>Registration no./ Application no.&nbsp;:&nbsp;{{certificate_details.Import_Permit_No}}</td>
+                </tr>
+                <tr>
+                    <td rowspan="2">This Import Permit is granted in accordance with the Livestock Act of Bhutan, 2001; and Livestock Rules and Regulations 2017 there under.</td>
+                </tr>
+                <tr>
+                    <td>Name and Address of the Importer&nbsp;:&nbsp;{{certificate_details.Applicant_Name}}&nbsp;{{certificate_details.Present_Address}}</td>
+                    <td>Name and Address of the Exporter&nbsp;:&nbsp;{{certificate_details.Exporter_Name_And_Address}}</td>
+                </tr>
+                <tr>
+                    <td>Entry Point&nbsp;:&nbsp;{{certificate_details.Place_Of_Entry}}</td>
+                    <td>Country of Origin&nbsp;:&nbsp;{{certificate_details.Country}}</td>
+                </tr>
+                <tr>
+                    <td>Final Destination&nbsp;:&nbsp;{{certificate_details.Place_Of_Entry}}</td>
+                    <td>Expected date of arrival&nbsp;:&nbsp;{{certificate_details.Expected_Arrival_Date|date:"d-m-Y"}}</td>
+                </tr>
+                <tr>
+                    <td rowspan="2">
+                        <p>General Entry Conditions</p>
+                        <p>The animal and animal products should be:</p>
+                        <p>(i)	Free from notifiable disease/ zoonotic disease.</p>
+                        <p>(ii)	All import shall furnish LMO free written certificate from the source.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td rowspan="2">
+                        Special Entry Conditions/ Additional Declaration: NA
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <p>Date of Issue&nbsp;:&nbsp;{{certificate_details.Approve_Date}}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <p>Valid Until&nbsp;:&nbsp;{{certificate_details.Validity}}</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        {% endfor %}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Particulars</th>
+                    <th scope="col">Company Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Unit</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for import in import %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{import.Particulars}}</td>
+                        <td>{{import.Company_Name}}</td>
+                        <td>{{import.Description}}</td>
+                        <td>{{import.Unit}}</td>
+                        <td>{{import.Quantity}}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                      <td colspan="6" class="text-center">No Data</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+

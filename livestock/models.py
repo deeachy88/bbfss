@@ -67,7 +67,6 @@ class t_livestock_import_permit_product_t1(models.Model):
     Email = models.EmailField(blank=True, null=True)
     Origin_Source_Products = models.TextField(blank=True, null=True)
     Name_And_Address_Supplier = models.TextField(blank=True, null=True)
-    Purpose = models.TextField(blank=True, null=True)
     Means_of_Conveyance = models.TextField(blank=True, null=True)
     Place_Of_Entry = models.IntegerField(blank=True, null=True)
     Final_Destination = models.CharField(max_length=250, blank=True, null=True)
@@ -77,13 +76,14 @@ class t_livestock_import_permit_product_t1(models.Model):
     Approve_Date = models.DateField(blank=True, null=True)
     Validity_Period = models.IntegerField(blank=True, null=True)
     Validity = models.DateField(blank=True, null=True)
+    Import_Permit_No = models.CharField(max_length=20, blank=True, null=True)
 
 
 class t_livestock_import_permit_product_t2(models.Model):
     Record_Id = models.AutoField(primary_key=True)
     Application_No = models.CharField(max_length=20)
-    Particulars = models.IntegerField(blank=True, null=True)
-    Company_Name = models.IntegerField(blank=True, null=True)
+    Particulars = models.CharField(max_length=100, default=None, blank=True, null=True)
+    Company_Name = models.CharField(max_length=100, default=None, blank=True, null=True)
     Description = models.TextField(blank=True, null=True)
     Quantity = models.IntegerField(blank=True, null=True)
     Unit = models.CharField(max_length=10)
@@ -114,7 +114,6 @@ class t_livestock_import_permit_product_inspection_t1(models.Model):
     Email = models.EmailField(blank=True, null=True)
     Origin_Source_Products = models.TextField(blank=True, null=True)
     Name_And_Address_Supplier = models.TextField(blank=True, null=True)
-    Purpose = models.TextField(blank=True, null=True)
     Means_of_Conveyance = models.TextField(blank=True, null=True)
     Place_Of_Entry = models.IntegerField(blank=True, null=True)
     Final_Destination = models.CharField(max_length=250, blank=True, null=True)
@@ -135,13 +134,15 @@ class t_livestock_import_permit_product_inspection_t1(models.Model):
 class t_livestock_import_permit_product_inspection_t2(models.Model):
     Record_Id = models.AutoField(primary_key=True)
     Application_No = models.CharField(max_length=20)
-    Particulars = models.IntegerField(blank=True, null=True)
-    Company_Name = models.IntegerField(blank=True, null=True)
+    Particulars = models.CharField(max_length=100, default=None, blank=True, null=True)
+    Company_Name = models.CharField(max_length=100, default=None, blank=True, null=True)
     Description = models.TextField(blank=True, null=True)
     Quantity = models.IntegerField(blank=True, null=True)
     Unit = models.CharField(max_length=10)
     Quantity_Released = models.IntegerField(blank=True, null=True)
     Remarks = models.TextField(blank=True, null=True)
+    Quantity_Balance = models.IntegerField(blank=True, null=True)
+    Product_Record_Id = models.IntegerField(blank=True, null=True)
 
 
 class t_livestock_import_permit_product_inspection_t3(models.Model):
@@ -179,6 +180,8 @@ class t_livestock_import_permit_animal_t1(models.Model):
     Approve_Date = models.DateField(blank=True, null=True)
     Validity_Period = models.IntegerField(blank=True, null=True)
     Validity = models.DateField(blank=True, null=True)
+    Quarantine_Facilities = models.CharField(max_length=100, default=None, blank=True, null=True)
+    Import_Permit_No = models.CharField(max_length=20, blank=True, null=True)
 
 
 class t_livestock_import_permit_animal_t2(models.Model):
@@ -233,6 +236,7 @@ class t_livestock_import_permit_animal_inspection_t1(models.Model):
     Clearance_Ref_No = models.CharField(max_length=20, blank=True, null=True)
     FO_Remarks = models.TextField(blank=True, null=True)
     Inspection_Remarks = models.TextField(blank=True, null=True)
+    Quarantine_Facilities = models.CharField(max_length=100, default=None, blank=True, null=True)
 
 
 class t_livestock_import_permit_animal_inspection_t2(models.Model):
@@ -246,6 +250,8 @@ class t_livestock_import_permit_animal_inspection_t2(models.Model):
     Quantity = models.IntegerField(blank=True, null=True)
     Quantity_Released = models.IntegerField(blank=True, null=True)
     Remarks = models.TextField(blank=True, null=True)
+    Quantity_Balance = models.IntegerField(blank=True, null=True)
+    Product_Record_Id = models.IntegerField(blank=True, null=True)
 
 
 class t_livestock_import_permit_animal_inspection_t3(models.Model):
@@ -259,7 +265,7 @@ class t_livestock_export_certificate_t1(models.Model):
     Application_No = models.CharField(max_length=30, primary_key=True)
     Application_Date = models.DateField(blank=True, null=True)
     Application_Type = models.CharField(max_length=50, default=None)
-    Export_Type = models.CharField(max_length=50, default=None)
+    Exporter_Type = models.CharField(max_length=50, default=None)
     Nationality = models.CharField(max_length=50, blank=True, null=True)
     Country = models.CharField(max_length=100, blank=True, null=True)
     CID = models.BigIntegerField(blank=True, null=True)
@@ -289,6 +295,7 @@ class t_livestock_export_certificate_t1(models.Model):
     Approve_Date = models.DateField(blank=True, null=True)
     Validity_Period = models.IntegerField(blank=True, null=True)
     Validity = models.DateField(blank=True, null=True)
+    Applicant_Id = models.CharField(max_length=100)
 
 
 class t_livestock_export_certificate_t2(models.Model):
@@ -304,6 +311,8 @@ class t_livestock_export_certificate_t2(models.Model):
     Quantity = models.IntegerField(blank=True, null=True)
     Quantity_Released = models.IntegerField(blank=True, null=True)
     Remarks = models.TextField(blank=True, null=True)
+    No_Of_Animal = models.CharField(max_length=10, default=None, blank=True, null=True)
+    Unit = models.CharField(max_length=100, blank=True, null=True)
 
 
 class t_livestock_export_certificate_t3(models.Model):
@@ -315,7 +324,7 @@ class t_livestock_export_certificate_t3(models.Model):
 
 class t_livestock_movement_permit_t1(models.Model):
     Application_No = models.CharField(max_length=20, primary_key=True)
-    Permit_Type = models.CharField(max_length=1, default=None)
+    Permit_Type = models.CharField(max_length=3, default=None)
     CID = models.BigIntegerField()
     Applicant_Name = models.CharField(max_length=250)
     Dzongkhag_Code = models.IntegerField(default=None, blank=True, null=True)
@@ -355,13 +364,14 @@ class t_livestock_movement_permit_t2(models.Model):
     Common_Name = models.CharField(max_length=100, blank=True, null=True)
     Scientific_Name = models.CharField(max_length=100, blank=True, null=True)
     Age = models.IntegerField(blank=True, null=True)
-    Particulars = models.IntegerField(blank=True, null=True)
-    Company_Name = models.IntegerField(blank=True, null=True)
+    Particulars = models.CharField(max_length=100, blank=True, null=True)
+    Company_Name = models.CharField(max_length=100, blank=True, null=True)
     Description = models.TextField(blank=True, null=True)
     Quantity = models.IntegerField(blank=True, null=True)
     Unit = models.CharField(max_length=100, blank=True, null=True)
     Quantity_Released = models.IntegerField(blank=True, null=True)
     Remarks = models.TextField(blank=True, null=True)
+    No_Of_Animal = models.IntegerField(blank=True, null=True)
 
 
 class t_livestock_movement_permit_t3(models.Model):
@@ -373,7 +383,7 @@ class t_livestock_movement_permit_t3(models.Model):
 
 class t_livestock_ante_post_mortem_t1(models.Model):
     Application_No = models.CharField(max_length=20, primary_key=True)
-    Application_Type = models.CharField(max_length=1, default=None)
+    Inspection_Type = models.CharField(max_length=1, default=None)
     CID = models.BigIntegerField()
     Applicant_Name = models.CharField(max_length=250)
     Dzongkhag_Code = models.IntegerField(default=None, blank=True, null=True)
@@ -385,6 +395,7 @@ class t_livestock_ante_post_mortem_t1(models.Model):
     Location_Dzongkhag_Code = models.IntegerField(default=None, blank=True, null=True)
     Location_Code = models.IntegerField(default=None, blank=True, null=True)
     Exact_Location = models.TextField(default=None, blank=True, null=True)
+    Inspection_Date_Requested = models.DateField(blank=True, null=True)
     Inspection_Date = models.DateField(blank=True, null=True)
     Inspection_Leader = models.CharField(max_length=100, default=None, blank=True, null=True)
     Inspection_Team = models.CharField(max_length=100, default=None, blank=True, null=True)
@@ -396,6 +407,19 @@ class t_livestock_ante_post_mortem_t1(models.Model):
     Approved_Date = models.DateField(default=None, blank=True, null=True)
     Validity_Period = models.CharField(default=None, max_length=10, blank=True, null=True)
     Validity = models.DateField(default=None, blank=True, null=True)
+    Respiration_Abnormalities = models.CharField(max_length=100, default=None, blank=True, null=True)
+    Behaviour_Abnormalities = models.TextField(default=None, blank=True, null=True)
+    Structure_Abnormalities = models.TextField(default=None, blank=True, null=True)
+    Abnormal_Gait = models.CharField(max_length=10, default=None, blank=True, null=True)
+    Abnormal_Posture = models.CharField(max_length=10, default=None, blank=True, null=True)
+    Discharge_Abnormalities = models.TextField(default=None, blank=True, null=True)
+    Abnormal_Colour = models.CharField(max_length=10, default=None, blank=True, null=True)
+    Abnormal_Odour = models.CharField(max_length=10, default=None, blank=True, null=True)
+    No_Without_Restrictions = models.CharField(max_length=10, default=None, blank=True, null=True)
+    No_Close_Supervision = models.CharField(max_length=10, default=None, blank=True, null=True)
+    No_Withheld = models.CharField(max_length=10, default=None, blank=True, null=True)
+    No_Emergency = models.CharField(max_length=10, default=None, blank=True, null=True)
+    No_Unfit = models.CharField(max_length=10, default=None, blank=True, null=True)
 
 
 class t_livestock_ante_post_mortem_t2(models.Model):

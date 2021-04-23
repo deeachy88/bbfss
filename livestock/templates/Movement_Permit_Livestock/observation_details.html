@@ -1,0 +1,22 @@
+<table id="book-table" class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Current Observation</th>
+            <th scope="col">Decision Conformity</th>
+        </tr>
+    </thead>
+    <tbody>
+       {% for observation in observation %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{observation.Current_Observation}}</td>
+                <td>{{observation.Decision_Conformity}}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="3" class="text-center">No Data</td>
+            </tr>
+       {% endfor %}
+    </tbody>
+</table>

@@ -1,0 +1,84 @@
+{% load static %}
+<style>
+    .header-card {
+    background-color: white;
+}
+</style>
+<div class="card">
+    <div class="card-header header-card">
+        <div class="card-head-row float-right">
+            <div class="card-tools">
+                <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Test Report';printClientTable()">
+                    <span class="btn-label">
+                        <i class="zmdi zmdi-print"></i>
+                    </span>
+                    Print
+                </a>
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="card-title text-center">
+            <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
+        </div>
+        <h6 class="text-center"><font color='black'><b>RELEASE FORM</b></font></h6>
+    </div>
+    <div class="card-body">
+        <div class="row justify-content-center">
+            <p>The following consignment is released to </p>
+        </div>
+        {% for certificate_details in certificate_details %}
+        <div class="row justify-content-between">
+            <label>Ref.No&nbsp;:&nbsp;{{certificate_details.Clearance_Ref_No}}</label>
+            <label>Import Permit&nbsp;:&nbsp;{{certificate_details.Import_Permit_No}}</label>
+        </div>
+        <div class="row justify-content-center">
+            <label>Mr/Ms&nbsp;:&nbsp;{{certificate_details.Applicant_Name}}</label>
+        </div>
+        <div class="row justify-content-center">
+            <label>Address&nbsp;:&nbsp;{{certificate_details.Present_Address}}</label>
+        </div>
+        <div class="row justify-content-center">
+            <label>Final Destination&nbsp;:&nbsp;{{certificate_details.Final_Destination}}</label>
+        </div>
+        {% endfor %}
+            <div class="row">
+                <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Particulars</th>
+                        <th scope="col">Company Name</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Unit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for import in import %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{import.Particulars}}</td>
+                            <td>{{import.Company_Name}}</td>
+                            <td>{{import.Description}}</td>
+                            <td>{{import.Unit}}</td>
+                            <td>{{import.Quantity}}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                          <td colspan="6" class="text-center">No Data</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+         {% for certificate_details in certificate_details %}
+            <div class="row">
+                Date of Issue &nbsp;:&nbsp;&nbsp;{{certificate_details.Approve_Date}}
+            </div>
+            <div class="row">
+               Place Of Issue&nbsp;:&nbsp;&nbsp;{{approved_date}}
+            </div>
+        {% endfor %}
+    </div>
+</div>

@@ -1,0 +1,739 @@
+{% extends 'common_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<style>
+    option
+    {
+        background-color: black !important;
+    }
+    .check {
+    margin-bottom: 0;
+    min-height: 2rem;
+}
+</style>
+<div class="card">
+    <div class="card-header">
+        <h4 class="card-title">Import Permit for Livestock Products and Animal Feeds</h4>
+    </div>
+    <div class="card-body">
+        <form method="post" id="Livestock_Products_Animal_Feeds_form">
+        {% csrf_token %}
+            <input type="hidden" name="application_no" id="applicationNo">
+            <div class="row justify-content-left">
+                <ul class="nav nav-pills nav-secondary" id="pills-tab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadDetails()">Application Form</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="pills-details" data-toggle="pill" href="#details" role="tab" aria-controls="pills-details" aria-selected="false" onclick="load_details()">Details</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="pills-profile-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="tab-content mt-2 mb-3" id="pills-tabContent">
+                <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                    <div id="applicant_details">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label class="form-label">Application Type</label>
+                            </div>
+                            <div class="col-sm-4 justify-content-center">
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" name="Application_Type" class="custom-control-input" value="Livestock Product">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Livestock Product</span>
+                                </label>
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" name="Application_Type" class="custom-control-input" value="Animal Feed">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Animal Feed</span>
+                                </label>
+                                <div class="alert alert-danger" id="applicationTypeErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-sm-2">
+                                <label class="form-label">Import Type</label>
+                            </div>
+                            <div class="col-sm-4 justify-content-center">
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" name="Import_Type" class="custom-control-input" value="Individual">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Individual</span>
+                                </label>
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" name="Import_Type" class="custom-control-input" value="Commercial">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Commercial</span>
+                                </label>
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" name="Import_Type" class="custom-control-input" value="Institution">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Institution</span>
+                                </label>
+                                <div class="alert alert-danger" id="importTypeErrorMsg" style="display:none"></div>
+                            </div>
+                        </div><br>
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label class="form-label">Nationality</label>
+                            </div>
+                            <div class="col-sm-4 justify-content-center">
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" name="nationality" class="custom-control-input" value="Bhutanese">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Bhutanese</span>
+                                </label>
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" name="nationality" class="custom-control-input" value="Non-Bhutanese">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Non-Bhutanese</span>
+                                </label>
+                                <div class="alert alert-danger" id="nationalityErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Applicant CID</label>
+                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)">
+                                </div>
+                                <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Name</label>
+                                    <input type="text" class="form-control" id="name" name="Name">
+                                </div>
+                                <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Present Address</label>
+                                    <textarea class="form-control" id="present_address" name="present_address"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="presentAddressErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Dzongkhag</label>
+                                    <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value),getLocation(this.value)">
+                                        <option value="">--SELECT DZONGKHAG--</option>
+                                        {% for dzongkhag in dzongkhag %}
+                                                <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Gewog</label>
+                                    <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                        <option value="">--SELECT GEWOG--</option>
+                                        {% for gewog in gewog %}
+                                                <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Village</label>
+                                     <select class="form-control" name="village" id="village">
+                                        <option value="">--SELECT VILLAGE--</option>
+                                        {% for village in village %}
+                                                <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                                <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Contact Number</label>
+                                    <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                                </div>
+                                <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email" onchange="validateemailId(this.value)">
+                                </div>
+                                <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">License Number</label>
+                                    <input type="text" class="form-control" id="license_no" name="license_no">
+                                </div>
+                                <div class="alert alert-danger" id="license_noErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Business Name</label>
+                                    <input type="text" class="form-control" id="business_name" name="business_name">
+                                </div>
+                                <div class="alert alert-danger" id="business_nameErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Origin of Source of Products</label>
+                                    <input type="text" class="form-control" id="Origin_Source_Products" name="Origin_Source_Products">
+                                </div>
+                                <div class="alert alert-danger" id="Origin_Source_ProductsErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Exporter's Name and address</label>
+                                    <textarea class="form-control" id="Exporter_Address" name="Exporter_Address"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="Importer_Name_AddressErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Place of Entry</label>
+                                    <select class="form-control" name="Place_of_Exit" id="Place_of_Exit">
+                                        <option value="">--SELECT--</option>
+                                        {% for location in location %}
+                                            <option value="{{ location.Field_Office_Code }}">{{ location.Field_Office }}</option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                                <div class="alert alert-danger" id="Place_of_ExitErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Final Destination</label>
+                                    <input type="text" class="form-control" id="Final_Destination" name="Final_Destination">
+                                </div>
+                                <div class="alert alert-danger" id="Final_DestinationErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Expected Date Of Arrival</label>
+                                     <input type="date" name="Expected_Arrival_Date" id="Expected_Arrival_Date" class="form-control date-picker flatpickr-input active">
+                                </div>
+                                <div class="alert alert-danger" id="Expected_Arrival_DateErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+                        Save SuccessFul
+                    </div>
+                    <div class="card-action">
+                        <button type="button" class="btn btn-primary" onclick="permit_save_details()">Save</button>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="details" role="tabpanel" aria-labelledby="pills-details">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-head-row">
+                                <div class="card-tools pull-right">
+                                    <button type="button" class="btn btn-light" onclick="show_modal()">Add Details</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="permit_details">
+                                {% include 'Livestock_Import/permit_details.html' %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <button type="button" class="btn btn-success" onclick="save_details_form()">Save</button>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="pills-profile-file">
+                    <div id="fileAttach">
+                        {% include 'Livestock_Import/file_attachment.html' %}
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<form method="post" id="permit_details_form">
+    {% csrf_token %}
+    <input type="hidden" id="applNo" name="appNo">
+    <div class="modal fade" id="permit_details_model" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Particulars</label>
+                                        <input type="text" name="Particulars" class="form-control" id="Particulars" required>
+                                        <div class="alert alert-danger" id="ParticularsErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Company/Producer</label>
+                                        <input type="text" name="Company_Name" class="form-control" id="Company_Name" required>
+                                        <div class="alert alert-danger" id="Company_NameErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Description</label>
+                                        <textarea class="form-control" name="Description" id="Description"></textarea>
+                                        <div class="alert alert-danger" id="remarksMeansErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Quantity</label>
+                                        <input type="number" name="qty" class="form-control" id="qty" required>
+                                        <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Unit</label>
+                                        <select class="form-control" name="unit"  id="unit">
+                                            <option value="">--SELECT UNIT--</option>
+                                            {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="alert alert-danger" id="unitErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="save_permit_details_form()">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<form method="post" id="attachment_form" enctype="multipart/form-data">
+{% csrf_token %}
+    <input type="hidden" name="appNo" id="appNo">
+    <div class="modal fade" id="attachmentModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="attachmentModalLabel">Attach Files</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label>Attach File</label>
+                                        <input type="file" name="document" id="document">
+                                        <div class="alert alert-danger" id="fileErrorMsg" style="display:none"></div>
+                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_attachment()"> Submit </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+function permit_save_details()
+{
+
+    var cid = $('#cid').val();
+    var name = $('#name').val();
+    var present_address = $('#present_address').val();
+    var dzongkhag = $('#dzongkhag').val();
+    var gewog = $('#gewog').val();
+    var village = $('#village').val();
+    var contactNumber = $('#contactNumber').val();
+    var email = $('#email').val();
+    var license_no = $('#license_no').val();
+    var business_name = $('#business_name').val();
+    var Origin_Source_Products = $('#Origin_Source_Products').val();
+    var Exporter_Address = $('#Exporter_Address').val();
+    var Place_of_Exit = $('#Place_of_Exit').val();
+    var Final_Destination = $('#Final_Destination').val();
+    var Expected_Arrival_Date = $('#Expected_Arrival_Date').val();
+    var cidCount = $('#cid').val().length;
+    var number_count = $('#contactNumber').val().length;
+    var Application_Type = $("input[name=Application_Type]:checked").length;
+    var Import_Type = $("input[name=Import_Type]:checked").length;
+    var nationality = $("input[name=nationality]:checked").length;
+
+    if(Application_Type < 1)
+    {
+        $('#applicationTypeErrorMsg').html("Please Check One Application Type.");
+        $('#applicationTypeErrorMsg').show();
+        $('#applicationTypeErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Import_Type < 1)
+    {
+        $('#importTypeErrorMsg').html("Please Check One Import Type.");
+        $('#importTypeErrorMsg').show();
+        $('#importTypeErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(nationality < 1)
+    {
+        $('#nationalityErrorMsg').html("Please Check One Nationality.");
+        $('#nationalityErrorMsg').show();
+        $('#nationalityErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(cid == "")
+    {
+        $('#cidErrorMsg').html("Enter CID Number.");
+        $('#cidErrorMsg').show();
+        $('#cidErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(name == "")
+    {
+        $('#nameErrorMsg').html("Enter Name .");
+        $('#nameErrorMsg').show();
+        $('#nameErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(present_address == "")
+    {
+        $('#presentAddressErrorMsg').html("Enter Name .");
+        $('#presentAddressErrorMsg').show();
+        $('#presentAddressErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(dzongkhag == "")
+    {
+        $('#dzongkhagErrorMsg').html("Select Dzongkhag.");
+        $('#dzongkhagErrorMsg').show();
+        $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(gewog == "")
+    {
+        $('#gewogErrorMsg').html("Select Gewog.");
+        $('#gewogErrorMsg').show();
+        $('#gewogErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(village == "")
+    {
+        $('#villageErrorMsg').html("Select Village.");
+        $('#villageErrorMsg').show();
+        $('#villageErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(contactNumber == "")
+    {
+        $('#contactNumberErrorMsg').html("Enter Contact Number.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(email == "")
+    {
+        $('#emailErrorMsg').html("Enter Contact Number.");
+        $('#emailErrorMsg').show();
+        $('#emailErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(license_no == "")
+    {
+        $('#license_noErrorMsg').html("Enter License No.");
+        $('#license_noErrorMsg').show();
+        $('#license_noErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if (business_name == "")
+    {
+        $('#business_nameErrorMsg').html("Enter Business Name.");
+        $('#business_nameErrorMsg').show();
+        $('#business_nameErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if (Origin_Source_Products == "")
+    {
+        $('#Origin_Source_ProductsErrorMsg').html("Enter Origin of Source of Products.");
+        $('#Origin_Source_ProductsErrorMsg').show();
+        $('#Origin_Source_ProductsErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Exporter_Address == "")
+    {
+        $('#Importer_Name_AddressErrorMsg').html("Enter Exporter's Name and address.");
+        $('#Importer_Name_AddressErrorMsg').show();
+        $('#Importer_Name_AddressErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Place_of_Exit == "")
+    {
+        $('#Place_of_ExitErrorMsg').html("Select Place of Entry.");
+        $('#Place_of_ExitErrorMsg').show();
+        $('#Place_of_ExitErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Final_Destination == "")
+    {
+        $('#Place_of_ExitErrorMsg').html("Enter Final Destination.");
+        $('#Place_of_ExitErrorMsg').show();
+        $('#Place_of_ExitErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Expected_Arrival_Date == "")
+    {
+        $('#Expected_Arrival_DateErrorMsg').html("Enter Final Destination.");
+        $('#Expected_Arrival_DateErrorMsg').show();
+        $('#Expected_Arrival_DateErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(cidCount < 11)
+    {
+        $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits.");
+        $('#cidErrorMsg').show();
+        setTimeout('hideStatus("cidErrorMsg")',2000);
+    }
+    else if(number_count < 8)
+    {
+        $('#contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
+        $('#contactNumberErrorMsg').show();
+        setTimeout('hideStatus("contactNumberErrorMsg")',2000);
+    }
+    else
+    {
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'save_import_lp' %}",
+            data : $('#Livestock_Products_Animal_Feeds_form').serialize(),
+            success : function(data)
+            {
+                $('#application_no').val(data.applNo);
+                $('#applNo').val(data.applNo);
+                $('#appNo').val(data.applNo);
+                $('#submitMsg').show();
+                setTimeout(function()
+                {
+                    $("#submitMsg").hide('blind', {}, 500)
+                }, 2000);
+                setTimeout(function()
+                {
+                    $('#pills-details').tab('show');
+                }, 3000);
+            }
+        });
+    }
+}
+
+function loadDetails()
+{
+    var appid = $('#applicationNo').val();
+    $.ajax({
+    type : "GET",
+    url : "{% url 'load_application_details' %}",
+    data :{'application_id':appid},
+    success : function(response)
+    {
+        $('#applicant_details').html(response);
+    }
+    });
+}
+
+function load_attachment_details()
+{
+    var appid = $('#applicationNo').val();
+    $.ajax({
+    type : "GET",
+    url : "{% url 'load_attachment_details' %}",
+    data :{'application_id':appid},
+    success : function(response)
+    {
+    $('#fileAttach').html(response);
+    }
+    });
+}
+
+function getGewog(dzongkhag_id)
+{
+    $.ajax({
+    type : "GET",
+    url : "{% url 'load_gewog' %}",
+    data :{'dzongkhag_id':dzongkhag_id},
+    success : function(data)
+    {
+    $('#gewog').html(data);
+    }
+    });
+}
+
+function getVillage(gewog_id)
+{
+    $.ajax({
+    type : "GET",
+    url : "{% url 'load_village' %}",
+    data :{'gewog_id':gewog_id},
+    success : function(data)
+    {
+    $('#village').html(data);
+    }
+    });
+}
+
+function getLocation(dzongkhag_id)
+{
+    $.ajax({
+    type : "GET",
+    url : "{% url 'load_location' %}",
+    data :{'dzongkhag_id':dzongkhag_id},
+    success : function(data) {
+    $('#location').html(data);
+    }
+    });
+}
+
+function updateDetails()
+{
+    $.ajax({
+    type : "POST",
+    url : "{% url 'update_details' %}",
+    data : $('#permitForm').serialize(),
+    success : function(response)
+    {
+    $('.wrapper').html(response);
+    $('#pills-tab a:last').tab('show');
+    }
+    });
+}
+
+function save_attachment()
+{
+    var fileName = document.getElementById('document').files[0].name;
+    var fd = new FormData();
+    var file = document.getElementById('document').files[0];
+    fd.append('document', file);
+    token_value=$("input[name=csrfmiddlewaretoken]").val();
+    $.ajaxSetup
+    ({
+        beforeSend: function(xhr, settings)
+        {
+        xhr.setRequestHeader("X-CSRFToken", token_value);
+        }
+    });
+    $.ajax
+    ({
+        type : "POST",
+        url : "{% url 'add_livestock_product_file' %}",
+        data : fd,
+        dataType: 'json',
+        contentType: false,
+        processData: false,
+        success : function(data)
+        {
+            if (data.form_is_valid)
+            {
+                var appNo = $('#applicationNo').val();
+                var file_url = data.file_url
+                $.ajax
+                ({
+                    type : "POST",
+                    url : "{% url 'add_livestock_product_name' %}",
+                    data : {'appNo':appNo , 'filename':fileName , 'file_url':file_url},
+                    success : function(responseText)
+                    {
+                        $('#attachmentModal').modal('hide');
+                        $('#fileAttach').html(responseText);
+                        $('.modal-backdrop').remove();
+                    }
+                });
+            }
+            else
+            {
+                $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                $('#fileErrorMsg').show();
+                $('#fileErrorMsg').delay(2000).fadeOut('slow');
+            }
+        }
+    });
+
+}
+function save_permit_details_form()
+{
+
+    var Particulars = $('#Particulars').val();
+    var Company_Name = $('#Company_Name').val();
+    var Description = $('#Description').val();
+    var qty = $('#qty').val();
+    var unit = $('#unit').val();
+
+    if(Particulars == "")
+    {
+        $('#ParticularsErrorMsg').html("Select Particulars.");
+        $('#ParticularsErrorMsg').show();
+        $('#ParticularsErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Company_Name == "")
+    {
+        $('#Company_NameErrorMsg').html("Enter Company Name.");
+        $('#Company_NameErrorMsg').show();
+        $('#Company_NameErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Description == "")
+    {
+        $('#DescriptionErrorMsg').html("Enter Description.");
+        $('#DescriptionErrorMsg').show();
+        $('#DescriptionErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(qty == "")
+    {
+        $('#qtyErrorMsg').html("Enter Quantity.");
+        $('#qtyErrorMsg').show();
+        $('#qtyErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(unit == "")
+    {
+        $('#unitErrorMsg').html("Select Unit.");
+        $('#unitErrorMsg').show();
+        $('#unitErrorMsg').delay(2000).fadeOut('slow');
+    }
+
+    else{
+        $.ajax({
+            type : "POST",
+            url : "{% url 'import_livestock_product_details' %}",
+            data : $('#permit_details_form').serialize(),
+            success : function(responseText) {
+               $('#permit_details_model').modal('hide');
+               $('#permit_details').html(responseText);
+               $('#pills-details').tab('show');
+               $('.modal-backdrop').remove();
+            }
+        });
+    }
+}
+
+function show_modal()
+{
+    $('#permit_details_model').modal('show');
+}
+
+function save_details_form()
+{
+    $('#pills-tab a:last').tab('show');
+}
+
+</script>
+{% endblock %}

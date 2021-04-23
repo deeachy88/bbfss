@@ -20,6 +20,14 @@
     white-space: nowrap;
     margin-top: -9px;
 }
+.notes__item {
+    margin-bottom: -2px;
+}
+.table thead>tr>th {
+    border-top: 0;
+    border-bottom: 0;
+    background: #56b372;
+}
 </style>
 <form id="certificate_form" method="post">
     {% csrf_token %}
@@ -28,52 +36,153 @@
             <strong class="card-title">Print Certificates</strong>
         </div>
         <div class="card-body">
-            <div class="row notes">
-                <div class="col-sm-4 col-md-3 notes__item">
-                    <a href="#edit-note" onclick="print_details('IPP')">
-                        <div class="notes__title text-center">
-                            Import Permit
-                        </div>
-                    </a>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col" colspan="5">Plant Section</th>
+                    </tr>
+                </thead>
+                <tbody>
+                 <div class="row notes">
+                        <tr>
+                            <td>
+                                <div class="notes__item">
+                                    <a href="#edit-note" onclick="print_details('IPP')">
+                                        <div class="notes__title text-center">
+                                            Import Permit
+                                        </div>
+                                    </a>
+                                </div>
+                            </td>
+                            <td>
+                                 <div class="notes__item notes__item--blue">
+                                    <a href="#edit-note" onclick="print_details('RF')">
+                                        <div class="notes__title text-center">Release Form</div>
+                                    </a>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="notes__item notes__item--blue">
+                                    <a href="#edit-note" onclick="print_details('NC')">
+                                        <div class="notes__title text-center">Nursery Clearance</div>
+                                    </a>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="notes__item notes__item--amber">
+                                    <a href="#edit-note" onclick="print_details('RSC')">
+                                        <div class="notes__title text-center">Seed Certificate</div>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    <tr>
+                        <td>
+                               <div class="notes__item">
+                                    <a href="#edit-note" onclick="print_details('MPP')">
+                                        <div class="notes__title text-center">In-Country Movement Permit</div>
+                                    </a>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="notes__item">
+                                    <a href="#edit-note" onclick="print_details('EPP')">
+                                        <div class="notes__title text-center">Export Certitficate</div>
+                                    </a>
+                                </div>
+                            </td>
+                        <td>
+                            <div class="notes__item">
+                                <a href="#edit-note" onclick="print_details('FFC')">
+                                    <div class="notes__title text-center">Fit For Consumption Certitficate</div>
+                                </a>
+                            </div>
+                        </td>
+                        <td></td>
+                    </tr>
                 </div>
+                </tbody>
+            </table>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col" colspan="3">Livestock Section</th>
+                    </tr>
+                </thead>
+                <tbody>
+                 <div class="row notes">
+                    <tr>
+                        <td>
+                            <div class="notes__item">
+                                <a href="#edit-note" onclick="print_details('IAF')">
+                                    <div class="notes__title text-center">
+                                        Import Permit(Live Animal & Fish)
+                                    </div>
+                                </a>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="notes__item">
+                                <a href="#edit-note" onclick="print_details('ILP')">
+                                    <div class="notes__title text-center">
+                                        Import Permit(Livestock Products)
+                                    </div>
+                                </a>
+                            </div>
+                        </td>
+                        <td>
+                             <div class="notes__item notes__item--blue">
+                                <a href="#edit-note" onclick="print_details('RFAF')">
+                                    <div class="notes__title text-center">Release Form(Live Animal & Fish)</div>
+                                </a>
+                            </div>
+                        </td>
 
-                <div class="col-sm-4 col-md-3 notes__item notes__item--blue">
-                    <a href="#edit-note" onclick="print_details('RF')">
-                        <div class="notes__title text-center">Release Form</div>
-                    </a>
+                    </tr>
+                     <tr>
+                         <td>
+                             <div class="notes__item notes__item--blue">
+                                <a href="#edit-note" onclick="print_details('RFLP')">
+                                    <div class="notes__title text-center">Release Form(Livestock Products)</div>
+                                </a>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="notes__item notes__item--blue">
+                                <a href="#edit-note" onclick="print_details('CMS')">
+                                    <div class="notes__title text-center">Meat Shop Clearance</div>
+                                </a>
+                            </div>
+                        </td>
+                         <td>
+                           <div class="notes__item">
+                                <a href="#edit-note" onclick="print_details('LMP')">
+                                    <div class="notes__title text-center">In-Country Movement Permit</div>
+                                </a>
+                            </div>
+                        </td>
+                     </tr>
+                    <tr>
+                        <td>
+                            <div class="notes__item">
+                                <a href="#edit-note" onclick="print_details('LEC')">
+                                    <div class="notes__title text-center">Export Certitficate</div>
+                                </a>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="notes__item">
+                                <a href="#edit-note" onclick="print_details('APM')">
+                                    <div class="notes__title text-center">Ante-Post Mortem Report</div>
+                                </a>
+                            </div>
+                        </td>
+                        <td></td>
+
+                    </tr>
                 </div>
-
-                <div class="col-sm-4 col-md-3 notes__item notes__item--blue">
-                    <a href="#edit-note" onclick="print_details('NC')">
-                        <div class="notes__title text-center">Nursery Clearance</div>
-                    </a>
-                </div>
-
-                <div class="col-sm-4 col-md-3 notes__item notes__item--amber">
-                    <a href="#edit-note" onclick="print_details('RSC')">
-                        <div class="notes__title text-center">Seed Certificate</div>
-                    </a>
-                </div>
-
-                <div class="col-sm-4 col-md-4 notes__item">
-                    <a href="#edit-note" onclick="print_details('MPP')">
-                        <div class="notes__title text-center">In-Country Movement Permit</div>
-                    </a>
-
-                </div>
-
-                <div class="col-sm-4 col-md-4 notes__item">
-                    <a href="#edit-note" onclick="print_details('EPP')">
-                        <div class="notes__title text-center">Export Certitficate</div>
-                    </a>
-                </div>
-
-                <div class="col-sm-4 col-md-4 notes__item">
-                    <a href="#edit-note" onclick="print_details('FFC')">
-                        <div class="notes__title text-center">Fit For Consumption Certitficate</div>
-                    </a>
-                </div>
-            </div>
+                </tbody>
+            </table>
             <div class="row">
                 <div class="col" style="display:none";>
                     <hr>
@@ -88,7 +197,7 @@
     </div>
 </form>
 <div class="modal fade" id="certificate_detailsModal" tabindex="-1" style="display: none;" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title pull-left"></h5>
@@ -102,19 +211,6 @@
     </div>
 </div>
 <script>
-    function print_certificate(serviceCode,application_No)
-    {
-        $.ajax({
-            type : "GET",
-            url : "{% url 'get_certificate_details' %}",
-            data : {'application_id':application_No ,'service_code':serviceCode},
-            success : function(response) {
-                $('#certificate_details').html(response);
-                $('#certificate_detailsModal').modal('show');
-            }
-        });
-    }
-
     function print_details(serviceCode)
     {
         $.ajax({
@@ -124,6 +220,19 @@
             success : function(response) {
                 $('.col').show();
                 $('#print_details').html(response);
+            }
+        });
+    }
+
+    function print_certificate(serviceCode, application_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'get_certificate_details' %}",
+            data : {'application_id':application_id, 'service_code':serviceCode},
+            success : function(response) {
+                $('#certificate_detailsModal').modal('show');
+                $('#certificate_details').html(response);
             }
         });
     }

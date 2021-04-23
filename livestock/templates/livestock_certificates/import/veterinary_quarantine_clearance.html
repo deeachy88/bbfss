@@ -1,0 +1,63 @@
+{% load static %}
+<style>
+    .header-card {
+    background-color: white;
+}
+</style>
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header header-card">
+            <div class="card-head-row float-right">
+                <div class="card-tools">
+                    <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Test Report';printClientTable()">
+                        <span class="btn-label">
+                            <i class="zmdi zmdi-print"></i>
+                        </span>
+                        Print
+                    </a>
+                </div>
+            </div>
+            <br>
+            <br>
+            <div class="row">
+                <div class="col-md-4">
+                    <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/bafra_logo.png' %}" style="width:90%;"/></a>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>KINGDOM OF BHUTAN</label>
+                        <label>Ministry of Agriculture & Forest (MoAF)</label>
+                        <label>Bhutan Agriculture & Food Regulatory Authority (BAFRA)</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label>ANIMAL FARM LICENSE</label>
+                </div>
+            </div>
+        </div>
+        {% now "Y-m-d" as todays_date %}
+        <div class="row d-flex justify-content-between details">
+                <h6>Letter No.&nbsp;&nbsp;</h6>
+			    <h6>Date.&nbsp;&nbsp;{% todays_date %}</h6>
+		</div>
+        <div class="row d-flex justify-content-between details">
+			    <h6>VETERINARY QUARANTINE CLEARANCE</h6>
+		</div>
+        {% for certificate_details in certificate_details %}
+            Your animal(s) imported into the country vide import permit number………………
+            dated ...............details of which is attached (Animal Admission Form)
+            have undergone quarantine observation for () days. During the quarantine period,
+            the animals have been screened against diseases in accordance with the Section8.3
+            of the Livestock Act of Bhutan 2001 and Sections 52-60 of the Livestock Rules and
+            Regulation of Bhutan2017. During the quarantine period, the animal(s)did not exhibit any
+            signs of infection/infestation of quarantine interest (notifiable and exotic diseases)
+            Therefore, animal(s)are being released with effect from………………………….
+            You are advised to take the animal(s) directly to the place of destination.
+            Should any of the animal falls sick after arriving at the place of destination,
+            you are advised to report to the nearest office of the Bhutan Agriculture and
+            Food Regulatory Authority (BAFRA) or the Department of Livestock?
+
+        {% endfor %}
+    </div>
+</div>
+

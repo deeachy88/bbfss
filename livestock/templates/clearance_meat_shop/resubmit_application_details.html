@@ -1,0 +1,549 @@
+{% load static %}
+        <div class="card">
+            <div class="card-header" role="tab" id="headingOne">
+                <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed">
+                    Collapsible Group Item #1
+                </a>
+            </div>
+            <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion" style="">
+                <div class="card-body">
+                    {% for application_details in application_details %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Scope</label>
+                                    {% if application_details.Scope == 'Retail Meat Shop' %}
+                                        <div class="form-check">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" checked>
+                                                <label class="form-check-label">Retail Meat Shop</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" disabled>
+                                                <label class="form-check-label">Whole Sale</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" disabled>
+                                                <label class="form-check-label">Cold Storage</label>
+                                            </div>
+                                        </div>
+                                    {% elif application_details.Scope == 'Wholesale' %}
+                                        <div class="form-check">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" disabled>
+                                                <label class="form-check-label">Retail Meat Shop</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" checked>
+                                                <label class="form-check-label">Whole Sale</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" disabled>
+                                                <label class="form-check-label">Cold Storage</label>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="form-check">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" disabled>
+                                                <label class="form-check-label">Retail Meat Shop</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" disabled>
+                                                <label class="form-check-label">Whole Sale</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" checked>
+                                                <label class="form-check-label">Cold Storage</label>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                               <div class="form-group">
+                                <label>Purpose</label>
+                                    {% if application_details.Scope == 'Retail Meat Shop' %}
+                                        <div class="form-check">
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" checked>
+                                              <label class="form-check-label" >Conditional Clearance</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" disabled>
+                                              <label class="form-check-label" >Operation of Meat Shop</label>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="form-check">
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" disabled>
+                                              <label class="form-check-label" >Conditional Clearance</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" checked>
+                                              <label class="form-check-label" >Operation of Meat Shop</label>
+                                        </div>
+                                    {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label >Name of the Meat Shop</label>
+                                    <input type="text" class="form-control" id="shopName" name="shopName" value="{{application_details.Name_Meat_Shop}}">
+                                </div>
+                                <div class="alert alert-danger" id="shopNameErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                <label>Ownership Type</label>
+                                    {% if application_details.Ownership_Type == 'Government' %}
+                                        <div class="form-check" id="ownership">
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" checked>
+                                              <label class="form-check-label" >Government</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" disabled>
+                                              <label class="form-check-label" >Private</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" disabled>
+                                              <label class="form-check-label" >Corporative</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" disabled>
+                                              <label class="form-check-label" >Joint</label>
+                                            </div>
+                                        </div>
+                                    {% elif application_details.Ownership_Type == 'Private' %}
+                                        <div class="form-check">
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" disabled>
+                                              <label class="form-check-label" >Government</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" checked>
+                                              <label class="form-check-label" >Private</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" disabled>
+                                              <label class="form-check-label" >Corporative</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" disabled>
+                                              <label class="form-check-label" >Joint</label>
+                                            </div>
+                                        </div>
+                                    {% elif application_details.Ownership_Type == 'Corporative' %}
+                                        <div class="form-check">
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" disabled>
+                                              <label class="form-check-label" >Government</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" disabled>
+                                              <label class="form-check-label" >Private</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" checked>
+                                              <label class="form-check-label" >Corporative</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" disabled>
+                                              <label class="form-check-label" >Joint</label>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="form-check">
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" disabled>
+                                              <label class="form-check-label" >Government</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" disabled>
+                                              <label class="form-check-label" >Private</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" disabled>
+                                              <label class="form-check-label" >Corporative</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" checked>
+                                              <label class="form-check-label" >Joint</label>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="cid">Applicant CID</label>
+                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" value="{{application_details.CID}}">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="name">Name</label>
+                                    <input type="text" class="form-control" id="name" name="Name" value="{{application_details.Name_Owner}}">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="contactNumber">Contact Number</label>
+                                    <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" value="{{application_details.Contact_No}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email" value="{{application_details.Email}}">
+                                </div>
+                                <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="dzongkhag">Dzongkhag</label>
+                                    <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value),getLocation(this.value)">
+                                        <option value="">--SELECT DZONGKHAG--</option>
+                                        {% for dzongkhag in dzongkhag %}
+                                            <option value="{{ dzongkhag.Dzongkhag_Code }}" {% if application_details.Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>{{ dzongkhag.Dzongkhag_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="gewog">Gewog</label>
+                                    <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                        <option value="">--SELECT GEWOG--</option>
+                                       {% for location in location %}
+                                            <option value="{{ location.Location_Code }}" {% if application_details.Gewog_Code == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                       {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="village">Village</label>
+                                     <select class="form-control" name="village" id="village">
+                                        <option value="">--SELECT VILLAGE--</option>
+                                        {% for village in village %}
+                                            <option value="{{ village.Village_Code }}" {% if application_details.Village_Code == village.Village_Code %}selected{% endif %}>{{ village.Village_Name }}</option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                <label>Clearance from the local government/community/house owner</label>
+                                    {% if application_details.Clearance_Type == 'Yes' %}
+                                        <div class="form-check">
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" checked>
+                                              <label class="form-check-label">Yes</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" disabled>
+                                              <label class="form-check-label">No</label>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="form-check">
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" disabled>
+                                              <label class="form-check-label">Yes</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" checked>
+                                              <label class="form-check-label">No</label>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                <label>Any proceedings by BAFRA in the past suspension or cancellation or  withdrawal of approvals</label>
+                                    {% if application_details.Any_Proceedings == 'Yes' %}
+                                        <div class="form-check">
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" checked>
+                                              <label class="form-check-label">Yes</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                              <input class="form-check-input" type="radio" disabled>
+                                              <label class="form-check-label">No</label>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="form-check">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" disabled>
+                                                <label class="form-check-label">Yes</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" checked>
+                                                <label class="form-check-label">No</label>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% if application_details.Any_Proceedings == 'Yes' %}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="proceedingReason">If yes, state reason?</label>
+                                        <input type="text" class="form-control" id="proceedingReason" name="proceedingReason" value="{{application_details.Reason_Suspension}}">
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header" role="tab" id="headingTwo">
+                <a class="collapsed" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    Attachments
+                </a>
+            </div>
+            <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">File</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           {% for file_attach in file %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{file_attach.Attachment}}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                  <td colspan="3" class="text-center">No Data</td>
+                                </tr>
+                           {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header" role="tab" id="headingThree">
+                <a class="collapsed" data-toggle="collapse" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    Resubmission Details
+                </a>
+            </div>
+            <div id="collapseThree" class="active" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion" style="">
+                <div class="card-body">
+                    {% for application_details in application_details %}
+
+                    {% endfor %}
+                    <div class="alert alert-info" id="resubmit_messageDiv" style="display:none">
+                        Application Resubmitted
+                    </div>
+                    <hr>
+                    {% for application_details in application_details %}
+                        <div class="card-action text-center">
+                            <button type="button" class="btn btn-flat btn-primary" onclick="application_resubmit('{{application_details.Application_No}}')">
+                                <i class="ace-icon fa fa-times"></i>
+                                &nbsp;&nbsp;Resubmit
+                            </button>
+                            <button type="button" class="btn btn-flat btn-danger">
+                                <i class="ace-icon fa fa-times"></i>
+                                &nbsp;&nbsp;Cancel
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div id="addModal" class="modal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"></h5>
+                        <button type="button" class="close" onclick="closeModal()">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Observation</label>
+                                    <textarea class="form-control" id="currentObservation" rows="2"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Action</label>
+                                    <textarea class="form-control" id="decisionConform" rows="2"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        {% for application_details in application_details %}
+                        <button type="button" class="btn btn-flat btn-primary" onclick="add_details_ins('{{ application_details.Application_No }}')">
+                            <i class="ace-icon fa fa-times"></i>
+                            &nbsp;&nbsp;Add
+                        </button>
+                        {% endfor %}
+                        <button type="button" class="btn btn-primary" onclick="closeModal()">Close Modal</button>
+                     </div>
+
+                  </div>
+            </div>
+        </div>
+    <div class="modal fade" id="modal-common">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content edit">
+
+          </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal-decision">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content edit">
+
+          </div>
+        </div>
+    </div>
+<script src="{% static 'assets/js/app.min.js' %}"></script>
+<script>
+function openDecisionModal()
+{
+    $('#addModal').modal('show');
+}
+
+function closeModal()
+{
+    $("#addModal").modal('hide');
+}
+
+function add_details_ins(application_id)
+{
+    currentObservation = $('#currentObservation').val();
+    decisionConform = $('#decisionConform').val();
+
+    $.ajax({
+        type : "GET",
+        url : "{% url 'details_ins_CMS' %}",
+        data :{'application_id':application_id,'currentObservation':currentObservation,'decisionConform':decisionConform},
+        success : function(data) {
+            $('#details').html(data);
+            $('#details').show();
+            $('#addModal').modal('hide');
+        }
+    });
+}
+
+function approve_details(application_id)
+{
+    alert(application_id);
+    Inspection_Leader = $('#teamLeader').val();
+    Inspection_Team = $('#insTeam').val();
+    remarks = $('#remarks').val();
+    dateOfInspection = $('#dateOfInspection').val();
+    ins_type = $('#ins_type').val();
+    identification_No = $('#identification_No').val();
+    revision_no = $('#revision_no').val();
+    validity = $('#validity').val();
+
+   $.ajax({
+        type : "GET",
+        url : "{% url 'approve_application_cms' %}",
+        data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks ,
+        'dateOfInspection':dateOfInspection, 'ins_type':ins_type, 'identification_No':identification_No, 'revision_no':revision_no, 'validity':validity},
+        success : function(data) {
+            $('#messageDiv').show();
+            setTimeout(function() {
+                $("#messageDiv").hide('blind', {}, 500)
+            }, 2000);
+            setTimeout(function() {
+                location.reload();
+            }, 3000);
+        }
+    });
+}
+
+function reject_details(application_id)
+{
+
+    Inspection_Leader = $('#teamLeader').val();
+    Inspection_Team = $('#insTeam').val();
+    remarks = $('#remarks').val();
+    dateOfInspection = $('#dateOfInspection').val();
+    ins_type = $('#ins_type').val();
+    identification_No = $('#identification_No').val();
+    revision_no = $('#revision_no').val();
+
+   $.ajax({
+        type : "GET",
+        url : "{% url 'reject_application_cms' %}",
+        data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks ,
+        'dateOfInspection':dateOfInspection, 'ins_type':ins_type, 'identification_No':identification_No, 'revision_no':revision_no},
+        success : function(data) {
+            $('#messageDiv').show();
+            setTimeout(function() {
+                $("#reject_messageDiv").hide('blind', {}, 500)
+            }, 2000);
+             setTimeout(function() {
+                location.reload();
+            }, 3000);
+        }
+    });
+}
+
+function resubmit_details(application_id)
+{
+
+    Inspection_Leader = $('#teamLeader').val();
+    Inspection_Team = $('#insTeam').val();
+    remarks = $('#remarks').val();
+    dateOfInspection = $('#dateOfInspection').val();
+    ins_type = $('#ins_type').val();
+    identification_No = $('#identification_No').val();
+    revision_no = $('#revision_no').val();
+
+   $.ajax({
+        type : "GET",
+        url : "{% url 'resubmit_application_cms' %}",
+        data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks ,
+        'dateOfInspection':dateOfInspection, 'ins_type':ins_type, 'identification_No':identification_No, 'revision_no':revision_no},
+        success : function(data) {
+            $('#resubmit_messageDiv').show();
+            setTimeout(function() {
+                $("#resubmit_messageDiv").hide('blind', {}, 500)
+            }, 2000);
+             setTimeout(function() {
+                location.reload();
+            }, 3000);
+        }
+    });
+}
+
+
+</script>
