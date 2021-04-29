@@ -21,5 +21,8 @@ urlpatterns = [
     path('', include('administrator.urls')),
     path('', include('plant.urls')),
     path('', include('livestock.urls')),
+    path('', include('food.urls')),
+    path('', include('certification.urls')),
+    path('', include('common_service.urls')),
 ]
 

@@ -13,6 +13,7 @@ from administrator.models import t_dzongkhag_master, t_gewog_master, t_village_m
     t_service_master, t_country_master, t_plant_crop_category_master, t_unit_master, t_section_master, \
     t_inspection_type_master
 from bbfss import settings
+from food.models import t_food_export_certificate_t1, t_food_licensinf_food_handler_t1
 from livestock.models import t_livestock_clearance_meat_shop_t1, t_livestock_ante_post_mortem_t2, \
     t_livestock_ante_post_mortem_t1, t_livestock_movement_permit_t1, t_livestock_movement_permit_t2, \
     t_livestock_export_certificate_t1, t_livestock_export_certificate_t2, \
@@ -476,6 +477,26 @@ def view_application_details(request):
         return render(request, 'Animal_Fish_Import/inspector_details.html',
                       {'application_details': application_details, 'file': file, 'dzongkhag': dzongkhag,
                        'village': village, 'location': location, 'import': details,
+                       'inspector_list': user_role_list})
+    elif service_code == 'FEC':
+        dzongkhag = t_dzongkhag_master.objects.all()
+        gewog = t_gewog_master.objects.all()
+        village = t_village_master.objects.all()
+        country = t_country_master.objects.all()
+        field_office = t_field_office_master.objects.filter(Is_Entry_Point='Y')
+        location = t_location_field_office_mapping.objects.all()
+        unit = t_unit_master.objects.all()
+        application_details = t_food_export_certificate_t1.objects.filter(
+            Application_No=application_id)
+        file = t_file_attachment.objects.filter(Application_No=application_id)
+        workflow_details = t_workflow_details.objects.filter(Application_No=application_id)
+        for application in workflow_details:
+            Field_Office = application.Field_Office_Id
+        user_role_list = t_user_master.objects.filter(Role_Id='5', Field_Office_Id_id=Field_Office)
+        return render(request, 'export_certificate_food/inspector_details.html',
+                      {'application_details': application_details, 'file': file,
+                       'gewog': gewog, 'dzongkhag': dzongkhag, 'country': country, 'field_office': field_office,
+                       'unit': unit, 'village': village, 'location': location,
                        'inspector_list': user_role_list})
 
 
@@ -1130,6 +1151,43 @@ def view_oic_details(request):
                       {'application_details': application_details, 'file': file, 'dzongkhag': dzongkhag,
                        'village': village, 'location': location, 'import': details,
                        'inspector_list': user_role_list})
+    elif service_code == 'FEC':
+        dzongkhag = t_dzongkhag_master.objects.all()
+        gewog = t_gewog_master.objects.all()
+        village = t_village_master.objects.all()
+        country = t_country_master.objects.all()
+        field_office = t_field_office_master.objects.filter(Is_Entry_Point='Y')
+        location = t_location_field_office_mapping.objects.all()
+        unit = t_unit_master.objects.all()
+        application_details = t_food_export_certificate_t1.objects.filter(
+            Application_No=application_id)
+        file = t_file_attachment.objects.filter(Application_No=application_id)
+        workflow_details = t_workflow_details.objects.filter(Application_No=application_id)
+        for application in workflow_details:
+            Field_Office = application.Field_Office_Id
+        user_role_list = t_user_master.objects.filter(Role_Id='5', Field_Office_Id_id=Field_Office)
+        return render(request, 'export_certificate_food/oic_details.html',
+                      {'application_details': application_details, 'file': file,
+                       'gewog': gewog, 'dzongkhag': dzongkhag, 'country': country, 'field_office': field_office,
+                       'unit': unit, 'village': village, 'location': location,
+                       'inspector_list': user_role_list})
+    elif service_code == 'FHC':
+        dzongkhag = t_dzongkhag_master.objects.all()
+        gewog = t_gewog_master.objects.all()
+        village = t_village_master.objects.all()
+        country = t_country_master.objects.all()
+        field_office = t_field_office_master.objects.all()
+        application_details = t_food_licensinf_food_handler_t1.objects.filter(
+            Application_No=application_id)
+        file = t_file_attachment.objects.filter(Application_No=application_id)
+        workflow_details = t_workflow_details.objects.filter(Application_No=application_id)
+        for application in workflow_details:
+            Field_Office = application.Field_Office_Id
+        user_role_list = t_user_master.objects.filter(Role_Id='5', Field_Office_Id_id=Field_Office)
+        return render(request, 'food_handler/oic_details.html',
+                      {'application_details': application_details, 'file': file,
+                       'gewog': gewog, 'dzongkhag': dzongkhag, 'country': country, 'field_office': field_office,
+                       'village': village, 'inspector_list': user_role_list})
 
 
 def view_inspector_details(request):

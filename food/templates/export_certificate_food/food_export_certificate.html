@@ -1,0 +1,723 @@
+{% extends 'common_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<style>
+    option
+    {
+        background-color: black !important;
+    }
+</style>
+<div class="card">
+    <div class="card-header">
+        <h4 class="card-title">Export Certificate for Food Products </h4>
+    </div>
+    <div class="card-body">
+        <form method="post" id="exportCertificateForm">
+            <input type="hidden" name="application_no" id="applicationNo">
+        {% csrf_token %}
+            <div class="row justify-content-left">
+                <ul class="nav nav-pills nav-secondary" id="pills-tab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadDetails()">Application Form</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="pills-profile-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="tab-content mt-2 mb-3" id="pills-tabContent">
+                <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                    <div id="applicant_details">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Trade License No</label>
+                                    <input type="text"  class="form-control" id="license_no" name="license_no">
+                                </div>
+                                <div class="alert alert-danger" id="license_noErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Applicant CID</label>
+                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)">
+                                </div>
+                                <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Name Of Exporter</label>
+                                    <input type="text" class="form-control" id="name" name="name">
+                                </div>
+                                <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Dzongkhag</label>
+                                    <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value),getLocation(this.value)">
+                                        <option value="">--SELECT DZONGKHAG--</option>
+                                        {% for dzongkhag in dzongkhag %}
+                                                <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Gewog</label>
+                                    <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                        <option value="">--SELECT GEWOG--</option>
+                                        {% for gewog in gewog %}
+                                                <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Village</label>
+                                     <select class="form-control" name="village" id="village">
+                                        <option value="">--SELECT VILLAGE--</option>
+                                        {% for village in village %}
+                                                <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                                <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Exporter's Address</label>
+                                    <textarea class="form-control" id="Exporter_Address" name="Exporter_Address"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="Exporter_AddressErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Contact Number</label>
+                                    <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                                </div>
+                                <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email" onchange="validateemailId(this.value)">
+                                </div>
+                                <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Importer</span>&nbsp;&nbsp;&nbsp;
+                                <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Details</span>
+                            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Importer’s Name</label>
+                                    <input type="text" class="form-control" id="importers_name" name="importers_name">
+                                </div>
+                                <div class="alert alert-danger" id="importers_nameErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Importer’s Address</label>
+                                    <textarea class="form-control" id="Importers_Address" name="Importers_Address"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="Importers_AddressErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Importing Country</label>
+                                    <select class="form-control" name="importing_country" id="importing_country">
+                                        <option value="">--SELECT--</option>
+                                        {% for country in country %}
+                                            <option value="{{ country.Country_Code }}">{{ country.Country_Name }}</option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                                <div class="alert alert-danger" id="importing_countryErrorMsg" style="display:none"></div>
+                            </div>
+                            </div>
+                        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Consignment </span>&nbsp;&nbsp;&nbsp;
+                                <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Details</span>
+                            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Product Name</label>
+                                    <input type="text" class="form-control" id="Product_name" name="Product_name">
+                                </div>
+                                <div class="alert alert-danger" id="Product_nameErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Number Of Packages</label>
+                                    <input type="number" class="form-control" id="no_of_packages" name="no_of_packages">
+                                </div>
+                                <div class="alert alert-danger" id="no_of_packagesErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Description Of Package</label>
+                                    <textarea class="form-control" id="description_of_packages" name="description_of_packages"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="description_of_packagesErrorMsg" style="display:none"></div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Quantity</label>
+                                    <input type="number" class="form-control" id="quantity" name="quantity">
+                                </div>
+                                <div class="alert alert-danger" id="quantityErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Unit</label>
+                                    <select class="form-control" name="unit"  id="unit">
+                                        <option value="">--SELECT UNIT--</option>
+                                        {% for unit in unit %}
+                                                <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="unitErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Declared Point of Exit</label>
+                                    <select class="form-control" name="Place_of_Exit" id="Place_of_Exit">
+                                        <option value="">--SELECT--</option>
+                                        {% for location in field_office %}
+                                            <option value="{{ location.Field_Office_Id }}">{{ location.Field_Office }}</option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                                <div class="alert alert-danger" id="Place_of_ExitErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Expected Date for Export</label>
+                                     <input type="date" name="Export_Expected_Date" id="Export_Expected_Date" class="form-control date-picker flatpickr-input active">
+                                </div>
+                                <div class="alert alert-danger" id="Export_Expected_DateErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Propose Date for Inspection</label>
+                                     <input type="date" name="inspectionDate" id="inspectionDate" class="form-control date-picker flatpickr-input active">
+                                </div>
+                                <div class="alert alert-danger" id="inspectionDateErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Purpose Of Export</label>
+                                    <input type="text" class="form-control" id="export_purpose" name="export_purpose">
+                                </div>
+                                <div class="alert alert-danger" id="export_purposeErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Consignment Location Dzongkhag</label>
+                                    <select class="form-control" name="consignment_location_dzongkhag"  id="consignment_location_dzongkhag" onchange="getFromGewog(this.value)">
+                                        <option value="">--SELECT DZONGKHAG--</option>
+                                        {% for dzongkhag in dzongkhag %}
+                                                <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="consignment_location_dzongkhagErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Consignment Location Gewog</label>
+                                    <select class="form-control" name="consignment_location_gewog"  id="consignment_location_gewog">
+                                        <option value="">--SELECT LOCATION--</option>
+                                        {% for location in location %}
+                                                <option value="{{ location.Location_Code }}">{{ location.Location_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="consignment_location_gewogErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Consignment Location</label>
+                                    <input type="text" class="form-control" id="consignment_location" name="consignment_location">
+                                </div>
+                                <div class="alert alert-danger" id="consignment_locationErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Any Additional Information</label>
+                                    <textarea class="form-control" name="additional_info" id="additional_info" rows="3"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="additional_infoErrorMsg" style="display:none"></div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+                        Save SuccessFul
+                    </div>
+                    <div class="card-action">
+                        <button type="button" class="btn btn-primary" value="Submit" onclick="save_food_export()">Save</button>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="pills-profile-file">
+                    <div id="fileAttach">
+                        {% include 'export_certificate_food/file_attachment.html' %}
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<form method="post" id="attachment_form" enctype="multipart/form-data">
+{% csrf_token %}
+    <input type="hidden" name="appNo" id="appNo">
+    <div class="modal fade" id="attachmentModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="attachmentModalLabel">Attach Files</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label>Attach File</label>
+                                        <input type="file" name="document" id="document">
+                                        <div class="alert alert-danger" id="fileErrorMsg" style="display:none"></div>
+                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_attachment()"> Submit </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+function save_food_export()
+{
+    var license_no = $('#license_no').val();
+    var cid = $('#cid').val();
+    var name = $('#name').val();
+    var dzongkhag = $('#dzongkhag').val();
+    var gewog = $('#gewog').val();
+    var village = $('#village').val();
+    var exporters_address = $('#Exporter_Address').val();
+    var contactNumber = $('#contactNumber').val();
+    var email = $('#email').val();
+    var importers_name = $('#importers_name').val();
+    var Importers_Address = $('#Importers_Address').val();
+    var importing_country = $('#importing_country').val();
+    var Product_name = $('#Product_name').val();
+    var no_of_packages = $('#no_of_packages').val();
+    var description_of_packages = $('#description_of_packages').val();
+    var quantity = $('#quantity').val();
+    var unit = $('#unit').val();
+    var Place_of_Exit = $('#Place_of_Exit').val();
+    var Export_Expected_Date = $('#Export_Expected_Date').val();
+    var inspectionDate = $('#inspectionDate').val();
+    var export_purpose = $('#export_purpose').val();
+    var consignment_location_dzongkhag = $('#consignment_location_dzongkhag').val();
+    var consignment_location_gewog = $('#consignment_location_gewog').val();
+    var consignment_location = $('#consignment_location').val();
+    var cidCount = $('#cid').val().length;
+    var number_count = $('#contactNumber').val().length;
+
+    if(license_no == "")
+    {
+        $('#license_noErrorMsg').html("Enter Trade License No.");
+        $('#license_noErrorMsg').show();
+        $('#license_noErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(cid == "")
+    {
+        $('#cidErrorMsg').html("Enter CID Number.");
+        $('#cidErrorMsg').show();
+        $('#cidErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(name == "")
+    {
+        $('#nameErrorMsg').html("Enter Name .");
+        $('#nameErrorMsg').show();
+        $('#nameErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(dzongkhag == "")
+    {
+        $('#dzongkhagErrorMsg').html("Select Dzongkhag.");
+        $('#dzongkhagErrorMsg').show();
+        $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(gewog == "")
+    {
+        $('#gewogErrorMsg').html("Select Gewog.");
+        $('#gewogErrorMsg').show();
+        $('#gewogErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(village == "")
+    {
+        $('#villageErrorMsg').html("Select Village.");
+        $('#villageErrorMsg').show();
+        $('#villageErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(exporters_address == "")
+    {
+        $('#exporters_addressErrorMsg').html("Enter Exporter's Address .");
+        $('#exporters_addressErrorMsg').show();
+        $('#exporters_addressErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(contactNumber == "")
+    {
+        $('#contactNumberErrorMsg').html("Enter Contact Number.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(email == "")
+    {
+        $('#emailErrorMsg').html("Enter Contact Number.");
+        $('#emailErrorMsg').show();
+        $('#emailErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(importers_name == "")
+    {
+        $('#importers_nameErrorMsg').html("Enter Importer's Name.");
+        $('#importers_nameErrorMsg').show();
+        $('#importers_nameErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Importers_Address == "")
+    {
+        $('#Importers_AddressErrorMsg').html("Enter Importer's Address.");
+        $('#Importers_AddressErrorMsg').show();
+        $('#Importers_AddressErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(importing_country == "")
+    {
+        $('#importing_countryErrorMsg').html("Select Importing Country.");
+        $('#importing_countryErrorMsg').show();
+        $('#importing_countryErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if (Product_name == "")
+    {
+        $('#Product_nameErrorMsg').html("Enter Name Of Product.");
+        $('#Product_nameErrorMsg').show();
+        $('#Product_nameErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if (no_of_packages == "")
+    {
+        $('#no_of_packagesErrorMsg').html("Enter No of Product.");
+        $('#no_of_packagesErrorMsg').show();
+        $('#no_of_packagesErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if (description_of_packages == "")
+    {
+        $('#description_of_packagesErrorMsg').html("Enter Description of Product.");
+        $('#description_of_packagesErrorMsg').show();
+        $('#description_of_packagesErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if (quantity == "")
+    {
+        $('#quantityErrorMsg').html("Enter Quantity.");
+        $('#quantityErrorMsg').show();
+        $('#quantityErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if (unit == "")
+    {
+        $('#unitErrorMsg').html("Enter Unit.");
+        $('#unitErrorMsg').show();
+        $('#unitErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if (Place_of_Exit == "")
+    {
+        $('#Place_of_ExitErrorMsg').html("Select Point Of Exit.");
+        $('#Place_of_ExitErrorMsg').show();
+        $('#Place_of_ExitErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if (Export_Expected_Date == "")
+    {
+        $('#Export_Expected_DateErrorMsg').html("Select Expected Date for Export.");
+        $('#Export_Expected_DateErrorMsg').show();
+        $('#Export_Expected_DateErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if (inspectionDate == "")
+    {
+        $('#inspectionDateErrorMsg').html("Select Proposed Inspection Date.");
+        $('#inspectionDateErrorMsg').show();
+        $('#inspectionDateErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if (export_purpose == "")
+    {
+        $('#export_purposeErrorMsg').html("Enter Purpose Of Expoer.");
+        $('#export_purposeErrorMsg').show();
+        $('#export_purposeErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(consignment_location_dzongkhag == "")
+    {
+        $('#consignment_location_dzongkhagErrorMsg').html("Select Consignment Location Dzongkhag.");
+        $('#consignment_location_dzongkhagErrorMsg').show();
+        $('#consignment_location_dzongkhagErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(consignment_location_gewog == "")
+    {
+        $('#consignment_location_gewogErrorMsg').html("Select Consignment Location Gewog.");
+        $('#consignment_location_gewogErrorMsg').show();
+        $('#consignment_location_gewogErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(consignment_location == "")
+    {
+        $('#consignment_locationErrorMsg').html("Enter Consignment Location.");
+        $('#consignment_locationErrorMsg').show();
+        $('#consignment_locationErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(cidCount < 11)
+    {
+        $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits.");
+        $('#cidErrorMsg').show();
+        setTimeout('hideStatus("cidErrorMsg")',2000);
+    }
+    else if(number_count < 8)
+    {
+        $('#contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
+        $('#contactNumberErrorMsg').show();
+        setTimeout('hideStatus("contactNumberErrorMsg")',2000);
+    }
+    else
+    {
+    $.ajax({
+        type : "POST",
+        url : "{% url 'save_food_export_details' %}",
+        data : $('#exportCertificateForm').serialize(),
+        success : function(data)
+        {
+            $('#applicationNo').val(data.applNo);
+            $('#applNo').val(data.applNo);
+            $('#animal_application_no').val(data.applNo);
+            $('#appNo').val(data.applNo);
+            $('#permit_type_product').val(data.Application_Type);
+            $('#submitMsg').show();
+            setTimeout(function()
+            {
+                $("#submitMsg").hide('blind', {}, 500)
+            }, 2000);
+            setTimeout(function() {
+                $('#pills-profile-file').tab('show');
+            }, 3000);
+        }
+        });
+    }
+}
+
+function loadDetails()
+{
+    var appid = $('#applicationNo').val();
+    $.ajax({
+    type : "GET",
+    url : "{% url 'load_application_details' %}",
+    data :{'application_id':appid},
+    success : function(response)
+    {
+        $('#applicant_details').html(response);
+    }
+    });
+}
+function load_attachment_details()
+{
+    var appid = $('#applicationNo').val();
+    $.ajax({
+    type : "GET",
+    url : "{% url 'load_attachment_details' %}",
+    data :{'application_id':appid},
+    success : function(response)
+    {
+        $('#fileAttach').html(response);
+    }
+    });
+}
+
+function getGewog(dzongkhag_id)
+{
+    $.ajax({
+    type : "GET",
+    url : "{% url 'load_gewog' %}",
+    data :{'dzongkhag_id':dzongkhag_id},
+    success : function(data)
+    {
+        $('#gewog').html(data);
+    }
+    });
+}
+
+function getVillage(gewog_id)
+{
+    $.ajax({
+    type : "GET",
+    url : "{% url 'load_village' %}",
+    data :{'gewog_id':gewog_id},
+    success : function(data)
+    {
+        $('#village').html(data);
+    }
+    });
+}
+
+function getLocation(dzongkhag_id)
+{
+    $.ajax({
+    type : "GET",
+    url : "{% url 'load_location' %}",
+    data :{'dzongkhag_id':dzongkhag_id},
+    success : function(data) {
+    $('#location').html(data);
+    }
+    });
+}
+
+function updateDetails()
+{
+    $.ajax({
+    type : "POST",
+    url : "{% url 'update_details' %}",
+    data : $('#permitForm').serialize(),
+    success : function(response)
+    {
+    $('.wrapper').html(response);
+    $('#pills-tab a:last').tab('show');
+    }
+    });
+}
+
+function save_attachment()
+{
+    var fileName = document.getElementById('document').files[0].name;
+    var fd = new FormData();
+    var file = document.getElementById('document').files[0];
+    fd.append('document', file);
+    token_value=$("input[name=csrfmiddlewaretoken]").val();
+    $.ajaxSetup
+    ({
+        beforeSend: function(xhr, settings)
+    {
+        xhr.setRequestHeader("X-CSRFToken", token_value);
+    }
+    });
+        $.ajax({
+        type : "POST",
+        url : "{% url 'food_export_file' %}",
+        data : fd,
+        dataType: 'json',
+        contentType: false,
+        processData: false,
+        success : function(data)
+        {
+        if (data.form_is_valid)
+        {
+            var appNo = $('#appNo').val();
+            var file_url = data.file_url
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'food_export_file_name' %}",
+                data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
+                success : function(responseText)
+                {
+                    $('#attachmentModal').modal('hide');
+                    $('#file-attachment').html(responseText);
+                    $('.modal-backdrop').remove();
+                }
+            });
+        }else
+        {
+                $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                $('#fileErrorMsg').show();
+                $('#fileErrorMsg').delay(2000).fadeOut('slow');
+        }
+    }
+    });
+}
+
+function validateemailId(emailId)
+{
+    var pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+    var no=emailId.match(pattern);
+
+    if(no==null)
+    {
+        $('#emailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
+        $('#email').val("");
+        $('#emailErrorMsg').show();
+        $('#emailErrorMsg').delay(2000).fadeOut('slow');
+    }else{
+     $('#emailErrorMsg').hide();
+    }
+
+}
+
+function checkContact(value)
+{
+    var firstDigit = value.charAt(0);
+    var secondDigit = value.charAt(1);
+
+    if(firstDigit != 7 && firstDigit != 1){
+        $('#contactNumberErrorMsg').html("Must Start with either 1 or 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 1 && secondDigit != 6 && secondDigit != 7){
+        $('#contactNumberErrorMsg').html("Second Digit Must Start with either 6 or 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 7 && secondDigit == 6){
+        $('#contactNumberErrorMsg').html("Second Digit Cannot be 6.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 7 && secondDigit != 7){
+        $('#contactNumberErrorMsg').html("Second Digit Must Start with 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }
+
+}
+
+
+function food_export_attachment_modal()
+{
+    $('#attachmentModal').modal('show');
+}
+</script>
+{% endblock %}

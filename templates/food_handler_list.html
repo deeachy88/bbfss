@@ -1,0 +1,191 @@
+{% extends 'common_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<form method="post" id="food_handler_ins_form">
+    {% csrf_token %}
+<div id="AppDetails">
+    <div class="animated fadeIn">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <strong class="card-title">Food Handlers Application List</strong>
+                    </div>
+                        <div class="card-body">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th class="center">
+                                            <label class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="all" onclick="checkAll()">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">All</span>
+                                            </label>
+                                        </th>
+                                        <th scope="col">Application No</th>
+                                        <th scope="col">Application Date</th>
+                                        <th scope="col">Applicant</th>
+                                        <th scope="col">Contact Number</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if application_details %}
+                                        <input type="hidden" value="{{ application_details|length }}" id="counter">
+                                    {% endif %}
+                                    {% for application_details in application_details %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td class="center">
+                                                <label class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input" onclick="check_condition_details()" id="check_{{ forloop.counter }}">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <input type="hidden" id="checkedVals" name="checkedVals"/>
+                                                </label>
+                                            </td>
+                                            <td><button class="btn btn-primary btn-link" onclick="viewApplicationDetails('{{application_details.Application_No}}')">{{application_details.Application_No}}</button></td>
+                                            {% for details in details %}
+                                                {% if application_details.Application_No == details.Application_No %}
+                                                    <td>{{details.Application_Date|date:"d-m-Y"}}</td>
+                                                    <td>{{details.Applicant_Name}}</td>
+                                                    <td>{{details.Contact_No}}</td>
+                                                    <input type="hidden" value="{{details.Email}}" id="cost_{{ forloop.counter }}">
+                                                    <input type="hidden" value="{{details.Application_No}}" id="appNo_{{ forloop.counter }}">
+                                                {% endif %}
+                                            {% endfor %}
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                          <td colspan="5" class="text-center">No Data</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <br>
+                            <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                                <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                    <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Training </span>&nbsp;&nbsp;&nbsp;
+                                    <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Details</span>
+                                <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Batch No</label>
+                                        <input type="text" name="batch_no" id="batch_no" class="form-control">
+                                    </div>
+                                    <div class="alert alert-danger" id="batch_noErrorMsg" style="display:none"></div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">From Training Date</label>
+                                         <input type="date" name="from_training_Date" id="from_training_Date" class="form-control date-picker flatpickr-input active">
+                                    </div>
+                                    <div class="alert alert-danger" id="from_training_DateErrorMsg" style="display:none"></div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">To Training Date</label>
+                                         <input type="date" name="to_training_Date" id="to_training_Date" class="form-control date-picker flatpickr-input active">
+                                    </div>
+                                    <div class="alert alert-danger" id="to_training_DateErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Minimum Marks</label>
+                                        <input type="number" name="min_mark" id="min_mark" class="form-control">
+                                    </div>
+                                    <div class="alert alert-danger" id="min_markErrorMsg" style="display:none"></div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label class="form-label">Remarks</label>
+                                        <textarea class="form-control" name="Remarks" id="Remarks" rows="3"></textarea>
+                                    </div>
+                                    <div class="alert alert-danger" id="associated_establishmentErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="card-action">
+                                <button type="button" class="btn btn-primary btn-md pull-right" onclick="update_details()"> Save </button>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+<script>
+    function viewApplicationDetails(appId,service_code)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'view_application_details' %}",
+            data :{'application_id':appId, 'service_code':service_code},
+            success : function(data)
+            {
+                $('#AppDetails').html(data);
+            }
+        });
+    }
+    function check_condition_details()
+    {
+        var vals = '';
+        var countFlag = 0;
+        counterId = $('#counter').val();
+        for (var i=1;i<=counterId;i++)
+        {
+           var idnCode ="";
+           if($("#check_"+i).is(':checked'))
+           {
+                idnCode = $('#cost_'+i).val();
+                appNo = $('#appNo_'+i).val();
+           }
+           if(parseInt(countFlag) > 0){
+                vals = vals + '#';
+            }
+            vals = vals + idnCode + '~' + appNo;
+            countFlag++;
+        }
+        $('#checkedVals').val(vals);
+    }
+
+    function update_details()
+    {
+       check_condition_details();
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'update_batch_no' %}",
+            data : $('#food_handler_ins_form').serialize(),
+            success : function(data)
+            {
+
+            }
+        });
+    }
+
+    function checkAll()
+    {
+        if($('#all'). prop("checked") == true)
+        {
+            counterId = $('#counter').val();
+            for (var i=0;i<=counterId;i++)
+            {
+                $("#check_"+i).prop("checked", true);
+            }
+        }
+        else
+        {
+            counterId = $('#counter').val();
+            for (var i=0;i<=counterId;i++)
+            {
+                $("#check_"+i).prop("checked", false);
+            }
+        }
+    }
+</script>
+{% endblock %}

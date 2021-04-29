@@ -1,234 +1,139 @@
-{% extends 'index.html' %}
-{% load crispy_forms_tags %}
-{% block content %}
-<style>
-    .card {
-    position: relative;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    min-width: 0;
-    word-wrap: break-word;
-    background-color: #2a3f54;
-    background-clip: border-box;
-    border: 0px solid rgba(0,0,0,.125);
-    border-radius: .25rem;
-}
-</style>
-<div class="col-lg-10  text-center">
-<div class="card">
-    <div class="card-body">
-        <div id="loginBox">
-              <div class="modal-header text-center">
-                <h3 class="modal-title w-100 dark-grey-text font-weight-bold my-3" id="myModalLabel"><strong><i class="fa fa-user"></i>
-                                                        &nbsp;Client Registration</strong></h3>
-              </div>
-              <form method="post" id="registerForm">
-                            {% csrf_token %}
-                  <div align="center" id="successMessage" class="alert alert-success" role="alert" style="display:none">
-                    Client Registration Successfull
-                  </div>
-                  <div class="form-check text-center">
-                    <label>Registration Type <font color="red">*</font></label><br>
-                    <label class="form-radio-label">
-                        <input class="form-radio-input" type="radio" name="client" value="I" id="individual" onclick="changeOnSelection(this.value)"  checked>
-                        <span class="form-radio-sign">Individial</span>
-                    </label>
-                    <label class="form-radio-label ml-3">
-                        <input class="form-radio-input" type="radio" name="client" value="O" id="organization" onclick="changeOnSelection(this.value)">
-                        <span class="form-radio-sign">Organization</span>
-                    </label>
-                  </div>
-                    <div id="individualDiv">
-                        <div class="row">
-                            <div class="form-group col-md-6">
-                                <label for="cid">CID</label>
-                                <input type="text" name="cid" class="form-control" id="cid" minlength="11" maxlength="11" onkeypress="return isNumberKey(event)">
-                                <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="name">Name</label>
-                                <input type="text" name="name" maxlength="254" class="form-control" id="name">
-                                <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6 mb-0">
-                                <div class="form-check">
-                                    <label>Gender</label><br>
-                                    <label class="form-radio-label">
-                                        <input class="form-radio-input" type="radio" name="gender" value="M" checked="">
-                                        <span class="form-radio-sign">Male</span>
-                                    </label>
-                                    <label class="form-radio-label ml-3">
-                                        <input class="form-radio-input" type="radio" name="gender" value="F">
-                                        <span class="form-radio-sign">Female</span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="form-group col-md-6 mb-0">
-                                <label for="email" class=" requiredField">
-                                    Email<span class="asteriskField">*</span>
-                                </label>
-                                <div class="">
-                                    <input type="email" name="email" class="form-control" pattern=".+@globex.com" id="email">
-                                </div>
-                                <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="form-group col-md-6">
-                                <label for="address">Contact Number</label>
-                                <input type="text" name="contactnumber" maxlength="254" class="form-control" id="contactnumber">
-                                <div class="alert alert-danger" id="contactErrorMsg" style="display:none"></div>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="address">Address</label>
-                                <textarea class="form-control" name="address" id="address" rows="5"></textarea>
-                                <div class="alert alert-danger" id="addressErrorMsg" style="display:none"></div>
-                            </div>
-                        </div>
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>BAFRA | BBFSS </title>
+
+    <!-- Bootstrap -->
+    <link href="{% static 'styles/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="{% static 'assets/bower_components/material-design-iconic-font/dist/css/material-design-iconic-font.min.css' %}" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="{% static 'styles/nprogress/nprogress.css' %}" rel="stylesheet">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="{% static 'assets/css/app.min.css' %}">
+
+    <!-- Custom Theme Style -->
+  </head>
+
+<body data-sa-theme="1">
+
+<div class="login">
+    <header class="header" style="background:url('{% static 'assets/img/banner.png' %}')">
+
+    </header>
+    <!-- Login -->
+    <div class="login__block active" id="l-login">
+        <div class="login__block__header">
+            <i class="zmdi zmdi-account-circle"></i>
+            Hi there! Please Sign in
+
+            <div class="actions actions--inverse login__block__actions">
+                <div class="dropdown">
+                    <i data-toggle="dropdown" class="zmdi zmdi-more-vert actions__item"></i>
+
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item" data-sa-action="login-switch" data-sa-target="#l-register" href="#">Create an account</a>
+                        <a class="dropdown-item" data-sa-action="login-switch" data-sa-target="#l-forget-password" href="#">Forgot password?</a>
                     </div>
-                   <div id="organizationDiv">
-                        <div class="form-row">
-                            <div class="form-group col-md-6 mb-0">
-                                <label for="contactPerson" class=" requiredField">
-                                    Contact Person<span class="asteriskField">*</span>
-                                </label>
-                                <div class="">
-                                    <input type="text" name="contactPerson" class="form-control" id="contactPerson">
-                                </div>
-                                <div class="alert alert-danger" id="contactPersonErrorMsg" style="display:none"></div>
-                            </div>
-                            <div class="form-group col-md-6 mb-0">
-                                <label for="id_email" class=" requiredField">
-                                    Email<span class="asteriskField">*</span>
-                                </label>
-                                <div class="">
-                                    <input type="email" name="emailId" maxlength="254" class="emailinput form-control" id="id_email">
-                                </div>
-                                <div class="alert alert-danger" id="id_emailPersonErrorMsg" style="display:none"></div>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label for="mobile_number">Contact Number</label>
-                                    <input type="text" name="mobile_number" class="form-control" id="mobile_number">
-                                </div>
-                                <div class="alert alert-danger" id="mobile_numberErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6 mb-0">
-                                <label for="org_agency">
-                                    Agency<span class="asteriskField">*</span>
-                                </label>
-                                <div class="">
-                                    <input type="text" name="org_agency" class="form-control" id="org_agency">
-                                </div>
-                                <div class="alert alert-danger" id="org_agencyErrorMsg" style="display:none"></div>
-                            </div>
-                            <div class="form-group col-md-6 mb-0">
-                                <label for="org_license">
-                                    License No<span class="asteriskField">*</span>
-                                </label>
-                                <div class="">
-                                    <input type="text" name="org_license" class="form-control" id="org_license">
-                                </div>
-                                <div class="alert alert-danger" id="org_licenseErrorMsg" style="display:none"></div>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6 mb-0">
-                                <label for="dzongkhag">
-                                    Dzongkhag<span class="asteriskField">*</span>
-                                </label>
-                                <div class="">
-                                    <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
-                                        <option value="">--SELECT DZONGKHAG--</option>
-                                        {% for dzongkhag in dzongkhag %}
-                                                <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
-                            </div>
-                            <div class="form-group col-md-6 mb-0">
-                                <label for="gewog">
-                                    Gewog<span class="asteriskField">*</span>
-                                </label>
-                                <div class="">
-                                    <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
-                                        <option value="">--SELECT GEWOG--</option>
-                                        {% for gewog in gewog %}
-                                                <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6 mb-0">
-                                <label for="village" class=" requiredField">
-                                    Village<span class="asteriskField">*</span>
-                                </label>
-                                <div class="">
-                                    <select class="form-control" name="village" id="village">
-                                        <option value="">--SELECT VILLAGE--</option>
-                                        {% for village in village %}
-                                                <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="org_address">Address</label>
-                                <textarea class="form-control" name="org_address" id="org_address" rows="5"></textarea>
-                                <div class="alert alert-danger" id="org_addressErrorMsg" style="display:none"></div>
-                            </div>
-                        </div>
-                    </div>
-                    </form>
-                    <div class="modal-footer mx-5 pt-3 mb-1 justify-content-center">
-                        <div class="custom-control custom-checkbox custom-control-inline"> <button type="button" onclick="register()" class="btn btn-blue text-center">Register</button>  </div> <small class="ml-auto mb-0 font-weight-bold">Already have an account? <a class="text-danger" href="http://127.0.0.1:8000/login">Login</a></small>
-                    </div>
-                    {% if messages %}
-                      <ul class="messages">
-                        {% for message in messages %}
-                          <li class="{{ message.tags }}">{{ message }}</li>
-                        {% endfor %}
-                      </ul>
-                    {% endif %}
                 </div>
             </div>
-         </div>
+        </div>
+
+        <div class="login__block__body">
+            <div class="form-group">
+                <input type="text" class="form-control text-center" placeholder="Email Address">
+            </div>
+
+            <div class="form-group">
+                <input type="password" class="form-control text-center" placeholder="Password">
+            </div>
+
+            <a href="index-2.html" class="btn btn--icon login__block__btn"><i class="zmdi zmdi-long-arrow-right"></i></a>
+        </div>
     </div>
 
-<script>
-function getGewog(dzongkhag_id)
-{
-    $.ajax({
-        type : "GET",
-        url : "{% url 'load_gewog' %}",
-        data :{'dzongkhag_id':dzongkhag_id},
-        success : function(data) {
-            $('#gewog').html(data);
-        }
-    });
-}
+    <!-- Register -->
+    <div class="login__block" id="l-register">
+        <div class="login__block__header">
+            <i class="zmdi zmdi-account-circle"></i>
+            Create an account
 
-function getVillage(gewog_id)
-{
-    $.ajax({
-        type : "GET",
-        url : "{% url 'load_village' %}",
-        data :{'gewog_id':gewog_id},
-        success : function(data) {
-            $('#village').html(data);
-        }
-    });
-}
-</script>
-{% endblock %}
+            <div class="actions actions--inverse login__block__actions">
+                <div class="dropdown">
+                    <i data-toggle="dropdown" class="zmdi zmdi-more-vert actions__item"></i>
+
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item" data-sa-action="login-switch" data-sa-target="#l-login" href="#">Already have an account?</a>
+                        <a class="dropdown-item" data-sa-action="login-switch" data-sa-target="#l-forget-password" href="#">Forgot password?</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="login__block__body">
+            <div class="form-group">
+                <input type="text" class="form-control text-center" placeholder="Name">
+            </div>
+
+            <div class="form-group form-group--centered">
+                <input type="text" class="form-control text-center" placeholder="Email Address">
+            </div>
+
+            <div class="form-group form-group--centered">
+                <input type="password" class="form-control text-center" placeholder="Password">
+            </div>
+
+            <div class="form-group">
+                <label class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input">
+                    <span class="custom-control-indicator"></span>
+                    <span class="custom-control-description">Accept the license agreement</span>
+                </label>
+            </div>
+
+            <a href="index-2.html" class="btn btn--icon login__block__btn"><i class="zmdi zmdi-plus"></i></a>
+        </div>
+    </div>
+
+    <!-- Forgot Password -->
+    <div class="login__block" id="l-forget-password">
+        <div class="login__block__header">
+            <i class="zmdi zmdi-account-circle"></i>
+            Forgot Password?
+
+            <div class="actions actions--inverse login__block__actions">
+                <div class="dropdown">
+                    <i data-toggle="dropdown" class="zmdi zmdi-more-vert actions__item"></i>
+
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item" data-sa-action="login-switch" data-sa-target="#l-login" href="#">Already have an account?</a>
+                        <a class="dropdown-item" data-sa-action="login-switch" data-sa-target="#l-register" href="#">Create an account</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="login__block__body">
+            <p class="mb-5">Lorem ipsum dolor fringilla enim feugiat commodo sed ac lacus.</p>
+
+            <div class="form-group">
+                <input type="text" class="form-control text-center" placeholder="Email Address">
+            </div>
+
+            <a href="index-2.html" class="btn btn--icon login__block__btn"><i class="zmdi zmdi-check"></i></a>
+        </div>
+    </div>
+</div>
+</body>
+<script src="{% static 'assets/bower_components/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'assets/bower_components/popper.js/dist/umd/popper.min.js' %}"></script>
+<script src="{% static 'assets/bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'assets/js/app.min.js' %}"></script>
+</html>
