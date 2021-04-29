@@ -14,12 +14,15 @@ from django.template.loader import render_to_string
 
 from administrator.forms import UserForm, LocationFieldMappingForm, FieldOfficeForm, FodderVarietyForm, PlantFodderForm, \
     PlantProductForm, PesticideForm, OrnamentalPlantForm, CropSpeciesForm, ChemicalForm, CropVarietyForm, CropForm, \
-    ServiceForm, DivisionForm, SectionForm, RoleForm, CropCategoryForm
+    ServiceForm, DivisionForm, SectionForm, RoleForm, CropCategoryForm, LivestockSpeciesForm, LivestockSpeciesBreedForm
 from administrator.models import t_user_master, t_security_question_master, t_role_master, t_forgot_password, \
     t_section_master, t_village_master, t_gewog_master, t_dzongkhag_master, t_location_field_office_mapping, \
     t_field_office_master, t_plant_fodder_variety_master, t_plant_fodder_master, t_plant_product_master, \
     t_plant_pesticide_master, t_plant_ornamental_master, t_plant_crop_species_master, t_plant_chemical_master, \
-    t_plant_crop_variety_master, t_plant_crop_master, t_service_master, t_division_master, t_plant_crop_category_master
+    t_plant_crop_variety_master, t_plant_crop_master, t_service_master, t_division_master, \
+    t_plant_crop_category_master, t_livestock_species_master, t_livestock_category_master, \
+    t_livestock_species_breed_master
+
 from bbfss import settings
 from plant.models import t_payment_details
 
@@ -415,7 +418,6 @@ def save_crop_category_form(request, form, template_name):
 
 
 def delete_crop_category(request, Crop_Category_Id):
-    print("test check delete")
     crop_category = get_object_or_404(t_plant_crop_category_master, pk=Crop_Category_Id)
     data = dict()
     if request.method == 'POST':
@@ -1298,3 +1300,157 @@ def update_payment_details(request):
                                Receipt_No=Receipt_No, Receipt_Date=receipt_date,
                                Updated_By=request.session['email'], Updated_On=date.today())
     return redirect(payment_list)
+
+
+def livestock_species_manage(request):
+    if request.method == 'POST':
+        form = LivestockSpeciesForm(request.POST)
+        if form.is_valid():
+            form.save()
+            form = LivestockSpeciesForm()
+            species = t_livestock_species_master.objects.all()
+            return render(request, 'livestock_species.html', {'form': form, 'species': species})
+    else:
+        species = t_livestock_species_master.objects.all()
+        form = LivestockSpeciesForm()
+        return render(request, 'livestock_species.html', {'form': form, 'species': species})
+
+
+def save_livestock_species_form(request, form, template_name):
+    data = dict()
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            data['form_is_valid'] = True
+            species = t_livestock_species_master.objects.all()
+            data['html_book_list'] = render_to_string('livestock_species.html', {
+                'species': species
+            })
+        else:
+            data['form_is_valid'] = False
+    context = {'form': form}
+    data['html_form'] = render_to_string(template_name, context, request=request)
+    return JsonResponse(data)
+
+def edit_livestock_species(request, Species_Id):
+    species = get_object_or_404(t_livestock_species_master, pk=Species_Id)
+    if request.method == 'POST':
+        form = LivestockSpeciesForm(request.POST, instance=species)
+    else:
+        form = LivestockSpeciesForm(instance=species)
+    return save_livestock_species_form(request, form, 'edit_livestock_species.html')
+
+def delete_livestock_species(request, Species_Id):
+    species = get_object_or_404(t_livestock_species_master, pk=Species_Id)
+    data = dict()
+    if request.method == 'POST':
+        species.delete()
+        data['form_is_valid'] = True  # This is just to play along with the existing code
+        species = t_livestock_species_master.objects.all()
+        data['html_form'] = render_to_string('livestock_species.html', {'species': species})
+    else:
+        context = {'species': species}
+        data['html_form'] = render_to_string('livestock_species_delete.html', context, request=request)
+    return JsonResponse(data)
+
+def livestock_species_breed_manage(request):
+    if request.method == 'POST':
+        form = LivestockSpeciesBreedForm(request.POST)
+        if form.is_valid():
+            form.save()
+            form = LivestockSpeciesBreedForm()
+            breed = t_livestock_species_breed_master.objects.all()
+            return render(request, 'livestock_species_breed.html', {'form': form, 'breed': breed})
+    else:
+        breed = t_livestock_species_breed_master.objects.all()
+        form = LivestockSpeciesBreedForm()
+        return render(request, 'livestock_species_breed.html', {'form': form, 'breed': breed})
+
+
+def save_livestock_species_breed_form(request, form, template_name):
+    data = dict()
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            data['form_is_valid'] = True
+            breed = t_livestock_species_breed_master.objects.all()
+            data['html_book_list'] = render_to_string('livestock_species_breed.html', {
+                'breed': breed
+            })
+        else:
+            data['form_is_valid'] = False
+    context = {'form': form}
+    data['html_form'] = render_to_string(template_name, context, request=request)
+    return JsonResponse(data)
+
+def edit_livestock_species_breed(request, Species_Breed_Id):
+    breed = get_object_or_404(t_livestock_species_breed_master, pk=Species_Breed_Id)
+    if request.method == 'POST':
+        form = LivestockSpeciesBreedForm(request.POST, instance=breed)
+    else:
+        form = LivestockSpeciesBreedForm(instance=breed)
+    return save_livestock_species_breed_form(request, form, 'edit_livestock_species_breed.html')
+
+def delete_livestock_species_breed(request, Species_Breed_Id):
+    breed = get_object_or_404(t_livestock_species_breed_master, pk=Species_Breed_Id)
+    data = dict()
+    if request.method == 'POST':
+        breed.delete()
+        data['form_is_valid'] = True  # This is just to play along with the existing code
+        breed = t_livestock_species_breed_master.objects.all()
+        data['html_form'] = render_to_string('livestock_species_breed.html', {'breed': breed})
+    else:
+        context = {'breed': breed}
+        data['html_form'] = render_to_string('livestock_species_breed_delete.html', context, request=request)
+    return JsonResponse(data)
+
+def livestock_product_manage(request):
+    if request.method == 'POST':
+        form = LivestockProductForm(request.POST)
+        if form.is_valid():
+            form.save()
+            product = t_livestock_product_master.objects.all()
+            return render(request, 'livestock_product.html', {'form': form, 'product': product})
+    else:
+        product = t_livestock_product_master.objects.all()
+        form = LivestockProductForm()
+        return render(request, 'livestock_product.html', {'form': form, 'product': product})
+
+
+def edit_livestock_product(request, Product_Id):
+    product = get_object_or_404(t_livestock_product_master, pk=Product_Id)
+    if request.method == 'POST':
+        form = LivestockProductForm(request.POST, instance=product)
+    else:
+        form = LivestockProductForm(instance=product)
+    return save_livestock_product_form(request, form, 'edit_livestock_product.html')
+
+
+def save_livestock_product_form(request, form, template_name):
+    data = dict()
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            data['form_is_valid'] = True
+            product = t_livestock_product_master.objects.all()
+            data['html_livestock_product_list'] = render_to_string('livestock_product.html', {
+                'product': product
+            })
+        else:
+            data['form_is_valid'] = False
+    context = {'form': form}
+    data['html_form'] = render_to_string(template_name, context, request=request)
+    return JsonResponse(data)
+
+def delete_livestock_product(request, Product_Id):
+    product = get_object_or_404(t_division_master, pk=Product_Id)
+    data = dict()
+    if request.method == 'POST':
+        product.delete()
+        data['form_is_valid'] = True  # This is just to play along with the existing code
+        division = t_livestock_product_master.objects.all()
+        data['html_form'] = render_to_string('livestock_product.html', {'product': product})
+    else:
+        context = {'product': product}
+        data['html_form'] = render_to_string('livestock_product_delete.html', context, request=request)
+    return JsonResponse(data)

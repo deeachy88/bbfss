@@ -81,6 +81,7 @@ class t_country_master(models.Model):
 class t_plant_crop_category_master(models.Model):
     Crop_Category_Id = models.AutoField(primary_key=True)
     Crop_Category_Name = models.CharField(max_length=100)
+    Crop_Category_Name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.Crop_Category_Name
@@ -269,7 +270,36 @@ class t_forgot_password(models.Model):
     Security_Question_Id = models.IntegerField()
     Answer = models.CharField(max_length=250)
 
-
 class t_inspection_type_master(models.Model):
     Inspection_Type_Id = models.AutoField(primary_key=True)
     Inspection_Type = models.CharField(max_length=100)
+
+class t_livestock_category_master(models.Model):
+    Category_Id = models.AutoField(primary_key=True)
+    Category_Name = models.CharField(max_length=100)
+    def __str__(self):
+        return self.Category_Name
+
+class t_livestock_species_master(models.Model):
+    Species_Id = models.AutoField(primary_key=True)
+    Species_Name = models.CharField(max_length=150)
+    Category_Id = models.ForeignKey(t_livestock_category_master, on_delete=models.CASCADE, null=True, blank=True)
+
+    def __str__(self):
+        return self.Species_Name
+
+class t_livestock_species_breed_master(models.Model):
+    Species_Breed_Id = models.AutoField(primary_key=True)
+    Species_Breed_Name = models.CharField(max_length=150)
+    Category_Id = models.ForeignKey(t_livestock_category_master, on_delete=models.CASCADE, null=True, blank=True)
+    Species_Id = models.ForeignKey(t_livestock_species_master, on_delete=models.CASCADE, null=True, blank=True)
+
+    def __str__(self):
+        return self.Species_Breed_Name
+
+class t_livestock_product_master(models.Model):
+    Product_Id = models.AutoField(primary_key=True)
+    Product_Name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.Product_Name

@@ -295,7 +295,7 @@ class t_livestock_export_certificate_t1(models.Model):
     Approve_Date = models.DateField(blank=True, null=True)
     Validity_Period = models.IntegerField(blank=True, null=True)
     Validity = models.DateField(blank=True, null=True)
-    Applicant_Id = models.CharField(max_length=100)
+    Applicant_Id = models.CharField(max_length=100, null=True, default=None)
 
 
 class t_livestock_export_certificate_t2(models.Model):
@@ -379,7 +379,6 @@ class t_livestock_movement_permit_t3(models.Model):
     Application_No = models.CharField(max_length=20)
     Current_Observation = models.TextField()
     Decision_Conformity = models.TextField()
-
 
 class t_livestock_ante_post_mortem_t1(models.Model):
     Application_No = models.CharField(max_length=20, primary_key=True)

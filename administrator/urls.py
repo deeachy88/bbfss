@@ -67,5 +67,14 @@ urlpatterns = [
     path('load_section', views.load_section, name='load_section'),
     path('password_update', views.password_update, name='password_update'),
     path('payment_details', views.payment_list, name='payment_details'),
-    path('update_payment_details', views.update_payment_details, name='update_payment_details')
+    path('update_payment_details', views.update_payment_details, name='update_payment_details'),
+    path('livestock_species', views.livestock_species_manage, name='livestock_species_page'),
+    path('edit_livestock_species/<int:Species_Id>', views.edit_livestock_species, name='edit_livestock_species'),
+    path('delete_livestock_species/<int:Species_Id>', views.delete_livestock_species, name='delete_livestock_species'),
+    path('livestock_species_breed', views.livestock_species_breed_manage, name='livestock_species_breed_page'),
+    path('edit_livestock_species_breed/<int:Species_Breed_Id>', views.edit_livestock_species_breed, name='edit_livestock_species_breed'),
+    path('delete_livestock_species_breed/<int:Species_Breed_Id>', views.delete_livestock_species_breed, name='delete_livestock_species_breed'),
+    path('livestock_product', views.livestock_product_manage, name='livestock_product_page'),
+    path('edit_livestock_product/<int:Product_Id>', views.edit_livestock_product, name='edit_livestock_product'),
+    path('delete_livestock_product/<int:Product_Id>', views.delete_livestock_product, name='delete_livestock_product'),
 ]
