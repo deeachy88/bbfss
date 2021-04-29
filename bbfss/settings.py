@@ -39,7 +39,9 @@ INSTALLED_APPS = [
     'administrator',
     'plant',
     'livestock',
-
+    'food',
+    'certification',
+    'common_service',
 ]
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 MIDDLEWARE = [

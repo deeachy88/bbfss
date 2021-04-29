@@ -1,0 +1,653 @@
+{% extends 'common_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<style>
+    option
+    {
+        background-color: black !important;
+    }
+    .mt-4, .my-4 {
+    margin-top: 0.1rem!important;
+}
+</style>
+<div class="card">
+    <div class="card-header">
+        <h4 class="card-title">Licensing of Personnel</h4>
+    </div>
+    <div class="card-body">
+        <form method="post" id="foodHandlerForm">
+            <input type="hidden" name="application_no" id="applicationNo">
+            {% csrf_token %}
+            <div class="row justify-content-left">
+                <ul class="nav nav-pills nav-secondary" id="pills-tab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadDetails()">Application Form</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="pills-profile-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="tab-content mt-2 mb-3" id="pills-tabContent">
+                <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                    <div id="applicant_details">
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <div class="form-check">
+                                    <label>Nationality</label><br>
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" name="Nationality" id="B_Inspection_Type" class="custom-control-input" value="Bhutanese" onchange="checkValue(this.value)" checked>
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Bhutanese</span>
+                                    </label>
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" name="Nationality" id="F_Inspection_Type" class="custom-control-input" value="Foreigner" onchange="checkValue(this.value)">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Foreigner</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label class="form-label" id="cid_label">CID</label>
+                                <label class="form-label" id="permit_label" style="display:none;">Permit No</label>
+                                <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)">
+                                <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="form-group col-md-4">
+                               <label class="form-label">Name</label>
+                                <input type="text" class="form-control" id="name" name="name">
+                                <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4" id="country_div" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label">Country</label>
+                                    <select class="form-control" name="country" id="country">
+                                        <option value="">--SELECT--</option>
+                                        {% for country in country %}
+                                            <option value="{{ country.Country_Code }}">{{ country.Country_Name }}</option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                                <div class="alert alert-danger" id="countryErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4" id="dzongkhag_div">
+                                <div class="form-group">
+                                    <label class="form-label">Dzongkhag</label>
+                                    <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value),getLocation(this.value)">
+                                        <option value="">--SELECT DZONGKHAG--</option>
+                                        {% for dzongkhag in dzongkhag %}
+                                                <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4" id="gewog_div">
+                                <div class="form-group">
+                                    <label class="form-label">Gewog</label>
+                                    <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                        <option value="">--SELECT GEWOG--</option>
+                                        {% for gewog in gewog %}
+                                                <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4" id="village_div">
+                                <div class="form-group">
+                                    <label class="form-label">Village</label>
+                                     <select class="form-control" name="village" id="village">
+                                        <option value="">--SELECT VILLAGE--</option>
+                                        {% for village in village %}
+                                                <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                                <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4" id="email_div">
+                                <div class="form-group">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email" onchange="validateemailId(this.value)">
+                                </div>
+                                <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4" id="f_email_div">
+                                <div class="form-group">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="f_email" name="f_email" onchange="validateemailId(this.value)">
+                                </div>
+                                <div class="alert alert-danger" id="f_emailErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Contact Number</label>
+                                    <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                                </div>
+                                <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Training </span>&nbsp;&nbsp;&nbsp;
+                                <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Details</span>
+                            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="col-md-6 text-center">
+                                <label class="form-label" style="margin-bottom: 4px;padding-right: 60px;">Training Request</label>
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Training_Type" class="custom-control-input" value="New">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">New License</span>
+                                        </label>&nbsp;
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Training_Type" class="custom-control-input" value="Renewal">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Renewal Of License</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="alert alert-danger" id="training_typeErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Preferred Place</label>
+                                    <select class="form-control" name="preferred_place" id="preferred_place">
+                                        <option value="">--SELECT--</option>
+                                        {% for location in field_office %}
+                                            <option value="{{ location.Field_Office_Id }}">{{ location.Field_Office }}</option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                                <div class="alert alert-danger" id="preferred_placeErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Preferred Date</label>
+                                     <input type="date" name="preferred_Date" id="preferred_Date" class="form-control date-picker flatpickr-input active">
+                                </div>
+                                <div class="alert alert-danger" id="preferred_DateErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Associated food establishment</label>
+                                    <textarea class="form-control" name="associated_establishment" id="associated_establishment" rows="3"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="associated_establishmentErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                        <p>I have understood the rules of personal hygiene and of hygienic food handling practices.</p>
+                        <p>I accept that i will report to my supervisor and restrain from handling food if i suffer from an illness involving any of the following medical conditions. I understand that failure to comply with this agreement could lead to regulatory action by BAFRA.</p>
+                        <p>1. Hepatitis A</p>
+                        <p>2. Diarrhoea</p>
+                        <p>3. Vomiting</p>
+                        <p>4. Fever</p>
+                        <p>5. Sore Throat With Fever</p>
+                        <p>6. Visibly Infected Lesions (Boils, Cuts, Etc However Small)</p>
+                        <p>7. Discharge from Ear, Eye and Nose.</p>
+                        <br>
+                        <label class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="terms" onclick="check_condition()">
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">I Agree</span>
+                        </label>
+
+                        <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+                            Save SuccessFul
+                        </div>
+                    <br><br>
+                        <div class="card-action" style="display:none">
+                            <button type="button" class="btn btn-primary" value="Submit" onclick="save_application_form()">Submit</button>
+                        </div>
+                    </div>
+
+                <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="pills-profile-file">
+                    <div id="fileAttach">
+                        {% include 'food_handler/file_attachment.html' %}
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<form method="post" id="attachment_form" enctype="multipart/form-data">
+{% csrf_token %}
+    <input type="hidden" name="appNo" id="appNo">
+    <div class="modal fade" id="attachmentModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="attachmentModalLabel">Attach Files</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label>Attach File</label>
+                                        <input type="file" name="document" id="document">
+                                        <div class="alert alert-danger" id="fileErrorMsg" style="display:none"></div>
+                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_attachment()"> Submit </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+function save_application_form()
+{
+    if($('#B_Inspection_Type').prop('checked'))
+    {
+        var cid = $('#cid').val();
+        var name = $('#name').val();
+        var dzongkhag = $('#dzongkhag').val();
+        var gewog = $('#gewog').val();
+        var village = $('#village').val();
+        var email = $('#email').val();
+        var contactNumber = $('#contactNumber').val();
+        var cidCount = $('#cid').val().length;
+        var number_count = $('#contactNumber').val().length;
+        var training_type = $("input[name=Training_Type]:checked").length;
+
+        if(cid == "")
+        {
+            $('#cidErrorMsg').html("Enter CID Number.");
+            $('#cidErrorMsg').show();
+            $('#cidErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(name == "")
+        {
+            $('#nameErrorMsg').html("Enter Name .");
+            $('#nameErrorMsg').show();
+            $('#nameErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(dzongkhag == "")
+        {
+            $('#dzongkhagErrorMsg').html("Select Dzongkhag.");
+            $('#dzongkhagErrorMsg').show();
+            $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(gewog == "")
+        {
+            $('#gewogErrorMsg').html("Select Gewog.");
+            $('#gewogErrorMsg').show();
+            $('#gewogErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(village == "")
+        {
+            $('#villageErrorMsg').html("Select Village.");
+            $('#villageErrorMsg').show();
+            $('#villageErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(contactNumber == "")
+        {
+            $('#contactNumberErrorMsg').html("Enter Contact Number.");
+            $('#contactNumberErrorMsg').show();
+            $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(email == "")
+        {
+            $('#emailErrorMsg').html("Enter Contact Number.");
+            $('#emailErrorMsg').show();
+            $('#emailErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(training_type < 1)
+        {
+            $('#training_typeErrorMsg').html("Please Check One Training Type.");
+            $('#training_typeErrorMsg').show();
+            $('#training_typeErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(preferred_Date == "")
+        {
+            $('#preferred_DateErrorMsg').html("Enter Trade License No.");
+            $('#preferred_DateErrorMsg').show();
+            $('#preferred_DateErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            $.ajax({
+                type : "POST",
+                url : "{% url 'save_food_handler_details' %}",
+                data : $('#foodHandlerForm').serialize(),
+                success : function(data)
+                {
+                    $('#applicationNo').val(data.applNo);
+                    $('#appNo').val(data.applNo);
+                    $('#submitMsg').show();
+                    setTimeout(function()
+                    {
+                        $("#submitMsg").hide('blind', {}, 500)
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#pills-profile-file').tab('show');
+                    }, 3000);
+                }
+                });
+        }
+    }
+    else
+    {
+        var cid = $('#cid').val();
+        var name = $('#name').val();
+        var country = $('#dzongkhag').val();
+        var gewog = $('#gewog').val();
+        var village = $('#village').val();
+        var email = $('#email').val();
+        var contactNumber = $('#contactNumber').val();
+        var cidCount = $('#cid').val().length;
+        var number_count = $('#contactNumber').val().length;
+        var training_type = $("input[name=Training_Type]:checked").length;
+
+
+        if(cid == "")
+        {
+            $('#cidErrorMsg').html("Enter Permit Number.");
+            $('#cidErrorMsg').show();
+            $('#cidErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(name == "")
+        {
+            $('#nameErrorMsg').html("Enter Name .");
+            $('#nameErrorMsg').show();
+            $('#nameErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(dzongkhag == "")
+        {
+            $('#countryErrorMsg').html("Select Country.");
+            $('#countryErrorMsg').show();
+            $('#countryErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(contactNumber == "")
+        {
+            $('#contactNumberErrorMsg').html("Enter Contact Number.");
+            $('#contactNumberErrorMsg').show();
+            $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(email == "")
+        {
+            $('#emailErrorMsg').html("Enter Contact Number.");
+            $('#emailErrorMsg').show();
+            $('#emailErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(training_type < 1)
+        {
+            $('#training_typeErrorMsg').html("Please Check One Training Type.");
+            $('#training_typeErrorMsg').show();
+            $('#training_typeErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(preferred_Date == "")
+        {
+            $('#preferred_DateErrorMsg').html("Enter Trade License No.");
+            $('#preferred_DateErrorMsg').show();
+            $('#preferred_DateErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            $.ajax({
+                type : "POST",
+                url : "{% url 'save_food_handler_details' %}",
+                data : $('#foodHandlerForm').serialize(),
+                success : function(data)
+                {
+                    $('#applicationNo').val(data.applNo);
+                    $('#appNo').val(data.applNo);
+                    $('#submitMsg').show();
+                    setTimeout(function()
+                    {
+                        $("#submitMsg").hide('blind', {}, 500)
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#pills-profile-file').tab('show');
+                    }, 3000);
+                }
+                });
+        }
+    }
+}
+
+function loadDetails()
+{
+    var appid = $('#applicationNo').val();
+    $.ajax({
+    type : "GET",
+    url : "{% url 'load_application_details' %}",
+    data :{'application_id':appid},
+    success : function(response)
+    {
+        $('#applicant_details').html(response);
+    }
+    });
+}
+function load_attachment_details()
+{
+    var appid = $('#applicationNo').val();
+    $.ajax({
+    type : "GET",
+    url : "{% url 'load_attachment_details' %}",
+    data :{'application_id':appid},
+    success : function(response)
+    {
+        $('#fileAttach').html(response);
+    }
+    });
+}
+
+function getGewog(dzongkhag_id)
+{
+    $.ajax({
+    type : "GET",
+    url : "{% url 'load_gewog' %}",
+    data :{'dzongkhag_id':dzongkhag_id},
+    success : function(data)
+    {
+        $('#gewog').html(data);
+    }
+    });
+}
+
+function getVillage(gewog_id)
+{
+    $.ajax({
+    type : "GET",
+    url : "{% url 'load_village' %}",
+    data :{'gewog_id':gewog_id},
+    success : function(data)
+    {
+        $('#village').html(data);
+    }
+    });
+}
+
+function getLocation(dzongkhag_id)
+{
+    $.ajax({
+    type : "GET",
+    url : "{% url 'load_location' %}",
+    data :{'dzongkhag_id':dzongkhag_id},
+    success : function(data) {
+    $('#location').html(data);
+    }
+    });
+}
+
+function updateDetails()
+{
+    $.ajax({
+    type : "POST",
+    url : "{% url 'update_details' %}",
+    data : $('#permitForm').serialize(),
+    success : function(response)
+    {
+    $('.wrapper').html(response);
+    $('#pills-tab a:last').tab('show');
+    }
+    });
+}
+
+function save_attachment()
+{
+    var fileName = document.getElementById('document').files[0].name;
+    var fd = new FormData();
+    var file = document.getElementById('document').files[0];
+    fd.append('document', file);
+    token_value=$("input[name=csrfmiddlewaretoken]").val();
+    $.ajaxSetup
+    ({
+        beforeSend: function(xhr, settings)
+    {
+        xhr.setRequestHeader("X-CSRFToken", token_value);
+    }
+    });
+        $.ajax({
+        type : "POST",
+        url : "{% url 'food_handler_file' %}",
+        data : fd,
+        dataType: 'json',
+        contentType: false,
+        processData: false,
+        success : function(data)
+        {
+        if (data.form_is_valid)
+        {
+            var appNo = $('#appNo').val();
+            var file_url = data.file_url
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'food_handler_file_name' %}",
+                data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
+                success : function(responseText)
+                {
+                    $('#attachmentModal').modal('hide');
+                    $('#file-attachment').html(responseText);
+                    $('.modal-backdrop').remove();
+                }
+            });
+        }else
+        {
+                $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                $('#fileErrorMsg').show();
+                $('#fileErrorMsg').delay(2000).fadeOut('slow');
+        }
+    }
+    });
+}
+
+function validateemailId(emailId)
+{
+    var pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+    var no=emailId.match(pattern);
+
+    if(no==null)
+    {
+        $('#emailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
+        $('#email').val("");
+        $('#emailErrorMsg').show();
+        $('#emailErrorMsg').delay(2000).fadeOut('slow');
+    }else{
+     $('#emailErrorMsg').hide();
+    }
+
+}
+
+function checkContact(value)
+{
+    var firstDigit = value.charAt(0);
+    var secondDigit = value.charAt(1);
+
+    if(firstDigit != 7 && firstDigit != 1){
+        $('#contactNumberErrorMsg').html("Must Start with either 1 or 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 1 && secondDigit != 6 && secondDigit != 7){
+        $('#contactNumberErrorMsg').html("Second Digit Must Start with either 6 or 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 7 && secondDigit == 6){
+        $('#contactNumberErrorMsg').html("Second Digit Cannot be 6.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 7 && secondDigit != 7){
+        $('#contactNumberErrorMsg').html("Second Digit Must Start with 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }
+
+}
+
+
+function food_export_attachment_modal()
+{
+    $('#attachmentModal').modal('show');
+}
+
+function checkValue(value)
+{
+    if(value == "Foreigner")
+    {
+        $('#permit_label').show();
+        $('#cid_label').hide();
+        $('#dzongkhag_div').hide();
+        $('#gewog_div').hide();
+        $('#village_div').hide();
+        $('#email_div').hide();
+        $('#f_email_div').show();
+        $('#country_div').show();
+    }
+    else
+    {
+        $('#permit_label').hide();
+        $('#cid_label').show();
+        $('#dzongkhag_div').show();
+        $('#gewog_div').show();
+        $('#village_div').show();
+        $('#email_div').show();
+        $('#f_email_div').hide();
+        $('#country_div').hide();
+    }
+}
+
+function check_condition()
+{
+    if($('#terms').is(":checked"))
+    {
+        $('.card-action').show();
+    }
+    else
+    {
+        $('.card-action').hide();
+    }
+}
+</script>
+{% endblock %}
