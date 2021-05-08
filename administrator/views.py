@@ -14,14 +14,15 @@ from django.template.loader import render_to_string
 
 from administrator.forms import UserForm, LocationFieldMappingForm, FieldOfficeForm, FodderVarietyForm, PlantFodderForm, \
     PlantProductForm, PesticideForm, OrnamentalPlantForm, CropSpeciesForm, ChemicalForm, CropVarietyForm, CropForm, \
-    ServiceForm, DivisionForm, SectionForm, RoleForm, CropCategoryForm, LivestockSpeciesForm, LivestockSpeciesBreedForm
+    ServiceForm, DivisionForm, SectionForm, RoleForm, CropCategoryForm, LivestockSpeciesForm, \
+    LivestockSpeciesBreedForm, LivestockProductForm
 from administrator.models import t_user_master, t_security_question_master, t_role_master, t_forgot_password, \
     t_section_master, t_village_master, t_gewog_master, t_dzongkhag_master, t_location_field_office_mapping, \
     t_field_office_master, t_plant_fodder_variety_master, t_plant_fodder_master, t_plant_product_master, \
     t_plant_pesticide_master, t_plant_ornamental_master, t_plant_crop_species_master, t_plant_chemical_master, \
     t_plant_crop_variety_master, t_plant_crop_master, t_service_master, t_division_master, \
     t_plant_crop_category_master, t_livestock_species_master, t_livestock_category_master, \
-    t_livestock_species_breed_master
+    t_livestock_species_breed_master, t_livestock_product_master
 
 from bbfss import settings
 from plant.models import t_payment_details
@@ -84,7 +85,7 @@ def login(request):
                                         request.session['Role_Id'] = mainroles.Role_Id
                                         request.session['section'] = user.Section_Id_id
                                     elif complaint_officer == str(mainroles.Role_Name):
-                                        request.session['username'] = user.name
+                                        request.session['username'] = user.Name
                                         request.session['role'] = complaint_officer
                                     elif OIC == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
@@ -227,7 +228,7 @@ def user(request):
                                              'division': division, 'field_office': field_office})
 
 
-def edit(request, Login_Id):
+def edit_user(request, Login_Id):
     details = get_object_or_404(t_user_master, id=Login_Id)
     if request.method == 'POST':
         form = UserForm(request.POST, instance=details)
@@ -1443,12 +1444,12 @@ def save_livestock_product_form(request, form, template_name):
     return JsonResponse(data)
 
 def delete_livestock_product(request, Product_Id):
-    product = get_object_or_404(t_division_master, pk=Product_Id)
+    product = get_object_or_404(t_livestock_product_master, pk=Product_Id)
     data = dict()
     if request.method == 'POST':
         product.delete()
         data['form_is_valid'] = True  # This is just to play along with the existing code
-        division = t_livestock_product_master.objects.all()
+        product = t_livestock_product_master.objects.all()
         data['html_form'] = render_to_string('livestock_product.html', {'product': product})
     else:
         context = {'product': product}

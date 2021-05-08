@@ -112,7 +112,7 @@ var loadRoleForm = function () {
 
 
   // Update user
-  $("#user-table").on("click", ".js-update-book", loadForm);
+  $("#user-table").on("click", ".js-edit-user", loadForm);
   $("#modal-user").on("submit", ".js-book-update-form", saveForm);
 
   // Update role

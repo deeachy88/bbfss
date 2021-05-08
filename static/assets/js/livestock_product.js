@@ -40,11 +40,11 @@ $(function () {
 
   /* Binding */
 
-  // Update Division
+  // Update Product
   $("#livestock-product-table").on("click", ".js-edit-livestock-product", loadForm);
   $("#modal-common").on("submit", ".js-livestock-product-update-form", saveForm);
 
-  // Delete Division
+  // Delete Product
   $("#livestock-product-table").on("click", ".js-delete-livestock-product", loadForm);
   $("#modal-common").on("submit", ".js-livestock-product-delete-form", saveForm);
 
