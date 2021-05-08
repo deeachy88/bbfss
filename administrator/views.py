@@ -14,14 +14,15 @@ from django.template.loader import render_to_string
 
 from administrator.forms import UserForm, LocationFieldMappingForm, FieldOfficeForm, FodderVarietyForm, PlantFodderForm, \
     PlantProductForm, PesticideForm, OrnamentalPlantForm, CropSpeciesForm, ChemicalForm, CropVarietyForm, CropForm, \
-    ServiceForm, DivisionForm, SectionForm, RoleForm, CropCategoryForm, LivestockSpeciesForm, LivestockSpeciesBreedForm
+    ServiceForm, DivisionForm, SectionForm, RoleForm, CropCategoryForm, LivestockSpeciesForm, LivestockSpeciesBreedForm, \
+    LivestockProductForm
 from administrator.models import t_user_master, t_security_question_master, t_role_master, t_forgot_password, \
     t_section_master, t_village_master, t_gewog_master, t_dzongkhag_master, t_location_field_office_mapping, \
     t_field_office_master, t_plant_fodder_variety_master, t_plant_fodder_master, t_plant_product_master, \
     t_plant_pesticide_master, t_plant_ornamental_master, t_plant_crop_species_master, t_plant_chemical_master, \
     t_plant_crop_variety_master, t_plant_crop_master, t_service_master, t_division_master, \
     t_plant_crop_category_master, t_livestock_species_master, t_livestock_category_master, \
-    t_livestock_species_breed_master
+    t_livestock_species_breed_master, t_livestock_product_master
 
 from bbfss import settings
 from plant.models import t_payment_details
@@ -91,6 +92,7 @@ def login(request):
                                         request.session['role'] = OIC
                                         request.session['Role_Id'] = mainroles.Role_Id
                                         request.session['field_office_id'] = user.Field_Office_Id_id
+                                        request.session['login_id'] = user.Login_Id
                                     elif Inspector == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
                                         request.session['role'] = Inspector

@@ -45,6 +45,7 @@ urlpatterns = [
     path('reject_fo_lp_import', views.reject_fo_lp_import, name='reject_fo_lp_import'),
     path('edit_lp_inspector_details/<int:Record_Id>', views.edit_lp_inspector_details, name='edit_lp_inspector_details'),
     path('submit_lp_application', views.submit_lp_application, name='submit_lp_application'),
+
     # export certificate for animal and animal products
     path('export_certificate_application', views.export_certificate_application, name='export_certificate_application'),
     path('save_livestock_export', views.save_livestock_export, name="save_livestock_export"),

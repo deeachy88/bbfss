@@ -312,28 +312,118 @@
                                     </div>
                                 </div>
                             </div>
-                        {% endfor %}
-                    </div>
+                        <br>
+                        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">File</span>
+                                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Attachments</span>
+                            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                        </div>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">File</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               {% for file_attach in file %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{file_attach.Attachment}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="3" class="text-center">No Data</td>
+                                    </tr>
+                               {% endfor %}
+                            </tbody>
+                        </table>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-label">Remarks(If Reject Please Fill THe Remarks)</label>
+                                    <textarea class="form-control" rows="3" id="remarks" name="remarks"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <br>
+                        <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+                            Application Approved
+                        </div>
+                        <div id="rejectMsg" class="alert alert-info" role="alert" style="display:none;">
+                            Application Rejected
+                        </div>
                         <div class="modal-footer justify-content-center">
                             <select class="form-control col-md-6" name="forwardTo"  id="forwardTo">
-                                <option value="">--SELECT INSPECTOR--</option>
-                                {% for inspector_list in inspector_list %}
-                                        <option value="{{ inspector_list.Login_Id }}">{{ inspector_list.Name }}</option>
+                                <option value="">--SELECT OIC--</option>
+                                {% for oic_list in oic_list %}
+                                        <option value="{{ oic_list.Login_Id }}">{{ oic_list.Name }}</option>
                                 {% endfor %}
                             </select>
-                            {% for application_details in application_details %}
-                                <button type="button" class="btn btn-success" onclick="forwardApplication('{{ application_details.Application_No }}')"><i class="ace-icon fas fa-arrow-right"></i>&nbsp;&nbsp;Forward</button>
-                            {% endfor %}
-                            <button class="btn btn-flat btn-danger" data-dismiss="modal">
-                                <i class="ace-icon fa fa-times"></i>
-                                &nbsp;&nbsp;Cancel
-                            </button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" onclick="fbr_fo_approve('{{ application_details.Application_No }}')"> Approve </button>
+                            <button type="button" class="btn btn-danger" onclick="fbr_fo_reject('{{ application_details.Application_No }}')"> Reject </button>
                         </div>
-                        <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
-                            Application Forwarded Successfully
-                        </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
     </div>
 </form>
+<script>
+    function fbr_fo_approve(application_id)
+        {
+            remarks = $('#remarks').val();
+            forwardTo = $('#forwardTo').val();
+            $.ajax({
+                type : "POST",
+                url : "{% url 'fbr_fo_approve' %}",
+                data :{'application_id':application_id ,'forwardTo':forwardTo,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(data) {
+                    $('#import_detailsModal').modal('hide');
+                    $('#submitMsg').show();
+                    setTimeout(function()
+                    {
+                        $("#submitMsg").hide('blind', {}, 500)
+                    }, 2000);
+                    setTimeout(function()
+                    {
+                         location.reload();
+                    }, 3000);
+
+                }
+            });
+
+        }
+    function fbr_fo_reject(application_id)
+        {
+            remarks = $('#remarks').val();
+
+            if(remarks == "")
+            {
+                $('#remarksErrorMsg').html("Remarks Cannot Be Empty.");
+                $('#remarksErrorMsg').show();
+                $('#remarksErrorMsg').delay(2000).fadeOut('slow');
+            }
+            $.ajax({
+                type : "POST",
+                url : "{% url 'fbr_fo_reject' %}",
+                data :{'application_id':application_id ,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(data) {
+                    $('#import_detailsModal').modal('hide');
+                    $('#rejectMsg').show();
+                    setTimeout(function()
+                    {
+                        $("#rejectMsg").hide('blind', {}, 500)
+                    }, 2000);
+                    setTimeout(function()
+                    {
+                         location.reload();
+                    }, 3000);
+                }
+            });
+        }
+</script>

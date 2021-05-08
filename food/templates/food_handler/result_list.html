@@ -1,0 +1,52 @@
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th class="center">
+                <label class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="all" onclick="checkAll()">
+                    <span class="custom-control-indicator"></span>
+                    <span class="custom-control-description">All</span>
+                </label>
+            </th>
+            <th scope="col">Applicant</th>
+            <th scope="col">Contact Number</th>
+            <th scope="col">Application No</th>
+            <th scope="col">Application Date</th>
+            <th scope="col">Minimum Score</th>
+            <th scope="col">Assessment Score</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if application_details %}
+            <input type="hidden" value="{{ application_details|length }}" id="counter">
+        {% endif %}
+        {% for application_details in application_details %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td class="center">
+                    <label class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" onclick="check_condition_details()"  value="Yes" id="check_{{ forloop.counter }}">
+                        <span class="custom-control-indicator"></span>
+                        <input type="hidden" id="checkedVals" name="checkedVals"/>
+                    </label>
+                </td>
+                <td>{{application_details.Applicant_Name}}</td>
+                <td>{{application_details.Contact_No}}</td>
+                <td><button class="btn btn-primary btn-link" onclick="viewApplicationDetails('{{application_details.Application_No}}')">{{application_details.Application_No}}</button></td>
+                <td>{{application_details.Application_Date|date:"d-m-Y"}}</td>
+                <td>{{application_details.Minimum_Score}}</td>
+                <td><input type="text" class="form-control" name="score" id="cost_{{ forloop.counter }}" disabled></td>
+                <input type="hidden" value="{{application_details.Application_No}}" id="appNo_{{ forloop.counter }}">
+            </tr>
+        {% empty %}
+            <tr>
+              <td colspan="5" class="text-center">No Data</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<div class="card-action">
+    <button type="button" class="btn btn-primary btn-md pull-right" onclick="update_result()"> Update </button>
+</div>

@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime, timedelta
 
 from django.core.files.storage import FileSystemStorage
 from django.core.mail import send_mail
@@ -13,7 +13,11 @@ from administrator.models import t_dzongkhag_master, t_gewog_master, t_village_m
     t_service_master, t_country_master, t_plant_crop_category_master, t_unit_master, t_section_master, \
     t_inspection_type_master
 from bbfss import settings
-from food.models import t_food_export_certificate_t1, t_food_licensinf_food_handler_t1
+from food.models import t_food_export_certificate_t1, t_food_licensinf_food_handler_t1, t_food_import_permit_t1, \
+    t_food_import_permit_t2, t_food_import_permit_inspection_t1, t_food_import_permit_inspection_t2, \
+    t_food_business_registration_licensing_t1, t_food_business_registration_licensing_t2, \
+    t_food_business_registration_licensing_t5, t_food_business_registration_licensing_t4, \
+    t_food_business_registration_licensing_t3, t_food_business_registration_licensing_t6
 from livestock.models import t_livestock_clearance_meat_shop_t1, t_livestock_ante_post_mortem_t2, \
     t_livestock_ante_post_mortem_t1, t_livestock_movement_permit_t1, t_livestock_movement_permit_t2, \
     t_livestock_export_certificate_t1, t_livestock_export_certificate_t2, \
@@ -36,29 +40,60 @@ def focal_officer_application(request):
     for sectionId in section_details:
         section = sectionId.Section_Name
     application_details = t_workflow_details.objects.filter(Assigned_Role_Id=Role_Id, Section=section,
-                                                            Application_Status='P')
+                                                            Application_Status='P', Action_Date__isnull=False)
     service_details = t_service_master.objects.all()
     return render(request, 'focal_officer_pending_list.html', {'application_details': application_details,
                                                                'service_details': service_details})
 
 
 def oic_application(request):
+    Login_Id = request.session['login_id']
+    print(Login_Id)
     Field_Office_Id = request.session['field_office_id']
     Role_Id = request.session['Role_Id']
-    application_details = t_workflow_details.objects.filter(Assigned_Role_Id=Role_Id, Field_Office_Id=Field_Office_Id,
-                                                            Application_Status='P')
-    service_details = t_service_master.objects.all()
-    return render(request, 'oic_pending_list.html',
-                  {'service_details': service_details, 'application_details': application_details})
+    new_import_app = t_workflow_details.objects.filter(Assigned_Role_Id='4', Field_Office_Id=Field_Office_Id,
+                                                       Application_Status='P', Action_Date__isnull=False)
+
+    if new_import_app.exists():
+        application_details = t_workflow_details.objects.filter(Assigned_Role_Id='4', Assigned_To=Login_Id,
+                                                                Application_Status='P', Action_Date__isnull=False)
+        service_details = t_service_master.objects.all()
+        return render(request, 'oic_pending_list.html',
+                      {'service_details': service_details, 'application_details': application_details})
+    else:
+        details = t_workflow_details.objects.filter(Assigned_Role_Id=Role_Id,
+                                                    Field_Office_Id=Field_Office_Id,
+                                                    Application_Status='I', Action_Date__isnull=False)
+        if details.exists():
+            application_details = t_workflow_details.objects.filter(Assigned_Role_Id=Role_Id,
+                                                                    Field_Office_Id=Field_Office_Id,
+                                                                    Application_Status='I', Action_Date__isnull=False)
+            service_details = t_service_master.objects.all()
+            return render(request, 'oic_pending_list.html',
+                          {'service_details': service_details, 'application_details': application_details})
+        else:
+            application_details = t_workflow_details.objects.filter(Assigned_Role_Id=Role_Id,
+                                                                    Field_Office_Id=Field_Office_Id,
+                                                                    Application_Status='FI', Action_Date__isnull=False)
+            service_details = t_service_master.objects.all()
+            return render(request, 'oic_pending_list.html',
+                          {'service_details': service_details, 'application_details': application_details})
 
 
 def inspector_application(request):
     Login_Id = request.session['login_id']
     new_import_app = t_workflow_details.objects.filter(Assigned_Role_Id='5', Assigned_To=Login_Id,
-                                                       Application_Status='P')
-    service_details = t_service_master.objects.all()
-    return render(request, 'inspector_pending_list.html',
-                  {'service_details': service_details, 'application_details': new_import_app})
+                                                       Application_Status='P', Action_Date__isnull=False)
+    if new_import_app.exists():
+        service_details = t_service_master.objects.all()
+        return render(request, 'inspector_pending_list.html',
+                      {'service_details': service_details, 'application_details': new_import_app})
+    else:
+        new_import_app = t_workflow_details.objects.filter(Assigned_Role_Id='5', Assigned_To=Login_Id,
+                                                           Application_Status='I', Action_Date__isnull=False)
+        service_details = t_service_master.objects.all()
+        return render(request, 'inspector_pending_list.html',
+                      {'service_details': service_details, 'application_details': new_import_app})
 
 
 def apply_movement_permit(request):
@@ -498,6 +533,62 @@ def view_application_details(request):
                        'gewog': gewog, 'dzongkhag': dzongkhag, 'country': country, 'field_office': field_office,
                        'unit': unit, 'village': village, 'location': location,
                        'inspector_list': user_role_list})
+    elif service_code == "FIP":
+        dzongkhag = t_dzongkhag_master.objects.all()
+        gewog = t_gewog_master.objects.all()
+        village = t_village_master.objects.all()
+        country = t_country_master.objects.all()
+        field_office = t_field_office_master.objects.all()
+        location = t_location_field_office_mapping.objects.all()
+        unit = t_unit_master.objects.all()
+        application_details = t_food_import_permit_inspection_t1.objects.filter(
+            Application_No=application_id)
+        details = t_food_import_permit_inspection_t2.objects.filter(Application_No=application_id)
+        file = t_file_attachment.objects.filter(Application_No=application_id)
+        workflow_details = t_workflow_details.objects.filter(Application_No=application_id)
+        for application in workflow_details:
+            Field_Office = application.Field_Office_Id
+        user_role_list = t_user_master.objects.filter(Role_Id='5', Field_Office_Id_id=Field_Office)
+        return render(request, 'import_certificate_food/inspector_details.html',
+                      {'application_details': application_details, 'file': file,
+                       'dzongkhag': dzongkhag, 'village': village,
+                       'gewog': gewog, 'country': country,
+                       'field_office': field_office, 'import': details,
+                       'location': location, 'unit': unit, 'inspector_list': user_role_list})
+    elif service_code == 'FBR':
+        workflow_details = t_workflow_details.objects.filter(Application_No=application_id)
+        for application in workflow_details:
+            Application_Status = application.Application_Status
+            if Application_Status == "I":
+                application_details = t_food_business_registration_licensing_t1.objects.filter(
+                    Application_No=application_id)
+                details = t_food_business_registration_licensing_t2.objects.filter(Application_No=application_id)
+                file = t_file_attachment.objects.filter(Application_No=application_id)
+                inspection_details = t_food_business_registration_licensing_t5.objects.filter(Application_No=application_id)
+                team_details = t_food_business_registration_licensing_t4.objects.filter(Application_No=application_id)
+                inspection_team_details = t_food_business_registration_licensing_t6.objects.filter(Application_No=application_id)
+                unit = t_unit_master.objects.all()
+                inspector_list = t_user_master.objects.filter(Role_Id='5')
+                return render(request, 'registration_licensing/feasibility_inspection.html',
+                              {'application_details': application_details, 'details': details, 'file': file,
+                               'inspector_list': inspector_list, 'unit': unit, 'inspection_details': inspection_details,
+                               'team_details': team_details, 'inspection_team_details': inspection_team_details})
+            else:
+                application_details = t_food_business_registration_licensing_t1.objects.filter(
+                    Application_No=application_id)
+                details = t_food_business_registration_licensing_t2.objects.filter(Application_No=application_id)
+                file = t_file_attachment.objects.filter(Application_No=application_id)
+                unit = t_unit_master.objects.all()
+                inspection_details = t_food_business_registration_licensing_t5.objects.filter(
+                    Application_No=application_id)
+                team_details = t_food_business_registration_licensing_t4.objects.filter(Application_No=application_id)
+                inspection_team_details = t_food_business_registration_licensing_t6.objects.filter(
+                    Application_No=application_id)
+                inspector_list = t_user_master.objects.filter(Role_Id='5')
+                return render(request, 'registration_licensing/factory_inspection.html',
+                              {'application_details': application_details, 'details': details, 'file': file,
+                               'inspector_list': inspector_list, 'unit': unit, 'inspection_details': inspection_details,
+                               'team_details': team_details, 'inspection_team_details': inspection_team_details})
 
 
 def approve_application(request):
@@ -921,6 +1012,7 @@ def fo_app_details(request):
     service_code = request.GET.get('service_code')
     print(service_code)
     dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
     location = t_location_field_office_mapping.objects.all()
     if service_code == 'IPP':
@@ -946,6 +1038,23 @@ def fo_app_details(request):
                       {'application_details': application_details, 'details': details, 'file': file,
                        'dzongkhag': dzongkhag,
                        'village': village, 'location': location})
+    elif service_code == 'FIP':
+        application_details = t_food_import_permit_t1.objects.filter(Application_No=Application_No)
+        details = t_food_import_permit_t2.objects.filter(Application_No=Application_No)
+        file = t_file_attachment.objects.filter(Application_No=Application_No)
+        return render(request, 'import_certificate_food/fo_details.html',
+                      {'application_details': application_details, 'details': details, 'file': file,
+                       'dzongkhag': dzongkhag, 'gewog': gewog,
+                       'village': village, 'location': location})
+    elif service_code == 'FBR':
+        application_details = t_food_business_registration_licensing_t1.objects.filter(Application_No=Application_No)
+        details = t_food_business_registration_licensing_t2.objects.filter(Application_No=Application_No)
+        file = t_file_attachment.objects.filter(Application_No=Application_No)
+        unit = t_unit_master.objects.all()
+        oic_list = t_user_master.objects.filter(Role_Id='4')
+        return render(request, 'registration_licensing/fo_details.html',
+                      {'application_details': application_details, 'details': details, 'file': file,
+                       'oic_list': oic_list, 'location': location, 'unit': unit})
 
 
 def approve_fo_app(request):
@@ -1188,6 +1297,37 @@ def view_oic_details(request):
                       {'application_details': application_details, 'file': file,
                        'gewog': gewog, 'dzongkhag': dzongkhag, 'country': country, 'field_office': field_office,
                        'village': village, 'inspector_list': user_role_list})
+    elif service_code == "FIP":
+        dzongkhag = t_dzongkhag_master.objects.all()
+        gewog = t_gewog_master.objects.all()
+        village = t_village_master.objects.all()
+        country = t_country_master.objects.all()
+        field_office = t_field_office_master.objects.all()
+        location = t_location_field_office_mapping.objects.all()
+        unit = t_unit_master.objects.all()
+        application_details = t_food_import_permit_inspection_t1.objects.filter(
+            Application_No=application_id)
+        details = t_food_import_permit_inspection_t2.objects.filter(Application_No=application_id)
+        file = t_file_attachment.objects.filter(Application_No=application_id)
+        workflow_details = t_workflow_details.objects.filter(Application_No=application_id)
+        for application in workflow_details:
+            Field_Office = application.Field_Office_Id
+        user_role_list = t_user_master.objects.filter(Role_Id='5', Field_Office_Id_id=Field_Office)
+        return render(request, 'import_certificate_food/oic_details.html',
+                      {'application_details': application_details, 'file': file,
+                       'dzongkhag': dzongkhag, 'village': village,
+                       'gewog': gewog, 'country': country,
+                       'field_office': field_office, 'import': details,
+                       'location': location, 'unit': unit, 'inspector_list': user_role_list})
+    elif service_code == 'FBR':
+        application_details = t_food_business_registration_licensing_t1.objects.filter(Application_No=application_id)
+        details = t_food_business_registration_licensing_t2.objects.filter(Application_No=application_id)
+        file = t_file_attachment.objects.filter(Application_No=application_id)
+        unit = t_unit_master.objects.all()
+        inspector_list = t_user_master.objects.filter(Role_Id='5')
+        return render(request, 'registration_licensing/oic_details.html',
+                      {'application_details': application_details, 'details': details, 'file': file,
+                       'inspector_list': inspector_list, 'unit': unit})
 
 
 def view_inspector_details(request):
@@ -1423,6 +1563,74 @@ def update_inspection_call_details(request):
         login_id = request.session['login_id']
         application_details = t_workflow_details.objects.filter(Assigned_To=login_id)
         return render(request, 'inspection_call.html', {'application_details': application_details})
+    elif service_code == 'FIP':
+        detail = t_food_import_permit_t1.objects.filter(Application_No=appNo)
+        import_details = t_food_import_permit_t2.objects.filter(Application_No=appNo)
+        date_format_ins = datetime.strptime(date_requested, '%d-%m-%Y').date()
+        new_import_application_no = new_food_import_application_no(service_code)
+        for details in detail:
+            t_food_import_permit_inspection_t1.objects.create(
+                Application_No=new_import_application_no,
+                Import_Type=details.Import_Type,
+                License_No=details.License_No,
+                CID=details.CID,
+                Applicant_Name=details.Applicant_Name,
+                Dzongkhag_Code=details.Dzongkhag_Code,
+                Gewog_Code=details.Gewog_Code,
+                Village_Code=details.Village_Code,
+                Present_Address=details.Present_Address,
+                Contact_No=details.Contact_No,
+                Email=details.Email,
+                Operation_Type=details.Operation_Type,
+                Origin_Country_Food=details.Origin_Country_Food,
+                Transit_Country=details.Transit_Country,
+                Country_Of_Transit=details.Country_Of_Transit,
+                Means_of_Conveyance=details.Means_of_Conveyance,
+                Place_Of_Entry=details.Place_Of_Entry,
+                Final_Destination=details.Final_Destination,
+                Expected_Arrival_Date=details.Expected_Arrival_Date,
+                FO_Remarks=details.FO_Remarks,
+                Application_Date=details.Application_Date,
+                Approve_Date=details.Approve_Date,
+                Validity_Period=None,
+                Validity=None,
+                Import_Permit_No=None,
+                Proposed_Inspection_Date=date_format_ins,
+                Actual_Point_Of_Entry=entry_point,
+                Inspection_Request_Remarks=remarks,
+                Inspection_Date=None,
+                Inspection_Type=None,
+                Inspection_Time=None,
+                Inspection_Leader=None,
+                Inspection_Team=None,
+                Clearance_Ref_No=None,
+                Inspection_Remarks=None
+            )
+
+        for import_details in import_details:
+            t_food_import_permit_inspection_t2.objects.create(
+                Application_No=new_import_application_no,
+                Product_Name_Description=import_details.Product_Name_Description,
+                Quantity=import_details.Quantity,
+                Unit=import_details.Unit,
+                Exporter_Type=import_details.Exporter_Type,
+                Quantity_Released=0,
+                Remarks=import_details.Remarks,
+                Quantity_Balance=import_details.Quantity_Balance,
+                Product_Record_Id=import_details.pk
+            )
+
+        field = t_location_field_office_mapping.objects.filter(Location_Code=entry_point)
+        for field_office in field:
+            field_office_id = field_office.Field_Office_Id_id
+        t_workflow_details.objects.create(Application_No=new_import_application_no,
+                                          Applicant_Id=request.session['email'],
+                                          Assigned_To=None, Field_Office_Id=field_office_id, Section='Food',
+                                          Assigned_Role_Id='4', Action_Date=None, Application_Status='P',
+                                          Service_Code=service_code)
+        login_id = request.session['login_id']
+        application_details = t_workflow_details.objects.filter(Assigned_To=login_id)
+        return render(request, 'inspection_call.html', {'application_details': application_details})
 
 
 def new_animal_fish_import_application_no(service_code):
@@ -1442,6 +1650,21 @@ def new_animal_fish_import_application_no(service_code):
 
 def new_livestock_product_import_application_no(service_code):
     last_application_no = t_livestock_import_permit_product_inspection_t1.objects.aggregate(Max('Application_No'))
+    lastAppNo = last_application_no['Application_No__max']
+    if not lastAppNo:
+        year = timezone.now().year
+        newAppNo = service_code + "/I/" + str(year) + "/" + "0001"
+    else:
+        substring = str(lastAppNo)[9:15]
+        substring = int(substring) + 1
+        AppNo = str(substring).zfill(4)
+        year = timezone.now().year
+        newAppNo = service_code + "/I/" + str(year) + "/" + AppNo
+    return newAppNo
+
+
+def new_food_import_application_no(service_code):
+    last_application_no = t_food_import_permit_inspection_t1.objects.aggregate(Max('Application_No'))
     lastAppNo = last_application_no['Application_No__max']
     if not lastAppNo:
         year = timezone.now().year
@@ -3776,21 +3999,21 @@ def resubmit_application(request):
     login_id = request.session['login_id']
     application_details = t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
     if application_details.exists():
-        for service_code in application_details:
-            code = service_code.Service_Code
-        service = t_service_master.objects.filter(Service_Code=code)
-        for service in service:
-            service_name = service.Service_Name
+        service_details = t_service_master.objects.all()
+        return render(request, 'resubmit_application.html', {'application_details': application_details,
+                                                             'service_details': service_details})
     else:
-        service_name = None
-    return render(request, 'resubmit_application.html', {'application_details': application_details,
-                                                         'service_name': service_name})
+        service_details = t_service_master.objects.all()
+        application_details = t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
+        return render(request, 'resubmit_application.html', {'application_details': application_details,
+                                                             'service_details': service_details})
 
 
 def call_for_inspection_details(request):
     application_no = request.GET.get('application_id')
     service_id = request.GET.get('service_code')
     dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
     location = t_location_field_office_mapping.objects.all()
     if service_id == 'IPP':
@@ -3819,20 +4042,24 @@ def call_for_inspection_details(request):
                       {'application_details': application_details, 'details': details, 'file': file,
                        'dzongkhag': dzongkhag, 'village': village, 'location': location,
                        'location_details': location_details})
+    elif service_id == 'FIP':
+        application_details = t_food_import_permit_t1.objects.filter(Application_No=application_no)
+        details = t_food_import_permit_t2.objects.filter(Application_No=application_no)
+        file = t_file_attachment.objects.filter(Application_No=application_no)
+        location_details = t_field_office_master.objects.filter(Is_Entry_Point='Y')
+        return render(request, 'import_certificate_food/call_for_inspection_details.html',
+                      {'application_details': application_details, 'details': details, 'file': file,
+                       'dzongkhag': dzongkhag, 'gewog': gewog,
+                       'village': village, 'location': location, 'location_details': location_details})
 
 
 def resubmit_app_details(request):
-    service_code = request.POST.get('service_code')
-    appNo = request.POST.get('appNo')
-    date_requested = request.POST.get('date')
-    login_id = request.session['login_id']
-    Resubmit_Remarks = request.session['Resubmit_Remarks']
-
+    service_code = request.GET.get('service_code')
+    appNo = request.GET.get('application_id')
+    print(service_code)
+    print(appNo)
     if service_code == 'RNS':
         details = t_plant_clearence_nursery_seed_grower_t1.objects.filter(Application_No=appNo)
-        details.update(Desired_Inspection_Date=date_requested)
-        details.update(Resubmit_Remarks=Resubmit_Remarks)
-
         workflow_details = t_workflow_details.objects.filter(Application_No=appNo)
         workflow_details.update(Assigned_Role_Id='4')
         workflow_details.update(Action_Date=date.today())
@@ -3841,3 +4068,33 @@ def resubmit_app_details(request):
         application_details = t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
         return render(request, 'nursery_registration/resubmit_application.html',
                       {'application_details': application_details})
+    elif service_code == 'FBR':
+        work_details = t_workflow_details.objects.filter(Application_No=appNo)
+        for app_status in work_details:
+            status = app_status.Application_Status
+            if status == 'IRS':
+                application_details = t_food_business_registration_licensing_t1.objects.filter(Application_No=appNo)
+                details = t_food_business_registration_licensing_t2.objects.filter(Application_No=appNo)
+                inspection_details = t_food_business_registration_licensing_t5.objects.filter(Application_No=appNo)
+                team_details = t_food_business_registration_licensing_t4.objects.filter(Application_No=appNo)
+                inspection_team_details = t_food_business_registration_licensing_t6.objects.filter(Application_No=appNo)
+                file = t_file_attachment.objects.filter(Application_No=appNo)
+                unit = t_unit_master.objects.all()
+                inspector_list = t_user_master.objects.filter(Role_Id='5')
+                return render(request, 'registration_licensing/resubmit_feasibility_inspection.html',
+                              {'application_details': application_details, 'details': details, 'file': file,
+                               'inspector_list': inspector_list, 'unit': unit, 'inspection_details': inspection_details,
+                               'team_details': team_details, 'inspection_team_details': inspection_team_details})
+            else:
+                application_details = t_food_business_registration_licensing_t1.objects.filter(Application_No=appNo)
+                details = t_food_business_registration_licensing_t2.objects.filter(Application_No=appNo)
+                file = t_file_attachment.objects.filter(Application_No=appNo)
+                unit = t_unit_master.objects.all()
+                inspection_details = t_food_business_registration_licensing_t5.objects.filter(Application_No=appNo)
+                team_details = t_food_business_registration_licensing_t4.objects.filter(Application_No=appNo)
+                inspection_team_details = t_food_business_registration_licensing_t6.objects.filter(Application_No=appNo)
+                inspector_list = t_user_master.objects.filter(Role_Id='5')
+                return render(request, 'registration_licensing/resubmit_factory_inspection.html',
+                              {'application_details': application_details, 'details': details, 'file': file,
+                               'inspector_list': inspector_list, 'unit': unit, 'inspection_details': inspection_details,
+                               'team_details': team_details, 'inspection_team_details': inspection_team_details})

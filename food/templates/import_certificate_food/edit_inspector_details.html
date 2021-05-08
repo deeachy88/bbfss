@@ -1,0 +1,87 @@
+{% load crispy_forms_tags %}
+<form method="post" action="{% url 'edit_food_inspector_details' form.instance.Record_Id %}" class="js-details-update-form">
+{% csrf_token %}
+  <div class="modal-header">
+    <h4 class="modal-title"></h4>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+      <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    {{ form.Product_Name_Description|as_crispy_field }}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    {{ form.Quantity|as_crispy_field }}
+                </div>
+            </div>
+      </div>
+      <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    {{ form.Unit|as_crispy_field }}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    {{ form.Exporter_Type|as_crispy_field }}
+                </div>
+            </div>
+      </div>
+      <hr>
+      <div class="row">
+          <div class="col-md-4">
+                <div class="form-group">
+                    {{ form.Quantity_Balance.as_hidden }}
+                    <label class="form-label">Quantity Balance</label>
+                    <input type="number" name="Quantity_Balance" class="form-control" id="Quantity_Balance" disabled required>
+
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    {{ form.Quantity_Released|as_crispy_field }}
+                    <div class="alert alert-danger" id="qty_releaseErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    {{ form.Remarks|as_crispy_field }}
+                </div>
+            </div>
+      </div>
+  </div>
+  <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      <button type="submit" class="btn btn-primary">Save</button>
+  </div>
+</form>
+<script>
+    $(document).ready(function()
+     {
+        bal_qty = $('#id_Quantity_Balance').val();
+        release_qty = $('#id_Quantity_Released').val();
+        balance = bal_qty - release_qty
+        $('#Quantity_Balance').val(balance);
+     });
+
+        $( "#id_Quantity_Released" ).blur(function() {
+            bal_qty = $('#id_Quantity_Balance').val();
+            release_qty = $('#id_Quantity_Released').val();
+            balance = bal_qty - release_qty
+            $('#Quantity_Balance').val(balance);
+            if(balance < 0 )
+            {
+
+                $('#qty_releaseErrorMsg').html("Quantity Exceeded.");
+                $('#qty_releaseErrorMsg').show();
+                $('#qty_releaseErrorMsg').delay(2000).fadeOut('slow');
+                $('#id_Quantity_Released').val("");
+
+            }
+        });
+</script>

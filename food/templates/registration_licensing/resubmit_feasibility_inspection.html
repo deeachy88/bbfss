@@ -1,12 +1,21 @@
-<form method="post" id="applicationForm">
-    {% csrf_token %}
-    <div class="animated fadeIn">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-body">
-                        {% for application_details in application_details %}
-                            <div id="applicant_details">
+{% load static %}
+<style>
+    .card {
+    margin-bottom: 0rem;
+    box-shadow: 0 1px 5px rgb(0 0 0 / 10%);
+}
+</style>
+        <div class="card">
+            <div class="card-header" role="tab" id="headingOne">
+                <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed">
+                    Application Details
+                </a>
+            </div>
+
+            <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion" style="">
+                <div class="card-body">
+                    {% for application_details in application_details %}
+                        <div id="applicant_details">
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
@@ -312,28 +321,300 @@
                                     </div>
                                 </div>
                             </div>
-                        {% endfor %}
-                    </div>
-                        <div class="modal-footer justify-content-center">
-                            <select class="form-control col-md-6" name="forwardTo"  id="forwardTo">
-                                <option value="">--SELECT INSPECTOR--</option>
-                                {% for inspector_list in inspector_list %}
-                                        <option value="{{ inspector_list.Login_Id }}">{{ inspector_list.Name }}</option>
+                     <br><br>
+                    {% if application_details.PermitType == A %}
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Species</th>
+                                    <th scope="col">Breed</th>
+                                    <th scope="col">Age</th>
+                                    <th scope="col">Sex</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Unit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for import in import %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{import.Import_Category}}</td>
+                                        <td>{{import.Pesticide_Id}}</td>
+                                        <td>{{import.Description}}</td>
+                                        <td>{{import.Unit}}</td>
+                                        <td>{{import.Quantity}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="8" class="text-center">No Data</td>
+                                    </tr>
                                 {% endfor %}
-                            </select>
-                            {% for application_details in application_details %}
-                                <button type="button" class="btn btn-success" onclick="forwardApplication('{{ application_details.Application_No }}')"><i class="ace-icon fas fa-arrow-right"></i>&nbsp;&nbsp;Forward</button>
-                            {% endfor %}
-                            <button class="btn btn-flat btn-danger" data-dismiss="modal">
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Particulars</th>
+                                    <th scope="col">Company_Name</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Unit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for import in import %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{import.Import_Category}}</td>
+                                        <td>{{import.Pesticide_Id}}</td>
+                                        <td>{{import.Description}}</td>
+                                        <td>{{import.Unit}}</td>
+                                        <td>{{import.Quantity}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="6" class="text-center">No Data</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% endif%}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header" role="tab" id="headingTwo">
+                <a class="collapsed" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    Attachments
+                </a>
+            </div>
+            <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">File</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           {% for file_attach in file %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{file_attach.Attachment}}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                  <td colspan="3" class="text-center">No Data</td>
+                                </tr>
+                           {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header" role="tab" id="headingFive">
+                <a class="collapsed" data-toggle="collapse" href="#collapseFive" aria-expanded="false" aria-controls="collapseTwo">
+                    Inspection Team Details
+                </a>
+            </div>
+            <div id="collapseFive" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+                <div class="card-body">
+                    <br>
+                    <div id="inspection_team_details">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Designation</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for import in inspection_team_details %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{import.Name}}</td>
+                                        <td>{{import.Designation}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="5" class="text-center">No Data</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header" role="tab" id="headingFour">
+                <a class="collapsed" data-toggle="collapse" href="#collapseFour" aria-expanded="false" aria-controls="collapseTwo">
+                    Team Formation
+                </a>
+            </div>
+            <div id="collapseFour" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+                <div class="card-body">
+                    <br>
+                    <div id="team_details">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Name Of Key Personal</th>
+                                    <th scope="col">Designation of Key Personal</th>
+                                    <th scope="col">Opening Meeting (Date)</th>
+                                    <th scope="col">Closing Meeting (Date)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for import in team_details %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{import.Name}}</td>
+                                        <td>{{import.Designation}}</td>
+                                        <td>{{import.Open_Meeting_Date|date:"d-m-Y"}}</td>
+                                        <td>{{import.Closing_Meeting_Date|date:"d-m-Y"}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="5" class="text-center">No Data</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header" role="tab" id="headingThree">
+                <a class="collapsed" data-toggle="collapse" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    Inspector Details
+                </a>
+            </div>
+            <div id="collapseThree" class="active" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion" style="">
+                <div class="card-body">
+                    <br>
+                    <div id="details">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Requirement</th>
+                                    <th scope="col">Clause No</th>
+                                    <th scope="col">Concern</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Observations/ Findings</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               <tbody>
+                                    {% for import in inspection_details %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{import.Requirement}}</td>
+                                            <td>{{import.Clause_No}}</td>
+                                            <td class="MyClass">{{import.Concern}}</td>
+                                            <td>{{import.Date|date:"d-m-Y"}}</td>
+                                            <td>{{import.Observation}}</td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                          <td colspan="6" class="text-center">No Data</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Desired Inspection Date</label>
+                                <input type="text" class="form-control date-picker flatpickr-input active" id="dateOfInspection" name="date"  placeholder="Pick a date" readonly="readonly">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Response</label>
+                                <textarea class="form-control" id="remarks" rows="2"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alert alert-info" id="messageDiv" style="display:none">
+                        Application Submitted Successfully
+                    </div>
+                    <hr>
+                    {% for application_details in application_details %}
+                        <div class="card-action text-center">
+                            <button type="button" id="approve_button" class="btn btn-flat btn-primary" onclick="resubmit_feasibility_inspection('{{application_details.Application_No}}')">
+                                <i class="ace-icon fa fa-times"></i>
+                                &nbsp;&nbsp;Response
+                            </button>
+                            <button type="button" onclick="close_app_model()" class="btn btn-flat btn-danger">
                                 <i class="ace-icon fa fa-times"></i>
                                 &nbsp;&nbsp;Cancel
                             </button>
                         </div>
-                        <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
-                            Application Forwarded Successfully
-                        </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
+    <div class="modal fade" id="modal-common">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content edit">
+
+          </div>
+        </div>
     </div>
-</form>
+    <div class="modal fade" id="modal-decision">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content edit">
+
+          </div>
+        </div>
+    </div>
+<script src="{% static 'assets/js/app.min.js' %}"></script>
+<script>
+$(function()
+{
+var rows = $('.MyClass').length;
+for (var i = 1; i<=rows; i++)
+{
+    alert(MyClass(i).innerHTML);
+}
+});
+function resubmit_feasibility_inspection(application_id)
+{
+
+    remarks = $('#remarks').val();
+    dateOfInspection = $('#dateOfInspection').val();
+
+   $.ajax({
+        type : "GET",
+        url : "{% url 'resubmit_feasibility_inspection' %}",
+        data :{'application_id':application_id , 'remarks':remarks ,'dateOfInspection':dateOfInspection},
+        success : function(data) {
+            $('#messageDiv').show();
+            setTimeout(function() {
+                $("#messageDiv").hide('blind', {}, 500)
+            }, 2000);
+            setTimeout(function() {
+                location.reload();
+            }, 3000);
+        }
+    });
+}
+
+
+
+</script>

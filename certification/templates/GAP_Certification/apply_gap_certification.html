@@ -1,0 +1,636 @@
+{% extends 'common_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<style>
+    option
+    {
+        background-color: black !important;
+    }
+    .check {
+    margin-bottom: 0;
+    min-height: 2rem;
+}
+</style>
+<div class="card">
+    <div class="card-header">
+        <h4 class="card-title">GAP Certification Application</h4>
+    </div>
+    <div class="card-body">
+        <form method="post" id="ante_post_mortem_form">
+        {% csrf_token %}
+            <input type="hidden" name="application_no" id="applicationNo">
+            <div class="row justify-content-left">
+                <ul class="nav nav-pills nav-secondary" id="pills-mortem" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadDetails()">Application Form</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="pills-details" data-toggle="pill" href="#details" role="tab" aria-controls="pills-details" aria-selected="false" onclick="load_details()">Details</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="pills-crop-production" data-toggle="pill" href="#crop_production_details" role="tab" aria-controls="pills-crop-production" aria-selected="false" onclick="load_details()">Details</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="pills-pack-house" data-toggle="pill" href="#pack_house_details" role="tab" aria-controls="pills-pack-house" aria-selected="false" onclick="load_details()">Details</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="mortem-file-attach" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="tab-content mt-2 mb-3" id="pills-mortemContent">
+                <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <label class="form-label">Applicant Type</label>
+                        </div>
+                        <div class="col-sm-4 justify-content-center">
+                            <label class="custom-control custom-radio">
+                                <input type="radio" name="Applicant_Type" class="custom-control-input" value="I">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Individual</span>
+                            </label>
+                            <label class="custom-control custom-radio">
+                                <input type="radio" name="Applicant_Type" class="custom-control-input" value="F">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Farmers Group</span>
+                            </label>
+                            <div class="alert alert-danger" id="applicantTypeErrorMsg" style="display:none"></div>
+                        </div>
+                    </div><br>
+                    <div id="individual_details">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Applicant CID</label>
+                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)">
+                                </div>
+                                <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Name</label>
+                                    <input type="text" class="form-control" id="name" name="Name">
+                                </div>
+                                <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Dzongkhag</label>
+                                    <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
+                                        <option value="">--SELECT DZONGKHAG--</option>
+                                        {% for dzongkhag in dzongkhag %}
+                                                <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Gewog</label>
+                                    <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                        <option value="">--SELECT GEWOG--</option>
+                                        {% for gewog in gewog %}
+                                                <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Village</label>
+                                     <select class="form-control" name="village" id="village">
+                                        <option value="">--SELECT VILLAGE--</option>
+                                        {% for village in village %}
+                                                <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                                <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Farm Location</label>
+                                    <textarea class="form-control" id="farm_location" name="farm_location"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="presentAddressErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email" onchange="validateemailId(this.value)">
+                                </div>
+                                <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Contact Number</label>
+                                    <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                                </div>
+                                <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Request Date for Inspection</label>
+                                     <input type="date" name="inspectionDate" id="inspectionDate" class="form-control date-picker flatpickr-input active">
+                                </div>
+                                <div class="alert alert-danger" id="inspectionDateErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="group_details">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Name Of Farmers Group</label>
+                                    <input type="text" class="form-control" id="farmers_group_name" name="farmers_group_name">
+                                </div>
+                                <div class="alert alert-danger" id="farmers_group_nameErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Dzongkhag</label>
+                                    <select class="form-control" name="farmers_group_dzongkhag"  id="farmers_group_dzongkhag" onchange="getGewog(this.value)">
+                                        <option value="">--SELECT DZONGKHAG--</option>
+                                        {% for dzongkhag in dzongkhag %}
+                                                <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="farmers_group_dzongkhagErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Gewog</label>
+                                    <select class="form-control" name="farmers_group_gewog" id="farmers_group_gewog" onchange="getVillage(this.value)">
+                                        <option value="">--SELECT GEWOG--</option>
+                                        {% for gewog in gewog %}
+                                                <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="farmers_group_gewogErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Village</label>
+                                     <select class="form-control" name="farmers_group_village" id="farmers_group_village">
+                                        <option value="">--SELECT VILLAGE--</option>
+                                        {% for village in village %}
+                                                <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                                <div class="alert alert-danger" id="farmers_group_villageErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+                        Save SuccessFul
+                    </div>
+                    <div class="card-action">
+                        <button type="button" class="btn btn-primary" onclick="save_mortem_form()">Save</button>
+                    </div>
+                </div>
+
+            <div class="tab-pane fade" id="details" role="tabpanel" aria-labelledby="pills-details">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-head-row">
+                            <div class="card-tools pull-right">
+                                <button type="button" class="btn btn-light" onclick="farmer_group_modal()">Add Details</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="mortem_details">
+                            {% include 'GAP_Certification/farmer_group_details.html' %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-action">
+                    <button type="button" class="btn btn-success" onclick="save_mortem()">Save</button>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="crop_production_details" role="tabpanel" aria-labelledby="pills-crop-production">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-head-row">
+                            <div class="card-tools pull-right">
+                                <button type="button" class="btn btn-light" onclick="crop_production_modal()">Add Details</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="crop_production">
+                            {% include 'GAP_Certification/crop_production_details.html' %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-action">
+                    <button type="button" class="btn btn-success" onclick="save_crop_production()">Save</button>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="pack_house_details" role="tabpanel" aria-labelledby="pills-pack-house">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-head-row">
+                            <div class="card-tools pull-right">
+                                <button type="button" class="btn btn-light" onclick="pack_house_modal()">Add Details</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="pack_house">
+                            {% include 'GAP_Certification/pack_house_details.html' %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-action">
+                    <button type="button" class="btn btn-success" onclick="save_pack_house()">Save</button>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="mortem-file-attach">
+                <div id="file-attachment-mortem">
+                    {% include 'GAP_Certification/file_attachment.html' %}
+                </div>
+            </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<form method="post" id="GAP_details_form">
+    {% csrf_token %}
+    <input type="hidden" id="application_no_details" name="application_no_details">
+    <div class="modal fade" id="GAP_details" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Name</label>
+                                        <input type="number" name="qty" class="form-control" id="qty" required>
+                                        <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="remarks">Remarks</label>
+                                        <input type="text" name="remarks" class="form-control" id="remarks" required>
+                                        <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="save_mortem_details()">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form method="post" id="attachment_form" enctype="multipart/form-data">
+{% csrf_token %}
+    <input type="hidden" name="attachment_appNo" id="attachment_appNo">
+    <div class="modal fade" id="attachmentModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="attachmentModalLabel">Attach Files</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label>Attach File</label>
+                                        <input type="file" name="document" id="document">
+                                        <div class="alert alert-danger" id="fileErrorMsg" style="display:none"></div>
+                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_mortem_attachment()"> Submit </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+
+function save_mortem_form()
+{
+    var cid = $('#cid').val();
+    var name = $('#name').val();
+    var dzongkhag = $('#dzongkhag').val();
+    var gewog = $('#gewog').val();
+    var village = $('#village').val();
+    var address = $('#present_address').val();
+    var contactNumber = $('#contactNumber').val();
+    var email = $('#email').val();
+    var license_no = $('#license_no').val();
+    var location = $('#location').val();
+    var Location_Dzongkhag_Code = $('#Location_Dzongkhag_Code').val();
+    var location_code = $('#location_code').val();
+    var inspectionDate = $('#inspectionDate').val();
+    var cidCount = $('#cid').val().length;
+    var number_count = $('#contactNumber').val().length;
+
+    if(cid == "")
+    {
+        $('#cidErrorMsg').html("Enter CID Number.");
+        $('#cidErrorMsg').show();
+        $('#cidErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(name == "")
+    {
+        $('#nameErrorMsg').html("Enter Name .");
+        $('#nameErrorMsg').show();
+        $('#nameErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(dzongkhag == "")
+    {
+        $('#dzongkhagErrorMsg').html("Select Dzongkhag.");
+        $('#dzongkhagErrorMsg').show();
+        $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(gewog == "")
+    {
+        $('#gewogErrorMsg').html("Select Gewog.");
+        $('#gewogErrorMsg').show();
+        $('#gewogErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(village == "")
+    {
+        $('#villageErrorMsg').html("Select Village.");
+        $('#villageErrorMsg').show();
+        $('#villageErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(contactNumber == "")
+    {
+        $('#contactNumberErrorMsg').html("Enter Contact Number.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(email == "")
+    {
+        $('#emailErrorMsg').html("Enter Contact Number.");
+        $('#emailErrorMsg').show();
+        $('#emailErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(license_no == "")
+    {
+        $('#license_noErrorMsg').html("Enter License No.");
+        $('#license_noErrorMsg').show();
+        $('#license_noErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if (Location_Dzongkhag_Code == "")
+    {
+        $('#Location_Dzongkhag_CodeErrorMsg').html("Select Location Dzongkhag Code.");
+        $('#Location_Dzongkhag_CodeErrorMsg').show();
+        $('#Location_Dzongkhag_CodeErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if (location_code == "")
+    {
+        $('#location_codeErrorMsg').html("Select Location.");
+        $('#location_codeErrorMsg').show();
+        $('#location_codeErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(exact_location == "")
+    {
+        $('#exact_locationErrorMsg').html("Enter Exact Location.");
+        $('#exact_locationErrorMsg').show();
+        $('#exact_locationErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(inspectionDate == "")
+    {
+        $('#inspectionDateErrorMsg').html("Enter Inspection Date.");
+        $('#inspectionDateErrorMsg').show();
+        $('#inspectionDateErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(cidCount < 11)
+    {
+        $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits.");
+        $('#cidErrorMsg').show();
+        setTimeout('hideStatus("cidErrorMsg")',2000);
+    }
+    else if(number_count < 8)
+    {
+        $('#contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
+        $('#contactNumberErrorMsg').show();
+        setTimeout('hideStatus("contactNumberErrorMsg")',2000);
+    }
+    else
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'save_application_form' %}",
+            data : $('#ante_post_mortem_form').serialize(),
+            success : function(data)
+            {
+                $('#applicationNo').val(data.applNo);
+                $('#application_no_details').val(data.applNo);
+                $('#attachment_appNo').val(data.applNo);
+                $('#submitMsg').show();
+                setTimeout(function() {
+                    $("#submitMsg").hide('blind', {}, 500)
+                }, 2000);
+                setTimeout(function() {
+                    $('#pills-details').tab('show');
+                }, 3000);
+            }
+        });
+    }
+}
+
+
+
+function save_mortem_attachment()
+{
+    var fileName = document.getElementById('document').files[0].name;
+    var fd = new FormData();
+    var file = document.getElementById('document').files[0];
+    fd.append('document', file);
+    token_value=$("input[name=csrfmiddlewaretoken]").val();
+    $.ajaxSetup
+    ({
+        beforeSend: function(xhr, settings)
+        {
+            xhr.setRequestHeader("X-CSRFToken", token_value);
+        }
+    });
+    $.ajax({
+    type : "POST",
+    url : "{% url 'add_mortem_file' %}",
+    data : fd,
+    dataType: 'json',
+    contentType: false,
+    processData: false,
+    success : function(data)
+    {
+        if (data.form_is_valid)
+        {
+            var file_url = data.file_url
+            var appNo = $('#attachment_appNo').val();
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'add_mortem_file_name' %}",
+                data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
+                success : function(responseText)
+                {
+                    $('#attachmentModal').modal('hide');
+                    $('#file-attachment-mortem').html(responseText);
+                    $('.modal-backdrop').remove();
+                }
+            });
+        }
+        else
+        {
+            $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+            $('#fileErrorMsg').show();
+            $('#fileErrorMsg').delay(2000).fadeOut('slow');
+        }
+    }
+});
+
+}
+
+function show_modal()
+{
+    $('#add_mortem_details').modal('show');
+}
+
+function show_mortem_attachment_modal()
+{
+    $('#attachmentModal').modal('show');
+}
+
+
+function save_mortem_details()
+    {
+        var Species = $('#Species').val();
+        var Nos = $('#Nos').val();
+        var qty = $('#qty').val();
+        var remarks = $('#remarks').val();
+
+        if(Species == "")
+        {
+            $('#SpeciesErrorMsg').html("Select Species.");
+            $('#SpeciesErrorMsg').show();
+            $('#SpeciesErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(Nos == "")
+        {
+            $('#NosErrorMsg').html("Enter Nos.");
+            $('#NosErrorMsg').show();
+            $('#NosErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(qty == "")
+        {
+            $('#qtyErrorMsg').html("Enter Quantity.");
+            $('#qtyErrorMsg').show();
+            $('#qtyErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(remarks == "")
+        {
+            $('#remarksErrorMsg').html("Enter Remarks.");
+            $('#remarksErrorMsg').show();
+            $('#remarksErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else{
+            $.ajax({
+                type : "POST",
+                url : "{% url 'save_mortem_details' %}",
+                data : $('#mortem_details_form').serialize(),
+                success : function(responseText) {
+                   $('#add_mortem_details').modal('hide');
+                   $('#mortem_details').html(responseText);
+                   $('#pills-details').tab('show');
+                   $('.modal-backdrop').remove();
+                }
+            });
+        }
+    }
+
+function validateemailId(emailId)
+{
+    var pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+    var no=emailId.match(pattern);
+
+    if(no==null)
+    {
+        $('#emailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
+        $('#email').val("");
+        $('#emailErrorMsg').show();
+        $('#emailErrorMsg').delay(2000).fadeOut('slow');
+    }else{
+     $('#emailErrorMsg').hide();
+    }
+
+}
+
+function checkContact(value)
+{
+    var firstDigit = value.charAt(0);
+    var secondDigit = value.charAt(1);
+
+    if(firstDigit != 7 && firstDigit != 1){
+        $('#contactNumberErrorMsg').html("Must Start with either 1 or 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 1 && secondDigit != 6 && secondDigit != 7){
+        $('#contactNumberErrorMsg').html("Second Digit Must Start with either 6 or 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 7 && secondDigit == 6){
+        $('#contactNumberErrorMsg').html("Second Digit Cannot be 6.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 7 && secondDigit != 7){
+        $('#contactNumberErrorMsg').html("Second Digit Must Start with 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }
+
+}
+
+function save_mortem()
+{
+    $('#mortem-file-attach').tab('show');
+}
+
+</script>
+{% endblock %}

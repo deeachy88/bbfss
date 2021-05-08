@@ -49,8 +49,8 @@ function save_details()
 {
 	$.ajax({
 			type : "POST",
-			url : "{% url 'submit_food_import' %}",
-			data : $('#food_import_form').serialize(),
+			url : "{% url 'submit_food_handler_application' %}",
+			data : $('#foodHandlerForm').serialize(),
 			cache : false,
 			dataType : "html",
 			success : function(responseText)
@@ -65,11 +65,11 @@ function DeleteAttachment(id)
     var appNo = $('#appNo').val();
     $.ajax({
         type : "GET",
-        url : "{% url 'delete_import_file' %}",
+        url : "{% url 'delete_agro_file' %}",
         data :{'appNo':appNo , 'file_id': id},
         success : function(responseText)
         {
-            $('#file-attachment').html(responseText);
+            $('#fileAttach').html(responseText);
         }
     });
 }

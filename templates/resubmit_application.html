@@ -1,13 +1,12 @@
 {% extends 'common_dashboard.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-
 <div class="animated fadeIn">
     <div class="row">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <strong class="card-title">Resubmit Application Lists</strong>
+                    <strong class="card-title">Application Lists</strong>
                 </div>
                     <div class="card-body">
                         <table class="table table-bordered">
@@ -15,6 +14,8 @@
                                 <tr>
                                     <th scope="col">#</th>
                                     <th scope="col">Application No</th>
+                                    <th scope="col">Service Name</th>
+                                    <th scope="col">Applicant</th>
                                     <th scope="col">Application Date</th>
                                 </tr>
                             </thead>
@@ -22,14 +23,20 @@
                                 {% for application_details in application_details %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td><button class="btn btn-primary btn-link" onclick="viewImportDetails('{{application_details.Application_No}}')">{{application_details.Application_No}}</button></td>
+                                        <td><button class="btn btn-primary btn-link" onclick="viewApplicationDetails('{{application_details.Application_No}}','{{application_details.Service_Code}}')">{{application_details.Application_No}}</button></td>
+                                        {% for service_details in service_details %}
+                                            {% if application_details.Service_Code == service_details.Service_Code %}
+                                                <td>{{service_details.Service_Name}}</td>
+                                            {% endif %}
+                                        {% endfor %}
+                                        <td>{{application_details.Applicant_Id}}</td>
                                         <td>{{application_details.Action_Date|date:"d-m-Y"}}</td>
                                     </tr>
                                     {% empty %}
                                     <tr>
-                                      <td colspan="4" class="text-center">No Data</td>
+                                      <td colspan="5" class="text-center">No Data</td>
                                     </tr>
-                                {% endfor %}
+                                    {% endfor %}
                             </tbody>
                         </table>
                     </div>
@@ -37,13 +44,13 @@
         </div>
     </div>
 </div>
-<form method="post" id="resubmit_form" enctype="multipart/form-data">
+<form method="post" id="import_details_form" enctype="multipart/form-data">
     {% csrf_token %}
-    <div class="modal fade" id="import_detailsModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
+    <div class="modal fade" id="application-details-modal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
                  <div class="modal-header">
-                    <h5 class="modal-title" id="agro_attachmentModalLabel">Application Resubmit Details</h5>
+                    <h5 class="modal-title" id="agro_attachmentModalLabel">Application Details</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                     </button>
@@ -52,33 +59,28 @@
                     <div class="col-lg-12">
                         <div class="box box-primary">
                             <div class="box-body">
-                                <div id="resubmit_details">
+                                <div id="details_application">
 
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="resubmit_details()"> Re-Submit </button>
-                </div>
             </div>
         </div>
     </div>
 </form>
-
 <script>
-
-function viewImportDetails(appId)
+    function viewApplicationDetails(appId,service_code)
     {
         $.ajax({
             type : "GET",
             url : "{% url 'resubmit_app_details' %}",
-            data :{'application_id':appId},
-            success : function(response)
+            data :{'application_id':appId, 'service_code':service_code},
+            success : function(data)
             {
-                $('#resubmit_details').html(response);
+                $('#details_application').html(data);
+                $('#application-details-modal').modal('show');
             }
         });
     }
@@ -93,6 +95,11 @@ function viewImportDetails(appId)
                 location.reload();
             }
         });
+    }
+    function close_app_model()
+    {
+        $('#application-details-modal').modal('hide');
+        $('.modal-backdrop').remove();
     }
 </script>
 {% endblock %}

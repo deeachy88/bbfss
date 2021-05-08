@@ -73,10 +73,12 @@ class PesticideForm(forms.ModelForm):
         model = t_plant_pesticide_master
         fields = '__all__'
 
+
 class CropCategoryForm(forms.ModelForm):
     class Meta:
         model = t_plant_crop_category_master
         fields = '__all__'
+
 
 class PlantProductForm(forms.ModelForm):
     class Meta:
@@ -107,15 +109,18 @@ class LocationFieldMappingForm(forms.ModelForm):
         model = t_location_field_office_mapping
         fields = '__all__'
 
+
 class LivestockSpeciesForm(forms.ModelForm):
     class Meta:
         model = t_livestock_species_master
         fields = '__all__'
 
+
 class LivestockSpeciesBreedForm(forms.ModelForm):
     class Meta:
         model = t_livestock_species_breed_master
         fields = '__all__'
+
 
 class LivestockProductForm(forms.ModelForm):
     class Meta:

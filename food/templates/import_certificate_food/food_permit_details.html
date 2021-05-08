@@ -1,0 +1,26 @@
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Product Name & Description</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Unit</th>
+            <th scope="col">Exporter Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for import in import %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{import.Product_Name_Description}}</td>
+                <td>{{import.Quantity}}</td>
+                <td>{{import.Unit}}</td>
+                <td>{{import.Exporter_Type}}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="5" class="text-center">No Data</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

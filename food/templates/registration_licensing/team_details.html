@@ -1,0 +1,26 @@
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name Of Key Personal</th>
+            <th scope="col">Designation of Key Personal</th>
+            <th scope="col">Opening Meeting (Date)</th>
+            <th scope="col">Closing Meeting (Date)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for import in application_details %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{import.Name}}</td>
+                <td>{{import.Designation}}</td>
+                <td>{{import.Open_Meeting_Date|date:"d-m-Y"}}</td>
+                <td>{{import.Closing_Meeting_Date|date:"d-m-Y"}}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="5" class="text-center">No Data</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

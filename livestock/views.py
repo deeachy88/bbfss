@@ -493,7 +493,7 @@ def import_permit_la_details(request):
                                                        Remarks=Remarks,
                                                        No_Of_Animal=No_Of_Animal,
                                                        Unit=None)
-    import_details = t_livestock_import_permit_animal_t2.objects.filter(Application_No=application_id)
+    import_details = t_livestock_import_permit_animal_t2.objects.filter(Application_No=application_no)
     return render(request, 'Livestock_Import/permit_details.html', {'import': import_details})
 
 

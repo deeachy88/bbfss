@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'food',
     'certification',
     'common_service',
+    'mathfilters',
 ]
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 MIDDLEWARE = [

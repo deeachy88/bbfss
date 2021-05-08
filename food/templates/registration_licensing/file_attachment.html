@@ -2,7 +2,7 @@
         <div class="card-header">
             <div class="card-head-row">
                 <div class="card-tools">
-                    <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="food_export_attachment_modal()">
+                    <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="show_fbr_attach_model()">
                         <span class="btn-label">
                             <i class="fa fa-print"></i>
                         </span>
@@ -49,8 +49,8 @@ function save_details()
 {
 	$.ajax({
 			type : "POST",
-			url : "{% url 'submit_food_export_application' %}",
-			data : $('#exportCertificateForm').serialize(),
+			url : "{% url 'submit_food_business_application' %}",
+			data : $('#FBR_form').serialize(),
 			cache : false,
 			dataType : "html",
 			success : function(responseText)
@@ -62,10 +62,10 @@ function save_details()
 
 function DeleteAttachment(id)
 {
-    var appNo = $('#agro_attachment_applicationNo').val();
+    var appNo = $('#attachment_appNo').val();
     $.ajax({
         type : "GET",
-        url : "{% url 'delete_agro_file' %}",
+        url : "{% url 'delete_fh_file' %}",
         data :{'appNo':appNo , 'file_id': id},
         success : function(responseText)
         {

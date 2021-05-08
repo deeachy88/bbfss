@@ -16,7 +16,7 @@
         <h4 class="card-title">Food Business Registration and Licensing</h4>
     </div>
     <div class="card-body">
-        <form method="post" id="ante_post_mortem_form">
+        <form method="post" id="FBR_form">
         {% csrf_token %}
             <input type="hidden" name="application_no" id="applicationNo">
             <div class="row justify-content-left">
@@ -25,10 +25,13 @@
                         <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadDetails()">Application Form</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-details" data-toggle="pill" href="#details" role="tab" aria-controls="pills-details" aria-selected="false" onclick="load_details()">Details</a>
+                        <a class="nav-link" id="pills-details" data-toggle="pill" href="#details" role="tab" aria-controls="pills-details" aria-selected="false" onclick="load_details()">Outsourced Process</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="mortem-file-attach" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
+                        <a class="nav-link" id="pills-food-handler" data-toggle="pill" href="#food-handler" role="tab" aria-controls="pills-food-handler" aria-selected="false" onclick="load_details()">Food Handlers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="fbr-file-attach" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
                     </li>
                 </ul>
             </div>
@@ -39,7 +42,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Name of the Food Business</label>
-                                    <input type="number" class="form-control" id="Business_Name" name="Business_Name">
+                                    <input type="text" class="form-control" id="Business_Name" name="Business_Name">
                                 </div>
                                 <div class="alert alert-danger" id="Business_NameErrorMsg" style="display:none"></div>
                             </div>
@@ -59,6 +62,20 @@
                             </div>
                         </div>
                         <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Name of the Top Manager</label>
+                                    <input type="text" class="form-control" id="name_manager" name="name_manager">
+                                </div>
+                                <div class="alert alert-danger" id="name_managerErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Licensing Criteria </label>
+                                    <input type="text" class="form-control" id="license_criteria" name="license_criteria">
+                                </div>
+                                <div class="alert alert-danger" id="license_criteriaErrorMsg" style="display:none"></div>
+                            </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Contact Number</label>
@@ -85,7 +102,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Current status of functioning</label>
-                                    <select class="form-control" name="current_status"  id="current_status" onchange="getLocation(this.value)">
+                                    <select class="form-control" name="current_status"  id="current_status">
                                         <option value="">--SELECT--</option>
                                         <option value="Project stage">Project stage</option>
                                         <option value="Commissioned">Commissioned but regular production yet to start</option>
@@ -96,10 +113,14 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Product Category(proposed/being manufactured)</label>
-                                    <textarea class="form-control" id="product_category" name="product_category"></textarea>
+                                    <label class="form-label">Product Category</label>
+                                    <select class="form-control" name="product_category"  id="product_category">
+                                        <option value="">--SELECT--</option>
+                                        <option value="Fresh land">Proposed</option>
+                                        <option value="Being Manufactured">Being Manufactured</option>
+                                    </select>
+                                    <div class="alert alert-danger" id="product_categoryErrorMsg" style="display:none"></div>
                                 </div>
-                                <div class="alert alert-danger" id="product_categoryErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
@@ -133,8 +154,8 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="form-group col-md-6">
-                                <label >Volume Unit</label>
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Volume Unit</label>
                                 <select class="form-control" name="volume_unit"  id="volume_unit">
                                     <option value="">--SELECT--</option>
                                     {% for unit in unit %}
@@ -143,13 +164,191 @@
                                 </select>
                                 <div class="alert alert-danger" id="volume_unitErrorMsg" style="display:none"></div>
                             </div>
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Site History Details</label>
+                                <select class="form-control" name="history" id="history" onchange="checkSiteHistory(this.value)">
+                                    <option value="">--SELECT--</option>
+                                    <option value="Fresh land">Fresh land</option>
+                                    <option value="Converted structure">Converted structure</option>
+                                </select>
+                                <div class="alert alert-danger" id="historyErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4" id="previous_business_div" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label">What was the previous business conducted there?</label>
+                                    <textarea class="form-control" id="previous_business" name="previous_business"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="previous_businessErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <div class="form-check">
+                                    <label class="form-label">Any processes outsourced by the FB?</label><br>
+                                    <br><div class="form-group text-center">
+                                        <div class="form-check">
+                                            <label class="custom-control custom-radio">
+                                                <input type="radio" name="outsourced_process" class="custom-control-input" value="Yes">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">Yes</span>
+                                            </label>&nbsp;
+                                            <label class="custom-control custom-radio">
+                                                <input type="radio" name="outsourced_process" class="custom-control-input" value="No">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">No</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Legal Entity Status</label>
+                                <select class="form-control" name="legal_status"  id="legal_status">
+                                    <option value="">--SELECT--</option>
+                                    <option value="Private Ltd">Private Ltd</option>
+                                    <option value="Public Ltd">Public Ltd</option>
+                                    <option value="Government undertaking">Government undertaking (Pull from master table)</option>
+                                </select>
+                                <div class="alert alert-danger" id="legal_statusErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <div class="form-check">
+                                    <label class="form-label">Are you a part of a larger Corporation?</label><br>
+                                    <br><div class="form-group">
+                                        <div class="form-check">
+                                            <label class="custom-control custom-radio">
+                                                <input type="radio" name="larger_corporation" class="custom-control-input" value="Yes" onclick="checkCorporation(this.value)">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">Yes</span>
+                                            </label>&nbsp;
+                                            <label class="custom-control custom-radio">
+                                                <input type="radio" name="larger_corporation" class="custom-control-input" value="No" onclick="checkCorporation(this.value)">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">No</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <div class="form-check">
+                                    <label class="form-label">Relationship</label><br>
+                                    <input type="text" class="form-control" id="relationship" name="relationship">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <div class="form-check">
+                                    <label class="form-label">Has the FBO been licensed before?</label><br><br>
+                                    <div class="form-group">
+                                        <div class="form-check">
+                                            <label class="custom-control custom-radio">
+                                                <input type="radio" name="licensed_before" class="custom-control-input" value="Yes">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">Yes</span>
+                                            </label>&nbsp;
+                                            <label class="custom-control custom-radio">
+                                                <input type="radio" name="licensed_before" class="custom-control-input" value="No">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">No</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <div class="form-check">
+                                    <label class="form-label">If Yes, provide details of License number</label><br>
+                                    <input type="text" class="form-control" id="license_number" name="license_number">
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <div class="form-check">
+                                    <label class="form-label">Reasons why the License is no longer valid</label><br>
+                                    <textarea class="form-control" id="reason" name="reason"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <div class="form-check">
+                                    <label class="form-label">Any judicial proceedings relating to the FBOs operations/product?</label><br>
+                                    <br><div class="form-group">
+                                        <div class="form-check">
+                                            <label class="custom-control custom-radio">
+                                                <input type="radio" name="judicial_proceedings" class="custom-control-input" value="Yes">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">Yes</span>
+                                            </label>&nbsp;
+                                            <label class="custom-control custom-radio">
+                                                <input type="radio" name="judicial_proceedings" class="custom-control-input" value="No">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">No</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <div class="form-check">
+                                    <label class="form-label">Please provide details</label><br>
+                                    <textarea class="form-control" id="provided_details" name="provided_details"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <div class="form-check">
+                                    <label class="form-label">Any proceedings by any Regulatory body or suspension /cancellation /withdrawal of any relevant licensing/approvals under any Regulations </label><br>
+                                    <br><div class="form-group">
+                                        <div class="form-check">
+                                            <label class="custom-control custom-radio">
+                                                <input type="radio" name="regulatory_proceedings" class="custom-control-input" value="Yes">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">Yes</span>
+                                            </label>&nbsp;
+                                            <label class="custom-control custom-radio">
+                                                <input type="radio" name="regulatory_proceedings" class="custom-control-input" value="No">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">No</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <div class="form-check">
+                                    <label class="form-label">Please provide details</label><br>
+                                    <textarea class="form-control" id="regulatory_proceedings_details" name="regulatory_proceedings_details"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <div class="form-check">
+                                    <label class="form-label">Has a Project Proposal been prepared  </label><br>
+                                    <br><div class="form-group">
+                                        <div class="form-check">
+                                            <label class="custom-control custom-radio">
+                                                <input type="radio" name="project_proposal" class="custom-control-input" value="Yes">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">Yes</span>
+                                            </label>&nbsp;
+                                            <label class="custom-control custom-radio">
+                                                <input type="radio" name="project_proposal" class="custom-control-input" value="No">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">No</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
                         Save SuccessFul
                     </div>
                     <div class="card-action">
-                        <button type="button" class="btn btn-primary" onclick="save_mortem_form()">Save</button>
+                        <button type="button" class="btn btn-primary" onclick="save_fbr_form()">Save</button>
                     </div>
                 </div>
 
@@ -158,23 +357,42 @@
                     <div class="card-header">
                         <div class="card-head-row">
                             <div class="card-tools pull-right">
-                                <button type="button" class="btn btn-light" onclick="show_modal()">Add Details</button>
+                                <button type="button" class="btn btn-light" onclick="show_fbr_modal()">Add Details</button>
                             </div>
                         </div>
                     </div>
                     <div class="card-body">
-                        <div id="mortem_details">
-                            {% include 'ante_post_mortem/details.html' %}
+                        <div id="fbr_details">
+                            {% include 'registration_licensing/details.html' %}
                         </div>
                     </div>
                 </div>
                 <div class="card-action">
-                    <button type="button" class="btn btn-success" onclick="save_mortem()">Save</button>
+                    <button type="button" class="btn btn-success" onclick="save_fbr_details()">Save</button>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="food-handler" role="tabpanel" aria-labelledby="pills-food-handler">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-head-row">
+                            <div class="card-tools pull-right">
+                                <button type="button" class="btn btn-light" onclick="show_fh_modal()">Add Details</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="food_handler_details">
+                            {% include 'registration_licensing/food_handler_details.html' %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-action">
+                    <button type="button" class="btn btn-success" onclick="save_food_handler_details()">Save</button>
                 </div>
             </div>
             <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="mortem-file-attach">
                 <div id="file-attachment-mortem">
-                    {% include 'ante_post_mortem/file_attachment.html' %}
+                    {% include 'registration_licensing/file_attachment.html' %}
                 </div>
             </div>
             </div>
@@ -182,10 +400,10 @@
     </div>
 </div>
 
-<form method="post" id="mortem_details_form">
+<form method="post" id="fh_details_form">
     {% csrf_token %}
-    <input type="hidden" id="application_no_details" name="application_no_details">
-    <div class="modal fade" id="add_mortem_details" tabindex="-1">
+    <input type="text" id="fh_details_application_no" name="fh_details_application_no">
+    <div class="modal fade" id="add_fh_details_model" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -200,35 +418,26 @@
                             <div class="box-body">
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Species</label>
-                                        <select class="form-control form-control" id="Species" name="Species">
-                                            <option value="">-SELECT-</option>
-                                            <option value="Bovine">Bovine</option>
-                                            <option value="Caprine">Caprine</option>
-                                            <option value="Swine">Swine</option>
-                                            <option value="fish">(fish)</option>
-                                            <option value="Yak">Yak</option>
-                                            <option value="Ovine">Ovine</option>
-                                            <option value="Avian">Avian</option>
-                                        </select>
-                                        <div class="alert alert-danger" id="SpeciesErrorMsg" style="display:none"></div>
+                                        <label class="form-label">Name</label>
+                                        <input type="text" name="details_name" class="form-control" id="details_name" required>
+                                        <div class="alert alert-danger" id="details_nameErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Nos</label>
-                                        <input type="text" name="Nos" class="form-control" id="Nos" required>
-                                        <div class="alert alert-danger" id="NosErrorMsg" style="display:none"></div>
+                                        <label class="form-label">Address Details</label>
+                                       <textarea name="details_address" class="form-control" id="details_address"></textarea>
+                                        <div class="alert alert-danger" id="details_addressErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Quantity</label>
-                                        <input type="number" name="qty" class="form-control" id="qty" required>
-                                        <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
+                                        <label class="form-label">Contact</label>
+                                        <input type="number" class="form-control" id="contact_number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contact_number" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                                        <div class="alert alert-danger" id="contact_numberErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label for="remarks">Remarks</label>
-                                        <input type="text" name="remarks" class="form-control" id="remarks" required>
-                                        <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
+                                        <label class="form-label">BAFRA License Number</label>
+                                        <input type="text" name="bafra_license_no" class="form-control" id="bafra_license_no" required>
+                                        <div class="alert alert-danger" id="bafra_license_noErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                             </div>
@@ -237,7 +446,48 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="save_mortem_details()">Add</button>
+                    <button type="button" class="btn btn-primary" onclick="submit_fbr_details()">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form method="post" id="fh_form">
+    {% csrf_token %}
+    <input type="hidden" id="fh_application_no" name="fh_application_no">
+    <div class="modal fade" id="add_fh_details" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" >Add Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">FH Name</label>
+                                        <input type="text" name="fh_name" class="form-control" id="fh_name" required>
+                                        <div class="alert alert-danger" id="fh_nameErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">FH License No</label>
+                                        <input type="text" name="fh_license" class="form-control" id="fh_license" required>
+                                        <div class="alert alert-danger" id="fh_licenseErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="save_fh_details()">Add</button>
                 </div>
             </div>
         </div>
@@ -273,7 +523,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_mortem_attachment()"> Submit </button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_fbr_attachment()"> Submit </button>
                 </div>
             </div>
         </div>
@@ -281,134 +531,41 @@
 </form>
 <script>
 
-function save_mortem_form()
+function save_fbr_form()
 {
-    var cid = $('#cid').val();
-    var name = $('#name').val();
-    var dzongkhag = $('#dzongkhag').val();
-    var gewog = $('#gewog').val();
-    var village = $('#village').val();
-    var address = $('#present_address').val();
-    var contactNumber = $('#contactNumber').val();
-    var email = $('#email').val();
-    var license_no = $('#license_no').val();
-    var location = $('#location').val();
-    var Location_Dzongkhag_Code = $('#Location_Dzongkhag_Code').val();
-    var location_code = $('#location_code').val();
-    var inspectionDate = $('#inspectionDate').val();
-    var cidCount = $('#cid').val().length;
-    var number_count = $('#contactNumber').val().length;
-
-    if(cid == "")
-    {
-        $('#cidErrorMsg').html("Enter CID Number.");
-        $('#cidErrorMsg').show();
-        $('#cidErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(name == "")
-    {
-        $('#nameErrorMsg').html("Enter Name .");
-        $('#nameErrorMsg').show();
-        $('#nameErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(dzongkhag == "")
-    {
-        $('#dzongkhagErrorMsg').html("Select Dzongkhag.");
-        $('#dzongkhagErrorMsg').show();
-        $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(gewog == "")
-    {
-        $('#gewogErrorMsg').html("Select Gewog.");
-        $('#gewogErrorMsg').show();
-        $('#gewogErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(village == "")
-    {
-        $('#villageErrorMsg').html("Select Village.");
-        $('#villageErrorMsg').show();
-        $('#villageErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(contactNumber == "")
-    {
-        $('#contactNumberErrorMsg').html("Enter Contact Number.");
-        $('#contactNumberErrorMsg').show();
-        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(email == "")
-    {
-        $('#emailErrorMsg').html("Enter Contact Number.");
-        $('#emailErrorMsg').show();
-        $('#emailErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(license_no == "")
-    {
-        $('#license_noErrorMsg').html("Enter License No.");
-        $('#license_noErrorMsg').show();
-        $('#license_noErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if (Location_Dzongkhag_Code == "")
-    {
-        $('#Location_Dzongkhag_CodeErrorMsg').html("Select Location Dzongkhag Code.");
-        $('#Location_Dzongkhag_CodeErrorMsg').show();
-        $('#Location_Dzongkhag_CodeErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if (location_code == "")
-    {
-        $('#location_codeErrorMsg').html("Select Location.");
-        $('#location_codeErrorMsg').show();
-        $('#location_codeErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(exact_location == "")
-    {
-        $('#exact_locationErrorMsg').html("Enter Exact Location.");
-        $('#exact_locationErrorMsg').show();
-        $('#exact_locationErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(inspectionDate == "")
-    {
-        $('#inspectionDateErrorMsg').html("Enter Inspection Date.");
-        $('#inspectionDateErrorMsg').show();
-        $('#inspectionDateErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(cidCount < 11)
-    {
-        $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits.");
-        $('#cidErrorMsg').show();
-        setTimeout('hideStatus("cidErrorMsg")',2000);
-    }
-    else if(number_count < 8)
-    {
-        $('#contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
-        $('#contactNumberErrorMsg').show();
-        setTimeout('hideStatus("contactNumberErrorMsg")',2000);
-    }
-    else
-    {
-        $.ajax({
+    $.ajax({
             type : "POST",
-            url : "{% url 'save_application_form' %}",
-            data : $('#ante_post_mortem_form').serialize(),
+            url : "{% url 'save_food_business_registration' %}",
+            data : $('#FBR_form').serialize(),
             success : function(data)
             {
                 $('#applicationNo').val(data.applNo);
-                $('#application_no_details').val(data.applNo);
+                $('#fh_application_no').val(data.applNo);
+                $('#fh_details_application_no').val(data.applNo);
                 $('#attachment_appNo').val(data.applNo);
                 $('#submitMsg').show();
                 setTimeout(function() {
                     $("#submitMsg").hide('blind', {}, 500)
                 }, 2000);
-                setTimeout(function() {
-                    $('#pills-details').tab('show');
-                }, 3000);
+                if(data.outsourced_process == 'Yes')
+                {
+                    setTimeout(function() {
+                        $('#pills-details').tab('show');
+                    }, 3000);
+                }
+                else
+                {
+                    setTimeout(function() {
+                        $('#pills-food-handler').tab('show');
+                    }, 3000);
+                }
             }
         });
-    }
 }
 
 
 
-function save_mortem_attachment()
+function save_fbr_attachment()
 {
     var fileName = document.getElementById('document').files[0].name;
     var fd = new FormData();
@@ -424,7 +581,7 @@ function save_mortem_attachment()
     });
     $.ajax({
     type : "POST",
-    url : "{% url 'add_mortem_file' %}",
+    url : "{% url 'food_business_file' %}",
     data : fd,
     dataType: 'json',
     contentType: false,
@@ -438,7 +595,7 @@ function save_mortem_attachment()
             $.ajax
             ({
                 type : "POST",
-                url : "{% url 'add_mortem_file_name' %}",
+                url : "{% url 'food_business_file_name' %}",
                 data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
                 success : function(responseText)
                 {
@@ -459,57 +616,55 @@ function save_mortem_attachment()
 
 }
 
-function show_modal()
+function show_fbr_modal()
 {
-    $('#add_mortem_details').modal('show');
+    $('#add_fh_details_model').modal('show');
+}
+function show_fh_modal()
+{
+    $('#add_fh_details').modal('show');
 }
 
-function show_mortem_attachment_modal()
+function show_fbr_attach_model()
 {
     $('#attachmentModal').modal('show');
 }
 
 
-function save_mortem_details()
+function submit_fbr_details()
     {
-        var Species = $('#Species').val();
-        var Nos = $('#Nos').val();
-        var qty = $('#qty').val();
-        var remarks = $('#remarks').val();
+        var BP_Outsourced_To = $('#details_name').val();
+        var details_address = $('#details_address').val();
+        var contact_number = $('#contact_number').val();
 
-        if(Species == "")
+
+        if(BP_Outsourced_To == "")
         {
-            $('#SpeciesErrorMsg').html("Select Species.");
-            $('#SpeciesErrorMsg').show();
-            $('#SpeciesErrorMsg').delay(2000).fadeOut('slow');
+            $('#details_nameErrorMsg').html("Enter Name.");
+            $('#details_nameErrorMsg').show();
+            $('#details_nameErrorMsg').delay(2000).fadeOut('slow');
         }
-        else if(Nos == "")
+        else if(details_address == "")
         {
-            $('#NosErrorMsg').html("Enter Nos.");
-            $('#NosErrorMsg').show();
-            $('#NosErrorMsg').delay(2000).fadeOut('slow');
+            $('#details_addressErrorMsg').html("Enter Address.");
+            $('#details_addressErrorMsg').show();
+            $('#details_addressErrorMsg').delay(2000).fadeOut('slow');
         }
-        else if(qty == "")
+        else if(contact_number == "")
         {
-            $('#qtyErrorMsg').html("Enter Quantity.");
-            $('#qtyErrorMsg').show();
-            $('#qtyErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(remarks == "")
-        {
-            $('#remarksErrorMsg').html("Enter Remarks.");
-            $('#remarksErrorMsg').show();
-            $('#remarksErrorMsg').delay(2000).fadeOut('slow');
+            $('#contact_numberErrorMsg').html("Enter Contact Number.");
+            $('#contact_numberErrorMsg').show();
+            $('#contact_numberErrorMsg').delay(2000).fadeOut('slow');
         }
         else{
             $.ajax({
                 type : "POST",
-                url : "{% url 'save_mortem_details' %}",
-                data : $('#mortem_details_form').serialize(),
+                url : "{% url 'save_fbr_details' %}",
+                data : $('#fh_details_form').serialize(),
                 success : function(responseText) {
-                   $('#add_mortem_details').modal('hide');
-                   $('#mortem_details').html(responseText);
-                   $('#pills-details').tab('show');
+                   $('#add_fh_details_model').modal('hide');
+                   $('#fbr_details').html(responseText);
+                   $('#pills-food-handler').tab('show');
                    $('.modal-backdrop').remove();
                 }
             });
@@ -562,10 +717,73 @@ function checkContact(value)
 
 }
 
-function save_mortem()
+function save_food_handler_details()
 {
-    $('#mortem-file-attach').tab('show');
+    $('#fbr-file-attach').tab('show');
 }
+
+function save_fbr_details()
+{
+    $('#pills-food-handler').tab('show');
+}
+
+function checkSiteHistory(value)
+{
+    if(value == "Converted structure")
+    {
+        $('#previous_business_div').show();
+    }
+    else
+    {
+        $('#previous_business_div').hide();
+    }
+}
+
+function checkCorporation(value)
+{
+    if(value == "Yes")
+    {
+        $('#previous_business_div').show();
+    }
+    else
+    {
+        $('#previous_business_div').hide();
+    }
+}
+
+function save_fh_details()
+{
+    var fh_name = $('#fh_name').val();
+    var fh_license = $('#fh_license').val();
+
+    if(fh_name == "")
+    {
+        $('#fh_nameErrorMsg').html("Enter FH Name.");
+        $('#fh_nameErrorMsg').show();
+        $('#fh_nameErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(fh_name == "")
+    {
+        $('#fh_nameErrorMsg').html("Enter License No.");
+        $('#fh_nameErrorMsg').show();
+        $('#fh_nameErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else
+    {
+        $.ajax({
+                type : "POST",
+                url : "{% url 'save_fh_details' %}",
+                data : $('#fh_form').serialize(),
+                success : function(responseText) {
+                   $('#add_fh_details').modal('hide');
+                   $('#food_handler_details').html(responseText);
+                   $('#pills-file').tab('show');
+                   $('.modal-backdrop').remove();
+                }
+            });
+    }
+}
+
 
 </script>
 {% endblock %}

@@ -1,0 +1,892 @@
+{% load static %}
+<style>
+    .card {
+    margin-bottom: 0rem;
+    box-shadow: 0 1px 5px rgb(0 0 0 / 10%);
+}
+</style>
+        <div class="card">
+            <div class="card-header" role="tab" id="headingOne">
+                <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed">
+                    Application Details
+                </a>
+            </div>
+
+            <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion" style="">
+                <div class="card-body">
+                    {% for application_details in application_details %}
+                        <div id="applicant_details">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Name of the Food Business</label>
+                                            <input type="text" class="form-control" value="{{application_details.Business_Name}}" disabled>
+                                        </div>
+                                    </div>
+                                     <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">CID of the Owner</label>
+                                            <input type="text" class="form-control" value="{{application_details.CID}}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Name of the applicant/Owner</label>
+                                            <input type="text" class="form-control" value="{{application_details.Name_Owner}}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Name of the Top Manager</label>
+                                            <input type="text" class="form-control" value="{{application_details.Name_Manager}}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Licensing Criteria </label>
+                                            <input type="text" class="form-control" value="{{application_details.License_Criteria}}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Contact Number</label>
+                                            <input type="number" class="form-control" value="{{application_details.Contact_No}}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Email</label>
+                                            <input type="email" class="form-control" value="{{application_details.Email}}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Food Business Address</label>
+                                            <textarea class="form-control" disabled>{{application_details.Address}}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Current status of functioning</label>
+                                            <select class="form-control" disabled>
+                                                {% if application_details.Current_Status == "Project stage" %}
+                                                    <option value="Project stage" selected>Project stage</option>
+                                                    <option value="Commissioned">Commissioned but regular production yet to start</option>
+                                                    <option value="Regular">Regular production in progress</option>
+                                                {% elif application_details.Current_Status == "Commissioned" %}
+                                                    <option value="Project stage">Project stage</option>
+                                                    <option value="Commissioned" selected>Commissioned but regular production yet to start</option>
+                                                    <option value="Regular">Regular production in progress</option>
+                                                {% else %}
+                                                    <option value="Project stage">Project stage</option>
+                                                    <option value="Commissioned">Commissioned but regular production yet to start</option>
+                                                    <option value="Regular" selected>Regular production in progress</option>
+                                                {% endif%}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Product Category</label>
+                                            <select class="form-control" disabled>
+                                                {% if application_details.Product_Category == "Fresh land" %}
+                                                    <option value="Fresh land" selected>Proposed</option>
+                                                    <option value="Being Manufactured">Being Manufactured</option>
+                                                {% else %}
+                                                    <option value="Fresh land">Proposed</option>
+                                                    <option value="Being Manufactured" selected>Being Manufactured</option>
+                                                {% endif%}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Products proposed/being manufactured</label>
+                                            <textarea class="form-control" disabled>{{application_details.Product}}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Identified water source</label>
+                                            <input type="text" class="form-control" value="{{application_details.Water_Source}}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Number of years in production</label>
+                                            <input type="text" class="form-control" value="{{application_details.Years_In_Production}}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Production Volume(Last Calender Year)</label>
+                                            <input type="number" class="form-control" value="{{application_details.Volume_Last_Year}}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Volume Unit</label>
+                                        <select class="form-control" name="volume_unit"  id="volume_unit">
+                                            <option value="">--SELECT--</option>
+                                            {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="alert alert-danger" id="volume_unitErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Site History Details</label>
+                                        <select class="form-control" name="history" id="history" onchange="checkSiteHistory(this.value)">
+                                            <option value="">--SELECT--</option>
+                                            <option value="Fresh land">Fresh land</option>
+                                            <option value="Converted structure">Converted structure</option>
+                                        </select>
+                                        <div class="alert alert-danger" id="historyErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-md-4" id="previous_business_div" style="display:none">
+                                        <div class="form-group">
+                                            <label class="form-label">What was the previous business conducted there?</label>
+                                            <textarea class="form-control" id="previous_business" name="previous_business"></textarea>
+                                        </div>
+                                        <div class="alert alert-danger" id="previous_businessErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label class="form-label">Any processes outsourced by the FB?</label><br>
+                                            <br><div class="form-group text-center">
+                                                <div class="form-check">
+                                                    <label class="custom-control custom-radio">
+                                                        <input type="radio" name="outsourced_process" class="custom-control-input" value="Yes">
+                                                        <span class="custom-control-indicator"></span>
+                                                        <span class="custom-control-description">Yes</span>
+                                                    </label>&nbsp;
+                                                    <label class="custom-control custom-radio">
+                                                        <input type="radio" name="outsourced_process" class="custom-control-input" value="No">
+                                                        <span class="custom-control-indicator"></span>
+                                                        <span class="custom-control-description">No</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Legal Entity Status</label>
+                                        <select class="form-control" name="legal_status"  id="legal_status">
+                                            <option value="">--SELECT--</option>
+                                            <option value="Private Ltd">Private Ltd</option>
+                                            <option value="Public Ltd">Public Ltd</option>
+                                            <option value="Government undertaking">Government undertaking (Pull from master table)</option>
+                                        </select>
+                                        <div class="alert alert-danger" id="legal_statusErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label class="form-label">Are you a part of a larger Corporation?</label><br>
+                                            <br><div class="form-group">
+                                                <div class="form-check">
+                                                    <label class="custom-control custom-radio">
+                                                        <input type="radio" name="larger_corporation" class="custom-control-input" value="Yes" onclick="checkCorporation(this.value)">
+                                                        <span class="custom-control-indicator"></span>
+                                                        <span class="custom-control-description">Yes</span>
+                                                    </label>&nbsp;
+                                                    <label class="custom-control custom-radio">
+                                                        <input type="radio" name="larger_corporation" class="custom-control-input" value="No" onclick="checkCorporation(this.value)">
+                                                        <span class="custom-control-indicator"></span>
+                                                        <span class="custom-control-description">No</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label class="form-label">Relationship</label><br>
+                                            <input type="text" class="form-control" id="relationship" name="relationship">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label class="form-label">Has the FBO been licensed before?</label><br><br>
+                                            <div class="form-group">
+                                                <div class="form-check">
+                                                    <label class="custom-control custom-radio">
+                                                        <input type="radio" name="licensed_before" class="custom-control-input" value="Yes">
+                                                        <span class="custom-control-indicator"></span>
+                                                        <span class="custom-control-description">Yes</span>
+                                                    </label>&nbsp;
+                                                    <label class="custom-control custom-radio">
+                                                        <input type="radio" name="licensed_before" class="custom-control-input" value="No">
+                                                        <span class="custom-control-indicator"></span>
+                                                        <span class="custom-control-description">No</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label class="form-label">If Yes, provide details of License number</label><br>
+                                            <input type="text" class="form-control" id="license_number" name="license_number">
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label class="form-label">Reasons why the License is no longer valid</label><br>
+                                            <textarea class="form-control" id="reason" name="reason"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label class="form-label">Any judicial proceedings relating to the FBOs operations/product?</label><br>
+                                            <br><div class="form-group">
+                                                <div class="form-check">
+                                                    <label class="custom-control custom-radio">
+                                                        <input type="radio" name="judicial_proceedings" class="custom-control-input" value="Yes">
+                                                        <span class="custom-control-indicator"></span>
+                                                        <span class="custom-control-description">Yes</span>
+                                                    </label>&nbsp;
+                                                    <label class="custom-control custom-radio">
+                                                        <input type="radio" name="judicial_proceedings" class="custom-control-input" value="No">
+                                                        <span class="custom-control-indicator"></span>
+                                                        <span class="custom-control-description">No</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label class="form-label">Please provide details</label><br>
+                                            <textarea class="form-control" id="provided_details" name="provided_details"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label class="form-label">Any proceedings by any Regulatory body or suspension /cancellation /withdrawal of any relevant licensing/approvals under any Regulations </label><br>
+                                            <br><div class="form-group">
+                                                <div class="form-check">
+                                                    <label class="custom-control custom-radio">
+                                                        <input type="radio" name="regulatory_proceedings" class="custom-control-input" value="Yes">
+                                                        <span class="custom-control-indicator"></span>
+                                                        <span class="custom-control-description">Yes</span>
+                                                    </label>&nbsp;
+                                                    <label class="custom-control custom-radio">
+                                                        <input type="radio" name="regulatory_proceedings" class="custom-control-input" value="No">
+                                                        <span class="custom-control-indicator"></span>
+                                                        <span class="custom-control-description">No</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label class="form-label">Please provide details</label><br>
+                                            <textarea class="form-control" id="regulatory_proceedings_details" name="regulatory_proceedings_details"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label class="form-label">Has a Project Proposal been prepared  </label><br>
+                                            <br><div class="form-group">
+                                                <div class="form-check">
+                                                    <label class="custom-control custom-radio">
+                                                        <input type="radio" name="project_proposal" class="custom-control-input" value="Yes">
+                                                        <span class="custom-control-indicator"></span>
+                                                        <span class="custom-control-description">Yes</span>
+                                                    </label>&nbsp;
+                                                    <label class="custom-control custom-radio">
+                                                        <input type="radio" name="project_proposal" class="custom-control-input" value="No">
+                                                        <span class="custom-control-indicator"></span>
+                                                        <span class="custom-control-description">No</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                     <br><br>
+                    {% if application_details.PermitType == A %}
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Species</th>
+                                    <th scope="col">Breed</th>
+                                    <th scope="col">Age</th>
+                                    <th scope="col">Sex</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Unit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for import in import %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{import.Import_Category}}</td>
+                                        <td>{{import.Pesticide_Id}}</td>
+                                        <td>{{import.Description}}</td>
+                                        <td>{{import.Unit}}</td>
+                                        <td>{{import.Quantity}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="8" class="text-center">No Data</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Particulars</th>
+                                    <th scope="col">Company_Name</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Unit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for import in import %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{import.Import_Category}}</td>
+                                        <td>{{import.Pesticide_Id}}</td>
+                                        <td>{{import.Description}}</td>
+                                        <td>{{import.Unit}}</td>
+                                        <td>{{import.Quantity}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="6" class="text-center">No Data</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% endif%}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header" role="tab" id="headingTwo">
+                <a class="collapsed" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    Attachments
+                </a>
+            </div>
+            <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">File</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           {% for file_attach in file %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{file_attach.Attachment}}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                  <td colspan="3" class="text-center">No Data</td>
+                                </tr>
+                           {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header" role="tab" id="headingFive">
+                <a class="collapsed" data-toggle="collapse" href="#collapseFive" aria-expanded="false" aria-controls="collapseTwo">
+                    Inspection Team Details
+                </a>
+            </div>
+            <div id="collapseFive" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+                <div class="card-body">
+                    <div class="card-tools">
+                        <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="openInspectionTeamModal()">
+                            <span class="btn-label">
+                                <i class="fa fa-print"></i>
+                            </span>
+                            Add
+                        </a>
+                    </div>
+                    <br>
+                    <div id="inspection_team_details">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Designation</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                    <tr>
+                                      <td colspan="5" class="text-center">No Data</td>
+                                    </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header" role="tab" id="headingFour">
+                <a class="collapsed" data-toggle="collapse" href="#collapseFour" aria-expanded="false" aria-controls="collapseTwo">
+                    Team Formation
+                </a>
+            </div>
+            <div id="collapseFour" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+                <div class="card-body">
+                    <div class="card-tools">
+                        <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="openTeamModal()">
+                            <span class="btn-label">
+                                <i class="fa fa-print"></i>
+                            </span>
+                            Add
+                        </a>
+                    </div>
+                    <br>
+                    <div id="team_details">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Name Of Key Personal</th>
+                                    <th scope="col">Designation of Key Personal</th>
+                                    <th scope="col">Opening Meeting (Date)</th>
+                                    <th scope="col">Closing Meeting (Date)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                    <tr>
+                                      <td colspan="5" class="text-center">No Data</td>
+                                    </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header" role="tab" id="headingThree">
+                <a class="collapsed" data-toggle="collapse" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    Inspector Details
+                </a>
+            </div>
+            <div id="collapseThree" class="active" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion" style="">
+                <div class="card-body">
+                    <div class="card-tools">
+                        <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="openDecisionModal()">
+                            <span class="btn-label">
+                                <i class="fa fa-print"></i>
+                            </span>
+                            Add
+                        </a>
+                    </div>
+                    <br>
+                    <div id="details">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Requirement</th>
+                                    <th scope="col">Clause No</th>
+                                    <th scope="col">Concern</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Observations/ Findings</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                  <td colspan="6" class="text-center">No Data</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Date Of Inspection</label>
+                                <input type="text" class="form-control date-picker flatpickr-input active" id="dateOfInspection" name="date"  placeholder="Pick a date" readonly="readonly">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Recommendation</label>
+                                <textarea class="form-control" id="remarks" rows="2"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alert alert-info" id="messageDiv" style="display:none">
+                        Application Approved
+                    </div>
+                    <div class="alert alert-info" id="reject_messageDiv" style="display:none">
+                        Application Rejected
+                    </div>
+                    <hr>
+                    {% for application_details in application_details %}
+                        <div class="card-action text-center">
+                            <button type="button" id="approve_button" class="btn btn-flat btn-primary" onclick="approve_feasibility_inspection('{{application_details.Application_No}}')">
+                                <i class="ace-icon fa fa-times"></i>
+                                &nbsp;&nbsp;Approve
+                            </button>
+                            <button type="button" onclick="close_app_model()" class="btn btn-flat btn-danger">
+                                <i class="ace-icon fa fa-times"></i>
+                                &nbsp;&nbsp;Cancel
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div id="addModal" class="modal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"></h5>
+                        <button type="button" class="close" onclick="closeModal()">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Requirement</label>
+                                    <input type="text" class="form-control" id="Requirement">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Clause No</label>
+                                    <input type="text" class="form-control" id="Clause_No">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+
+                                    <div class="form-group col-md-6">
+                                        <div class="form-check">
+                                           <label class="form-label">Concern</label><br>
+                                            <label class="form-radio-label">
+                                                <input class="form-radio-input" type="radio" name="Concern" value="Yes">
+                                                <span class="form-radio-sign">Yes</span>
+                                            </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" name="Concern" value="No">
+                                                <span class="form-radio-sign">No</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Response or Actions proposed by FBO</label>
+                                    <input type="text" class="form-control date-picker flatpickr-input active" name="Date" id="Date" readonly>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Observations/Finding</label>
+                                    <textarea class="form-control" id="Observations" rows="2"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        {% for application_details in application_details %}
+                        <button type="button" class="btn btn-flat btn-primary" onclick="add_details_ins('{{ application_details.Application_No }}')">
+                            <i class="ace-icon fa fa-times"></i>
+                            &nbsp;&nbsp;Add
+                        </button>
+                        {% endfor %}
+                        <button type="button" class="btn btn-primary" onclick="closeModal()">Close Modal</button>
+                     </div>
+
+                  </div>
+            </div>
+        </div>
+        <div id="teamModal" class="modal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"></h5>
+                        <button type="button" class="close" onclick="closeModal()">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Name Of Key Personal</label>
+                                    <input type="text" class="form-control" name="name" id="name">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Designation Of Key Personal</label>
+                                    <input type="text" class="form-control" name="designation" id="designation">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Opening Meeting(Date)</label>
+                                    <input type="text" class="form-control date-picker flatpickr-input active" name="opening_date" id="opening_date" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Closing Meeting(Date)</label>
+                                    <input type="text" class="form-control date-picker flatpickr-input active" name="closing_date" id="closing_date" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        {% for application_details in application_details %}
+                        <button type="button" class="btn btn-flat btn-primary" onclick="add_team_details('{{ application_details.Application_No }}')">
+                            <i class="ace-icon fa fa-times"></i>
+                            &nbsp;&nbsp;Add
+                        </button>
+                        {% endfor %}
+                        <button type="button" class="btn btn-primary" onclick="closeTeamModal()">Close Modal</button>
+                     </div>
+
+                  </div>
+            </div>
+        </div>
+        <div id="InspectionTeamModal" class="modal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"></h5>
+                        <button type="button" class="close" onclick="closeModal()">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Name</label>
+                                    <input type="text" class="form-control" name="ins_name" id="ins_name">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Designation</label>
+                                    <input type="text" class="form-control" name="ins_designation" id="ins_designation">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        {% for application_details in application_details %}
+                        <button type="button" class="btn btn-flat btn-primary" onclick="add_inspection_team_details('{{ application_details.Application_No }}')">
+                            <i class="ace-icon fa fa-times"></i>
+                            &nbsp;&nbsp;Add
+                        </button>
+                        {% endfor %}
+                        <button type="button" class="btn btn-primary" onclick="closeTeamModal()">Close Modal</button>
+                     </div>
+
+                  </div>
+            </div>
+        </div>
+    <div class="modal fade" id="modal-common">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content edit">
+
+          </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal-decision">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content edit">
+
+          </div>
+        </div>
+    </div>
+<script src="{% static 'assets/js/app.min.js' %}"></script>
+<script>
+function openDecisionModal()
+{
+    $('#addModal').modal('show');
+}
+
+function openTeamModal()
+{
+    $('#teamModal').modal('show');
+}
+
+
+function closeModal()
+{
+    $("#addModal").modal('hide');
+}
+
+function closeTeamModal()
+{
+    $("#teamModal").modal('hide');
+}
+
+function openInspectionTeamModal()
+{
+    $("#InspectionTeamModal").modal('show');
+}
+
+function closeModal()
+{
+    $("#InspectionTeamModal").modal('hide');
+}
+
+function add_details_ins(application_id)
+{
+    Requirement = $('#Requirement').val();
+    Clause_No = $('#Clause_No').val();
+    Concern = $('input[name="Concern"]:checked').val();
+    Date = $('#Date').val();
+    Observations = $('#Observations').val();
+
+
+    $.ajax({
+        type : "GET",
+        url : "{% url 'concern_details_feasibility_ins' %}",
+        data :{'application_id':application_id,'Requirement':Requirement,'Observations':Observations,'Clause_No':Clause_No,'Date':Date,'Concern':Concern},
+        success : function(data) {
+            $('#details').html(data);
+            $('#details').show();
+            $('#addModal').modal('hide');
+        }
+    });
+}
+
+function add_team_details(application_id)
+{
+    name = $('#name').val();
+    designation = $('#designation').val();
+    opening_date = $('#opening_date').val();
+    closing_date = $('#closing_date').val();
+
+    $.ajax({
+        type : "GET",
+        url : "{% url 'team_details_feasibility_ins' %}",
+        data :{'application_id':application_id,'name':name,'designation':designation,'opening_date':opening_date,'closing_date':closing_date},
+        success : function(data) {
+            $('#team_details').html(data);
+            $('#team_details').show();
+            $('#teamModal').modal('hide');
+        }
+    });
+}
+
+function add_inspection_team_details(application_id)
+{
+    name = $('#ins_name').val();
+    designation = $('#ins_designation').val();
+
+    $.ajax({
+        type : "GET",
+        url : "{% url 'inspection_team_details' %}",
+        data :{'application_id':application_id,'name':name,'designation':designation},
+        success : function(data) {
+            $('#inspection_team_details').html(data);
+            $('#inspection_team_details').show();
+            $('#InspectionTeamModal').modal('hide');
+        }
+    });
+}
+
+function approve_feasibility_inspection(application_id)
+{
+    Inspection_Leader = $('#teamLeader').val();
+    Inspection_Team = $('#insTeam').val();
+    remarks = $('#remarks').val();
+    dateOfInspection = $('#dateOfInspection').val();
+    validity = $('#validity').val();
+
+   $.ajax({
+        type : "GET",
+        url : "{% url 'approve_feasibility_inspection' %}",
+        data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks ,
+        'dateOfInspection':dateOfInspection, 'validity':validity},
+        success : function(data) {
+            $('#messageDiv').show();
+            setTimeout(function() {
+                $("#messageDiv").hide('blind', {}, 500)
+            }, 2000);
+            setTimeout(function() {
+                location.reload();
+            }, 3000);
+        }
+    });
+}
+
+function reject_feasibility_inspection(application_id)
+{
+
+    Inspection_Leader = $('#teamLeader').val();
+    Inspection_Team = $('#insTeam').val();
+    remarks = $('#remarks').val();
+    dateOfInspection = $('#dateOfInspection').val();
+
+   $.ajax({
+        type : "GET",
+        url : "{% url 'reject_feasibility_inspection' %}",
+        data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks ,
+        'dateOfInspection':dateOfInspection},
+        success : function(data) {
+            $('#messageDiv').show();
+            setTimeout(function() {
+                $("#reject_messageDiv").hide('blind', {}, 500)
+            }, 2000);
+             setTimeout(function() {
+                location.reload();
+            }, 3000);
+        }
+    });
+}
+
+
+</script>
