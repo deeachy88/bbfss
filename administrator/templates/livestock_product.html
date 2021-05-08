@@ -7,7 +7,7 @@
             <div class="card">
                 <div class="card-header">
                     <strong class="card-title">Livestock Product Master</strong>
-                    <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#roleModal">
+                    <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#productModal">
                         Add Product
                     </button>
                 </div>
@@ -32,7 +32,7 @@
                                           <i class="zmdi zmdi-edit"></i>
                                     </button>
                                     <button type="button" class="btn btn-danger btn-sm js-delete-livestock-product"
-                                          data-url="{% url 'delete_livestock_product' Product.Product_Id %}">
+                                          data-url="{% url 'delete_livestock_product' product.Product_Id %}">
                                           <i class="zmdi zmdi-delete"></i>
                                     </button>
                                 </td>
@@ -50,7 +50,7 @@
     </div>
 </div>
 <form id="livestock_product_add_form" method="post" class="form-horizontal form-label-left">
-    <div class="modal fade" id="roleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="productModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -93,13 +93,13 @@
     {
         $.ajax({
             type : "POST",
-            url : "{% url 'livestock_product' %}",
+            url : "{% url 'livestock_product_page' %}",
             data : $('#livestock_product_add_form').serialize(),
             cache : false,
             dataType : "html",
             success : function(responseText)
             {
-                $("#roleModal").modal("hide");
+                $("#productModal").modal("hide");
                 location.reload();
                 $("#livestock_product_add_form")[0].reset();
             }

@@ -1,0 +1,106 @@
+<form method="post" id="applicationForm">
+{% csrf_token %}
+        <div class="card-body">
+            {% for complaint_details in complaint_details %}
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="cid">Applicant CID</label>
+                            <input type="number" disabled oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" value="{{complaint_details.CID}}">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" disabled class="form-control" id="applicantName" name="applicantName" value="{{complaint_details.Name}}">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="dzongkhag">Dzongkhag</label>
+                            <select class="form-control" disabled name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value),getLocation(this.value)">
+                                <option value="">--SELECT DZONGKHAG--</option>
+                                {% for dzongkhag in dzongkhag %}
+                                    <option value="{{ dzongkhag.Dzongkhag_Code }}" {% if complaint_details.Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>{{ dzongkhag.Dzongkhag_Name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="gewog">Gewog</label>
+                            <select class="form-control" disabled name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                <option value="">--SELECT GEWOG--</option>
+                               {% for gewog in gewog %}
+                                    <option value="{{ gewog.Gewog_Code }}" {% if complaint_details.Gewog_Code == gewog.Gewog_Code %}selected{% endif %}>{{ gewog.Gewog_Name }}</option>
+                               {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="village">Village</label>
+                             <select class="form-control" disabled name="village" id="village">
+                                <option value="">--SELECT VILLAGE--</option>
+                                {% for village in village %}
+                                    <option value="{{ village.Village_Code }}" {% if complaint_details.Village_Code == village.Village_Code %}selected{% endif %}>{{ village.Village_Name }}</option>
+                                {% endfor %}
+                             </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="contactNumber">Contact Number</label>
+                            <input type="number" disabled class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" value="{{complaint_details.Contact_No}}">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" disabled class="form-control" id="email" name="email" value="{{complaint_details.Email}}">
+                        </div>
+                        <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="address">Address</label>
+                            <input type="text" disabled class="form-control" id="address" name="address" value="{{complaint_details.Address}}">
+                        </div>
+                        <div class="alert alert-danger" id="addressErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="address">Complaint Description</label>
+                            <textarea class="form-control" disabled id="complainDescription" name="complainDescription">{{complaint_details.Complaint_Description}}</textarea>
+                        </div>
+                        <div class="alert alert-danger" id="complaintDescriptionErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+            {% endfor %}
+                <br>
+                <div class="row">
+                    <div class="col-md-6">
+                        <select class="form-control" name="forwardTo"  id="forwardTo">
+                            <option value="">--SELECT INSPECTOR--</option>
+                            {% for inspector_list in inspector_list %}
+                                    <option value="{{ complaint_details.Login_Id }}">{{ inspector_list.Name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        {% for complaint_details in complaint_details %}
+                            <button type="button" class="btn btn-primary" onclick="forwardApplication('{{ complaint_details.Application_No }}')"> Forward </button>
+                        {% endfor %}
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                     <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+                        Application Forwarded Successfully
+                    </div>
+                </div>
+        </div>
+</form>
+
