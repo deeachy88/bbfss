@@ -1,0 +1,103 @@
+{% load static %}
+<style>
+    .header-card {
+    background-color: white;
+}
+
+table, th, td {
+  border: 1px solid black;
+}
+
+</style>
+<div class="animated fadeIn">
+    <div class="card-header header-card"><font color='black'>
+        <div class="col-md-12">
+            <div >
+                <div class="card-head-row float-right">
+                    <div class="card-tools">
+                        <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Test Report';printClientTable()">
+                            <span class="btn-label">
+                                <i class="zmdi zmdi-print"></i>
+                            </span>
+                            Print
+                        </a>
+                    </div>
+                </div>
+                <br>
+                <br>
+                <div class="card-title text-center">
+                    <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
+                </div>
+                <h4 class="text-center"><font color='black'><b>RELEASE FORM</b></font></h4>
+                {% for certificate_details in certificate_details %}
+                <div class="row float-left">
+                    <p>Ref No&nbsp;:&nbsp;<b>{{certificate_details.Clearance_Ref_No}}</b></p>
+                </div>
+                <div class="card-body">
+                    <div class="col-md-12">
+                        <div class="row">
+                        <h6 class="text-center"><font color='black'><b>The following consignment is released to</b></font></h6>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="row">
+                        <h6 class="text-center"><font color='black'><b>Mr/Ms: &nbsp;&nbsp;{{certificate_details.Applicant_Name}}</b></font></h6>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="row">
+                        <h6 class="text-center"><font color='black'><b>Address:  &nbsp;&nbsp;{{certificate_details.Present_Address}}</b></font></h6>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Product Name and Description</th>
+                                <th scope="col">Unit</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for clearance in clearance %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{clearance.Product_Name_Description}}</td>
+                                    <td>{{clearance.Unit}}</td>
+                                    <td>{{clearance.Quantity_Released}}</td>
+                                    <td>{{clearance.Remarks}}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center">No Data</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+                <div class="card-body">
+                    <div class="col-md-12">
+                        <div class="row">
+                             <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Place of Issue:  &nbsp;&nbsp;{{certificate_details.Inspection_Date}}</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Name and signature of Authorized Officer</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </font>
+    </div>
+</div>

@@ -14,7 +14,7 @@ from administrator.models import t_village_master, t_gewog_master, t_dzongkhag_m
     t_field_office_master, t_location_field_office_mapping, t_unit_master, t_service_master, t_user_master
 from bbfss import settings
 from food.forms import ImportFormFood, FeasibilityForm
-from food.models import t_food_export_certificate_t1, t_food_licensinf_food_handler_t1, t_food_import_permit_t1, \
+from food.models import t_food_export_certificate_t1, t_food_licensing_food_handler_t1, t_food_import_permit_t1, \
     t_food_import_permit_inspection_t2, t_food_import_permit_t2, t_food_import_permit_inspection_t1, \
     t_food_import_permit_inspection_t3, t_food_business_registration_licensing_t1, \
     t_food_business_registration_licensing_t3, t_food_business_registration_licensing_t2, \

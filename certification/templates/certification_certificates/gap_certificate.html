@@ -1,0 +1,75 @@
+{% load static %}
+<style xmlns="http://www.w3.org/1999/html">
+    .header-card {
+    background-color: white;
+}
+
+table, th, td {
+  border: 1px solid black;
+}
+
+</style>
+<div class="animated fadeIn">
+    <div class="card-header header-card"><font color='black'>
+        <div class="col-md-12">
+            <div class="card-head-row float-right">
+                <div class="card-tools">
+                    <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Test Report';printClientTable()">
+                        <span class="btn-label">
+                            <i class="zmdi zmdi-print"></i>
+                        </span>
+                        Print
+                    </a>
+                </div>
+            </div>
+            <br>
+            <br>
+            <div class="card-title text-center">
+                <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
+            </div>
+           <h4 class="text-center"><font color='black'><b>BHUTAN GAP CERTIFICATE</b></font></h4>
+            {% for certificate_details in certificate_details %}
+            <div class="row float-right">
+                <p>Certificate Number&nbsp;:&nbsp;<b>{{certificate_details.Import_Permit_No}}</b></p>
+            </div>
+            <div class="row">
+                {% for certificate_details in certificate_details %}
+                <p>Certification Services, Bhutan Agriculture and Food Regulatory Authority hereby certifies that products of</p>
+                <p><h6 class="text-center"><font color='black'><b>{{certificate_details.Farm_Name}}</b></font></h6></p>
+                <p><h6 class="text-center"><font color='black'><b>{{certificate_details.Farm_Location}}</b></font></h6></p>
+                <p>are in accordance with the requirements of </p>
+                <p><h4 class="text-center"><font color='black'><b>BhutanGAP Standard 2017 (BTS 30:2017).</b></font></h4></p>
+                <p>This certificate is valid for those product (s) and area (s) specified below</p>
+            </div>
+            <div>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Name of Product</th>
+                            <th scope="col">Production Area</th>
+                            <th scope="col">No of Producer</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for gap_certificate_details in gap_certificate_details %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{gap_certificate_details.Crop_Name}}</td>
+                                <td>{{gap_certificate_details.Area_Cultivated}}&nbsp;&nbsp;{{gap_certificate_details.Unit}}</td>
+                                <td></td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center">No Data</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </font>
+    </div>
+</div>
