@@ -78,7 +78,6 @@ class t_food_licensinf_food_handler_t1(models.Model):
     Inspection_Remarks = models.TextField(default=None, blank=True, null=True)
     Attendance = models.CharField(max_length=5, default='No', blank=True, null=True)
 
-
 class t_food_import_permit_t1(models.Model):
     Application_No = models.CharField(max_length=30, primary_key=True)
     Import_Type = models.CharField(max_length=50, default=None)
@@ -105,6 +104,7 @@ class t_food_import_permit_t1(models.Model):
     Validity_Period = models.IntegerField(blank=True, null=True)
     Validity = models.DateField(blank=True, null=True)
     Import_Permit_No = models.CharField(max_length=20, blank=True, null=True)
+    Applicant_Id = models.CharField(max_length=100,  blank=True, null=True)
 
 
 class t_food_import_permit_t2(models.Model):
@@ -154,6 +154,7 @@ class t_food_import_permit_inspection_t1(models.Model):
     Inspection_Team = models.TextField(blank=True, null=True)
     Clearance_Ref_No = models.CharField(max_length=20, blank=True, null=True)
     Inspection_Remarks = models.TextField(blank=True, null=True)
+    Applicant_Id = models.CharField(max_length=100,  blank=True, null=True)
 
 
 class t_food_import_permit_inspection_t2(models.Model):
@@ -222,6 +223,14 @@ class t_food_business_registration_licensing_t1(models.Model):
     FR_Response = models.TextField(blank=True, null=True)
     FR_Recommendation = models.TextField(blank=True, null=True)
     Field_Office_Id = models.IntegerField(default=None, blank=True, null=True)
+    Applicant_Id = models.CharField(max_length=100,  blank=True, null=True)
+    Conditional_Clearance_No = models.CharField(max_length=100, blank=True, null=True)
+    Clearance_Approve_Date = models.DateField(blank=True, null=True)
+    Clearance_Validity_Period = models.IntegerField(blank=True, null=True)
+    Clearance_Validity = models.DateField(blank=True, null=True)
+    Approve_Date = models.DateField(blank=True, null=True)
+    Validity_Period = models.IntegerField(blank=True, null=True)
+    Validity = models.DateField(blank=True, null=True)
 
 
 class t_food_business_registration_licensing_t2(models.Model):

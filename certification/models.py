@@ -61,6 +61,8 @@ class t_certification_GAP_t1(models.Model):  # GAP main table
     Validity_Period = models.IntegerField(blank=True, null=True)
     Validity = models.DateField(blank=True, null=True)
     Farm_Location = models.CharField(max_length=250, default=None, blank=True, null=True)
+    Farm_Name = models.CharField(max_length=250, blank=True, null=True)
+    Applicant_Id = models.CharField(max_length=50, blank=True, null=True)
 
 
 class t_certification_GAP_t2(models.Model):  # GAP certification farmer group
@@ -210,6 +212,8 @@ class t_certification_Organic_t1(models.Model):  # Organic Certification main ta
     Validity_Period = models.IntegerField(blank=True, null=True)
     Validity = models.DateField(blank=True, null=True)
     Farm_Location = models.CharField(max_length=250, default=None, blank=True, null=True)
+    Farm_Name = models.CharField(max_length=250, blank=True, null=True)
+    Applicant_Id = models.CharField(max_length=50, blank=True, null=True)
 
 
 class t_certification_Organic_t2(models.Model):  # Organic Certification farmer group
@@ -405,6 +409,7 @@ class t_certification_Food_t1(models.Model):  # Food Product main table
     Certificate_No = models.CharField(max_length=100, blank=True, null=True)
     Validity_Period = models.IntegerField(blank=True, null=True)
     Validity = models.DateField(blank=True, null=True)
+    Applicant_Id = models.CharField(max_length=50, blank=True, null=True)
 
 
 class t_certification_Food_t2(models.Model):  # Food Product farmer group
