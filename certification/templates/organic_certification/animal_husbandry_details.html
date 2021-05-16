@@ -1,0 +1,30 @@
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Livestock Type</th>
+            <th scope="col">Number Of Male</th>
+            <th scope="col">Number Of Female</th>
+            <th scope="col">Estimated Production</th>
+            <th scope="col">Estimated Production Unit</th>
+            <th scope="col">Product Sold</th>
+        </tr>
+    </thead>
+    <tbody>
+       {% for animal in animal_husbandry %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{animal.Livestock_Type}}</td>
+                <td>{{animal.Male_no}}</td>
+                <td>{{animal.Female_no}}</td>
+                <td>{{animal.Estimated_Production}}</td>
+                <td>{{animal.Production_Unit}}</td>
+                <td>{{animal.Production_Sold}}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="7" class="text-center">No Data</td>
+            </tr>
+       {% endfor %}
+    </tbody>
+</table>

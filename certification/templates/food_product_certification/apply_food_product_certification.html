@@ -13,7 +13,7 @@
 </style>
 <div class="card">
     <div class="card-header">
-        <h4 class="card-title">GAP Certification Application</h4>
+        <h4 class="card-title">Food Product Certification Application</h4>
     </div>
     <div class="card-body">
         <form method="post" id="ante_post_mortem_form">
@@ -41,156 +41,87 @@
             <div class="tab-content mt-2 mb-3" id="pills-mortemContent">
                 <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
                     <div class="row">
-                        <div class="col-sm-2">
-                            <label class="form-label">Applicant Type</label>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Applicant CID</label>
+                                <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)">
+                            </div>
+                            <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
                         </div>
-                        <div class="col-sm-4 justify-content-center">
-                            <label class="custom-control custom-radio">
-                                <input type="radio" name="Applicant_Type" class="custom-control-input" value="I">
-                                <span class="custom-control-indicator"></span>
-                                <span class="custom-control-description">Individual</span>
-                            </label>
-                            <label class="custom-control custom-radio">
-                                <input type="radio" name="Applicant_Type" class="custom-control-input" value="F">
-                                <span class="custom-control-indicator"></span>
-                                <span class="custom-control-description">Farmers Group</span>
-                            </label>
-                            <div class="alert alert-danger" id="applicantTypeErrorMsg" style="display:none"></div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Name</label>
+                                <input type="text" class="form-control" id="name" name="Name">
+                            </div>
+                            <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
                         </div>
-                    </div><br>
-                    <div id="individual_details">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Applicant CID</label>
-                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)">
-                                </div>
-                                <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Dzongkhag</label>
+                                <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
+                                    <option value="">--SELECT DZONGKHAG--</option>
+                                    {% for dzongkhag in dzongkhag %}
+                                            <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Name</label>
-                                    <input type="text" class="form-control" id="name" name="Name">
-                                </div>
-                                <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Dzongkhag</label>
-                                    <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
-                                        <option value="">--SELECT DZONGKHAG--</option>
-                                        {% for dzongkhag in dzongkhag %}
-                                                <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Gewog</label>
-                                    <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
-                                        <option value="">--SELECT GEWOG--</option>
-                                        {% for gewog in gewog %}
-                                                <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Village</label>
-                                     <select class="form-control" name="village" id="village">
-                                        <option value="">--SELECT VILLAGE--</option>
-                                        {% for village in village %}
-                                                <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
-                                        {% endfor %}
-                                     </select>
-                                </div>
-                                <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Farm Location</label>
-                                    <textarea class="form-control" id="farm_location" name="farm_location"></textarea>
-                                </div>
-                                <div class="alert alert-danger" id="presentAddressErrorMsg" style="display:none"></div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="email" name="email" onchange="validateemailId(this.value)">
-                                </div>
-                                <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Contact Number</label>
-                                    <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
-                                </div>
-                                <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Request Date for Inspection</label>
-                                     <input type="date" name="inspectionDate" id="inspectionDate" class="form-control date-picker flatpickr-input active">
-                                </div>
-                                <div class="alert alert-danger" id="inspectionDateErrorMsg" style="display:none"></div>
-                            </div>
+                            <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
                         </div>
                     </div>
-                    <div id="group_details">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Name Of Farmers Group</label>
-                                    <input type="text" class="form-control" id="farmers_group_name" name="farmers_group_name">
-                                </div>
-                                <div class="alert alert-danger" id="farmers_group_nameErrorMsg" style="display:none"></div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Gewog</label>
+                                <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                    <option value="">--SELECT GEWOG--</option>
+                                    {% for gewog in gewog %}
+                                            <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
+                            <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Dzongkhag</label>
-                                    <select class="form-control" name="farmers_group_dzongkhag"  id="farmers_group_dzongkhag" onchange="getGewog(this.value)">
-                                        <option value="">--SELECT DZONGKHAG--</option>
-                                        {% for dzongkhag in dzongkhag %}
-                                                <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div class="alert alert-danger" id="farmers_group_dzongkhagErrorMsg" style="display:none"></div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Village</label>
+                                 <select class="form-control" name="village" id="village">
+                                    <option value="">--SELECT VILLAGE--</option>
+                                    {% for village in village %}
+                                            <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
+                                    {% endfor %}
+                                 </select>
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Gewog</label>
-                                    <select class="form-control" name="farmers_group_gewog" id="farmers_group_gewog" onchange="getVillage(this.value)">
-                                        <option value="">--SELECT GEWOG--</option>
-                                        {% for gewog in gewog %}
-                                                <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div class="alert alert-danger" id="farmers_group_gewogErrorMsg" style="display:none"></div>
+                            <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Farm Location</label>
+                                <textarea class="form-control" id="farm_location" name="farm_location"></textarea>
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Village</label>
-                                     <select class="form-control" name="farmers_group_village" id="farmers_group_village">
-                                        <option value="">--SELECT VILLAGE--</option>
-                                        {% for village in village %}
-                                                <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
-                                        {% endfor %}
-                                     </select>
-                                </div>
-                                <div class="alert alert-danger" id="farmers_group_villageErrorMsg" style="display:none"></div>
+                            <div class="alert alert-danger" id="presentAddressErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" onchange="validateemailId(this.value)">
                             </div>
+                            <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Contact Number</label>
+                                <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                            </div>
+                            <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Request Date for Inspection</label>
+                                 <input type="date" name="inspectionDate" id="inspectionDate" class="form-control date-picker flatpickr-input active">
+                            </div>
+                            <div class="alert alert-danger" id="inspectionDateErrorMsg" style="display:none"></div>
                         </div>
                     </div>
                     <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
@@ -212,12 +143,12 @@
                     </div>
                     <div class="card-body">
                         <div id="mortem_details">
-                            {% include 'GAP_Certification/farmer_group_details.html' %}
+                            {% include 'food_product_certification/farmer_group_details.html' %}
                         </div>
                     </div>
                 </div>
                 <div class="card-action">
-                    <button type="button" class="btn btn-success" onclick="save_mortem()">Save</button>
+                    <button type="button" class="btn btn-success" onclick="save_farmer_group_details()">Save</button>
                 </div>
             </div>
             <div class="tab-pane fade" id="crop_production_details" role="tabpanel" aria-labelledby="pills-crop-production">
@@ -225,13 +156,13 @@
                     <div class="card-header">
                         <div class="card-head-row">
                             <div class="card-tools pull-right">
-                                <button type="button" class="btn btn-light" onclick="crop_production_modal()">Add Details</button>
+                                <button type="button" class="btn btn-light" onclick="commodity_modal()">Add</button>
                             </div>
                         </div>
                     </div>
                     <div class="card-body">
-                        <div id="crop_production">
-                            {% include 'GAP_Certification/crop_production_details.html' %}
+                        <div id="commodity">
+                            {% include 'food_product_certification/commodity_details.html' %}
                         </div>
                     </div>
                 </div>
@@ -239,28 +170,9 @@
                     <button type="button" class="btn btn-success" onclick="save_crop_production()">Save</button>
                 </div>
             </div>
-            <div class="tab-pane fade" id="pack_house_details" role="tabpanel" aria-labelledby="pills-pack-house">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-head-row">
-                            <div class="card-tools pull-right">
-                                <button type="button" class="btn btn-light" onclick="pack_house_modal()">Add Details</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div id="pack_house">
-                            {% include 'GAP_Certification/pack_house_details.html' %}
-                        </div>
-                    </div>
-                </div>
-                <div class="card-action">
-                    <button type="button" class="btn btn-success" onclick="save_pack_house()">Save</button>
-                </div>
-            </div>
             <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="mortem-file-attach">
                 <div id="file-attachment-mortem">
-                    {% include 'ante_post_mortem/file_attachment.html' %}
+                    {% include 'food_product_certification/file_attachment.html' %}
                 </div>
             </div>
             </div>
@@ -268,14 +180,14 @@
     </div>
 </div>
 
-<form method="post" id="mortem_details_form">
+<form method="post" id="commodity_details_form">
     {% csrf_token %}
-    <input type="hidden" id="application_no_details" name="application_no_details">
+    <input type="hidden" id="commodity_application_no" name="commodity_application_no">
     <div class="modal fade" id="add_mortem_details" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Add Details</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Add Commodity Details</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -285,20 +197,6 @@
                         <div class="box box-primary">
                             <div class="box-body">
                                 <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label class="form-label">Species</label>
-                                        <select class="form-control form-control" id="Species" name="Species">
-                                            <option value="">-SELECT-</option>
-                                            <option value="Bovine">Bovine</option>
-                                            <option value="Caprine">Caprine</option>
-                                            <option value="Swine">Swine</option>
-                                            <option value="fish">(fish)</option>
-                                            <option value="Yak">Yak</option>
-                                            <option value="Ovine">Ovine</option>
-                                            <option value="Avian">Avian</option>
-                                        </select>
-                                        <div class="alert alert-danger" id="SpeciesErrorMsg" style="display:none"></div>
-                                    </div>
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Nos</label>
                                         <input type="text" name="Nos" class="form-control" id="Nos" required>
@@ -648,10 +546,6 @@ function checkContact(value)
 
 }
 
-function save_mortem()
-{
-    $('#mortem-file-attach').tab('show');
-}
 
 </script>
 {% endblock %}

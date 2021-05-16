@@ -1,0 +1,34 @@
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Aquaculture Type</th>
+            <th scope="col">Estimated Yield</th>
+            <th scope="col">Estimated Yield Unit</th>
+            <th scope="col">Harvest Month</th>
+            <th scope="col">Sold</th>
+            <th scope="col">Sold Unit</th>
+            <th scope="col">Balance Stock</th>
+            <th scope="col">Balance Stock Unit</th>
+        </tr>
+    </thead>
+    <tbody>
+       {% for aqua in aquaculture_details %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{aqua.Aquaculture_Type}}</td>
+                <td>{{aqua.Estimated_Yield}}</td>
+                <td>{{aqua.Estimated_Yield_Unit}}</td>
+                <td>{{aqua.Harvest_Month}}</td>
+                <td>{{aqua.Sold}}</td>
+                <td>{{aqua.Sold_Unit}}</td>
+                <td>{{aqua.Balance_Stock}}</td>
+                <td>{{aqua.Balance_Stock_Unit}}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="7" class="text-center">No Data</td>
+            </tr>
+       {% endfor %}
+    </tbody>
+</table>

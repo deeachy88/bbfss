@@ -1,0 +1,35 @@
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Common Name</th>
+            <th scope="col">Botanical Name</th>
+            <th scope="col">Part of Plant Harvested</th>
+            <th scope="col">Estimated Harvest/Yield</th>
+            <th scope="col">Estimated Harvest/Yield Unit</th>
+            <th scope="col">Estimated Harvest Yield/Season</th>
+            <th scope="col">Harvest Acreage</th>
+            <!--<th scope="col">Harvest Month</th>-->
+            <th scope="col">Unit</th>
+        </tr>
+    </thead>
+    <tbody>
+       {% for wild in wild_collection %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{wild.Common_Name}}</td>
+                <td>{{wild.Botanical_Name}}</td>
+                <td>{{wild.Plant_Part}}</td>
+                <td>{{wild.Estimated_Harvest}}</td>
+                <td>{{wild.Harvest_Unit}}</td>
+                <td>{{wild.Harvest_Season}}</td>
+                <td>{{wild.Harvest_Acreage}}</td>
+                <td>{{wild.Acreage_Unit}}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="3" class="text-center">No Data</td>
+            </tr>
+       {% endfor %}
+    </tbody>
+</table>

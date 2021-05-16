@@ -4,10 +4,9 @@ from django.db import models
 # Create your models here.
 
 
-class t_certification_GAP_t1(models.Model): # GAP main table
+class t_certification_GAP_t1(models.Model):  # GAP main table
     Application_No = models.CharField(max_length=30, primary_key=True)
     Application_Date = models.DateField(blank=True, null=True)
-    Certificate_Type = models.CharField(max_length=50, default=None)
     Application_Type = models.CharField(max_length=50, default=None)
     CID = models.BigIntegerField(blank=True, null=True)
     Applicant_Name = models.CharField(max_length=250, blank=True, null=True)
@@ -26,6 +25,7 @@ class t_certification_GAP_t1(models.Model): # GAP main table
     Terms_Change_Willingness = models.CharField(max_length=1, blank=True, null=True)
     Terms_Abide = models.CharField(max_length=1, blank=True, null=True)
     Terms_Agreement = models.CharField(max_length=1, blank=True, null=True)
+    Acknowledge = models.CharField(max_length=1, blank=True, null=True)
     FO_Remarks = models.TextField(blank=True, null=True)
     Audit_Team_Leader = models.CharField(max_length=100, blank=True, null=True)
     Audit_Team_Acceptance = models.CharField(max_length=1, blank=True, null=True)
@@ -36,6 +36,7 @@ class t_certification_GAP_t1(models.Model): # GAP main table
     Audit_Plan_Scope = models.TextField(blank=True, null=True)
     Audit_Plan_Acceptance = models.CharField(max_length=1, blank=True, null=True)
     Audit_Plan_Acceptance_Remarks = models.TextField(blank=True, null=True)
+    Audit_Date = models.DateField(blank=True, null=True)
     Audit_Findings_Site_History = models.TextField(blank=True, null=True)
     Audit_Findings_Water_Source = models.TextField(blank=True, null=True)
     Audit_Findings_Product_Quality = models.TextField(blank=True, null=True)
@@ -59,20 +60,24 @@ class t_certification_GAP_t1(models.Model): # GAP main table
     Certificate_No = models.CharField(max_length=100, blank=True, null=True)
     Validity_Period = models.IntegerField(blank=True, null=True)
     Validity = models.DateField(blank=True, null=True)
+    Farm_Location = models.CharField(max_length=250, default=None, blank=True, null=True)
 
-class t_certification_GAP_t2(models.Model): # GAP certification farmer group
+
+class t_certification_GAP_t2(models.Model):  # GAP certification farmer group
     Record_Id = models.AutoField(primary_key=True)
     Application_No = models.CharField(max_length=20)
     CID = models.CharField(max_length=100, default=None, blank=True, null=True)
     Name = models.CharField(max_length=100, default=None, blank=True, null=True)
 
-class t_certification_GAP_t3(models.Model): # GAP Certification audit team
+
+class t_certification_GAP_t3(models.Model):  # GAP Certification audit team
     Record_Id = models.AutoField(primary_key=True)
     Application_No = models.CharField(max_length=20)
     Login_Id = models.CharField(max_length=100, default=None, blank=True, null=True)
     Name = models.CharField(max_length=100, default=None, blank=True, null=True)
 
-class t_certification_GAP_t4(models.Model): # GAP Certification crop production
+
+class t_certification_GAP_t4(models.Model):  # GAP Certification crop production
     Record_Id = models.AutoField(primary_key=True)
     Application_No = models.CharField(max_length=20)
     Crop_Name = models.CharField(max_length=100, default=None, blank=True, null=True)
@@ -84,7 +89,6 @@ class t_certification_GAP_t4(models.Model): # GAP Certification crop production
     P_Yield_Unit = models.CharField(max_length=50)
     P_Harvest_Month = models.CharField(max_length=50)
     P_Sold = models.IntegerField(blank=True, null=True)
-    P_Sold_Unit = models.CharField(max_length=50)
     P_Balance_Stock = models.IntegerField(blank=True, null=True)
     C_From_Date = models.DateField(blank=True, null=True)
     C_To_Date = models.DateField(blank=True, null=True)
@@ -92,7 +96,8 @@ class t_certification_GAP_t4(models.Model): # GAP Certification crop production
     C_Yield_Unit = models.CharField(max_length=50)
     C_Harvest_Month = models.CharField(max_length=50)
 
-class t_certification_GAP_t5(models.Model): # GAP Certification pack house
+
+class t_certification_GAP_t5(models.Model):  # GAP Certification pack house
     Record_Id = models.AutoField(primary_key=True)
     Application_No = models.CharField(max_length=20)
     Pack_House_Name = models.CharField(max_length=200, blank=True, null=True)
@@ -111,7 +116,7 @@ class t_certification_GAP_t5(models.Model): # GAP Certification pack house
     C_Balance_Stock = models.IntegerField(blank=True, null=True)
 
 
-class t_certification_GAP_t6(models.Model): # GAP Certification Audit Plan
+class t_certification_GAP_t6(models.Model):  # GAP Certification Audit Plan
     Record_Id = models.AutoField(primary_key=True)
     Application_No = models.CharField(max_length=20)
     Audit_Plan_Date = models.DateField(blank=True, null=True)
@@ -119,14 +124,16 @@ class t_certification_GAP_t6(models.Model): # GAP Certification Audit Plan
     Area_Function_Department = models.TextField(blank=True, null=True)
     Company_Contact = models.TextField(blank=True, null=True)
 
-class t_certification_GAP_t7(models.Model): # Audit Finding/Report (Farm inputs/raw materials and packaging materials)
+
+class t_certification_GAP_t7(models.Model):  # Audit Finding/Report (Farm inputs/raw materials and packaging materials)
     Record_Id = models.AutoField(primary_key=True)
     Application_No = models.CharField(max_length=20)
     Audit_Findings_Farm_Inputs = models.CharField(max_length=200, blank=True, null=True)
     Audit_Findings_Farm_Supplier = models.CharField(max_length=200, blank=True, null=True)
     Audit_Findings_Farm_Invoice = models.CharField(max_length=200, blank=True, null=True)
 
-class t_certification_GAP_t8(models.Model): # GAP Observation.
+
+class t_certification_GAP_t8(models.Model):  # GAP Observation.
     Record_Id = models.AutoField(primary_key=True)
     Application_No = models.CharField(max_length=20)
     Inspection_Type = models.CharField(max_length=200, blank=True, null=True)
@@ -142,10 +149,9 @@ class t_certification_GAP_t8(models.Model): # GAP Observation.
 
 
 # Organic Certification
-class t_certification_Organic_t1(models.Model): # Organic Certification main table
+class t_certification_Organic_t1(models.Model):  # Organic Certification main table
     Application_No = models.CharField(max_length=30, primary_key=True)
     Application_Date = models.DateField(blank=True, null=True)
-    Certificate_Type = models.CharField(max_length=50, default=None)
     Application_Type = models.CharField(max_length=50, default=None)
     CID = models.BigIntegerField(blank=True, null=True)
     Applicant_Name = models.CharField(max_length=250, blank=True, null=True)
@@ -169,6 +175,7 @@ class t_certification_Organic_t1(models.Model): # Organic Certification main tab
     Terms_Abide = models.CharField(max_length=1, blank=True, null=True)
     Terms_Agreement = models.CharField(max_length=1, blank=True, null=True)
     FO_Remarks = models.TextField(blank=True, null=True)
+    Acknowledge = models.CharField(max_length=1, blank=True, null=True)
     Audit_Team_Leader = models.CharField(max_length=100, blank=True, null=True)
     Audit_Team_Acceptance = models.CharField(max_length=1, blank=True, null=True)
     Audit_Team_Acceptance_Remarks = models.TextField(blank=True, null=True)
@@ -178,6 +185,7 @@ class t_certification_Organic_t1(models.Model): # Organic Certification main tab
     Audit_Plan_Scope = models.TextField(blank=True, null=True)
     Audit_Plan_Acceptance = models.CharField(max_length=1, blank=True, null=True)
     Audit_Plan_Acceptance_Remarks = models.TextField(blank=True, null=True)
+    Audit_Date = models.DateField(blank=True, null=True)
     Audit_Findings_Site_History = models.TextField(blank=True, null=True)
     Audit_Findings_Water_Source = models.TextField(blank=True, null=True)
     Audit_Findings_Product_Quality = models.TextField(blank=True, null=True)
@@ -201,20 +209,24 @@ class t_certification_Organic_t1(models.Model): # Organic Certification main tab
     Certificate_No = models.CharField(max_length=100, blank=True, null=True)
     Validity_Period = models.IntegerField(blank=True, null=True)
     Validity = models.DateField(blank=True, null=True)
+    Farm_Location = models.CharField(max_length=250, default=None, blank=True, null=True)
 
-class t_certification_Organic_t2(models.Model): # Organic Certification farmer group
+
+class t_certification_Organic_t2(models.Model):  # Organic Certification farmer group
     Record_Id = models.AutoField(primary_key=True)
     Application_No = models.CharField(max_length=20)
     CID = models.CharField(max_length=100, default=None, blank=True, null=True)
     Name = models.CharField(max_length=100, default=None, blank=True, null=True)
 
-class t_certification_Organic_t3(models.Model): # Organic Certification audit team
+
+class t_certification_Organic_t3(models.Model):  # Organic Certification audit team
     Record_Id = models.AutoField(primary_key=True)
     Application_No = models.CharField(max_length=20)
     Login_Id = models.CharField(max_length=100, default=None, blank=True, null=True)
     Name = models.CharField(max_length=100, default=None, blank=True, null=True)
 
-class t_certification_Organic_t4(models.Model): # Organic Certification crop production
+
+class t_certification_Organic_t4(models.Model):  # Organic Certification crop production
     Record_Id = models.AutoField(primary_key=True)
     Application_No = models.CharField(max_length=20)
     Crop_Name = models.CharField(max_length=100, default=None, blank=True, null=True)
@@ -226,7 +238,6 @@ class t_certification_Organic_t4(models.Model): # Organic Certification crop pro
     P_Yield_Unit = models.CharField(max_length=50)
     P_Harvest_Month = models.CharField(max_length=50)
     P_Sold = models.IntegerField(blank=True, null=True)
-    P_Sold_Unit = models.CharField(max_length=50)
     P_Balance_Stock = models.IntegerField(blank=True, null=True)
     C_From_Date = models.DateField(blank=True, null=True)
     C_To_Date = models.DateField(blank=True, null=True)
@@ -234,7 +245,8 @@ class t_certification_Organic_t4(models.Model): # Organic Certification crop pro
     C_Yield_Unit = models.CharField(max_length=50)
     C_Harvest_Month = models.CharField(max_length=50)
 
-class t_certification_Organic_t5(models.Model): # Organic Certification processing unit
+
+class t_certification_Organic_t5(models.Model):  # Organic Certification processing unit
     Record_Id = models.AutoField(primary_key=True)
     Application_No = models.CharField(max_length=20)
     Production_House_Name = models.CharField(max_length=200, blank=True, null=True)
@@ -249,8 +261,10 @@ class t_certification_Organic_t5(models.Model): # Organic Certification processi
     C_From_Date = models.DateField(blank=True, null=True)
     C_To_Date = models.DateField(blank=True, null=True)
     C_Production = models.IntegerField(blank=True, null=True)
+    C_Production_Unit = models.CharField(max_length=50)
     C_Sold = models.IntegerField(blank=True, null=True)
     C_Balance_Stock = models.IntegerField(blank=True, null=True)
+
 
 class t_certification_Organic_t6(models.Model):  # Organic Certification Wild Collection
     Record_Id = models.AutoField(primary_key=True)
@@ -264,6 +278,7 @@ class t_certification_Organic_t6(models.Model):  # Organic Certification Wild Co
     Harvest_Acreage = models.IntegerField(default=None, blank=True, null=True)
     Acreage_Unit = models.CharField(max_length=50, default=None, blank=True, null=True)
 
+
 class t_certification_Organic_t7(models.Model):  # Organic Certification Animal Husbandry/Livestock
     Record_Id = models.AutoField(primary_key=True)
     Application_No = models.CharField(max_length=20)
@@ -274,18 +289,21 @@ class t_certification_Organic_t7(models.Model):  # Organic Certification Animal 
     Production_Unit = models.CharField(max_length=50, default=None, blank=True, null=True)
     Production_Sold = models.CharField(max_length=200, default=None, blank=True, null=True)
 
-class t_certification_Organic_t7(models.Model):  # Organic Certification Aquaculture
+
+class t_certification_Organic_t8(models.Model):  # Organic Certification Aquaculture
     Record_Id = models.AutoField(primary_key=True)
     Application_No = models.CharField(max_length=20)
-    Aquaculture_Type = models.CharField(max_length=100, default=None, blank=True, null=True)
-    Estimated_Yield = models.IntegerField(default=None, blank=True, null=True)
-    Yield_Unit = models.CharField(max_length=50, default=None, blank=True, null=True)
-    Harvest_Month = models.CharField(max_length=200, default=None, blank=True, null=True)
-    Harvest_Sold = models.IntegerField(default=None, blank=True, null=True)
-    Harvest_Unit = models.CharField(max_length=50, default=None, blank=True, null=True)
-    Balance_Stock = models.IntegerField(default=None, blank=True, null=True)
+    Aquaculture_Type = models.CharField(max_length=20)
+    Estimated_Yield = models.CharField(max_length=200, default=None, blank=True, null=True)
+    Estimated_Yield_Unit = models.CharField(max_length=50, default=None, blank=True, null=True)
+    Harvest_Month = models.CharField(max_length=50, default=None, blank=True, null=True)
+    Sold = models.IntegerField(default=None, blank=True, null=True)
+    Sold_Unit = models.CharField(max_length=50, default=None, blank=True, null=True)
+    Balance_Stock = models.IntegerField(blank=True, null=True)
+    Balance_Stock_Unit = models.CharField(max_length=20, default=None, blank=True, null=True)
 
-class t_certification_Organic_t8(models.Model):  # Organic Certification Apiculture
+
+class t_certification_Organic_t9(models.Model):  # Organic Certification Api_culture
     Record_Id = models.AutoField(primary_key=True)
     Application_No = models.CharField(max_length=20)
     Common_Name = models.CharField(max_length=200, default=None, blank=True, null=True)
@@ -295,22 +313,16 @@ class t_certification_Organic_t8(models.Model):  # Organic Certification Apicult
     Harvest_Acreage = models.IntegerField(default=None, blank=True, null=True)
     Acreage_Unit = models.CharField(max_length=50, default=None, blank=True, null=True)
 
-class t_certification_Organic_t9(models.Model): # Organic Certification Audit Plan
-    Record_Id = models.AutoField(primary_key=True)
-    Application_No = models.CharField(max_length=20)
-    Audit_Plan_Date = models.DateField(blank=True, null=True)
-    Audit_Plan_Time = models.TimeField(blank=True, null=True)
-    Area_Function_Department = models.TextField(blank=True, null=True)
-    Company_Contact = models.TextField(blank=True, null=True)
 
-class t_certification_Organic_t10(models.Model): # Organic Certification Audit Finding/Report Related to T1)
+class t_certification_Organic_t10(models.Model):  # Organic Certification Audit Finding/Report Related to T1)
     Record_Id = models.AutoField(primary_key=True)
     Application_No = models.CharField(max_length=20)
     Audit_Findings_Farm_Inputs = models.CharField(max_length=200, blank=True, null=True)
     Audit_Findings_Farm_Supplier = models.CharField(max_length=200, blank=True, null=True)
     Audit_Findings_Farm_Invoice = models.CharField(max_length=200, blank=True, null=True)
 
-class t_certification_Organic_t11(models.Model): # Organic Certification Observation.
+
+class t_certification_Organic_t11(models.Model):  # Organic Certification Observation.
     Record_Id = models.AutoField(primary_key=True)
     Application_No = models.CharField(max_length=20)
     Inspection_Type = models.CharField(max_length=200, blank=True, null=True)
@@ -325,10 +337,8 @@ class t_certification_Organic_t11(models.Model): # Organic Certification Observa
     Non_Conformity_Closure = models.CharField(max_length=1, blank=True, null=True)
 
 
-
 # Food Product Certificate
-
-class t_certification_Food_t1(models.Model): # Food Product main table
+class t_certification_Food_t1(models.Model):  # Food Product main table
     Application_No = models.CharField(max_length=30, primary_key=True)
     Application_Date = models.DateField(blank=True, null=True)
     Firm_Name = models.CharField(max_length=250, blank=True, null=True)
@@ -360,6 +370,7 @@ class t_certification_Food_t1(models.Model): # Food Product main table
     Terms_Change_Willingness = models.CharField(max_length=1, blank=True, null=True)
     Terms_Abide = models.CharField(max_length=1, blank=True, null=True)
     Terms_Agreement = models.CharField(max_length=1, blank=True, null=True)
+    Acknowledge = models.CharField(max_length=1, blank=True, null=True)
     FO_Remarks = models.TextField(blank=True, null=True)
     Audit_Team_Leader = models.CharField(max_length=100, blank=True, null=True)
     Audit_Team_Acceptance = models.CharField(max_length=1, blank=True, null=True)
@@ -370,6 +381,7 @@ class t_certification_Food_t1(models.Model): # Food Product main table
     Audit_Plan_Scope = models.TextField(blank=True, null=True)
     Audit_Plan_Acceptance = models.CharField(max_length=1, blank=True, null=True)
     Audit_Plan_Acceptance_Remarks = models.TextField(blank=True, null=True)
+    Audit_Date = models.DateField(blank=True, null=True)
     Audit_Findings_Site_History = models.TextField(blank=True, null=True)
     Audit_Findings_Water_Source = models.TextField(blank=True, null=True)
     Audit_Findings_Product_Quality = models.TextField(blank=True, null=True)
@@ -394,34 +406,30 @@ class t_certification_Food_t1(models.Model): # Food Product main table
     Validity_Period = models.IntegerField(blank=True, null=True)
     Validity = models.DateField(blank=True, null=True)
 
-class t_certification_Food_t2(models.Model): # Food Product farmer group
+
+class t_certification_Food_t2(models.Model):  # Food Product farmer group
     Record_Id = models.AutoField(primary_key=True)
     Application_No = models.CharField(max_length=20)
     CID = models.CharField(max_length=100, default=None, blank=True, null=True)
     Name = models.CharField(max_length=100, default=None, blank=True, null=True)
 
-class t_certification_Food_t3(models.Model): # Food Product audit team
+
+class t_certification_Food_t3(models.Model):  # Food Product audit team
     Record_Id = models.AutoField(primary_key=True)
     Application_No = models.CharField(max_length=20)
     Login_Id = models.CharField(max_length=100, default=None, blank=True, null=True)
     Name = models.CharField(max_length=100, default=None, blank=True, null=True)
 
-class t_certification_Food_t4(models.Model): # Food Product Audit Plan
-    Record_Id = models.AutoField(primary_key=True)
-    Application_No = models.CharField(max_length=20)
-    Audit_Plan_Date = models.DateField(blank=True, null=True)
-    Audit_Plan_Time = models.TimeField(blank=True, null=True)
-    Area_Function_Department = models.TextField(blank=True, null=True)
-    Company_Contact = models.TextField(blank=True, null=True)
 
-class t_certification_Food_t5(models.Model): # Food Product Audit Finding/Report (Farm inputs/raw materials)
+class t_certification_Food_t4(models.Model):  # Food Product Audit Finding/Report (Farm inputs/raw materials)
     Record_Id = models.AutoField(primary_key=True)
     Application_No = models.CharField(max_length=20)
     Audit_Findings_Farm_Inputs = models.CharField(max_length=200, blank=True, null=True)
     Audit_Findings_Farm_Supplier = models.CharField(max_length=200, blank=True, null=True)
     Audit_Findings_Farm_Invoice = models.CharField(max_length=200, blank=True, null=True)
 
-class t_certification_Food_t6(models.Model): # Food Product Observation.
+
+class t_certification_Food_t5(models.Model):  # Food Product Observation.
     Record_Id = models.AutoField(primary_key=True)
     Application_No = models.CharField(max_length=20)
     Inspection_Type = models.CharField(max_length=200, blank=True, null=True)
@@ -434,4 +442,3 @@ class t_certification_Food_t6(models.Model): # Food Product Observation.
     Corrective_Action_Date = models.DateField(blank=True, null=True)
     Corrective_Action_Verified_Auditor = models.TextField(blank=True, null=True)
     Non_Conformity_Closure = models.CharField(max_length=1, blank=True, null=True)
-

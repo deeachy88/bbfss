@@ -1,0 +1,48 @@
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Crop Name</th>
+            <th scope="col">Cultivated Area</th>
+            <th scope="col">Area Unit</th>
+            <th scope="col">For the previous year(From date)</th>
+            <th scope="col">For the previous year(To date)</th>
+            <th scope="col">Yield</th>
+            <th scope="col">Yield Unit</th>
+            <th scope="col">Harvest Month</th>
+            <th scope="col">Sold</th>
+            <th scope="col">Balance Stock</th>
+            <th scope="col">For the current year(From date)</th>
+            <th scope="col">For the current year(To date)</th>
+            <th scope="col">Estimated Yield</th>
+            <th scope="col">Yield Unit</th>
+            <th scope="col">Harvest Month</th>
+        </tr>
+    </thead>
+    <tbody>
+       {% for crop in crop_details %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{crop.Crop_Name}}</td>
+                <td>{{crop.Area_Cultivated}}</td>
+                <td>{{crop.Unit}}</td>
+                <td>{{crop.P_From_Date}}</td>
+                <td>{{crop.P_To_Date}}</td>
+                <td>{{crop.P_Yield}}</td>
+                <td>{{crop.P_Yield_Unit}}</td>
+                <td>{{crop.P_Harvest_Month}}</td>
+                <td>{{crop.P_Sold}}</td>
+                <td>{{crop.P_Balance_Stock}}</td>
+                <td>{{crop.C_From_Date}}</td>
+                <td>{{crop.C_To_Date}}</td>
+                <td>{{crop.C_Estimated_Yield}}</td>
+                <td>{{crop.C_Yield_Unit}}</td>
+                <td>{{crop.C_Harvest_Month}}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="3" class="text-center">No Data</td>
+            </tr>
+       {% endfor %}
+    </tbody>
+</table>

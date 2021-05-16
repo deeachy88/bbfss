@@ -16,7 +16,7 @@
         <h4 class="card-title">GAP Certification Application</h4>
     </div>
     <div class="card-body">
-        <form method="post" id="ante_post_mortem_form">
+        <form method="post" id="gap_certification_form">
         {% csrf_token %}
             <input type="hidden" name="application_no" id="applicationNo">
             <div class="row justify-content-left">
@@ -25,13 +25,13 @@
                         <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadDetails()">Application Form</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-details" data-toggle="pill" href="#details" role="tab" aria-controls="pills-details" aria-selected="false" onclick="load_details()">Details</a>
+                        <a class="nav-link" id="pills-farmers-group" data-toggle="pill" href="#farmers_group_details" role="tab" aria-controls="pills-farmers-group" aria-selected="false" onclick="load_details()">Farmer Group Details</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-crop-production" data-toggle="pill" href="#crop_production_details" role="tab" aria-controls="pills-crop-production" aria-selected="false" onclick="load_details()">Details</a>
+                        <a class="nav-link" id="pills-crop-production" data-toggle="pill" href="#crop_production_details" role="tab" aria-controls="pills-crop-production" aria-selected="false" onclick="load_details()">Crop Production </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-pack-house" data-toggle="pill" href="#pack_house_details" role="tab" aria-controls="pills-pack-house" aria-selected="false" onclick="load_details()">Details</a>
+                        <a class="nav-link" id="pills-pack-house" data-toggle="pill" href="#pack_house_details" role="tab" aria-controls="pills-pack-house" aria-selected="false" onclick="load_details()">Pack House Details</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="mortem-file-attach" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
@@ -153,6 +153,13 @@
                                 </div>
                                 <div class="alert alert-danger" id="farmers_group_nameErrorMsg" style="display:none"></div>
                             </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Farmers Group Number</label>
+                                    <input type="text" class="form-control" id="farmers_group_number" name="farmers_group_number">
+                                </div>
+                                <div class="alert alert-danger" id="farmers_group_numberErrorMsg" style="display:none"></div>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-md-4">
@@ -197,11 +204,11 @@
                         Save SuccessFul
                     </div>
                     <div class="card-action">
-                        <button type="button" class="btn btn-primary" onclick="save_mortem_form()">Save</button>
+                        <button type="button" class="btn btn-primary" onclick="save_gap_certification()">Save</button>
                     </div>
                 </div>
 
-            <div class="tab-pane fade" id="details" role="tabpanel" aria-labelledby="pills-details">
+            <div class="tab-pane fade" id="farmers_group_details" role="tabpanel" aria-labelledby="pills-farmers-group">
                 <div class="card">
                     <div class="card-header">
                         <div class="card-head-row">
@@ -225,13 +232,13 @@
                     <div class="card-header">
                         <div class="card-head-row">
                             <div class="card-tools pull-right">
-                                <button type="button" class="btn btn-light" onclick="crop_production_modal()">Add Details</button>
+                                <button type="button" class="btn btn-light" onclick="crop_production_details_modal()">Add Details</button>
                             </div>
                         </div>
                     </div>
                     <div class="card-body">
                         <div id="crop_production">
-                            {% include 'GAP_Certification/crop_production_details.html' %}
+                            {% include 'organic_certification/crop_production_details.html' %}
                         </div>
                     </div>
                 </div>
@@ -263,15 +270,97 @@
                     {% include 'GAP_Certification/file_attachment.html' %}
                 </div>
             </div>
+            <div class="tab-pane fade" id="standards" role="tabpanel" aria-labelledby="mortem-file-attach">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <div class="form-check">
+                            <label class="form-label">With a view to ensure the similarity of the process of production of the mentioned commodities as per related standard, we shall keep regular records and maintain all required documentation to fulfill the requirements of the identified Standard (refer previous point) and any other additional documentation required by the BAFRA as the Certification Body</label><br><br>
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" name="licensed_before" class="custom-control-input" value="Agree">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Agree</span>
+                                    </label>&nbsp;
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" name="licensed_before" class="custom-control-input" value="Disagree">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Disagree</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="form-check">
+                            <label class="form-label">We are willing to change our operational practices, as may be required from time to time to keep in line with our policy which may be directed by BAFRA.</label><br><br>
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" name="licensed_before" class="custom-control-input" value="Agree">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Agree</span>
+                                    </label>&nbsp;
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" name="licensed_before" class="custom-control-input" value="Disagree">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Disagree</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <div class="form-check">
+                            <label class="form-label">If BAFRA desires to make a preliminary inspection or investigation then, we, agree to give all our reasonable opportunity and privileges to BAFRA and accordingly provide our cooperation as per certification requirements.</label><br><br>
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" name="licensed_before" class="custom-control-input" value="Agree">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Agree</span>
+                                    </label>&nbsp;
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" name="licensed_before" class="custom-control-input" value="Disagree">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Disagree</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="form-check">
+                            <label class="form-label">If the certificate is awarded, we will abide by all the terms and conditions of the certification, so long as it remains valid for use and also comply with the Rules and Regulations. If the license/certificate becomes prolonged or it is cancelled, then we, shall ensure that any use of the Standard Mark on any commodity under the license will be stopped immediately and all related advertisement, materials will be taken back and other necessary action will be taken</label><br><br>
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" name="licensed_before" class="custom-control-input" value="Agree">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Agree</span>
+                                    </label>&nbsp;
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" name="licensed_before" class="custom-control-input" value="Disagree">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Disagree</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             </div>
         </form>
     </div>
 </div>
 
-<form method="post" id="GAP_details_form">
+<form method="post" id="crop_production_form">
     {% csrf_token %}
-    <input type="hidden" id="application_no_details" name="application_no_details">
-    <div class="modal fade" id="GAP_details" tabindex="-1">
+    <input type="hidden" id="crop_production_app_no" name="crop_production_app_no">
+    <div class="modal fade" id="crop_production_modal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -285,15 +374,112 @@
                         <div class="box box-primary">
                             <div class="box-body">
                                 <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label class="form-label">Name</label>
-                                        <input type="number" name="qty" class="form-control" id="qty" required>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Name Of the crop</label>
+                                        <input type="text" name="crop_name" class="form-control" id="crop_name" required>
+                                        <div class="alert alert-danger" id="NosErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Cultivated Area</label>
+                                        <input type="number" name="area" class="form-control" id="area" required>
                                         <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
                                     </div>
-                                    <div class="form-group col-md-6">
-                                        <label for="remarks">Remarks</label>
-                                        <input type="text" name="remarks" class="form-control" id="remarks" required>
+                                    <div class="form-group col-md-4">
+                                        <label for="area_unit">Area Unit</label>
+                                        <input type="text" name="area_unit" class="form-control" id="area_unit" required>
                                         <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">For the previous year(From date)</label>
+                                             <input type="text" name="prev_year" id="prev_year" class="form-control date-picker flatpickr-input active">
+                                        </div>
+                                        <div class="alert alert-danger" id="prev_yearErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">For the previous year(To date)</label>
+                                             <input type="text" name="to_year" id="to_year" class="form-control date-picker flatpickr-input active">
+                                        </div>
+                                        <div class="alert alert-danger" id="to_yearErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Yield</label>
+                                             <input type="number" name="yield" id="yield" class="form-control">
+                                        </div>
+                                        <div class="alert alert-danger" id="yieldErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label>Yield Unit</label>
+                                        <input type="text" name="Yield_Unit" class="form-control" id="Yield_Unit" required>
+                                        <div class="alert alert-danger" id="Yield_UnitErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label>Harvest Month</label>
+                                        <input type="text" name="harvest_month" class="form-control" id="harvest_month" required>
+                                        <div class="alert alert-danger" id="harvest_monthErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label>Sold</label>
+                                        <input type="text" name="sold" class="form-control" id="sold" required>
+                                        <div class="alert alert-danger" id="soldErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <!--<div class="form-group col-md-4">
+                                        <label>Sold Unit</label>
+                                        <input type="text" name="sold_unit" class="form-control" id="sold_unit" required>
+                                        <div class="alert alert-danger" id="sold_unitErrorMsg" style="display:none"></div>
+                                    </div>-->
+                                    <div class="form-group col-md-4">
+                                        <label>Balance Stock</label>
+                                        <input type="text" name="balance_stock" class="form-control" id="balance_stock" required>
+                                        <div class="alert alert-danger" id="balance_stockErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <!--<div class="form-group col-md-4">
+                                        <label>Balance Stock Unit</label>
+                                        <input type="text" name="balance_stock_unit" class="form-control" id="balance_stock_unit" required>
+                                        <div class="alert alert-danger" id="balance_stock_unitErrorMsg" style="display:none"></div>
+                                    </div>-->
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">For the current year(From date)</label>
+                                             <input type="text" name="current_year" id="current_year" class="form-control date-picker flatpickr-input active">
+                                        </div>
+                                        <div class="alert alert-danger" id="current_yearErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">For the current year(To date)</label>
+                                             <input type="text" name="to_current_year" id="to_current_year" class="form-control date-picker flatpickr-input active">
+                                        </div>
+                                        <div class="alert alert-danger" id="to_current_yearErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Estimated Yield</label>
+                                             <input type="number" name="estimated_yield" id="estimated_yield" class="form-control">
+                                        </div>
+                                        <div class="alert alert-danger" id="estimated_yieldErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label>Yield Unit</label>
+                                        <input type="text" name="estimated_Yield_Unit" class="form-control" id="estimated_Yield_Unit" required>
+                                        <div class="alert alert-danger" id="estimated_Yield_UnitErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label>Harvest Month</label>
+                                        <input type="text" name="estimated_harvest_month" class="form-control" id="estimated_harvest_month" required>
+                                        <div class="alert alert-danger" id="estimated_harvest_monthErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                             </div>
@@ -302,7 +488,173 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="save_mortem_details()">Add</button>
+                    <button type="button" class="btn btn-primary" onclick="save_crop_production_details()">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form method="post" id="pack_house_form">
+    {% csrf_token %}
+    <input type="hidden" id="pack_house_application_no" name="pack_house_application_no">
+    <div class="modal fade" id="pack_house_model" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Name</label>
+                                        <input type="text" name="pack_house_name" class="form-control" id="pack_house_name" required>
+                                        <div class="alert alert-danger" id="pack_house_nameErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Address Of Pack House</label>
+                                        <textarea name="pack_house_address" id="pack_house_address" class="form-control"></textarea>
+                                        <div class="alert alert-danger" id="pack_house_addressErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">For the previous year (From date)</label>
+                                        <input type="text" class="form-control date-picker flatpickr-input active" id="previous_from_date" name="previous_from_date"  placeholder="Pick a date" readonly="readonly">
+                                        <div class="alert alert-danger" id="previous_from_dateErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">For the previous year (To date)</label>
+                                        <input type="text" class="form-control date-picker flatpickr-input active" id="previous_to_date" name="previous_to_date"  placeholder="Pick a date" readonly="readonly">
+                                        <div class="alert alert-danger" id="previous_to_dateErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Production </label>
+                                        <input type="number" name="production" class="form-control" id="production" required>
+                                        <div class="alert alert-danger" id="productionErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Production Unit</label>
+                                        <input type="text" name="production_unit" class="form-control" id="production_unit" required>
+                                        <div class="alert alert-danger" id="production_unitErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Sold</label>
+                                        <input type="number" name="previous_sold" class="form-control" id="previous_sold" required>
+                                        <div class="alert alert-danger" id="previous_soldErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Sold Unit</label>
+                                        <input type="text" name="previous_sold_unit" class="form-control" id="previous_sold_unit" required>
+                                        <div class="alert alert-danger" id="previous_sold_unitErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Balance Stock</label>
+                                        <input type="number" name="stock_balance" class="form-control" id="stock_balance" required>
+                                        <div class="alert alert-danger" id="stock_balanceErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Balance Stock Unit</label>
+                                        <input type="text" name="stock_balance_unit" class="form-control" id="stock_balance_unit" required>
+                                        <div class="alert alert-danger" id="stock_balance_unitErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">For the current  year (From date)</label>
+                                        <input type="text" class="form-control date-picker flatpickr-input active" id="current_from_date" name="current_from_date"  placeholder="Pick a date" readonly="readonly">
+                                        <div class="alert alert-danger" id="current_from_dateErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">For the current year (To date)</label>
+                                        <input type="text" class="form-control date-picker flatpickr-input active" id="current_to_date" name="current_to_date"  placeholder="Pick a date" readonly="readonly">
+                                        <div class="alert alert-danger" id="current_to_dateErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Sold</label>
+                                        <input type="number" name="current_sold" class="form-control" id="current_sold" required>
+                                        <div class="alert alert-danger" id="current_soldErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Sold Unit</label>
+                                        <input type="text" name="current_sold_unit" class="form-control" id="current_sold_unit" required>
+                                        <div class="alert alert-danger" id="current_sold_unitErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Balance Stock</label>
+                                        <input type="number" name="current_stock_balance" class="form-control" id="current_stock_balance" required>
+                                        <div class="alert alert-danger" id="current_stock_balanceErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Balance Srock Unit</label>
+                                        <input type="text" name="current_stock_unit" class="form-control" id="current_stock_unit" required>
+                                        <div class="alert alert-danger" id="current_stock_unitErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="save_pack_house_details()">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form method="post" id="farmers_group_form">
+    {% csrf_token %}
+    <input type="hidden" id="farmers_group_application_no" name="farmers_group_application_no">
+    <div class="modal fade" id="farmers_group_model" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">CID</label>
+                                            <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="farmers_group_cid" name="farmers_group_cid" maxlength="11" onkeypress="return isNumberKey(event)">
+                                        </div>
+                                        <div class="alert alert-danger" id="farmers_group_cidErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Name</label>
+                                            <input type="text" class="form-control" id="farmers_group_fullname" name="farmers_group_fullname">
+                                        </div>
+                                        <div class="alert alert-danger" id="farmers_group_fullnameErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="save_farmer_group_details()">Add</button>
                 </div>
             </div>
         </div>
@@ -346,7 +698,7 @@
 </form>
 <script>
 
-function save_mortem_form()
+function save_gap_certification()
 {
     var cid = $('#cid').val();
     var name = $('#name').val();
@@ -452,8 +804,8 @@ function save_mortem_form()
     {
         $.ajax({
             type : "POST",
-            url : "{% url 'save_application_form' %}",
-            data : $('#ante_post_mortem_form').serialize(),
+            url : "{% url 'save_gap_certificate' %}",
+            data : $('#gap_certification_form').serialize(),
             success : function(data)
             {
                 $('#applicationNo').val(data.applNo);
@@ -463,9 +815,18 @@ function save_mortem_form()
                 setTimeout(function() {
                     $("#submitMsg").hide('blind', {}, 500)
                 }, 2000);
-                setTimeout(function() {
-                    $('#pills-details').tab('show');
-                }, 3000);
+                if(data.Applicant_Type == 'I')
+                {
+                    setTimeout(function() {
+                        $('#pills-crop-production').tab('show');
+                    }, 3000);
+                }
+                else
+                {
+                    setTimeout(function() {
+                        $('#pills-details').tab('show');
+                    }, 3000);
+                }
             }
         });
     }
@@ -473,7 +834,7 @@ function save_mortem_form()
 
 
 
-function save_mortem_attachment()
+function save_gap_attachment()
 {
     var fileName = document.getElementById('document').files[0].name;
     var fd = new FormData();
@@ -489,7 +850,7 @@ function save_mortem_attachment()
     });
     $.ajax({
     type : "POST",
-    url : "{% url 'add_mortem_file' %}",
+    url : "{% url 'gap_certificate_file' %}",
     data : fd,
     dataType: 'json',
     contentType: false,
@@ -503,7 +864,7 @@ function save_mortem_attachment()
             $.ajax
             ({
                 type : "POST",
-                url : "{% url 'add_mortem_file_name' %}",
+                url : "{% url 'gap_certificate_file_name' %}",
                 data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
                 success : function(responseText)
                 {
@@ -524,62 +885,6 @@ function save_mortem_attachment()
 
 }
 
-function show_modal()
-{
-    $('#add_mortem_details').modal('show');
-}
-
-function show_mortem_attachment_modal()
-{
-    $('#attachmentModal').modal('show');
-}
-
-
-function save_mortem_details()
-    {
-        var Species = $('#Species').val();
-        var Nos = $('#Nos').val();
-        var qty = $('#qty').val();
-        var remarks = $('#remarks').val();
-
-        if(Species == "")
-        {
-            $('#SpeciesErrorMsg').html("Select Species.");
-            $('#SpeciesErrorMsg').show();
-            $('#SpeciesErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(Nos == "")
-        {
-            $('#NosErrorMsg').html("Enter Nos.");
-            $('#NosErrorMsg').show();
-            $('#NosErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(qty == "")
-        {
-            $('#qtyErrorMsg').html("Enter Quantity.");
-            $('#qtyErrorMsg').show();
-            $('#qtyErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(remarks == "")
-        {
-            $('#remarksErrorMsg').html("Enter Remarks.");
-            $('#remarksErrorMsg').show();
-            $('#remarksErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else{
-            $.ajax({
-                type : "POST",
-                url : "{% url 'save_mortem_details' %}",
-                data : $('#mortem_details_form').serialize(),
-                success : function(responseText) {
-                   $('#add_mortem_details').modal('hide');
-                   $('#mortem_details').html(responseText);
-                   $('#pills-details').tab('show');
-                   $('.modal-backdrop').remove();
-                }
-            });
-        }
-    }
 
 function validateemailId(emailId)
 {
@@ -627,9 +932,19 @@ function checkContact(value)
 
 }
 
-function save_mortem()
+function farmer_group_modal()
 {
-    $('#mortem-file-attach').tab('show');
+    $('#farmers_group_model').modal('show');
+}
+
+function crop_production_details_modal()
+{
+    $('#crop_production_modal').modal('show');
+}
+
+function pack_house_modal()
+{
+    $('#pack_house_model').modal('show');
 }
 
 </script>

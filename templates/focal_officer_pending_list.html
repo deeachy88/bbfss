@@ -17,6 +17,11 @@
                                     <th scope="col">Service Name</th>
                                     <th scope="col">Applicant</th>
                                     <th scope="col">Application Date</th>
+                                    {% for application_details in application_details %}
+                                    {% if application_details.Service_Code == 'OC'%}
+                                               <th scope="col">Action</th>
+                                        {% endif %}
+                                    {% endfor %}
                                 </tr>
                             </thead>
                             <tbody>
@@ -31,6 +36,12 @@
                                         {% endfor %}
                                         <td>{{application_details.Applicant_Id}}</td>
                                         <td>{{application_details.Action_Date|date:"d-m-Y"}}</td>
+                                        {% if application_details.Service_Code == 'OC'%}
+                                                <td><button type="button" class="btn btn-warning btn-sm js-edit-section" onclick="acknowledge('{{application_details.Application_No}}')">
+                                            Acknowledge
+                                            </button>
+                                                </td>
+                                        {% endif %}
                                     </tr>
                                     {% empty %}
                                     <tr>
@@ -82,6 +93,18 @@
             {
                 $('#details_import').html(data);
                 $('#import_detailsModal').modal('show');
+            }
+        });
+    }
+    function acknowledge(appId)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'send_acknowledge' %}",
+            data :{'application_id':appId},
+            success : function(data)
+            {
+
             }
         });
     }

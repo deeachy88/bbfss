@@ -13,6 +13,10 @@ from administrator.models import t_dzongkhag_master, t_gewog_master, t_village_m
     t_service_master, t_country_master, t_plant_crop_category_master, t_unit_master, t_section_master, \
     t_inspection_type_master
 from bbfss import settings
+from certification.models import t_certification_Organic_t1, t_certification_Organic_t2, t_certification_Organic_t3, \
+    t_certification_Organic_t4, t_certification_Organic_t5, t_certification_Organic_t6, t_certification_Organic_t11, \
+    t_certification_GAP_t1, t_certification_GAP_t2, t_certification_GAP_t3, t_certification_GAP_t4, \
+    t_certification_GAP_t5
 from food.models import t_food_export_certificate_t1, t_food_licensinf_food_handler_t1, t_food_import_permit_t1, \
     t_food_import_permit_t2, t_food_import_permit_inspection_t1, t_food_import_permit_inspection_t2, \
     t_food_business_registration_licensing_t1, t_food_business_registration_licensing_t2, \
@@ -42,6 +46,7 @@ def focal_officer_application(request):
     application_details = t_workflow_details.objects.filter(Assigned_Role_Id=Role_Id, Section=section,
                                                             Application_Status='P', Action_Date__isnull=False)
     service_details = t_service_master.objects.all()
+    #application_data = t_certification_Organic_t1.objects.all()
     return render(request, 'focal_officer_pending_list.html', {'application_details': application_details,
                                                                'service_details': service_details})
 
@@ -1055,6 +1060,44 @@ def fo_app_details(request):
         return render(request, 'registration_licensing/fo_details.html',
                       {'application_details': application_details, 'details': details, 'file': file,
                        'oic_list': oic_list, 'location': location, 'unit': unit})
+    elif service_code == 'OC':
+        application_details = t_certification_Organic_t1.objects.filter(Application_No=Application_No)
+        processing_details = t_certification_Organic_t2.objects.filter(Application_No=Application_No)
+        team_details = t_certification_Organic_t3.objects.filter(Application_No=Application_No)
+        app_details = t_certification_Organic_t4.objects.filter(Application_No=Application_No)
+        details_ah = t_certification_Organic_t5.objects.filter(Application_No=Application_No)
+        details_production = t_certification_Organic_t6.objects.filter(Application_No=Application_No)
+        details = t_food_business_registration_licensing_t2.objects.filter(Application_No=Application_No)
+        observation = t_certification_Organic_t11.objects.filter(Application_No=Application_No)
+        file = t_file_attachment.objects.filter(Application_No=Application_No)
+        team_details = t_user_master.objects.filter(Role_Id='4')
+        return render(request, 'organic_certification/fo_details.html',
+                      {'application_details': application_details, 'details': details, 'file': file,
+                       'location': location, 'team_details': team_details, 'processing_details': processing_details})
+    elif service_code == 'GAP':
+        application_details = t_certification_Organic_t1.objects.filter(Application_No=Application_No)
+        processing_details = t_certification_Organic_t2.objects.filter(Application_No=Application_No)
+        team_details = t_certification_Organic_t3.objects.filter(Application_No=Application_No)
+        application_details = t_certification_Organic_t4.objects.filter(Application_No=Application_No)
+        observation = t_certification_Organic_t11.objects.filter(Application_No=Application_No)
+        file = t_file_attachment.objects.filter(Application_No=Application_No)
+        unit = t_unit_master.objects.all()
+        oic_list = t_user_master.objects.filter(Role_Id='4')
+        return render(request, 'GAP_Certification/fo_details.html',
+                      {'application_details': application_details, 'file': file,
+                       'oic_list': oic_list, 'location': location, 'processing_details': processing_details})
+    elif service_code == 'FPC':
+        application_details = t_certification_Organic_t1.objects.filter(Application_No=Application_No)
+        processing_details = t_certification_Organic_t2.objects.filter(Application_No=Application_No)
+        team_details = t_certification_Organic_t3.objects.filter(Application_No=Application_No)
+        application_details = t_certification_Organic_t4.objects.filter(Application_No=Application_No)
+        observation = t_certification_Organic_t11.objects.filter(Application_No=Application_No)
+        file = t_file_attachment.objects.filter(Application_No=Application_No)
+        unit = t_unit_master.objects.all()
+        oic_list = t_user_master.objects.filter(Role_Id='4')
+        return render(request, 'food_product_certification/fo_details.html',
+                      {'application_details': application_details,'file': file,
+                       'oic_list': oic_list, 'location': location, 'processing_details': processing_details})
 
 
 def approve_fo_app(request):
@@ -4005,9 +4048,14 @@ def resubmit_application(request):
     else:
         service_details = t_service_master.objects.all()
         application_details = t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
-        return render(request, 'resubmit_application.html', {'application_details': application_details,
+        if application_details.exists():
+            return render(request, 'resubmit_application.html', {'application_details': application_details,
                                                              'service_details': service_details})
-
+        else:
+            service_details = t_service_master.objects.all()
+            application_details = t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AT')
+            return render(request, 'resubmit_application.html', {'application_details': application_details,
+                                                                 'service_details': service_details})
 
 def call_for_inspection_details(request):
     application_no = request.GET.get('application_id')
@@ -4098,3 +4146,38 @@ def resubmit_app_details(request):
                               {'application_details': application_details, 'details': details, 'file': file,
                                'inspector_list': inspector_list, 'unit': unit, 'inspection_details': inspection_details,
                                'team_details': team_details, 'inspection_team_details': inspection_team_details})
+    elif service_code == 'OC':
+        application_details = t_certification_Organic_t1.objects.filter(Application_No=appNo)
+        processing_details = t_certification_Organic_t2.objects.filter(Application_No=appNo)
+        team_details = t_certification_Organic_t3.objects.filter(Application_No=appNo)
+        app_details = t_certification_Organic_t4.objects.filter(Application_No=appNo)
+        details_ah = t_certification_Organic_t5.objects.filter(Application_No=appNo)
+        details_production = t_certification_Organic_t6.objects.filter(Application_No=appNo)
+        details = t_food_business_registration_licensing_t2.objects.filter(Application_No=appNo)
+        observation = t_certification_Organic_t11.objects.filter(Application_No=appNo)
+        file = t_file_attachment.objects.filter(Application_No=appNo)
+        return render(request, 'organic_certification/audit_team_accept.html',
+                      {'application_details': application_details, 'details': details, 'file': file,
+                       'team_details': team_details, 'processing_details': processing_details})
+    elif service_code == 'GAP':
+        application_details = t_certification_GAP_t1.objects.filter(Application_No=appNo)
+        processing_details = t_certification_GAP_t2.objects.filter(Application_No=appNo)
+        team_details = t_certification_GAP_t3.objects.filter(Application_No=appNo)
+        application_details = t_certification_GAP_t4.objects.filter(Application_No=appNo)
+        observation = t_certification_GAP_t5.objects.filter(Application_No=appNo)
+        file = t_file_attachment.objects.filter(Application_No=appNo)
+        unit = t_unit_master.objects.all()
+        return render(request, 'GAP_Certification/audit_team_accept.html',
+                      {'application_details': application_details, 'file': file,
+                       'processing_details': processing_details})
+    elif service_code == 'FPC':
+        application_details = t_certification_Organic_t1.objects.filter(Application_No=appNo)
+        processing_details = t_certification_Organic_t2.objects.filter(Application_No=appNo)
+        team_details = t_certification_Organic_t3.objects.filter(Application_No=appNo)
+        application_details = t_certification_Organic_t4.objects.filter(Application_No=appNo)
+        observation = t_certification_Organic_t11.objects.filter(Application_No=appNo)
+        file = t_file_attachment.objects.filter(Application_No=appNo)
+        unit = t_unit_master.objects.all()
+        return render(request, 'food_product_certification/audit_team_accept.html',
+                      {'application_details': application_details,'file': file,
+                       'processing_details': processing_details})

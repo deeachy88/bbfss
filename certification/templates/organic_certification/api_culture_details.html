@@ -1,0 +1,30 @@
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Common Name</th>
+            <th scope="col">Botanical Name</th>
+            <th scope="col">Estimated Harvest Yield</th>
+            <th scope="col">Estimated Harvest Yield Unit</th>
+            <th scope="col">Harvest Acreage</th>
+            <th scope="col">Unit</th>
+        </tr>
+    </thead>
+    <tbody>
+       {% for aqua in aquaculture_details %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{aqua.Common_Name}}</td>
+                <td>{{aqua.Botanical_Name}}</td>
+                <td>{{aqua.Estimated_Harvest}}</td>
+                <td>{{aqua.Harvest_Unit}}</td>
+                <td>{{aqua.Harvest_Acreage}}</td>
+                <td>{{aqua.Acreage_Unit}}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="7" class="text-center">No Data</td>
+            </tr>
+       {% endfor %}
+    </tbody>
+</table>
