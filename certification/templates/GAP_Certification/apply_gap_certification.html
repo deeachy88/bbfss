@@ -16,7 +16,7 @@
         <h4 class="card-title">GAP Certification Application</h4>
     </div>
     <div class="card-body">
-        <form method="post" id="gap_certification_form">
+        <form method="post" id="gap_certificate_form">
         {% csrf_token %}
             <input type="hidden" name="application_no" id="applicationNo">
             <div class="row justify-content-left">
@@ -34,7 +34,10 @@
                         <a class="nav-link" id="pills-pack-house" data-toggle="pill" href="#pack_house_details" role="tab" aria-controls="pills-pack-house" aria-selected="false" onclick="load_details()">Pack House Details</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="mortem-file-attach" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
+                        <a class="nav-link" id="file-attach" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="certification_standards" data-toggle="pill" href="#certification-standards" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">Standards</a>
                     </li>
                 </ul>
             </div>
@@ -46,158 +49,130 @@
                         </div>
                         <div class="col-sm-4 justify-content-center">
                             <label class="custom-control custom-radio">
-                                <input type="radio" name="Applicant_Type" class="custom-control-input" value="I">
+                                <input type="radio" name="Applicant_Type" class="custom-control-input" id="individual_radio" value="I" onclick="showDetails('I')">
                                 <span class="custom-control-indicator"></span>
                                 <span class="custom-control-description">Individual</span>
                             </label>
                             <label class="custom-control custom-radio">
-                                <input type="radio" name="Applicant_Type" class="custom-control-input" value="F">
+                                <input type="radio" name="Applicant_Type" class="custom-control-input" id="farmers_radio" value="F" onclick="showDetails('F')">
                                 <span class="custom-control-indicator"></span>
                                 <span class="custom-control-description">Farmers Group</span>
                             </label>
                             <div class="alert alert-danger" id="applicantTypeErrorMsg" style="display:none"></div>
                         </div>
                     </div><br>
-                    <div id="individual_details">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Applicant CID</label>
-                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)">
-                                </div>
-                                <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
+                    <div class="row">
+                        <div class="col-md-4 individual_details">
+                            <div class="form-group">
+                                <label class="form-label">Applicant CID</label>
+                                <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)">
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Name</label>
-                                    <input type="text" class="form-control" id="name" name="Name">
-                                </div>
-                                <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Dzongkhag</label>
-                                    <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
-                                        <option value="">--SELECT DZONGKHAG--</option>
-                                        {% for dzongkhag in dzongkhag %}
-                                                <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
-                            </div>
+                            <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Gewog</label>
-                                    <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
-                                        <option value="">--SELECT GEWOG--</option>
-                                        {% for gewog in gewog %}
-                                                <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
+                        <div class="col-md-4 individual_details">
+                            <div class="form-group">
+                                <label class="form-label">Name</label>
+                                <input type="text" class="form-control" id="name" name="Name">
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Village</label>
-                                     <select class="form-control" name="village" id="village">
-                                        <option value="">--SELECT VILLAGE--</option>
-                                        {% for village in village %}
-                                                <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
-                                        {% endfor %}
-                                     </select>
-                                </div>
-                                <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Farm Location</label>
-                                    <textarea class="form-control" id="farm_location" name="farm_location"></textarea>
-                                </div>
-                                <div class="alert alert-danger" id="presentAddressErrorMsg" style="display:none"></div>
-                            </div>
+                            <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="email" name="email" onchange="validateemailId(this.value)">
-                                </div>
-                                <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
+                        <div class="col-md-4 farmer_group_details" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label">Name of Farmers Group</label>
+                                <input type="text" class="form-control" id="farmers_group_name" name="farmers_group_name">
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Contact Number</label>
-                                    <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
-                                </div>
-                                <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
+                            <div class="alert alert-danger" id="farmers_group_nameErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4 farmer_group_details" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label">Farmers Group Number</label>
+                                <input type="text" class="form-control" id="farmers_group_number" name="farmers_group_number">
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Request Date for Inspection</label>
-                                     <input type="date" name="inspectionDate" id="inspectionDate" class="form-control date-picker flatpickr-input active">
-                                </div>
-                                <div class="alert alert-danger" id="inspectionDateErrorMsg" style="display:none"></div>
+                            <div class="alert alert-danger" id="farmers_group_numberErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Dzongkhag</label>
+                                <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
+                                    <option value="">--SELECT DZONGKHAG--</option>
+                                    {% for dzongkhag in dzongkhag %}
+                                            <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
+                            <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
                         </div>
                     </div>
-                    <div id="group_details">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Name Of Farmers Group</label>
-                                    <input type="text" class="form-control" id="farmers_group_name" name="farmers_group_name">
-                                </div>
-                                <div class="alert alert-danger" id="farmers_group_nameErrorMsg" style="display:none"></div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Gewog</label>
+                                <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                    <option value="">--SELECT GEWOG--</option>
+                                    {% for gewog in gewog %}
+                                            <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Farmers Group Number</label>
-                                    <input type="text" class="form-control" id="farmers_group_number" name="farmers_group_number">
-                                </div>
-                                <div class="alert alert-danger" id="farmers_group_numberErrorMsg" style="display:none"></div>
-                            </div>
+                            <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Dzongkhag</label>
-                                    <select class="form-control" name="farmers_group_dzongkhag"  id="farmers_group_dzongkhag" onchange="getGewog(this.value)">
-                                        <option value="">--SELECT DZONGKHAG--</option>
-                                        {% for dzongkhag in dzongkhag %}
-                                                <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div class="alert alert-danger" id="farmers_group_dzongkhagErrorMsg" style="display:none"></div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Village</label>
+                                 <select class="form-control" name="village" id="village">
+                                    <option value="">--SELECT VILLAGE--</option>
+                                    {% for village in village %}
+                                            <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
+                                    {% endfor %}
+                                 </select>
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Gewog</label>
-                                    <select class="form-control" name="farmers_group_gewog" id="farmers_group_gewog" onchange="getVillage(this.value)">
-                                        <option value="">--SELECT GEWOG--</option>
-                                        {% for gewog in gewog %}
-                                                <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div class="alert alert-danger" id="farmers_group_gewogErrorMsg" style="display:none"></div>
+                            <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Address</label>
+                                <textarea class="form-control" id="adddress" name="adddress"></textarea>
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Village</label>
-                                     <select class="form-control" name="farmers_group_village" id="farmers_group_village">
-                                        <option value="">--SELECT VILLAGE--</option>
-                                        {% for village in village %}
-                                                <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
-                                        {% endfor %}
-                                     </select>
-                                </div>
-                                <div class="alert alert-danger" id="farmers_group_villageErrorMsg" style="display:none"></div>
+                            <div class="alert alert-danger" id="adddress_ErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Farm Name</label>
+                                <textarea class="form-control" id="farm_name" name="farm_name"></textarea>
                             </div>
+                            <div class="alert alert-danger" id="farm_nameErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Farm Location</label>
+                                <textarea class="form-control" id="farm_location" name="farm_location"></textarea>
+                            </div>
+                            <div class="alert alert-danger" id="farm_locationErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" onchange="validateemailId(this.value)">
+                            </div>
+                            <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Contact Number</label>
+                                <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                            </div>
+                            <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Request Date for Inspection</label>
+                                 <input type="date" name="inspectionDate" id="inspectionDate" class="form-control date-picker flatpickr-input active">
+                            </div>
+                            <div class="alert alert-danger" id="inspectionDateErrorMsg" style="display:none"></div>
                         </div>
                     </div>
                     <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
@@ -224,7 +199,7 @@
                     </div>
                 </div>
                 <div class="card-action">
-                    <button type="button" class="btn btn-success" onclick="save_mortem()">Save</button>
+                    <button type="button" class="btn btn-success" onclick="save_farmer_details()">Save-Next</button>
                 </div>
             </div>
             <div class="tab-pane fade" id="crop_production_details" role="tabpanel" aria-labelledby="pills-crop-production">
@@ -243,7 +218,7 @@
                     </div>
                 </div>
                 <div class="card-action">
-                    <button type="button" class="btn btn-success" onclick="save_crop_production()">Save</button>
+                    <button type="button" class="btn btn-success" onclick="next_crop_production()">Save-Next</button>
                 </div>
             </div>
             <div class="tab-pane fade" id="pack_house_details" role="tabpanel" aria-labelledby="pills-pack-house">
@@ -262,96 +237,102 @@
                     </div>
                 </div>
                 <div class="card-action">
-                    <button type="button" class="btn btn-success" onclick="save_pack_house()">Save</button>
+                    <button type="button" class="btn btn-success" onclick="next_pack_house()">Save-Next</button>
                 </div>
             </div>
             <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="mortem-file-attach">
                 <div id="file-attachment-mortem">
                     {% include 'GAP_Certification/file_attachment.html' %}
                 </div>
-            </div>
-            <div class="tab-pane fade" id="standards" role="tabpanel" aria-labelledby="mortem-file-attach">
-                <div class="row">
-                    <div class="form-group col-md-6">
-                        <div class="form-check">
-                            <label class="form-label">With a view to ensure the similarity of the process of production of the mentioned commodities as per related standard, we shall keep regular records and maintain all required documentation to fulfill the requirements of the identified Standard (refer previous point) and any other additional documentation required by the BAFRA as the Certification Body</label><br><br>
-                            <div class="form-group">
-                                <div class="form-check">
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" name="licensed_before" class="custom-control-input" value="Agree">
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Agree</span>
-                                    </label>&nbsp;
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" name="licensed_before" class="custom-control-input" value="Disagree">
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Disagree</span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <div class="form-check">
-                            <label class="form-label">We are willing to change our operational practices, as may be required from time to time to keep in line with our policy which may be directed by BAFRA.</label><br><br>
-                            <div class="form-group">
-                                <div class="form-check">
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" name="licensed_before" class="custom-control-input" value="Agree">
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Agree</span>
-                                    </label>&nbsp;
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" name="licensed_before" class="custom-control-input" value="Disagree">
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Disagree</span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group col-md-6">
-                        <div class="form-check">
-                            <label class="form-label">If BAFRA desires to make a preliminary inspection or investigation then, we, agree to give all our reasonable opportunity and privileges to BAFRA and accordingly provide our cooperation as per certification requirements.</label><br><br>
-                            <div class="form-group">
-                                <div class="form-check">
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" name="licensed_before" class="custom-control-input" value="Agree">
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Agree</span>
-                                    </label>&nbsp;
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" name="licensed_before" class="custom-control-input" value="Disagree">
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Disagree</span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <div class="form-check">
-                            <label class="form-label">If the certificate is awarded, we will abide by all the terms and conditions of the certification, so long as it remains valid for use and also comply with the Rules and Regulations. If the license/certificate becomes prolonged or it is cancelled, then we, shall ensure that any use of the Standard Mark on any commodity under the license will be stopped immediately and all related advertisement, materials will be taken back and other necessary action will be taken</label><br><br>
-                            <div class="form-group">
-                                <div class="form-check">
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" name="licensed_before" class="custom-control-input" value="Agree">
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Agree</span>
-                                    </label>&nbsp;
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" name="licensed_before" class="custom-control-input" value="Disagree">
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Disagree</span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="card-action">
+                    <button type="button" class="btn btn-success" onclick="next_file_attach()">Save-Next</button>
                 </div>
             </div>
+            <div class="tab-pane fade" id="certification-standards" role="tabpanel" aria-labelledby="mortem-file-attach">
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <div class="form-check">
+                                <label class="form-label">With a view to ensure the similarity of the process of production of the mentioned commodities as per related standard, we shall keep regular records and maintain all required documentation to fulfill the requirements of the identified Standard (refer previous point) and any other additional documentation required by the BAFRA as the Certification Body</label><br><br>
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Agree">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Agree</span>
+                                        </label>&nbsp;
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Disagree">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Disagree</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <div class="form-check">
+                                <label class="form-label">We are willing to change our operational practices, as may be required from time to time to keep in line with our policy which may be directed by BAFRA.</label><br><br>
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Agree">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Agree</span>
+                                        </label>&nbsp;
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Disagree">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Disagree</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <div class="form-check">
+                                <label class="form-label">If BAFRA desires to make a preliminary inspection or investigation then, we, agree to give all our reasonable opportunity and privileges to BAFRA and accordingly provide our cooperation as per certification requirements.</label><br><br>
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Terms_Abide" class="custom-control-input" value="Agree">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Agree</span>
+                                        </label>&nbsp;
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Terms_Abide" class="custom-control-input" value="Disagree">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Disagree</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <div class="form-check">
+                                <label class="form-label">If the certificate is awarded, we will abide by all the terms and conditions of the certification, so long as it remains valid for use and also comply with the Rules and Regulations. If the license/certificate becomes prolonged or it is cancelled, then we, shall ensure that any use of the Standard Mark on any commodity under the license will be stopped immediately and all related advertisement, materials will be taken back and other necessary action will be taken</label><br><br>
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Agree">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Agree</span>
+                                        </label>&nbsp;
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Disagree">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Disagree</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <button type="button" class="btn btn-primary" onclick="submit_gap_certificate_details()">Save</button>
+                    </div>
+                </div>
             </div>
         </form>
     </div>
@@ -706,27 +687,45 @@ function save_gap_certification()
     var gewog = $('#gewog').val();
     var village = $('#village').val();
     var address = $('#present_address').val();
-    var contactNumber = $('#contactNumber').val();
+    var farm_location = $('#farm_location').val();
     var email = $('#email').val();
-    var license_no = $('#license_no').val();
-    var location = $('#location').val();
-    var Location_Dzongkhag_Code = $('#Location_Dzongkhag_Code').val();
-    var location_code = $('#location_code').val();
+    var contactNumber = $('#contactNumber').val();
     var inspectionDate = $('#inspectionDate').val();
-    var cidCount = $('#cid').val().length;
+    var farmers_group_name = $('#farmers_group_name').val();
+    var farmers_group_number = $('#farmers_group_number').val();
+    var Applicant_Type = $("input[name=Applicant_Type]:checked").length;
     var number_count = $('#contactNumber').val().length;
+    var cidCount = $('#cid').val().length;
 
-    if(cid == "")
+    if(Applicant_Type < 1)
+    {
+        $('#applicantTypeErrorMsg').html("Please Check One Applicant Type.");
+        $('#applicantTypeErrorMsg').show();
+        $('#applicantTypeErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if($('#individual_radio').prop('checked') && cid == "")
     {
         $('#cidErrorMsg').html("Enter CID Number.");
         $('#cidErrorMsg').show();
         $('#cidErrorMsg').delay(2000).fadeOut('slow');
     }
-    else if(name == "")
+    else if($('#individual_radio').prop('checked') && name == "")
     {
         $('#nameErrorMsg').html("Enter Name .");
         $('#nameErrorMsg').show();
         $('#nameErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if($('#farmers_radio').prop('checked') &&farmers_group_name == "")
+    {
+        $('#farmers_group_nameErrorMsg').html("Enter Farmers Group Name.");
+        $('#farmers_group_nameErrorMsg').show();
+        $('#farmers_group_nameErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if($('#farmers_radio').prop('checked') && farmers_group_number == "")
+    {
+        $('#farmers_group_numberErrorMsg').html("Enter Farmers Group Number.");
+        $('#farmers_group_numberErrorMsg').show();
+        $('#farmers_group_numberErrorMsg').delay(2000).fadeOut('slow');
     }
     else if(dzongkhag == "")
     {
@@ -758,37 +757,13 @@ function save_gap_certification()
         $('#emailErrorMsg').show();
         $('#emailErrorMsg').delay(2000).fadeOut('slow');
     }
-    else if(license_no == "")
-    {
-        $('#license_noErrorMsg').html("Enter License No.");
-        $('#license_noErrorMsg').show();
-        $('#license_noErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if (Location_Dzongkhag_Code == "")
-    {
-        $('#Location_Dzongkhag_CodeErrorMsg').html("Select Location Dzongkhag Code.");
-        $('#Location_Dzongkhag_CodeErrorMsg').show();
-        $('#Location_Dzongkhag_CodeErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if (location_code == "")
-    {
-        $('#location_codeErrorMsg').html("Select Location.");
-        $('#location_codeErrorMsg').show();
-        $('#location_codeErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(exact_location == "")
-    {
-        $('#exact_locationErrorMsg').html("Enter Exact Location.");
-        $('#exact_locationErrorMsg').show();
-        $('#exact_locationErrorMsg').delay(2000).fadeOut('slow');
-    }
     else if(inspectionDate == "")
     {
         $('#inspectionDateErrorMsg').html("Enter Inspection Date.");
         $('#inspectionDateErrorMsg').show();
         $('#inspectionDateErrorMsg').delay(2000).fadeOut('slow');
     }
-    else if(cidCount < 11)
+    else if($('#individual_radio').prop('checked') && cidCount < 11)
     {
         $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits.");
         $('#cidErrorMsg').show();
@@ -805,12 +780,15 @@ function save_gap_certification()
         $.ajax({
             type : "POST",
             url : "{% url 'save_gap_certificate' %}",
-            data : $('#gap_certification_form').serialize(),
+            data : $('#gap_certificate_form').serialize(),
             success : function(data)
             {
                 $('#applicationNo').val(data.applNo);
-                $('#application_no_details').val(data.applNo);
+                $('#farmers_group_application_no').val(data.applNo);
+                $('#crop_production_app_no').val(data.applNo);
+                $('#pack_house_application_no').val(data.applNo);
                 $('#attachment_appNo').val(data.applNo);
+
                 $('#submitMsg').show();
                 setTimeout(function() {
                     $("#submitMsg").hide('blind', {}, 500)
@@ -824,7 +802,7 @@ function save_gap_certification()
                 else
                 {
                     setTimeout(function() {
-                        $('#pills-details').tab('show');
+                        $('#pills-farmers-group').tab('show');
                     }, 3000);
                 }
             }
@@ -945,6 +923,54 @@ function crop_production_details_modal()
 function pack_house_modal()
 {
     $('#pack_house_model').modal('show');
+}
+
+function showDetails(value)
+{
+    if(value == 'I')
+    {
+        $('.individual_details').show();
+        $('.farmer_group_details').hide();
+    }
+    else
+    {
+        $('.farmer_group_details').show();
+        $('.individual_details').hide();
+    }
+}
+
+function save_farmer_details()
+{
+    $('#pills-crop-production').tab('show');
+}
+function next_crop_production()
+{
+    $('#pills-pack-house').tab('show');
+}
+function next_pack_house()
+{
+    $('#file-attach').tab('show');
+}
+function next_file_attach()
+{
+    $('#certification_standards').tab('show');
+}
+
+function gap_attachment_modal()
+{
+    $('#attachmentModal').modal('show');
+}
+
+function  submit_gap_certificate_details()
+{
+    $.ajax({
+        type : "POST",
+        url : "{% url 'submit_gap_certificate' %}",
+        data : $('#gap_certificate_form').serialize(),
+        success : function(responseText) {
+           location.reload();
+        }
+    });
 }
 
 </script>

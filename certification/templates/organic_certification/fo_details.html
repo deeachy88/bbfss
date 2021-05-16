@@ -484,7 +484,7 @@
         <div class="card">
             <div class="card-header" role="tab" id="processing_details">
                 <a class="collapsed" data-toggle="collapse" href="#collapse_processing_details" aria-expanded="false" aria-controls="collapse_processing_details">
-                    Apiculture Details
+                    Processing Unit Details
                 </a>
             </div>
             <div id="collapse_processing_details" class="collapse" role="tabpanel" aria-labelledby="collapse_processing_details" data-parent="#accordion" style="">
@@ -578,17 +578,12 @@
                 </a>
             </div>
             <div id="collapseFour" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+
                 <div class="card-body">
-                    <div class="card-tools">
-                        <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="openAuditTeamModal()">
-                            <span class="btn-label">
-                                <i class="fa fa-print"></i>
-                            </span>
-                            Add
-                        </a>
-                    </div>
+                {% for application_details in application_details %}
+                    {% if application_details.Audit_Team_Acceptance == 'A' %}
                     <br>
-                    <div id="audit_team_details">
+                    <div>
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
@@ -611,18 +606,68 @@
                         </table>
                     </div>
                     <br>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Audit Team Leader</label>
-                                <select class="form-control" id="audit_team_leader">
-                                    <option value="">--SELECT--</option>
-                                    {% for team_details in team_details %}
-                                        <option value="{{team_details.Login_Id}}">{{team_details.Name}}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
+                    {% else %}
+                        <div class="card-tools">
+                            <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="openAuditTeamModal()">
+                                <span class="btn-label">
+                                    <i class="fa fa-print"></i>
+                                </span>
+                                Add
+                            </a>
                         </div>
+                        <br>
+                        <div id="audit_team_details">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                   {% for audit in audit_team %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{audit.Name}}</td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                          <td colspan="3" class="text-center">No Data</td>
+                                        </tr>
+                                   {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <br>
+                    {% endif %}
+                {% endfor %}
+                    <div class="row">
+                        {% for application_details in application_details %}
+                            {% if application_details.Audit_Team_Acceptance == 'A' %}
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Audit Team Leader</label>
+                                        <select class="form-control" id="leader" disabled>
+                                            {% for team_details in team_details %}
+                                                <option value="{{ team_details.Login_Id }}" {% if application_details.Audit_Team_Leader == team_details.Login_Id %}selected{% endif %}>{{team_details.Name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Audit Team Leader</label>
+                                        <select class="form-control" id="audit_team_leader">
+                                            <option value="">--SELECT--</option>
+                                            {% for team_details in team_details %}
+                                                <option value="{{team_details.Login_Id}}">{{team_details.Name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Remarks</label>
@@ -632,11 +677,10 @@
                     </div>
                     <div class="card-action">
                         {% for application_details in application_details %}
-                         {% if application_details.Audit_Team_Acceptance == 'Y' %}
-
+                         {% if application_details.Audit_Team_Acceptance == 'A' %}
                             <button type="button" class="btn btn-flat btn-primary" onclick="forward_application('{{ application_details.Application_No }}')">
                                 <i class="ace-icon fa fa-times"></i>
-                                &nbsp;&nbsp;Send For Acceptance
+                                &nbsp;&nbsp;Forward
                             </button>
                         {% else %}
                             <button type="button" class="btn btn-flat btn-primary" onclick="send_for_acceptance('{{ application_details.Application_No }}')">
@@ -720,6 +764,21 @@ function send_for_acceptance(application_id)
         data :{'application_id':application_id,'audit_team_leader':audit_team_leader, 'remarks':remarks},
         success : function(data) {
             $('#addModal').modal('hide');
+            location.reload();
+        }
+    });
+}
+
+function forward_application(application_id)
+{
+    remarks = $('#remarks_fo').val();
+    leader = $('#leader').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'forward_application_team_leader' %}",
+        data :{'application_id':application_id, 'audit_team_leader':leader, 'remarks':remarks},
+        success : function(data) {
+            $('#import_detailsModal').modal('hide');
             location.reload();
         }
     });

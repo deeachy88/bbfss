@@ -1,10 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Pack House Name</th>
+            <th scope="col">Address of the pack house</th>
+            <th scope="col">Processing_Type</th>
+            <th scope="col">For the previous year(From date)</th>
+            <th scope="col">For the previous year(To date)</th>
+            <th scope="col">Production</th>
+            <th scope="col">Production  Unit</th>
+            <th scope="col">Sold</th>
+            <th scope="col">Sold Unit</th>
+            <th scope="col">Balance Stock</th>
+            <th scope="col">For the current year(From date)</th>
+            <th scope="col">For the current year(To date)</th>
+            <th scope="col">Production</th>
+            <th scope="col">Sold</th>
+            <th scope="col">Balance Stock</th>
+        </tr>
+    </thead>
+    <tbody>
+       {% for crop in crop_details %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{crop.Pack_House_Name}}</td>
+                <td>{{crop.Pack_House_Address}}</td>
+                <td>{{crop.Processing_Type}}</td>
+                <td>{{crop.P_From_Date}}</td>
+                <td>{{crop.P_To_Date}}</td>
+                <td>{{crop.P_Production}}</td>
+                <td>{{crop.P_Production_Unit}}</td>
+                <td>{{crop.P_Sold}}</td>
+                <td>{{crop.P_Balance_Stock}}</td>
+                <td>{{crop.C_From_Date}}</td>
+                <td>{{crop.C_To_Date}}</td>
+                <td>{{crop.C_Production}}</td>
+                <td>{{crop.C_Sold}}</td>
+                <td>{{crop.C_Balance_Stock}}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="3" class="text-center">No Data</td>
+            </tr>
+       {% endfor %}
+    </tbody>
+</table>

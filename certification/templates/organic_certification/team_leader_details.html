@@ -220,7 +220,7 @@
         <div class="card">
             <div class="card-header" role="tab" id="farmer_group_details">
                 <a class="collapsed" data-toggle="collapse" href="#collapse_farmer_group" aria-expanded="false" aria-controls="collapse_farmer_group">
-                    Crop Production Details
+                    Farmer Group Details
                 </a>
             </div>
             <div id="collapse_farmer_group" class="collapse" role="tabpanel" aria-labelledby="collapse_farmer_group" data-parent="#accordion" style="">
@@ -312,7 +312,7 @@
         <div class="card">
             <div class="card-header" role="tab" id="wild_collection_details">
                 <a class="collapsed" data-toggle="collapse" href="#collapse_wild_collection" aria-expanded="false" aria-controls="collapse_wild_collection">
-                    Crop Production Details
+                    Wild Collection Details
                 </a>
             </div>
             <div id="collapse_wild_collection" class="collapse" role="tabpanel" aria-labelledby="collapse_wild_collection" data-parent="#accordion" style="">
@@ -358,7 +358,7 @@
         <div class="card">
             <div class="card-header" role="tab" id="animal_husbandry_details">
                 <a class="collapsed" data-toggle="collapse" href="#collapse_animal_husbandry" aria-expanded="false" aria-controls="collapse_animal_husbandry">
-                    Crop Production Details
+                    Animal Husbandry Details
                 </a>
             </div>
             <div id="collapse_animal_husbandry" class="collapse" role="tabpanel" aria-labelledby="collapse_animal_husbandry" data-parent="#accordion" style="">
@@ -485,7 +485,7 @@
         <div class="card">
             <div class="card-header" role="tab" id="processing_details">
                 <a class="collapsed" data-toggle="collapse" href="#collapse_processing_details" aria-expanded="false" aria-controls="collapse_processing_details">
-                    Apiculture Details
+                    Processing Unit Details
                 </a>
             </div>
             <div id="collapse_processing_details" class="collapse" role="tabpanel" aria-labelledby="collapse_processing_details" data-parent="#accordion" style="">
@@ -576,7 +576,7 @@
         <div class="card">
             <div class="card-header" role="tab" id="observations">
                 <a class="collapsed" data-toggle="collapse" href="#observations_tab" aria-expanded="false" aria-controls="collapseTwo">
-                    Attachments
+                    Audit Plan Upload
                 </a>
             </div>
             <div id="observations_tab" class="collapse" role="tabpanel" aria-labelledby="observations_tab" data-parent="#observations_tab" style="">
@@ -616,8 +616,12 @@
 
                 <div class="card-body">
                     <div class="row">
-                        <label class="form-label">Site History And Management</label>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Site History And Management </label>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
                             <div class="form-group">
                                 <label class="form-label">Findings/Observations </label>
                                <textarea type="text" class="form-control" id="site_history_findings" name="Audit_Findings_Site_History"></textarea>
@@ -625,8 +629,12 @@
                         </div>
                     </div>
                     <div class="row">
-                        <label class="form-label">Water source, reservoirs and holding tanks</label>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Water source, reservoirs and holding tanks</label>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
                             <div class="form-group">
                                 <label class="form-label">Findings/Observations  </label>
                                <textarea type="text" class="form-control" id="water_source_findings" name="Audit_Findings_Water_Source"></textarea>
@@ -792,24 +800,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        {% for application_details in application_details %}
-                        <button type="button" class="btn btn-flat btn-primary" onclick="approve_details('{{ application_details.Application_No }}')">
-                            <i class="ace-icon fa fa-times"></i>
-                            &nbsp;&nbsp;Approve
-                        </button>
-                        <button type="button" class="btn btn-flat btn-primary" onclick="resubmit_details('{{ application_details.Application_No }}')">
-                            <i class="ace-icon fa fa-times"></i>
-                            &nbsp;&nbsp;Resubmit
-                        </button>
-                        {% endfor %}
 
-                        <button type="button" class="btn btn-primary" onclick="closeTeamModal()">Close Modal</button>
-                    </div>
                 </div>
             </div>
         </div>
-        </form>
+
         <div class="card">
             <div class="card-header" role="tab">
                 <a class="collapsed" data-toggle="collapse" href="#non_conform_tab" aria-expanded="false" aria-controls="collapseTwo">
@@ -836,7 +831,7 @@
                                         <th scope="col">Clause Number</th>
                                         <th scope="col">Non Conformity</th>
                                         <th scope="col">Non Conformity Category</th>
-                                        <th scope="col">Closing Meeting (Date)</th>
+                                        <th scope="col">Description of nonconformity</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -857,10 +852,24 @@
                             </table>
                         </div>
                     </div>
+                    <div class="modal-footer">
+                        {% for application_details in application_details %}
+                        <button type="button" class="btn btn-flat btn-primary" onclick="approve_details('{{ application_details.Application_No }}')">
+                            <i class="ace-icon fa fa-times"></i>
+                            &nbsp;&nbsp;Approve
+                        </button>
+                        <button type="button" class="btn btn-flat btn-primary" onclick="resubmit_details('{{ application_details.Application_No }}')">
+                            <i class="ace-icon fa fa-times"></i>
+                            &nbsp;&nbsp;Resubmit
+                        </button>
+                        {% endfor %}
+
+                        <button type="button" class="btn btn-primary" onclick="closeTeamModal()">Close Modal</button>
+                    </div>
                 </div>
             </div>
         </div>
-
+    </form>
         <div id="farmInputModal" class="modal" tabindex="-1">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -1029,7 +1038,7 @@ function resubmit_details()
 {
     $.ajax({
         type : "GET",
-        url : "{% url 'send_audit_plan_acceptance' %}",
+        url : "{% url 'send_audit_plan_resubmit' %}",
         data :$('#organic_certificate_observation_form').serialize(),
         success : function(data) {
             location.reload();

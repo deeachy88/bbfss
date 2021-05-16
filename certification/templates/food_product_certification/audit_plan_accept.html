@@ -211,6 +211,253 @@
                                 </div>
                             </div>
                         {% endif %}
+                    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Factory</span>
+                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Details</span>
+                        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Name Of Factory</label>
+                                <input type="text" class="form-control" name="Factory_Name" id="Factory_Name">
+                            </div>
+                            <div class="alert alert-danger" id="Factory_NameErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Address</label>
+                                <textarea class="form-control" id="Factory_Address" name="Factory_Address"></textarea>
+                            </div>
+                            <div class="alert alert-danger" id="Factory_AddressErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Contact Number</label>
+                                <input type="number" class="form-control" id="Factory_Contact_No" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="Factory_Contact_No" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                            </div>
+                            <div class="alert alert-danger" id="Factory_Contact_NoErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" id="Factory_Email" name="Factory_Email" onchange="validateemailId(this.value)">
+                            </div>
+                            <div class="alert alert-danger" id="Factory_EmailErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Product</span>
+                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Information</span>
+                        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Brief description of the product</label>
+                                <textarea class="form-control" id="Product_Description" name="Product_Description"></textarea>
+                            </div>
+                            <div class="alert alert-danger" id="Product_DescriptionErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Product Trade Mark(s)</label>
+                                <textarea class="form-control" id="Product_Trade_Mark" name="Product_Trade_Mark"></textarea>
+                            </div>
+                            <div class="alert alert-danger" id="Product_Trade_MarkErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Production</span>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Details</span>
+                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Previous</span>
+                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Year</span>
+                        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">From date</label>
+                                 <input type="text" name="P_From_Date" id="P_From_Date" class="form-control date-picker flatpickr-input active">
+                            </div>
+                            <div class="alert alert-danger" id="P_From_DateErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">To date</label>
+                                 <input type="text" name="P_To_Date" id="P_To_Date" class="form-control date-picker flatpickr-input active">
+                            </div>
+                            <div class="alert alert-danger" id="P_To_DateErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="form-label">Production(Quantity)</label>
+                            <input type="text" name="P_Production" class="form-control" id="P_Production" required>
+                            <div class="alert alert-danger" id="productionErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Unit</label>
+                                <select class="form-control" name="P_Production_Unit" id="P_Production_Unit">
+                                    <option value="">--SELECT--</option>
+                                    {% for unit in unit %}
+                                        <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="alert alert-danger" id="P_Production_UnitErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="form-label">Value</label>
+                            <input type="number" name="P_Production_Value" class="form-control" id="P_Production_Value" required>
+                            <div class="alert alert-danger" id="P_Production_ValueErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Production</span>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Details</span>
+                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Current</span>
+                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Year</span>
+                        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">From date</label>
+                                 <input type="text" name="C_From_Date" id="C_From_Date" class="form-control date-picker flatpickr-input active">
+                            </div>
+                            <div class="alert alert-danger" id="C_From_DateErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">To date</label>
+                                 <input type="text" name="C_To_Date" id="C_To_Date" class="form-control date-picker flatpickr-input active">
+                            </div>
+                            <div class="alert alert-danger" id="to_current_yearErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="form-label">Production(Quantity)</label>
+                            <input type="number" name="C_Production" class="form-control" id="C_Production" required>
+                            <div class="alert alert-danger" id="C_ProductionErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            <label class="form-label">Unit</label>
+                            <select class="form-control" name="C_Production_Unit" id="C_Production_Unit">
+                                <option value="">--SELECT--</option>
+                                {% for unit in unit %}
+                                        <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="alert alert-danger" id="C_Production_UnitErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="form-label">Value</label>
+                            <input type="number" name="C_Production_Value" class="form-control" id="C_Production_Value" required>
+                            <div class="alert alert-danger" id="C_Production_ValueErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Export</span>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Details</span>
+                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Previous</span>
+                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Year</span>
+                        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">From date</label>
+                                 <input type="text" name="P_Export_From_Date" id="P_Export_From_Date" class="form-control date-picker flatpickr-input active">
+                            </div>
+                            <div class="alert alert-danger" id="P_Export_From_DateErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">To date</label>
+                                 <input type="text" name="P_Export_To_Date" id="P_Export_To_Date" class="form-control date-picker flatpickr-input active">
+                            </div>
+                            <div class="alert alert-danger" id="P_Export_To_DateErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="form-label">Export(Quantity)</label>
+                            <input type="text" name="P_Export" class="form-control" id="P_Export" required>
+                            <div class="alert alert-danger" id="P_ExportErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            <label class="form-label">Export Unit</label>
+                            <select class="form-control" name="P_Export_Unit" id="P_Export_Unit">
+                                <option value="">--SELECT--</option>
+                                {% for unit in unit %}
+                                        <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="alert alert-danger" id="export_unitErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="form-label">Export Value</label>
+                            <input type="number" name="P_Export_Value" class="form-control" id="P_Export_Value" required>
+                            <div class="alert alert-danger" id="P_Export_ValueErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">Export</span>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">Details</span>
+                                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Current</span>
+                                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Year</span>
+                            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                        </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">From date</label>
+                                 <input type="text" name="C_Export_From_Date" id="C_Export_From_Date" class="form-control date-picker flatpickr-input active">
+                            </div>
+                            <div class="alert alert-danger" id="C_Export_From_DateErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">To date</label>
+                                 <input type="text" name="C_Export_To_Date" id="C_Export_To_Date" class="form-control date-picker flatpickr-input active">
+                            </div>
+                            <div class="alert alert-danger" id="C_Export_To_DateErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="form-label">Export(Quantity)</label>
+                            <input type="number" name="C_Export" class="form-control" id="C_Export" required>
+                            <div class="alert alert-danger" id="export_yearErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            <label class="form-label">Unit</label>
+                            <select class="form-control" name="C_Export_Unit" id="C_Export_Unit">
+                                <option value="">--SELECT--</option>
+                                {% for unit in unit %}
+                                        <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="alert alert-danger" id="C_Export_UnitErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="form-label">Value</label>
+                            <input type="number" name="currentValue" class="form-control" id="currentValue" required>
+                            <div class="alert alert-danger" id="currentValueErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
                      <br><br>
                     {% endfor %}
                 </div>
@@ -219,7 +466,7 @@
         <div class="card">
             <div class="card-header" role="tab" id="farmer_group_details">
                 <a class="collapsed" data-toggle="collapse" href="#collapse_farmer_group" aria-expanded="false" aria-controls="collapse_farmer_group">
-                    Crop Production Details
+                    Farmers Group Details
                 </a>
             </div>
             <div id="collapse_farmer_group" class="collapse" role="tabpanel" aria-labelledby="collapse_farmer_group" data-parent="#accordion" style="">
@@ -242,297 +489,6 @@
                                 {% empty %}
                                 <tr>
                                   <td colspan="3" class="text-center">No Data</td>
-                                </tr>
-                           {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-header" role="tab" id="crop_details">
-                <a class="collapsed" data-toggle="collapse" href="#collapseCrop" aria-expanded="false" aria-controls="collapseCrop">
-                    Crop Production Details
-                </a>
-            </div>
-            <div id="collapseCrop" class="collapse" role="tabpanel" aria-labelledby="collapseCrop" data-parent="#accordion" style="">
-                <div class="card-body">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Crop Name</th>
-                                <th scope="col">Cultivated Area</th>
-                                <th scope="col">Area Unit</th>
-                                <th scope="col">For the previous year(From date)</th>
-                                <th scope="col">For the previous year(To date)</th>
-                                <th scope="col">Yield</th>
-                                <th scope="col">Yield Unit</th>
-                                <th scope="col">Harvest Month</th>
-                                <th scope="col">Sold</th>
-                                <th scope="col">Balance Stock</th>
-                                <th scope="col">For the current year(From date)</th>
-                                <th scope="col">For the current year(To date)</th>
-                                <th scope="col">Estimated Yield</th>
-                                <th scope="col">Yield Unit</th>
-                                <th scope="col">Harvest Month</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                           {% for crop in crop_details %}
-                                <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>{{crop.Crop_Name}}</td>
-                                    <td>{{crop.Area_Cultivated}}</td>
-                                    <td>{{crop.Unit}}</td>
-                                    <td>{{crop.P_From_Date}}</td>
-                                    <td>{{crop.P_To_Date}}</td>
-                                    <td>{{crop.P_Yield}}</td>
-                                    <td>{{crop.P_Yield_Unit}}</td>
-                                    <td>{{crop.P_Harvest_Month}}</td>
-                                    <td>{{crop.P_Sold}}</td>
-                                    <td>{{crop.P_Balance_Stock}}</td>
-                                    <td>{{crop.C_From_Date}}</td>
-                                    <td>{{crop.C_To_Date}}</td>
-                                    <td>{{crop.C_Estimated_Yield}}</td>
-                                    <td>{{crop.C_Yield_Unit}}</td>
-                                    <td>{{crop.C_Harvest_Month}}</td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                  <td colspan="3" class="text-center">No Data</td>
-                                </tr>
-                           {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-header" role="tab" id="wild_collection_details">
-                <a class="collapsed" data-toggle="collapse" href="#collapse_wild_collection" aria-expanded="false" aria-controls="collapse_wild_collection">
-                    Crop Production Details
-                </a>
-            </div>
-            <div id="collapse_wild_collection" class="collapse" role="tabpanel" aria-labelledby="collapse_wild_collection" data-parent="#accordion" style="">
-                <div class="card-body">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Common Name</th>
-                                <th scope="col">Botanical Name</th>
-                                <th scope="col">Part of Plant Harvested</th>
-                                <th scope="col">Estimated Harvest/Yield</th>
-                                <th scope="col">Estimated Harvest/Yield Unit</th>
-                                <th scope="col">Estimated Harvest Yield/Season</th>
-                                <th scope="col">Harvest Acreage</th>
-                                <!--<th scope="col">Harvest Month</th>-->
-                                <th scope="col">Unit</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                           {% for wild in wild_collection %}
-                                <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>{{wild.Common_Name}}</td>
-                                    <td>{{wild.Botanical_Name}}</td>
-                                    <td>{{wild.Plant_Part}}</td>
-                                    <td>{{wild.Estimated_Harvest}}</td>
-                                    <td>{{wild.Harvest_Unit}}</td>
-                                    <td>{{wild.Harvest_Season}}</td>
-                                    <td>{{wild.Harvest_Acreage}}</td>
-                                    <td>{{wild.Acreage_Unit}}</td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                  <td colspan="3" class="text-center">No Data</td>
-                                </tr>
-                           {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-header" role="tab" id="animal_husbandry_details">
-                <a class="collapsed" data-toggle="collapse" href="#collapse_animal_husbandry" aria-expanded="false" aria-controls="collapse_animal_husbandry">
-                    Crop Production Details
-                </a>
-            </div>
-            <div id="collapse_animal_husbandry" class="collapse" role="tabpanel" aria-labelledby="collapse_animal_husbandry" data-parent="#accordion" style="">
-                <div class="card-body">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Livestock Type</th>
-                                <th scope="col">Number Of Male</th>
-                                <th scope="col">Number Of Female</th>
-                                <th scope="col">Estimated Production</th>
-                                <th scope="col">Estimated Production Unit</th>
-                                <th scope="col">Product Sold</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                           {% for animal in animal_husbandry %}
-                                <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>{{animal.Livestock_Type}}</td>
-                                    <td>{{animal.Male_no}}</td>
-                                    <td>{{animal.Female_no}}</td>
-                                    <td>{{animal.Estimated_Production}}</td>
-                                    <td>{{animal.Production_Unit}}</td>
-                                    <td>{{animal.Production_Sold}}</td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                  <td colspan="7" class="text-center">No Data</td>
-                                </tr>
-                           {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-header" role="tab" id="aquaculture_details">
-                <a class="collapsed" data-toggle="collapse" href="#collapse_aquaculture" aria-expanded="false" aria-controls="collapse_aquaculture">
-                    Aquaculture Details
-                </a>
-            </div>
-            <div id="collapse_aquaculture" class="collapse" role="tabpanel" aria-labelledby="collapse_animal_husbandry" data-parent="#accordion" style="">
-                <div class="card-body">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Aquaculture Type</th>
-                                <th scope="col">Estimated Yield</th>
-                                <th scope="col">Estimated Yield Unit</th>
-                                <th scope="col">Harvest Month</th>
-                                <th scope="col">Sold</th>
-                                <th scope="col">Sold Unit</th>
-                                <th scope="col">Balance Stock</th>
-                                <th scope="col">Balance Stock Unit</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                           {% for aqua in aquaculture_details %}
-                                <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>{{aqua.Aquaculture_Type}}</td>
-                                    <td>{{aqua.Estimated_Yield}}</td>
-                                    <td>{{aqua.Estimated_Yield_Unit}}</td>
-                                    <td>{{aqua.Harvest_Month}}</td>
-                                    <td>{{aqua.Sold}}</td>
-                                    <td>{{aqua.Sold_Unit}}</td>
-                                    <td>{{aqua.Balance_Stock}}</td>
-                                    <td>{{aqua.Balance_Stock_Unit}}</td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                  <td colspan="7" class="text-center">No Data</td>
-                                </tr>
-                           {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-header" role="tab" id="api_culture_details">
-                <a class="collapsed" data-toggle="collapse" href="#collapse_api_culture" aria-expanded="false" aria-controls="collapse_api_culture">
-                    Apiculture Details
-                </a>
-            </div>
-            <div id="collapse_api_culture" class="collapse" role="tabpanel" aria-labelledby="collapse_animal_husbandry" data-parent="#accordion" style="">
-                <div class="card-body">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Common Name</th>
-                                <th scope="col">Botanical Name</th>
-                                <th scope="col">Estimated Harvest Yield</th>
-                                <th scope="col">Estimated Harvest Yield Unit</th>
-                                <th scope="col">Harvest Acreage</th>
-                                <th scope="col">Unit</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                           {% for aqua in aquaculture_details %}
-                                <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>{{aqua.Common_Name}}</td>
-                                    <td>{{aqua.Botanical_Name}}</td>
-                                    <td>{{aqua.Estimated_Harvest}}</td>
-                                    <td>{{aqua.Harvest_Unit}}</td>
-                                    <td>{{aqua.Harvest_Acreage}}</td>
-                                    <td>{{aqua.Acreage_Unit}}</td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                  <td colspan="7" class="text-center">No Data</td>
-                                </tr>
-                           {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-header" role="tab" id="processing_details">
-                <a class="collapsed" data-toggle="collapse" href="#collapse_processing_details" aria-expanded="false" aria-controls="collapse_processing_details">
-                    Apiculture Details
-                </a>
-            </div>
-            <div id="collapse_processing_details" class="collapse" role="tabpanel" aria-labelledby="collapse_processing_details" data-parent="#accordion" style="">
-                <div class="card-body">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Address Of Operation</th>
-                                <th scope="col">Type Of Processing</th>
-                                <th scope="col">For the previous year(From date)</th>
-                                <th scope="col">For the previous year(To date)</th>
-                                <th scope="col">Production</th>
-                                <th scope="col">Production Unit</th>
-                                <th scope="col">Sold</th>
-                                <th scope="col">Balance Stock</th>
-                                <th scope="col">For the current year(From date)</th>
-                                <th scope="col">For the current year(To date)</th>
-                                <th scope="col">Production</th>
-                                <th scope="col">Production Unit</th>
-                                <th scope="col">Sold</th>
-                                <th scope="col">Balance Stock</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                           {% for processing in processing_details %}
-                                <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>{{processing.Production_House_Name}}</td>
-                                    <td>{{processing.Production_House_Address}}</td>
-                                    <td>{{processing.Processing_Type}}</td>
-                                    <td>{{crop.P_From_Date}}</td>
-                                    <td>{{crop.P_To_Date}}</td>
-                                    <td>{{crop.P_Production}}</td>
-                                    <td>{{crop.P_Production_Unit}}</td>
-                                    <td>{{crop.P_Sold}}</td>
-                                    <td>{{crop.P_Balance_Stock}}</td>
-                                    <td>{{crop.C_From_Date}}</td>
-                                    <td>{{crop.C_To_Date}}</td>
-                                    <td>{{crop.C_Production}}</td>
-                                    <td>{{crop.C_Production_Unit}}</td>
-                                    <td>{{crop.C_Sold}}</td>
-                                    <td>{{crop.C_Balance_Stock}}</td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                  <td colspan="7" class="text-center">No Data</td>
                                 </tr>
                            {% endfor %}
                         </tbody>
@@ -610,7 +566,7 @@
                             <div class="form-group">
                                 <label class="form-label">Audit Team Leader</label>
                                  {% for application_details in application_details %}
-                                    <input type="text" value="{{application_details.Audit_Team_Leader}}" disabled>
+                                    <input type="text" id="team_leader" name="team_leader" value="{{application_details.Audit_Team_Leader}}" disabled>
                                 {% endfor %}
                             </div>
                             <div class="col-md-6">
@@ -656,11 +612,11 @@
             </div>
         </div>
 <script>
-function audit_team_accept()
+function forward_application()
 {
     $.ajax({
         type : "GET",
-        url : "{% url 'audit_team_accept' %}",
+        url : "{% url 'fpc_audit_team_details' %}",
         data :$('#audit_team_form').serialize(),
         success : function(data) {
             location.reload();

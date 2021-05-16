@@ -219,7 +219,7 @@
         <div class="card">
             <div class="card-header" role="tab" id="farmer_group_details">
                 <a class="collapsed" data-toggle="collapse" href="#collapse_farmer_group" aria-expanded="false" aria-controls="collapse_farmer_group">
-                    Crop Production Details
+                    Farmers Group Details
                 </a>
             </div>
             <div id="collapse_farmer_group" class="collapse" role="tabpanel" aria-labelledby="collapse_farmer_group" data-parent="#accordion" style="">
@@ -311,7 +311,7 @@
         <div class="card">
             <div class="card-header" role="tab" id="wild_collection_details">
                 <a class="collapsed" data-toggle="collapse" href="#collapse_wild_collection" aria-expanded="false" aria-controls="collapse_wild_collection">
-                    Crop Production Details
+                    Pack House Details
                 </a>
             </div>
             <div id="collapse_wild_collection" class="collapse" role="tabpanel" aria-labelledby="collapse_wild_collection" data-parent="#accordion" style="">
@@ -320,203 +320,30 @@
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Common Name</th>
-                                <th scope="col">Botanical Name</th>
-                                <th scope="col">Part of Plant Harvested</th>
-                                <th scope="col">Estimated Harvest/Yield</th>
-                                <th scope="col">Estimated Harvest/Yield Unit</th>
-                                <th scope="col">Estimated Harvest Yield/Season</th>
-                                <th scope="col">Harvest Acreage</th>
-                                <!--<th scope="col">Harvest Month</th>-->
-                                <th scope="col">Unit</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                           {% for wild in wild_collection %}
-                                <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>{{wild.Common_Name}}</td>
-                                    <td>{{wild.Botanical_Name}}</td>
-                                    <td>{{wild.Plant_Part}}</td>
-                                    <td>{{wild.Estimated_Harvest}}</td>
-                                    <td>{{wild.Harvest_Unit}}</td>
-                                    <td>{{wild.Harvest_Season}}</td>
-                                    <td>{{wild.Harvest_Acreage}}</td>
-                                    <td>{{wild.Acreage_Unit}}</td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                  <td colspan="3" class="text-center">No Data</td>
-                                </tr>
-                           {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-header" role="tab" id="animal_husbandry_details">
-                <a class="collapsed" data-toggle="collapse" href="#collapse_animal_husbandry" aria-expanded="false" aria-controls="collapse_animal_husbandry">
-                    Crop Production Details
-                </a>
-            </div>
-            <div id="collapse_animal_husbandry" class="collapse" role="tabpanel" aria-labelledby="collapse_animal_husbandry" data-parent="#accordion" style="">
-                <div class="card-body">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Livestock Type</th>
-                                <th scope="col">Number Of Male</th>
-                                <th scope="col">Number Of Female</th>
-                                <th scope="col">Estimated Production</th>
-                                <th scope="col">Estimated Production Unit</th>
-                                <th scope="col">Product Sold</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                           {% for animal in animal_husbandry %}
-                                <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>{{animal.Livestock_Type}}</td>
-                                    <td>{{animal.Male_no}}</td>
-                                    <td>{{animal.Female_no}}</td>
-                                    <td>{{animal.Estimated_Production}}</td>
-                                    <td>{{animal.Production_Unit}}</td>
-                                    <td>{{animal.Production_Sold}}</td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                  <td colspan="7" class="text-center">No Data</td>
-                                </tr>
-                           {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-header" role="tab" id="aquaculture_details">
-                <a class="collapsed" data-toggle="collapse" href="#collapse_aquaculture" aria-expanded="false" aria-controls="collapse_aquaculture">
-                    Aquaculture Details
-                </a>
-            </div>
-            <div id="collapse_aquaculture" class="collapse" role="tabpanel" aria-labelledby="collapse_animal_husbandry" data-parent="#accordion" style="">
-                <div class="card-body">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Aquaculture Type</th>
-                                <th scope="col">Estimated Yield</th>
-                                <th scope="col">Estimated Yield Unit</th>
-                                <th scope="col">Harvest Month</th>
-                                <th scope="col">Sold</th>
-                                <th scope="col">Sold Unit</th>
-                                <th scope="col">Balance Stock</th>
-                                <th scope="col">Balance Stock Unit</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                           {% for aqua in aquaculture_details %}
-                                <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>{{aqua.Aquaculture_Type}}</td>
-                                    <td>{{aqua.Estimated_Yield}}</td>
-                                    <td>{{aqua.Estimated_Yield_Unit}}</td>
-                                    <td>{{aqua.Harvest_Month}}</td>
-                                    <td>{{aqua.Sold}}</td>
-                                    <td>{{aqua.Sold_Unit}}</td>
-                                    <td>{{aqua.Balance_Stock}}</td>
-                                    <td>{{aqua.Balance_Stock_Unit}}</td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                  <td colspan="7" class="text-center">No Data</td>
-                                </tr>
-                           {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-header" role="tab" id="api_culture_details">
-                <a class="collapsed" data-toggle="collapse" href="#collapse_api_culture" aria-expanded="false" aria-controls="collapse_api_culture">
-                    Apiculture Details
-                </a>
-            </div>
-            <div id="collapse_api_culture" class="collapse" role="tabpanel" aria-labelledby="collapse_animal_husbandry" data-parent="#accordion" style="">
-                <div class="card-body">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Common Name</th>
-                                <th scope="col">Botanical Name</th>
-                                <th scope="col">Estimated Harvest Yield</th>
-                                <th scope="col">Estimated Harvest Yield Unit</th>
-                                <th scope="col">Harvest Acreage</th>
-                                <th scope="col">Unit</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                           {% for aqua in aquaculture_details %}
-                                <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>{{aqua.Common_Name}}</td>
-                                    <td>{{aqua.Botanical_Name}}</td>
-                                    <td>{{aqua.Estimated_Harvest}}</td>
-                                    <td>{{aqua.Harvest_Unit}}</td>
-                                    <td>{{aqua.Harvest_Acreage}}</td>
-                                    <td>{{aqua.Acreage_Unit}}</td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                  <td colspan="7" class="text-center">No Data</td>
-                                </tr>
-                           {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-header" role="tab" id="processing_details">
-                <a class="collapsed" data-toggle="collapse" href="#collapse_processing_details" aria-expanded="false" aria-controls="collapse_processing_details">
-                    Apiculture Details
-                </a>
-            </div>
-            <div id="collapse_processing_details" class="collapse" role="tabpanel" aria-labelledby="collapse_processing_details" data-parent="#accordion" style="">
-                <div class="card-body">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Address Of Operation</th>
-                                <th scope="col">Type Of Processing</th>
+                                <th scope="col">Pack House Name</th>
+                                <th scope="col">Address of the pack house</th>
+                                <th scope="col">Processing_Type</th>
                                 <th scope="col">For the previous year(From date)</th>
                                 <th scope="col">For the previous year(To date)</th>
                                 <th scope="col">Production</th>
-                                <th scope="col">Production Unit</th>
+                                <th scope="col">Production  Unit</th>
                                 <th scope="col">Sold</th>
+                                <th scope="col">Sold Unit</th>
                                 <th scope="col">Balance Stock</th>
                                 <th scope="col">For the current year(From date)</th>
                                 <th scope="col">For the current year(To date)</th>
                                 <th scope="col">Production</th>
-                                <th scope="col">Production Unit</th>
                                 <th scope="col">Sold</th>
                                 <th scope="col">Balance Stock</th>
                             </tr>
                         </thead>
                         <tbody>
-                           {% for processing in processing_details %}
+                           {% for crop in crop_details %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td>{{processing.Production_House_Name}}</td>
-                                    <td>{{processing.Production_House_Address}}</td>
-                                    <td>{{processing.Processing_Type}}</td>
+                                    <td>{{crop.Pack_House_Name}}</td>
+                                    <td>{{crop.Pack_House_Address}}</td>
+                                    <td>{{crop.Processing_Type}}</td>
                                     <td>{{crop.P_From_Date}}</td>
                                     <td>{{crop.P_To_Date}}</td>
                                     <td>{{crop.P_Production}}</td>
@@ -526,13 +353,12 @@
                                     <td>{{crop.C_From_Date}}</td>
                                     <td>{{crop.C_To_Date}}</td>
                                     <td>{{crop.C_Production}}</td>
-                                    <td>{{crop.C_Production_Unit}}</td>
                                     <td>{{crop.C_Sold}}</td>
                                     <td>{{crop.C_Balance_Stock}}</td>
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                  <td colspan="7" class="text-center">No Data</td>
+                                  <td colspan="3" class="text-center">No Data</td>
                                 </tr>
                            {% endfor %}
                         </tbody>
@@ -578,17 +404,12 @@
                 </a>
             </div>
             <div id="collapseFour" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+
                 <div class="card-body">
-                    <div class="card-tools">
-                        <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="openAuditTeamModal()">
-                            <span class="btn-label">
-                                <i class="fa fa-print"></i>
-                            </span>
-                            Add
-                        </a>
-                    </div>
+                {% for application_details in application_details %}
+                    {% if application_details.Audit_Team_Acceptance == 'A' %}
                     <br>
-                    <div id="audit_team_details">
+                    <div>
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
@@ -611,18 +432,68 @@
                         </table>
                     </div>
                     <br>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Audit Team Leader</label>
-                                <select class="form-control" id="audit_team_leader">
-                                    <option value="">--SELECT--</option>
-                                    {% for team_details in team_details %}
-                                        <option value="{{team_details.Name}}">{{team_details.Name}}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
+                    {% else %}
+                        <div class="card-tools">
+                            <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="openAuditTeamModal()">
+                                <span class="btn-label">
+                                    <i class="fa fa-print"></i>
+                                </span>
+                                Add
+                            </a>
                         </div>
+                        <br>
+                        <div id="audit_team_details_gap">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                   {% for audit in audit_team %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{audit.Name}}</td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                          <td colspan="3" class="text-center">No Data</td>
+                                        </tr>
+                                   {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <br>
+                    {% endif %}
+                {% endfor %}
+                    <div class="row">
+                        {% for application_details in application_details %}
+                            {% if application_details.Audit_Team_Acceptance == 'A' %}
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Audit Team Leader</label>
+                                        <select class="form-control" id="leader" disabled>
+                                            {% for team_details in team_details %}
+                                                <option value="{{ team_details.Login_Id }}" {% if application_details.Audit_Team_Leader == team_details.Login_Id %}selected{% endif %}>{{team_details.Name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Audit Team Leader</label>
+                                        <select class="form-control" id="audit_team_leader">
+                                            <option value="">--SELECT--</option>
+                                            {% for team_details in team_details %}
+                                                <option value="{{team_details.Login_Id}}">{{team_details.Name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Remarks</label>
@@ -632,10 +503,17 @@
                     </div>
                     <div class="card-action">
                         {% for application_details in application_details %}
-                        <button type="button" class="btn btn-flat btn-primary" onclick="send_for_acceptance('{{ application_details.Application_No }}')">
-                            <i class="ace-icon fa fa-times"></i>
-                            &nbsp;&nbsp;Send For Acceptance
-                        </button>
+                         {% if application_details.Audit_Team_Acceptance == 'A' %}
+                            <button type="button" class="btn btn-flat btn-primary" onclick="forward_application('{{ application_details.Application_No }}')">
+                                <i class="ace-icon fa fa-times"></i>
+                                &nbsp;&nbsp;Forward
+                            </button>
+                        {% else %}
+                            <button type="button" class="btn btn-flat btn-primary" onclick="send_for_acceptance('{{ application_details.Application_No }}')">
+                                <i class="ace-icon fa fa-times"></i>
+                                &nbsp;&nbsp;Send For Acceptance
+                            </button>
+                        {% endif%}
                         {% endfor %}
                         <button type="button" class="btn btn-primary" onclick="closeTeamModal()">Close Modal</button>
                     </div>
@@ -683,35 +561,50 @@
 <script>
 function openAuditTeamModal()
 {
-    $('#addModal').modal('show');
+    $('#AuditTeamModal').modal('show');
 }
 
 
-function add_audit_details(application_id)
+function audit_team_details(application_id)
 {
     name = $('#audit_team_member').val();
     $.ajax({
         type : "GET",
-        url : "{% url 'add_audit_team_details' %}",
+        url : "{% url 'gap_audit_team_details' %}",
         data :{'application_id':application_id,'name':name},
         success : function(data) {
-            $('#audit_team_details').html(data);
+            $('#audit_team_details_gap').html(data);
             $('#details').show();
             $('#AuditTeamModal').modal('hide');
         }
     });
 }
 
-function send_for_acceptance()
+function send_for_acceptance(application_id)
 {
     audit_team_leader = $('#audit_team_leader').val();
     remarks = $('#remarks_fo').val();
     $.ajax({
         type : "GET",
-        url : "{% url 'send_for_acceptance' %}",
+        url : "{% url 'gap_for_acceptance' %}",
         data :{'application_id':application_id,'audit_team_leader':audit_team_leader, 'remarks':remarks},
         success : function(data) {
             $('#addModal').modal('hide');
+            location.reload();
+        }
+    });
+}
+
+function forward_application(application_id)
+{
+    remarks = $('#remarks_fo').val();
+    leader = $('#leader').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'gap_application_team_leader' %}",
+        data :{'application_id':application_id, 'audit_team_leader':leader, 'remarks':remarks},
+        success : function(data) {
+            $('#import_detailsModal').modal('hide');
             location.reload();
         }
     });

@@ -54,15 +54,15 @@ def focal_officer_application(request):
                                                                    'service_details': service_details})
     else:
         application_details = t_workflow_details.objects.filter(Assigned_Role_Id=Role_Id, Section=section,
-                                                                Application_Status='AP', Action_Date__isnull=False)
+                                                                Application_Status='ATA', Action_Date__isnull=False)
         if application_details.exists():
             service_details = t_service_master.objects.all()
             return render(request, 'focal_officer_pending_list.html', {'application_details': application_details,
                                                                        'service_details': service_details})
         else:
-            application_details = t_workflow_details.objects.filter(Assigned_Role_Id=Role_Id, Section=section,
-                                                                    Application_Status='AT', Action_Date__isnull=False)
             service_details = t_service_master.objects.all()
+            application_details = t_workflow_details.objects.filter(Assigned_Role_Id=Role_Id, Section=section,
+                                                                    Application_Status='AA', Action_Date__isnull=False)
             return render(request, 'focal_officer_pending_list.html', {'application_details': application_details,
                                                                        'service_details': service_details})
 
@@ -102,49 +102,21 @@ def oic_application(request):
                               {'service_details': service_details, 'application_details': application_details})
             else:
                 application_details = t_workflow_details.objects.filter(Assigned_To=Login_Id,
-                                                                        Application_Status='AT',
+                                                                        Application_Status='AP',
                                                                         Action_Date__isnull=False)
-                if application_details.exists():
-                    service_details = t_service_master.objects.all()
-                    return render(request, 'oic_pending_list.html',
-                                  {'service_details': service_details, 'application_details': application_details})
-                else:
-                    application_details = t_workflow_details.objects.filter(Assigned_To=Login_Id,
-                                                                            Application_Status='AP',
-                                                                            Action_Date__isnull=False)
-                    service_details = t_service_master.objects.all()
-                    return render(request, 'oic_pending_list.html',
-                                  {'service_details': service_details, 'application_details': application_details})
+                service_details = t_service_master.objects.all()
+                return render(request, 'oic_pending_list.html',
+                              {'service_details': service_details, 'application_details': application_details})
 
 
 def inspector_application(request):
     Login_Id = request.session['login_id']
-    new_import_app = t_workflow_details.objects.filter(Assigned_Role_Id='5', Assigned_To=Login_Id,
-                                                       Application_Status='P', Action_Date__isnull=False)
-    if new_import_app.exists():
-        service_details = t_service_master.objects.all()
-        return render(request, 'inspector_pending_list.html',
-                      {'service_details': service_details, 'application_details': new_import_app})
-    else:
-        new_import_app = t_workflow_details.objects.filter(Assigned_Role_Id='5', Assigned_To=Login_Id,
-                                                           Application_Status='I', Action_Date__isnull=False)
-        if new_import_app.exists():
-            service_details = t_service_master.objects.all()
-            return render(request, 'inspector_pending_list.html',
-                          {'service_details': service_details, 'application_details': new_import_app})
-        else:
-            new_import_app = t_workflow_details.objects.filter(Assigned_To=Login_Id,
-                                                               Application_Status='AT', Action_Date__isnull=False)
-            if new_import_app.exists():
-                service_details = t_service_master.objects.all()
-                return render(request, 'inspector_pending_list.html',
-                              {'service_details': service_details, 'application_details': new_import_app})
-            else:
-                new_import_app = t_workflow_details.objects.filter(Assigned_To=Login_Id,
-                                                                   Application_Status='AP', Action_Date__isnull=False)
-                service_details = t_service_master.objects.all()
-                return render(request, 'inspector_pending_list.html',
-                              {'service_details': service_details, 'application_details': new_import_app})
+    print(Login_Id)
+    new_import_app = t_workflow_details.objects.filter(Assigned_To=Login_Id,
+                                                       Application_Status='AP', Action_Date__isnull=False)
+    service_details = t_service_master.objects.all()
+    return render(request, 'inspector_pending_list.html',
+                  {'service_details': service_details, 'application_details': new_import_app})
 
 
 def apply_movement_permit(request):
@@ -655,7 +627,7 @@ def view_application_details(request):
         audit_findings = t_certification_organic_t10.objects.filter(Application_No=application_id)
         audit_observation = t_certification_organic_t11.objects.filter(Application_No=application_id)
         file = t_file_attachment.objects.filter(Application_No=application_id)
-        return render(request, 'organic_certificate/team_leader_details.html',
+        return render(request, 'organic_certification/team_leader_details.html',
                       {'application_details': application_details, 'details': details, 'file': file,
                        'crop_production': crop_production, 'audit_team': audit_team,
                        'processing_unit': processing_unit, 'wild_collection': wild_collection,
@@ -1155,53 +1127,165 @@ def fo_app_details(request):
                       {'application_details': application_details, 'details': details, 'file': file,
                        'oic_list': oic_list, 'location': location, 'unit': unit})
     elif service_code == 'OC':
-        application_details = t_certification_organic_t1.objects.filter(Application_No=Application_No)
-        details = t_certification_organic_t2.objects.filter(Application_No=Application_No)
-        audit_team = t_certification_organic_t3.objects.filter(Application_No=Application_No)
-        crop_production = t_certification_organic_t4.objects.filter(Application_No=Application_No)
-        processing_unit = t_certification_organic_t5.objects.filter(Application_No=Application_No)
-        wild_collection = t_certification_organic_t6.objects.filter(Application_No=Application_No)
-        ah_details = t_certification_organic_t7.objects.filter(Application_No=Application_No)
-        aqua_details = t_certification_organic_t8.objects.filter(Application_No=Application_No)
-        api_details = t_certification_organic_t9.objects.filter(Application_No=Application_No)
-        audit_findings = t_certification_organic_t10.objects.filter(Application_No=Application_No)
-        audit_observation = t_certification_organic_t11.objects.filter(Application_No=Application_No)
-        file = t_file_attachment.objects.filter(Application_No=Application_No)
-        team_details = t_user_master.objects.filter(Login_Type='I')
-        return render(request, 'organic_certification/fo_details.html',
-                      {'application_details': application_details, 'details': details, 'file': file,
-                       'crop_production': crop_production, 'audit_team': audit_team,
-                       'processing_unit': processing_unit, 'wild_collection': wild_collection,
-                       'ah_details': ah_details, 'aqua_details': aqua_details, 'api_details': api_details,
-                       'audit_findings': audit_findings,'team_details':team_details, 'audit_observation': audit_observation})
+        new_import_app = t_workflow_details.objects.filter(Application_No=Application_No, Application_Status='ATA')
+        if new_import_app.exists():
+            application_details = t_certification_organic_t1.objects.filter(Application_No=Application_No)
+            details = t_certification_organic_t2.objects.filter(Application_No=Application_No)
+            audit_team = t_certification_organic_t3.objects.filter(Application_No=Application_No)
+            crop_production = t_certification_organic_t4.objects.filter(Application_No=Application_No)
+            processing_unit = t_certification_organic_t5.objects.filter(Application_No=Application_No)
+            wild_collection = t_certification_organic_t6.objects.filter(Application_No=Application_No)
+            ah_details = t_certification_organic_t7.objects.filter(Application_No=Application_No)
+            aqua_details = t_certification_organic_t8.objects.filter(Application_No=Application_No)
+            api_details = t_certification_organic_t9.objects.filter(Application_No=Application_No)
+            audit_findings = t_certification_organic_t10.objects.filter(Application_No=Application_No)
+            audit_observation = t_certification_organic_t11.objects.filter(Application_No=Application_No)
+            file = t_file_attachment.objects.filter(Application_No=Application_No)
+            team_details = t_user_master.objects.filter(Login_Type='I')
+            return render(request, 'organic_certification/fo_details.html',
+                          {'application_details': application_details, 'details': details, 'file': file,
+                           'crop_production': crop_production, 'audit_team': audit_team,
+                           'processing_unit': processing_unit, 'wild_collection': wild_collection,
+                           'ah_details': ah_details, 'aqua_details': aqua_details, 'api_details': api_details,
+                           'audit_findings': audit_findings, 'team_details': team_details,
+                           'audit_observation': audit_observation})
+        else:
+            new_import_app = t_workflow_details.objects.filter(Application_No=Application_No, Application_Status='AA')
+            if new_import_app.exists():
+                application_details = t_certification_organic_t1.objects.filter(Application_No=Application_No)
+                details = t_certification_organic_t2.objects.filter(Application_No=Application_No)
+                audit_team = t_certification_organic_t3.objects.filter(Application_No=Application_No)
+                crop_production = t_certification_organic_t4.objects.filter(Application_No=Application_No)
+                processing_unit = t_certification_organic_t5.objects.filter(Application_No=Application_No)
+                wild_collection = t_certification_organic_t6.objects.filter(Application_No=Application_No)
+                ah_details = t_certification_organic_t7.objects.filter(Application_No=Application_No)
+                aqua_details = t_certification_organic_t8.objects.filter(Application_No=Application_No)
+                api_details = t_certification_organic_t9.objects.filter(Application_No=Application_No)
+                audit_findings = t_certification_organic_t10.objects.filter(Application_No=Application_No)
+                audit_observation = t_certification_organic_t11.objects.filter(Application_No=Application_No)
+                file = t_file_attachment.objects.filter(Application_No=Application_No)
+                team_details = t_user_master.objects.filter(Login_Type='I')
+                return render(request, 'organic_certification/approve_fo_details.html',
+                              {'application_details': application_details, 'details': details, 'file': file,
+                               'crop_production': crop_production, 'audit_team': audit_team,
+                               'processing_unit': processing_unit, 'wild_collection': wild_collection,
+                               'ah_details': ah_details, 'aqua_details': aqua_details, 'api_details': api_details,
+                               'audit_findings': audit_findings, 'team_details': team_details,
+                               'audit_observation': audit_observation})
+            else:
+                application_details = t_certification_organic_t1.objects.filter(Application_No=Application_No)
+                details = t_certification_organic_t2.objects.filter(Application_No=Application_No)
+                audit_team = t_certification_organic_t3.objects.filter(Application_No=Application_No)
+                crop_production = t_certification_organic_t4.objects.filter(Application_No=Application_No)
+                processing_unit = t_certification_organic_t5.objects.filter(Application_No=Application_No)
+                wild_collection = t_certification_organic_t6.objects.filter(Application_No=Application_No)
+                ah_details = t_certification_organic_t7.objects.filter(Application_No=Application_No)
+                aqua_details = t_certification_organic_t8.objects.filter(Application_No=Application_No)
+                api_details = t_certification_organic_t9.objects.filter(Application_No=Application_No)
+                audit_findings = t_certification_organic_t10.objects.filter(Application_No=Application_No)
+                audit_observation = t_certification_organic_t11.objects.filter(Application_No=Application_No)
+                file = t_file_attachment.objects.filter(Application_No=Application_No)
+                team_details = t_user_master.objects.filter(Login_Type='I')
+                return render(request, 'organic_certification/fo_details.html',
+                              {'application_details': application_details, 'details': details, 'file': file,
+                               'crop_production': crop_production, 'audit_team': audit_team,
+                               'processing_unit': processing_unit, 'wild_collection': wild_collection,
+                               'ah_details': ah_details, 'aqua_details': aqua_details, 'api_details': api_details,
+                               'audit_findings': audit_findings, 'team_details': team_details,
+                               'audit_observation': audit_observation})
+
     elif service_code == 'GAP':
-        application_details = t_certification_gap_t1.objects.filter(Application_No=Application_No)
-        details = t_certification_gap_t2.objects.filter(Application_No=Application_No)
-        audit_team_details = t_certification_gap_t3.objects.filter(Application_No=Application_No)
-        crop_production = t_certification_gap_t4.objects.filter(Application_No=Application_No)
-        gap_house_details = t_certification_gap_t5.objects.filter(Application_No=Application_No)
-        file = t_file_attachment.objects.filter(Application_No=Application_No)
-        audit_findings = t_certification_gap_t7.objects.filter(Application_No=Application_No)
-        audit_observation = t_certification_gap_t8.objects.filter(Application_No=Application_No)
-        team_details = t_user_master.objects.filter(Login_Type='I')
-        return render(request, 'GAP_Certification/fo_details.html',
-                      {'application_details': application_details, 'details': details, 'file': file,
-                       'audit_findings': audit_findings, 'audit_observation': audit_observation,
-                       'crop_production': crop_production, 'gap_house_details': gap_house_details,
-                       'audit_team_details': audit_team_details, 'team_details':team_details})
+        new_import_app = t_workflow_details.objects.filter(Application_No=Application_No, Application_Status='ATA')
+        if new_import_app.exists():
+            application_details = t_certification_gap_t1.objects.filter(Application_No=Application_No)
+            details = t_certification_gap_t2.objects.filter(Application_No=Application_No)
+            audit_team_details = t_certification_gap_t3.objects.filter(Application_No=Application_No)
+            crop_production = t_certification_gap_t4.objects.filter(Application_No=Application_No)
+            gap_house_details = t_certification_gap_t5.objects.filter(Application_No=Application_No)
+            file = t_file_attachment.objects.filter(Application_No=Application_No)
+            audit_findings = t_certification_gap_t7.objects.filter(Application_No=Application_No)
+            audit_observation = t_certification_gap_t8.objects.filter(Application_No=Application_No)
+            team_details = t_user_master.objects.filter(Login_Type='I')
+            return render(request, 'GAP_Certification/fo_details.html',
+                          {'application_details': application_details, 'details': details, 'file': file,
+                           'audit_findings': audit_findings, 'audit_observation': audit_observation,
+                           'crop_production': crop_production, 'gap_house_details': gap_house_details,
+                           'audit_team_details': audit_team_details, 'team_details': team_details})
+        else:
+            import_app = t_workflow_details.objects.filter(Application_No=Application_No, Application_Status='AA')
+            if import_app.exists():
+                application_details = t_certification_gap_t1.objects.filter(Application_No=Application_No)
+                details = t_certification_gap_t2.objects.filter(Application_No=Application_No)
+                audit_team_details = t_certification_gap_t3.objects.filter(Application_No=Application_No)
+                crop_production = t_certification_gap_t4.objects.filter(Application_No=Application_No)
+                gap_house_details = t_certification_gap_t5.objects.filter(Application_No=Application_No)
+                file = t_file_attachment.objects.filter(Application_No=Application_No)
+                audit_findings = t_certification_gap_t7.objects.filter(Application_No=Application_No)
+                audit_observation = t_certification_gap_t8.objects.filter(Application_No=Application_No)
+                team_details = t_user_master.objects.filter(Login_Type='I')
+                return render(request, 'GAP_Certification/approve_fo_details.html',
+                              {'application_details': application_details, 'details': details, 'file': file,
+                               'audit_findings': audit_findings, 'audit_observation': audit_observation,
+                               'crop_production': crop_production, 'gap_house_details': gap_house_details,
+                               'audit_team_details': audit_team_details, 'team_details': team_details})
+            else:
+                application_details = t_certification_gap_t1.objects.filter(Application_No=Application_No)
+                details = t_certification_gap_t2.objects.filter(Application_No=Application_No)
+                audit_team_details = t_certification_gap_t3.objects.filter(Application_No=Application_No)
+                crop_production = t_certification_gap_t4.objects.filter(Application_No=Application_No)
+                gap_house_details = t_certification_gap_t5.objects.filter(Application_No=Application_No)
+                file = t_file_attachment.objects.filter(Application_No=Application_No)
+                audit_findings = t_certification_gap_t7.objects.filter(Application_No=Application_No)
+                audit_observation = t_certification_gap_t8.objects.filter(Application_No=Application_No)
+                team_details = t_user_master.objects.filter(Login_Type='I')
+                return render(request, 'GAP_Certification/fo_details.html',
+                              {'application_details': application_details, 'details': details, 'file': file,
+                               'audit_findings': audit_findings, 'audit_observation': audit_observation,
+                               'crop_production': crop_production, 'gap_house_details': gap_house_details,
+                               'audit_team_details': audit_team_details, 'team_details': team_details})
+
     elif service_code == 'FPC':
-        application_details = t_certification_food_t1.objects.filter(Application_No=Application_No)
-        details = t_certification_food_t2.objects.filter(Application_No=Application_No)
-        inspection_details = t_certification_food_t3.objects.filter(Application_No=Application_No)
-        file = t_file_attachment.objects.filter(Application_No=Application_No)
-        audit_findings = t_certification_food_t4.objects.filter(Application_No=Application_No)
-        audit_observation = t_certification_food_t4.objects.filter(Application_No=Application_No)
-        team_details = t_user_master.objects.filter(Login_Type='I')
-        return render(request, 'food_product_certification/fo_details.html',
-                      {'application_details': application_details, 'details': details, 'file': file,
-                       'audit_findings': audit_findings, 'audit_observation': audit_observation,
-                       'inspection_details': inspection_details,'team_details':team_details
-                       })
+        new_import_app = t_workflow_details.objects.filter(Application_No=Application_No, Application_Status='ATA')
+        if new_import_app.exists():
+            application_details = t_certification_food_t1.objects.filter(Application_No=Application_No)
+            details = t_certification_food_t2.objects.filter(Application_No=Application_No)
+            inspection_details = t_certification_food_t3.objects.filter(Application_No=Application_No)
+            file = t_file_attachment.objects.filter(Application_No=Application_No)
+            audit_findings = t_certification_food_t4.objects.filter(Application_No=Application_No)
+            audit_observation = t_certification_food_t4.objects.filter(Application_No=Application_No)
+            team_details = t_user_master.objects.filter(Login_Type='I')
+            return render(request, 'food_product_certification/fo_details.html',
+                          {'application_details': application_details, 'details': details, 'file': file,
+                           'audit_findings': audit_findings, 'audit_observation': audit_observation,
+                           'inspection_details': inspection_details, 'team_details': team_details
+                           })
+        else:
+            new_import_app = t_workflow_details.objects.filter(Application_No=Application_No, Application_Status='AA')
+            if new_import_app.exists():
+                application_details = t_certification_food_t1.objects.filter(Application_No=Application_No)
+                details = t_certification_food_t2.objects.filter(Application_No=Application_No)
+                inspection_details = t_certification_food_t3.objects.filter(Application_No=Application_No)
+                file = t_file_attachment.objects.filter(Application_No=Application_No)
+                audit_findings = t_certification_food_t4.objects.filter(Application_No=Application_No)
+                audit_observation = t_certification_food_t4.objects.filter(Application_No=Application_No)
+                team_details = t_user_master.objects.filter(Login_Type='I')
+                return render(request, 'food_product_certification/approve_fo_details.html',
+                              {'application_details': application_details, 'details': details, 'file': file,
+                               'audit_findings': audit_findings, 'audit_observation': audit_observation,
+                               'inspection_details': inspection_details, 'team_details': team_details
+                               })
+            else:
+                application_details = t_certification_food_t1.objects.filter(Application_No=Application_No)
+                details = t_certification_food_t2.objects.filter(Application_No=Application_No)
+                inspection_details = t_certification_food_t3.objects.filter(Application_No=Application_No)
+                file = t_file_attachment.objects.filter(Application_No=Application_No)
+                audit_findings = t_certification_food_t4.objects.filter(Application_No=Application_No)
+                audit_observation = t_certification_food_t4.objects.filter(Application_No=Application_No)
+                team_details = t_user_master.objects.filter(Login_Type='I')
+                return render(request, 'food_product_certification/fo_details.html',
+                              {'application_details': application_details, 'details': details, 'file': file,
+                               'inspection_details': inspection_details, 'team_details': team_details
+                               })
 
 
 def approve_fo_app(request):

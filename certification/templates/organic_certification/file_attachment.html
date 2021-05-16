@@ -2,7 +2,7 @@
         <div class="card-header">
             <div class="card-head-row">
                 <div class="card-tools">
-                    <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="attachment_modal()">
+                    <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="show_mortem_attachment_modal()">
                         <span class="btn-label">
                             <i class="fa fa-print"></i>
                         </span>
@@ -42,21 +42,6 @@
         </div>
 </div>
 <script>
-function save_details()
-{
-	$.ajax({
-			type : "POST",
-			url : "{% url 'submit_food_handler_application' %}",
-			data : $('#foodHandlerForm').serialize(),
-			cache : false,
-			dataType : "html",
-			success : function(responseText)
-			{
-                location.reload();
-			}
-	});
-}
-
 function DeleteAttachment(id)
 {
     var appNo = $('#appNo').val();

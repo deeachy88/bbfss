@@ -318,32 +318,28 @@
                     {% endif %}
                 {% endfor %}
                     <div class="row">
-                        {% for application_details in application_details %}
-                            {% if application_details.Audit_Team_Acceptance == 'A' %}
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Audit Team Leader</label>
-                                        <select class="form-control" id="leader" disabled>
-                                            {% for team_details in team_details %}
-                                                <option value="{{ team_details.Login_Id }}" {% if application_details.Audit_Team_Leader == team_details.Login_Id %}selected{% endif %}>{{team_details.Name}}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Date Of Inspection</label>
+                                    <input type="text" class="form-control date-picker flatpickr-input active" id="dateOfInspection" name="dateOfInspection"  placeholder="Pick a date" readonly="readonly">
                                 </div>
-                            {% else %}
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Audit Team Leader</label>
-                                        <select class="form-control" id="audit_team_leader">
-                                            <option value="">--SELECT--</option>
-                                            {% for team_details in team_details %}
-                                                <option value="{{team_details.Login_Id}}">{{team_details.Name}}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Validity Of Permit</label>
+                                    <input type="number" class="form-control" id="validity" name="validity">
                                 </div>
-                            {% endif %}
-                        {% endfor %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Remarks</label>
+                                    <textarea class="form-control" id="remarks" name="remarks" rows="2"></textarea>
+                                </div>
+                            </div>
+                        </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Remarks</label>
@@ -352,19 +348,12 @@
                         </div>
                     </div>
                     <div class="card-action">
-                        {% for application_details in application_details %}
                              {% if application_details.Audit_Team_Acceptance == 'A' %}
-                                <button type="button" class="btn btn-flat btn-primary" onclick="forward_application('{{ application_details.Application_No }}')">
+                                <button type="button" class="btn btn-flat btn-primary" onclick="approve_fpc_application('{{ application_details.Application_No }}')">
                                     <i class="ace-icon fa fa-times"></i>
-                                    &nbsp;&nbsp;Forward
-                                </button>
-                            {% else %}
-                                <button type="button" class="btn btn-flat btn-primary" onclick="send_for_acceptance('{{ application_details.Application_No }}')">
-                                    <i class="ace-icon fa fa-times"></i>
-                                    &nbsp;&nbsp;Send For Acceptance
+                                    &nbsp;&nbsp;Approve
                                 </button>
                             {% endif %}
-                        {% endfor %}
                         <button type="button" class="btn btn-primary" onclick="closeTeamModal()">Close Modal</button>
                     </div>
                 </div>
@@ -395,6 +384,9 @@
                             </div>
                         </div>
                     </div>
+                    <div class="alert alert-info" id="messageDiv" style="display:none">
+                        Application Approved
+                    </div>
                     <div class="modal-footer">
                         {% for application_details in application_details %}
                         <button type="button" class="btn btn-flat btn-primary" onclick="audit_team_details('{{ application_details.Application_No }}')">
@@ -409,55 +401,21 @@
         </div>
 
 <script>
-function openAuditTeamModal()
+function submit_details(application_id)
 {
-    $('#AuditTeamModal').modal('show');
-}
 
+    remarks = $('#remarks').val();
+    dateOfInspection = $('#dateOfInspection').val();
+    validity = $('#validity').val();
 
-function audit_team_details(application_id)
-{
-    name = $('#audit_team_member').val();
-    $.ajax({
+   $.ajax({
         type : "GET",
-        url : "{% url 'fpc_audit_team_details' %}",
-        data :{'application_id':application_id,'name':name},
+        url : "{% url 'approve_oc_application' %}",
+        data :{'application_no':application_id , 'remarks':remarks , 'dateOfInspection':dateOfInspection,'timeOfInspection':timeOfInspection},
         success : function(data) {
-            $('#audit_team_details').html(data);
-            $('#details').show();
-            $('#AuditTeamModal').modal('hide');
-        }
-    });
-}
-
-function send_for_acceptance(application_id)
-{
-    audit_team_leader = $('#audit_team_leader').val();
-    remarks = $('#remarks_fo').val();
-    $.ajax({
-        type : "GET",
-        url : "{% url 'fpc_for_acceptance' %}",
-        data :{'application_id':application_id,'audit_team_leader':audit_team_leader, 'remarks':remarks},
-        success : function(data) {
-            $('#addModal').modal('hide');
+            $('#application-details-modal').modal('hide');
             location.reload();
         }
     });
 }
-
-function forward_application(application_id)
-{
-    remarks = $('#remarks_fo').val();
-    leader = $('#leader').val();
-    $.ajax({
-        type : "GET",
-        url : "{% url 'fpc_application_team_leader' %}",
-        data :{'application_id':application_id, 'audit_team_leader':leader, 'remarks':remarks},
-        success : function(data) {
-            $('#import_detailsModal').modal('hide');
-            location.reload();
-        }
-    });
-}
-
 </script>

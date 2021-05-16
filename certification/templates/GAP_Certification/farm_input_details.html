@@ -1,0 +1,24 @@
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Farm Inputs</th>
+            <th scope="col">Name Of Supplier/Source</th>
+            <th scope="col">Invoice/Certificate</th>
+        </tr>
+    </thead>
+    <tbody>
+       {% for farm_inputs in farm_inputs %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{farm_inputs.Audit_Findings_Farm_Inputs}}</td>
+                <td>{{farm_inputs.Audit_Findings_Farm_Supplier}}</td>
+                <td>{{farm_inputs.Audit_Findings_Farm_Invoice}}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="4" class="text-center">No Data</td>
+            </tr>
+       {% endfor %}
+    </tbody>
+</table>
