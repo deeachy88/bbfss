@@ -1,0 +1,158 @@
+{% load static %}
+<style>
+    .header-card {
+    background-color: white;
+}
+
+table, th, td {
+  border: 1px solid black;
+}
+
+</style>
+<div class="animated fadeIn">
+    <div class="card-header header-card"><font color='black'>
+        <div class="col-md-12">
+            <div >
+                <div class="card-head-row float-right">
+                    <div class="card-tools">
+                        <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Test Report';printClientTable()">
+                            <span class="btn-label">
+                                <i class="zmdi zmdi-print"></i>
+                            </span>
+                            Print
+                        </a>
+                    </div>
+                </div>
+                <br>
+                <br>
+                <div class="card-title text-center">
+                    <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
+                </div>
+                <h4 class="text-center"><font color='black'><b>FOOD IMPORT PERMIT</b></font></h4>
+                {% for certificate_details in certificate_details %}
+                <div class="row float-right">
+                    <p>Permit No&nbsp;:&nbsp;<b>{{certificate_details.Import_Permit_No}}</b></p>
+                </div>
+                <div>
+                    <table style="width:100%">
+                        <tr>
+                            <td colspan="2">
+                                This import permit is granted in accordance with the Food Act of Bhutan, 2005.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:50%">
+                                <label>Name and Address of the Importer: </label>
+                                <b>{{certificate_details.Applicant_Name}}&nbsp;&nbsp;{{certificate_details.Present_Address}}</b>
+                            </td>
+                            <td style="width:50%">
+                                <label>Name and Address of the Exporter: </label>
+                                <b>{{certificate_details.Name_And_Address_Supplier}}</b>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:50%">
+                                <label>Entry Point: </label>
+                                <b>{{certificate_details.Point_Of_Entry}}</b>
+                            </td>
+                            <td style="width:50%">
+                                <label>Country of Origin: </label>
+                                <b>{{certificate_details.Origin_Country_Food}}</b>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:50%">
+                                <label>Final Destination: </label>
+                                <b>{{certificate_details.Final_Destination}}</b>
+                            </td>
+                            <td style="width:50%">
+                                <label>Expected Date of Arrival: </label>
+                                <b>{{certificate_details.Expected_Arrival_Date}}</b>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Product Name and Description</th>
+                                            <th scope="col">Unit</th>
+                                            <th scope="col">Quantity</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for import in import %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td>{{import.Product_Name_Description}}</td>
+                                                <td>{{import.Unit}}</td>
+                                                <td>{{import.Quantity}}</td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                                <td colspan="6" class="text-center">No Data</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <h5 class="text-left"><font color='black'><b>General Entry Conditions :</b></font></h5>
+                                <p><b>The consignment of food should –</b></p>
+                                    <p>1.	Be accompanied by Bhutan Food Safety Certificate (Annexure 1) only for high risk products.</p>
+                                    <p>2.	Meet National Food Labelling Requirements</p>
+                                    <p>3.	Have atleast 50% of its shelf during the time of import</p>
+                                    <p>4.	The consignment of Food Lot must be unloaded from transport for inspection and or sampling (if required)</p>
+                                    <p>5.	Evidence they are in good regulatory standing from responsible authority in exporting country</p>
+                                    <p>6.	For first time imports from new suppliers, please attach a copy of the last inspection report</p>
+                                    <p>7.	Transported in appropriate transport condition</p>
+                                    <p><b>The importer must:</b></p>
+                                    <p>•	advise BAFRA of any circumstance that may affect the safety and suitability of the food. </p>
+                                    <p><b>The import permit may be revoked where BAFRA determines that: </b></p>
+                                    <p>•	the zoonotic disease outbreak has occurred in the exporting country</p>
+                                    <p>•	there is a food safety problem in the exporting country or the processor is no longer in good regulatory standing,</p>
+                                    <p>•	Importer is determined to be non-compliant following an inspection</p>
+
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="card-body">
+                    <div class="col-md-12">
+                        <div class="row">
+                             <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Date of Issue</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                             <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Validity</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                             <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Place of Issue</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Name and signature of Authorized Officer</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </font>
+    </div>
+</div>

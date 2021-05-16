@@ -1,0 +1,28 @@
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Export Certificate No</th>
+            <th scope="col">Application No</th>
+            <th scope="col">Application Date</th>
+            <th scope="col">Validity</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for import_permit_details in import_permit_details %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{import_permit_details.Export_Permit_No}}</td>
+                <td>{{import_permit_details.Application_No}}</td>
+                <td>{{import_permit_details.Application_Date}}</td>
+                <td>{{import_permit_details.Validity}}</td>
+                <td><button  class="btn btn-default btn-border" type="button" onclick="print_certificate('ECF','{{import_permit_details.Application_No}}')"><i class="zmdi zmdi-print"></i></button></td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="5" class="text-center">No Data</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

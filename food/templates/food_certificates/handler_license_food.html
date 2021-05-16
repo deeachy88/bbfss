@@ -1,0 +1,56 @@
+{% load static %}
+<style>
+    .header-card {
+    background-color: white;
+}
+
+table, th, td {
+  border: 1px solid black;
+}
+
+</style>
+<div class="animated fadeIn">
+    <div class="card-header header-card"><font color='black'>
+        <div class="col-md-12">
+            <div >
+                <div class="card-head-row float-right">
+                    <div class="card-tools">
+                        <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Test Report';printClientTable()">
+                            <span class="btn-label">
+                                <i class="zmdi zmdi-print"></i>
+                            </span>
+                            Print
+                        </a>
+                    </div>
+                </div>
+                <br>
+                <br>
+                <div class="card-title text-center">
+                    <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
+                </div>
+
+                <h4 class="text-center"><font color='black'><b>FOOD HANDLER LICENCE</b></font></h4>
+                {% for food_handler_details in food_handler_details %}
+                <div class="row float-left">
+                    <p>LICENCE No.&nbsp;:&nbsp;<b>{{food_handler_details.FH_License_No}}</b></p>
+                </div>
+                <div class="row float-right">
+                    <p>Date of issue&nbsp;:&nbsp;<b>{{food_handler_details.Approved_Date}}</b></p>
+                </div>
+                <div class="card-body">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <p>Food Handler license is issued to Mr/Ms: <b>{{food_handler_details.Applicant_Name}}</b>
+                            <p>This License is issued in accordance with the Food Act of Bhutan 2005 and its
+                                Regulation 2017.</p>
+                        </div>
+                    </div>
+                    <h4 class="text-center"><font color='black'><b>DIRECTOR GENERAL</b></font></h4>
+
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </font>
+    </div>
+</div>
