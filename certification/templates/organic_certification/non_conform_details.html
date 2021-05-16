@@ -1,0 +1,26 @@
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Clause Number</th>
+            <th scope="col">Non Conformity</th>
+            <th scope="col">Non Conformity Category</th>
+            <th scope="col">Closing Meeting (Date)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for conform_details in conform_details %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{import.Clause_Number}}</td>
+                <td>{{import.Non_Conformity}}</td>
+                <td>{{import.Non_Conformity_Category}}</td>
+                <td>{{import.Non_Conformity_Description}}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="5" class="text-center">No Data</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

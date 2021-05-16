@@ -151,6 +151,13 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
+                                <label class="form-label">Farm Name</label>
+                                <textarea class="form-control" id="farm_name" name="farm_name"></textarea>
+                            </div>
+                            <div class="alert alert-danger" id="farm_nameErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
                                 <label class="form-label">Farm Location</label>
                                 <textarea class="form-control" id="farm_location" name="farm_location"></textarea>
                             </div>
@@ -163,6 +170,8 @@
                             </div>
                             <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Contact Number</label>
@@ -170,8 +179,6 @@
                             </div>
                             <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
                         </div>
-                    </div>
-                    <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Request Date for Inspection</label>
@@ -204,7 +211,7 @@
                     </div>
                 </div>
                 <div class="card-action">
-                    <button type="button" class="btn btn-success" onclick="save_farmer_details()">Save</button>
+                    <button type="button" class="btn btn-success" onclick="save_farmer_details()">Save-Next</button>
                 </div>
             </div>
             <div class="tab-pane fade" id="crop_production_details" role="tabpanel" aria-labelledby="pills-crop-production">
@@ -223,7 +230,7 @@
                     </div>
                 </div>
                 <div class="card-action">
-                    <button type="button" class="btn btn-success" onclick="next_crop_production()">Save</button>
+                    <button type="button" class="btn btn-success" onclick="next_crop_production()">Save-Next</button>
                 </div>
             </div>
             <div class="tab-pane fade" id="wild_collection_details" role="tabpanel" aria-labelledby="pills-crop-production">
@@ -242,7 +249,7 @@
                     </div>
                 </div>
                 <div class="card-action">
-                    <button type="button" class="btn btn-success" onclick="wild_collection_details_save()">Save</button>
+                    <button type="button" class="btn btn-success" onclick="wild_collection_details_save()">Save-Next</button>
                 </div>
             </div>
             <div class="tab-pane fade" id="animal_husbandry_details" role="tabpanel" aria-labelledby="pills-crop-production">
@@ -261,7 +268,7 @@
                     </div>
                 </div>
                 <div class="card-action">
-                    <button type="button" class="btn btn-success" onclick="next_animal_husbandry_details()">Save</button>
+                    <button type="button" class="btn btn-success" onclick="next_animal_husbandry_details()">Save-Next</button>
                 </div>
             </div>
             <div class="tab-pane fade" id="aquaculture_details" role="tabpanel" aria-labelledby="pills-crop-production">
@@ -280,10 +287,10 @@
                     </div>
                 </div>
                 <div class="card-action">
-                    <button type="button" class="btn btn-success" onclick="next_aquaculture_details()">Save</button>
+                    <button type="button" class="btn btn-success" onclick="next_aquaculture_details()">Save-Next</button>
                 </div>
             </div>
-            <div class="tab-pane fade" id="api_culture_details" role="tabpanel" aria-labelledby="pills-crop-production">
+            <div class="tab-pane fade" id="apiculture_details" role="tabpanel" aria-labelledby="pills-crop-production">
                 <div class="card">
                     <div class="card-header">
                         <div class="card-head-row">
@@ -299,7 +306,7 @@
                     </div>
                 </div>
                 <div class="card-action">
-                    <button type="button" class="btn btn-success" onclick="next_api_culture_details()">Save</button>
+                    <button type="button" class="btn btn-success" onclick="next_api_culture_details()">Save-Next</button>
                 </div>
             </div>
             <div class="tab-pane fade" id="processing_unit_details" role="tabpanel" aria-labelledby="pills-crop-production">
@@ -318,7 +325,7 @@
                     </div>
                 </div>
                 <div class="card-action">
-                    <button type="button" class="btn btn-success" onclick="next_processing_unit_details()">Save</button>
+                    <button type="button" class="btn btn-success" onclick="next_processing_unit_details()">Save-Next</button>
                 </div>
             </div>
             <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="mortem-file-attach">
@@ -326,12 +333,12 @@
                     {% include 'organic_certification/file_attachment.html' %}
                 </div>
                 <div class="card-action">
-                    <button type="button" class="btn btn-success" onclick="next_attach()">Save</button>
+                    <button type="button" class="btn btn-success" onclick="next_attach()">Save-Next</button>
                 </div>
             </div>
-            <div class="tab-pane fade" id="standards" role="tabpanel" aria-labelledby="mortem-file-attach">
+            <div class="tab-pane fade" id="certification-standards" role="tabpanel" aria-labelledby="mortem-file-attach">
                 <div class="row">
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-12">
                         <div class="form-check">
                             <label class="form-label">With a view to ensure the similarity of the process of production of the mentioned commodities as per related standard, we shall keep regular records and maintain all required documentation to fulfill the requirements of the identified Standard (refer previous point) and any other additional documentation required by the BAFRA as the Certification Body</label><br><br>
                             <div class="form-group">
@@ -350,7 +357,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-12">
                         <div class="form-check">
                             <label class="form-label">We are willing to change our operational practices, as may be required from time to time to keep in line with our policy which may be directed by BAFRA.</label><br><br>
                             <div class="form-group">
@@ -371,7 +378,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-12">
                         <div class="form-check">
                             <label class="form-label">If BAFRA desires to make a preliminary inspection or investigation then, we, agree to give all our reasonable opportunity and privileges to BAFRA and accordingly provide our cooperation as per certification requirements.</label><br><br>
                             <div class="form-group">
@@ -390,7 +397,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-12">
                         <div class="form-check">
                             <label class="form-label">If the certificate is awarded, we will abide by all the terms and conditions of the certification, so long as it remains valid for use and also comply with the Rules and Regulations. If the license/certificate becomes prolonged or it is cancelled, then we, shall ensure that any use of the Standard Mark on any commodity under the license will be stopped immediately and all related advertisement, materials will be taken back and other necessary action will be taken</label><br><br>
                             <div class="form-group">
@@ -411,7 +418,7 @@
                     </div>
                 </div>
                 <div class="card-action">
-                    <button type="button" class="btn btn-primary" onclick="submit_organic_certificate()">Save</button>
+                    <button type="button" class="btn btn-primary" onclick="submit_organic_certificate()">Submit</button>
                 </div>
             </div>
             </div>
@@ -1153,7 +1160,7 @@ function save_organic_certificate()
                 data : $('#organic_certificate_form').serialize(),
                 success : function(data)
                 {
-                    $('#application_no').val(data.applNo);
+                    $('#applicationNo').val(data.applNo);
                     $('#farmers_group_application_no').val(data.applNo);
                     $('#crop_production_app_no').val(data.applNo);
                     $('#wild_collection_app_no').val(data.applNo);

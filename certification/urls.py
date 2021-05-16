@@ -37,6 +37,9 @@ urlpatterns = [
     path('send_audit_plan_acceptance', views.send_audit_plan_acceptance, name='send_audit_plan_acceptance'),
     path('approve_application', views.approve_application, name='approve_application'),
     path('resubmit_application', views.resubmit_application, name='resubmit_application'),
+    path('farm_input_observation', views.farm_input_observation, name='farm_input_observation'),
+    path('conform_observation', views.conform_observation, name='conform_observation'),
+    path('audit_team_accept',views.audit_team_accept, name='audit_team_accept'),
 
 
     # Food Product certificate
@@ -48,6 +51,7 @@ urlpatterns = [
          name='food_product_certificate_file_name'),
     path('submit_food_product_certificate', views.submit_food_product_certificate,
          name='submit_food_product_certificate'),
+
 
 ]
 if settings.DEBUG:
