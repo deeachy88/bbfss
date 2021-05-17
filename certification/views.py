@@ -14,7 +14,7 @@ from certification.models import t_certification_food_t2, t_certification_organi
     t_certification_organic_t9, t_certification_organic_t1, t_certification_gap_t5, t_certification_gap_t4, \
     t_certification_organic_t3, t_certification_gap_t1, t_certification_food_t4, t_certification_organic_t11, \
     t_certification_food_t1, t_certification_gap_t3, t_certification_food_t3, t_certification_organic_t10, \
-    t_certification_food_t5
+    t_certification_food_t5, t_certification_gap_t2
 from livestock.views import update_payment
 from plant.models import t_file_attachment, t_workflow_details
 
@@ -877,7 +877,8 @@ def gap_farmers_group_details(request):
     application_no = request.POST.get('farmers_group_application_no')
     cid = request.POST.get('farmers_group_cid')
     name = request.POST.get('farmers_group_fullname')
-    farmers_group_details = t_certification_organic_t2.objects.filter(Application_No=application_no, CID=cid, Name=name)
+    t_certification_gap_t2.objects.create(Application_No=application_no, CID=cid, Name=name)
+    farmers_group_details = t_certification_gap_t2.objects.filter(Application_No=application_no)
     return render(request, 'organic_certification/farmers_group_details.html',
                   {'farmers_group_details': farmers_group_details})
 
@@ -899,21 +900,25 @@ def gap_crop_production_details(request):
     estimated_yield = request.POST.get('estimated_yield')
     estimated_Yield_Unit = request.POST.get('estimated_Yield_Unit')
     estimated_harvest_month = request.POST.get('estimated_harvest_month')
+    p_from = datetime.strptime(prev_year, '%d-%m-%Y').date()
+    p_to = datetime.strptime(to_year, '%d-%m-%Y').date()
+    c_from = datetime.strptime(current_year, '%d-%m-%Y').date()
+    c_to = datetime.strptime(to_current_year, '%d-%m-%Y').date()
 
     t_certification_gap_t4.objects.create(
         Application_No=application_no,
         Crop_Name=crop_name,
         Area_Cultivated=area,
         Unit=area_unit,
-        P_From_Date=prev_year,
-        P_To_Date=to_year,
+        P_From_Date=p_from,
+        P_To_Date=p_to,
         P_Yield=yields,
         P_Yield_Unit=Yield_Unit,
         P_Harvest_Month=harvest_month,
         P_Sold=sold,
         P_Balance_Stock=balance_stock,
-        C_From_Date=current_year,
-        C_To_Date=to_current_year,
+        C_From_Date=c_from,
+        C_To_Date=c_to,
         C_Estimated_Yield=estimated_yield,
         C_Yield_Unit=estimated_Yield_Unit,
         C_Harvest_Month=estimated_harvest_month)
@@ -1200,6 +1205,8 @@ def gap_certificate_no(request):
         year = timezone.now().year
         newAppNo = Field_Code + "/" + "GAP" + "/" + str(year) + "/" + AppNo
     return newAppNo
+
+
 
 
 # Food Product certificate

@@ -973,5 +973,35 @@ function  submit_gap_certificate_details()
     });
 }
 
+function save_farmer_group_details()
+{
+        $.ajax({
+                type : "POST",
+                url : "{% url 'save_farmers_group_details' %}",
+                data : $('#farmers_group_form').serialize(),
+                success : function(responseText) {
+                   $('#farmer_group_model').modal('hide');
+                   $('#farmer_details').html(responseText);
+                   $('#pills-details').tab('show');
+                   $('.modal-backdrop').remove();
+                }
+            });
+}
+
+function save_crop_production_details()
+{
+        $.ajax({
+                type : "POST",
+                url : "{% url 'save_crop_production_details' %}",
+                data : $('#crop_production_form').serialize(),
+                success : function(responseText) {
+                   $('#crop_production_model').modal('hide');
+                   $('#crop_production').html(responseText);
+                   $('#pills-crop-production').tab('show');
+                   $('.modal-backdrop').remove();
+                }
+            });
+}
+
 </script>
 {% endblock %}

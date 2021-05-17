@@ -907,7 +907,7 @@ def save_food_handler_details(request):
     Proposed_Inspection_Date = request.POST.get('preferred_Date')
     Associated_Food_Establishment = request.POST.get('associated_establishment')
     date_format_ins = datetime.strptime(Proposed_Inspection_Date, '%d-%m-%Y').date()
-    t_food_licensinf_food_handler_t1.objects.create(
+    t_food_licensing_food_handler_t1.objects.create(
         Application_No=application_no,
         Application_Date=date.today(),
         Nationality=Nationality,
@@ -948,7 +948,7 @@ def save_food_handler_details(request):
 
 
 def food_handler_application_no(service_code):
-    last_application_no = t_food_licensinf_food_handler_t1.objects.aggregate(Max('Application_No'))
+    last_application_no = t_food_licensing_food_handler_t1.objects.aggregate(Max('Application_No'))
     lastAppNo = last_application_no['Application_No__max']
     if not lastAppNo:
         year = timezone.now().year
@@ -1002,7 +1002,7 @@ def food_handler_forward_application(request):
     application_id = request.POST.get('application_id')
     forwardTo = request.POST.get('forwardTo')
     remarks = request.POST.get('remarks')
-    details = t_food_licensinf_food_handler_t1.objects.filter(Application_No=application_id)
+    details = t_food_licensing_food_handler_t1.objects.filter(Application_No=application_id)
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Assigned_To=forwardTo)
     application_details.update(Action_Date=date.today())
@@ -1024,7 +1024,7 @@ def food_handler_forward_application(request):
 def reject_food_handler_application(request):
     application_id = request.GET.get('application_id')
     remarks = request.POST.get('remarks')
-    details = t_food_licensinf_food_handler_t1.objects.filter(Application_No=application_id)
+    details = t_food_licensing_food_handler_t1.objects.filter(Application_No=application_id)
     work_details = t_workflow_details.objects.filter(Application_No=application_id)
     work_details.update(Action_Date=date.today())
     work_details.update(Application_Status='R')
@@ -1059,7 +1059,7 @@ def food_handler_application(request):
 
     application_details = t_workflow_details.objects.filter(Assigned_Role_Id='5', Assigned_To=Login_Id,
                                                             Application_Status='A', Service_Code=service_code)
-    details = t_food_licensinf_food_handler_t1.objects.all()
+    details = t_food_licensing_food_handler_t1.objects.all()
     return render(request, 'food_handler_list.html',
                   {'details': details, 'application_details': application_details})
 
@@ -1080,7 +1080,7 @@ def update_batch_no(request):
         checkboxArr = tempArr.split("~")
         email = checkboxArr[0]
         app_no = checkboxArr[1]
-        details = t_food_licensinf_food_handler_t1.objects.filter(Application_No=app_no)
+        details = t_food_licensing_food_handler_t1.objects.filter(Application_No=app_no)
         details.update(Minimum_Score=Minimum_Score, Training_Batch_No=batchNo, Training_From_Date=from_Date,
                        Training_To_Date=to_Date, Inspection_Remarks=remarks)
         send_batch_mail(batchNo, from_training_Date, to_training_Date, remarks, email)
@@ -1098,7 +1098,7 @@ def send_batch_mail(batchNo, from_training_Date, to_training_Date, remarks, Emai
 
 
 def result_update_list(request):
-    result_details = t_food_licensinf_food_handler_t1.objects.filter(Training_Batch_No__isnull=False).distinct(
+    result_details = t_food_licensing_food_handler_t1.objects.filter(Training_Batch_No__isnull=False).distinct(
         'Training_Batch_No')
     return render(request, 'food_handler/food_handler_result_list.html',
                   {'application_details': result_details})
@@ -1106,7 +1106,7 @@ def result_update_list(request):
 
 def update_list(request):
     batch_no = request.POST.get('Training_Batch_No')
-    result_details = t_food_licensinf_food_handler_t1.objects.filter(Training_Batch_No=batch_no)
+    result_details = t_food_licensing_food_handler_t1.objects.filter(Training_Batch_No=batch_no)
     return render(request, 'food_handler/result_list.html',
                   {'application_details': result_details})
 
@@ -1119,7 +1119,7 @@ def result_update(request):
         score = checkboxArr[0]
         app_no = checkboxArr[1]
         att = checkboxArr[2]
-        details = t_food_licensinf_food_handler_t1.objects.filter(Application_No=app_no)
+        details = t_food_licensing_food_handler_t1.objects.filter(Application_No=app_no)
         details.update(Assessment_Score=score)
         details.update(Attendance=att)
         for detail in details:
@@ -1130,7 +1130,7 @@ def result_update(request):
 
 
 def generate_fh_license_no(request):
-    last_application_no = t_food_licensinf_food_handler_t1.objects.aggregate(Max('FH_License_No'))
+    last_application_no = t_food_licensing_food_handler_t1.objects.aggregate(Max('FH_License_No'))
     lastAppNo = last_application_no['FH_License_No__max']
     if not lastAppNo:
         year = timezone.now().year

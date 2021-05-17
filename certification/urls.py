@@ -26,6 +26,8 @@ urlpatterns = [
     path('gap_audit_plan_resubmit', views.gap_audit_plan_resubmit, name='gap_audit_plan_resubmit'),
     path('gap_conform_observation', views.gap_conform_observation, name='gap_conform_observation'),
     path('approve_oc_application', views.approve_gap_application, name='approve_oc_application'),
+    path('gap_farmers_group_details', views.save_farmers_group_details, name='gap_farmers_group_details'),
+    path('gap_crop_production_details', views.save_crop_production_details, name='gap_crop_production_details'),
 
     # Organic certificate
     path('organic_certificate', views.organic_certificate, name='organic_certificate'),
