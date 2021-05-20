@@ -28,5 +28,7 @@ class t_common_complaint_t1(models.Model):
     Closure_Date = models.DateField(blank=True, null=True)
     Closure_Remarks = models.TextField(blank=True, null=True)
     Application_Status = models.CharField(blank=True, null=True, max_length=50)
+    Acknowledge_Remarks = models.TextField(default=None, null=True)
+    Acknowledge_Date = models.DateField(default=None, null=True)
 
 

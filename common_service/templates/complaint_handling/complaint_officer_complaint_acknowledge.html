@@ -1,7 +1,10 @@
-<form method="post" id="applicationForm">
-{% csrf_token %}
-        <div class="card-body">
+{% load static %}
+{% load crispy_forms_tags %}
+<form method="post" id="acknowledgeForm">
+    {% csrf_token %}
+         <div class="card-body">
             {% for complaint_details in complaint_details %}
+             <input type="hidden" id="applicationNo" name="applicationNo" value="{{complaint_details.Application_No}}">
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
@@ -11,13 +14,13 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="name">Name</label>
+                            <label >Name</label>
                             <input type="text" disabled class="form-control" id="applicantName" name="applicantName" value="{{complaint_details.Name}}">
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="dzongkhag">Dzongkhag</label>
+                            <label >Dzongkhag</label>
                             <select class="form-control" disabled name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value),getLocation(this.value)">
                                 <option value="">--SELECT DZONGKHAG--</option>
                                 {% for dzongkhag in dzongkhag %}
@@ -82,24 +85,51 @@
                 </div>
             {% endfor %}
                 <br>
-                <div class="row">
-                    <div class="col-md-12">
-                        <label class="form-label">Acknowledge Remarks</label>
-                        <textarea class="form-control" id="acknowledgeRemarks" name="acknowledgeRemarks"></textarea>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="form-label">Acknowledge Remarks</label>
+                            <textarea class="form-control" id="acknowledgeRemarks" name="acknowledgeRemarks"></textarea>
+                        </div>
+                        <div class="alert alert-danger" id="acknowledgeRemarksErrorMsg" style="display:none"></div>
                     </div>
-
-                </div>
-                <div class="modal-footer">
-                    <div class="col-md-4">
-                        {% for complaint_details in complaint_details %}
-                            <button type="button" class="btn btn-primary" onclick="forwardApplication('{{ complaint_details.Application_No }}')"> Acknowledge </button>
-                        {% endfor %}
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <div class="modal-footer">
+                        <div class="col-md-4">
+                                <button type="button" class="btn btn-primary" onclick="acknowledgeApplication()"> Acknowledge </button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                         <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+                            Complaint Acknowledged !
+                        </div>
                     </div>
-                     <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
-                        Complaint Acknowledged !
-                    </div>
-                </div>
         </div>
 </form>
 
+<script>
+function acknowledgeApplication(form)
+{
+    var remarks = $('#acknowledgeRemarks').val();
+
+    if (remarks == "")
+    {
+        $('#acknowledgeRemarksErrorMsg').html("Enter Acknowledge Remarks.");
+        $('#acknowledgeRemarksErrorMsg').show();
+        $('#acknowledgeRemarksErrorMsg').delay(2000).fadeOut('slow');
+    }
+
+    else
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'acknowledge_complaint' %}",
+            data : $('#acknowledgeForm').serialize(),
+            success : function(data) {
+                $('#submitMsg').show();
+                setTimeout(function() {
+                    $("#submitMsg").hide('blind', {}, 500)
+                }, 2000);
+                location.reload();
+            }
+        });
+    }
+}
+</script>

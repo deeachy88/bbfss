@@ -35,7 +35,7 @@
                                         <td>
                                             <div class="btn-group">
                                                 <button  type="button" class="btn btn-warning btn-sm "
-                                                         onclick="acknowledgeComplaint('{{complaint_details.Application_No}}',
+                                                         onclick="acknowledgeComplaintDetails('{{complaint_details.Application_No}}',
                                                          '{{complaint_details.Service_Code}}')">
                                                     Acknowledge<i class="zmdi zmdi-edit"></i></button>
                                             </div>
@@ -100,11 +100,11 @@
             }
         });
     }
-    function acknowledgeComplaint(appId, Service_Id)
+    function acknowledgeComplaintDetails(appId, Service_Id)
     {
         $.ajax({
             type : "GET",
-            url : "{% url 'acknowledge_complaint' %}",
+            url : "{% url 'complaint_details' %}",
             data :{'application_id':appId, 'service_code':Service_Id},
             success : function(data)
             {
