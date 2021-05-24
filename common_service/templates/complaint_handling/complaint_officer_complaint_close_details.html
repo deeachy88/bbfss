@@ -1,0 +1,162 @@
+{% load static %}
+{% load crispy_forms_tags %}
+{% load static %}
+<style>
+    .header-card {
+    background-color: white;
+}
+
+table, th, td {
+  border: 1px solid black;
+}
+
+</style>
+ <div class="animated fadeIn">
+    <div class="card-header header-card"><font color='black'>
+        <div class="card-head-row float-right">
+            <div class="card-tools">
+                <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Complaint Report';printClientTable()">
+                    <span class="btn-label">
+                        <i class="zmdi zmdi-print"></i>
+                    </span>
+                    Print
+                </a>
+            </div>
+        </div>
+        <br>
+        <br>
+    {% for complaint_details in complaint_details %}
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="cid">Applicant CID : </label>
+                    <input type="number" disabled class="form-control" id="cid" name="cid" value="{{complaint_details.CID}}">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label >Name</label>
+                    <input type="text" disabled class="form-control" id="applicantName" name="applicantName" value="{{complaint_details.Name}}">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label >Dzongkhag</label>
+                    <select class="form-control" disabled name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value),getLocation(this.value)">
+                        <option value="">--SELECT DZONGKHAG--</option>
+                        {% for dzongkhag in dzongkhag %}
+                            <option value="{{ dzongkhag.Dzongkhag_Code }}" {% if complaint_details.Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>{{ dzongkhag.Dzongkhag_Name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="gewog">Gewog</label>
+                    <select class="form-control" disabled name="gewog" id="gewog" onchange="getVillage(this.value)">
+                        <option value="">--SELECT GEWOG--</option>
+                       {% for gewog in gewog %}
+                            <option value="{{ gewog.Gewog_Code }}" {% if complaint_details.Gewog_Code == gewog.Gewog_Code %}selected{% endif %}>{{ gewog.Gewog_Name }}</option>
+                       {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="village">Village</label>
+                     <select class="form-control" disabled name="village" id="village">
+                        <option value="">--SELECT VILLAGE--</option>
+                        {% for village in village %}
+                            <option value="{{ village.Village_Code }}" {% if complaint_details.Village_Code == village.Village_Code %}selected{% endif %}>{{ village.Village_Name }}</option>
+                        {% endfor %}
+                     </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="contactNumber">Contact Number</label>
+                    <input type="number" disabled class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" value="{{complaint_details.Contact_No}}">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" disabled class="form-control" id="email" name="email" value="{{complaint_details.Email}}">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <input type="text" disabled class="form-control" id="address" name="address" value="{{complaint_details.Address}}">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="address">Complaint Description</label>
+                    <textarea class="form-control" disabled id="complainDescription" name="complainDescription">{{complaint_details.Complaint_Description}}</textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="border-bottom w-100 " style="border: 1px solid#888; margin-bottom:10px;"></div>
+
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="cid">Assign Date</label>
+                    <input type="text" disabled class="form-control" value="{{complaint_details.Assign_Date}}">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="cid">Assign To</label>
+                    {% for user_details in user_details %}
+                    <input type="text" disabled class="form-control" value="{{user_details.Name}}">
+                    {% endfor %}
+                </div>
+            </div>
+             <div class="col-md-8">
+                <div class="form-group">
+                    <label for="cid">Assign Remarks</label>
+                    <input type="text" disabled class="form-control" value="{{complaint_details.Assign_Remarks}}">
+                </div>
+            </div>
+        </div>
+        <div class="border-bottom w-100 " style="border: 1px solid#888; margin-bottom:10px;"></div>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>Investigation Date</label>
+                    <input type="text" disabled class="form-control" value="{{complaint_details.Investigation_Date}}">
+                </div>
+            </div>
+            <div class="col-md-10">
+                <div class="form-group">
+                    <label>Investigation Report</label>
+                    <textarea disabled class="form-control" id="inReport" name="inReport">{{complaint_details.Investigation_Report}}</textarea>
+                </div>
+            </div>
+        </div>
+        <div class="border-bottom w-100 " style="border: 1px solid#888; margin-bottom:10px;"></div>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>Closure Date</label>
+                    <input type="text" disabled class="form-control" value="{{complaint_details.Closure_Date}}">
+                </div>
+            </div>
+            <div class="col-md-10">
+                <label>Closure Remarks</label>
+                <textarea disabled class="form-control" id="closeRemarks" name="closeRemarks">{{complaint_details.Closure_Remarks}}</textarea>
+            </div>
+        </div>
+   {% endfor %}
+    </font>
+    </div>
+</div>
+
+

@@ -20,6 +20,8 @@ urlpatterns = [
     path('investigation_report_list', views.investigation_report_list, name='investigation_report_list'),
     path('investigation_report_details', views.investigation_report_details, name='investigation_report_details'),
     path('close_complaint', views.close_complaint, name='close_complaint'),
+    path('complaint_closed_list', views.complaint_closed_list, name='complaint_closed_list'),
+    path('complaint_closed_details', views.complaint_closed_details, name='complaint_closed_details'),
 
 ]
 if settings.DEBUG:

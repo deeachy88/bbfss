@@ -26,6 +26,22 @@ def co_complaint_list(request):
         #acknowledge_status = t_common_complaint_t1.objects.filter(Application_No=app_no)
     return render(request, 'complaint_officer_pending_list.html', {'complaint_details': complaint_details})
 
+def complaint_closed_list(request):
+    complaint_closed_details = t_workflow_details.objects.filter(Application_Status='C', Assigned_Role_Id='3')
+    return render(request, 'complaint_closed_list.html', {'complaint_details': complaint_closed_details})
+
+def complaint_closed_details(request):
+    Application_No = request.GET.get('application_id')
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    details = t_common_complaint_t1.objects.filter(Application_No=Application_No)
+    for userId in details:
+        user_id = userId.Assign_To
+        user_details = t_user_master.objects.filter(Login_Id=user_id)
+
+    return render(request, 'complaint_handling/complaint_officer_complaint_close_details.html', {'complaint_details': details, 'user_details': user_details, 'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village})
+
 def investigation_report_list(request):   #list of investigation report submitted to the Complaint Officer
     complaint_details = t_workflow_details.objects.filter(Application_Status='IR', Assigned_Role_Id='3')
     return render(request, 'complaint_officer_investigation_report_list.html', {'complaint_details': complaint_details})
@@ -205,7 +221,7 @@ def close_complaint(request):
     application_details = t_workflow_details.objects.filter(Application_No=app_no)
     application_details.update(Action_Date=date.today())
     application_details.update(Assigned_To=None)
-    application_details.update(Assigned_Role_Id=None)
+    #application_details.update(Assigned_Role_Id=None)
     application_details.update(Application_Status='C')
     send_close_email(app_no, application_date, closure_remarks, email, investigation_report, investigation_date)
     return redirect(investigation_report_list)
