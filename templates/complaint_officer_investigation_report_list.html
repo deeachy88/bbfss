@@ -16,7 +16,6 @@
                                     <th scope="col">#</th>
                                     <th scope="col">Complaint No</th>
                                     <th scope="col">Complainant</th>
-                                    <th scope="col">Complaint Date</th>
                                     <th scope="col">Action</th>
                                 </tr>
                             </thead>
@@ -25,30 +24,13 @@
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
                                         <td>{{complaint_details.Application_No}}</td>
-                                        <td>{{complaint_details.Applicant_Id}}
-                                        {{complaint_details.Application_Status}}</td>
-                                        <td>{{complaint_details.Action_Date|date:"d-m-Y"}}</td>
+                                        <td>{{complaint_details.Applicant_Id}}</td>
                                         <td>
                                             <div class="btn-group">
-                                                {% if complaint_details.Application_Status == 'A' %}
-                                                    <button  type="button" class="btn btn-warning btn-sm "
-                                                             onclick="acknowledgeComplaintDetails('{{complaint_details.Application_No}}',
-                                                             '{{complaint_details.Service_Code}}')" disabled>
-                                                        Acknowledge<i class="zmdi zmdi-edit"></i></button>
-                                                    <button  type="button" class="btn btn-warning btn-sm "
-                                                         onclick="viewApplicationDetails('{{complaint_details.Application_No}}',
+                                                <button  type="button" class="btn btn-warning btn-sm "
+                                                         onclick="viewInvestigationReport('{{complaint_details.Application_No}}',
                                                          '{{complaint_details.Service_Code}}')">
-                                                    Forward<i class="zmdi zmdi-edit"></i></button>
-                                                {% else %}
-                                                    <button  type="button" class="btn btn-warning btn-sm "
-                                                             onclick="acknowledgeComplaintDetails('{{complaint_details.Application_No}}',
-                                                             '{{complaint_details.Service_Code}}')">
-                                                        Acknowledged<i class="zmdi zmdi-edit"></i></button>
-                                                    <button  type="button" class="btn btn-warning btn-sm "
-                                                         onclick="viewApplicationDetails('{{complaint_details.Application_No}}',
-                                                         '{{complaint_details.Service_Code}}')" disabled>
-                                                    Forward<i class="zmdi zmdi-edit"></i></button>
-                                                {% endif %}
+                                                    Close Complaint<i class="zmdi zmdi-edit"></i></button>
                                             </div>
                                         </td>
                                     </tr>
@@ -92,25 +74,12 @@
     </div>
 </form>
 <script>
-    function viewApplicationDetails(appId, Service_Id)
+    function viewInvestigationReport(appId, Service_Id)
     {
         $.ajax({
             type : "GET",
-            url : "{% url 'co_complaint_details' %}",
-            data :{'application_id':appId, 'service_code':Service_Id},
-            success : function(data)
-            {
-                $('#details_complaint').html(data);
-                $('#complaint-details-Modal').modal('show');
-            }
-        });
-    }
-    function acknowledgeComplaintDetails(appId, Service_Id)
-    {
-        $.ajax({
-            type : "GET",
-            url : "{% url 'complaint_details' %}",
-            data :{'application_id':appId, 'service_code':Service_Id},
+            url : "{% url 'investigation_report_details' %}",
+            data :{'application_id':appId},
             success : function(data)
             {
                 $('#details_complaint').html(data);

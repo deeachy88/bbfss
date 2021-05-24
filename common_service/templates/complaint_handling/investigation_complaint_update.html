@@ -2,9 +2,9 @@
 {% load crispy_forms_tags %}
 <form method="post" id="forwardForm">
 {% csrf_token %}
-    <div class="card-body">
+    <div class="card-body" onload="load_attachment_details" >
         {% for complaint_details in complaint_details %}
-            <input type="hidden" id="applicationNo" name="applicationNo" value="{{complaint_details.Application_No}}">
+        <input type="hidden" id="applicationNo" name="applicationNo" value="{{complaint_details.Application_No}}">
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
@@ -82,84 +82,72 @@
                     </div>
                     <div class="alert alert-danger" id="complaintDescriptionErrorMsg" style="display:none"></div>
                 </div>
-            </div>
-            <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
-                <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
-                    <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Acknowledge</span>&nbsp;&nbsp;&nbsp;
-                    <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Remarks</span>
-                <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+
             </div>
             <div class="row">
-                <div class="col-md-2">
+                <div class="col-md-12">
                     <div class="form-group">
-                        <label>Acknowledge Date</label>
-                        <input type="text" disabled class="form-control" id="acknowledgeDate" name="acknowledgeDate" value="{{complaint_details.Acknowledge_Date}}">
+                        <label>Complaint Officer Remarks</label>
+                        <textarea class="form-control" disabled id="assignRemarks" name="assignRemarks">{{complaint_details.Assign_Remarks}}</textarea>
                     </div>
-                </div>
-                <div class="col-md-10">
-                    <div class="form-group">
-                        <label>Acknowledge Remarks</label>
-                        <input type="text" disabled class="form-control" id="acknowledgeRemarks" name="acknowledgeRemarks" value="{{complaint_details.Acknowledge_Remarks}}">
-                    </div>
+                    <div class="alert alert-danger" id="assignRemarksErrorMsg" style="display:none"></div>
                 </div>
             </div>
         {% endfor %}
             <br>
             <div class="row">
-                <div class="col-md-12">
-                    <label class="form-label">Remarks</label>
-                    <textarea class="form-control" id="forwardRemarks" name="forwardRemarks"></textarea>
+                <div class="col-md-2">
+                    <label class="form-label">Investigation Date</label>
+                    <input type="date" name="investigationDate" id="investigationDate" class="form-control date-picker flatpickr-input active">
                 </div>
-                <div class="alert alert-danger" id="forwardRemarksErrorMsg" style="display:none"></div>
+                <div class="alert alert-danger" id="investigationDateErrorMsg" style="display:none"></div>
+                <div class="col-md-10">
+                    <label class="form-label">Investigation Report</label>
+                    <textarea class="form-control" id="investigationReport" name="investigationReport"></textarea>
+                </div>
+                <div class="alert alert-danger" id="investigationReportErrorMsg" style="display:none"></div>
             </div>
             <br>
             <div class="row">
-                <div class="col-md-6">
-                    <select class="form-control" name="forwardTo"  id="forwardTo">
-                        <option value="">--FORWARD TO--</option>
-                        {% for inspector_list in inspector_list %}
-                                <option value="{{ inspector_list.Login_Id }}">{{ inspector_list.Name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="alert alert-danger" id="forwardToErrorMsg" style="display:none"></div>
-                <div class="col-md-6">
+                <div class="col-md-12">
                     {% for complaint_details in complaint_details %}
-                        <button type="button" class="btn btn-primary" onclick="forwardApplication('{{ complaint_details.Application_No }}')"> Forward </button>
+                        <button type="button" class="btn btn-primary" onclick="investigationSubmit('{{ complaint_details.Application_No }}')"> Submit </button>
                     {% endfor %}
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
                 <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
-                    Application Forwarded Successfully
+                    Investigation Report Submitted Successfully
                 </div>
             </div>
     </div>
 </form>
 <script>
-function forwardApplication(form)
-{
-    var remarks = $('#forwardRemarks').val();
-    var forward_to = $('#forwardTo').val();
 
-    if (remarks == "")
+function investigationSubmit(form)
+{
+    var inDate = $('#investigationDate').val();
+    var inRemarks = $('#investigationReport').val();
+
+    if (inDate == "")
     {
-        $('#forwardRemarksErrorMsg').html("Enter Remarks.");
-        $('#forwardRemarksErrorMsg').show();
-        $('#forwardRemarksErrorMsg').delay(2000).fadeOut('slow');
+        $('#investigationDateErrorMsg').html("Select Investigation Date.");
+        $('#investigationDateErrorMsg').show();
+        $('#investigationDateErrorMsg').delay(2000).fadeOut('slow');
     }
-    else if (forward_to == "")
+    else if (inRemarks == "")
     {
-        $('#forwardToErrorMsg').html("Select Forward To.");
-        $('#forwardToErrorMsg').show();
-        $('#forwardToErrorMsg').delay(2000).fadeOut('slow');
+        $('#investigationReportErrorMsg').html("Enter Investigation Report.");
+        $('#investigationReportErrorMsg').show();
+        $('#investigationReportErrorMsg').delay(2000).fadeOut('slow');
     }
     else
     {
         $.ajax({
             type : "POST",
-            url : "{% url 'forward_complaint_by_co' %}",
+            url : "{% url 'forward_complaint_to_co' %}",
             data : $('#forwardForm').serialize(),
-            success : function(data) {
+            success : function(data)
+            {
                 $('#submitMsg').show();
                 setTimeout(function() {
                     $("#submitMsg").hide('blind', {}, 500)
@@ -169,5 +157,5 @@ function forwardApplication(form)
         });
     }
 }
-</script>
 
+</script>

@@ -18,10 +18,37 @@ from plant.views import inspector_application
 
 def co_complaint_list(request):
     #Role_Id = request.session['Role_Id']
-    service_details = t_service_master.objects.all()
-    complaint_details = t_workflow_details.objects.filter(Application_Status='P', Assigned_Role_Id='3')
+    #global acknowledge_status
+    #service_details = t_service_master.objects.all()
+    complaint_details = t_workflow_details.objects.filter(Application_Status='P', Assigned_Role_Id='3') | t_workflow_details.objects.filter(Application_Status='A', Assigned_Role_Id='3')
+    #for application_number in complaint_details:
+        #app_no = application_number.Application_No
+        #acknowledge_status = t_common_complaint_t1.objects.filter(Application_No=app_no)
+    return render(request, 'complaint_officer_pending_list.html', {'complaint_details': complaint_details})
 
-    return render(request, 'complaint_officer_pending_list.html', {'service_details': service_details, 'complaint_details': complaint_details})
+def investigation_report_list(request):   #list of investigation report submitted to the Complaint Officer
+    complaint_details = t_workflow_details.objects.filter(Application_Status='IR', Assigned_Role_Id='3')
+    return render(request, 'complaint_officer_investigation_report_list.html', {'complaint_details': complaint_details})
+
+def investigation_report_details(request):
+    Application_No = request.GET.get('application_id')
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    details = t_common_complaint_t1.objects.filter(Application_No=Application_No)
+    for userId in details:
+        user_id = userId.Assign_To
+        user_details = t_user_master.objects.filter(Login_Id=user_id)
+
+    return render(request, 'complaint_handling/complaint_officer_complaint_close.html', {'complaint_details': details, 'user_details': user_details, 'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village})
+
+def investigation_complaint_list(request):
+    Login_Id = request.session['login_id']
+    #Role_Id = request.session['Role_Id']
+    global investigation_list
+    in_complaint_list = t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='A')
+
+    return render(request, 'complaint_investigation_pending_list.html', {'in_complaint_list': in_complaint_list})
 
 def co_complaint_details(request):
     Application_No = request.GET.get('application_id')
@@ -31,10 +58,18 @@ def co_complaint_details(request):
     village = t_village_master.objects.all()
     details = t_common_complaint_t1.objects.filter(Application_No=Application_No)
 
-    inspector_list = t_user_master.objects.filter(Login_Type='I')
+    inspector_list = t_user_master.objects.all()
 
     return render(request, 'complaint_handling/complaint_officer_complaint_forward.html', {'complaint_details': details, 'inspector_list': inspector_list, 'dzongkhag': dzongkhag, 'gewog': gewog,
                        'village': village})
+
+def investigation_complaint_details(request):
+    Application_No = request.GET.get('application_id')
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    details = t_common_complaint_t1.objects.filter(Application_No=Application_No)
+    return render(request, 'complaint_handling/investigation_complaint_update.html', {'complaint_details': details, 'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village})
 
 def apply_complaint_form(request):
     dzongkhag = t_dzongkhag_master.objects.all()
@@ -94,12 +129,6 @@ def complaint_details(request):
     return render(request, 'complaint_handling/complaint_officer_complaint_acknowledge.html', {'complaint_details': complaint_details, 'inspector_list': inspector_list, 'dzongkhag': dzongkhag, 'gewog': gewog,
                        'village': village})
 
-def load_attachment_details(request):
-    application_id = request.GET.get('application_id')
-    attachment_details = t_file_attachment.objects.filter(Application_No=application_id)
-    return render(request, 'clearance_meat_shop/meat_shop_file_attachment_page.html',
-                  {'file_attach': attachment_details})
-
 def load_gewog(request):
     dzongkhag_id = request.GET.get('dzongkhag_id')
     gewog_list = t_gewog_master.objects.filter(Dzongkhag_Code_id=dzongkhag_id).order_by('Gewog_Name')
@@ -118,103 +147,69 @@ def acknowledge_complaint(request):
         email = email_id.Email
         application_date = email_id.Application_Date
 
+    workflow_details = t_workflow_details.objects.filter(Application_No = app_no)
     c_details.update(Acknowledge='Y')
     c_details.update(Acknowledge_Remarks=remarks)
     c_details.update(Acknowledge_Date=date.today())
+    workflow_details.update(Application_Status='A')
     send_acknowledge_email(app_no, application_date, remarks, email)
     return redirect(co_complaint_list)
 
 def forward_complaint_by_co(request):
-    application_id = request.GET.get('application_id')
-    Inspection_Leader = request.GET.get('Inspection_Leader')
-    Inspection_Team = request.GET.get('Inspection_Team')
-    remarks = request.GET.get('remarks')
-    dateOfInspection = request.GET.get('dateOfInspection')
-    identification_No = request.GET.get('identification_No')
-    revision_no = request.GET.get('revision_no')
-    date_format_ins = datetime.strptime(dateOfInspection, '%d-%m-%Y').date()
-    details = t_common_complaint_t1.objects.filter(Application_No=application_id)
-    for email_id in details:
-        email = email_id.Email
-    if revision_no is not None:
-        details.update(Revision_No=revision_no)
-    else:
-        details.update(Revision_No=None)
-    details.update(Remarks_Inspection=remarks)
-    details.update(Inspection_Leader=Inspection_Leader)
-    details.update(Inspection_Team=Inspection_Team)
-    details.update(Inspection_Date=date_format_ins)
-    details.update(Identification_No=identification_No)
-    details.update(Application_Status='R')
-    application_details = t_workflow_details.objects.filter(Application_No=application_id)
+    app_no = request.POST.get('applicationNo')
+    remarks = request.POST.get('forwardRemarks')
+    forward_to = request.POST.get('forwardTo')
+    forward_details = t_common_complaint_t1.objects.filter(Application_No=app_no)
+
+    forward_details.update(Assign_To=forward_to)
+    forward_details.update(Assign_Remarks=remarks)
+    forward_details.update(Assign_Date=date.today())
+
+    application_details = t_workflow_details.objects.filter(Application_No=app_no)
     application_details.update(Action_Date=date.today())
-    application_details.update(Application_Status='R')
+    application_details.update(Assigned_To=forward_to)
+    application_details.update(Assigned_Role_Id=None)
     return redirect(co_complaint_list)
 
 
 def forward_complaint_to_co(request):
-    application_id = request.GET.get('application_id')
-    Inspection_Leader = request.GET.get('Inspection_Leader')
-    Inspection_Team = request.GET.get('Inspection_Team')
-    remarks = request.GET.get('remarks')
-    dateOfInspection = request.GET.get('dateOfInspection')
-    identification_No = request.GET.get('identification_No')
-    revision_no = request.GET.get('revision_no')
+    app_no = request.POST.get('applicationNo')
+    investigation_report = request.POST.get('investigationReport')
+    investigation_date = request.POST.get('investigationDate')
+    #forward_to = request.POST.get('forwardTo')
+    forward_details = t_common_complaint_t1.objects.filter(Application_No=app_no)
 
-    date_format_ins = datetime.strptime(dateOfInspection, '%d-%m-%Y').date()
-    details = t_common_complaint_t1.objects.filter(Application_No=application_id)
+    forward_details.update(Investigation_Report=investigation_report)
+    forward_details.update(Investigation_Date=investigation_date)
 
-    if revision_no is not None:
-        details.update(Revision_No=revision_no)
-    else:
-        details.update(Revision_No=None)
-    details.update(Remarks_Inspection=remarks)
-    details.update(Inspection_Leader=Inspection_Leader)
-    details.update(Inspection_Team=Inspection_Team)
-    details.update(Inspection_Date=date_format_ins)
-    details.update(Identification_No=identification_No)
-    details.update(Application_Status='RS')
-    application_details = t_workflow_details.objects.filter(Application_No=application_id)
+    application_details = t_workflow_details.objects.filter(Application_No=app_no)
     application_details.update(Action_Date=date.today())
-    application_details.update(Application_Status='RS')
-    for login in application_details:
-        login_id = login.Applicant_Id
-    app_det = t_user_master.objects.filter(Email_Id=login_id)
-    for app in app_det:
-        user_id = app.Login_Id
-    application_details.update(Assigned_To=user_id)
-    for email_id in details:
-        email = email_id.Email
-    return redirect(co_complaint_list)
-
+    application_details.update(Assigned_To=None)
+    application_details.update(Assigned_Role_Id='3')
+    application_details.update(Application_Status='IR')  #IR - Investigation Report complete
+    return redirect(investigation_complaint_list)
 
 def close_complaint(request):
-    application_id = request.GET.get('application_id')
-    remarks = request.GET.get('remarks')
-    revision_no = request.GET.get('revision_no')
-
-    date_format_ins = datetime.strptime(dateOfInspection, '%d-%m-%Y').date()
-    details = t_common_complaint_t1.objects.filter(Application_No=application_id)
-
-    if revision_no is not None:
-        details.update(Revision_No=revision_no)
-    else:
-        details.update(Revision_No=None)
-    details.update(Remarks_Inspection=remarks)
-    details.update(Application_Status='RS')
-    application_details = t_workflow_details.objects.filter(Application_No=application_id)
-    application_details.update(Action_Date=date.today())
-    application_details.update(Application_Status='RS')
-    for login in application_details:
-        login_id = login.Applicant_Id
-    app_det = t_user_master.objects.filter(Email_Id=login_id)
-    for app in app_det:
-        user_id = app.Login_Id
-    application_details.update(Assigned_To=user_id)
-    for email_id in details:
+    app_no = request.POST.get('applicationNo')
+    closure_remarks = request.POST.get('closeRemarks')
+    c_details = t_common_complaint_t1.objects.filter(Application_No=app_no)
+    for email_id in c_details:
         email = email_id.Email
-        send_close_email(remarks, email)
-    return redirect(co_complaint_list)
+        application_date = email_id.Application_Date
+        investigation_report = email_id.Investigation_Report
+        investigation_date = email_id.Investigation_Date
+
+    c_details.update(Closure_Remarks=closure_remarks)
+    c_details.update(Closure_Date=date.today())
+
+    application_details = t_workflow_details.objects.filter(Application_No=app_no)
+    application_details.update(Action_Date=date.today())
+    application_details.update(Assigned_To=None)
+    application_details.update(Assigned_Role_Id=None)
+    application_details.update(Application_Status='C')
+    send_close_email(app_no, application_date, closure_remarks, email, investigation_report, investigation_date)
+    return redirect(investigation_report_list)
+
 
 def send_acknowledge_email(app_no, app_date,ack_remarks, email_id):
     subject = 'COMPLAINT APPLICATION ACCEPTED'
@@ -224,11 +219,11 @@ def send_acknowledge_email(app_no, app_date,ack_remarks, email_id):
     send_mail(subject, message, email_from, recipient_list)
 
 
-def send_close_email(remarks, Email):
+def send_close_email(app_no, app_date, close_remarks, email_id, in_report, in_date):
     subject = 'COMPLAINT CLOSED'
-    message = "Dear " + "Sir" + " Your Complaint has been closed" + remarks + ""
+    message = "Dear " + "Sir/Madam, " + " Your Complaint has been closed. " + close_remarks + "."
     email_from = settings.EMAIL_HOST_USER
-    recipient_list = [Email]
+    recipient_list = [email_id]
     send_mail(subject, message, email_from, recipient_list)
 
 
@@ -245,3 +240,4 @@ def get_complaint_application_no(request, service_code):
         year = timezone.now().year
         newAppNo = service_code + "/" + str(year) + "/" + AppNo
     return newAppNo
+

@@ -17,7 +17,7 @@ class t_common_complaint_t1(models.Model):
     Address = models.CharField(blank=True, null=True, max_length=250)
     Complaint_Type = models.CharField(blank=True, null=True, max_length=100)
     Complaint_Description = models.TextField(blank=True, null=True)
-    Acknowledge = models.CharField(blank=True, null=True, max_length=1)
+    Acknowledge = models.CharField(default='N', blank=True, null=True, max_length=1)
     Assign_To = models.CharField(blank=True, null=True, max_length=100)
     Assign_Date = models.DateField(blank=True, null=True)
     Assign_Remarks = models.TextField(blank=True, null=True)
