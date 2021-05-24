@@ -17,7 +17,7 @@ class t_common_complaint_t1(models.Model):
     Address = models.CharField(blank=True, null=True, max_length=250)
     Complaint_Type = models.CharField(blank=True, null=True, max_length=100)
     Complaint_Description = models.TextField(blank=True, null=True)
-    Acknowledge = models.CharField(blank=True, null=True, max_length=1)
+    Acknowledge = models.CharField(default='N', blank=True, null=True, max_length=1)
     Assign_To = models.CharField(blank=True, null=True, max_length=100)
     Assign_Date = models.DateField(blank=True, null=True)
     Assign_Remarks = models.TextField(blank=True, null=True)
@@ -28,6 +28,8 @@ class t_common_complaint_t1(models.Model):
     Closure_Date = models.DateField(blank=True, null=True)
     Closure_Remarks = models.TextField(blank=True, null=True)
     Application_Status = models.CharField(blank=True, null=True, max_length=50)
+    Acknowledge_Remarks = models.TextField(default=None, null=True)
+    Acknowledge_Date = models.DateField(default=None, null=True)
 
 
 class t_Inspection_monitoring_t1(models.Model):

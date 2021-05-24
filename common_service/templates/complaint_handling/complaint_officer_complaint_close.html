@@ -1,7 +1,10 @@
-<form method="post" id="applicationForm">
-{% csrf_token %}
-        <div class="card-body">
+{% load static %}
+{% load crispy_forms_tags %}
+<form method="post" id="closeForm">
+    {% csrf_token %}
+         <div class="card-body">
             {% for complaint_details in complaint_details %}
+             <input type="hidden" id="applicationNo" name="applicationNo" value="{{complaint_details.Application_No}}">
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
@@ -11,13 +14,13 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="name">Name</label>
+                            <label >Name</label>
                             <input type="text" disabled class="form-control" id="applicantName" name="applicantName" value="{{complaint_details.Name}}">
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="dzongkhag">Dzongkhag</label>
+                            <label >Dzongkhag</label>
                             <select class="form-control" disabled name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value),getLocation(this.value)">
                                 <option value="">--SELECT DZONGKHAG--</option>
                                 {% for dzongkhag in dzongkhag %}
@@ -80,27 +83,100 @@
                         <div class="alert alert-danger" id="complaintDescriptionErrorMsg" style="display:none"></div>
                     </div>
                 </div>
-            {% endfor %}
-                <br>
+                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                        <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Forward </span>&nbsp;&nbsp;&nbsp;
+                        <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Remarks</span>
+                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                </div>
                 <div class="row">
-                    <div class="col-md-6">
-                        <select class="form-control" name="forwardTo"  id="forwardTo">
-                            <option value="">--SELECT INSPECTOR--</option>
-                            {% for inspector_list in inspector_list %}
-                                    <option value="{{ complaint_details.Login_Id }}">{{ inspector_list.Name }}</option>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="cid">Assign Date</label>
+                            <input type="text" disabled class="form-control" value="{{complaint_details.Assign_Date}}">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="cid">Assign To</label>
+                            {% for user_details in user_details %}
+                            <input type="text" disabled class="form-control" value="{{user_details.Name}}">
                             {% endfor %}
-                        </select>
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        {% for complaint_details in complaint_details %}
-                            <button type="button" class="btn btn-primary" onclick="forwardApplication('{{ complaint_details.Application_No }}')"> Forward </button>
-                        {% endfor %}
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-                     <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
-                        Application Forwarded Successfully
+                     <div class="col-md-8">
+                        <div class="form-group">
+                            <label for="cid">Assign Remarks</label>
+                            <input type="text" disabled class="form-control" value="{{complaint_details.Assign_Remarks}}">
+                        </div>
                     </div>
                 </div>
+                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                        <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Investigation </span>&nbsp;&nbsp;&nbsp;
+                        <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Report</span>
+                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="cid">Investigation Date</label>
+                            <input type="text" disabled class="form-control" value="{{complaint_details.Investigation_Date}}">
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <div class="form-group">
+                            <label for="cid">Investigation Report</label>
+                            <input type="text" disabled class="form-control" value="{{complaint_details.Investigation_Report}}">
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="form-label">Closing Remarks</label>
+                            <textarea class="form-control" id="closeRemarks" name="closeRemarks"></textarea>
+                        </div>
+                        <div class="alert alert-danger" id="closeRemarksErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="col-md-12">
+                                <button type="button" class="btn btn-primary" onclick="closeApplication()"> Close Complaint </button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                         <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+                            Complaint Closed !
+                        </div>
+                    </div>
         </div>
 </form>
 
+<script>
+function closeApplication(form)
+{
+    var remarks = $('#closeRemarks').val();
+
+    if (remarks == "")
+    {
+        $('#closeRemarksErrorMsg').html("Enter Closing Remarks.");
+        $('#closeRemarksErrorMsg').show();
+        $('#closeRemarksErrorMsg').delay(2000).fadeOut('slow');
+    }
+
+    else
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'close_complaint' %}",
+            data : $('#closeForm').serialize(),
+            success : function(data) {
+                $('#submitMsg').show();
+                setTimeout(function() {
+                    $("#submitMsg").hide('blind', {}, 500)
+                }, 2000);
+                location.reload();
+            }
+        });
+    }
+}
+</script>
