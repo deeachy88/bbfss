@@ -43,28 +43,17 @@ from certification.models import t_certification_gap_t1, t_certification_gap_t2,
 def focal_officer_application(request):
     Role_Id = request.session['Role_Id']
     section_id = request.session['section']
-    section_details = t_section_master.objects.filter(Section_Id=section_id)
-    for sectionId in section_details:
-        section = sectionId.Section_Name
-    application_details = t_workflow_details.objects.filter(Assigned_Role_Id=Role_Id, Section=section,
-                                                            Application_Status='P', Action_Date__isnull=False)
-    if application_details.exists():
-        service_details = t_service_master.objects.all()
-        return render(request, 'focal_officer_pending_list.html', {'application_details': application_details,
-                                                                   'service_details': service_details})
-    else:
-        application_details = t_workflow_details.objects.filter(Assigned_Role_Id=Role_Id, Section=section,
-                                                                Application_Status='ATA', Action_Date__isnull=False)
-        if application_details.exists():
-            service_details = t_service_master.objects.all()
-            return render(request, 'focal_officer_pending_list.html', {'application_details': application_details,
-                                                                       'service_details': service_details})
-        else:
-            service_details = t_service_master.objects.all()
-            application_details = t_workflow_details.objects.filter(Assigned_Role_Id=Role_Id, Section=section,
-                                                                    Application_Status='AA', Action_Date__isnull=False)
-            return render(request, 'focal_officer_pending_list.html', {'application_details': application_details,
-                                                                       'service_details': service_details})
+
+    service_details = t_service_master.objects.all()
+
+    application_details = t_workflow_details.objects.filter(Assigned_Role_Id=Role_Id,
+                                                            Application_Status='ATA', Action_Date__isnull=False) \
+                          | t_workflow_details.objects.filter(Assigned_Role_Id=Role_Id,
+                                                              Application_Status='P', Action_Date__isnull=False) \
+                          | t_workflow_details.objects.filter(Assigned_Role_Id=Role_Id,
+                                                              Application_Status='AA', Action_Date__isnull=False)
+    return render(request, 'focal_officer_pending_list.html', {'application_details': application_details,
+                                                               'service_details': service_details})
 
 
 def oic_application(request):
@@ -73,47 +62,27 @@ def oic_application(request):
     Field_Office_Id = request.session['field_office_id']
     Role_Id = request.session['Role_Id']
     new_import_app = t_workflow_details.objects.filter(Assigned_Role_Id='4', Field_Office_Id=Field_Office_Id,
-                                                       Application_Status='P', Action_Date__isnull=False)
+                                                       Application_Status='P', Action_Date__isnull=False) | \
+                     t_workflow_details.objects.filter(Assigned_Role_Id='4', Field_Office_Id=Field_Office_Id,
+                                                       Application_Status='I', Action_Date__isnull=False) | \
+                     t_workflow_details.objects.filter(Assigned_Role_Id='4', Field_Office_Id=Field_Office_Id,
+                                                       Application_Status='FR', Action_Date__isnull=False)
 
-    if new_import_app.exists():
-        application_details = t_workflow_details.objects.filter(Assigned_Role_Id='4', Assigned_To=Login_Id,
-                                                                Application_Status='P', Action_Date__isnull=False)
-        service_details = t_service_master.objects.all()
-        return render(request, 'oic_pending_list.html',
-                      {'service_details': service_details, 'application_details': application_details})
-    else:
-        details = t_workflow_details.objects.filter(Assigned_Role_Id=Role_Id,
-                                                    Field_Office_Id=Field_Office_Id,
-                                                    Application_Status='I', Action_Date__isnull=False)
-        if details.exists():
-            application_details = t_workflow_details.objects.filter(Assigned_Role_Id=Role_Id,
-                                                                    Field_Office_Id=Field_Office_Id,
-                                                                    Application_Status='I', Action_Date__isnull=False)
-            service_details = t_service_master.objects.all()
-            return render(request, 'oic_pending_list.html',
-                          {'service_details': service_details, 'application_details': application_details})
-        else:
-            application_details = t_workflow_details.objects.filter(Assigned_Role_Id=Role_Id,
-                                                                    Field_Office_Id=Field_Office_Id,
-                                                                    Application_Status='FI', Action_Date__isnull=False)
-            if application_details.exists():
-                service_details = t_service_master.objects.all()
-                return render(request, 'oic_pending_list.html',
-                              {'service_details': service_details, 'application_details': application_details})
-            else:
-                application_details = t_workflow_details.objects.filter(Assigned_To=Login_Id,
-                                                                        Application_Status='AP',
-                                                                        Action_Date__isnull=False)
-                service_details = t_service_master.objects.all()
-                return render(request, 'oic_pending_list.html',
-                              {'service_details': service_details, 'application_details': application_details})
+    service_details = t_service_master.objects.all()
+    return render(request, 'oic_pending_list.html',
+                  {'service_details': service_details, 'application_details': new_import_app})
 
 
 def inspector_application(request):
     Login_Id = request.session['login_id']
     print(Login_Id)
     new_import_app = t_workflow_details.objects.filter(Assigned_To=Login_Id,
-                                                       Application_Status='AP', Action_Date__isnull=False)
+                                                       Application_Status='AP', Action_Date__isnull=False) | \
+                     t_workflow_details.objects.filter(Assigned_To=Login_Id,
+                                                       Application_Status='I', Action_Date__isnull=False) \
+                     | t_workflow_details.objects.filter(Assigned_To=Login_Id,
+                                                         Application_Status='FI', Action_Date__isnull=False)
+
     service_details = t_service_master.objects.all()
     return render(request, 'inspector_pending_list.html',
                   {'service_details': service_details, 'application_details': new_import_app})
@@ -348,6 +317,7 @@ def forward_application(request):
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Assigned_To=forwardTo)
     application_details.update(Action_Date=date.today())
+    application_details.update(Field_Office_Id=None)
     application_details.update(Assigned_Role_Id='5')
     Field_Office_Id = request.session['field_office_id']
     Role_Id = request.session['Role_Id']
@@ -582,7 +552,7 @@ def view_application_details(request):
         workflow_details = t_workflow_details.objects.filter(Application_No=application_id)
         for application in workflow_details:
             Application_Status = application.Application_Status
-            if Application_Status == "I":
+            if Application_Status == "FI":
                 application_details = t_food_business_registration_licensing_t1.objects.filter(
                     Application_No=application_id)
                 details = t_food_business_registration_licensing_t2.objects.filter(Application_No=application_id)
@@ -593,7 +563,7 @@ def view_application_details(request):
                 inspection_team_details = t_food_business_registration_licensing_t6.objects.filter(
                     Application_No=application_id)
                 unit = t_unit_master.objects.all()
-                inspector_list = t_user_master.objects.filter(Role_Id='5')
+                inspector_list = t_field_office_master.objects.all()
                 return render(request, 'registration_licensing/feasibility_inspection.html',
                               {'application_details': application_details, 'details': details, 'file': file,
                                'inspector_list': inspector_list, 'unit': unit, 'inspection_details': inspection_details,
@@ -1122,7 +1092,7 @@ def fo_app_details(request):
         details = t_food_business_registration_licensing_t2.objects.filter(Application_No=Application_No)
         file = t_file_attachment.objects.filter(Application_No=Application_No)
         unit = t_unit_master.objects.all()
-        oic_list = t_user_master.objects.filter(Role_Id='4')
+        oic_list = t_field_office_master.objects.all()
         return render(request, 'registration_licensing/fo_details.html',
                       {'application_details': application_details, 'details': details, 'file': file,
                        'oic_list': oic_list, 'location': location, 'unit': unit})
@@ -4395,28 +4365,15 @@ def application_status(request):
 
 def resubmit_application(request):
     login_id = request.session['login_id']
-    application_details = t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
-    if application_details.exists():
-        service_details = t_service_master.objects.all()
-        return render(request, 'resubmit_application.html', {'application_details': application_details,
-                                                             'service_details': service_details})
-    else:
-        service_details = t_service_master.objects.all()
-        application_details = t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
-        if application_details.exists():
-            return render(request, 'resubmit_application.html', {'application_details': application_details,
-                                                                 'service_details': service_details})
-        else:
-            service_details = t_service_master.objects.all()
-            application_details = t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
-            if application_details.exists():
-                return render(request, 'resubmit_application.html', {'application_details': application_details,
-                                                                     'service_details': service_details})
-            else:
-                service_details = t_service_master.objects.all()
-                application_details = t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
-                return render(request, 'resubmit_application.html', {'application_details': application_details,
-                                                                     'service_details': service_details})
+    print(login_id)
+    application_details = t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS') \
+                          | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS') \
+                          | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR') \
+                          | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
+
+    service_details = t_service_master.objects.all()
+    return render(request, 'resubmit_application.html', {'application_details': application_details,
+                                                         'service_details': service_details})
 
 
 def call_for_inspection_details(request):

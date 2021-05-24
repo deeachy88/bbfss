@@ -19,6 +19,12 @@ urlpatterns = [
     path('apply_complaint_form', views.apply_complaint_form, name='apply_complaint_form'),
     path('acknowledge_complaint', views.acknowledge_complaint, name='acknowledge_complaint'),
 
+    path('inspection_and_monitoring_form', views.inspection_and_monitoring_form,
+         name='inspection_and_monitoring_form'),
+    path('save_sample_details', views.save_sample_details, name='save_sample_details'),
+    path('save_item_details', views.save_item_details, name='save_item_details'),
+    path('save_owner_manager_details', views.save_owner_manager_details, name='save_owner_manager_details'),
+
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

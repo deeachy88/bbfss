@@ -131,6 +131,7 @@ urlpatterns = [
     path('update_resubmit_details', views.update_resubmit_details, name='update_resubmit_details'),
     path('get_variety', views.get_variety, name='get_variety'),
     path('get_crop', views.get_crop, name='get_crop'),
+
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

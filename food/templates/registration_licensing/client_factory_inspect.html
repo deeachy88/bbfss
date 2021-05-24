@@ -1,3 +1,4 @@
+{% load static %}
 <form method="post" id="applicationForm">
     {% csrf_token %}
     <div class="animated fadeIn">
@@ -341,31 +342,27 @@
                         </table>
                         </div>
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Remarks(If Reject Please Fill THe Remarks)</label>
-                                    <textarea class="form-control" rows="3" id="remarks" name="remarks"></textarea>
+                                    <label class="form-label"> Proposed Factory Inspection Date</label>
+                                    <input type="text" class="form-control date-picker flatpickr-input active" id="date" name="date"  placeholder="Pick a date" readonly="readonly">
                                 </div>
                                 <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                         <br>
                         <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
-                            Application Approved
-                        </div>
-                        <div id="rejectMsg" class="alert alert-info" role="alert" style="display:none;">
-                            Application Rejected
+                            Application Forwarded
                         </div>
                         <div class="modal-footer justify-content-center">
                             <select class="form-control col-md-6" name="forwardTo"  id="forwardTo">
                                 <option value="">--SELECT OIC--</option>
                                 {% for oic_list in oic_list %}
-                                        <option value="{{ oic_list.Login_Id }}">{{ oic_list.Name }}</option>
+                                        <option value="{{ oic_list.Field_Office_Id }}">{{ oic_list.Field_Office }}</option>
                                 {% endfor %}
                             </select>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" onclick="fbr_fo_approve('{{ application_details.Application_No }}')"> Approve </button>
-                            <button type="button" class="btn btn-danger" onclick="fbr_fo_reject('{{ application_details.Application_No }}')"> Reject </button>
+                            <button type="button" class="btn btn-primary" onclick="forward_factory_application('{{ application_details.Application_No }}')"> Forward </button>
                         </div>
                     {% endfor %}
                 </div>
@@ -373,15 +370,17 @@
         </div>
     </div>
 </form>
+<script src="{% static 'assets/js/app.min.js' %}"></script>
 <script>
-    function fbr_fo_approve(application_id)
+    function forward_factory_application(application_id)
         {
-            remarks = $('#remarks').val();
+            date = $('#date').val();
             forwardTo = $('#forwardTo').val();
+
             $.ajax({
                 type : "POST",
-                url : "{% url 'fbr_fo_approve' %}",
-                data :{'application_id':application_id ,'forwardTo':forwardTo,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                url : "{% url 'forward_factory_application' %}",
+                data :{'application_id':application_id ,'forwardTo':forwardTo,'date':date, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(data) {
                     $('#submitMsg').show();
                     setTimeout(function()
@@ -400,33 +399,5 @@
                 }
             });
 
-        }
-    function fbr_fo_reject(application_id)
-        {
-            remarks = $('#remarks').val();
-
-            if(remarks == "")
-            {
-                $('#remarksErrorMsg').html("Remarks Cannot Be Empty.");
-                $('#remarksErrorMsg').show();
-                $('#remarksErrorMsg').delay(2000).fadeOut('slow');
-            }
-            $.ajax({
-                type : "POST",
-                url : "{% url 'fbr_fo_reject' %}",
-                data :{'application_id':application_id ,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
-                success : function(data) {
-                    $('#import_detailsModal').modal('hide');
-                    $('#rejectMsg').show();
-                    setTimeout(function()
-                    {
-                        $("#rejectMsg").hide('blind', {}, 500)
-                    }, 2000);
-                    setTimeout(function()
-                    {
-                         location.reload();
-                    }, 3000);
-                }
-            });
         }
 </script>

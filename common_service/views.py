@@ -7,21 +7,27 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.utils import timezone
 
-from administrator.models import t_dzongkhag_master, t_gewog_master, t_village_master, t_service_master, t_user_master
+from administrator.models import t_dzongkhag_master, t_gewog_master, t_village_master, t_service_master, t_user_master, \
+    t_location_field_office_mapping, t_field_office_master
 from bbfss import settings
 
-from common_service.models import t_common_complaint_t1
+from common_service.models import t_common_complaint_t1, t_Inspection_monitoring_t2, t_Inspection_monitoring_t3, \
+    t_Inspection_monitoring_t4
+from livestock.models import t_livestock_clearance_meat_shop_t1, t_livestock_clearance_meat_shop_t2
+from livestock.views import meat_shop_clearance_no, update_payment
 
 from plant.models import t_workflow_details, t_file_attachment
 from plant.views import inspector_application
 
 
 def co_complaint_list(request):
-    #Role_Id = request.session['Role_Id']
+    # Role_Id = request.session['Role_Id']
     service_details = t_service_master.objects.all()
     complaint_details = t_workflow_details.objects.filter(Application_Status='P', Assigned_Role_Id='3')
 
-    return render(request, 'complaint_officer_pending_list.html', {'service_details': service_details, 'complaint_details': complaint_details})
+    return render(request, 'complaint_officer_pending_list.html',
+                  {'service_details': service_details, 'complaint_details': complaint_details})
+
 
 def co_complaint_details(request):
     Application_No = request.GET.get('application_id')
@@ -33,9 +39,10 @@ def co_complaint_details(request):
 
     inspector_list = t_user_master.objects.filter(Login_Type='I')
 
-    return render(request, 'complaint_handling/complaint_officer_complaint_details.html', {'complaint_details': complaint_details, 'inspector_list': inspector_list, 'dzongkhag': dzongkhag, 'gewog': gewog,
-                       'village': village})
-
+    return render(request, 'complaint_handling/complaint_officer_complaint_details.html',
+                  {'complaint_details': complaint_details, 'inspector_list': inspector_list, 'dzongkhag': dzongkhag,
+                   'gewog': gewog,
+                   'village': village})
 
 
 def apply_complaint_form(request):
@@ -94,8 +101,11 @@ def acknowledge_complaint(request):
 
     inspector_list = t_user_master.objects.filter(Login_Type='I')
 
-    return render(request, 'complaint_handling/complaint_officer_complaint_acknowledge.html', {'complaint_details': complaint_details, 'inspector_list': inspector_list, 'dzongkhag': dzongkhag, 'gewog': gewog,
-                       'village': village})
+    return render(request, 'complaint_handling/complaint_officer_complaint_acknowledge.html',
+                  {'complaint_details': complaint_details, 'inspector_list': inspector_list, 'dzongkhag': dzongkhag,
+                   'gewog': gewog,
+                   'village': village})
+
 
 def get_complaint_no(request, service_code):
     last_application_no = t_livestock_clearance_meat_shop_t1.objects.aggregate(Max('Application_No'))
@@ -351,3 +361,96 @@ def get_complaint_application_no(request, service_code):
         year = timezone.now().year
         newAppNo = service_code + "/" + str(year) + "/" + AppNo
     return newAppNo
+
+
+def inspection_and_monitoring_form(request):
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    return render(request, 'inspection_monitoring/application_form.html',
+                  {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village})
+
+
+def save_owner_manager_details(request):
+    Reference_No = request.POST.get('owner_manager_app_no')
+    Inspection_Date = request.POST.get('Inspection_Date')
+    Inspector_Name = request.POST.get('Inspector_Name')
+    Observation = request.POST.get('Observation')
+    Correction_Proposed = request.POST.get('Correction_Proposed')
+    Date_Line_Correction = request.POST.get('Date_Line_Correction')
+    Correction_Taken = request.POST.get('Correction_Taken')
+    Fine_Imposed = request.POST.get('Fine_Imposed')
+    Revenue_Receipt = request.POST.get('Revenue_Receipt')
+    Receipt_Date = request.POST.get('Receipt_Date')
+
+    t_Inspection_monitoring_t2.objects.create(
+        Reference_No=Reference_No,
+        Inspection_Date=Inspection_Date,
+        Inspector_Name=Inspector_Name,
+        Observation=Observation,
+        Correction_Proposed=Correction_Proposed,
+        Date_Line_Correction=Date_Line_Correction,
+        Correction_Taken=Correction_Taken,
+        Fine_Imposed=Fine_Imposed,
+        Revenue_Receipt=Revenue_Receipt,
+        Receipt_Date=Receipt_Date
+    )
+    details = t_Inspection_monitoring_t2.objects.filter(Reference_No=Reference_No)
+    return render(request, 'inspection_monitoring/owner_manager_details.html', {'details': details})
+
+
+def save_item_details(request):
+    Reference_No = request.POST.get('details_application_no')
+    Inspection_Date = request.POST.get('item_Inspection_Date')
+    Inspector_Name = request.POST.get('Item_Inspector_Name')
+    Items_Seized = request.POST.get('Items_Seized')
+    Qty_Seized = request.POST.get('Qty_Seized')
+    Unit = request.POST.get('Unit')
+    Reason = request.POST.get('reason')
+    Fine_Imposed = request.POST.get('Item_Fine_Imposed')
+    Revenue_Receipt = request.POST.get('Item_Revenue_Receipt')
+    Receipt_Date = request.POST.get('Item_Receipt_Date')
+
+    t_Inspection_monitoring_t3.objects.create(
+        Reference_No=Reference_No,
+        Inspection_Date=Inspection_Date,
+        Inspector_Name=Inspector_Name,
+        Items_Seized=Items_Seized,
+        Qty_Seized=Qty_Seized,
+        Unit=Unit,
+        Reason=Reason,
+        Fine_Imposed=Fine_Imposed,
+        Revenue_Receipt=Revenue_Receipt,
+        Receipt_Date=Receipt_Date
+    )
+    details = t_Inspection_monitoring_t3.objects.filter(Reference_No=Reference_No)
+    return render(request, 'inspection_monitoring/item_details.html', {'details': details})
+
+
+def save_sample_details(request):
+    Reference_No = request.POST.get('sample_collection_application_no')
+    Collection_Type = request.POST.get('Collection_Type')
+    Collection_Date = request.POST.get('Collection_Date')
+    Submission_Date = request.POST.get('Submission_Date')
+    HS_Code_Imp = request.POST.get('HS_Code_Imp')
+    HS_Code_Local = request.POST.get('HS_Code_Local')
+    Sample_Type = request.POST.get('Sample_Type')
+    Qty = request.POST.get('Qty')
+    Batch_No_Date = request.POST.get('Batch_No_Date')
+    Test_Requested = request.POST.get('Test_Requested')
+    Test_Report = request.POST.get('Test_Report')
+    t_Inspection_monitoring_t4.objects.create(
+        Reference_No=Reference_No,
+        Collection_Type=Collection_Type,
+        Collection_Date=Collection_Date,
+        Submission_Date=Submission_Date,
+        HS_Code_Imp=HS_Code_Imp,
+        HS_Code_Local=HS_Code_Local,
+        Sample_Type=Sample_Type,
+        Qty=Qty,
+        Batch_No_Date=Batch_No_Date,
+        Test_Requested=Test_Requested,
+        Test_Report=Test_Report
+    )
+    details = t_Inspection_monitoring_t4.objects.filter(Reference_No=Reference_No)
+    return render(request, 'inspection_monitoring/sample_collection_details.html', {'details': details})

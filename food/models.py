@@ -231,6 +231,8 @@ class t_food_business_registration_licensing_t1(models.Model):
     Approve_Date = models.DateField(blank=True, null=True)
     Validity_Period = models.IntegerField(blank=True, null=True)
     Validity = models.DateField(blank=True, null=True)
+    FR_Inspection_Team = models.CharField(max_length=200, default=None, blank=True, null=True)
+    FI_Inspection_Team = models.CharField(max_length=200, default=None, blank=True, null=True)
 
 
 class t_food_business_registration_licensing_t2(models.Model):
