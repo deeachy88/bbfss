@@ -1,10 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
+<table class="table table-bordered" id="item_details">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Date of Collection</th>
+            <th scope="col">Date of Submission</th>
+            <th scope="col">HS Code Imp</th>
+            <th scope="col">HS Code Local</th>
+            <th scope="col">Sample Type</th>
+            <th scope="col">Qty</th>
+            <th scope="col">Date & batch no.</th>
+            <th scope="col">Test requested </th>
+            <th scope="col">Test report </th>
+        </tr>
+    </thead>
+    <tbody>
+       {% for aqua in details %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{aqua.Collection_Date}}</td>
+                <td>{{aqua.Submission_Date}}</td>
+                <td>{{aqua.HS_Code_Imp}}</td>
+                <td>{{aqua.HS_Code_Local}}</td>
+                <td>{{aqua.Date_Line_Correction}}</td>
+                <td>{{aqua.Sample_Type}}</td>
+                <td>{{aqua.Qty}}</td>
+                <td>{{aqua.Batch_No_Date}}</td>
+                <td>{{aqua.Test_Requested}}</td>
+                <td>{{aqua.Test_Report}}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="11" class="text-center">No Data</td>
+            </tr>
+       {% endfor %}
+    </tbody>
+</table>

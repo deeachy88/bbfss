@@ -291,19 +291,34 @@
                         <div class="box box-primary">
                             <div class="box-body">
                                 <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label class="form-label">Food Product Description</label>
-                                        <textarea class="form-control" name="Description" id="Description"></textarea>
-                                        <div class="alert alert-danger" id="DescriptionErrorMsg" style="display:none"></div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Common Name</label>
+                                        <input type="text" name="Common_Name" class="form-control" id="Common_Name" required>
+                                        <div class="alert alert-danger" id="common_nameErrorMsg" style="display:none"></div>
                                     </div>
-                                    <div class="form-group col-md-6">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Product Category</label>
+                                        <select class="form-control" name="Product_Category"  id="Product_Category">
+                                            <option value="">--SELECT CATEGORY--</option>
+                                            {% for category in category %}
+                                                    <option value="{{ category.Category_Name }}">{{ category.Category_Name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="alert alert-danger" id="product_categoryErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Product Characteristics</label>
+                                        <textarea class="form-control" id="characteristics" name="characteristics"></textarea>
+                                        <div class="alert alert-danger" id="characteristicsErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
                                         <label class="form-label">Quantity</label>
                                         <input type="number" name="qty" class="form-control" id="qty" required>
                                         <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="form-group col-md-6">
+                                    <div class="form-group col-md-4">
                                         <label class="form-label">Unit</label>
                                         <select class="form-control" name="unit"  id="unit">
                                             <option value="">--SELECT UNIT--</option>
@@ -313,22 +328,22 @@
                                         </select>
                                         <div class="alert alert-danger" id="unitErrorMsg" style="display:none"></div>
                                     </div>
-                                    <div class="form-group col-md-6" style="margin-top: 20px;">
-                                        <label class="form-label">Type Of Exporter</label>&nbsp;
-                                        <label class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" name="exporter_type" value="Producer">
-                                            <span class="custom-control-indicator"></span>
-                                            <span class="custom-control-description">Producer</span>
-                                        </label>
-                                        <label class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" name="exporter_type" value="Exporter">
-                                            <span class="custom-control-indicator"></span>
-                                            <span class="custom-control-description">Exporter</span>
-                                        </label>
-                                        <div class="alert alert-danger" id="exporter_typeErrorMsg" style="display:none"></div>
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label>Type Of Exporter</label><br>
+                                            <label class="custom-control custom-radio">
+                                                <input type="radio" name="Export_Type" class="custom-control-input" value="Producer">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">Individual</span>
+                                            </label>
+                                            <label class="custom-control custom-radio">
+                                                <input type="radio" name="Export_Type" class="custom-control-input" value="Exporter">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">Commercial</span>
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -512,7 +527,7 @@ function save_food_permit_details()
             data : $('#food_import_form').serialize(),
             success : function(data)
             {
-                $('#application_no').val(data.applNo);
+                $('#applicationNo').val(data.applNo);
                 $('#applNo').val(data.applNo);
                 $('#appNo').val(data.applNo);
                 $('#submitMsg').show();

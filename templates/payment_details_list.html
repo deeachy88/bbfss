@@ -88,8 +88,9 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Receipt No</label>
-                                <input type="text" class="form-control" name="Receipt_No" id="Receipt_No">
+                                <input type="text" class="form-control" name="Receipt_No" id="Receipt_No" onchange="checkReceiptNo(this.value)">
                             </div>
+                            <div class="alert alert-danger" id="Receipt_NoErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
@@ -133,6 +134,25 @@
             }
         });
 
+    }
+
+    function checkReceiptNo(receipt_no)
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'validate_receipt_no' %}",
+            data :{ 'receipt_no' : receipt_no},
+            success : function(data)
+            {
+                if(data.status == "Exists")
+                {
+                    $('#Receipt_NoErrorMsg').html("Receipt No Already Used.");
+                    $('#Receipt_NoErrorMsg').show();
+                    $('#Receipt_NoErrorMsg').delay(2000).fadeOut('slow');
+                    $('#Receipt_No').val("");
+                }
+            }
+        });
     }
 </script>
 {% endblock %}

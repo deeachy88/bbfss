@@ -11,7 +11,8 @@ from django.template.loader import render_to_string
 from django.utils import timezone
 
 from administrator.models import t_village_master, t_gewog_master, t_dzongkhag_master, t_country_master, \
-    t_field_office_master, t_location_field_office_mapping, t_unit_master, t_service_master, t_user_master
+    t_field_office_master, t_location_field_office_mapping, t_unit_master, t_service_master, t_user_master, \
+    t_food_category_master
 from bbfss import settings
 from food.forms import ImportFormFood, FeasibilityForm
 from food.models import t_food_export_certificate_t1, t_food_licensing_food_handler_t1, t_food_import_permit_t1, \
@@ -23,12 +24,15 @@ from food.models import t_food_export_certificate_t1, t_food_licensing_food_hand
 from livestock.models import t_livestock_clearance_meat_shop_t2
 from livestock.views import update_payment
 from plant.models import t_workflow_details, t_file_attachment
-from plant.views import inspector_application, resubmit_application
+from plant.views import inspector_application, resubmit_application, focal_officer_application
 
 
 def food_business_registration_licensing(request):
     unit = t_unit_master.objects.all()
-    return render(request, 'registration_licensing/registration_application.html', {'unit': unit})
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    return render(request, 'registration_licensing/registration_application.html',
+                  {'unit': unit, 'dzongkhag': dzongkhag, 'gewog': gewog})
 
 
 def save_food_business_registration(request):
@@ -64,6 +68,8 @@ def save_food_business_registration(request):
     regulatory_proceedings_details = request.POST.get('regulatory_proceedings_details')
     project_proposal = request.POST.get('project_proposal')
     regulatory_proceedings = request.POST.get('regulatory_proceedings')
+    dzongkhag = request.POST.get('dzongkhag')
+    gewog = request.POST.get('gewog')
 
     t_food_business_registration_licensing_t1.objects.create(
         Application_No=new_food_business_registration_application,
@@ -105,7 +111,9 @@ def save_food_business_registration(request):
         FI_Recommendation=None,
         FR_Inspection_Date=None,
         FR_Inspection_Leader=None,
-        FR_Inspection_Team=None
+        FR_Inspection_Team=None,
+        Dzongkhag_Code=dzongkhag,
+        Gewog_Code=gewog
 
     )
 
@@ -339,9 +347,17 @@ def approve_feasibility_inspection(request):
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='FR')
+    application_details.update(Assigned_Role_Id=None)
+    for work_details in application_details:
+        user_id = work_details.Applicant_Id
+        login = t_user_master.objects.filter(Email_Id=user_id)
+        for login_id in login:
+            id = login_id.Login_Id
+            application_details.update(Assigned_To=id)
     for email_id in details:
         emailId = email_id.Email
         send_feasibility_approve_email(Clearance_No, emailId)
+
     # update_payment(application_id, Meat_Shop_Clearance_No, 'CMS', validity_date)
     return redirect(inspector_application)
 
@@ -466,7 +482,6 @@ def approve_factory_inspection(request):
     application_id = request.GET.get('application_id')
     remarks = request.GET.get('remarks')
     dateOfInspection = request.GET.get('dateOfInspection')
-    Clearance_No = feasibility_clearance_no(request)
     date_format_ins = datetime.strptime(dateOfInspection, '%d-%m-%Y').date()
     details = t_food_business_registration_licensing_t1.objects.filter(Application_No=application_id)
 
@@ -475,15 +490,12 @@ def approve_factory_inspection(request):
     else:
         details.update(FI_Recommendation=None)
 
-    details.update(Inspection_Date=date_format_ins)
-    details.update(Conditional_Clearance_No=Clearance_No)
+    details.update(FR_Inspection_Date=date_format_ins)
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
-    application_details.update(Application_Status='IA')
-    for email_id in details:
-        emailId = email_id.Email
-        send_feasibility_approve_email(Clearance_No, emailId)
-    # update_payment(application_id, Meat_Shop_Clearance_No, 'CMS', validity_date)
+    application_details.update(Application_Status='FRA')
+    application_details.update(Assigned_Role_Id='2')
+
     return redirect(inspector_application)
 
 
@@ -540,13 +552,16 @@ def reject_factory_inspection(request):
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='RS')
-    for email_id in application_details:
-        email = email_id.Applicant_Id
-        login_details = t_user_master.objects.filter(Email_Id=email)
-        login = login_details.Login_Id
-        application_details.update(Assigned_To=login)
-        application_details.update(Assigned_Role_Id=None)
-    send_feasibility_reject_email(remarks, details.Email)
+    application_details.update(Assigned_Role_Id=None)
+    for applicant in application_details:
+        email_id = applicant.Applicant_Id
+        print(email_id)
+        login_details = t_user_master.objects.filter(Email_Id=email_id)
+        for applicant_login in login_details:
+            login = applicant_login.Login_Id
+            print(login)
+            application_details.update(Assigned_To=login)
+    # send_feasibility_reject_email(remarks, details.Email)
     return redirect(inspector_application)
 
 
@@ -631,20 +646,19 @@ def view_factory_inspection_application(request):
 def forward_factory_application(request):
     application_id = request.POST.get('application_id')
     forwardTo = request.POST.get('forwardTo')
-    Desired_FR_Inspection_Date = request.POST.get('forwardTo')
+    Desired_FR_Inspection_Date = request.POST.get('date')
+    date_format_ins = datetime.strptime(Desired_FR_Inspection_Date, '%d-%m-%Y').date()
 
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Assigned_To=None)
     application_details.update(Action_Date=date.today())
     application_details.update(Field_Office_Id=forwardTo)
     application_details.update(Assigned_Role_Id='4')
-    application_details.update(Application_Status='FR')
 
+    details = t_food_business_registration_licensing_t1.objects.filter(Application_No=application_id)
+    details.update(Desired_FR_Inspection_Date=date_format_ins)
 
-    new_import_app = t_workflow_details.objects.filter(Application_Status='FR', Action_Date__isnull=False)
-    service_details = t_service_master.objects.all()
-    return render(request, 'factory_inspection_list.html',
-                  {'service_details': service_details, 'application_details': new_import_app})
+    return redirect(factory_inspection_list)
 
 
 # Export OF Food
@@ -1086,8 +1100,28 @@ def reject_food_handler_application(request):
     details.update(OIC_Remarks=remarks)
 
 
+def send_acknowledge(request):
+    application_id = request.GET.get('application_id')
+    work_details = t_workflow_details.objects.filter(Application_No=application_id)
+    work_details.update(Application_Status='ACK')
+    application_details = t_food_business_registration_licensing_t1.objects.filter(Application_No=application_id)
+    for app in application_details:
+        mail_id = app.Email
+        send_fbr_acknowledgement_mail(mail_id)
+    return redirect(focal_officer_application)
+
+
+def send_fbr_acknowledgement_mail(Email):
+    subject = 'APPLICATION ACKNOWLEGED'
+    message = "Dear Sir/Madam, Your Application for Food BUsiness Registration And Licensing Has Been Accepted. " \
+              "You will Be Informed About The Inspection Later."
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = [Email]
+    send_mail(subject, message, email_from, recipient_list)
+
+
 def send_acknowledgement_mail(Email):
-    subject = 'APPLICATION APPROVED'
+    subject = 'APPLICATION ACKNOWLEGED'
     message = "Dear Sir/Madam, Your Application for Food Handler Certificate Has Been Accepted. " \
               "You will Be Informed About The Training Programme Later."
     email_from = settings.EMAIL_HOST_USER
@@ -1205,11 +1239,12 @@ def food_import_application(request):
     field_office = t_field_office_master.objects.all()
     location = t_location_field_office_mapping.objects.all()
     unit = t_unit_master.objects.all()
+    category = t_food_category_master.objects.all()
     return render(request, 'import_certificate_food/application_form.html',
                   {'dzongkhag': dzongkhag, 'village': village,
                    'gewog': gewog, 'country': country,
                    'field_office': field_office,
-                   'location': location, 'unit': unit})
+                   'location': location, 'unit': unit, 'category': category})
 
 
 def save_food_import(request):
@@ -1261,10 +1296,13 @@ def save_food_import(request):
         Approve_Date=None,
         Validity_Period=None,
         Validity=None,
-        Import_Permit_No=None
+        Import_Permit_No=None,
+        Applicant_Id=request.session['email'],
+        Terms=None
     )
+
     t_workflow_details.objects.create(Application_No=application_no, Applicant_Id=request.session['email'],
-                                      Assigned_To=None, Field_Office_Id=None, Section='Food',
+                                      Assigned_To=None, Field_Office_Id=Place_of_Entry, Section='Food',
                                       Assigned_Role_Id='2', Action_Date=None, Application_Status='P',
                                       Service_Code=service_code)
     data['applNo'] = application_no
@@ -1288,12 +1326,16 @@ def generate_food_import_app_no(service_code):
 
 def save_food_import_details(request):
     application_no = request.POST.get('appNo')
-    Description = request.POST.get('Description')
+    Common_Name = request.POST.get('Common_Name')
+    Product_Category = request.POST.get('Product_Category')
+    characteristics = request.POST.get('characteristics')
     quantity = request.POST.get('qty')
     unit = request.POST.get('unit')
-    exporter_type = request.POST.getlist('exporter_type')
+    exporter_type = request.POST.get('Export_Type')
 
-    t_food_import_permit_t2.objects.create(Application_No=application_no, Product_Name_Description=Description,
+    t_food_import_permit_t2.objects.create(Application_No=application_no, Common_Name=Common_Name,
+                                           Product_Category=Product_Category,
+                                           Product_Characteristics=characteristics,
                                            Quantity=quantity, Unit=unit, Exporter_Type=exporter_type,
                                            Quantity_Balance=quantity, Remarks=None)
     import_details = t_food_import_permit_t2.objects.filter(Application_No=application_no)
@@ -1357,6 +1399,7 @@ def approve_fo_fip_import(request):
     application_no = request.POST.get('application_id')
     remarks = request.POST.get('remarks')
     validity = request.POST.get('validity')
+    terms = request.POST.get('terms')
     workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
     for app in workflow_details:
         client_login_id = app.Applicant_Id
@@ -1373,13 +1416,14 @@ def approve_fo_fip_import(request):
         details.update(FO_Remarks=None)
     details.update(Validity_Period=validity)
     details.update(Import_Permit_No=permit_no)
+    details.update(Terms=terms)
     d = timedelta(days=int(validity))
     validity_date = date.today() + d
     details.update(Validity=validity_date)
+    update_payment(application_no, permit_no, 'FIP', validity_date)
     for email_id in details:
         email = email_id.Email
         send_fip_approve_email(permit_no, email, validity_date)
-    update_payment(application_no, permit_no, 'FIP', validity_date)
     return render(request, 'focal_officer_pending_list.html')
 
 
@@ -1502,7 +1546,7 @@ def submit_fip_application(request):
     application_details = t_workflow_details.objects.filter(Application_No=application_no)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='C')
-    application_list = t_workflow_details.objects.filter(Application_Status='A')
+    application_list = t_workflow_details.objects.filter(Application_Status='P', Assigned_Role_Id='5')
 
     return render(request, 'inspector_pending_list.html',
                   {'service_name': None, 'application_details': application_list})

@@ -251,26 +251,30 @@
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">Product Name And Description</th>
+                                    <th scope="col">Common Name</th>
+                                    <th scope="col">Product Category</th>
+                                    <th scope="col">Product Characteristics</th>
                                     <th scope="col">Quantity</th>
                                     <th scope="col">Unit</th>
                                     <th scope="col">Exporter Type</th>
                                 </tr>
                             </thead>
                             <tbody>
-                            {% for import in details %}
-                                <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>{{import.Product_Name_Description}}</td>
-                                    <td>{{import.Quantity}}</td>
-                                    <td>{{import.Unit}}</td>
-                                    <td>{{import.Exporter_Type}}</td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                  <td colspan="6" class="text-center">No Data</td>
-                                </tr>
-                            {% endfor %}
+                                {% for import in details %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{import.Common_Name}}</td>
+                                        <td>{{import.Product_Category}}</td>
+                                        <td>{{import.Product_Characteristics}}</td>
+                                        <td>{{import.Quantity}}</td>
+                                        <td>{{import.Unit}}</td>
+                                        <td>{{import.Exporter_Type}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="7" class="text-center">No Data</td>
+                                    </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                         <br>
@@ -302,14 +306,14 @@
                         </table>
                         </div>
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Validity Period (If Approve Please Fill The Validity Period)</label>
                                     <input type="number" class="form-control" name="validity" id="validity">
                                 </div>
                                 <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>
                             </div>
-                            <div class="col-md-8">
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Remarks(If Reject Please Fill THe Remarks)</label>
                                     <textarea class="form-control" rows="3" id="remarks" name="remarks"></textarea>
@@ -317,6 +321,15 @@
                                 <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
                             </div>
                         </div>
+                        <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Special Terms And Conditions</label>
+                                        <textarea class="form-control" rows="3" id="terms" name="terms"></textarea>
+                                    </div>
+                                    <div class="alert alert-danger" id="termsErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
                         <br>
                         <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
                             Application Approved
@@ -326,8 +339,8 @@
                         </div>
                         <div class="float-right">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" onclick="fo_approve('{{ application_details.Application_No }}')"> Approve </button>
-                            <button type="button" class="btn btn-danger" onclick="fo_reject('{{ application_details.Application_No }}')"> Reject </button>
+                            <button type="button" class="btn btn-primary" onclick="fo_fip_import_approve('{{ application_details.Application_No }}')"> Approve </button>
+                            <button type="button" class="btn btn-danger" onclick="fo_fip_import_reject('{{ application_details.Application_No }}')"> Reject </button>
                         </div>
                     {% endfor %}
                     </div>
@@ -337,10 +350,11 @@
 </form>
 
 <script>
-    function fo_approve(application_id)
+    function fo_fip_import_approve(application_id)
         {
             remarks = $('#remarks').val();
             validity = $('#validity').val();
+            terms = $('#terms').val();
             if(validity == "")
             {
                 $('#validityErrorMsg').html("Remarks Cannot Be Empty.");
@@ -352,7 +366,7 @@
                 $.ajax({
                     type : "POST",
                     url : "{% url 'approve_fo_fip_import' %}",
-                    data :{'application_id':application_id ,'remarks':remarks,'validity':validity, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                    data :{'application_id':application_id ,'remarks':remarks,'validity':validity,'terms':terms, csrfmiddlewaretoken: '{{ csrf_token }}'},
                     success : function(data) {
                         $('#import_detailsModal').modal('hide');
                         $('#submitMsg').show();
@@ -369,7 +383,7 @@
                 });
             }
         }
-    function fo_reject(application_id)
+    function fo_fip_import_reject(application_id)
         {
             remarks = $('#remarks').val();
 

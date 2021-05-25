@@ -40,6 +40,7 @@ urlpatterns = [
     path('view_factory_inspection_application', views.view_factory_inspection_application,
          name='view_factory_inspection_application'),
     path('forward_factory_application', views.forward_factory_application, name='forward_factory_application'),
+    path('send_acknowledge', views.send_acknowledge, name='send_acknowledge'),
 
     # Export Of Food
     path('food_export_certificate_application', views.food_export_certificate_application,

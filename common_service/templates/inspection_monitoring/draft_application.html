@@ -1,0 +1,61 @@
+{% extends 'common_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div id="AppDetails">
+<div class="animated fadeIn">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <strong class="card-title">Pending Applications</strong>
+                </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Reference No</th>
+                                    <th scope="col">Service Name</th>
+                                    <th scope="col">Inspection Report Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for application_details in application_details %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td><button class="btn btn-primary btn-link" onclick="viewApplicationDetails('{{application_details.Reference_No}}')">{{application_details.Reference_No}}</button></td>
+                                        {% for service_details in service_details %}
+                                            {% if application_details.Service_Code == service_details.Service_Code %}
+                                                <td>{{service_details.Service_Name}}</td>
+                                            {% endif %}
+                                        {% endfor %}
+                                        <td>{{application_details.Inspection_Report_Date|date:"d-m-Y"}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="5" class="text-center">No Data</td>
+                                    </tr>
+                                    {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<script>
+    function viewApplicationDetails(appId)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'view_draft_details' %}",
+            data :{'reference_no':appId},
+            success : function(data)
+            {
+                $('#AppDetails').html(data);
+            }
+        });
+    }
+</script>
+{% endblock %}

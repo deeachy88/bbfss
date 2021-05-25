@@ -72,7 +72,11 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Licensing Criteria </label>
-                                    <input type="text" class="form-control" id="license_criteria" name="license_criteria">
+                                    <select class="form-control" name="license_criteria"  id="license_criteria">
+                                        <option value="">--SELECT--</option>
+                                        <option value="BAFRA GHP">BAFRA GHP</option>
+                                        <option value="BAFRA GMP">BAFRA GMP</option>
+                                    </select>
                                 </div>
                                 <div class="alert alert-danger" id="license_criteriaErrorMsg" style="display:none"></div>
                             </div>
@@ -83,6 +87,8 @@
                                 </div>
                                 <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
                             </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Email</label>
@@ -90,6 +96,33 @@
                                 </div>
                                 <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
                             </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Dzongkhag</label>
+                                    <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
+                                        <option value="">--SELECT DZONGKHAG--</option>
+                                        {% for dzongkhag in dzongkhag %}
+                                                <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="to_dzongkhagErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Gewog</label>
+                                    <select class="form-control" name="gewog"  id="gewog">
+                                        <option value="">--SELECT GEWOG--</option>
+                                        {% for gewog in gewog %}
+                                                <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="to_gewogErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Food Business Address</label>
@@ -402,7 +435,7 @@
 
 <form method="post" id="fh_details_form">
     {% csrf_token %}
-    <input type="text" id="fh_details_application_no" name="fh_details_application_no">
+    <input type="hidden" id="fh_details_application_no" name="fh_details_application_no">
     <div class="modal fade" id="add_fh_details_model" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -664,7 +697,7 @@ function submit_fbr_details()
                 success : function(responseText) {
                    $('#add_fh_details_model').modal('hide');
                    $('#fbr_details').html(responseText);
-                   $('#pills-food-handler').tab('show');
+                   $('#pills-details').tab('show');
                    $('.modal-backdrop').remove();
                 }
             });
@@ -784,6 +817,17 @@ function save_fh_details()
     }
 }
 
-
+function getGewog(dzongkhag_id)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_gewog' %}",
+        data :{'dzongkhag_id':dzongkhag_id},
+        success : function(data)
+        {
+            $('#gewog').html(data);
+        }
+    });
+}
 </script>
 {% endblock %}

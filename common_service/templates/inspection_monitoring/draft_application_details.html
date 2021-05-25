@@ -1,6 +1,5 @@
-{% extends 'common_dashboard.html' %}
 {% load crispy_forms_tags %}
-{% block content %}
+{% load static %}
 <style>
     option
     {
@@ -16,16 +15,16 @@
         <h4 class="card-title">Inspection And Monitoring</h4>
     </div>
     <div class="card-body">
+        {% for application_details in application_details %}
         <form method="post" id="inspection_monitoring_form">
-        {% csrf_token %}
-            <input type="hidden" name="application_no" id="applicationNo">
+            {% csrf_token %}
             <div class="row justify-content-left">
                 <ul class="nav nav-pills nav-secondary" id="pills-mortem" role="tablist">
                     <li class="nav-item">
                         <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadDetails()">General Information</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-nc" data-toggle="pill" href="#nc_details" role="tab" aria-controls="pills-nc" aria-selected="false" onclick="load_details()">NCs</a>
+                        <a class="nav-link" id="pills-nc" data-toggle="pill" href="#nc_details" role="tab" aria-controls="pills-nc" aria-selected="false" onclick="load_nc_details('{{application_details.Reference_No }}')">NCs</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="pills-seized-item" data-toggle="pill" href="#seized_item_details" role="tab" aria-controls="pills-seized-item" aria-selected="false" onclick="load_details()">Seized Item Details</a>
@@ -40,23 +39,134 @@
             </div>
             <div class="tab-content mt-2 mb-3" id="pills-mortemContent">
                 <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                <input type="hidden" name="reference_no" value="{{application_details.Reference_No }}">
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Inspection Type </label>
                                 <select class="form-control form-control" id="Inspection_Type" name="Inspection_Type" onchange="conveyanceChange(this.value)">
                                     <option value="">-SELECT-</option>
-                                    <option value="Restaurant">Restaurant</option>
-                                    <option value="Bar">Bar</option>
-                                    <option value="Hotel">Hotel</option>
-                                    <option value="Bakeries">Bakeries</option>
-                                    <option value="Canteen">Canteen</option>
-                                    <option value="Processing Plants">Processing Plants</option>
-                                    <option value="Institutions">Institutions</option>
-                                    <option value="Street Vendors">Street Vendors</option>
-                                    <option value="Homemade Producers">Homemade Producers</option>
-                                    <option value="Grocery">Grocery</option>
-                                    <option value="Warehouse">Warehouse</option>
+                                    {% if application_details.Inspection_Type == "Restaurant" %}
+                                        <option value="Restaurant" selected>Restaurant</option>
+                                        <option value="Bar">Bar</option>
+                                        <option value="Hotel">Hotel</option>
+                                        <option value="Bakeries">Bakeries</option>
+                                        <option value="Canteen">Canteen</option>
+                                        <option value="Processing Plants">Processing Plants</option>
+                                        <option value="Institutions">Institutions</option>
+                                        <option value="Street Vendors">Street Vendors</option>
+                                        <option value="Homemade Producers">Homemade Producers</option>
+                                        <option value="Grocery">Grocery</option>
+                                        <option value="Warehouse">Warehouse</option>
+                                    {% elif application_details.Inspection_Type == "Bar" %}
+                                        <option value="Restaurant">Restaurant</option>
+                                        <option value="Bar" selected>Bar</option>
+                                        <option value="Hotel">Hotel</option>
+                                        <option value="Bakeries">Bakeries</option>
+                                        <option value="Canteen">Canteen</option>
+                                        <option value="Processing Plants">Processing Plants</option>
+                                        <option value="Institutions">Institutions</option>
+                                        <option value="Street Vendors">Street Vendors</option>
+                                        <option value="Homemade Producers">Homemade Producers</option>
+                                        <option value="Grocery">Grocery</option>
+                                        <option value="Warehouse">Warehouse</option>
+                                    {% elif application_details.Inspection_Type == "Hotel" %}
+                                        <option value="Restaurant">Restaurant</option>
+                                        <option value="Bar">Bar</option>
+                                        <option value="Hotel" selected>Hotel</option>
+                                        <option value="Bakeries">Bakeries</option>
+                                        <option value="Canteen">Canteen</option>
+                                        <option value="Processing Plants">Processing Plants</option>
+                                        <option value="Institutions">Institutions</option>
+                                        <option value="Street Vendors">Street Vendors</option>
+                                        <option value="Homemade Producers">Homemade Producers</option>
+                                        <option value="Grocery">Grocery</option>
+                                        <option value="Warehouse">Warehouse</option>
+                                    {% elif application_details.Inspection_Type == "Bakeries" %}
+                                        <option value="Restaurant">Restaurant</option>
+                                        <option value="Bar">Bar</option>
+                                        <option value="Hotel">Hotel</option>
+                                        <option value="Bakeries" selected>Bakeries</option>
+                                        <option value="Canteen">Canteen</option>
+                                        <option value="Processing Plants">Processing Plants</option>
+                                        <option value="Institutions">Institutions</option>
+                                        <option value="Street Vendors">Street Vendors</option>
+                                        <option value="Homemade Producers">Homemade Producers</option>
+                                        <option value="Grocery">Grocery</option>
+                                        <option value="Warehouse">Warehouse</option>
+                                    {% elif application_details.Inspection_Type == "Canteen" %}
+                                        <option value="Restaurant">Restaurant</option>
+                                        <option value="Bar">Bar</option>
+                                        <option value="Hotel">Hotel</option>
+                                        <option value="Bakeries">Bakeries</option>
+                                        <option value="Canteen" selected>Canteen</option>
+                                        <option value="Processing Plants">Processing Plants</option>
+                                        <option value="Institutions">Institutions</option>
+                                        <option value="Street Vendors">Street Vendors</option>
+                                        <option value="Homemade Producers">Homemade Producers</option>
+                                        <option value="Grocery">Grocery</option>
+                                        <option value="Warehouse">Warehouse</option>
+                                    {% elif application_details.Inspection_Type == "Processing Plants" %}
+                                        <option value="Restaurant">Restaurant</option>
+                                        <option value="Bar">Bar</option>
+                                        <option value="Hotel">Hotel</option>
+                                        <option value="Bakeries">Bakeries</option>
+                                        <option value="Canteen">Canteen</option>
+                                        <option value="Processing Plants" selected>Processing Plants</option>
+                                        <option value="Institutions">Institutions</option>
+                                        <option value="Street Vendors">Street Vendors</option>
+                                        <option value="Homemade Producers">Homemade Producers</option>
+                                        <option value="Grocery">Grocery</option>
+                                        <option value="Warehouse">Warehouse</option>
+                                    {% elif application_details.Inspection_Type == "Institutions" %}
+                                        <option value="Restaurant">Restaurant</option>
+                                        <option value="Bar">Bar</option>
+                                        <option value="Hotel">Hotel</option>
+                                        <option value="Bakeries">Bakeries</option>
+                                        <option value="Canteen">Canteen</option>
+                                        <option value="Processing Plants">Processing Plants</option>
+                                        <option value="Institutions" selected>Institutions</option>
+                                        <option value="Street Vendors">Street Vendors</option>
+                                        <option value="Homemade Producers">Homemade Producers</option>
+                                        <option value="Grocery">Grocery</option>
+                                        <option value="Warehouse">Warehouse</option>
+                                    {% elif application_details.Inspection_Type == "Street Vendors" %}
+                                        <option value="Restaurant">Restaurant</option>
+                                        <option value="Bar">Bar</option>
+                                        <option value="Hotel">Hotel</option>
+                                        <option value="Bakeries">Bakeries</option>
+                                        <option value="Canteen">Canteen</option>
+                                        <option value="Processing Plants">Processing Plants</option>
+                                        <option value="Institutions">Institutions</option>
+                                        <option value="Street Vendors" selected>Street Vendors</option>
+                                        <option value="Homemade Producers">Homemade Producers</option>
+                                        <option value="Grocery">Grocery</option>
+                                        <option value="Warehouse">Warehouse</option>
+                                    {% elif application_details.Inspection_Type == "Grocery" %}
+                                        <option value="Restaurant">Restaurant</option>
+                                        <option value="Bar">Bar</option>
+                                        <option value="Hotel">Hotel</option>
+                                        <option value="Bakeries">Bakeries</option>
+                                        <option value="Canteen">Canteen</option>
+                                        <option value="Processing Plants">Processing Plants</option>
+                                        <option value="Institutions">Institutions</option>
+                                        <option value="Street Vendors">Street Vendors</option>
+                                        <option value="Homemade Producers" >Homemade Producers</option>
+                                        <option value="Grocery" selected>Grocery</option>
+                                        <option value="Warehouse">Warehouse</option>
+                                    {% else %}
+                                        <option value="Restaurant">Restaurant</option>
+                                        <option value="Bar">Bar</option>
+                                        <option value="Hotel">Hotel</option>
+                                        <option value="Bakeries">Bakeries</option>
+                                        <option value="Canteen">Canteen</option>
+                                        <option value="Processing Plants">Processing Plants</option>
+                                        <option value="Institutions">Institutions</option>
+                                        <option value="Street Vendors">Street Vendors</option>
+                                        <option value="Homemade Producers" >Homemade Producers</option>
+                                        <option value="Grocery">Grocery</option>
+                                        <option value="Warehouse" selected>Warehouse</option>
+                                    {% endif %}
                                 </select>
                             </div>
                             <div class="alert alert-danger" id="Inspection_TypeErrorMsg" style="display:none"></div>
@@ -64,31 +174,30 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Inspection Report Date</label>
-                                <input type="text" class="form-control date-picker flatpickr-input active" id="inspection_report_date" name="inspection_report_date"  placeholder="Pick a date" readonly="readonly">
+                                <input type="text" class="form-control date-picker flatpickr-input active" id="inspection_report_date" name="inspection_report_date" readonly="readonly" value="{{ application_details.Inspection_Report_Date|date:'d-m-Y'}}">
                             </div>
                             <div class="alert alert-danger" id="inspection_report_dateErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Name of FBO</label>
-                                <input type="text" class="form-control" id="FBO_Name" name="FBO_Name">
+                                <input type="text" class="form-control" id="FBO_Name" name="FBO_Name" value="{{ application_details.FBO_Name }}">
                             </div>
                             <div class="alert alert-danger" id="FBO_NameErrorMsg" style="display:none"></div>
                         </div>
-
                     </div>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Food Safety License No</label>
-                                <input type="text" class="form-control" id="License_No" name="License_No">
+                                <input type="text" class="form-control" id="License_No" name="License_No" value="{{ application_details.License_No }}">
                             </div>
                             <div class="alert alert-danger" id="License_NoErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Address</label>
-                                <textarea class="form-control" id="Address" name="Address"></textarea>
+                                <textarea class="form-control" id="Address" name="Address">{{ application_details.Address }}</textarea>
                             </div>
                             <div class="alert alert-danger" id="AddressErrorMsg" style="display:none"></div>
                         </div>
@@ -96,9 +205,10 @@
                             <div class="form-group">
                                 <label class="form-label">Dzongkhag</label>
                                 <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
-                                    <option value="">--SELECT DZONGKHAG--</option>
                                     {% for dzongkhag in dzongkhag %}
-                                            <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                        <option value="{{dzongkhag.Dzongkhag_Code}}"{% if application_details.Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>
+                                            {{ dzongkhag.Dzongkhag_Name }}
+                                        </option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -110,9 +220,8 @@
                             <div class="form-group">
                                 <label class="form-label">Gewog</label>
                                 <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
-                                    <option value="">--SELECT GEWOG--</option>
                                     {% for gewog in gewog %}
-                                            <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
+                                            <option value="{{ gewog.Gewog_Code }}"{% if application_details.Gewog_Code == gewog.Gewog_Code %}selected{% endif %}>{{ gewog.Gewog_Name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -122,9 +231,8 @@
                             <div class="form-group">
                                 <label class="form-label">Village</label>
                                  <select class="form-control" name="village" id="village">
-                                    <option value="">--SELECT VILLAGE--</option>
                                     {% for village in village %}
-                                            <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
+                                            <option value="{{ village.Village_Code }}" {% if application_details.Village_Code == village.Village_Code %}selected{% endif %}>{{ village.Village_Name }}</option>
                                     {% endfor %}
                                  </select>
                             </div>
@@ -133,7 +241,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">CID</label>
-                                <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)">
+                                <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" value="{{application_details.CID}}">
                             </div>
                             <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
                         </div>
@@ -142,31 +250,32 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Name Of Owner</label>
-                                <input type="text" class="form-control" id="owner_name" name="owner_name">
+                                <input type="text" class="form-control" id="owner_name" name="owner_name" value="{{application_details.Name_Of_Owner}}">
                             </div>
                             <div class="alert alert-danger" id="owner_nameErrorMsg" style="display:none"></div>
                         </div>
                          <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" name="email" onchange="validateemailId(this.value)">
+                                <input type="email" class="form-control" id="email" name="email" onchange="validateemailId(this.value)" value="{{application_details.Email}}">
                             </div>
                             <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Contact Number</label>
-                                <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                                <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)" value="{{application_details.Contact_No}}">
                             </div>
                             <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
                         </div>
                     </div>
                     <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
-                        Save SuccessFul
+                        Update SuccessFul
                     </div>
                     <div class="card-action">
-                        <button type="button" class="btn btn-primary" onclick="save_inspection_details()">Save-Next</button>
+                        <button type="button" class="btn btn-primary" onclick="update_inspection_details()">Update</button>
                     </div>
+                {% endfor %}
                 </div>
             <div class="tab-pane fade" id="nc_details" role="tabpanel" aria-labelledby="pills-nc">
                 <div class="card">
@@ -179,12 +288,47 @@
                     </div>
                     <div class="card-body">
                         <div id="details_owner_manager">
-                            {% include 'inspection_monitoring/owner_manager_details.html' %}
+                            <table class="table table-bordered" id="nc-details-table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Date of inspection</th>
+                                        <th scope="col">Name Of Inspector</th>
+                                        <th scope="col">NCs observed </th>
+                                        <th scope="col">Corrective Action</th>
+                                        <th scope="col">Date line for correction</th>
+                                        <th scope="col">Corrected/not corrected</th>
+                                        <th scope="col">Fine Imposed</th>
+                                        <th scope="col">Receipt No</th>
+                                        <th scope="col">Receipt Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                   {% for aqua in details %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{aqua.Inspection_Date}}</td>
+                                            <td>{{aqua.Inspector_Name}}</td>
+                                            <td>{{aqua.Observation}}</td>
+                                            <td>{{aqua.Correction_Proposed}}</td>
+                                            <td>{{aqua.Date_Line_Correction}}</td>
+                                            <td>{{aqua.Correction_Taken}}</td>
+                                            <td>{{aqua.Fine_Imposed}}</td>
+                                            <td>{{aqua.Revenue_Receipt}}</td>
+                                            <td>{{aqua.Receipt_Date}}</td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                          <td colspan="10" class="text-center">No Data</td>
+                                        </tr>
+                                   {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
                 <div class="card-action">
-                    <button type="button" class="btn btn-success" onclick="save_nc_details()">Save-Next</button>
+                    <button type="button" class="btn btn-success" onclick="save_nc_details()">Update-Next</button>
                 </div>
             </div>
             <div class="tab-pane fade" id="seized_item_details" role="tabpanel" aria-labelledby="pills-seized-item">
@@ -198,12 +342,49 @@
                     </div>
                     <div class="card-body">
                         <div id="item_details">
-                            {% include 'inspection_monitoring/item_details.html' %}
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Date of inspection</th>
+                                        <th scope="col">Name Of Inspector</th>
+                                        <th scope="col">Items seized</th>
+                                        <th scope="col">Qty</th>
+                                        <th scope="col">Unit</th>
+                                        <th scope="col">Reason for seizer</th>
+                                        <th scope="col">Fine Imposed</th>
+                                        <th scope="col">Receipt No</th>
+                                        <th scope="col">Receipt Date</th>
+                                        <th scope="col">Detaintion and destruction No</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                   {% for aqua in details %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{aqua.Inspection_Date}}</td>
+                                            <td>{{aqua.Inspector_Name}}</td>
+                                            <td>{{aqua.Observation}}</td>
+                                            <td>{{aqua.Correction_Proposed}}</td>
+                                            <td>{{aqua.Date_Line_Correction}}</td>
+                                            <td>{{aqua.Correction_Taken}}</td>
+                                            <td>{{aqua.Fine_Imposed}}</td>
+                                            <td>{{aqua.Revenue_Receipt}}</td>
+                                            <td>{{aqua.Receipt_Date}}</td>
+                                            <td>{{aqua.Detaintion_Destruction_No}}</td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                          <td colspan="11" class="text-center">No Data</td>
+                                        </tr>
+                                   {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
                 <div class="card-action">
-                    <button type="button" class="btn btn-success" onclick="next_item_details()">Save-Next</button>
+                    <button type="button" class="btn btn-success" onclick="next_item_details()">Update-Next</button>
                 </div>
             </div>
             <div class="tab-pane fade" id="sample_collection_details" role="tabpanel" aria-labelledby="pills-sample-collection">
@@ -217,12 +398,47 @@
                     </div>
                     <div class="card-body">
                         <div id="sample_collection">
-                            {% include 'inspection_monitoring/sample_collection_details.html' %}
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Date of Collection</th>
+                                        <th scope="col">Date of Submission</th>
+                                        <th scope="col">HS Code</th>
+                                        <th scope="col">Sample Type</th>
+                                        <th scope="col">Qty</th>
+                                        <th scope="col">Date & batch no.</th>
+                                        <th scope="col">Test requested </th>
+                                        <th scope="col">Test report </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                   {% for aqua in details %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{aqua.Collection_Date}}</td>
+                                            <td>{{aqua.Submission_Date}}</td>
+                                            <td>{{aqua.HS_Code_Imp}}</td>
+                                            <td>{{aqua.HS_Code_Local}}</td>
+                                            <td>{{aqua.Date_Line_Correction}}</td>
+                                            <td>{{aqua.Sample_Type}}</td>
+                                            <td>{{aqua.Qty}}</td>
+                                            <td>{{aqua.Batch_No_Date}}</td>
+                                            <td>{{aqua.Test_Requested}}</td>
+                                            <td>{{aqua.Test_Report}}</td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                          <td colspan="11" class="text-center">No Data</td>
+                                        </tr>
+                                   {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
                 <div class="card-action">
-                    <button type="button" class="btn btn-success" onclick="next_sample_collection()">Save-Next</button>
+                    <button type="button" class="btn btn-success" onclick="next_sample_collection()">Update-Next</button>
                 </div>
             </div>
             <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="mortem-file-attach">
@@ -241,7 +457,33 @@
                     </div>
                     <div class="card-body">
                         <div id="inspection_attachment">
-                            {% include 'inspection_monitoring/file_attachment.html' %}
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">File</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                   {% for file_attach in file_attach %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{file_attach.Attachment}}</td>
+                                            <td>
+                                                <button type="button"
+                                                    class="btn btn-danger btn-sm" onclick="DeleteAttachment('{{ file_attach.File_Id }}')">
+                                                    <i class="zmdi zmdi-delete"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                          <td colspan="3" class="text-center">No Data</td>
+                                        </tr>
+                                   {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -569,9 +811,10 @@
         </div>
     </div>
 </form>
+<script src="{% static 'assets/js/app.min.js' %}"></script>
 <script>
 
-function save_inspection_details()
+function update_inspection_details()
 {
     var Inspection_Type = $('#Inspection_Type').val();
     var inspection_report_date = $('#inspection_report_date').val();
@@ -676,11 +919,10 @@ function save_inspection_details()
     {
         $.ajax({
             type : "POST",
-            url : "{% url 'save_monitoring_form' %}",
+            url : "{% url 'update_inspection_details' %}",
             data : $('#inspection_monitoring_form').serialize(),
             success : function(data)
             {
-                $('#applicationNo').val(data.applNo);
                 $('#owner_manager_app_no').val(data.applNo);
                 $('#details_application_no').val(data.applNo);
                 $('#sample_collection_application_no').val(data.applNo);
@@ -692,7 +934,6 @@ function save_inspection_details()
                 setTimeout(function() {
                     $('#pills-nc').tab('show');
                 }, 3000);
-
             }
         });
     }
@@ -882,7 +1123,7 @@ function submit_inspection_details()
 {
     $.ajax({
         type : "POST",
-        url : "{% url 'submit_inspection_details' %}",
+        url : "{% url 'submit_draft_inspection_details' %}",
         data : $('#inspection_monitoring_form').serialize(),
         success : function(responseText) {
            location.reload();
@@ -890,5 +1131,5 @@ function submit_inspection_details()
     });
 }
 
+
 </script>
-{% endblock %}

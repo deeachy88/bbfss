@@ -106,15 +106,18 @@ class t_food_import_permit_t1(models.Model):
     Validity = models.DateField(blank=True, null=True)
     Import_Permit_No = models.CharField(max_length=20, blank=True, null=True)
     Applicant_Id = models.CharField(max_length=100, default=None, blank=True, null=True)
+    Terms = models.TextField(blank=True, null=True)
 
 
 class t_food_import_permit_t2(models.Model):
     Record_Id = models.AutoField(primary_key=True)
     Application_No = models.CharField(max_length=20)
-    Product_Name_Description = models.TextField(blank=True, null=True)
+    Common_Name = models.CharField(max_length=100, blank=True, null=True)
+    Product_Category = models.CharField(max_length=100, blank=True, null=True)
+    Product_Characteristics = models.CharField(max_length=250, blank=True, null=True)
     Quantity = models.IntegerField(blank=True, null=True)
     Unit = models.CharField(max_length=10)
-    Exporter_Type = models.TextField(blank=True, null=True)
+    Exporter_Type = models.CharField(max_length=100, blank=True, null=True)
     Quantity_Balance = models.IntegerField(blank=True, null=True)
     Remarks = models.TextField(blank=True, null=True)
 
@@ -156,15 +159,18 @@ class t_food_import_permit_inspection_t1(models.Model):
     Clearance_Ref_No = models.CharField(max_length=20, blank=True, null=True)
     Inspection_Remarks = models.TextField(blank=True, null=True)
     Applicant_Id = models.CharField(max_length=100, default=None, blank=True, null=True)
+    Terms = models.TextField(blank=True, null=True)
 
 
 class t_food_import_permit_inspection_t2(models.Model):
     Record_Id = models.AutoField(primary_key=True)
     Application_No = models.CharField(max_length=20)
-    Product_Name_Description = models.TextField(blank=True, null=True)
+    Common_Name = models.CharField(max_length=100, blank=True, null=True)
+    Product_Category = models.CharField(max_length=100, blank=True, null=True)
+    Product_Characteristics = models.CharField(max_length=250, blank=True, null=True)
     Quantity = models.IntegerField(blank=True, null=True)
     Unit = models.CharField(max_length=10)
-    Exporter_Type = models.TextField(blank=True, null=True)
+    Exporter_Type = models.CharField(max_length=100, blank=True, null=True)
     Quantity_Released = models.IntegerField(blank=True, null=True)
     Remarks = models.TextField(blank=True, null=True)
     Quantity_Balance = models.IntegerField(blank=True, null=True)
@@ -233,6 +239,9 @@ class t_food_business_registration_licensing_t1(models.Model):
     Validity = models.DateField(blank=True, null=True)
     FR_Inspection_Team = models.CharField(max_length=200, default=None, blank=True, null=True)
     FI_Inspection_Team = models.CharField(max_length=200, default=None, blank=True, null=True)
+    Dzongkhag_Code = models.IntegerField(default=None, blank=True, null=True)
+    Gewog_Code = models.IntegerField(default=None, blank=True, null=True)
+
 
 
 class t_food_business_registration_licensing_t2(models.Model):
