@@ -18,12 +18,14 @@ from plant.views import inspector_application
 
 def co_complaint_list(request):
     #Role_Id = request.session['Role_Id']
-    #global acknowledge_status
-    #service_details = t_service_master.objects.all()
+    #applicant_details = t_common_complaint_t1.objects.filter(Application_Status='P') | t_common_complaint_t1.objects.filter(Application_Status='A')
     complaint_details = t_workflow_details.objects.filter(Application_Status='P', Assigned_Role_Id='3') | t_workflow_details.objects.filter(Application_Status='A', Assigned_Role_Id='3')
     #for application_number in complaint_details:
         #app_no = application_number.Application_No
         #acknowledge_status = t_common_complaint_t1.objects.filter(Application_No=app_no)
+
+    #return render(request, 'focal_officer_pending_list.html', {'complaint_details': complaint_details, 'applicant_details': applicant_details})
+
     return render(request, 'complaint_officer_pending_list.html', {'complaint_details': complaint_details})
 
 def complaint_closed_list(request):
@@ -121,7 +123,8 @@ def submit_complaint(request):
         Contact_No=contact_number,
         Email=email,
         Address=address,
-        Complaint_Description=complaint_description
+        Complaint_Description=complaint_description,
+        Application_Status='P'
 
     )
 
@@ -167,6 +170,8 @@ def acknowledge_complaint(request):
     c_details.update(Acknowledge='Y')
     c_details.update(Acknowledge_Remarks=remarks)
     c_details.update(Acknowledge_Date=date.today())
+    c_details.update(Application_Status='A')
+
     workflow_details.update(Application_Status='A')
     send_acknowledge_email(app_no, application_date, remarks, email)
     return redirect(co_complaint_list)
@@ -197,6 +202,7 @@ def forward_complaint_to_co(request):
 
     forward_details.update(Investigation_Report=investigation_report)
     forward_details.update(Investigation_Date=investigation_date)
+    forward_details.update(Application_Status='IR')
 
     application_details = t_workflow_details.objects.filter(Application_No=app_no)
     application_details.update(Action_Date=date.today())
@@ -217,6 +223,7 @@ def close_complaint(request):
 
     c_details.update(Closure_Remarks=closure_remarks)
     c_details.update(Closure_Date=date.today())
+    c_details.update(Application_Status='C')
 
     application_details = t_workflow_details.objects.filter(Application_No=app_no)
     application_details.update(Action_Date=date.today())
@@ -237,7 +244,10 @@ def send_acknowledge_email(app_no, app_date,ack_remarks, email_id):
 
 def send_close_email(app_no, app_date, close_remarks, email_id, in_report, in_date):
     subject = 'COMPLAINT CLOSED'
-    message = "Dear " + "Sir/Madam, " + " Your Complaint has been closed. " + close_remarks + "."
+    message = "Dear " + "Sir/Madam, This has reference to your complaint registered with us Registration No." \
+                        "" + app_no + " dated " + str(app_date) + ". Please find below our decision or findings here :"\
+                        "" + close_remarks + ".Thank You"
+
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [email_id]
     send_mail(subject, message, email_from, recipient_list)
