@@ -52,6 +52,23 @@ def investigation_report_details(request):
                   {'complaint_details': details, 'user_details': user_details, 'dzongkhag': dzongkhag, 'gewog': gewog,
                    'village': village})
 
+def complaint_closed_list(request):
+    complaint_closed_details = t_workflow_details.objects.filter(Application_Status='C', Assigned_Role_Id='3')
+    return render(request, 'complaint_closed_list.html', {'complaint_details': complaint_closed_details})
+
+def complaint_closed_details(request):
+    Application_No = request.GET.get('application_id')
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    details = t_common_complaint_t1.objects.filter(Application_No=Application_No)
+    for userId in details:
+        user_id = userId.Assign_To
+        user_details = t_user_master.objects.filter(Login_Id=user_id)
+
+    return render(request, 'complaint_handling/complaint_officer_complaint_close_details.html', {'complaint_details': details, 'user_details': user_details, 'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village})
+
+
 
 def investigation_complaint_list(request):
     Login_Id = request.session['login_id']
