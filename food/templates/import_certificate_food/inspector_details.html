@@ -293,7 +293,9 @@
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">Product Name & Description</th>
+                                    <th scope="col">Common Name</th>
+                                    <th scope="col">Product Category</th>
+                                    <th scope="col">Product Characteristics</th>
                                     <th scope="col">Approved Quantity</th>
                                     <th scope="col">Unit</th>
                                     <th scope="col">Exporter Type</th>
@@ -307,7 +309,9 @@
                                 {% for import in import %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td>{{import.Product_Name_Description}}</td>
+                                        <td>{{import.Common_Name}}</td>
+                                        <td>{{import.Product_Category}}</td>
+                                        <td>{{import.Product_Characteristics}}</td>
                                         <td>{{import.Quantity}}</td>
                                         <td>{{import.Unit}}</td>
                                         <td>{{import.Exporter_Type}}</td>
@@ -414,10 +418,12 @@
                     </div>
                     <hr>
                     <div class="card-action text-center">
-                        <button type="button" class="btn btn-flat btn-primary" onclick="submit_details('{{application_details.Application_No}}')">
-                            <i class="ace-icon fa fa-times"></i>
-                            &nbsp;&nbsp;Submit
-                        </button>
+                        {% for application_details in application_details %}
+                            <button type="button" class="btn btn-flat btn-primary" onclick="submit_details('{{application_details.Application_No}}')">
+                                <i class="ace-icon fa fa-times"></i>
+                                &nbsp;&nbsp;Submit
+                            </button>
+                        {% endfor %}
                         <button type="button" class="btn btn-flat btn-danger">
                             <i class="ace-icon fa fa-times"></i>
                             &nbsp;&nbsp;Cancel

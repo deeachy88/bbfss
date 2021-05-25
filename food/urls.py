@@ -36,6 +36,11 @@ urlpatterns = [
          name='resubmit_factory_inspection'),
     path('edit_feasibility_inspection/<int:Record_Id>', views.edit_feasibility_details,
          name='edit_feasibility_inspection'),
+    path('forward_fbr_application', views.forward_fbr_application, name='forward_fbr_application'),
+    path('view_factory_inspection_application', views.view_factory_inspection_application,
+         name='view_factory_inspection_application'),
+    path('forward_factory_application', views.forward_factory_application, name='forward_factory_application'),
+    path('send_acknowledge', views.send_acknowledge, name='send_acknowledge'),
 
     # Export Of Food
     path('food_export_certificate_application', views.food_export_certificate_application,
@@ -81,6 +86,7 @@ urlpatterns = [
     path('result_update_list', views.result_update_list, name='result_update_list'),
     path('result_update', views.result_update, name='result_update'),
     path('update_list', views.update_list, name='update_list'),
+    path('factory_inspection_list', views.factory_inspection_list, name='factory_inspection_list'),
 
 ]
 if settings.DEBUG:

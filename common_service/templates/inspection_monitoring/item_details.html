@@ -1,0 +1,38 @@
+<table class="table table-bordered" id="item_details">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Date of inspection</th>
+            <th scope="col">Name Of Inspector</th>
+            <th scope="col">Items seized</th>
+            <th scope="col">Qty</th>
+            <th scope="col">Unit</th>
+            <th scope="col">Reason for seizer</th>
+            <th scope="col">Fine Imposed</th>
+            <th scope="col">Receipt No</th>
+            <th scope="col">Receipt Date</th>
+            <th scope="col">Detaintion and destruction No</th>
+        </tr>
+    </thead>
+    <tbody>
+       {% for aqua in details %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{aqua.Inspection_Date}}</td>
+                <td>{{aqua.Inspector_Name}}</td>
+                <td>{{aqua.Observation}}</td>
+                <td>{{aqua.Correction_Proposed}}</td>
+                <td>{{aqua.Date_Line_Correction}}</td>
+                <td>{{aqua.Correction_Taken}}</td>
+                <td>{{aqua.Fine_Imposed}}</td>
+                <td>{{aqua.Revenue_Receipt}}</td>
+                <td>{{aqua.Receipt_Date}}</td>
+                <td>{{aqua.Detaintion_Destruction_No}}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="11" class="text-center">No Data</td>
+            </tr>
+       {% endfor %}
+    </tbody>
+</table>

@@ -1,0 +1,894 @@
+{% extends 'common_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<style>
+    option
+    {
+        background-color: black !important;
+    }
+    .check {
+    margin-bottom: 0;
+    min-height: 2rem;
+}
+</style>
+<div class="card">
+    <div class="card-header">
+        <h4 class="card-title">Inspection And Monitoring</h4>
+    </div>
+    <div class="card-body">
+        <form method="post" id="inspection_monitoring_form">
+        {% csrf_token %}
+            <input type="hidden" name="application_no" id="applicationNo">
+            <div class="row justify-content-left">
+                <ul class="nav nav-pills nav-secondary" id="pills-mortem" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadDetails()">General Information</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="pills-nc" data-toggle="pill" href="#nc_details" role="tab" aria-controls="pills-nc" aria-selected="false" onclick="load_details()">NCs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="pills-seized-item" data-toggle="pill" href="#seized_item_details" role="tab" aria-controls="pills-seized-item" aria-selected="false" onclick="load_details()">Seized Item Details</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="pills-sample-collection" data-toggle="pill" href="#sample_collection_details" role="tab" aria-controls="pills-sample-collection" aria-selected="false" onclick="load_details()">Sample Collection Details</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="file-attach" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="tab-content mt-2 mb-3" id="pills-mortemContent">
+                <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Inspection Type </label>
+                                <select class="form-control form-control" id="Inspection_Type" name="Inspection_Type" onchange="conveyanceChange(this.value)">
+                                    <option value="">-SELECT-</option>
+                                    <option value="Restaurant">Restaurant</option>
+                                    <option value="Bar">Bar</option>
+                                    <option value="Hotel">Hotel</option>
+                                    <option value="Bakeries">Bakeries</option>
+                                    <option value="Canteen">Canteen</option>
+                                    <option value="Processing Plants">Processing Plants</option>
+                                    <option value="Institutions">Institutions</option>
+                                    <option value="Street Vendors">Street Vendors</option>
+                                    <option value="Homemade Producers">Homemade Producers</option>
+                                    <option value="Grocery">Grocery</option>
+                                    <option value="Warehouse">Warehouse</option>
+                                </select>
+                            </div>
+                            <div class="alert alert-danger" id="Inspection_TypeErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Inspection Report Date</label>
+                                <input type="text" class="form-control date-picker flatpickr-input active" id="inspection_report_date" name="inspection_report_date"  placeholder="Pick a date" readonly="readonly">
+                            </div>
+                            <div class="alert alert-danger" id="inspection_report_dateErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Name of FBO</label>
+                                <input type="text" class="form-control" id="FBO_Name" name="FBO_Name">
+                            </div>
+                            <div class="alert alert-danger" id="FBO_NameErrorMsg" style="display:none"></div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Food Safety License No</label>
+                                <input type="text" class="form-control" id="License_No" name="License_No">
+                            </div>
+                            <div class="alert alert-danger" id="License_NoErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Address</label>
+                                <textarea class="form-control" id="Address" name="Address"></textarea>
+                            </div>
+                            <div class="alert alert-danger" id="AddressErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Dzongkhag</label>
+                                <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
+                                    <option value="">--SELECT DZONGKHAG--</option>
+                                    {% for dzongkhag in dzongkhag %}
+                                            <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Gewog</label>
+                                <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                    <option value="">--SELECT GEWOG--</option>
+                                    {% for gewog in gewog %}
+                                            <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Village</label>
+                                 <select class="form-control" name="village" id="village">
+                                    <option value="">--SELECT VILLAGE--</option>
+                                    {% for village in village %}
+                                            <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
+                                    {% endfor %}
+                                 </select>
+                            </div>
+                            <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">CID</label>
+                                <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)">
+                            </div>
+                            <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Name Of Owner</label>
+                                <input type="text" class="form-control" id="owner_name" name="owner_name">
+                            </div>
+                            <div class="alert alert-danger" id="owner_nameErrorMsg" style="display:none"></div>
+                        </div>
+                         <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" onchange="validateemailId(this.value)">
+                            </div>
+                            <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Contact Number</label>
+                                <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                            </div>
+                            <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+                        Save SuccessFul
+                    </div>
+                    <div class="card-action">
+                        <button type="button" class="btn btn-primary" onclick="save_inspection_details()">Save-Next</button>
+                    </div>
+                </div>
+            <div class="tab-pane fade" id="nc_details" role="tabpanel" aria-labelledby="pills-nc">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-head-row">
+                            <div class="card-tools pull-right">
+                                <button type="button" class="btn btn-light" onclick="show_owner_manager_modal()">Add Details</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="details_owner_manager">
+                            {% include 'inspection_monitoring/owner_manager_details.html' %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-action">
+                    <button type="button" class="btn btn-success" onclick="save_nc_details()">Save-Next</button>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="seized_item_details" role="tabpanel" aria-labelledby="pills-seized-item">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-head-row">
+                            <div class="card-tools pull-right">
+                                <button type="button" class="btn btn-light" onclick="show_item_details_modal()">Add Details</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="item_details">
+                            {% include 'inspection_monitoring/item_details.html' %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-action">
+                    <button type="button" class="btn btn-success" onclick="next_item_details()">Save-Next</button>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="sample_collection_details" role="tabpanel" aria-labelledby="pills-sample-collection">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-head-row">
+                            <div class="card-tools pull-right">
+                                <button type="button" class="btn btn-light" onclick="show_sample_collection_details_modal()">Add Details</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="sample_collection">
+                            {% include 'inspection_monitoring/sample_collection_details.html' %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-action">
+                    <button type="button" class="btn btn-success" onclick="next_sample_collection()">Save-Next</button>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="mortem-file-attach">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-head-row">
+                            <div class="card-tools">
+                                <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="show_inspection_attachment_modal()">
+                                    <span class="btn-label">
+                                        <i class="fa fa-print"></i>
+                                    </span>
+                                    Add
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="inspection_attachment">
+                            {% include 'inspection_monitoring/file_attachment.html' %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-action">
+                    <button type="button" class="btn btn-success" onclick="submit_inspection_details()">Save</button>
+                </div>
+            </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<form method="post" id="owner_manager_form">
+    {% csrf_token %}
+    <input type="hidden" id="owner_manager_app_no" name="owner_manager_app_no">
+    <div class="modal fade" id="owner_manager_modal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Date of Inspection</label>
+                                        <input type="text" class="form-control date-picker flatpickr-input active" id="Inspection_Date" name="Inspection_Date"  placeholder="Pick a date" readonly="readonly">
+                                        <div class="alert alert-danger" id="Inspection_DateErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Inspector Name</label>
+                                        <input type="text" name="Inspector_Name" class="form-control" id="Inspector_Name" required>
+                                        <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Observation</label>
+                                        <select class="form-control form-control" id="Observation" name="Observation">
+                                            <option value="">-SELECT-</option>
+                                            <option value="Critical">Critical</option>
+                                            <option value="Major">Major</option>
+                                            <option value="NCs observed">NCs observed</option>
+                                        </select>
+                                        <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Correction Proposed</label>
+                                             <input type="text" name="Correction_Proposed" id="Correction_Proposed" class="form-control">
+                                        </div>
+                                        <div class="alert alert-danger" id="Correction_ProposedErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Date Line Correction</label>
+                                             <input type="text" name="Date_Line_Correction" id="Date_Line_Correction" class="form-control date-picker flatpickr-input active">
+                                        </div>
+                                        <div class="alert alert-danger" id="Date_Line_CorrectionErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Correction Taken</label>
+                                             <input type="text" name="Correction_Taken" id="Correction_Taken" class="form-control">
+                                        </div>
+                                        <div class="alert alert-danger" id="Correction_TakenErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Fine Imposed</label>
+                                        <input type="number" name="Fine_Imposed" class="form-control" id="Fine_Imposed" required>
+                                        <div class="alert alert-danger" id="Fine_ImposedErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Revenue Receipt</label>
+                                        <input type="text" name="Revenue_Receipt" class="form-control" id="Revenue_Receipt" required>
+                                        <div class="alert alert-danger" id="Revenue_ReceiptErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Receipt Date</label>
+                                        <input type="text" name="Receipt_Date" id="Receipt_Date" class="form-control date-picker flatpickr-input active">
+                                        <div class="alert alert-danger" id="soldErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="save_owner_manager_details()">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form method="post" id="details_form">
+    {% csrf_token %}
+    <input type="hidden" id="details_application_no" name="details_application_no">
+    <div class="modal fade" id="details_model" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Date of Inspection</label>
+                                        <input type="text" class="form-control date-picker flatpickr-input active" id="item_Inspection_Date" name="item_Inspection_Date"  placeholder="Pick a date" readonly="readonly">
+                                        <div class="alert alert-danger" id="item_Inspection_DateErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Inspector Name</label>
+                                        <input type="text" name="Item_Inspector_Name" class="form-control" id="Item_Inspector_Name" required>
+                                        <div class="alert alert-danger" id="Item_ErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Item Seized</label>
+                                        <input type="text" class="form-control" id="Items_Seized" name="Items_Seized">
+                                        <div class="alert alert-danger" id="Items_SeizedErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Quantity Seized</label>
+                                        <input type="number" class="form-control" id="Qty_Seized" name="Qty_Seized">
+                                        <div class="alert alert-danger" id="previous_to_dateErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Unit </label>
+                                        <select class="form-control" name="Unit" id="Unit">
+                                            <option value="">--SELECT UNIT--</option>
+                                            {% for unit in unit %}
+                                                <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                            {% endfor %}
+                                         </select>
+                                        <div class="alert alert-danger" id="UnitErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Reason For Seizing</label>
+                                        <textarea class="form-control" id="reason" name="reason"></textarea>
+                                        <div class="alert alert-danger" id="reasonErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Fine Imposed</label>
+                                        <input type="number" name="Item_Fine_Imposed" class="form-control" id="Item_Fine_Imposed" required>
+                                        <div class="alert alert-danger" id="Item_Fine_ImposedErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Revenue Receipt</label>
+                                        <input type="text" name="Item_Revenue_Receipt" class="form-control" id="Item_Revenue_Receipt" required>
+                                        <div class="alert alert-danger" id="Item_Revenue_ReceiptErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Receipt Date</label>
+                                        <input type="text" name="Item_Receipt_Date" id="Item_Receipt_Date" class="form-control date-picker flatpickr-input active">
+                                        <div class="alert alert-danger" id="Item_Receipt_DateErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Detaintion and destruction No</label>
+                                        <input type="number" class="form-control" name="Detaintion_Destruction_No" id="Detaintion_Destruction_No">
+                                        <div class="alert alert-danger" id="Detaintion_Destruction_NoErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="save_item_details()">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form method="post" id="sample_collection_form">
+    {% csrf_token %}
+    <input type="hidden" id="sample_collection_application_no" name="sample_collection_application_no">
+    <div class="modal fade" id="sample_collection_model" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Collection Type</label>
+                                            <select class="form-control form-control" id="Collection_Type" name="Collection_Type">
+                                            <option value="">-SELECT-</option>
+                                            <option value="Regulatory">Regulatory</option>
+                                            <option value="Surveilance">Surveilance</option>
+                                        </select>
+                                        </div>
+                                        <div class="alert alert-danger" id="Collection_TypeErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Collection Date</label>
+                                            <input type="text" name="Collection_Date" id="Collection_Date" class="form-control date-picker flatpickr-input active">
+                                        </div>
+                                        <div class="alert alert-danger" id="Collection_DateErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Submission Date</label>
+                                            <input type="text" name="Submission_Date" id="Submission_Date" class="form-control date-picker flatpickr-input active">
+                                        </div>
+                                        <div class="alert alert-danger" id="Submission_DateErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">HS Code(imported)</label>
+                                        <input type="text" name="HS_Code_Imp" class="form-control" id="HS_Code_Imp" required>
+                                        <div class="alert alert-danger" id="HS_Code_ImpErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">HS Code(Local)</label>
+                                        <input type="text" name="HS_Code_Local" class="form-control" id="HS_Code_Local" required>
+                                        <div class="alert alert-danger" id="HS_Code_LocalErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Sample Type</label>
+                                        <input type="text" name="Sample_Type" class="form-control" id="Sample_Type" required>
+                                        <div class="alert alert-danger" id="Sample_TypeErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Quantity</label>
+                                        <input type="number" name="Qty" class="form-control" id="Qty" required>
+                                        <div class="alert alert-danger" id="Sample_QtyErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Batch No And Date</label>
+                                        <input type="text" name="Batch_No_Date" class="form-control" id="Batch_No_Date" required>
+                                        <div class="alert alert-danger" id="Batch_No_DateErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Test Requested</label>
+                                        <input type="text" name="Test_Requested" class="form-control" id="Test_Requested" required>
+                                        <div class="alert alert-danger" id="Test_RequestedErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Test Report</label>
+                                        <input type="text" name="Test_Report" class="form-control" id="Test_Report" required>
+                                        <div class="alert alert-danger" id="Test_ReportErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="save_sample_details()">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form method="post" id="attachment_form" enctype="multipart/form-data">
+{% csrf_token %}
+    <input type="hidden" name="attachment_appNo" id="attachment_appNo">
+    <div class="modal fade" id="attachmentModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="attachmentModalLabel">Attach Files</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Attach File</label>
+                                        <input type="file" name="document" id="document">
+                                        <div class="alert alert-danger" id="fileErrorMsg" style="display:none"></div>
+                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_inspection_attachment()"> Submit </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+
+function save_inspection_details()
+{
+    var Inspection_Type = $('#Inspection_Type').val();
+    var inspection_report_date = $('#inspection_report_date').val();
+    var FBO_Name = $('#FBO_Name').val();
+    var License_No = $('#License_No').val();
+    var Address = $('#Address').val();
+    var dzongkhag = $('#dzongkhag').val();
+    var gewog = $('#gewog').val();
+    var village = $('#village').val();
+    var cid = $('#cid').val();
+    var owner_name = $('#owner_name').val();
+    var email = $('#email').val();
+    var contactNumber = $('#contactNumber').val();
+    var number_count = $('#contactNumber').val().length;
+    var cidCount = $('#cid').val().length;
+
+    if(Inspection_Type == "")
+    {
+        $('#Inspection_TypeErrorMsg').html("Please Check One Inspection Type.");
+        $('#Inspection_TypeErrorMsg').show();
+        $('#Inspection_TypeErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(inspection_report_date == "")
+    {
+        $('#inspection_report_dateErrorMsg').html("Select Inspection Report Date.");
+        $('#inspection_report_dateErrorMsg').show();
+        $('#inspection_report_dateErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(FBO_Name == "")
+    {
+        $('#FBO_NameErrorMsg').html("Enter Name Of FBO.");
+        $('#FBO_NameErrorMsg').show();
+        $('#FBO_NameErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(License_No == "")
+    {
+        $('#License_NoErrorMsg').html("Enter License No.");
+        $('#License_NoErrorMsg').show();
+        $('#License_NoErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Address == "")
+    {
+        $('#AddressErrorMsg').html("Enter Address.");
+        $('#AddressErrorMsg').show();
+        $('#AddressErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(dzongkhag == "")
+    {
+        $('#dzongkhagErrorMsg').html("Select Dzongkhag.");
+        $('#dzongkhagErrorMsg').show();
+        $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(gewog == "")
+    {
+        $('#gewogErrorMsg').html("Select Gewog.");
+        $('#gewogErrorMsg').show();
+        $('#gewogErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(village == "")
+    {
+        $('#villageErrorMsg').html("Select Village.");
+        $('#villageErrorMsg').show();
+        $('#villageErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(cid == "")
+    {
+        $('#cidErrorMsg').html("Enter CID Number.");
+        $('#cidErrorMsg').show();
+        $('#cidErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(owner_name == "")
+    {
+        $('#owner_nameErrorMsg').html("Enter Name Of Owner.");
+        $('#owner_nameErrorMsg').show();
+        $('#owner_nameErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(email == "")
+    {
+        $('#emailErrorMsg').html("Enter Contact Number.");
+        $('#emailErrorMsg').show();
+        $('#emailErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(contactNumber == "")
+    {
+        $('#contactNumberErrorMsg').html("Enter Contact Number.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if($('#individual_radio').prop('checked') && cidCount < 11)
+    {
+        $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits.");
+        $('#cidErrorMsg').show();
+        setTimeout('hideStatus("cidErrorMsg")',2000);
+    }
+    else if(number_count < 8)
+    {
+        $('#contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
+        $('#contactNumberErrorMsg').show();
+        setTimeout('hideStatus("contactNumberErrorMsg")',2000);
+    }
+    else
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'save_monitoring_form' %}",
+            data : $('#inspection_monitoring_form').serialize(),
+            success : function(data)
+            {
+                $('#applicationNo').val(data.applNo);
+                $('#owner_manager_app_no').val(data.applNo);
+                $('#details_application_no').val(data.applNo);
+                $('#sample_collection_application_no').val(data.applNo);
+                $('#attachment_appNo').val(data.applNo);
+                $('#submitMsg').show();
+                setTimeout(function() {
+                    $("#submitMsg").hide('blind', {}, 500)
+                }, 2000);
+                setTimeout(function() {
+                    $('#pills-nc').tab('show');
+                }, 3000);
+
+            }
+        });
+    }
+}
+
+
+
+function save_inspection_attachment()
+{
+    var fileName = document.getElementById('document').files[0].name;
+    var fd = new FormData();
+    var file = document.getElementById('document').files[0];
+    fd.append('document', file);
+    token_value=$("input[name=csrfmiddlewaretoken]").val();
+    $.ajaxSetup
+    ({
+        beforeSend: function(xhr, settings)
+        {
+            xhr.setRequestHeader("X-CSRFToken", token_value);
+        }
+    });
+    $.ajax({
+    type : "POST",
+    url : "{% url 'inspection_file' %}",
+    data : fd,
+    dataType: 'json',
+    contentType: false,
+    processData: false,
+    success : function(data)
+    {
+        if (data.form_is_valid)
+        {
+            var file_url = data.file_url
+            var appNo = $('#attachment_appNo').val();
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'inspection_file_name' %}",
+                data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
+                success : function(responseText)
+                {
+                    $('#attachmentModal').modal('hide');
+                    $('#inspection_attachment').html(responseText);
+                    $('.modal-backdrop').remove();
+                }
+            });
+        }
+        else
+        {
+            $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+            $('#fileErrorMsg').show();
+            $('#fileErrorMsg').delay(2000).fadeOut('slow');
+        }
+    }
+});
+
+}
+
+
+function validateemailId(emailId)
+{
+    var pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+    var no=emailId.match(pattern);
+
+    if(no==null)
+    {
+        $('#emailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
+        $('#email').val("");
+        $('#emailErrorMsg').show();
+        $('#emailErrorMsg').delay(2000).fadeOut('slow');
+    }else{
+     $('#emailErrorMsg').hide();
+    }
+
+}
+
+function checkContact(value)
+{
+    var firstDigit = value.charAt(0);
+    var secondDigit = value.charAt(1);
+
+    if(firstDigit != 7 && firstDigit != 1){
+        $('#contactNumberErrorMsg').html("Must Start with either 1 or 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 1 && secondDigit != 6 && secondDigit != 7){
+        $('#contactNumberErrorMsg').html("Second Digit Must Start with either 6 or 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 7 && secondDigit == 6){
+        $('#contactNumberErrorMsg').html("Second Digit Cannot be 6.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 7 && secondDigit != 7){
+        $('#contactNumberErrorMsg').html("Second Digit Must Start with 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }
+
+}
+
+function save_owner_manager_details()
+{
+    $.ajax({
+        type : "POST",
+        url : "{% url 'save_owner_manager_details' %}",
+        data : $('#owner_manager_form').serialize(),
+        success : function(responseText) {
+           $('#owner_manager_modal').modal('hide');
+           $('#details_owner_manager').html(responseText);
+           $('#pills-nc').tab('show');
+           $('.modal-backdrop').remove();
+        }
+    });
+}
+
+function save_item_details()
+{
+    $.ajax({
+        type : "POST",
+        url : "{% url 'save_item_details' %}",
+        data : $('#details_form').serialize(),
+        success : function(responseText) {
+           $('#details_model').modal('hide');
+           $('#item_details').html(responseText);
+           $('#pills-seized-item').tab('show');
+           $('.modal-backdrop').remove();
+        }
+    });
+}
+
+function save_sample_details()
+{
+    $.ajax({
+        type : "POST",
+        url : "{% url 'save_sample_details' %}",
+        data : $('#sample_collection_form').serialize(),
+        success : function(responseText) {
+           $('#sample_collection_model').modal('hide');
+           $('#sample_collection').html(responseText);
+           $('#pills-sample-collection').tab('show');
+           $('.modal-backdrop').remove();
+        }
+    });
+}
+
+function show_owner_manager_modal()
+{
+    $('#owner_manager_modal').modal('show');
+}
+
+function show_item_details_modal()
+{
+    $('#details_model').modal('show');
+}
+
+function show_sample_collection_details_modal()
+{
+    $('#sample_collection_model').modal('show');
+}
+
+function show_inspection_attachment_modal()
+{
+    $('#attachmentModal').modal('show');
+}
+
+function save_nc_details()
+{
+    $('#pills-seized-item').tab('show');
+}
+
+function next_item_details()
+{
+    $('#pills-sample-collection').tab('show');
+}
+
+function next_sample_collection()
+{
+    $('#file-attach').tab('show');
+}
+
+function submit_inspection_details()
+{
+    $.ajax({
+        type : "POST",
+        url : "{% url 'submit_inspection_details' %}",
+        data : $('#inspection_monitoring_form').serialize(),
+        success : function(responseText) {
+           location.reload();
+        }
+    });
+}
+
+</script>
+{% endblock %}

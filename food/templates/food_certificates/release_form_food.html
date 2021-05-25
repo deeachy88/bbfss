@@ -55,24 +55,28 @@ table, th, td {
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Product Name and Description</th>
-                                <th scope="col">Unit</th>
+                                <th scope="col">Common Name</th>
+                                <th scope="col">Product Category</th>
+                                <th scope="col">Product Characteristics</th>
                                 <th scope="col">Quantity</th>
-                                <th scope="col">Remarks</th>
+                                <th scope="col">Unit</th>
+                                <th scope="col">Exporter Type</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for clearance in clearance %}
+                            {% for import in clearance %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td>{{clearance.Product_Name_Description}}</td>
-                                    <td>{{clearance.Unit}}</td>
-                                    <td>{{clearance.Quantity_Released}}</td>
-                                    <td>{{clearance.Remarks}}</td>
+                                    <td>{{import.Common_Name}}</td>
+                                    <td>{{import.Product_Category}}</td>
+                                    <td>{{import.Product_Characteristics}}</td>
+                                    <td>{{import.Quantity}}</td>
+                                    <td>{{import.Unit}}</td>
+                                    <td>{{import.Exporter_Type}}</td>
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="6" class="text-center">No Data</td>
+                                  <td colspan="7" class="text-center">No Data</td>
                                 </tr>
                             {% endfor %}
                         </tbody>

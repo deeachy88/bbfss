@@ -43,28 +43,20 @@ from certification.models import t_certification_gap_t1, t_certification_gap_t2,
 def focal_officer_application(request):
     Role_Id = request.session['Role_Id']
     section_id = request.session['section']
-    section_details = t_section_master.objects.filter(Section_Id=section_id)
-    for sectionId in section_details:
-        section = sectionId.Section_Name
-    application_details = t_workflow_details.objects.filter(Assigned_Role_Id=Role_Id, Section=section,
-                                                            Application_Status='P', Action_Date__isnull=False)
-    if application_details.exists():
-        service_details = t_service_master.objects.all()
-        return render(request, 'focal_officer_pending_list.html', {'application_details': application_details,
-                                                                   'service_details': service_details})
-    else:
-        application_details = t_workflow_details.objects.filter(Assigned_Role_Id=Role_Id, Section=section,
-                                                                Application_Status='ATA', Action_Date__isnull=False)
-        if application_details.exists():
-            service_details = t_service_master.objects.all()
-            return render(request, 'focal_officer_pending_list.html', {'application_details': application_details,
-                                                                       'service_details': service_details})
-        else:
-            service_details = t_service_master.objects.all()
-            application_details = t_workflow_details.objects.filter(Assigned_Role_Id=Role_Id, Section=section,
-                                                                    Application_Status='AA', Action_Date__isnull=False)
-            return render(request, 'focal_officer_pending_list.html', {'application_details': application_details,
-                                                                       'service_details': service_details})
+
+    service_details = t_service_master.objects.all()
+
+    application_details = t_workflow_details.objects.filter(Assigned_Role_Id=Role_Id,
+                                                            Application_Status='ATA', Action_Date__isnull=False) \
+                          | t_workflow_details.objects.filter(Assigned_Role_Id=Role_Id,
+                                                              Application_Status='P', Action_Date__isnull=False) \
+                          | t_workflow_details.objects.filter(Assigned_Role_Id=Role_Id,
+                                                              Application_Status='AA', Action_Date__isnull=False) \
+                          | t_workflow_details.objects.filter(Assigned_Role_Id=Role_Id,
+                                                              Application_Status='ACK', Action_Date__isnull=False)
+    # ACK - Acknowledgement Sent
+    return render(request, 'focal_officer_pending_list.html', {'application_details': application_details,
+                                                               'service_details': service_details})
 
 
 def oic_application(request):
@@ -73,47 +65,31 @@ def oic_application(request):
     Field_Office_Id = request.session['field_office_id']
     Role_Id = request.session['Role_Id']
     new_import_app = t_workflow_details.objects.filter(Assigned_Role_Id='4', Field_Office_Id=Field_Office_Id,
-                                                       Application_Status='P', Action_Date__isnull=False)
+                                                       Application_Status='P', Action_Date__isnull=False) | \
+                     t_workflow_details.objects.filter(Assigned_Role_Id='4', Field_Office_Id=Field_Office_Id,
+                                                       Application_Status='I', Action_Date__isnull=False) | \
+                     t_workflow_details.objects.filter(Assigned_Role_Id='4', Field_Office_Id=Field_Office_Id,
+                                                       Application_Status='FR', Action_Date__isnull=False)
 
-    if new_import_app.exists():
-        application_details = t_workflow_details.objects.filter(Assigned_Role_Id='4', Assigned_To=Login_Id,
-                                                                Application_Status='P', Action_Date__isnull=False)
-        service_details = t_service_master.objects.all()
-        return render(request, 'oic_pending_list.html',
-                      {'service_details': service_details, 'application_details': application_details})
-    else:
-        details = t_workflow_details.objects.filter(Assigned_Role_Id=Role_Id,
-                                                    Field_Office_Id=Field_Office_Id,
-                                                    Application_Status='I', Action_Date__isnull=False)
-        if details.exists():
-            application_details = t_workflow_details.objects.filter(Assigned_Role_Id=Role_Id,
-                                                                    Field_Office_Id=Field_Office_Id,
-                                                                    Application_Status='I', Action_Date__isnull=False)
-            service_details = t_service_master.objects.all()
-            return render(request, 'oic_pending_list.html',
-                          {'service_details': service_details, 'application_details': application_details})
-        else:
-            application_details = t_workflow_details.objects.filter(Assigned_Role_Id=Role_Id,
-                                                                    Field_Office_Id=Field_Office_Id,
-                                                                    Application_Status='FI', Action_Date__isnull=False)
-            if application_details.exists():
-                service_details = t_service_master.objects.all()
-                return render(request, 'oic_pending_list.html',
-                              {'service_details': service_details, 'application_details': application_details})
-            else:
-                application_details = t_workflow_details.objects.filter(Assigned_To=Login_Id,
-                                                                        Application_Status='AP',
-                                                                        Action_Date__isnull=False)
-                service_details = t_service_master.objects.all()
-                return render(request, 'oic_pending_list.html',
-                              {'service_details': service_details, 'application_details': application_details})
+    service_details = t_service_master.objects.all()
+    return render(request, 'oic_pending_list.html',
+                  {'service_details': service_details, 'application_details': new_import_app})
 
 
 def inspector_application(request):
     Login_Id = request.session['login_id']
     print(Login_Id)
     new_import_app = t_workflow_details.objects.filter(Assigned_To=Login_Id,
-                                                       Application_Status='AP', Action_Date__isnull=False)
+                                                       Application_Status='AP', Action_Date__isnull=False) | \
+                     t_workflow_details.objects.filter(Assigned_To=Login_Id,
+                                                       Application_Status='I', Action_Date__isnull=False) \
+                     | t_workflow_details.objects.filter(Assigned_To=Login_Id,
+                                                         Application_Status='FI', Action_Date__isnull=False) \
+                     | t_workflow_details.objects.filter(Assigned_To=Login_Id,
+                                                         Application_Status='FR', Action_Date__isnull=False) \
+                     | t_workflow_details.objects.filter(Assigned_To=Login_Id,
+                                                         Application_Status='P', Action_Date__isnull=False)
+
     service_details = t_service_master.objects.all()
     return render(request, 'inspector_pending_list.html',
                   {'service_details': service_details, 'application_details': new_import_app})
@@ -350,6 +326,7 @@ def forward_application(request):
     application_details.update(Action_Date=date.today())
     application_details.update(Assigned_Role_Id='5')
     Field_Office_Id = request.session['field_office_id']
+
     Role_Id = request.session['Role_Id']
     application_Lists = t_workflow_details.objects.filter(Assigned_To=Role_Id, Field_Office_Id=Field_Office_Id)
     return render(request, 'oic_pending_list.html', {'application_details': application_Lists})
@@ -571,7 +548,8 @@ def view_application_details(request):
         workflow_details = t_workflow_details.objects.filter(Application_No=application_id)
         for application in workflow_details:
             Field_Office = application.Field_Office_Id
-        user_role_list = t_user_master.objects.filter(Role_Id='5', Field_Office_Id_id=Field_Office)
+            print(Field_Office)
+            user_role_list = t_user_master.objects.filter(Role_Id='5', Field_Office_Id_id=Field_Office)
         return render(request, 'import_certificate_food/inspector_details.html',
                       {'application_details': application_details, 'file': file,
                        'dzongkhag': dzongkhag, 'village': village,
@@ -1122,7 +1100,7 @@ def fo_app_details(request):
         details = t_food_business_registration_licensing_t2.objects.filter(Application_No=Application_No)
         file = t_file_attachment.objects.filter(Application_No=Application_No)
         unit = t_unit_master.objects.all()
-        oic_list = t_user_master.objects.filter(Role_Id='4')
+        oic_list = t_field_office_master.objects.all()
         return render(request, 'registration_licensing/fo_details.html',
                       {'application_details': application_details, 'details': details, 'file': file,
                        'oic_list': oic_list, 'location': location, 'unit': unit})
@@ -1881,13 +1859,17 @@ def update_inspection_call_details(request):
                 Inspection_Leader=None,
                 Inspection_Team=None,
                 Clearance_Ref_No=None,
-                Inspection_Remarks=None
+                Inspection_Remarks=None,
+                Applicant_Id=details.Applicant_Id,
+                Terms=details.Terms
             )
 
         for import_details in import_details:
             t_food_import_permit_inspection_t2.objects.create(
                 Application_No=new_import_application_no,
-                Product_Name_Description=import_details.Product_Name_Description,
+                Common_Name=import_details.Common_Name,
+                Product_Category=import_details.Product_Category,
+                Product_Characteristics=import_details.Product_Characteristics,
                 Quantity=import_details.Quantity,
                 Unit=import_details.Unit,
                 Exporter_Type=import_details.Exporter_Type,
@@ -1903,7 +1885,7 @@ def update_inspection_call_details(request):
         t_workflow_details.objects.create(Application_No=new_import_application_no,
                                           Applicant_Id=request.session['email'],
                                           Assigned_To=None, Field_Office_Id=field_office_id, Section='Food',
-                                          Assigned_Role_Id='4', Action_Date=None, Application_Status='P',
+                                          Assigned_Role_Id='4', Action_Date=date.today(), Application_Status='P',
                                           Service_Code=service_code)
         login_id = request.session['login_id']
         application_details = t_workflow_details.objects.filter(Assigned_To=login_id)
@@ -1947,7 +1929,7 @@ def new_food_import_application_no(service_code):
         year = timezone.now().year
         newAppNo = service_code + "/I/" + str(year) + "/" + "0001"
     else:
-        substring = str(lastAppNo)[9:15]
+        substring = str(lastAppNo)[11:15]
         substring = int(substring) + 1
         AppNo = str(substring).zfill(4)
         year = timezone.now().year
@@ -4320,8 +4302,8 @@ def get_certificate_details(request, t_livestock_import_permit_product_inspectio
     elif service_code == 'RFF':
         details = t_food_import_permit_inspection_t1.objects.filter(Clearance_Ref_No=application_No)
         for app in details:
-            application_id = app.Applicant_Id
-        details_clearance = t_food_import_permit_t2.objects.filter(Application_No=application_id)
+            application_id = app.Application_No
+        details_clearance = t_food_import_permit_inspection_t2.objects.filter(Application_No=application_id)
 
         return render(request, 'food_certificates/release_form_food.html',
                       {'certificate_details': details, 'clearance': details_clearance})
@@ -4395,28 +4377,15 @@ def application_status(request):
 
 def resubmit_application(request):
     login_id = request.session['login_id']
-    application_details = t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
-    if application_details.exists():
-        service_details = t_service_master.objects.all()
-        return render(request, 'resubmit_application.html', {'application_details': application_details,
-                                                             'service_details': service_details})
-    else:
-        service_details = t_service_master.objects.all()
-        application_details = t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
-        if application_details.exists():
-            return render(request, 'resubmit_application.html', {'application_details': application_details,
-                                                                 'service_details': service_details})
-        else:
-            service_details = t_service_master.objects.all()
-            application_details = t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
-            if application_details.exists():
-                return render(request, 'resubmit_application.html', {'application_details': application_details,
-                                                                     'service_details': service_details})
-            else:
-                service_details = t_service_master.objects.all()
-                application_details = t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
-                return render(request, 'resubmit_application.html', {'application_details': application_details,
-                                                                     'service_details': service_details})
+    print(login_id)
+    application_details = t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS') \
+                          | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS') \
+                          | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR') \
+                          | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
+
+    service_details = t_service_master.objects.all()
+    return render(request, 'resubmit_application.html', {'application_details': application_details,
+                                                         'service_details': service_details})
 
 
 def call_for_inspection_details(request):
@@ -4602,3 +4571,13 @@ def resubmit_app_details(request):
                                'audit_findings': audit_findings, 'audit_observation': audit_observation,
                                'inspection_details': inspection_details,
                                })
+
+
+def validate_receipt_no(request):
+    data = dict()
+    receipt_no = request.GET.get('receipt_no')
+    application_list = t_payment_details.objects.filter(Receipt_No=receipt_no)
+    if application_list.exists():
+        status = "Exists"
+        data['status'] = status
+        return JsonResponse(data)

@@ -32,3 +32,63 @@ class t_common_complaint_t1(models.Model):
     Acknowledge_Date = models.DateField(default=None, null=True)
 
 
+class t_inspection_monitoring_t1(models.Model):
+    Record_Id = models.AutoField(primary_key=True)
+    Reference_No = models.CharField(max_length=30, blank=True, null=True)
+    Inspection_Type = models.CharField(max_length=100, blank=True, null=True)
+    Inspection_Report_Date = models.DateField(default=None, blank=True, null=True)
+    FBO_Name = models.CharField(max_length=100, blank=True, null=True)
+    License_No = models.CharField(max_length=100, blank=True, null=True)
+    Address = models.CharField(max_length=250, blank=True, null=True)
+    Email = models.CharField(max_length=100, blank=True, null=True)
+    Contact_No = models.IntegerField(blank=True, null=True)
+    Dzongkhag_Code = models.CharField(max_length=10, blank=True, null=True)
+    Gewog_Code = models.CharField(max_length=10, blank=True, null=True)
+    Village_Code = models.CharField(max_length=10, blank=True, null=True)
+    CID = models.BigIntegerField(default=None, blank=True, null=True)
+    Name_Of_Owner = models.CharField(max_length=100, default=None, blank=True, null=True)
+    Application_Flag = models.CharField(max_length=1, default='P', blank=True, null=True)
+    Service_Code = models.CharField(max_length=5, default=None, blank=True, null=True)
+
+
+class t_inspection_monitoring_t2(models.Model):
+    Record_Id = models.AutoField(primary_key=True)
+    Reference_No = models.CharField(max_length=30, blank=True, null=True)
+    Inspection_Date = models.DateField(blank=True, null=True)
+    Inspector_Name = models.CharField(max_length=30, blank=True, null=True)
+    Observation = models.CharField(max_length=30, blank=True, null=True)
+    Correction_Proposed = models.CharField(max_length=30, blank=True, null=True)
+    Date_Line_Correction = models.DateField(blank=True, null=True)
+    Correction_Taken = models.CharField(max_length=30, blank=True, null=True)
+    Fine_Imposed = models.IntegerField(blank=True, null=True)
+    Revenue_Receipt = models.CharField(max_length=30, blank=True, null=True)
+    Receipt_Date = models.DateField(blank=True, null=True)
+
+
+class t_inspection_monitoring_t3(models.Model):
+    Record_Id = models.AutoField(primary_key=True)
+    Reference_No = models.CharField(max_length=30, blank=True, null=True)
+    Inspection_Date = models.DateField(blank=True, null=True)
+    Inspector_Name = models.CharField(max_length=30, blank=True, null=True)
+    Items_Seized = models.CharField(max_length=30, blank=True, null=True)
+    Qty_Seized = models.IntegerField(blank=True, null=True)
+    Unit = models.CharField(max_length=10, blank=True, null=True)
+    Reason = models.CharField(max_length=250, blank=True, null=True)
+    Fine_Imposed = models.IntegerField(blank=True, null=True)
+    Revenue_Receipt = models.CharField(max_length=30, blank=True, null=True)
+    Receipt_Date = models.DateField(blank=True, null=True)
+    Detaintion_Destruction_No = models.IntegerField(blank=True, null=True)
+
+
+class t_inspection_monitoring_t4(models.Model):
+    Record_Id = models.AutoField(primary_key=True)
+    Reference_No = models.CharField(max_length=30, blank=True, null=True)
+    Collection_Date = models.DateField(blank=True, null=True)
+    Submission_Date = models.DateField(blank=True, null=True)
+    HS_Code_Imp = models.CharField(max_length=30, blank=True, null=True)
+    HS_Code_Local = models.CharField(max_length=30, blank=True, null=True)
+    Sample_Type = models.CharField(max_length=100, blank=True, null=True)
+    Qty = models.IntegerField(blank=True, null=True)
+    Batch_No_Date = models.CharField(max_length=100, blank=True, null=True)
+    Test_Requested = models.CharField(max_length=100, blank=True, null=True)
+    Test_Report = models.CharField(max_length=100, blank=True, null=True)

@@ -73,6 +73,7 @@ class t_workflow_details(models.Model):
     Application_Status = models.CharField(max_length=3, default=None, blank=True, null=True)
 
 
+
 class t_workflow_details_audit(models.Model):
     Audit_Record_Id = models.AutoField(primary_key=True)
     Workflow_Record_Id = models.IntegerField()

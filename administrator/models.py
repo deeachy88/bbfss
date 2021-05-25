@@ -270,15 +270,19 @@ class t_forgot_password(models.Model):
     Security_Question_Id = models.IntegerField()
     Answer = models.CharField(max_length=250)
 
+
 class t_inspection_type_master(models.Model):
     Inspection_Type_Id = models.AutoField(primary_key=True)
     Inspection_Type = models.CharField(max_length=100)
 
+
 class t_livestock_category_master(models.Model):
     Category_Id = models.AutoField(primary_key=True)
-    Category_Name = models.CharField(max_length=100)
+    Category_Name = models.CharField(max_length=110, default=None)
+
     def __str__(self):
         return self.Category_Name
+
 
 class t_livestock_species_master(models.Model):
     Species_Id = models.AutoField(primary_key=True)
@@ -287,6 +291,7 @@ class t_livestock_species_master(models.Model):
 
     def __str__(self):
         return self.Species_Name
+
 
 class t_livestock_species_breed_master(models.Model):
     Species_Breed_Id = models.AutoField(primary_key=True)
@@ -297,9 +302,19 @@ class t_livestock_species_breed_master(models.Model):
     def __str__(self):
         return self.Species_Breed_Name
 
+
 class t_livestock_product_master(models.Model):
     Product_Id = models.AutoField(primary_key=True)
     Product_Name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.Product_Name
+
+
+class t_food_category_master(models.Model):
+    Category_Id = models.AutoField(primary_key=True)
+    Category_Name = models.CharField(max_length=100)
+    HS_Code = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.Category_Name
