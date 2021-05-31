@@ -1,9 +1,23 @@
-{% load static %}
 {% load crispy_forms_tags %}
-<form method="post" id="forwardForm">
-{% csrf_token %}
-    <div class="card-body" onload="load_attachment_details" >
+{% load static %}
+<style>
+    option
+    {
+        background-color: black !important;
+    }
+    .check {
+    margin-bottom: 0;
+    min-height: 2rem;
+}
+</style>
+<div class="card">
+    <div class="card-header">
+        <h4 class="card-title">Investigation Report Update</h4>
+    </div>
+    <div class="card-body">
         {% for complaint_details in complaint_details %}
+        <form method="post" id="forwardForm">
+            {% csrf_token %}
         <input type="hidden" id="applicationNo" name="applicationNo" value="{{complaint_details.Application_No}}">
             <div class="row">
                 <div class="col-md-4">
@@ -82,8 +96,33 @@
                     </div>
                     <div class="alert alert-danger" id="complaintDescriptionErrorMsg" style="display:none"></div>
                 </div>
-
             </div>
+            <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                    <span class="px-2 small text-muted font-weight-bold text-muted form-label">File</span>
+                    <span class="px-1 small text-muted font-weight-bold text-muted form-label">Attachments</span>
+                <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+            </div>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">Sl No</th>
+                        <th scope="col">File Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                   {% for complaint_file in complaint_file %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td><a href='..{{complaint_file.File_Path}}/{{complaint_file.Attachment}}' target="_blank">{{complaint_file.Attachment}}</a></td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                          <td colspan="3" class="text-center">No Data</td>
+                        </tr>
+                   {% endfor %}
+                </tbody>
+            </table>
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-group">
@@ -95,6 +134,19 @@
             </div>
         {% endfor %}
             <br>
+            <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                    <span class="px-2 small text-muted font-weight-bold text-muted form-label">Investigation</span>
+                    <span class="px-1 small text-muted font-weight-bold text-muted form-label">Report</span>
+                <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+            </div>
+            <div class="row" >
+                <div class="col-md-12" id="file-attachment">
+                    <div id="fileAttach">
+                        {% include 'complaint_handling/investigation_file_attachment_page.html' %}
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-2">
                     <label class="form-label">Investigation Date</label>
@@ -119,14 +171,52 @@
                     Investigation Report Submitted Successfully
                 </div>
             </div>
+        </form>
+    </div>
+</div>
+<form method="post" id="attachment_form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" name="appNo" id="appNo" value="{{ title }}">
+    <div class="modal fade" id="attachmentModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                 <div class="modal-header">
+                    <h5 class="modal-title" id="attachmentModalLabel">Attach Files</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label>Attach File</label>
+                                        <input type="file" name="document" id="document">
+                                        <div class="alert alert-danger" id="fileErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_attachment()"> Add Attachment </button>
+                </div>
+            </div>
+        </div>
     </div>
 </form>
+<script src="{% static 'assets/js/app.min.js' %}"></script>
 <script>
 
 function investigationSubmit(form)
 {
     var inDate = $('#investigationDate').val();
     var inRemarks = $('#investigationReport').val();
+
 
     if (inDate == "")
     {
@@ -158,4 +248,67 @@ function investigationSubmit(form)
     }
 }
 
+function save_attachment()
+{
+    var fileName = document.getElementById('document').files[0].name;
+    var fd = new FormData();
+    var file = document.getElementById('document').files[0];
+    fd.append('document', file);
+    token_value=$("input[name=csrfmiddlewaretoken]").val();
+    $.ajaxSetup
+    ({
+        beforeSend: function(xhr, settings)
+        {
+            xhr.setRequestHeader("X-CSRFToken", token_value);
+        }
+    });
+        $.ajax({
+        type : "POST",
+        url : "{% url 'save_investigation_file' %}",
+        data : fd,
+        dataType: 'json',
+        contentType: false,
+        processData: false,
+        success : function(data)
+        {
+            if (data.form_is_valid)
+            {
+                var appNo = $('#applicationNo').val();
+                var file_url = data.file_url
+                $.ajax
+                ({
+                    type : "POST",
+                    url : "{% url 'add_investigation_file_name' %}",
+                    data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
+                    success : function(responseText)
+                    {
+                        $('#file-attachment').html(responseText);
+                        $('#attachmentModal').modal('hide');
+                        $('.modal-backdrop').remove();
+                    }
+                });
+            }else
+            {
+                $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                $('#fileErrorMsg').show();
+                $('#fileErrorMsg').delay(2000).fadeOut('slow');
+            }
+        }
+    });
+
+}
+
+function load_attachment_details()
+{
+    var appid = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_investigation_attachment_details' %}",
+        data :{'application_id':appid},
+        success : function(response)
+        {
+            $('#fileAttach').html(response);
+        }
+    });
+}
 </script>

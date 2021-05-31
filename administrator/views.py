@@ -77,36 +77,43 @@ def login(request):
                                     if admin == str(mainroles.Role_Name):
                                         request.session['role'] = admin
                                         request.session['login_id'] = user.Login_Id
+                                        request.session['email'] = user.Email_Id
                                     elif DG == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
                                         request.session['role'] = DG
                                         request.session['login_id'] = user.Login_Id
+                                        request.session['email'] = user.Email_Id
                                     elif focal_officer == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
                                         request.session['role'] = focal_officer
                                         request.session['Role_Id'] = mainroles.Role_Id
                                         request.session['section'] = user.Section_Id_id
                                         request.session['login_id'] = user.Login_Id
+                                        request.session['email'] = user.Email_Id
                                     elif complaint_officer == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
                                         request.session['role'] = complaint_officer
                                         request.session['login_id'] = user.Login_Id
+                                        request.session['email'] = user.Email_Id
                                     elif OIC == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
                                         request.session['role'] = OIC
                                         request.session['Role_Id'] = mainroles.Role_Id
                                         request.session['field_office_id'] = user.Field_Office_Id_id
                                         request.session['login_id'] = user.Login_Id
+                                        request.session['email'] = user.Email_Id
                                     elif Inspector == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
                                         request.session['role'] = Inspector
                                         request.session['field_office_id'] = user.Field_Office_Id_id
                                         request.session['login_id'] = user.Login_Id
+                                        request.session['email'] = user.Email_Id
                                     elif Chief == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
                                         request.session['role'] = Chief
                                         request.session['Division_Id'] = user.Division_Id_id
                                         request.session['login_id'] = user.Login_Id
+                                        request.session['email'] = user.Email_Id
                                 return render(request, 'common_dashboard.html')
                     else:
                         _message = 'Your account is not activated'

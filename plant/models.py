@@ -91,7 +91,7 @@ class t_workflow_details_audit(models.Model):
 class t_file_attachment(models.Model):
     File_Id = models.AutoField(primary_key=True)
     Application_No = models.CharField(max_length=20, blank=True, null=True)
-    Applicant_Id = models.CharField(max_length=20, blank=True, null=True)
+    Applicant_Id = models.CharField(max_length=100, blank=True, null=True)
     Role_Id = models.IntegerField(blank=True, null=True)
     File_Path = models.CharField(max_length=250)
     Attachment = models.FileField(storage=fs)

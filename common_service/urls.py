@@ -5,6 +5,7 @@ from common_service import views
 
 urlpatterns = [
     # Complaint service
+    path('save_complaint', views.save_complaint, name='save_complaint'),
     path('submit_complaint', views.submit_complaint, name='submit_complaint'),
     path('load_gewog', views.load_gewog, name='load_gewog'),
     path('load_village', views.load_village, name='load_village'),
@@ -23,7 +24,19 @@ urlpatterns = [
     path('close_complaint', views.close_complaint, name='close_complaint'),
     path('complaint_closed_list', views.complaint_closed_list, name='complaint_closed_list'),
     path('complaint_closed_details', views.complaint_closed_details, name='complaint_closed_details'),
+    path('load_complaint_attachment_details', views.load_complaint_attachment_details,
+         name='load_complaint_attachment_details'),
+    path('save_complaint_file', views.save_complaint_file, name='save_complaint_file'),
+    path('add_complaint_file_name', views.add_complaint_file_name, name='add_complaint_file_name'),
+    path('delete_complaint_file', views.delete_complaint_file, name='delete_complaint_file'),
+    path('load_investigation_attachment_details', views.load_investigation_attachment_details,
+         name='load_investigation_attachment_details'),
+    path('save_investigation_file', views.save_investigation_file, name='save_investigation_file'),
+    path('add_investigation_file_name', views.add_investigation_file_name, name='add_investigation_file_name'),
+    path('delete_investigation_file', views.delete_investigation_file, name='delete_investigation_file'),
 
+
+# Inspection and Monitoring
     path('inspection_and_monitoring_form', views.inspection_and_monitoring_form,
          name='inspection_and_monitoring_form'),
     path('save_monitoring_form', views.save_monitoring_form, name='save_monitoring_form'),

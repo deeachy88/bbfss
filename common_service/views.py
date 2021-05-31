@@ -44,13 +44,14 @@ def investigation_report_details(request):
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
     details = t_common_complaint_t1.objects.filter(Application_No=Application_No)
+    file = t_file_attachment.objects.filter(Application_No=Application_No)
     for userId in details:
         user_id = userId.Assign_To
         user_details = t_user_master.objects.filter(Login_Id=user_id)
 
     return render(request, 'complaint_handling/complaint_officer_complaint_close.html',
                   {'complaint_details': details, 'user_details': user_details, 'dzongkhag': dzongkhag, 'gewog': gewog,
-                   'village': village})
+                   'village': village, 'file': file})
 
 def complaint_closed_list(request):
     complaint_closed_details = t_workflow_details.objects.filter(Application_Status='C', Assigned_Role_Id='3')
@@ -62,13 +63,14 @@ def complaint_closed_details(request):
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
     details = t_common_complaint_t1.objects.filter(Application_No=Application_No)
+    file = t_file_attachment.objects.filter(Application_No=Application_No)
     for userId in details:
         user_id = userId.Assign_To
         user_details = t_user_master.objects.filter(Login_Id=user_id)
 
-    return render(request, 'complaint_handling/complaint_officer_complaint_close_details.html', {'complaint_details': details, 'user_details': user_details, 'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village})
-
-
+    return render(request, 'complaint_handling/complaint_officer_complaint_close_details.html',
+                  {'complaint_details': details, 'user_details': user_details, 'dzongkhag': dzongkhag, 'gewog': gewog,
+                   'village': village, 'file': file})
 
 def investigation_complaint_list(request):
     Login_Id = request.session['login_id']
@@ -86,19 +88,24 @@ def co_complaint_details(request):
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
     details = t_common_complaint_t1.objects.filter(Application_No=Application_No)
-
+    file = t_file_attachment.objects.filter(Application_No=Application_No)
     inspector_list = t_user_master.objects.all()
 
-    return render(request, 'complaint_handling/complaint_officer_complaint_forward.html', {'complaint_details': details, 'inspector_list': inspector_list, 'dzongkhag': dzongkhag, 'gewog': gewog,
-                       'village': village})
+    return render(request, 'complaint_handling/complaint_officer_complaint_forward.html', {'complaint_details': details,
+     'inspector_list': inspector_list, 'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village, 'file': file})
 
 def investigation_complaint_details(request):
-    Application_No = request.GET.get('application_id')
+    application_no = request.GET.get('application_id')
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
-    details = t_common_complaint_t1.objects.filter(Application_No=Application_No)
-    return render(request, 'complaint_handling/investigation_complaint_update.html', {'complaint_details': details, 'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village})
+    details = t_common_complaint_t1.objects.filter(Application_No=application_no)
+    complaint_file = t_file_attachment.objects.filter(Application_No=application_no, Role_Id='8')
+    investigation_file = t_file_attachment.objects.filter(Application_No=application_no, Role_Id='5')
+
+    return render(request, 'complaint_handling/investigation_complaint_update.html', {'complaint_details': details,
+      'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village, 'complaint_file': complaint_file,
+      'investigation_file': investigation_file})
 
 def apply_complaint_form(request):
     dzongkhag = t_dzongkhag_master.objects.all()
@@ -107,7 +114,7 @@ def apply_complaint_form(request):
     return render(request, 'complaint_handling/submit_complaint.html',
                   {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village})
 
-def submit_complaint(request):
+def save_complaint(request):
     data = dict()
     service_code = "COM"
     last_application_no = get_complaint_application_no(request, service_code)
@@ -141,9 +148,105 @@ def submit_complaint(request):
 
     t_workflow_details.objects.create(Application_No=last_application_no, Applicant_Id=request.session['email'],
                                       Assigned_To=None, Field_Office_Id=None, Section='Complaint',
-                                      Assigned_Role_Id='3', Action_Date=date.today(), Application_Status='P',
+                                      Assigned_Role_Id='3', Action_Date=None, Application_Status='P',
                                       Service_Code=service_code)
+    data['applNo'] = last_application_no
     return JsonResponse(data)
+
+def load_complaint_attachment_details(request):
+    application_id = request.GET.get('application_id')
+    attachment_details = t_file_attachment.objects.filter(Application_No=application_id, Role_Id='8')
+    return render(request, 'complaint_handling/complaint_file_attachment_page.html',
+                  {'file_attach': attachment_details})
+
+def save_complaint_file(request):
+    data = dict()
+    myFile = request.FILES['document']
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/common_service/complaint_handling")
+    if fs.exists(myFile.name):
+        data['form_is_valid'] = False
+    else:
+        fs.save(myFile.name, myFile)
+        data['form_is_valid'] = True
+    return JsonResponse(data)
+
+def add_complaint_file_name(request):
+    if request.method == 'POST':
+        Application_No = request.POST.get('appNo')
+        fileName = request.POST.get('filename')
+        Applicant_Id = request.session['email']
+        fs = ("/attachments" + "/" + str(timezone.now().year) + "/common_service/complaint_handling/")
+        print(fs)
+        t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
+                                         Role_Id='8', File_Path=fs, Attachment=fileName)
+
+        complaint_file = t_file_attachment.objects.filter(Application_No=Application_No, Rold_id='8')
+    return render(request, 'complaint_handling/complaint_file_attachment_page.html', {'complaint_file': complaint_file})
+
+def delete_complaint_file(request):
+    File_Id = request.GET.get('file_id')
+    Application_No = request.GET.get('appNo')
+    file = t_file_attachment.objects.filter(pk=File_Id)
+    for file in file:
+        fileName = file.Attachment
+        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/common_service/complaint_handling")
+        fs.delete(str(fileName))
+    file.delete()
+
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No, Role_Id='8')
+    return render(request, 'complaint_handling/complaint_file_attachment_page.html', {'file_attach': file_attach})
+
+
+def load_investigation_attachment_details(request):
+    application_id = request.GET.get('application_id')
+    attachment_details = t_file_attachment.objects.filter(Application_No=application_id, Role_Id='5')
+    return render(request, 'complaint_handling/investigation_file_attachment_page.html',
+                  {'file_attach': attachment_details})
+
+def save_investigation_file(request):
+    data = dict()
+    myFile = request.FILES['document']
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/common_service/complaint_handling")
+    if fs.exists(myFile.name):
+        data['form_is_valid'] = False
+    else:
+        fs.save(myFile.name, myFile)
+        data['form_is_valid'] = True
+    return JsonResponse(data)
+
+def add_investigation_file_name(request):
+    if request.method == 'POST':
+        Application_No = request.POST.get('appNo')
+        fileName = request.POST.get('filename')
+        Applicant_Id = request.session['email']
+        fs = ("/attachments" + "/" + str(timezone.now().year) + "/common_service/complaint_handling/")
+        t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
+                                         Role_Id='5', File_Path=fs, Attachment=fileName)
+        investigation_file = t_file_attachment.objects.filter(Application_No=Application_No, Role_Id='5')
+    return render(request, 'complaint_handling/investigation_file_attachment_page.html', {'investigation_file': investigation_file})
+
+def delete_investigation_file(request):
+    File_Id = request.GET.get('file_id')
+    Application_No = request.GET.get('appNo')
+    file = t_file_attachment.objects.filter(pk=File_Id)
+    for file in file:
+        fileName = file.Attachment
+        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/common_service/complaint_handling")
+        fs.delete(str(fileName))
+    file.delete()
+    investigation_file = t_file_attachment.objects.filter(Application_No=Application_No, Role_Id='5')
+    return render(request, 'complaint_handling/investigation_file_attachment_page.html', {'investigation_file': investigation_file})
+
+def submit_complaint(request):
+    application_no = request.GET.get('appNo')
+    workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
+    workflow_details.update(Action_Date=date.today())
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+
+    return render(request, 'complaint_handling/submit_complaint.html',
+                  {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village})
 
 
 def complaint_details(request):
@@ -153,11 +256,13 @@ def complaint_details(request):
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
     complaint_details = t_common_complaint_t1.objects.filter(Application_No=Application_No)
+    file = t_file_attachment.objects.filter(Application_No=Application_No)
 
     inspector_list = t_user_master.objects.filter(Login_Type='I')
 
-    return render(request, 'complaint_handling/complaint_officer_complaint_acknowledge.html', {'complaint_details': complaint_details, 'inspector_list': inspector_list, 'dzongkhag': dzongkhag, 'gewog': gewog,
-                       'village': village})
+    return render(request, 'complaint_handling/complaint_officer_complaint_acknowledge.html',
+                  {'complaint_details': complaint_details, 'inspector_list': inspector_list, 'dzongkhag': dzongkhag,
+                   'gewog': gewog, 'village': village, 'file': file})
 
 def load_gewog(request):
     dzongkhag_id = request.GET.get('dzongkhag_id')
@@ -277,6 +382,9 @@ def get_complaint_application_no(request, service_code):
         year = timezone.now().year
         newAppNo = service_code + "/" + str(year) + "/" + AppNo
     return newAppNo
+
+
+
 
 
 def inspection_and_monitoring_form(request):

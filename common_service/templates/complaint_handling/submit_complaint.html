@@ -6,116 +6,171 @@ option {
     background-color: black !important;
 }
 </style>
+<input type="hidden" id="applicationNo" name="applicationNo" value="{{ applicationNo }}">
 <div class="card">
     <div class="card-header">
         <h4 class="card-title">Complaint Form</h4>
     </div>
     <div class="card-body">
-         <form method="post" id="complaintForm">
+        <form method="post" id="complaintForm">
              {% csrf_token %}
             <div id="complaint">
-                <div id="applicant_details">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Applicant CID</label>
-                                <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)">
+                <div class="row justify-content-left">
+                    <ul class="nav nav-pills nav-secondary" id="pills-tab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadDetails()">Complaint Form</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="pills-profile-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="tab-content mt-2 mb-3" id="pills-tabContent">
+                    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                        <div id="applicant_details">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Applicant CID</label>
+                                        <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)">
+                                    </div>
+                                    <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label  class="form-label">Name</label>
+                                        <input type="text" class="form-control" id="complainantName" name="complainantName">
+                                    </div>
+                                    <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
+                                </div>
                             </div>
-                            <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label  class="form-label">Name</label>
-                                <input type="text" class="form-control" id="complainantName" name="complainantName">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Dzongkhag</label>
+                                        <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
+                                            <option value="">--SELECT DZONGKHAG--</option>
+                                            {% for dzongkhag in dzongkhag %}
+                                                    <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Gewog</label>
+                                        <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                            <option value="">--SELECT GEWOG--</option>
+                                            {% for gewog in gewog %}
+                                                    <option value="{{ gewog.gewog_Code }}">{{ gewog.gewog_Name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
+                                </div>
                             </div>
-                            <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Village</label>
+                                         <select class="form-control" name="village" id="village">
+                                            <option value="">--SELECT VILLAGE--</option>
+                                            {% for village in village %}
+                                                    <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
+                                            {% endfor %}
+                                         </select>
+                                    </div>
+                                    <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Contact Number</label>
+                                        <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)">
+                                    </div>
+                                    <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="email" name="email">
+                                    </div>
+                                    <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Address</label>
+                                        <input type="email" class="form-control" id="address" name="address">
+                                    </div>
+                                    <div class="alert alert-danger" id="addressErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Description of Complaint</label>
+                                        <textarea class="form-control" id="complainDescription" name="complainDescription"></textarea>
+                                    </div>
+                                    <div class="alert alert-danger" id="complainDescriptionErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                            <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+                                Save SuccessFul
+                            </div>
+                            <div class="card-action">
+                                <button type="button" class="btn btn-primary" value="Submit" onclick="Save_form(this.form)">Save & Next</button>
+                            </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Dzongkhag</label>
-                                <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
-                                    <option value="">--SELECT DZONGKHAG--</option>
-                                    {% for dzongkhag in dzongkhag %}
-                                            <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
+                    <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="pills-profile-file">
+                        <div id="fileAttach">
+                            {% include 'complaint_handling/investigation_file_attachment_page.html' %}
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Gewog</label>
-                                <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
-                                    <option value="">--SELECT GEWOG--</option>
-                                    {% for gewog in gewog %}
-                                            <option value="{{ gewog.gewog_Code }}">{{ gewog.gewog_Name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Village</label>
-                                 <select class="form-control" name="village" id="village">
-                                    <option value="">--SELECT VILLAGE--</option>
-                                    {% for village in village %}
-                                            <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
-                                    {% endfor %}
-                                 </select>
-                            </div>
-                            <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Contact Number</label>
-                                <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)">
-                            </div>
-                            <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" name="email">
-                            </div>
-                            <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Address</label>
-                                <input type="email" class="form-control" id="address" name="address">
-                            </div>
-                            <div class="alert alert-danger" id="addressErrorMsg" style="display:none"></div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label class="form-label">Description of Complaint</label>
-                                <textarea class="form-control" id="complainDescription" name="complainDescription"></textarea>
-                            </div>
-                            <div class="alert alert-danger" id="complainDescriptionErrorMsg" style="display:none"></div>
-                        </div>
-                   </div>
-                    <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
-                        Save SuccessFul
-                    </div>
-                    <div class="card-action">
-                        <button type="button" class="btn btn-primary" value="Submit" onclick="submit_form(this.form)">Submit</button>
                     </div>
                 </div>
             </div>
         </form>
     </div>
 </div>
+<form method="post" id="attachment_form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" name="appNo" id="appNo" value="{{ title }}">
+    <div class="modal fade" id="attachmentModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                 <div class="modal-header">
+                    <h5 class="modal-title" id="attachmentModalLabel">Attach Files</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label>Attach File</label>
+                                        <input type="file" name="document" id="document">
+                                        <div class="alert alert-danger" id="fileErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_attachment()"> Add Attachment </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
 <script>
-function submit_form(form)
+function Save_form(form)
     {
         var cid = $('#cid').val();
         var name = $('#complainantName').val();
@@ -199,14 +254,17 @@ function submit_form(form)
         {
             $.ajax({
                 type : "POST",
-                url : "{% url 'submit_complaint' %}",
+                url : "{% url 'save_complaint' %}",
                 data : $('#complaintForm').serialize(),
                 success : function(data) {
+                    $('#applicationNo').val(data.applNo);
                     $('#submitMsg').show();
                     setTimeout(function() {
                         $("#submitMsg").hide('blind', {}, 500)
+                    }, 1000);
+                    setTimeout(function() {
+                         $('#pills-profile-file').tab('show');
                     }, 2000);
-                    location.reload();
                 }
             });
         }
@@ -234,6 +292,69 @@ function getVillage(gewog_id)
         success : function(data)
         {
             $('#village').html(data);
+        }
+    });
+}
+
+function save_attachment()
+{
+    var fileName = document.getElementById('document').files[0].name;
+    var fd = new FormData();
+    var file = document.getElementById('document').files[0];
+    fd.append('document', file);
+    token_value=$("input[name=csrfmiddlewaretoken]").val();
+    $.ajaxSetup
+    ({
+        beforeSend: function(xhr, settings)
+        {
+            xhr.setRequestHeader("X-CSRFToken", token_value);
+        }
+    });
+        $.ajax({
+        type : "POST",
+        url : "{% url 'save_complaint_file' %}",
+        data : fd,
+        dataType: 'json',
+        contentType: false,
+        processData: false,
+        success : function(data)
+        {
+            if (data.form_is_valid)
+            {
+                var appNo = $('#applicationNo').val();
+                var file_url = data.file_url
+                $.ajax
+                ({
+                    type : "POST",
+                    url : "{% url 'add_complaint_file_name' %}",
+                    data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
+                    success : function(responseText)
+                    {
+                        $('#file-attachment').html(responseText);
+                        $('.modal-backdrop').remove();
+                    }
+                });
+            }else
+            {
+                $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                $('#fileErrorMsg').show();
+                $('#fileErrorMsg').delay(2000).fadeOut('slow');
+            }
+        }
+    });
+
+}
+
+function load_attachment_details()
+{
+    var appid = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_complaint_attachment_details' %}",
+        data :{'application_id':appid},
+        success : function(response)
+        {
+            $('#fileAttach').html(response);
         }
     });
 }
