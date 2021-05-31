@@ -235,7 +235,7 @@ def user(request):
 
 
 def edit_user(request, Login_Id):
-    details = get_object_or_404(t_user_master, id=Login_Id)
+    details = get_object_or_404(t_user_master, Login_Id=Login_Id)
     if request.method == 'POST':
         form = UserForm(request.POST, instance=details)
     else:
@@ -243,7 +243,7 @@ def edit_user(request, Login_Id):
     return save_user_form(request, form, Login_Id, 'edit_users.html')
 
 
-def save_user_form(request, form, id, template_name):
+def save_user_form(request, form, Login_Id, template_name):
     data = dict()
     if request.method == 'POST':
         data['form_is_valid'] = True
@@ -252,7 +252,7 @@ def save_user_form(request, form, id, template_name):
         contact_number = request.POST.get('contact_number')
         address = request.POST.get('address')
         role = request.POST.get('role_id')
-        t_user_master.objects.filter(id=id).update(name=username, email=email, contact_number=contact_number,
+        t_user_master.objects.filter(Login_Id=Login_Id).update(name=username, email=email, contact_number=contact_number,
                                                    address=address,
                                                    role_id_id=role)
         books = t_user_master.objects.all()

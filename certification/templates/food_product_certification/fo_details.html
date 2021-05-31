@@ -265,6 +265,7 @@
                                 <tr>
                                     <th scope="col">#</th>
                                     <th scope="col">Name</th>
+                                    <th scope="col">Role</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -272,6 +273,7 @@
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
                                         <td>{{audit.Name}}</td>
+                                        <td>{{audit.Role}}</td>
                                     </tr>
                                     {% empty %}
                                     <tr>
@@ -298,6 +300,7 @@
                                     <tr>
                                         <th scope="col">#</th>
                                         <th scope="col">Name</th>
+                                        <th scope="col">Role</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -305,6 +308,7 @@
                                         <tr>
                                             <td>{{ forloop.counter }}</td>
                                             <td>{{audit.Name}}</td>
+                                            <td>{{audit.Role}}</td>
                                         </tr>
                                         {% empty %}
                                         <tr>
@@ -350,6 +354,14 @@
                                 <textarea class="form-control" id="remarks_fo"></textarea>
                             </div>
                         </div>
+                        {% for application_details in application_details %}
+                            {% if application_details.Audit_Team_Acceptance == 'A' or  application_details.Audit_Team_Acceptance == 'R' %}
+                                <div class="col-md-6">
+                                    <label class="form-label">Remarks From Client </label>
+                                    <textarea type="text" class="form-control" disabled>{{ application_details.Audit_Team_Acceptance_Remarks }}</textarea>
+                                </div>
+                            {% else %}
+                        {% endfor %}
                     </div>
                     <div class="card-action">
                         {% for application_details in application_details %}
@@ -388,8 +400,19 @@
                                     <select class="form-control" id="audit_team_member">
                                         <option value="">--SELECT--</option>
                                         {% for team_details in team_details %}
-                                            <option value="{{team_details.Name}}">{{team_details.Name}}</option>
+                                            <option value="{{team_details.Login_Id}}">{{team_details.Name}}</option>
                                         {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Role</label>
+                                    <select class="form-control" id="role">
+                                        <option value="">--SELECT--</option>
+                                        <option value="Team Member">Team Member</option>
+                                        <option value="Observer">Observer</option></option>
+
                                     </select>
                                 </div>
                             </div>
@@ -418,10 +441,11 @@ function openAuditTeamModal()
 function audit_team_details(application_id)
 {
     name = $('#audit_team_member').val();
+    role = $('#role').val();
     $.ajax({
         type : "GET",
         url : "{% url 'fpc_audit_team_details' %}",
-        data :{'application_id':application_id,'name':name},
+        data :{'application_id':application_id,'name':name, 'role':role},
         success : function(data) {
             $('#audit_team_details').html(data);
             $('#details').show();

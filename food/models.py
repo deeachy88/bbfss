@@ -43,6 +43,8 @@ class t_food_export_certificate_t1(models.Model):
     Validity_Period = models.IntegerField(blank=True, null=True)
     Validity = models.DateField(blank=True, null=True)
     Applicant_Id = models.CharField(max_length=100, default=None, blank=True, null=True)
+    Rejection_Reason = models.TextField(blank=True, null=True)
+    Terms = models.TextField(blank=True, null=True)
 
 
 class t_food_licensing_food_handler_t1(models.Model):
@@ -77,6 +79,8 @@ class t_food_licensing_food_handler_t1(models.Model):
     OIC_Remarks = models.TextField(default=None, blank=True, null=True)
     Inspection_Remarks = models.TextField(default=None, blank=True, null=True)
     Attendance = models.CharField(max_length=5, default='No', blank=True, null=True)
+    Training_Venue = models.CharField(max_length=100, default=None, blank=True, null=True)
+    Training_Batch = models.CharField(max_length=100, default=None, blank=True, null=True)
 
 
 class t_food_import_permit_t1(models.Model):
@@ -273,7 +277,7 @@ class t_food_business_registration_licensing_t4(models.Model):
 class t_food_business_registration_licensing_t5(models.Model):
     Record_Id = models.AutoField(primary_key=True)
     Application_No = models.CharField(max_length=30)
-    Meeting_Type = models.CharField(max_length=100)
+    Inspection_Type = models.CharField(max_length=100)
     Requirement = models.TextField()
     Observation = models.TextField()
     Clause_No = models.CharField(max_length=100, default=None, blank=True, null=True)

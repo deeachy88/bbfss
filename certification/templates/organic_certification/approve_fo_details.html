@@ -317,22 +317,13 @@
                         <br>
                     {% endif %}
                 {% endfor %}
-                    <div class="row">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Date Of Inspection</label>
-                                    <input type="text" class="form-control date-picker flatpickr-input active" id="dateOfInspection" name="dateOfInspection"  placeholder="Pick a date" readonly="readonly">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Validity Of Permit</label>
+                                    <label>Validity Of Certificate</label>
                                     <input type="number" class="form-control" id="validity" name="validity">
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Remarks</label>
@@ -340,68 +331,22 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Remarks</label>
-                                <textarea class="form-control" id="remarks_fo"></textarea>
-                            </div>
-                        </div>
-                    </div>
                     <div class="card-action">
-                             {% if application_details.Audit_Team_Acceptance == 'A' %}
-                                <button type="button" class="btn btn-flat btn-primary" onclick="approve_fpc_application('{{ application_details.Application_No }}')">
-                                    <i class="ace-icon fa fa-times"></i>
-                                    &nbsp;&nbsp;Approve
-                                </button>
-                            {% endif %}
-                        <button type="button" class="btn btn-primary" onclick="closeTeamModal()">Close Modal</button>
+                    {% for application_details in application_details %}
+                        <button type="button" class="btn btn-flat btn-primary" onclick="approve_oc_application('{{ application_details.Application_No }}')">
+                            <i class="ace-icon fa fa-times"></i>
+                            &nbsp;&nbsp;Approve
+                        </button>
+                    {% endfor %}
+
+                    <button type="button" class="btn btn-primary" onclick="closeTeamModal()">Close Modal</button>
                     </div>
                 </div>
             </div>
         </div>
-        <div id="AuditTeamModal" class="modal" tabindex="-1">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title"></h5>
-                        <button type="button" class="close" onclick="closeModal()">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">Audit Team Member</label>
-                                    <select class="form-control" id="audit_team_member">
-                                        <option value="">--SELECT--</option>
-                                        {% for team_details in team_details %}
-                                            <option value="{{team_details.Name}}">{{team_details.Name}}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="alert alert-info" id="messageDiv" style="display:none">
-                        Application Approved
-                    </div>
-                    <div class="modal-footer">
-                        {% for application_details in application_details %}
-                        <button type="button" class="btn btn-flat btn-primary" onclick="audit_team_details('{{ application_details.Application_No }}')">
-                            <i class="ace-icon fa fa-times"></i>
-                            &nbsp;&nbsp;Add
-                        </button>
-                        {% endfor %}
-                        <button type="button" class="btn btn-primary" onclick="closeTeamModal()">Close Modal</button>
-                    </div>
-                  </div>
-            </div>
-        </div>
-
+<script src="{% static 'assets/js/app.min.js' %}"></script>
 <script>
-function submit_details(application_id)
+function approve_oc_application(application_id)
 {
 
     remarks = $('#remarks').val();
@@ -411,9 +356,9 @@ function submit_details(application_id)
    $.ajax({
         type : "GET",
         url : "{% url 'approve_oc_application' %}",
-        data :{'application_no':application_id , 'remarks':remarks , 'dateOfInspection':dateOfInspection,'timeOfInspection':timeOfInspection},
+        data :{'application_no':application_id , 'remarks':remarks , 'dateOfInspection':dateOfInspection, 'validity':validity},
         success : function(data) {
-            $('#application-details-modal').modal('hide');
+            $('#import_detailsModal').modal('hide');
             location.reload();
         }
     });

@@ -336,9 +336,31 @@
                     <button type="button" class="btn btn-success" onclick="next_attach()">Save-Next</button>
                 </div>
             </div>
-            <div class="tab-pane fade" id="standards" role="tabpanel" aria-labelledby="mortem-file-attach">
+            <div class="tab-pane fade" id="certification-standards" role="tabpanel" aria-labelledby="mortem-file-attach">
                     <div class="row">
                         <div class="form-group col-md-6">
+                            <div class="form-check">
+                                <label class="form-label">Standard(s) for which we wish to be certified</label><br><br>
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Standard" class="custom-control-input" value="BhutanGAP Standard(BTS 30:2017)" onchange="checkStandards(this.value)">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">BhutanGAP Standard (BTS 30:2017)</span>
+                                        </label>&nbsp;
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Standard" class="custom-control-input" value="Others" onchange="checkStandards(this.value)">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Others</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6" >
+                            <input type="text" class="form-control" id="other_standard" name="other_standard" disabled>
+                        </div>
+                        <div class="form-group col-md-12">
                             <div class="form-check">
                                 <label class="form-label">With a view to ensure the similarity of the process of production of the mentioned commodities as per related standard, we shall keep regular records and maintain all required documentation to fulfill the requirements of the identified Standard (refer previous point) and any other additional documentation required by the BAFRA as the Certification Body</label><br><br>
                                 <div class="form-group">
@@ -357,7 +379,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-12">
                             <div class="form-check">
                                 <label class="form-label">We are willing to change our operational practices, as may be required from time to time to keep in line with our policy which may be directed by BAFRA.</label><br><br>
                                 <div class="form-group">
@@ -378,7 +400,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-12">
                             <div class="form-check">
                                 <label class="form-label">If BAFRA desires to make a preliminary inspection or investigation then, we, agree to give all our reasonable opportunity and privileges to BAFRA and accordingly provide our cooperation as per certification requirements.</label><br><br>
                                 <div class="form-group">
@@ -397,7 +419,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-12">
                             <div class="form-check">
                                 <label class="form-label">If the certificate is awarded, we will abide by all the terms and conditions of the certification, so long as it remains valid for use and also comply with the Rules and Regulations. If the license/certificate becomes prolonged or it is cancelled, then we, shall ensure that any use of the Standard Mark on any commodity under the license will be stopped immediately and all related advertisement, materials will be taken back and other necessary action will be taken</label><br><br>
                                 <div class="form-group">
@@ -421,7 +443,6 @@
                         <button type="button" class="btn btn-primary" onclick="submit_organic_certificate()">Save</button>
                     </div>
                 </div>
-            </div>
             </div>
         </form>
     </div>
@@ -1502,6 +1523,17 @@ function  submit_organic_certificate()
                    location.reload();
                 }
             });
+}
+function checkStandards(value)
+{
+    if(value == "Others")
+    {
+        $("#other_standard").removeAttr("disabled");
+    }
+    else
+    {
+        $("#other_standard").attr("disabled", "disabled");
+    }
 }
 </script>
 {% endblock %}

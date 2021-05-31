@@ -219,7 +219,7 @@
         <div class="card">
             <div class="card-header" role="tab" id="farmer_group_details">
                 <a class="collapsed" data-toggle="collapse" href="#collapse_farmer_group" aria-expanded="false" aria-controls="collapse_farmer_group">
-                    Crop Production Details
+                    Farmer Group Details
                 </a>
             </div>
             <div id="collapse_farmer_group" class="collapse" role="tabpanel" aria-labelledby="collapse_farmer_group" data-parent="#accordion" style="">
@@ -394,58 +394,93 @@
             </div>
         </div>
         <div class="card">
+            <div class="card-header" role="tab" id="headingThree">
+                <a class="collapsed" data-toggle="collapse" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    Confirmatory  Details
+                </a>
+            </div>
+            <div id="collapseThree" class="active" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion" style="">
+                <div class="card-body">
+                    <div class="card-tools">
+                        <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="openDecisionModal()">
+                            <span class="btn-label">
+                                <i class="fa fa-print"></i>
+                            </span>
+                            Add
+                        </a>
+                    </div>
+                    <br>
+                    <div id="details">
+                        <table id="inspection-details-table" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Clause Number</th>
+                                    <th scope="col">Non Conformity</th>
+                                    <th scope="col">Non Conformity Category</th>
+                                    <th scope="col">Description of nonconformity</th>
+                                    {% if inspection_details %}
+                                        <th scope="col">Action</th>
+                                    {% endif %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for import in inspection_details %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{import.Clause_Number}}</td>
+                                        <td>{{import.Non_Conformity}}</td>
+                                        <td>{{import.Non_Conformity_Category}}</td>
+                                        <td>{{import.Non_Conformity_Description}}</td>
+                                        <td>
+                                            <button type="button"
+                                            class="btn btn-primary btn--icon btn-sm js-edit-details"
+                                            data-url="{% url 'edit_feasibility_inspection' import.Record_Id %}">
+                                            <i class="zmdi zmdi-edit"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="6" class="text-center">No Data</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
             <div class="card-header" role="tab" id="headingFour">
                 <a class="collapsed" data-toggle="collapse" href="#collapseFour" aria-expanded="false" aria-controls="collapseTwo">
-                    Audit Team Details
+                    Audit Details
                 </a>
             </div>
             <div id="collapseFour" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
                 <div class="card-body">
-                    <br>
-                    <div id="audit_team_details">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Name</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                               {% for audit in audit_team %}
-                                    <tr>
-                                        <td>{{ forloop.counter }}</td>
-                                        <td>{{audit.Name}}</td>
-                                    </tr>
-                                    {% empty %}
-                                    <tr>
-                                      <td colspan="3" class="text-center">No Data</td>
-                                    </tr>
-                               {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    <br>
-                    <form method="post" id="audit_team_form">
+                    <form method="post" id="audit_plan_form">
                     {% csrf_token %}
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">Audit Team Leader</label>
+                                <label class="form-label">Provisional Audit Date</label>
                                  {% for application_details in application_details %}
-                                    <input type="text" id="team_leader" name="team_leader" value="{{application_details.Audit_Team_Leader}}" disabled>
+                                    <input type="hidden" name="Leader" value="{{application_details.Audit_Team_Leader}}">
+                                    <input type="text" id="Audit_Date" name="Audit_Date" value="{{application_details.Audit_Date}}" disabled>
                                 {% endfor %}
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Audit Team Accept</label>
+                                    <label class="form-label">Audit Date Accept</label>
                                     <div class="col-sm-4 justify-content-center">
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="acceptance" class="custom-control-input">
+                                            <input type="radio" name="acceptance" class="custom-control-input" value="A">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Accept</span>
                                         </label>
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="acceptance" class="custom-control-input">
+                                            <input type="radio" name="acceptance" class="custom-control-input" value="R">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Reject</span>
                                         </label>
@@ -466,7 +501,7 @@
                         </div>
                         {% for application_details in application_details %}
                         <input type="hidden" value="{{ application_details.Application_No }}" name="application_id">
-                            <button type="button" class="btn btn-flat btn-primary" onclick="forward_application('{{ application_details.Application_No }}')">
+                            <button type="button" class="btn btn-flat btn-primary" onclick="audit_team_accept()">
                                 <i class="ace-icon fa fa-times"></i>
                                 &nbsp;&nbsp;Send For Acceptance
                             </button>
@@ -482,8 +517,8 @@ function audit_team_accept()
 {
     $.ajax({
         type : "GET",
-        url : "{% url 'audit_team_accept' %}",
-        data :$('#audit_team_form').serialize(),
+        url : "{% url 'gap_audit_plan_acceptance' %}",
+        data :$('#audit_plan_form').serialize(),
         success : function(data) {
             location.reload();
         }

@@ -7,7 +7,6 @@
 
             <li class="navigation__sub @@tableactive">
                 <a href="#"><i class="zmdi zmdi-view-list"></i> Masters</a>
-
                 <ul>
                     <li class="@@normaltableactive"><a href="{% url 'role_page' %}">Role</a></li>
                     <li class="@@datatableactive"><a href="{% url 'division' %}">Division</a></li>
@@ -51,11 +50,13 @@
         </ul>
     {% elif request.session.role == 'Complaint Officer' %}
         <ul class="navigation">
-            <li class="navigation__active"><a href="index-2.html"><i class="zmdi zmdi-home"></i> Home</a></li>
-
+            <li class="navigation__active"><a href="http://localhost:8000/login/"><i class="zmdi zmdi-home"></i> Home</a></li>
+            <li class="@@datatableactive">
+                <a href="{% url 'apply_complaint_form' %}"><i class="zmdi zmdi-collection-text"></i>Complaint Form</a>
+            </li>
             <li class="@@datatableactive"><a href="{% url 'co_complaint_list' %}"><i class="zmdi zmdi-collection-text"></i> Complaint List</a></li>
             <li class="@@datatableactive"><a href="{% url 'investigation_report_list' %}"><i class="zmdi zmdi-collection-text"></i>Investigation Report</a></li>
-            <li class="@@datatableactive"><a href="{% url 'complaint_closed_list' %}"><i class="zmdi zmdi-collection-text"></i>Complaint Closed List</a></li>
+            <li class="@@datatableactive"><a href="{% url 'complaint_closed_list' %}"><i class="zmdi zmdi-collection-text"></i>List - Closed Complaint</a></li>
         </ul>
     {% elif request.session.role == 'OIC' %}
         <ul class="navigation">
@@ -108,7 +109,7 @@
                     <li class="navigation__sub @@formactive">
                         <a href="#"><font color="white" size="4px">LiveStock Services</font></a>
                         <ul>
-                            <li class="@@datatableactive"><a href="{% url 'apply_clearance_meat_shop' %}">Clearance for Meat Shop</a></li>
+                            <li class="@@datatableactive"><a href="{% url 'apply_clearance_meat_shop' %}">Licensing Of Meat Shop</a></li>
                             <li class="@@datatableactive"><a href="{% url 'export_certificate_application' %}">Export Certificate</a></li>
                             <li class="@@datatableactive"><a href="{% url 'import_permit_application' %}">Import Permit Product</a></li>
                             <li class="@@datatableactive"><a href="{% url 'import_permit' %}">Import Permit Animal</a></li>
@@ -117,12 +118,12 @@
                         </ul>
                     </li>
                     <li class="navigation__sub @@formactive">
-                        <a href="#"><font color="white" size="4px">Food Services</font></a>
+                        <a href="#"><font color="white" size="4px">Food Safety Services</font></a>
                         <ul>
                             <li class="@@datatableactive"><a href="{% url 'food_business_registration_licensing' %}">Food Business Registration and Licensing</a></li>
+                            <li class="@@datatableactive"><a href="{% url 'food_import_application' %}">Food Import</a></li>
                             <li class="@@datatableactive"><a href="{% url 'food_export_certificate_application' %}">Export Certificate</a></li>
-                            <li class="@@datatableactive"><a href="{% url 'food_handler_licensing' %}">Licensing of Food Handler</a></li>
-                            <li class="@@datatableactive"><a href="{% url 'food_import_application' %}">Import Food</a></li>
+                            <li class="@@datatableactive"><a href="{% url 'food_handler_licensing' %}">Training and Licensing of Food Handlers</a></li>
                         </ul>
                     </li>
                     <li class="navigation__sub @@formactive">
@@ -144,12 +145,12 @@
 			<li class="@@datatableactive">
                 <a href="{% url 'resubmit_application' %}"><i class="zmdi zmdi-collection-text"></i>Resubmit Application</a>
             </li>
+            <li class="@@datatableactive">
+                <a href="{% url 'factory_inspection_list' %}"><i class="zmdi zmdi-collection-text"></i>Factory Inspection Call</a>
+            </li>
             <li class="@@datatableactive"><a href="{% url 'certificate_print' %}"><i class="zmdi zmdi-print"></i>Print</a></li>
             <li class="@@datatableactive">
                 <a href="{% url 'apply_complaint_form' %}"><i class="zmdi zmdi-collection-text"></i>Complaint Form</a>
-            </li>
-            <li class="@@datatableactive">
-                <a href="{% url 'factory_inspection_list' %}"><i class="zmdi zmdi-collection-text"></i>Factory Inspection Call</a>
             </li>
         </ul>
     {% endif %}

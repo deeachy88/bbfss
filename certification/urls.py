@@ -25,9 +25,9 @@ urlpatterns = [
     path('gap_audit_plan_acceptance', views.gap_audit_plan_acceptance, name='gap_audit_plan_acceptance'),
     path('gap_audit_plan_resubmit', views.gap_audit_plan_resubmit, name='gap_audit_plan_resubmit'),
     path('gap_conform_observation', views.gap_conform_observation, name='gap_conform_observation'),
-    path('approve_oc_application', views.approve_gap_application, name='approve_oc_application'),
-    path('gap_farmers_group_details', views.save_farmers_group_details, name='gap_farmers_group_details'),
-    path('gap_crop_production_details', views.save_crop_production_details, name='gap_crop_production_details'),
+    path('forward_application_head_office', views.forward_application_head_office,
+         name='forward_application_head_office'),
+    path('approve_gap_application', views.approve_gap_application, name='approve_gap_application'),
 
     # Organic certificate
     path('organic_certificate', views.organic_certificate, name='organic_certificate'),
@@ -56,6 +56,7 @@ urlpatterns = [
     path('forward_application_team_leader', views.forward_application_team_leader,
          name='forward_application_team_leader'),
     path('approve_oc_application', views.approve_oc_application, name='approve_oc_application'),
+    path('oc_application_team_leader', views.oc_application_team_leader, name='oc_application_team_leader'),
 
 
     # Food Product certificate
@@ -76,7 +77,7 @@ urlpatterns = [
     path('fpc_audit_plan_acceptance', views.fpc_audit_plan_acceptance, name='fpc_audit_plan_acceptance'),
     path('fpc_audit_plan_resubmit', views.fpc_audit_plan_resubmit, name='fpc_audit_plan_resubmit'),
     path('fpc_conform_observation', views.fpc_conform_observation, name='fpc_conform_observation'),
-    path('approve_oc_application', views.approve_fpc_application, name='approve_oc_application'),
+    path('approve_fpc_application', views.approve_fpc_application, name='approve_fpc_application'),
 
 ]
 if settings.DEBUG:

@@ -186,7 +186,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Address</label>
-                                        <<textarea class="form-control" disabled>{{application_details.Present_Address}}</textarea>
+                                        <textarea class="form-control" disabled>{{application_details.Present_Address}}</textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -279,7 +279,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                           {% for crop in crop_details %}
+                           {% for crop in crop_production %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
                                     <td>{{crop.Crop_Name}}</td>
@@ -300,7 +300,7 @@
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                  <td colspan="3" class="text-center">No Data</td>
+                                  <td colspan="15" class="text-center">No Data</td>
                                 </tr>
                            {% endfor %}
                         </tbody>
@@ -338,7 +338,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                           {% for crop in crop_details %}
+                           {% for crop in gap_house_details %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
                                     <td>{{crop.Pack_House_Name}}</td>
@@ -358,7 +358,7 @@
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                  <td colspan="3" class="text-center">No Data</td>
+                                  <td colspan="16" class="text-center">No Data</td>
                                 </tr>
                            {% endfor %}
                         </tbody>
@@ -415,6 +415,7 @@
                                 <tr>
                                     <th scope="col">#</th>
                                     <th scope="col">Name</th>
+                                    <th scope="col">Role</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -422,6 +423,7 @@
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
                                         <td>{{audit.Name}}</td>
+                                        <td>{{audit.Role}}</td>
                                     </tr>
                                     {% empty %}
                                     <tr>
@@ -448,6 +450,7 @@
                                     <tr>
                                         <th scope="col">#</th>
                                         <th scope="col">Name</th>
+                                        <th scope="col">Role</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -455,6 +458,7 @@
                                         <tr>
                                             <td>{{ forloop.counter }}</td>
                                             <td>{{audit.Name}}</td>
+                                            <td>{{audit.Role}}</td>
                                         </tr>
                                         {% empty %}
                                         <tr>
@@ -469,15 +473,19 @@
                 {% endfor %}
                     <div class="row">
                         {% for application_details in application_details %}
+
                             {% if application_details.Audit_Team_Acceptance == 'A' %}
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-label">Audit Team Leader</label>
-                                        <select class="form-control" id="leader" disabled>
-                                            {% for team_details in team_details %}
-                                                <option value="{{ team_details.Login_Id }}" {% if application_details.Audit_Team_Leader == team_details.Login_Id %}selected{% endif %}>{{team_details.Name}}</option>
+                                            <input type="text" class="form-control" id="team_leader" name="team_leader" value="{{application_details.Audit_Team_Leader}}" disabled>
+                                            <select class="form-control">
+                                            {% for user in user_details %}
+                                                <option value="{{user.Login_Id}}"{% if user.Login_Id == application_details.Audit_Team_Leader %}selected{% endif %}>
+                                                    {{ user.Name }}
+                                                </option>
                                             {% endfor %}
-                                        </select>
+                                            </select>
                                     </div>
                                 </div>
                             {% else %}
@@ -500,7 +508,16 @@
                                 <textarea class="form-control" id="remarks_fo"></textarea>
                             </div>
                         </div>
+                        {% for application_details in application_details %}
+                            {% if application_details.Audit_Team_Acceptance == 'A' or  application_details.Audit_Team_Acceptance == 'R' %}
+                                <div class="col-md-6">
+                                    <label class="form-label">Remarks From Client </label>
+                                    <textarea type="text" class="form-control" disabled>{{ application_details.Audit_Team_Acceptance_Remarks }}</textarea>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
                     </div>
+                    <br>
                     <div class="card-action">
                         {% for application_details in application_details %}
                          {% if application_details.Audit_Team_Acceptance == 'A' %}
@@ -543,8 +560,19 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Role</label>
+                                    <select class="form-control" id="role" name="role">
+                                        <option value="">--SELECT--</option>
+                                        <option value="Team Member">Team Member</option>
+                                        <option value="Observer">Observer</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
                     <div class="modal-footer">
                         {% for application_details in application_details %}
                         <button type="button" class="btn btn-flat btn-primary" onclick="audit_team_details('{{ application_details.Application_No }}')">
@@ -568,10 +596,11 @@ function openAuditTeamModal()
 function audit_team_details(application_id)
 {
     name = $('#audit_team_member').val();
+    role = $('#role').val();
     $.ajax({
         type : "GET",
         url : "{% url 'gap_audit_team_details' %}",
-        data :{'application_id':application_id,'name':name},
+        data :{'application_id':application_id,'name':name, 'role':role},
         success : function(data) {
             $('#audit_team_details_gap').html(data);
             $('#details').show();

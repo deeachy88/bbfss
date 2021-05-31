@@ -4,6 +4,14 @@
     margin-bottom: 0rem;
     box-shadow: 0 1px 5px rgb(0 0 0 / 10%);
 }
+.custom-control {
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    padding-left: 2rem;
+    margin-right: 1rem;
+    margin-top: 8px;
+}
 </style>
         <div class="card">
             <div class="card-header" role="tab" id="headingOne">
@@ -104,7 +112,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Address</label>
-                                        <<textarea class="form-control" disabled>{{application_details.Present_Address}}</textarea>
+                                        <textarea class="form-control" disabled>{{application_details.Present_Address}}</textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -279,7 +287,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                           {% for crop in crop_details %}
+                           {% for crop in crop_production %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
                                     <td>{{crop.Crop_Name}}</td>
@@ -310,57 +318,61 @@
         </div>
         <div class="card">
             <div class="card-header" role="tab" id="wild_collection_details">
-                <a class="collapsed" data-toggle="collapse" href="#collapse_wild_collection" aria-expanded="false" aria-controls="collapse_wild_collection">
+                <a class="collapsed" data-toggle="collapse" href="#collapse_pack_house" aria-expanded="false" aria-controls="collapse_wild_collection">
                     Pack House Details
                 </a>
             </div>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Pack House Name</th>
-                        <th scope="col">Address of the pack house</th>
-                        <th scope="col">Processing_Type</th>
-                        <th scope="col">For the previous year(From date)</th>
-                        <th scope="col">For the previous year(To date)</th>
-                        <th scope="col">Production</th>
-                        <th scope="col">Production  Unit</th>
-                        <th scope="col">Sold</th>
-                        <th scope="col">Sold Unit</th>
-                        <th scope="col">Balance Stock</th>
-                        <th scope="col">For the current year(From date)</th>
-                        <th scope="col">For the current year(To date)</th>
-                        <th scope="col">Production</th>
-                        <th scope="col">Sold</th>
-                        <th scope="col">Balance Stock</th>
-                    </tr>
-                </thead>
-                <tbody>
-                   {% for crop in pack_house_details %}
-                        <tr>
-                            <td>{{ forloop.counter }}</td>
-                            <td>{{crop.Pack_House_Name}}</td>
-                            <td>{{crop.Pack_House_Address}}</td>
-                            <td>{{crop.Processing_Type}}</td>
-                            <td>{{crop.P_From_Date}}</td>
-                            <td>{{crop.P_To_Date}}</td>
-                            <td>{{crop.P_Production}}</td>
-                            <td>{{crop.P_Production_Unit}}</td>
-                            <td>{{crop.P_Sold}}</td>
-                            <td>{{crop.P_Balance_Stock}}</td>
-                            <td>{{crop.C_From_Date}}</td>
-                            <td>{{crop.C_To_Date}}</td>
-                            <td>{{crop.C_Production}}</td>
-                            <td>{{crop.C_Sold}}</td>
-                            <td>{{crop.C_Balance_Stock}}</td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                          <td colspan="3" class="text-center">No Data</td>
-                        </tr>
-                   {% endfor %}
-                </tbody>
-            </table>
+            <div id="collapse_pack_house" class="collapse" role="tabpanel" aria-labelledby="wild_collection_details" data-parent="#accordion" style="">
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Pack House Name</th>
+                                <th scope="col">Address of the pack house</th>
+                                <th scope="col">Processing_Type</th>
+                                <th scope="col">For the previous year(From date)</th>
+                                <th scope="col">For the previous year(To date)</th>
+                                <th scope="col">Production</th>
+                                <th scope="col">Production  Unit</th>
+                                <th scope="col">Sold</th>
+                                <th scope="col">Sold Unit</th>
+                                <th scope="col">Balance Stock</th>
+                                <th scope="col">For the current year(From date)</th>
+                                <th scope="col">For the current year(To date)</th>
+                                <th scope="col">Production</th>
+                                <th scope="col">Sold</th>
+                                <th scope="col">Balance Stock</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           {% for crop in gap_house_details %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{crop.Pack_House_Name}}</td>
+                                    <td>{{crop.Pack_House_Address}}</td>
+                                    <td>{{crop.Processing_Type}}</td>
+                                    <td>{{crop.P_From_Date}}</td>
+                                    <td>{{crop.P_To_Date}}</td>
+                                    <td>{{crop.P_Production}}</td>
+                                    <td>{{crop.P_Production_Unit}}</td>
+                                    <td>{{crop.P_Sold}}</td>
+                                    <td>{{crop.P_Balance_Stock}}</td>
+                                    <td>{{crop.C_From_Date}}</td>
+                                    <td>{{crop.C_To_Date}}</td>
+                                    <td>{{crop.C_Production}}</td>
+                                    <td>{{crop.C_Sold}}</td>
+                                    <td>{{crop.C_Balance_Stock}}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                  <td colspan="16" class="text-center">No Data</td>
+                                </tr>
+                           {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
         <div class="card">
             <div class="card-header" role="tab" id="headingTwo">
@@ -399,22 +411,48 @@
                     Audit Team Details
                 </a>
             </div>
-            <div id="collapseFour" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+            <div id="collapseFour" class="active" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
                 <div class="card-body">
+                    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Focal</span>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Ofiicer</span>
+                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Details</span>
+                        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="form-label">Remarks</label>
+                                {% for application_details in application_details %}
+                                <textarea class="form-control" disabled>{{application_details.FO_Remarks}}</textarea>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
                     <br>
+                    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Audit</span>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Team</span>
+                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Details</span>
+                        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                    </div>
                     <div id="audit_team_details">
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
                                     <th scope="col">Name</th>
+                                    <th scope="col">Role</th>
                                 </tr>
                             </thead>
                             <tbody>
-                               {% for audit in audit_team %}
+                               {% for audit in audit_team_details %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
                                         <td>{{audit.Name}}</td>
+                                        <td>{{audit.Role}}</td>
                                     </tr>
                                     {% empty %}
                                     <tr>
@@ -425,6 +463,8 @@
                         </table>
                     </div>
                     <br>
+
+
                     <form method="post" id="audit_team_form">
                     {% csrf_token %}
                     <div class="row">
@@ -432,30 +472,39 @@
                             <div class="form-group">
                                 <label class="form-label">Audit Team Leader</label>
                                  {% for application_details in application_details %}
-                                    <input type="text" id="team_leader" name="team_leader" value="{{application_details.Audit_Team_Leader}}" disabled>
+                                    <input type="hidden" class="form-control" id="team_leader" name="team_leader" value="{{application_details.Audit_Team_Leader}}" disabled>
+                                    <select class="form-control" disabled>
+                                    {% for user_details in user_details %}
+                                        <option value="{{user_details.Login_Id}}"{% if application_details.team_leader == user_details.Login_Id %}selected{% endif %}>
+                                            {{ user_details.Name }}
+                                        </option>
+                                    {% endfor %}
+                                    </select>
                                 {% endfor %}
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">Audit Team Accept</label>
-                                    <div class="col-sm-4 justify-content-center">
-                                        <label class="custom-control custom-radio">
-                                            <input type="radio" name="acceptance" class="custom-control-input" value="A">
-                                            <span class="custom-control-indicator"></span>
-                                            <span class="custom-control-description">Accept</span>
-                                        </label>
-                                        <label class="custom-control custom-radio">
-                                            <input type="radio" name="acceptance" class="custom-control-input" value="R">
-                                            <span class="custom-control-indicator"></span>
-                                            <span class="custom-control-description">Reject</span>
-                                        </label>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">Remarks</label>
+                                <label class="form-label">Audit Team Accept</label>&nbsp;
+                                <div class="justify-content-center">
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" name="acceptance" class="custom-control-input" value="A">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Accept</span>
+                                    </label>
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" name="acceptance" class="custom-control-input" value="R">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Reject</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="form-label">Response</label>
                                 <textarea class="form-control" name="remarks" id="remarks"></textarea>
                             </div>
                         </div>
@@ -468,10 +517,10 @@
                         <input type="hidden" value="{{ application_details.Application_No }}" name="application_id">
                             <button type="button" class="btn btn-flat btn-primary" onclick="audit_team_accept('{{ application_details.Application_No }}')">
                                 <i class="ace-icon fa fa-times"></i>
-                                &nbsp;&nbsp;Send For Acceptance
+                                &nbsp;&nbsp;Submit
                             </button>
                         {% endfor %}
-                        <button type="button" class="btn btn-primary" onclick="closeTeamModal()">Close Modal</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close Modal</button>
                     </div>
                     </form>
                 </div>

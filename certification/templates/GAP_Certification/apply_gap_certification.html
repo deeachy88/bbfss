@@ -212,8 +212,8 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div id="crop_production">
-                            {% include 'organic_certification/crop_production_details.html' %}
+                        <div id="details_crop_production">
+
                         </div>
                     </div>
                 </div>
@@ -232,7 +232,7 @@
                     </div>
                     <div class="card-body">
                         <div id="pack_house">
-                            {% include 'GAP_Certification/pack_house_details.html' %}
+
                         </div>
                     </div>
                 </div>
@@ -250,6 +250,28 @@
             </div>
             <div class="tab-pane fade" id="certification-standards" role="tabpanel" aria-labelledby="mortem-file-attach">
                     <div class="row">
+                        <div class="form-group col-md-6">
+                            <div class="form-check">
+                                <label class="form-label">Standard(s) for which we wish to be certified</label><br><br>
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Standard" class="custom-control-input" value="BhutanGAP Standard(BTS 30:2017)" onchange="checkStandards(this.value)">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">BhutanGAP Standard (BTS 30:2017)</span>
+                                        </label>&nbsp;
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Standard" class="custom-control-input" value="Others" onchange="checkStandards(this.value)">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Others</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6" >
+                            <input type="text" class="form-control" id="other_standard" name="other_standard" disabled>
+                        </div>
                         <div class="form-group col-md-12">
                             <div class="form-check">
                                 <label class="form-label">With a view to ensure the similarity of the process of production of the mentioned commodities as per related standard, we shall keep regular records and maintain all required documentation to fulfill the requirements of the identified Standard (refer previous point) and any other additional documentation required by the BAFRA as the Certification Body</label><br><br>
@@ -562,6 +584,11 @@
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-4">
+                                        <label class="form-label">Production</label>
+                                        <input type="number" name="current_Production" class="form-control" id="current_Production" required>
+                                        <div class="alert alert-danger" id="current_ProductionErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
                                         <label class="form-label">Sold</label>
                                         <input type="number" name="current_sold" class="form-control" id="current_sold" required>
                                         <div class="alert alert-danger" id="current_soldErrorMsg" style="display:none"></div>
@@ -571,15 +598,16 @@
                                         <input type="text" name="current_sold_unit" class="form-control" id="current_sold_unit" required>
                                         <div class="alert alert-danger" id="current_sold_unitErrorMsg" style="display:none"></div>
                                     </div>
+
+                                </div>
+                                <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Balance Stock</label>
                                         <input type="number" name="current_stock_balance" class="form-control" id="current_stock_balance" required>
                                         <div class="alert alert-danger" id="current_stock_balanceErrorMsg" style="display:none"></div>
                                     </div>
-                                </div>
-                                <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Balance Srock Unit</label>
+                                        <label class="form-label">Balance Stock Unit</label>
                                         <input type="text" name="current_stock_unit" class="form-control" id="current_stock_unit" required>
                                         <div class="alert alert-danger" id="current_stock_unitErrorMsg" style="display:none"></div>
                                     </div>
@@ -977,7 +1005,7 @@ function save_farmer_group_details()
 {
         $.ajax({
                 type : "POST",
-                url : "{% url 'save_farmers_group_details' %}",
+                url : "{% url 'gap_farmers_group_details' %}",
                 data : $('#farmers_group_form').serialize(),
                 success : function(responseText) {
                    $('#farmer_group_model').modal('hide');
@@ -991,17 +1019,43 @@ function save_farmer_group_details()
 function save_crop_production_details()
 {
         $.ajax({
-                type : "POST",
-                url : "{% url 'save_crop_production_details' %}",
+                type : "GET",
+                url : "{% url 'gap_crop_production_details' %}",
                 data : $('#crop_production_form').serialize(),
-                success : function(responseText) {
-                   $('#crop_production_model').modal('hide');
-                   $('#crop_production').html(responseText);
+                success : function(response) {
+                   $('#crop_production_modal').modal('hide');
+                   $('#details_crop_production').html(response);
                    $('#pills-crop-production').tab('show');
                    $('.modal-backdrop').remove();
                 }
             });
 }
 
+function save_pack_house_details()
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'add_pack_house_details' %}",
+        data : $('#pack_house_form').serialize(),
+        success : function(response) {
+           $('#pack_house_model').modal('hide');
+           $('#pack_house').html(response);
+           $('#pills-pack-house').tab('show');
+           $('.modal-backdrop').remove();
+        }
+    });
+}
+
+function checkStandards(value)
+{
+    if(value == "Others")
+    {
+        $("#other_standard").removeAttr("disabled");
+    }
+    else
+    {
+        $("#other_standard").attr("disabled", "disabled");
+    }
+}
 </script>
 {% endblock %}

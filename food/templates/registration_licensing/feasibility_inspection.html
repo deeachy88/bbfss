@@ -853,12 +853,12 @@ function add_details_ins(application_id)
     Concern = $('input[name="Concern"]:checked').val();
     Date = $('#Date').val();
     Observations = $('#Observations').val();
-
+    meeting_type = "Feasibility"
 
     $.ajax({
         type : "GET",
         url : "{% url 'concern_details_feasibility_ins' %}",
-        data :{'application_id':application_id,'Requirement':Requirement,'Observations':Observations,'Clause_No':Clause_No,'Date':Date,'Concern':Concern},
+        data :{'application_id':application_id,'Requirement':Requirement,'Observations':Observations,'Clause_No':Clause_No,'Date':Date,'Concern':Concern, 'meeting_type':meeting_type},
         success : function(data) {
             $('#details').html(data);
             $('#details').show();
@@ -873,11 +873,11 @@ function add_team_details(application_id)
     designation = $('#designation').val();
     opening_date = $('#opening_date').val();
     closing_date = $('#closing_date').val();
-
+    meeting_type = "Feasibility"
     $.ajax({
         type : "GET",
         url : "{% url 'team_details_feasibility_ins' %}",
-        data :{'application_id':application_id,'name':name,'designation':designation,'opening_date':opening_date,'closing_date':closing_date},
+        data :{'application_id':application_id,'name':name,'designation':designation,'opening_date':opening_date,'closing_date':closing_date,'meeting_type':meeting_type},
         success : function(data) {
             $('#team_details').html(data);
             $('#team_details').show();
@@ -890,11 +890,11 @@ function add_inspection_team_details(application_id)
 {
     name = $('#ins_name').val();
     designation = $('#ins_designation').val();
-
+    meeting_type = "Feasibility"
     $.ajax({
         type : "GET",
         url : "{% url 'inspection_team_details' %}",
-        data :{'application_id':application_id,'name':name,'designation':designation},
+        data :{'application_id':application_id,'name':name,'designation':designation, 'meeting_type':meeting_type},
         success : function(data) {
             $('#inspection_team_details').html(data);
             $('#inspection_team_details').show();

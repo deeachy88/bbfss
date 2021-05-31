@@ -56,7 +56,7 @@
                                         </tr>
                                     {% empty %}
                                         <tr>
-                                          <td colspan="5" class="text-center">No Data</td>
+                                          <td colspan="6" class="text-center">No Data</td>
                                         </tr>
                                     {% endfor %}
                                 </tbody>
@@ -71,6 +71,18 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
+                                        <label class="form-label">Training Batch</label>
+                                        <select class="form-control form-control" id="Training_Batch" name="Training_Batch" onchange="conveyanceChange(this.value)">
+                                            <option value="">-SELECT-</option>
+                                            <option value="Meat Shop">Meat Shop</option>
+                                            <option value="Food & Beverage Services">Food & Beverage Services</option>
+                                            <option value="Food Processing Units">Food Processing Units</option>
+                                        </select>
+                                    </div>
+                                    <div class="alert alert-danger" id="Training_BatchErrorMsg" style="display:none"></div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
                                         <label class="form-label">Batch No</label>
                                         <input type="text" name="batch_no" id="batch_no" class="form-control">
                                     </div>
@@ -83,6 +95,8 @@
                                     </div>
                                     <div class="alert alert-danger" id="from_training_DateErrorMsg" style="display:none"></div>
                                 </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">To Training Date</label>
@@ -90,16 +104,24 @@
                                     </div>
                                     <div class="alert alert-danger" id="to_training_DateErrorMsg" style="display:none"></div>
                                 </div>
-                            </div>
-                            <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="form-label">Minimum Marks</label>
+                                        <label class="form-label">Minimum Qualifying Marks</label>
                                         <input type="number" name="min_mark" id="min_mark" class="form-control">
                                     </div>
                                     <div class="alert alert-danger" id="min_markErrorMsg" style="display:none"></div>
                                 </div>
-                                <div class="col-md-8">
+                                 <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Training Venue</label>
+                                        <input type="text" name="Training_Venue" id="Training_Venue" class="form-control">
+                                    </div>
+                                    <div class="alert alert-danger" id="Training_VenueErrorMsg" style="display:none"></div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-label">Remarks</label>
                                         <textarea class="form-control" name="Remarks" id="Remarks" rows="3"></textarea>

@@ -312,232 +312,58 @@
         <div class="card">
             <div class="card-header" role="tab" id="wild_collection_details">
                 <a class="collapsed" data-toggle="collapse" href="#collapse_wild_collection" aria-expanded="false" aria-controls="collapse_wild_collection">
-                    Wild Collection Details
+                    Pack House Details
                 </a>
             </div>
             <div id="collapse_wild_collection" class="collapse" role="tabpanel" aria-labelledby="collapse_wild_collection" data-parent="#accordion" style="">
                 <div class="card-body">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Common Name</th>
-                                <th scope="col">Botanical Name</th>
-                                <th scope="col">Part of Plant Harvested</th>
-                                <th scope="col">Estimated Harvest/Yield</th>
-                                <th scope="col">Estimated Harvest/Yield Unit</th>
-                                <th scope="col">Estimated Harvest Yield/Season</th>
-                                <th scope="col">Harvest Acreage</th>
-                                <!--<th scope="col">Harvest Month</th>-->
-                                <th scope="col">Unit</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                           {% for wild in wild_collection %}
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="dynamic-table">
+                            <thead>
                                 <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>{{wild.Common_Name}}</td>
-                                    <td>{{wild.Botanical_Name}}</td>
-                                    <td>{{wild.Plant_Part}}</td>
-                                    <td>{{wild.Estimated_Harvest}}</td>
-                                    <td>{{wild.Harvest_Unit}}</td>
-                                    <td>{{wild.Harvest_Season}}</td>
-                                    <td>{{wild.Harvest_Acreage}}</td>
-                                    <td>{{wild.Acreage_Unit}}</td>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Pack House Name</th>
+                                    <th scope="col">Address of the pack house</th>
+                                    <th scope="col">For the previous year(From date)</th>
+                                    <th scope="col">For the previous year(To date)</th>
+                                    <th scope="col">Production</th>
+                                    <th scope="col">Production  Unit</th>
+                                    <th scope="col">Sold</th>
+                                    <th scope="col">Sold Unit</th>
+                                    <th scope="col">Balance Stock</th>
+                                    <th scope="col">For the current year(From date)</th>
+                                    <th scope="col">For the current year(To date)</th>
+                                    <th scope="col">Production</th>
+                                    <th scope="col">Sold</th>
+                                    <th scope="col">Balance Stock</th>
                                 </tr>
-                                {% empty %}
-                                <tr>
-                                  <td colspan="3" class="text-center">No Data</td>
-                                </tr>
-                           {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-header" role="tab" id="animal_husbandry_details">
-                <a class="collapsed" data-toggle="collapse" href="#collapse_animal_husbandry" aria-expanded="false" aria-controls="collapse_animal_husbandry">
-                    Animal Husbandry Details
-                </a>
-            </div>
-            <div id="collapse_animal_husbandry" class="collapse" role="tabpanel" aria-labelledby="collapse_animal_husbandry" data-parent="#accordion" style="">
-                <div class="card-body">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Livestock Type</th>
-                                <th scope="col">Number Of Male</th>
-                                <th scope="col">Number Of Female</th>
-                                <th scope="col">Estimated Production</th>
-                                <th scope="col">Estimated Production Unit</th>
-                                <th scope="col">Product Sold</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                           {% for animal in animal_husbandry %}
-                                <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>{{animal.Livestock_Type}}</td>
-                                    <td>{{animal.Male_no}}</td>
-                                    <td>{{animal.Female_no}}</td>
-                                    <td>{{animal.Estimated_Production}}</td>
-                                    <td>{{animal.Production_Unit}}</td>
-                                    <td>{{animal.Production_Sold}}</td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                  <td colspan="7" class="text-center">No Data</td>
-                                </tr>
-                           {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-header" role="tab" id="aquaculture_details">
-                <a class="collapsed" data-toggle="collapse" href="#collapse_aquaculture" aria-expanded="false" aria-controls="collapse_aquaculture">
-                    Aquaculture Details
-                </a>
-            </div>
-            <div id="collapse_aquaculture" class="collapse" role="tabpanel" aria-labelledby="collapse_animal_husbandry" data-parent="#accordion" style="">
-                <div class="card-body">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Aquaculture Type</th>
-                                <th scope="col">Estimated Yield</th>
-                                <th scope="col">Estimated Yield Unit</th>
-                                <th scope="col">Harvest Month</th>
-                                <th scope="col">Sold</th>
-                                <th scope="col">Sold Unit</th>
-                                <th scope="col">Balance Stock</th>
-                                <th scope="col">Balance Stock Unit</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                           {% for aqua in aquaculture_details %}
-                                <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>{{aqua.Aquaculture_Type}}</td>
-                                    <td>{{aqua.Estimated_Yield}}</td>
-                                    <td>{{aqua.Estimated_Yield_Unit}}</td>
-                                    <td>{{aqua.Harvest_Month}}</td>
-                                    <td>{{aqua.Sold}}</td>
-                                    <td>{{aqua.Sold_Unit}}</td>
-                                    <td>{{aqua.Balance_Stock}}</td>
-                                    <td>{{aqua.Balance_Stock_Unit}}</td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                  <td colspan="7" class="text-center">No Data</td>
-                                </tr>
-                           {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-header" role="tab" id="api_culture_details">
-                <a class="collapsed" data-toggle="collapse" href="#collapse_api_culture" aria-expanded="false" aria-controls="collapse_api_culture">
-                    Apiculture Details
-                </a>
-            </div>
-            <div id="collapse_api_culture" class="collapse" role="tabpanel" aria-labelledby="collapse_animal_husbandry" data-parent="#accordion" style="">
-                <div class="card-body">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Common Name</th>
-                                <th scope="col">Botanical Name</th>
-                                <th scope="col">Estimated Harvest Yield</th>
-                                <th scope="col">Estimated Harvest Yield Unit</th>
-                                <th scope="col">Harvest Acreage</th>
-                                <th scope="col">Unit</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                           {% for aqua in aquaculture_details %}
-                                <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>{{aqua.Common_Name}}</td>
-                                    <td>{{aqua.Botanical_Name}}</td>
-                                    <td>{{aqua.Estimated_Harvest}}</td>
-                                    <td>{{aqua.Harvest_Unit}}</td>
-                                    <td>{{aqua.Harvest_Acreage}}</td>
-                                    <td>{{aqua.Acreage_Unit}}</td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                  <td colspan="7" class="text-center">No Data</td>
-                                </tr>
-                           {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-header" role="tab" id="processing_details">
-                <a class="collapsed" data-toggle="collapse" href="#collapse_processing_details" aria-expanded="false" aria-controls="collapse_processing_details">
-                    Processing Unit Details
-                </a>
-            </div>
-            <div id="collapse_processing_details" class="collapse" role="tabpanel" aria-labelledby="collapse_processing_details" data-parent="#accordion" style="">
-                <div class="card-body">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Address Of Operation</th>
-                                <th scope="col">Type Of Processing</th>
-                                <th scope="col">For the previous year(From date)</th>
-                                <th scope="col">For the previous year(To date)</th>
-                                <th scope="col">Production</th>
-                                <th scope="col">Production Unit</th>
-                                <th scope="col">Sold</th>
-                                <th scope="col">Balance Stock</th>
-                                <th scope="col">For the current year(From date)</th>
-                                <th scope="col">For the current year(To date)</th>
-                                <th scope="col">Production</th>
-                                <th scope="col">Production Unit</th>
-                                <th scope="col">Sold</th>
-                                <th scope="col">Balance Stock</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                           {% for processing in processing_details %}
-                                <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>{{processing.Production_House_Name}}</td>
-                                    <td>{{processing.Production_House_Address}}</td>
-                                    <td>{{processing.Processing_Type}}</td>
-                                    <td>{{crop.P_From_Date}}</td>
-                                    <td>{{crop.P_To_Date}}</td>
-                                    <td>{{crop.P_Production}}</td>
-                                    <td>{{crop.P_Production_Unit}}</td>
-                                    <td>{{crop.P_Sold}}</td>
-                                    <td>{{crop.P_Balance_Stock}}</td>
-                                    <td>{{crop.C_From_Date}}</td>
-                                    <td>{{crop.C_To_Date}}</td>
-                                    <td>{{crop.C_Production}}</td>
-                                    <td>{{crop.C_Production_Unit}}</td>
-                                    <td>{{crop.C_Sold}}</td>
-                                    <td>{{crop.C_Balance_Stock}}</td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                  <td colspan="7" class="text-center">No Data</td>
-                                </tr>
-                           {% endfor %}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                               {% for crop in pack_house_details %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{crop.Pack_House_Name}}</td>
+                                        <td>{{crop.Pack_House_Address}}</td>
+                                        <td>{{crop.P_From_Date}}</td>
+                                        <td>{{crop.P_To_Date}}</td>
+                                        <td>{{crop.P_Production}}</td>
+                                        <td>{{crop.P_Production_Unit}}</td>
+                                        <td>{{crop.P_Sold}}</td>
+                                        <td>{{crop.P_Balance_Stock}}</td>
+                                        <td>{{crop.C_From_Date}}</td>
+                                        <td>{{crop.C_To_Date}}</td>
+                                        <td>{{crop.C_Production}}</td>
+                                        <td>{{crop.C_Sold}}</td>
+                                        <td>{{crop.C_Balance_Stock}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="14" class="text-center">No Data</td>
+                                    </tr>
+                               {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -609,40 +435,57 @@
         <div class="card">
             <div class="card-header" role="tab" id="audit_findings">
                 <a class="collapsed" data-toggle="collapse" href="#audit_findings_tab" aria-expanded="false" aria-controls="collapseTwo">
-                    Observations
+                    Audit Findings
                 </a>
             </div>
             <div id="audit_findings_tab" class="collapse" role="tabpanel" aria-labelledby="observations_tab" data-parent="#observations_tab" style="">
 
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-6 justify-content-center">
                             <div class="form-group">
                                 <label class="form-label">Site History And Management </label>
                             </div>
                         </div>
-                        <div class="col-md-8">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Objective Evidence</label>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Site_History" name="Audit_Findings_Site_History"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Findings/Observations </label>
-                               <textarea type="text" class="form-control" id="site_history_findings" name="Audit_Findings_Site_History"></textarea>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Site_History_O" name="Audit_Findings_Site_History_O"></textarea>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-6 justify-content-center">
                             <div class="form-group">
                                 <label class="form-label">Water source, reservoirs and holding tanks</label>
                             </div>
                         </div>
-                        <div class="col-md-8">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Objective Evidence</label>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Water_Source" name="Audit_Findings_Water_Source"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Findings/Observations  </label>
-                               <textarea type="text" class="form-control" id="water_source_findings" name="Audit_Findings_Water_Source"></textarea>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Water_Source_O" name="Audit_Findings_Water_Source_O"></textarea>
                             </div>
                         </div>
                     </div>
                     <br>
                     <hr>
+                    <label class="form-label">Farm inputs/raw materials and packaging materials</label>
                     <div class="card-tools">
                         <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="openInputModal()">
                             <span class="btn-label">
@@ -652,131 +495,260 @@
                         </a>
                     </div>
                     <br>
-                    <div class="row" >
-                        <label class="form-label">Farm inputs/raw materials and packaging materials</label>
-                            <div id="farm_inputs_table">
-                                <table class="table table-bordered">
-                                    <thead>
+                        <div id="farm_inputs_table">
+                            <table class="table table-bordered" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Farm Inputs</th>
+                                        <th scope="col">Name Of Supplier/Source</th>
+                                        <th scope="col">Invoice/Certificate</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                   {% for farm_inputs in farm_inputs %}
                                         <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col">Farm Inputs</th>
-                                            <th scope="col">Name Of Supplier/Source</th>
-                                            <th scope="col">Invoice/Certificate</th>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{farm_inputs.Audit_Findings_Farm_Inputs}}</td>
+                                            <td>{{farm_inputs.Audit_Findings_Farm_Supplier}}</td>
+                                            <td>{{farm_inputs.Audit_Findings_Farm_Invoice}}</td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                       {% for farm_inputs in farm_inputs %}
-                                            <tr>
-                                                <td>{{ forloop.counter }}</td>
-                                                <td>{{farm_inputs.Audit_Findings_Farm_Inputs}}</td>
-                                                <td>{{farm_inputs.Audit_Findings_Farm_Supplier}}</td>
-                                                <td>{{farm_inputs.Audit_Findings_Farm_Invoice}}</td>
-                                            </tr>
-                                            {% empty %}
-                                            <tr>
-                                              <td colspan="4" class="text-center">No Data</td>
-                                            </tr>
-                                       {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
+                                        {% empty %}
+                                        <tr>
+                                          <td colspan="4" class="text-center">No Data</td>
+                                        </tr>
+                                   {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
                     <div class="row">
-                        <label class="form-label">Produce Quality</label>
+                        <div class="col-md-6 justify-content-center">
+                            <div class="form-group">
+                                <label class="form-label">Produce Quality</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Objective Evidence</label>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Product_Quality" name="Audit_Findings_Product_Quality"></textarea>
+                            </div>
+                        </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Findings/Observations  </label>
-                               <textarea type="text" class="form-control" id="produce_quality_findings" name="Audit_Findings_Product_Quality"></textarea>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Product_Quality_O" name="Audit_Findings_Product_Quality_O"></textarea>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <label class="form-label">Harvesting and Handling of produces</label>
-                        <div class="col-md-6">
+                        <div class="col-md-6 justify-content-center">
                             <div class="form-group">
-                                <label class="form-label">Findings/Observations </label>
-                               <textarea type="text" class="form-control" id="harvesting_findings" name="Audit_Findings_Harvesting"></textarea>
+                                <label class="form-label">Harvesting and Handling of produces</label>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <label class="form-label">Farm Equipment/Machinery</label>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">Findings/Observations </label>
-                               <textarea type="text" class="form-control" id="farm_equipment_findings" name="Audit_Findings_Equipment"></textarea>
+                                <label class="form-label">Objective Evidence</label>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Harvesting" name="Audit_Findings_Harvesting"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Findings/Observations  </label>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Harvesting_O" name="Audit_Findings_Harvesting_O"></textarea>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <label class="form-label">Manufacture/Production</label>
-                        <div class="col-md-6">
+                        <div class="col-md-6 justify-content-center">
                             <div class="form-group">
-                                <label class="form-label">Findings/Observations </label>
-                               <textarea type="text" class="form-control" id="manufacture_findings" name="Audit_Findings_Manufacturing_Production"></textarea>
+                                <label class="form-label">Farm Equipment/Machinery</label>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <label class="form-label">Sampling And Testing</label>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">Findings/Observations </label>
-                               <textarea type="text" class="form-control" id="sampling_findings" name="Audit_Findings_Sampling_Testing"></textarea>
+                                <label class="form-label">Objective Evidence</label>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Equipment" name="Audit_Findings_Equipment"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Findings/Observations  </label>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Equipment_O" name="Audit_Findings_Equipment_O"></textarea>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <label class="form-label">Packing And Marking</label>
-                        <div class="col-md-6">
+                        <div class="col-md-6 justify-content-center">
                             <div class="form-group">
-                                <label class="form-label">Findings/Observations </label>
-                               <textarea type="text" class="form-control" id="packing_findings" name="Audit_Findings_Packing_Marking"></textarea>
+                                <label class="form-label">Manufacture/Production</label>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <label class="form-label">Storage and Transport</label>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">Findings/Observations </label>
-                               <textarea type="text" class="form-control" id="storage_findings" name="Audit_Findings_Storage_Transport"></textarea>
+                                <label class="form-label">Objective Evidence</label>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Manufacturing_Production" name="Audit_Findings_Manufacturing_Production"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Findings/Observations  </label>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Manufacturing_Production_O" name="Audit_Findings_Manufacturing_Production_O"></textarea>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <label class="form-label">Traceability, recall and complaint handling</label>
-                        <div class="col-md-6">
+                        <div class="col-md-6 justify-content-center">
                             <div class="form-group">
-                                <label class="form-label">Findings/Observations </label>
-                               <textarea type="text" class="form-control" id="traceability_findings" name="Audit_Findings_Traceability"></textarea>
+                                <label class="form-label">Sampling And Testing</label>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <label class="form-label">Worker Health, Safety & Welfare</label>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">Findings/Observations </label>
-                               <textarea type="text" class="form-control" id="worker_health_findings" name="Audit_Findings_Worker_Health"></textarea>
+                                <label class="form-label">Objective Evidence</label>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Sampling_Testing" name="Audit_Findings_Sampling_Testing"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Findings/Observations  </label>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Sampling_Testing_O" name="Audit_Findings_Sampling_Testing_O"></textarea>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <label class="form-label">Group requirements (if applicable)</label>
-                        <div class="col-md-6">
+                        <div class="col-md-6 justify-content-center">
                             <div class="form-group">
-                                <label class="form-label">Findings/Observations </label>
-                               <textarea type="text" class="form-control" id="group_findings" name="Audit_Findings_Group_Requirement"></textarea>
+                                <label class="form-label">Packing And Marking</label>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <label class="form-label">Others</label>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">Findings/Observations </label>
-                               <textarea type="text" class="form-control" id="others_findings" name="Audit_Findings_Others"></textarea>
+                                <label class="form-label">Objective Evidence</label>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Packing_Marking" name="Audit_Findings_Packing_Marking"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Findings/Observations  </label>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Packing_Marking_O" name="Audit_Findings_Packing_Marking_O"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 justify-content-center">
+                            <div class="form-group">
+                                <label class="form-label">Storage and Transport</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Objective Evidence</label>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Storage_Transport" name="Audit_Findings_Storage_Transport"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Findings/Observations  </label>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Storage_Transport_O" name="Audit_Findings_Storage_Transport_O"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 justify-content-center">
+                            <div class="form-group">
+                                <label class="form-label">Traceability, recall and complaint handling</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Objective Evidence</label>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Traceability" name="Audit_Findings_Traceability"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Findings/Observations  </label>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Traceability_O" name="Audit_Findings_Traceability_O"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 justify-content-center">
+                            <div class="form-group">
+                                <label class="form-label">Worker Health, Safety & Welfare</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Objective Evidence</label>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Worker_Health" name="Audit_Findings_Worker_Health"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Findings/Observations  </label>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Worker_Health_O" name="Audit_Findings_Worker_Health_O"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 justify-content-center">
+                            <div class="form-group">
+                                <label class="form-label">Group requirements (if applicable)</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Objective Evidence</label>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Group_Requirement" name="Audit_Findings_Group_Requirement"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Findings/Observations  </label>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Group_Requirement_O" name="Audit_Findings_Group_Requirement_O"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 justify-content-center">
+                            <div class="form-group">
+                                <label class="form-label">Others</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Objective Evidence</label>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Others" name="Audit_Findings_Others"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Findings/Observations  </label>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Others_O" name="Audit_Findings_Others_O"></textarea>
                             </div>
                         </div>
                     </div>
@@ -784,40 +756,44 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Audit Date </label>
-                               <textarea type="text" class="form-control" id="audit_date" name="audit_date"></textarea>
+                               <input type="date" name="Audit_Date" id="Audit_Date" class="form-control date-picker flatpickr-input active">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">Nature OF Audit</label>
+                                <label class="form-label">Nature Of Audit</label>
                                <select class="form-control" name="Audit_Type">
+                                    <option value="">--SELECT--</option>
                                     <option value="Preliminary visit">Preliminary visit</option>
                                     <option value="Factory audit">Factory audit</option>
                                     <option value="Surveillance audit">Surveillance audit</option>
-                                   <option value="Recertification audit">Recertification audit</option>
+                                    <option value="Recertification audit">Recertification audit</option>
                                     <option value="Others">Others</option>
                                 </select>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        {% for application_details in application_details %}
-                        <button type="button" class="btn btn-flat btn-primary" onclick="approve_details('{{ application_details.Application_No }}')">
-                            <i class="ace-icon fa fa-times"></i>
-                            &nbsp;&nbsp;Approve
-                        </button>
-                        <button type="button" class="btn btn-flat btn-primary" onclick="resubmit_details('{{ application_details.Application_No }}')">
-                            <i class="ace-icon fa fa-times"></i>
-                            &nbsp;&nbsp;Resubmit
-                        </button>
-                        {% endfor %}
-
-                        <button type="button" class="btn btn-primary" onclick="closeTeamModal()">Close Modal</button>
+                    <div class="row">
+                    {% for application_details in application_details %}
+                        {% if application_details.Audit_Plan_Acceptance == 'A' or  application_details.Audit_Plan_Acceptance == 'R' %}
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Remarks From Client </label>
+                                    <textarea type="text" class="form-control" disabled>{{ application_details.Audit_Plan_Acceptance_Remarks }}</textarea>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Remarks From Focal Officer </label>
+                                <textarea type="text" class="form-control" disabled>{{ application_details.FO_Remarks }}</textarea>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        </form>
         <div class="card">
             <div class="card-header" role="tab">
                 <a class="collapsed" data-toggle="collapse" href="#non_conform_tab" aria-expanded="false" aria-controls="collapseTwo">
@@ -866,9 +842,27 @@
                         </div>
                     </div>
                 </div>
+                <div class="modal-footer">
+                        {% for application_details in application_details %}
+                            <input type="hidden" name="det_application_no" value="{{ application_details.Application_No }}">
+                            {% if application_details.Audit_Plan_Acceptance == 'A' %}
+                                <button type="button" class="btn btn-flat btn-primary" onclick="approve_details()">
+                                    <i class="ace-icon fa fa-times"></i>
+                                    &nbsp;&nbsp;Approve
+                                </button>
+                            {% else %}
+                                <button type="button" class="btn btn-flat btn-primary" onclick="resubmit_details()">
+                                    <i class="ace-icon fa fa-times"></i>
+                                    &nbsp;&nbsp;Resubmit
+                                </button>
+                            {% endif %}
+                        {% endfor %}
+
+                        <button type="button" class="btn btn-primary" onclick="closeTeamModal()">Close Modal</button>
+                    </div>
             </div>
         </div>
-
+</form>
         <div id="farmInputModal" class="modal" tabindex="-1">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -937,12 +931,12 @@
                                 <label class="custom-control custom-radio">
                                     <input type="radio" name="Non_Conformity" class="custom-control-input" value="Yes">
                                     <span class="custom-control-indicator"></span>
-                                    <span class="custom-control-description">Yes</span>
+                                    <span class="custom-control-description">Open</span>
                                 </label>
                                 <label class="custom-control custom-radio">
                                     <input type="radio" name="Non_Conformity" class="custom-control-input" value="No">
                                     <span class="custom-control-indicator"></span>
-                                    <span class="custom-control-description">No</span>
+                                    <span class="custom-control-description">Close</span>
                                 </label>
                             </div>
                             <div class="col-md-4">
@@ -977,6 +971,7 @@
         </div>
 
 <script>
+
 function openInputModal()
 {
     $('#farmInputModal').modal('show');
@@ -1012,7 +1007,7 @@ function approve_details()
 {
     $.ajax({
         type : "GET",
-        url : "{% url 'gap_audit_plan_acceptance' %}",
+        url : "{% url 'forward_application_head_office' %}",
         data :$('#organic_certificate_observation_form').serialize(),
         success : function(data) {
             location.reload();
@@ -1028,7 +1023,7 @@ function conform_observation()
         data :$('#conform_form').serialize(),
         success : function(data) {
             $('#conform_details').html(data);
-            $('#farmInputModal').modal('hide');
+            $('#conformModal').modal('hide');
         }
     });
 }

@@ -318,42 +318,26 @@
                     {% endif %}
                 {% endfor %}
                     <div class="row">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Date Of Inspection</label>
-                                    <input type="text" class="form-control date-picker flatpickr-input active" id="dateOfInspection" name="dateOfInspection"  placeholder="Pick a date" readonly="readonly">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Validity Of Permit</label>
-                                    <input type="number" class="form-control" id="validity" name="validity">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Remarks</label>
-                                    <textarea class="form-control" id="remarks" name="remarks" rows="2"></textarea>
-                                </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Validity Of Certificate</label>
+                                <input type="number" class="form-control" id="validity" name="validity">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">Remarks</label>
-                                <textarea class="form-control" id="remarks_fo"></textarea>
+                                <label>Remarks</label>
+                                <textarea class="form-control" id="remarks" name="remarks" rows="2"></textarea>
                             </div>
                         </div>
                     </div>
                     <div class="card-action">
-                             {% if application_details.Audit_Team_Acceptance == 'A' %}
-                                <button type="button" class="btn btn-flat btn-primary" onclick="approve_fpc_application('{{ application_details.Application_No }}')">
-                                    <i class="ace-icon fa fa-times"></i>
-                                    &nbsp;&nbsp;Approve
-                                </button>
-                            {% endif %}
+                        {% for application_details in application_details %}
+                            <button type="button" class="btn btn-flat btn-primary" onclick="approve_fpc_application('{{ application_details.Application_No }}')">
+                                <i class="ace-icon fa fa-times"></i>
+                                &nbsp;&nbsp;Approve
+                            </button>
+                        {% endfor %}
                         <button type="button" class="btn btn-primary" onclick="closeTeamModal()">Close Modal</button>
                     </div>
                 </div>
@@ -389,7 +373,7 @@
                     </div>
                     <div class="modal-footer">
                         {% for application_details in application_details %}
-                        <button type="button" class="btn btn-flat btn-primary" onclick="audit_team_details('{{ application_details.Application_No }}')">
+                        <button type="button" class="btn btn-flat btn-primary" onclick="submit_details('{{ application_details.Application_No }}')">
                             <i class="ace-icon fa fa-times"></i>
                             &nbsp;&nbsp;Add
                         </button>
@@ -401,17 +385,16 @@
         </div>
 
 <script>
-function submit_details(application_id)
+function approve_fpc_application(application_id)
 {
 
     remarks = $('#remarks').val();
-    dateOfInspection = $('#dateOfInspection').val();
     validity = $('#validity').val();
 
    $.ajax({
         type : "GET",
         url : "{% url 'approve_fpc_application' %}",
-        data :{'application_no':application_id , 'remarks':remarks , 'dateOfInspection':dateOfInspection,'timeOfInspection':timeOfInspection},
+        data :{'application_no':application_id , 'remarks':remarks , 'validity':validity},
         success : function(data) {
             $('#application-details-modal').modal('hide');
             location.reload();

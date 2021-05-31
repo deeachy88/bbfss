@@ -12,61 +12,61 @@
                     </button>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive">
-                    <table id="user-table" class="table table-striped table-bordered">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Name</th>
-                                <th>EmpId</th>
-                                <th>Gender</th>
-                                <th>Email</th>
-                                <th>Mobile No</th>
-                                <th>Role</th>
-                                <th>Division</th>
-                                <th>Section</th>
-                                <th>Field Office</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {% for user in details %}
-                            <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td>{{user.Name}}</td>
-                                <td>{{user.Employee_Id}}</td>
-                                {% if user.Gender == "M" %}
-                                <td>Male</td>
-                                {% else %}
-                                 <td>Female</td>
-                                {% endif %}
-                                <td>{{user.Email_Id}}</td>
-                                <td>{{user.Mobile_Number}}</td>
-                                <td>{{user.Role_Id}}</td>
-                                <td>{{user.Division_Id}}</td>
-                                <td>{{user.Section_Id}}</td>
-                                <td>{{user.Field_Office_Id}}</td>
-                                <td>
-                                    <div class="btn-group">
-                                        {% if user.Is_Active == "Y" %}
-                                        <button  type="button" class="btn btn-primary btn--icon btn-sm" data-toggle="tooltip" title="Deactivate" ><i class="zmdi zmdi-lock"></i></button>
-                                        {% else %}
-                                        <button  type="button" class="btn btn-primary btn--icon btn-sm" data-toggle="tooltip" title="Activate" ><i class="zmdi zmdi-unlock"></i></button>
-                                        {% endif %}
-                                        <button  type="button" class="btn btn-warning btn-sm js-edit-user" data-url="{% url 'edit_user' user.Login_Id %}" data-toggle="tooltip" title="Edit" ><i class="zmdi zmdi-edit"></i> </button>
-                                        <button  type="button" class="btn btn-primary btn--icon btn-sm" data-toggle="tooltip" title="Reset Password" ><i class="zmdi zmdi-key"></i></button>
-                                    </div>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
+                    <div class="table-responsive data-table">
+                        <table id="user-table" class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <!--<th>EmpId</th>
+                                    <th>Gender</th>-->
+                                    <th>Email</th>
+                                    <th>Mobile No</th>
+                                    <th>Role</th>
+                                    <th>Division</th>
+                                    <th>Section</th>
+                                    <th>Field Office</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for user in details %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{user.Name}}</td>
+                                    <!--<td>{{user.Employee_Id}}</td>
+                                    {% if user.Gender == "M" %}
+                                    <td>Male</td>
+                                    {% else %}
+                                     <td>Female</td>
+                                    {% endif %}-->
+                                    <td>{{user.Email_Id}}</td>
+                                    <td>{{user.Mobile_Number}}</td>
+                                    <td>{{user.Role_Id}}</td>
+                                    <td>{{user.Division_Id}}</td>
+                                    <td>{{user.Section_Id}}</td>
+                                    <td>{{user.Field_Office_Id}}</td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            {% if user.Is_Active == "Y" %}
+                                            <button  type="button" class="btn btn-info btn-sm" data-toggle="tooltip" title="Deactivate" ><i class="zmdi zmdi-lock"></i></button>
+                                            {% else %}
+                                            <button  type="button" class="btn btn-info btn-sm" data-toggle="tooltip" title="Activate" ><i class="zmdi zmdi-unlock"></i></button>
+                                            {% endif %}
+                                            <button  type="button" class="btn btn-info btn-sm js-edit-user" data-url="{% url 'edit_user' user.Login_Id %}" data-toggle="tooltip" title="Edit" ><i class="zmdi zmdi-edit"></i> </button>
+                                            <button  type="button" class="btn btn-info btn-sm" data-toggle="tooltip" title="Reset Password" ><i class="zmdi zmdi-key"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 <form method="post" id="my_form" class="form-horizontal form-label-left">
     <div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg" role="document">

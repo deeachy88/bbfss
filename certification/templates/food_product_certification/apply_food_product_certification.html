@@ -362,10 +362,33 @@
                     <div id="file-attachment-mortem">
                         {% include 'food_product_certification/file_attachment.html' %}
                     </div>
+                    <div class="card-action">
+                        <button type="button" class="btn btn-success" onclick="next_file_attach()">Save-Next</button>
+                    </div>
                 </div>
-                <div class="tab-pane fade" id="standards" role="tabpanel" aria-labelledby="mortem-file-attach">
+                <div class="tab-pane fade" id="certification-standards" role="tabpanel" aria-labelledby="mortem-file-attach">
                     <div class="row">
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-2">
+                            <label class="form-label">Standard(s) for which we wish to be certified</label><br><br>
+                        </div>
+                        <div class="form-group col-md-6" >
+                            <select class="form-control form-control" id="Standard" name="Standard" onchange="checkStandards(this.value)">
+                                <option value="">-SELECT-</option>
+                                <option value="BTR 11: 2017 Packaged Drinking Water">1.BTR 11: 2017 Packaged Drinking Water</option>
+                                <option value="BTR 12: 2017 Packaged Natural Mineral Water">2.BTR 12: 2017 Packaged Natural Mineral Water</option>
+                                <option value="BTR 13: General Fruit Juices and Nectar">3.BTR 13: General Fruit Juices and Nectar</option>
+                                <option value="BTS 299:2020 Bhutan Standard for Butter">4.BTS 299:2020 Bhutan Standard for Butter</option>
+                                <option value="BTS 300:2020 Bhutan Standard for Datshi">5.BTS 300:2020 Bhutan Standard for Datshi</option>
+                                <option value="BTS 301:2020 (IS 10484:1983) Bhutan Standard for Paneer">6.BTS 301:2020 (IS 10484:1983) Bhutan Standard for Paneer</option>
+                                <option value="BTS 303:2020 Bhutan Standard for Buckwheat Flour">7.BTS 303:2020 Bhutan Standard for Buckwheat Flour</option>
+                                <option value="BTS 304:2020 Bhutan Standard for Herbal Tea">8.BTS 304:2020 Bhutan Standard for Herbal Tea</option>
+                                <option value="Others">Others</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4" >
+                            <input type="text" class="form-control" id="other_standard" name="other_standard" disabled>
+                        </div>
+                        <div class="form-group col-md-12">
                             <div class="form-check">
                                 <label class="form-label">With a view to ensure the similarity of the process of production of the mentioned commodities as per related standard, we shall keep regular records and maintain all required documentation to fulfill the requirements of the identified Standard (refer previous point) and any other additional documentation required by the BAFRA as the Certification Body</label><br><br>
                                 <div class="form-group">
@@ -384,7 +407,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-12">
                             <div class="form-check">
                                 <label class="form-label">We are willing to change our operational practices, as may be required from time to time to keep in line with our policy which may be directed by BAFRA.</label><br><br>
                                 <div class="form-group">
@@ -405,7 +428,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-12">
                             <div class="form-check">
                                 <label class="form-label">If BAFRA desires to make a preliminary inspection or investigation then, we, agree to give all our reasonable opportunity and privileges to BAFRA and accordingly provide our cooperation as per certification requirements.</label><br><br>
                                 <div class="form-group">
@@ -424,7 +447,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-12">
                             <div class="form-check">
                                 <label class="form-label">If the certificate is awarded, we will abide by all the terms and conditions of the certification, so long as it remains valid for use and also comply with the Rules and Regulations. If the license/certificate becomes prolonged or it is cancelled, then we, shall ensure that any use of the Standard Mark on any commodity under the license will be stopped immediately and all related advertisement, materials will be taken back and other necessary action will be taken</label><br><br>
                                 <div class="form-group">
@@ -672,6 +695,33 @@ function  submit_organic_certificate()
     $.ajax({
         type : "POST",
         url : "{% url 'submit_organic_certificate' %}",
+        data : $('#food_product_form').serialize(),
+        success : function(responseText) {
+           location.reload();
+        }
+    });
+}
+
+function checkStandards(value)
+{
+    if(value == "Others")
+    {
+        $("#other_standard").removeAttr("disabled");
+    }
+    else
+    {
+        $("#other_standard").attr("disabled", "disabled");
+    }
+}
+function next_file_attach()
+{
+    $('#certification_standards').tab('show');
+}
+function submit_fpc_certificate()
+{
+    $.ajax({
+        type : "POST",
+        url : "{% url 'submit_food_product_certificate' %}",
         data : $('#food_product_form').serialize(),
         success : function(responseText) {
            location.reload();

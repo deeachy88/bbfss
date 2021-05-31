@@ -305,11 +305,12 @@ def team_details_feasibility_ins(request):
     date_open = datetime.strptime(opening_date, '%d-%m-%Y').date()
     date_close = datetime.strptime(closing_date, '%d-%m-%Y').date()
     t_food_business_registration_licensing_t4.objects.create(Application_No=application_id,
-                                                             Meeting_Type='Feasibility Inspection ',
+                                                             Meeting_Type='Feasibility Inspection',
                                                              Name=name, Designation=designation,
                                                              Open_Meeting_Date=date_open,
                                                              Closing_Meeting_Date=date_close)
-    application_details = t_food_business_registration_licensing_t4.objects.filter(Application_No=application_id)
+    application_details = t_food_business_registration_licensing_t4.objects.filter(Application_No=application_id,
+                                                                                   Inspection_Type='Feasibility Inspection')
     return render(request, 'registration_licensing/team_details.html', {'application_details': application_details})
 
 
@@ -322,10 +323,11 @@ def concern_details_feasibility_ins(request):
     Date = request.GET.get('Date')
     date_chosen = datetime.strptime(Date, '%d-%m-%Y').date()
     t_food_business_registration_licensing_t5.objects.create(Application_No=application_id,
-                                                             Meeting_Type='Feasibility Inspection ',
+                                                             Inspection_Type='Feasibility Inspection',
                                                              Requirement=Requirement, Observation=Observation,
                                                              Clause_No=Clause_No, Date=date_chosen, Concern=Concern)
-    application_details = t_food_business_registration_licensing_t5.objects.filter(Application_No=application_id)
+    application_details = t_food_business_registration_licensing_t5.objects.filter(Application_No=application_id,
+                                                                                   Inspection_Type='Feasibility Inspection')
     return render(request, 'registration_licensing/concern_details.html', {'application_details': application_details})
 
 
@@ -454,11 +456,12 @@ def team_details_factory_ins(request):
     date_open = datetime.strptime(opening_date, '%d-%m-%Y').date()
     date_close = datetime.strptime(closing_date, '%d-%m-%Y').date()
     t_food_business_registration_licensing_t4.objects.create(Application_No=application_id,
-                                                             Meeting_Type='Feasibility Inspection ',
+                                                             Meeting_Type='Factory Inspection',
                                                              Name=name, Designation=designation,
                                                              Open_Meeting_Date=date_open,
                                                              Closing_Meeting_Date=date_close)
-    application_details = t_food_business_registration_licensing_t4.objects.filter(Application_No=application_id)
+    application_details = t_food_business_registration_licensing_t4.objects.filter(Application_No=application_id,
+                                                                                   Inspection_Type='Factory Inspection')
     return render(request, 'registration_licensing/team_details.html', {'application_details': application_details})
 
 
@@ -471,10 +474,11 @@ def concern_details_factory_ins(request):
     Date = request.GET.get('Date')
     date_chosen = datetime.strptime(Date, '%d-%m-%Y').date()
     t_food_business_registration_licensing_t5.objects.create(Application_No=application_id,
-                                                             Meeting_Type='Feasibility Inspection ',
+                                                             Inspection_Type='Factory Inspection',
                                                              Requirement=Requirement, Observation=Observation,
                                                              Clause_No=Clause_No, Date=date_chosen, Concern=Concern)
-    application_details = t_food_business_registration_licensing_t5.objects.filter(Application_No=application_id)
+    application_details = t_food_business_registration_licensing_t5.objects.filter(Application_No=application_id,
+                                                                                   Inspection_Type='Factory Inspection')
     return render(request, 'registration_licensing/concern_details.html', {'application_details': application_details})
 
 
@@ -486,9 +490,9 @@ def approve_factory_inspection(request):
     details = t_food_business_registration_licensing_t1.objects.filter(Application_No=application_id)
 
     if remarks is not None:
-        details.update(FI_Recommendation=remarks)
+        details.update(FR_Recommendation=remarks)
     else:
-        details.update(FI_Recommendation=None)
+        details.update(FR_Recommendation=None)
 
     details.update(FR_Inspection_Date=date_format_ins)
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
@@ -499,6 +503,27 @@ def approve_factory_inspection(request):
     return redirect(inspector_application)
 
 
+def fbr_submit(request):
+    application_id = request.GET.get('application_id')
+    remarks = request.GET.get('remarks')
+    validity = request.GET.get('validity')
+    clearance = factory_clearance_no(request)
+    details = t_food_business_registration_licensing_t1.objects.filter(Application_No=application_id)
+    details.update(FB_License_No=clearance)
+    details.update(Approve_Date=date.today())
+    d = timedelta(days=int(validity))
+    validity_date = date.today() + d
+    details.update(Validity=validity_date)
+    application_details = t_workflow_details.objects.filter(Application_No=application_id)
+    application_details.update(Action_Date=date.today())
+    application_details.update(Application_Status='A')
+    update_payment(application_id, clearance, 'FBR', validity_date)
+    for email_id in details:
+        emailId = email_id.Email
+        send_fbr_approve_email(clearance, emailId, validity_date)
+    return redirect(inspector_application)
+
+
 def factory_clearance_no(request):
     global Field_Code
     Field_Office_Id = request.session['field_office_id']
@@ -506,8 +531,8 @@ def factory_clearance_no(request):
     for code in code:
         Field_Code = code.Field_Office_Code
 
-    last_application_no = t_food_business_registration_licensing_t1.objects.aggregate(Max('Meat_Shop_Clearance_No'))
-    lastAppNo = last_application_no['Meat_Shop_Clearance_No__max']
+    last_application_no = t_food_business_registration_licensing_t1.objects.aggregate(Max('FB_License_No'))
+    lastAppNo = last_application_no['FB_License_No__max']
     if not lastAppNo:
         year = timezone.now().year
         newAppNo = Field_Code + "/" + "FBR" + "/" + str(year) + "/" + "0001"
@@ -744,7 +769,9 @@ def save_food_export_details(request):
         Validity=None,
         Applicant_Id=request.session['email'],
         Importing_Country=Importing_Country,
-        Additional_Information=additional_info
+        Additional_Information=additional_info,
+        Rejection_Reason=None,
+        Terms=None
     )
     field = t_location_field_office_mapping.objects.filter(Location_Code=Consignment_Location_Gewog)
     for field_office in field:
@@ -820,6 +847,8 @@ def approve_food_export(request):
     validity = request.POST.get('validity')
     date_format_ins = datetime.strptime(Inspection_Date, '%d-%m-%Y').date()
     remarks = request.POST.get('remarks')
+    rejection_reason = request.POST.get('rejection_reason')
+    terms = request.POST.get('terms')
     Export_Permit_No = food_export_permit_no(request)
     details = t_food_export_certificate_t1.objects.filter(Application_No=application_id)
     if remarks is not None:
@@ -836,6 +865,8 @@ def approve_food_export(request):
     details.update(Unit_Certified=Unit_Net)
     details.update(Quantity_Rejected=rejected_qty)
     details.update(Unit_Rejected=Unit_Rejected)
+    details.update(Rejection_Reason=rejection_reason)
+    details.update(Terms=terms)
     d = timedelta(days=int(validity))
     validity_date = date.today() + d
     details.update(Validity=validity_date)
@@ -1157,7 +1188,8 @@ def update_batch_no(request):
     to_training_Date = request.POST.get('from_training_Date')
     remarks = request.POST.get('Remarks')
     Minimum_Score = request.POST.get('min_mark')
-
+    training_batch = request.POST.get('Training_Batch')
+    Training_Venue = request.POST.get('Training_Venue')
     from_Date = datetime.strptime(from_training_Date, '%d-%m-%Y').date()
     to_Date = datetime.strptime(to_training_Date, '%d-%m-%Y').date()
 
@@ -1168,7 +1200,8 @@ def update_batch_no(request):
         app_no = checkboxArr[1]
         details = t_food_licensing_food_handler_t1.objects.filter(Application_No=app_no)
         details.update(Minimum_Score=Minimum_Score, Training_Batch_No=batchNo, Training_From_Date=from_Date,
-                       Training_To_Date=to_Date, Inspection_Remarks=remarks)
+                       Training_To_Date=to_Date, Inspection_Remarks=remarks, Training_Venue=Training_Venue,
+                       Training_Batch=training_batch)
         send_batch_mail(batchNo, from_training_Date, to_training_Date, remarks, email)
 
 

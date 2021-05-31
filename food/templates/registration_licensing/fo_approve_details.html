@@ -1,21 +1,12 @@
-{% load static %}
-<style>
-    .card {
-    margin-bottom: 0rem;
-    box-shadow: 0 1px 5px rgb(0 0 0 / 10%);
-}
-</style>
-        <div class="card">
-            <div class="card-header" role="tab" id="headingOne">
-                <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed">
-                    Application Details
-                </a>
-            </div>
-
-            <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion" style="">
-                <div class="card-body">
-                    {% for application_details in application_details %}
-                        <div id="applicant_details">
+<form method="post" id="applicationForm">
+    {% csrf_token %}
+    <div class="animated fadeIn">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        {% for application_details in application_details %}
+                            <div id="applicant_details">
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
@@ -321,514 +312,89 @@
                                     </div>
                                 </div>
                             </div>
-                     <br><br>
-                    {% if application_details.PermitType == A %}
+                        <br>
+                        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">File</span>
+                                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Attachments</span>
+                            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                        </div>
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">Species</th>
-                                    <th scope="col">Breed</th>
-                                    <th scope="col">Age</th>
-                                    <th scope="col">Sex</th>
-                                    <th scope="col">Description</th>
-                                    <th scope="col">Quantity</th>
-                                    <th scope="col">Unit</th>
+                                    <th scope="col">File</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for import in import %}
+                               {% for file_attach in file %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td>{{import.Import_Category}}</td>
-                                        <td>{{import.Pesticide_Id}}</td>
-                                        <td>{{import.Description}}</td>
-                                        <td>{{import.Unit}}</td>
-                                        <td>{{import.Quantity}}</td>
+                                        <td>{{file_attach.Attachment}}</td>
                                     </tr>
                                     {% empty %}
                                     <tr>
-                                      <td colspan="8" class="text-center">No Data</td>
+                                      <td colspan="3" class="text-center">No Data</td>
                                     </tr>
-                                {% endfor %}
+                               {% endfor %}
                             </tbody>
                         </table>
-                        {% else %}
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Particulars</th>
-                                    <th scope="col">Company_Name</th>
-                                    <th scope="col">Description</th>
-                                    <th scope="col">Quantity</th>
-                                    <th scope="col">Unit</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for import in import %}
-                                    <tr>
-                                        <td>{{ forloop.counter }}</td>
-                                        <td>{{import.Import_Category}}</td>
-                                        <td>{{import.Pesticide_Id}}</td>
-                                        <td>{{import.Description}}</td>
-                                        <td>{{import.Unit}}</td>
-                                        <td>{{import.Quantity}}</td>
-                                    </tr>
-                                    {% empty %}
-                                    <tr>
-                                      <td colspan="6" class="text-center">No Data</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                        {% endif%}
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-header" role="tab" id="headingTwo">
-                <a class="collapsed" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                    Attachments
-                </a>
-            </div>
-            <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
-                <div class="card-body">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">File</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                           {% for file_attach in file %}
-                                <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>{{file_attach.Attachment}}</td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                  <td colspan="3" class="text-center">No Data</td>
-                                </tr>
-                           {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-header" role="tab" id="headingFour">
-                <a class="collapsed" data-toggle="collapse" href="#collapseFour" aria-expanded="false" aria-controls="collapseTwo">
-                    Team Formation
-                </a>
-            </div>
-            <div id="collapseFour" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
-                <div class="card-body">
-                    <div class="card-tools">
-                        <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="openTeamModal()">
-                            <span class="btn-label">
-                                <i class="fa fa-print"></i>
-                            </span>
-                            Add
-                        </a>
-                    </div>
-                    <br>
-                    <div id="team_details">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Name Of Key Personal</th>
-                                    <th scope="col">Designation of Key Personal</th>
-                                    <th scope="col">Opening Meeting (Date)</th>
-                                    <th scope="col">Closing Meeting (Date)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                    <tr>
-                                      <td colspan="5" class="text-center">No Data</td>
-                                    </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-header" role="tab" id="headingThree">
-                <a class="collapsed" data-toggle="collapse" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                    Inspector Details
-                </a>
-            </div>
-            <div id="collapseThree" class="active" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion" style="">
-                <div class="card-body">
-                    <div class="card-tools">
-                        <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="openDecisionModal()">
-                            <span class="btn-label">
-                                <i class="fa fa-print"></i>
-                            </span>
-                            Add
-                        </a>
-                    </div>
-                    <br>
-                    <div id="details">
-                        <table id="inspection-details-table" class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Requirement</th>
-                                    <th scope="col">Clause No</th>
-                                    <th scope="col">Concern</th>
-                                    <th scope="col">Date</th>
-                                    <th scope="col">Observations/ Findings</th>
-                                    {% if inspection_details %}
-                                        <th scope="col">Action</th>
-                                    {% endif %}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for import in inspection_details %}
-                                    <tr>
-                                        <td>{{ forloop.counter }}</td>
-                                        <td>{{import.Requirement}}</td>
-                                        <td>{{import.Clause_No}}</td>
-                                        <td id="my_cell">{{import.Concern}}</td>
-                                        <td>{{import.Date|date:"d-m-Y"}}</td>
-                                        <td>{{import.Observation}}</td>
-                                        <td>
-                                            <button type="button"
-                                            class="btn btn-primary btn--icon btn-sm js-edit-details"
-                                            data-url="{% url 'edit_feasibility_inspection' import.Record_Id %}">
-                                            <i class="zmdi zmdi-edit"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    {% empty %}
-                                    <tr>
-                                      <td colspan="6" class="text-center">No Data</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    <br>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Inspection Team Leader</label>
-                                <select class="form-control" name="teamLeader"  id="teamLeader">
-                                    <option value="">--SELECT TEAM LEADER--</option>
-                                    {% for inspector_list in inspector_list %}
-                                            <option value="{{ inspector_list.Login_Id }}">{{ inspector_list.Name }}</option>
-                                    {% endfor %}
-                                </select>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Validity Of License</label>
+                                    <input type="number" class="form-control" id="validity" name="validity">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Remarks</label>
+                                    <textarea class="form-control" id="remarks" name="remarks" rows="2"></textarea>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="insTeam">Inspection Team </label>
-                                <textarea class="form-control" id="insTeam" rows="2"></textarea>
-                            </div>
+                        <br>
+                        <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+                            Application Approved
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Date Of Inspection</label>
-                                <input type="text" class="form-control date-picker flatpickr-input active" id="dateOfInspection" name="date"  placeholder="Pick a date" readonly="readonly">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Remarks</label>
-                                <textarea class="form-control" id="remarks" rows="2"></textarea>
-                            </div>
-                            <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
-                        </div>
-                    </div>
-                    <div class="alert alert-info" id="messageDiv" style="display:none">
-                        Application Approved
-                    </div>
-                    <div class="alert alert-info" id="client-message-div" style="display:none">
-                        Application Forwarded TO Client
-                    </div>
-                    <hr>
-                    {% for application_details in application_details %}
-                        <div class="card-action text-center">
-                            <button type="button" class="btn btn-flat btn-primary" onclick="approve_factory_inspection('{{application_details.Application_No}}')">
-                                <i class="ace-icon fa fa-times"></i>
-                                &nbsp;&nbsp;Approve
-                            </button>
-                            <button type="button" class="btn btn-flat btn-primary" onclick="reject_factory_inspection('{{application_details.Application_No}}')">
-                                <i class="ace-icon fa fa-times"></i>
-                                &nbsp;&nbsp;Reject
-                            </button>
-                            <button type="button" class="btn btn-flat btn-danger">
-                                <i class="ace-icon fa fa-times"></i>
-                                &nbsp;&nbsp;Cancel
-                            </button>
+                        <div class="modal-footer justify-content-center">
+                            <button type="button" class="btn btn-primary" onclick="fbr_submit('{{ application_details.Application_No }}')"> Approve </button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         </div>
                     {% endfor %}
                 </div>
             </div>
         </div>
-        <div id="addModal" class="modal" tabindex="-1">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title"></h5>
-                        <button type="button" class="close" onclick="closeModal()">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">Requirement</label>
-                                    <input type="text" class="form-control" id="Requirement">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">Clause No</label>
-                                    <input type="text" class="form-control" id="Clause_No">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <div class="form-group col-md-6">
-                                        <div class="form-check">
-                                           <label class="form-label">Concern</label><br>
-                                            <label class="form-radio-label">
-                                                <input class="form-radio-input" type="radio" name="Concern" value="Yes">
-                                                <span class="form-radio-sign">Yes</span>
-                                            </label>
-                                            <label class="form-radio-label ml-3">
-                                                <input class="form-radio-input" type="radio" name="Concern" value="No">
-                                                <span class="form-radio-sign">No</span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">Response or Actions proposed by FBO</label>
-                                    <input type="text" class="form-control date-picker flatpickr-input active" name="Date" id="Date" readonly>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">Observations/Finding</label>
-                                    <textarea class="form-control" id="Observations" rows="2"></textarea>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        {% for application_details in application_details %}
-                        <button type="button" class="btn btn-flat btn-primary" onclick="add_details_ins('{{ application_details.Application_No }}')">
-                            <i class="ace-icon fa fa-times"></i>
-                            &nbsp;&nbsp;Add
-                        </button>
-                        {% endfor %}
-                        <button type="button" class="btn btn-primary" onclick="closeModal()">Close Modal</button>
-                     </div>
-                  </div>
-            </div>
-        </div>
-        <div id="teamModal" class="modal" tabindex="-1">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title"></h5>
-                        <button type="button" class="close" onclick="closeModal()">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">Name Of Key Personal</label>
-                                    <input type="text" class="form-control" name="name" id="name">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">Designation Of Key Personal</label>
-                                    <input type="text" class="form-control" name="designation" id="designation">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">Opening Meeting(Date)</label>
-                                    <input type="text" class="form-control date-picker flatpickr-input active" name="opening_date" id="opening_date" readonly>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">Closing Meeting(Date)</label>
-                                    <input type="text" class="form-control date-picker flatpickr-input active" name="closing_date" id="closing_date" readonly>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        {% for application_details in application_details %}
-                        <button type="button" class="btn btn-flat btn-primary" onclick="add_team_details('{{ application_details.Application_No }}')">
-                            <i class="ace-icon fa fa-times"></i>
-                            &nbsp;&nbsp;Add
-                        </button>
-                        {% endfor %}
-                        <button type="button" class="btn btn-primary" onclick="closeTeamModal()">Close Modal</button>
-                     </div>
-
-                  </div>
-            </div>
-        </div>
-    <div class="modal fade" id="modal-common">
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content edit">
-
-          </div>
-        </div>
     </div>
-    <div class="modal fade" id="modal-decision">
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content edit">
-
-          </div>
-        </div>
-    </div>
-<script src="{% static 'assets/js/app.min.js' %}"></script>
+</form>
 <script>
-function openDecisionModal()
-{
-    $('#addModal').modal('show');
-}
+    function fbr_submit(application_id)
+        {
+            remarks = $('#remarks').val();
+            validity = $('#validity').val();
+            $.ajax({
+                type : "GET",
+                url : "{% url 'fbr_submit' %}",
+                data :{'application_id':application_id , 'remarks':remarks , 'validity':validity},
+                success : function(data) {
+                    $('#submitMsg').show();
+                    setTimeout(function()
+                    {
+                        $("#submitMsg").hide('blind', {}, 500)
+                    }, 2000);
+                    setTimeout(function()
+                    {
+                        $('#import_detailsModal').modal('hide');
+                    }, 3000);
+                    setTimeout(function()
+                    {
+                         location.reload();
+                    }, 3000);
 
-function openTeamModal()
-{
-    $('#teamModal').modal('show');
-}
+                }
+            });
 
-
-function closeModal()
-{
-    $("#addModal").modal('hide');
-}
-
-function closeTeamModal()
-{
-    $("#teamModal").modal('hide');
-}
-
-function add_details_ins(application_id)
-{
-    Requirement = $('#Requirement').val();
-    Clause_No = $('#Clause_No').val();
-    Concern = $('input[name="Concern"]:checked').val();
-    Date = $('#Date').val();
-    Observations = $('#Observations').val();
-
-    $.ajax({
-        type : "GET",
-        url : "{% url 'concern_details_factory_ins' %}",
-        data :{'application_id':application_id,'Requirement':Requirement,'Observations':Observations,'Clause_No':Clause_No,'Date':Date,'Concern':Concern},
-        success : function(data) {
-            $('#details').html(data);
-            $('#details').show();
-            $('#addModal').modal('hide');
         }
-    });
-}
-
-function add_details_ins(application_id)
-{
-    name = $('#name').val();
-    designation = $('#designation').val();
-    opening_date = $('#opening_date').val();
-    closing_date = $('#closing_date').val();
-
-    $.ajax({
-        type : "GET",
-        url : "{% url 'team_details_factory_ins' %}",
-        data :{'application_id':application_id,'name':name,'designation':designation,'opening_date':opening_date,'closing_date':closing_date},
-        success : function(data) {
-            $('#team_details').html(data);
-            $('#team_details').show();
-            $('#teamModal').modal('hide');
-        }
-    });
-}
-
-function approve_factory_inspection(application_id)
-{
-    Inspection_Leader = $('#teamLeader').val();
-    Inspection_Team = $('#insTeam').val();
-    remarks = $('#remarks').val();
-    dateOfInspection = $('#dateOfInspection').val();
-
-
-    $.ajax({
-        type : "GET",
-        url : "{% url 'approve_factory_inspection' %}",
-       data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks ,
-        'dateOfInspection':dateOfInspection},
-        success : function(data) {
-            $('#messageDiv').show();
-            setTimeout(function() {
-                $("#messageDiv").hide('blind', {}, 500)
-            }, 2000);
-            setTimeout(function() {
-                location.reload();
-            }, 3000);
-        }
-        });
-
-
-}
-
-function reject_factory_inspection(application_id)
-{
-    remarks = $('#remarks').val();
-    dateOfInspection = $('#dateOfInspection').val();
-    if(remarks == "")
-    {
-        $('#remarksErrorMsg').html("Please Enter Remarks.");
-        $('#remarksErrorMsg').show();
-        $('#remarksErrorMsg').delay(2000).fadeOut('slow');
-    }else
-    {
-        $.ajax({
-        type : "GET",
-        url : "{% url 'reject_factory_inspection' %}",
-        data :{'application_id':application_id ,'remarks':remarks, 'dateOfInspection':dateOfInspection},
-        success : function(data) {
-            $('#client-message-div').show();
-            setTimeout(function() {
-                $("#client-message-div").hide('blind', {}, 500)
-            }, 2000);
-             setTimeout(function() {
-                location.reload();
-            }, 3000);
-        }
-        });
-    }
-}
-
 
 </script>
