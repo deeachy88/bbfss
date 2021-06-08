@@ -622,19 +622,16 @@ def inspection_file_name(request):
         file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
     return render(request, 'inspection_establishment/file_attachment.html', {'file_attach': file_attach})
 
-
 def submit_establishment_inspection_form(request):
-    Application_No = request.POST.get('application_no')
+    Application_No = request.POST.get('applicationNo')
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
+    print(Application_No)
     details = t_inspection_monitoring_t1.objects.filter(Reference_No=Application_No)
     details.update(Created_Date=date.today())
     return render(request, 'inspection_establishment/application_form.html',
                   {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village})
-
-
-
 
 def draft_application_list(request):
     application_details = t_inspection_monitoring_t1.objects.filter(Application_Flag='P')
@@ -660,7 +657,7 @@ def view_draft_details(request):
                    'gewog': gewog, 'village': village, 'unit': unit})
 
 
-def update_inspection_details(request):
+def update_inspection_establishment_application(request):
     data = dict()
     reference_no = request.POST.get('reference_no')
     Inspection_Type = request.POST.get('Inspection_Type')
@@ -700,6 +697,22 @@ def submit_draft_inspection_details(request):
     details = t_inspection_monitoring_t1.objects.filter(Reference_No=Application_No)
     details.update(Created_Date=date.today())
     return redirect(draft_application_list)
+
+def load_establishment_nc_details(request):
+    reference_no = request.GET.get('refNo')
+    details = t_inspection_monitoring_t2.objects.filter(Reference_No=reference_no)
+    return render(request, 'inspection_commodity/owner_manager_details.html', {'details': details})
+
+def load_establishment_seized_details(request):
+    reference_no = request.GET.get('refNo')
+    details = t_inspection_monitoring_t3.objects.filter(Reference_No=reference_no)
+    return render(request, 'inspection_commodity/item_details.html', {'details': details})
+
+def load_establishment_sample_details(request):
+    reference_no = request.GET.get('refNo')
+    details = t_inspection_monitoring_t4.objects.filter(Reference_No=reference_no)
+    return render(request, 'inspection_commodity/sample_collection_details.html', {'details': details})
+
 
 def load_establishment_attachment_details(request):
     referenceNo = request.GET.get('refNo')
@@ -848,12 +861,21 @@ def load_commodity_attachment_details(request):
     return render(request, 'inspection_commodity/commodity_file_attachment.html',
                   {'file_attach': attachment_details})
 
+def load_commodity_application(request):
+    reference_no = request.GET.get('refNo')
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    application_details = t_commodity_inspection_t1.objects.filter(Reference_No=reference_no)
+    return render(request, 'inspection_commodity/application_commodity.html',
+                  {'application_details': application_details, 'dzongkhag': dzongkhag, 'gewog': gewog,
+                   'village': village})
+
 def load_commodity_application_details(request):
     reference_no = request.GET.get('refNo')
-    print(reference_no)
-    commodity_details = t_inspection_monitoring_t2.objects.filter(Reference_No=reference_no)
+    commodity_inspection = t_commodity_inspection_t2.objects.filter(Reference_No=reference_no)
     return render(request, 'inspection_commodity/commodity_details.html',
-                  {'commodity_details': commodity_details})
+                  {'commodity_inspection': commodity_inspection})
 
 def draft_inspection_application_details(request):
     dzongkhag = t_dzongkhag_master.objects.all()
@@ -945,7 +967,8 @@ def save_commodity_details(request):
             Reason_For_Rejection=reasonReject)
 
         commodity_inspection = t_commodity_inspection_t2.objects.filter(Reference_No=reference_no)
-        return render(request, 'inspection_commodity/commodity_details.html', {'commodity_inspection': commodity_inspection})
+        return render(request, 'inspection_commodity/commodity_details.html',
+                      {'commodity_inspection': commodity_inspection})
 
 def submit_commodity_inspection_form(request):
     reference_no = request.POST.get('referenceNo')
@@ -981,7 +1004,7 @@ def view_draft_commodity_inspection_details(request):
                    'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village, 'unit': unit,
                    'inspector_list': inspector_list})
 
-def update_inspection_report_application(request):
+def update_inspection_commodity_application(request):
     data = dict()
     reference_no = request.POST.get('referenceNo')
     ownerName = request.POST.get('ownerName')

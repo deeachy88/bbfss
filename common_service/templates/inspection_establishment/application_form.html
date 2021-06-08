@@ -25,13 +25,13 @@
                         <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadDetails()">General Information</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-nc" data-toggle="pill" href="#nc_details" role="tab" aria-controls="pills-nc" aria-selected="false" onclick="load_details()">NCs</a>
+                        <a class="nav-link" id="pills-nc" data-toggle="pill" href="#nc_details" role="tab" aria-controls="pills-nc" aria-selected="false" onclick="load_nc_details()">NCs</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-seized-item" data-toggle="pill" href="#seized_item_details" role="tab" aria-controls="pills-seized-item" aria-selected="false" onclick="load_details()">Seized Item Details</a>
+                        <a class="nav-link" id="pills-seized-item" data-toggle="pill" href="#seized_item_details" role="tab" aria-controls="pills-seized-item" aria-selected="false" onclick="load_seized_details()">Seized Item Details</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-sample-collection" data-toggle="pill" href="#sample_collection_details" role="tab" aria-controls="pills-sample-collection" aria-selected="false" onclick="load_details()">Sample Collection Details</a>
+                        <a class="nav-link" id="pills-sample-collection" data-toggle="pill" href="#sample_collection_details" role="tab" aria-controls="pills-sample-collection" aria-selected="false" onclick="load_sample_details()">Sample Collection Details</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="file-attach" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
@@ -242,21 +242,21 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Correction Proposed</label>
+                                            <label class="form-label">Action Proposed</label>
                                              <input type="text" name="Correction_Proposed" id="Correction_Proposed" class="form-control">
                                         </div>
                                         <div class="alert alert-danger" id="Correction_ProposedErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Date Line Correction</label>
+                                            <label class="form-label">Date Line for Action</label>
                                              <input type="text" name="Date_Line_Correction" id="Date_Line_Correction" class="form-control date-picker flatpickr-input active">
                                         </div>
                                         <div class="alert alert-danger" id="Date_Line_CorrectionErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Correction Taken</label>
+                                            <label class="form-label">Action Taken</label>
                                              <input type="text" name="Correction_Taken" id="Correction_Taken" class="form-control">
                                         </div>
                                         <div class="alert alert-danger" id="Correction_TakenErrorMsg" style="display:none"></div>
@@ -269,7 +269,7 @@
                                         <div class="alert alert-danger" id="Fine_ImposedErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Revenue Receipt</label>
+                                        <label class="form-label">Revenue Receipt No</label>
                                         <input type="text" name="Revenue_Receipt" class="form-control" id="Revenue_Receipt" required>
                                         <div class="alert alert-danger" id="Revenue_ReceiptErrorMsg" style="display:none"></div>
                                     </div>
@@ -534,6 +534,7 @@
 
 function save_inspection_details()
 {
+    var referenceNo = $('#applicationNo').val();
     var Inspection_Type = $('#Inspection_Type').val();
     var inspection_report_date = $('#inspection_report_date').val();
     var FBO_Name = $('#FBO_Name').val();
@@ -633,11 +634,35 @@ function save_inspection_details()
         $('#contactNumberErrorMsg').show();
         setTimeout('hideStatus("contactNumberErrorMsg")',2000);
     }
-    else
+    else if(referenceNo == "")
     {
         $.ajax({
             type : "POST",
             url : "{% url 'save_monitoring_form' %}",
+            data : $('#inspection_establishment_form').serialize(),
+            success : function(data)
+            {
+                $('#applicationNo').val(data.applNo);
+                $('#owner_manager_app_no').val(data.applNo);
+                $('#details_application_no').val(data.applNo);
+                $('#sample_collection_application_no').val(data.applNo);
+                $('#attachment_appNo').val(data.applNo);
+                $('#submitMsg').show();
+                setTimeout(function() {
+                    $("#submitMsg").hide('blind', {}, 500)
+                }, 1500);
+                setTimeout(function() {
+                    $('#pills-nc').tab('show');
+                }, 1500);
+
+            }
+        });
+    }
+    else if(referenceNo != "")
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'update_inspection_establishment_application' %}",
             data : $('#inspection_establishment_form').serialize(),
             success : function(data)
             {
@@ -710,6 +735,69 @@ function save_inspection_attachment()
 
 }
 
+
+function loadDetails()
+{
+    var refNo = $('#applicationNo').val();
+    if(refNo == "")
+        {
+            $("#pills-home-tab").prop('disabled', true);
+            $("#pills-nc").prop('disabled', true);
+            $('#pills-seized-item').prop('disabled', true);
+            $('#pills-sample-collection').prop('disabled', true);
+            $('#file-attach').prop('disabled', true);
+        }
+   else if(refNo != "")
+        {
+            $("#pills-home-tab").prop('disabled', false);
+            $("#pills-nc").prop('disabled', false);
+            $('#pills-seized-item').prop('disabled', false);
+            $('#pills-sample-collection').prop('disabled', false);
+            $('#file-attach').prop('disabled', false);
+        }
+}
+
+function load_nc_details()
+{
+    var refNo = $('#owner_manager_app_no').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_establishment_nc_details' %}",
+        data :{'refNo':refNo},
+        success : function(response)
+        {
+            $('#ncDetails').html(response);
+        }
+    });
+}
+
+function load_seized_details()
+{
+    var refNo = $('#details_application_no').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_establishment_seized_details' %}",
+        data :{'refNo':refNo},
+        success : function(response)
+        {
+            $('#item_details').html(response);
+        }
+    });
+}
+
+function load_sample_details()
+{
+    var refNo = $('#sample_collection_application_no').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_establishment_sample_details' %}",
+        data :{'refNo':refNo},
+        success : function(response)
+        {
+            $('#sample_collection').html(response);
+        }
+    });
+}
 
 function validateemailId(emailId)
 {
@@ -873,18 +961,6 @@ function next_item_details()
 function next_sample_collection()
 {
     $('#file-attach').tab('show');
-}
-
-function submit_inspection_details()
-{
-    $.ajax({
-        type : "POST",
-        url : "{% url 'submit_establishment_inspection_form' %}",
-        data : $('#inspection_establishment_form').serialize(),
-        success : function(responseText) {
-           location.reload();
-        }
-    });
 }
 
 function getGewog(dzongkhag_id)

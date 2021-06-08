@@ -300,6 +300,7 @@
 <script>
 function save_inspection_report()
 {
+    var referenceNo = $('#referenceNo').val();
     var ownerName = $('#ownerName').val();
     var regNumber = $('#regNumber').val();
     var dzongkhag = $('#dzongkhag').val();
@@ -406,7 +407,7 @@ function save_inspection_report()
         $('#contactNumberErrorMsg').show();
         setTimeout('hideStatus("contactNumberErrorMsg")',2000);
     }
-    else
+    else if(referenceNo == "")
     {
         $.ajax({
             type : "POST",
@@ -421,11 +422,34 @@ function save_inspection_report()
                 $('#submitMsg').show();
                 setTimeout(function() {
                     $("#submitMsg").hide('blind', {}, 500)
-                }, 2000);
+                }, 1500);
                 setTimeout(function() {
                     $('#pills-details').tab('show');
                     $('#commodity_details_card').show();
-                }, 3000);
+                }, 1500);
+            }
+        });
+    }
+    else if(referenceNo != "")
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'update_inspection_commodity_application' %}",
+            data : $('#commodity_application_form').serialize(),
+            success : function(data)
+            {
+                url : "{% url 'load_commodity_application_details' %}",
+                $('#referenceNo').val(data.refNo);
+                $('#refNo').val(data.refNo);
+                $('#attachment_refNo').val(data.refNo);
+                $('#submitMsg').show();
+                setTimeout(function() {
+                    $("#submitMsg").hide('blind', {}, 500)
+                }, 1500);
+                setTimeout(function() {
+                    $('#pills-details').tab('show');
+                    $('#commodity_details_card').show();
+                }, 1500);
             }
         });
     }
@@ -433,17 +457,35 @@ function save_inspection_report()
 
 function loadDetails()
 {
-    var appid = $('#referenceNo').val();
+    var refNo = $('#referenceNo').val();
+    if(refNo == "")
+        {
+            $("#pills-profile-tab").prop('disabled', true);
+            $("#pills-profile-file").prop('disabled', true);
+            $('#pills-details').prop('disabled', true);
+        }
+    else if(refNo != "")
+        {
+            $("#pills-profile-tab").prop('disabled', false);
+            $("#pills-profile-file").prop('disabled', false);
+            $('#pills-details').prop('disabled', false);
+        }
+}
+
+function load_details()
+{
+    var refNo = $('#refNo').val();
     $.ajax({
         type : "GET",
-        url : "{% url 'load_application_details' %}",
-        data :{'application_id':appid},
+        url : "{% url 'load_commodity_application_details' %}",
+        data :{'refNo':refNo},
         success : function(response)
         {
-            $('#applicant_details').html(response);
+            $('#commodity_details').html(response);
         }
     });
 }
+
 function load_attachment_details()
 {
     var refNo = $('#referenceNo').val();

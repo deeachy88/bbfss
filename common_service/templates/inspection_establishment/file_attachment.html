@@ -58,4 +58,16 @@ function DeleteAttachment(id)
         }
     });
 }
+
+function submit_inspection_details()
+{
+    $.ajax({
+        type : "POST",
+        url : "{% url 'submit_establishment_inspection_form' %}",
+        data : $('#inspection_establishment_form').serialize(),
+        success : function(responseText) {
+           location.reload();
+        }
+    });
+}
 </script>
