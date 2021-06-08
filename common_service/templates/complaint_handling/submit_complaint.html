@@ -21,7 +21,7 @@ option {
                             <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadDetails()">Complaint Form</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="pills-profile-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
+                            <a class="nav-link" id="pills-complaint-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
                         </li>
                     </ul>
                 </div>
@@ -124,7 +124,7 @@ option {
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="pills-profile-file">
+                    <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="pills-complaint-file">
                         <div id="fileAttach">
                             {% include 'complaint_handling/complaint_file_attachment_page.html' %}
                         </div>
@@ -172,6 +172,7 @@ option {
 <script>
 function Save_form(form)
     {
+        var appNo = $('#applicationNo').val();
         var cid = $('#cid').val();
         var name = $('#complainantName').val();
         var dzongkhag = $('#dzongkhag').val();
@@ -250,7 +251,7 @@ function Save_form(form)
             $('#contactNumberErrorMsg').show();
             setTimeout('hideStatus("contactNumberErrorMsg")',2000);
         }
-        else
+        else if(appNo == "")
         {
             $.ajax({
                 type : "POST",
@@ -263,7 +264,25 @@ function Save_form(form)
                         $("#submitMsg").hide('blind', {}, 500)
                     }, 1000);
                     setTimeout(function() {
-                         $('#pills-profile-file').tab('show');
+                         $('#pills-complaint-file').tab('show');
+                    }, 2000);
+                }
+            });
+        }
+        else if(appNo != "")
+        {
+            $.ajax({
+                type : "POST",
+                url : "{% url 'save_complaint' %}",
+                data : $('#complaintForm').serialize(),
+                success : function(data) {
+                    $('#applicationNo').val(data.applNo);
+                    $('#submitMsg').show();
+                    setTimeout(function() {
+                        $("#submitMsg").hide('blind', {}, 500)
+                    }, 1000);
+                    setTimeout(function() {
+                         $('#pills-complaint-file').tab('show');
                     }, 2000);
                 }
             });
@@ -374,14 +393,19 @@ function validateemailId(emailId)
     }else{
      $('#emailErrorMsg').hide();
     }
-
 }
 function checkContact(value)
 {
     var firstDigit = value.charAt(0);
     var secondDigit = value.charAt(1);
+    var length = value.length;
 
-    if(firstDigit != 7 && firstDigit != 1){
+    if (length <8){
+    $('#contactNumberErrorMsg').html("Contact Number must be 8 digit.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(1500).fadeOut('slow');
+    }
+    else if(firstDigit != 7 && firstDigit != 1){
         $('#contactNumberErrorMsg').html("Must Start with either 1 or 7.");
         $('#contactNumberErrorMsg').show();
         $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
@@ -403,6 +427,19 @@ function checkContact(value)
         $('#contactNumber').val("");
     }
 
+}
+
+function loadDetails()
+{
+    var refNo = $('#applicationNo').val();
+    if(refNo == "")
+        {
+            $("#pills-complaint-file").prop('disabled', true);
+        }
+    else if(refNo != "")
+        {
+            $("#pills-complaint-file").prop('disabled', false);
+        }
 }
 </script>
 {% endblock %}

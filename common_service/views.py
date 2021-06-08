@@ -143,6 +143,37 @@ def save_complaint(request):
     data['applNo'] = last_application_no
     return JsonResponse(data)
 
+
+def update_complaint_application(request):
+    data = dict()
+    application_no = request.POST.get('applicationNo')
+    applicant_Id = request.session['email']
+    cid = request.POST.get('cid')
+    complainantName = request.POST.get('complainantName')
+    dzongkhag = request.POST.get('dzongkhag')
+    gewog = request.POST.get('gewog')
+    village = request.POST.get('village')
+    contact_number = request.POST.get('contactNumber')
+    email = request.POST.get('email')
+    address = request.POST.get('address')
+    complaint_description = request.POST.get('complainDescription')
+
+    complaintDetails = t_common_complaint_t1.objects.filter(Application_No=application_no)
+    complaintDetails.update(
+        CID=cid,
+        Name=complainantName,
+        Dzongkhag_Code=dzongkhag,
+        Gewog_Code=gewog,
+        Village_Code=village,
+        Contact_No=contact_number,
+        Email=email,
+        Address=address,
+        Complaint_Description=complaint_description,
+    )
+    data['applNo'] = application_no
+    return JsonResponse(data)
+
+
 def load_complaint_attachment_details(request):
     application_id = request.GET.get('application_id')
     attachment_details = t_file_attachment.objects.filter(Application_No=application_id, Role_Id='8')

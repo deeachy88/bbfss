@@ -11,6 +11,7 @@ urlpatterns = [
     path('load_village', views.load_village, name='load_village'),
     path('co_complaint_list', views.co_complaint_list, name='co_complaint_list'),
     path('investigation_complaint_list', views.investigation_complaint_list, name='investigation_complaint_list'),
+    path('update_complaint_application', views.update_complaint_application, name='update_complaint_application'),
     path("investigation_complaint_details", views.investigation_complaint_details,
          name="investigation_complaint_details"),
     path('co_complaint_details', views.co_complaint_details, name='co_complaint_details'),

@@ -226,7 +226,7 @@
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Inspector Name</label>
                                         <input type="text" name="Inspector_Name" class="form-control" id="Inspector_Name" required>
-                                        <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
+                                        <div class="alert alert-danger" id="Inspector_NameErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Observation</label>
@@ -236,7 +236,7 @@
                                             <option value="Major">Major</option>
                                             <option value="NCs observed">NCs observed</option>
                                         </select>
-                                        <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
+                                        <div class="alert alert-danger" id="ObservationErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -320,7 +320,7 @@
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Inspector Name</label>
                                         <input type="text" name="Item_Inspector_Name" class="form-control" id="Item_Inspector_Name" required>
-                                        <div class="alert alert-danger" id="Item_ErrorMsg" style="display:none"></div>
+                                        <div class="alert alert-danger" id="Item_Inspector_NameErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Item Seized</label>
@@ -332,7 +332,7 @@
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Quantity Seized</label>
                                         <input type="number" class="form-control" id="Qty_Seized" name="Qty_Seized">
-                                        <div class="alert alert-danger" id="previous_to_dateErrorMsg" style="display:none"></div>
+                                        <div class="alert alert-danger" id="Qty_SeizedErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Unit </label>
@@ -863,69 +863,226 @@ function checkCID(value)
 
 function save_owner_manager_details()
 {
-    $.ajax({
-        type : "POST",
-        url : "{% url 'save_owner_manager_details' %}",
-        data : $('#owner_manager_form').serialize(),
-        success : function(responseText)
-        {
-            $('#saveMsg').show();
-            setTimeout(function() {
-                $("#saveMsg").hide('blind', {}, 500)
-            }, 1500);
-            setTimeout(function() {
-                $('#ncDetails').html(responseText);
-                $('#owner_manager_modal').modal('hide');
-                $('#pills-nc').tab('show');
-                $('.modal-backdrop').remove();
-            }, 1500);
-        }
-    });
+    var Inspection_Date = $('#Inspection_Date').val();
+    var Inspector_Name = $('#Inspector_Name').val();
+    var Observation = $('#Observation').val();
+    var Correction_Proposed = $('#Correction_Proposed').val();
+    var Date_Line_Correction = $('#Date_Line_Correction').val();
+    var Correction_Taken = $('#Correction_Taken').val();
+
+    if(Inspection_Date == "")
+    {
+        $('#Inspection_DateErrorMsg').html("Enter Inspection Date.");
+        $('#Inspection_DateErrorMsg').show();
+        $('#Inspection_DateErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Inspector_Name == "")
+    {
+        $('#Inspector_NameErrorMsg').html("Enter Inspector Name.");
+        $('#Inspector_NameErrorMsg').show();
+        $('#Inspector_NameErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Observation == "")
+    {
+        $('#ObservationErrorMsg').html("Select Observation.");
+        $('#ObservationErrorMsg').show();
+        $('#ObservationErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Date_Line_Correction == "")
+    {
+        $('#Date_Line_CorrectionErrorMsg').html("Enter date Line for Action.");
+        $('#Date_Line_CorrectionErrorMsg').show();
+        $('#Date_Line_CorrectionErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Correction_Taken == "")
+    {
+        $('#Correction_TakenErrorMsg').html("Enter Action Taken.");
+        $('#Correction_TakenErrorMsg').show();
+        $('#Correction_TakenErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else{
+        $.ajax({
+            type : "POST",
+            url : "{% url 'save_owner_manager_details' %}",
+            data : $('#owner_manager_form').serialize(),
+            success : function(responseText)
+            {
+                $('#saveMsg').show();
+                setTimeout(function() {
+                    $("#saveMsg").hide('blind', {}, 500)
+                }, 1500);
+                setTimeout(function() {
+                    $('#ncDetails').html(responseText);
+                    $('#owner_manager_modal').modal('hide');
+                    $('#pills-nc').tab('show');
+                    $('.modal-backdrop').remove();
+                }, 1500);
+            }
+        });
+    }
 }
 
 function save_item_details()
 {
-    $.ajax({
-        type : "POST",
-        url : "{% url 'save_item_details' %}",
-        data : $('#details_form').serialize(),
-        success : function(responseText)
-         {
-            $('#saveSMsg').show();
-            setTimeout(function() {
-                $("#saveSMsg").hide('blind', {}, 500)
-            }, 1500);
-            setTimeout(function() {
-                $('#item_details').html(responseText);
-                $('#details_model').modal('hide');
-                $('#pills-seized-item').tab('show');
-                $('.modal-backdrop').remove();
-            }, 1500);
-        }
+    var item_Inspection_Date = $('#item_Inspection_Date').val();
+    var Item_Inspector_Name = $('#Item_Inspector_Name').val();
+    var Items_Seized = $('#Items_Seized').val();
+    var Qty_Seized = $('#Qty_Seized').val();
+    var Unit = $('#Unit').val();
+    var reason = $('#reason').val();
 
-    });
+    if(item_Inspection_Date == "")
+    {
+        $('#item_Inspection_DateErrorMsg').html("Enter Inspection Date.");
+        $('#item_Inspection_DateErrorMsg').show();
+        $('#item_Inspection_DateErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Item_Inspector_Name == "")
+    {
+        $('#Item_Inspector_NameErrorMsg').html("Enter Inspector Name.");
+        $('#Item_Inspector_NameErrorMsg').show();
+        $('#Item_Inspector_NameErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Items_Seized == "")
+    {
+        $('#Items_SeizedErrorMsg').html("Enter Item Seized details.");
+        $('#Items_SeizedErrorMsg').show();
+        $('#Items_SeizedErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Unit == "")
+    {
+        $('#UnitErrorMsg').html("Select Unit.");
+        $('#UnitErrorMsg').show();
+        $('#UnitErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(reason == "")
+    {
+        $('#reasonErrorMsg').html("Enter REason for Rejection.");
+        $('#reasonErrorMsg').show();
+        $('#reasonErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else{
+        $.ajax({
+            type : "POST",
+            url : "{% url 'save_item_details' %}",
+            data : $('#details_form').serialize(),
+            success : function(responseText)
+             {
+                $('#saveSMsg').show();
+                setTimeout(function() {
+                    $("#saveSMsg").hide('blind', {}, 500)
+                }, 1500);
+                setTimeout(function() {
+                    $('#item_details').html(responseText);
+                    $('#details_model').modal('hide');
+                    $('#pills-seized-item').tab('show');
+                    $('.modal-backdrop').remove();
+                }, 1500);
+            }
+        });
+    }
 }
 
 function save_sample_details()
 {
-    $.ajax({
-        type : "POST",
-        url : "{% url 'save_sample_details' %}",
-        data : $('#sample_collection_form').serialize(),
-        success : function(responseText)
-        {
-            $('#saveCMsg').show();
-            setTimeout(function() {
-                $("#saveCMsg").hide('blind', {}, 500)
-            }, 1500);
-            setTimeout(function() {
-                $('#sample_collection').html(responseText);
-                $('#sample_collection_model').modal('hide');
-                $('#pills-sample-collection').tab('show');
-                $('.modal-backdrop').remove();
-            }, 1500);
-        }
-    });
+    var Collection_Type = $('#Collection_Type').val();
+    var Collection_Date = $('#Collection_Date').val();
+    var Submission_Date = $('#Submission_Date').val();
+    var HS_Code_Imp = $('#HS_Code_Imp').val();
+    var HS_Code_Local = $('#HS_Code_Local').val();
+    var Sample_Type = $('#Sample_Type').val();
+    var Qty = $('#Qty').val();
+    var Batch_No = $('#Batch_No').val();
+    var Batch_Date = $('#Batch_Date').val();
+    var Test_Requested = $('#Test_Requested').val();
+    var Test_Report = $('#Test_Report').val();
+
+    if(Collection_Type == "")
+    {
+        $('#Collection_TypeErrorMsg').html("Enter Collection Type.");
+        $('#Collection_TypeErrorMsg').show();
+        $('#Collection_TypeErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Collection_Date == "")
+    {
+        $('#Collection_DateErrorMsg').html("Select Collection Date.");
+        $('#Collection_DateErrorMsg').show();
+        $('#Collection_DateErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Submission_Date == "")
+    {
+        $('#Submission_DateErrorMsg').html("Select Submission Date.");
+        $('#Submission_DateErrorMsg').show();
+        $('#Submission_DateErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(HS_Code_Imp == "")
+    {
+        $('#HS_Code_ImpErrorMsg').html("Enter HS Code (imp).");
+        $('#HS_Code_ImpErrorMsg').show();
+        $('#HS_Code_ImpErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(HS_Code_Local == "")
+    {
+        $('#HS_Code_LocalErrorMsg').html("Enter HS Code (Local).");
+        $('#HS_Code_LocalErrorMsg').show();
+        $('#HS_Code_LocalErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Sample_Type == "")
+    {
+        $('#Sample_TypeErrorMsg').html("Enter Sample Type.");
+        $('#Sample_TypeErrorMsg').show();
+        $('#Sample_TypeErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Qty == "")
+    {
+        $('#QtyErrorMsg').html("Enter Quantity.");
+        $('#QtyErrorMsg').show();
+        $('#QtyErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Batch_No == "")
+    {
+        $('#Batch_NoErrorMsg').html("Enter Batch No.");
+        $('#Batch_NoErrorMsg').show();
+        $('#Batch_NoErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Batch_Date == "")
+    {
+        $('#Batch_DateErrorMsg').html("Enter Batch Date.");
+        $('#Batch_DateErrorMsg').show();
+        $('#Batch_DateErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Test_Requested == "")
+    {
+        $('#Test_RequestedErrorMsg').html("Enter test Requested.");
+        $('#Test_RequestedErrorMsg').show();
+        $('#Test_RequestedErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Test_Report == "")
+    {
+        $('#Test_ReportErrorMsg').html("Enter Test Report.");
+        $('#Test_ReportErrorMsg').show();
+        $('#Test_ReportErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else{
+        $.ajax({
+            type : "POST",
+            url : "{% url 'save_sample_details' %}",
+            data : $('#sample_collection_form').serialize(),
+            success : function(responseText)
+            {
+                $('#saveCMsg').show();
+                setTimeout(function() {
+                    $("#saveCMsg").hide('blind', {}, 500)
+                }, 1500);
+                setTimeout(function() {
+                    $('#sample_collection').html(responseText);
+                    $('#sample_collection_model').modal('hide');
+                    $('#pills-sample-collection').tab('show');
+                    $('.modal-backdrop').remove();
+                }, 1500);
+            }
+        });
+    }
 }
 
 function show_owner_manager_modal()
