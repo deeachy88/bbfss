@@ -1,0 +1,179 @@
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+
+<div class="card">
+    <div class="card-header">
+        <h4 class="card-title">Inspection Report For Commodity</h4>
+    </div>
+    <div class="card-body">
+        {% for application_details in application_details %}
+        {% csrf_token %}
+            <div class="tab-content mt-2 mb-3" id="pills-tabContent">
+                <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                    <div id="applicant_details">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Name of the Owner/Unit: &nbsp;&nbsp;</label> <label>{{ application_details.FBO_Name }}</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Registration Number: &nbsp;&nbsp;</label><label>{{ application_details.Registration_No }}</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    {% for dzongkhag in dzongkhag %}
+                                    <label class="form-label">Dzongkhag: &nbsp;&nbsp;</label><label>{{ dzongkhag.Dzongkhag_Name }}</label>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    {% for gewog in gewog %}
+                                    <label class="form-label">Gewog: &nbsp;&nbsp;</label><label>{{ gewog.Gewog_Name }}</label>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    {% for village in village %}
+                                    <label class="form-label">Village: &nbsp;&nbsp;</label><label>{{ village.Village_Name }}</label>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Address: &nbsp;&nbsp;</label><label>{{ application_details.Address }}</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Contact Number: &nbsp;&nbsp;</label><label>{{ application_details.Contact_No }}</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Email: &nbsp;&nbsp;</label><label>{{ application_details.Email }}</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Commodity: &nbsp;&nbsp;</label><label>{{ application_details.Commodity }}</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Inspection Date: &nbsp;&nbsp;</label><label>{{application_details.Inspection_Date|date:'d-m-Y'}}</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Inspection Team: &nbsp;&nbsp;</label><label>{{ application_details.Inspection_Team }}</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Purpose of Inspection: &nbsp;&nbsp;</label><label>{{ application_details.Purpose }}</label>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="row">
+                             <div class="col-md-8">
+                                <div class="form-group">
+                                    <label class="form-label">Observations: &nbsp;&nbsp;</label><label>{{ application_details.Observation }}</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                {% for team_leader in team_leader %}
+                                <label class="form-label">Inspection Team Leader: &nbsp;&nbsp;</label><label>{{ team_leader.Name }}</label>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">Commodity</span>
+                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Inspected</span>
+                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Commodity</th>
+                                <th scope="col">Commodity Requirement</th>
+                                <th scope="col">Qty Inspected</th>
+                                <th scope="col">Unit</th>
+                                <th scope="col">Qty Cleared</th>
+                                <th scope="col">Qty Rejected</th>
+                                <th scope="col">Reason for Rejection</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for commodity_inspection in details %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{commodity_inspection.Commodity}}</td>
+                                    <td>{{commodity_inspection.Commodity_Requirement}}</td>
+                                    <td>{{commodity_inspection.Qty_Inspected}}</td>
+                                    <td>{{commodity_inspection.Unit}}</td>
+                                    <td>{{commodity_inspection.Qty_Cleared}}</td>
+                                    <td>{{commodity_inspection.Qty_Rejected}}</td>
+                                    <td>{{commodity_inspection.Reason_For_Rejection}}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                  <td colspan="8" class="text-center">No Data</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">File</span>
+                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Attachments</span>
+                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">File</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           {% for file_attach in file_attach %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{file_attach.Attachment}}</td>
+                                        <td><a href='..{{file_attach.File_Path}}/{{file_attach.Attachment}}'
+                                               class="btn btn-info btn-border btn-round btn-sm" target="_blank">
+                                               Download File</a></td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="3" class="text-center">No Data</td>
+                                    </tr>
+                           {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

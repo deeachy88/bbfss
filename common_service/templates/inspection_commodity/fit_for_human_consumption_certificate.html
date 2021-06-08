@@ -1,0 +1,147 @@
+{% load static %}
+{% load crispy_forms_tags %}
+{% load static %}
+<style>
+    .header-card {
+    background-color: white;
+}
+
+table, th, td {
+  border: 1px solid black;
+}
+</style>
+<div class="animated fadeIn">
+    <div class="card-header header-card"><font color='black'>
+        <div class="card-head-row float-right">
+            <div class="card-tools">
+                <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Complaint Report';printClientTable()">
+                    <span class="btn-label">
+                        <i class="zmdi zmdi-print"></i>
+                    </span>
+                    Print
+                </a>
+            </div>
+        </div>
+        <div class="card-title text-center">
+            <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
+        </div>
+        <h4 class="text-center"><font color='black'><b>FIT FOR HUMAN CONSUMPTION CERTIFICATE</b></font></h4>
+        <br>
+        {% for application_details in application_details %}
+        <div class="row float-left">
+            <p>Reference No:.&nbsp;&nbsp;<b>{{ application_details.Reference_No }}</b></p>
+        </div>
+        <div class="row float-right">
+            <p>Date of issue&nbsp;:&nbsp;<b>{{application_details.Inspection_Date|date:'d-m-Y'}}</b></p>
+        </div>
+        <br>
+        {% csrf_token %}
+        <table style="width:100%">
+            <tr>
+                <td>
+                    <p>Name of the Owner/Unit: &nbsp;&nbsp<b>{{ application_details.FBO_Name }}</b></p>
+                </td>
+                <td>
+                    <p>Registration Number: &nbsp;&nbsp;<b>{{ application_details.Registration_No }}</b></p>
+                </td>
+            </tr>
+            <tr>
+                <td>{% for dzongkhag in dzongkhag %}
+                    <p>Dzongkhag: &nbsp;&nbsp;<b>{{ dzongkhag.Dzongkhag_Name }}</b></p>
+                    {% endfor %}
+                </td>
+                <td>{% for gewog in gewog %}
+                    <p>Gewog: &nbsp;&nbsp;<b>{{ gewog.Gewog_Name }}</b></p>
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <td>{% for village in village %}
+                    <p>Village: &nbsp;&nbsp;<b>{{ village.Village_Name }}</b></p>
+                    {% endfor %}
+                </td>
+                <td>
+                    <p>Address: &nbsp;&nbsp;<b>{{ application_details.Address }}</b></p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>Contact Number: &nbsp;&nbsp;<b>{{ application_details.Contact_No }}</b></p>
+                </td>
+                <td>
+                    <p>Email: &nbsp;&nbsp;<b>{{ application_details.Email }}</b></p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>Commodity: &nbsp;&nbsp;<b>{{ application_details.Commodity }}</b></p>
+                </td>
+                <td>
+                    <p>Inspection Date: &nbsp;&nbsp;<b>{{application_details.Inspection_Date|date:'d-m-Y'}}</b></p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>Inspection Team: &nbsp;&nbsp;<b>{{ application_details.Inspection_Team }}</b></p>
+                </td>
+                <td>
+                    <p>Purpose of Inspection: &nbsp;&nbsp;<b>{{ application_details.Purpose }}</b></p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>Observations: &nbsp;&nbsp;<b>{{ application_details.Observation }}</b></p>
+                </td>
+                <td>{% for team_leader in team_leader %}
+                    <p>Inspection Team Leader: &nbsp;&nbsp;<b>{{ team_leader.Name }}</b></p>
+                    {% endfor %}
+                </td>
+            </tr>
+        </table>
+        <br>
+        <div class="border-bottom w-100 " style="border: 1px solid#888; margin-bottom:10px;"></div>
+        <div class="card-body">
+            <table style="width:100%">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Commodity</th>
+                        <th scope="col">Commodity Requirement</th>
+                        <th scope="col">Qty Inspected</th>
+                        <th scope="col">Unit</th>
+                        <th scope="col">Qty Cleared</th>
+                        <th scope="col">Qty Rejected</th>
+                        <th scope="col">Reason for Rejection</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for commodity_inspection in details %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{commodity_inspection.Commodity}}</td>
+                            <td>{{commodity_inspection.Commodity_Requirement}}</td>
+                            <td>{{commodity_inspection.Qty_Inspected}}</td>
+                            <td>{{commodity_inspection.Unit}}</td>
+                            <td>{{commodity_inspection.Qty_Cleared}}</td>
+                            <td>{{commodity_inspection.Qty_Rejected}}</td>
+                            <td>{{commodity_inspection.Reason_For_Rejection}}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                          <td colspan="8" class="text-center">No Data</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <br>
+        <br>
+        <br>
+        <br>
+        {% endfor %}
+        <div>
+            <div>Name of Signature of the Issuing Authority</div>
+        </div>
+    </font>
+    </div>
+</div>

@@ -86,7 +86,7 @@ option {
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-label">Contact Number</label>
-                                        <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)">
+                                        <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
                                     </div>
                                     <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
                                 </div>
@@ -95,14 +95,14 @@ option {
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-label">Email</label>
-                                        <input type="email" class="form-control" id="email" name="email">
+                                        <input type="email" class="form-control" id="email" name="email" onchange="validateemailId(this.value)">
                                     </div>
                                     <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-label">Address</label>
-                                        <input type="email" class="form-control" id="address" name="address">
+                                        <input type="text" class="form-control" id="address" name="address">
                                     </div>
                                     <div class="alert alert-danger" id="addressErrorMsg" style="display:none"></div>
                                 </div>
@@ -126,7 +126,7 @@ option {
                     </div>
                     <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="pills-profile-file">
                         <div id="fileAttach">
-                            {% include 'complaint_handling/investigation_file_attachment_page.html' %}
+                            {% include 'complaint_handling/complaint_file_attachment_page.html' %}
                         </div>
                     </div>
                 </div>
@@ -331,6 +331,7 @@ function save_attachment()
                     success : function(responseText)
                     {
                         $('#file-attachment').html(responseText);
+                        $('#attachmentModal').modal('hide');
                         $('.modal-backdrop').remove();
                     }
                 });
@@ -359,5 +360,49 @@ function load_attachment_details()
     });
 }
 
+function validateemailId(emailId)
+{
+    var pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+    var no=emailId.match(pattern);
+
+    if(no==null)
+    {
+        $('#emailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
+        $('#email').val("");
+        $('#emailErrorMsg').show();
+        $('#emailErrorMsg').delay(2000).fadeOut('slow');
+    }else{
+     $('#emailErrorMsg').hide();
+    }
+
+}
+function checkContact(value)
+{
+    var firstDigit = value.charAt(0);
+    var secondDigit = value.charAt(1);
+
+    if(firstDigit != 7 && firstDigit != 1){
+        $('#contactNumberErrorMsg').html("Must Start with either 1 or 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 1 && secondDigit != 6 && secondDigit != 7){
+        $('#contactNumberErrorMsg').html("Second Digit Must Start with either 6 or 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 7 && secondDigit == 6){
+        $('#contactNumberErrorMsg').html("Second Digit Cannot be 6.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 7 && secondDigit != 7){
+        $('#contactNumberErrorMsg').html("Second Digit Must Start with 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }
+
+}
 </script>
 {% endblock %}

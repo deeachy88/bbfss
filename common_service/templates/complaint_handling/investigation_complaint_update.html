@@ -123,8 +123,20 @@
                    {% endfor %}
                 </tbody>
             </table>
+            <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                    <span class="px-2 small text-muted font-weight-bold text-muted form-label">Assignment</span>
+                    <span class="px-1 small text-muted font-weight-bold text-muted form-label">Remarks</span>
+                <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+            </div>
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label>Assign Date</label>
+                        <input type="text" disabled class="form-control" id="assignDate" name="assignDate" value="{{complaint_details.Assign_Date}}">
+                    </div>
+                </div>
+                <div class="col-md-10">
                     <div class="form-group">
                         <label>Complaint Officer Remarks</label>
                         <textarea class="form-control" disabled id="assignRemarks" name="assignRemarks">{{complaint_details.Assign_Remarks}}</textarea>
@@ -133,7 +145,6 @@
                 </div>
             </div>
         {% endfor %}
-            <br>
             <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
                 <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
                     <span class="px-2 small text-muted font-weight-bold text-muted form-label">Investigation</span>
@@ -165,7 +176,7 @@
                     {% for complaint_details in complaint_details %}
                         <button type="button" class="btn btn-primary" onclick="investigationSubmit('{{ complaint_details.Application_No }}')"> Submit </button>
                     {% endfor %}
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" ><a href="{% url 'investigation_complaint_list' %}">Close</a></button>
                 </div>
                 <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
                     Investigation Report Submitted Successfully
@@ -209,9 +220,7 @@
         </div>
     </div>
 </form>
-<script src="{% static 'assets/js/app.min.js' %}"></script>
 <script>
-
 function investigationSubmit(form)
 {
     var inDate = $('#investigationDate').val();

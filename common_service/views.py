@@ -12,26 +12,15 @@ from administrator.models import t_dzongkhag_master, t_gewog_master, t_village_m
 from bbfss import settings
 
 from common_service.models import t_common_complaint_t1, t_inspection_monitoring_t1, t_inspection_monitoring_t2, \
-    t_inspection_monitoring_t3, t_inspection_monitoring_t4
-from livestock.models import t_livestock_clearance_meat_shop_t1, t_livestock_clearance_meat_shop_t2
-from livestock.views import meat_shop_clearance_no, update_payment
+    t_inspection_monitoring_t3, t_inspection_monitoring_t4, t_commodity_inspection_t1, t_commodity_inspection_t2
 
 from plant.models import t_workflow_details, t_file_attachment
 from plant.views import inspector_application
 
-
 def co_complaint_list(request):
-    # Role_Id = request.session['Role_Id']
-    # global acknowledge_status
-    # service_details = t_service_master.objects.all()
-    complaint_details = t_workflow_details.objects.filter(Application_Status='P',
-                                                          Assigned_Role_Id='3') | t_workflow_details.objects.filter(
-        Application_Status='A', Assigned_Role_Id='3')
-    # for application_number in complaint_details:
-    # app_no = application_number.Application_No
-    # acknowledge_status = t_common_complaint_t1.objects.filter(Application_No=app_no)
+    complaint_details = t_workflow_details.objects.filter(Application_Status='P', Assigned_Role_Id='3').order_by('Application_No').reverse() | \
+                        t_workflow_details.objects.filter(Application_Status='A', Assigned_Role_Id='3').order_by('Application_No').reverse()
     return render(request, 'complaint_officer_pending_list.html', {'complaint_details': complaint_details})
-
 
 def investigation_report_list(request):  # list of investigation report submitted to the Complaint Officer
     complaint_details = t_workflow_details.objects.filter(Application_Status='IR', Assigned_Role_Id='3')
@@ -44,14 +33,15 @@ def investigation_report_details(request):
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
     details = t_common_complaint_t1.objects.filter(Application_No=Application_No)
-    file = t_file_attachment.objects.filter(Application_No=Application_No)
+    complaint_file = t_file_attachment.objects.filter(Application_No=Application_No, Role_Id='8')
+    investigation_file = t_file_attachment.objects.filter(Application_No=Application_No, Role_Id='5')
     for userId in details:
         user_id = userId.Assign_To
         user_details = t_user_master.objects.filter(Login_Id=user_id)
 
     return render(request, 'complaint_handling/complaint_officer_complaint_close.html',
                   {'complaint_details': details, 'user_details': user_details, 'dzongkhag': dzongkhag, 'gewog': gewog,
-                   'village': village, 'file': file})
+                   'village': village, 'complaint_file': complaint_file, 'investigation_file': investigation_file})
 
 def complaint_closed_list(request):
     complaint_closed_details = t_workflow_details.objects.filter(Application_Status='C', Assigned_Role_Id='3')
@@ -180,7 +170,7 @@ def add_complaint_file_name(request):
         t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
                                          Role_Id='8', File_Path=fs, Attachment=fileName)
 
-        complaint_file = t_file_attachment.objects.filter(Application_No=Application_No, Rold_id='8')
+        complaint_file = t_file_attachment.objects.filter(Application_No=Application_No, Role_Id='8')
     return render(request, 'complaint_handling/complaint_file_attachment_page.html', {'complaint_file': complaint_file})
 
 def delete_complaint_file(request):
@@ -193,8 +183,8 @@ def delete_complaint_file(request):
         fs.delete(str(fileName))
     file.delete()
 
-    file_attach = t_file_attachment.objects.filter(Application_No=Application_No, Role_Id='8')
-    return render(request, 'complaint_handling/complaint_file_attachment_page.html', {'file_attach': file_attach})
+    complaint_file = t_file_attachment.objects.filter(Application_No=Application_No, Role_Id='8')
+    return render(request, 'complaint_handling/complaint_file_attachment_page.html', {'complaint_file': complaint_file})
 
 
 def load_investigation_attachment_details(request):
@@ -313,11 +303,11 @@ def forward_complaint_to_co(request):
     app_no = request.POST.get('applicationNo')
     investigation_report = request.POST.get('investigationReport')
     investigation_date = request.POST.get('investigationDate')
-    #forward_to = request.POST.get('forwardTo')
+    ins_investigation_date = datetime.strptime(investigation_date, '%d-%m-%Y').date()
     forward_details = t_common_complaint_t1.objects.filter(Application_No=app_no)
 
     forward_details.update(Investigation_Report=investigation_report)
-    forward_details.update(Investigation_Date=investigation_date)
+    forward_details.update(Investigation_Date=ins_investigation_date)
     forward_details.update(Application_Status='IR')
 
     application_details = t_workflow_details.objects.filter(Application_No=app_no)
@@ -385,14 +375,14 @@ def get_complaint_application_no(request, service_code):
 
 
 
+#Establishment Inspection and Monitoring
 
-
-def inspection_and_monitoring_form(request):
+def establishment_inspection_form(request):
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
     unit = t_unit_master.objects.all()
-    return render(request, 'inspection_monitoring/application_form.html',
+    return render(request, 'inspection_establishment/application_form.html',
                   {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village, 'unit': unit})
 
 
@@ -412,6 +402,8 @@ def save_monitoring_form(request):
     owner_name = request.POST.get('owner_name')
     email = request.POST.get('email')
     contactNumber = request.POST.get('contactNumber')
+    observations = request.POST.get('observations')
+    Login_Id = request.session['login_id']
     date_format_ins = datetime.strptime(inspection_report_date, '%d-%m-%Y').date()
 
     t_inspection_monitoring_t1.objects.create(
@@ -428,7 +420,10 @@ def save_monitoring_form(request):
         CID=cid,
         Inspection_Report_Date=date_format_ins,
         Name_Of_Owner=owner_name,
-        Service_Code=service_code
+        Service_Code=service_code,
+        Observation=observations,
+        Created_Date=None,
+        Created_By=Login_Id
     )
     data['applNo'] = monitoring_ref_no
     return JsonResponse(data)
@@ -460,9 +455,24 @@ def save_owner_manager_details(request):
     Fine_Imposed = request.POST.get('Fine_Imposed')
     Revenue_Receipt = request.POST.get('Revenue_Receipt')
     Receipt_Date = request.POST.get('Receipt_Date')
-    date_format_ins = datetime.strptime(Inspection_Date, '%d-%m-%Y').date()
-    date_of_receipt = datetime.strptime(Receipt_Date, '%d-%m-%Y').date()
-    date_line = datetime.strptime(Date_Line_Correction, '%d-%m-%Y').date()
+
+    if not Inspection_Date:
+        date_format_ins = None
+    else:
+        date_format_ins = datetime.strptime(Inspection_Date, '%d-%m-%Y').date()
+    if not Receipt_Date:
+        date_of_receipt = None
+    else:
+        date_of_receipt = datetime.strptime(Receipt_Date, '%d-%m-%Y').date()
+    if not Date_Line_Correction:
+        date_line = None
+    else:
+        date_line = datetime.strptime(Date_Line_Correction, '%d-%m-%Y').date()
+
+    if not Fine_Imposed:
+        fine_amt = None
+    else:
+        fine_amt = Fine_Imposed
 
     t_inspection_monitoring_t2.objects.create(
         Reference_No=Reference_No,
@@ -472,12 +482,12 @@ def save_owner_manager_details(request):
         Correction_Proposed=Correction_Proposed,
         Date_Line_Correction=date_line,
         Correction_Taken=Correction_Taken,
-        Fine_Imposed=Fine_Imposed,
+        Fine_Imposed=fine_amt,
         Revenue_Receipt=Revenue_Receipt,
         Receipt_Date=date_of_receipt
     )
     details = t_inspection_monitoring_t2.objects.filter(Reference_No=Reference_No)
-    return render(request, 'inspection_monitoring/owner_manager_details.html', {'details': details})
+    return render(request, 'inspection_establishment/owner_manager_details.html', {'details': details})
 
 
 def save_item_details(request):
@@ -491,9 +501,27 @@ def save_item_details(request):
     Fine_Imposed = request.POST.get('Item_Fine_Imposed')
     Revenue_Receipt = request.POST.get('Item_Revenue_Receipt')
     Receipt_Date = request.POST.get('Item_Receipt_Date')
-    Detaintion_Destruction_No = request.POST.get('Detaintion_Destruction_No')
-    date_format_ins = datetime.strptime(Inspection_Date, '%d-%m-%Y').date()
-    date_of_receipt = datetime.strptime(Receipt_Date, '%d-%m-%Y').date()
+    Detention_Destruction_No = request.POST.get('Detaintion_Destruction_No')
+
+    if not Inspection_Date:
+        date_format_ins = None
+    else:
+        date_format_ins = datetime.strptime(Inspection_Date, '%d-%m-%Y').date()
+
+    if not Receipt_Date:
+        date_of_receipt = None
+    else:
+        date_of_receipt = datetime.strptime(Receipt_Date, '%d-%m-%Y').date()
+
+    if not Fine_Imposed:
+        fine_amt = None
+    else:
+        fine_amt = Fine_Imposed
+
+    if not Detention_Destruction_No:
+        destruction_no = None
+    else:
+        destruction_no = Detention_Destruction_No
 
     t_inspection_monitoring_t3.objects.create(
         Reference_No=Reference_No,
@@ -503,13 +531,13 @@ def save_item_details(request):
         Qty_Seized=Qty_Seized,
         Unit=Unit,
         Reason=Reason,
-        Fine_Imposed=Fine_Imposed,
+        Fine_Imposed=fine_amt,
         Revenue_Receipt=Revenue_Receipt,
         Receipt_Date=date_of_receipt,
-        Detaintion_Destruction_No=Detaintion_Destruction_No
+        Detention_Destruction_No=destruction_no
     )
     details = t_inspection_monitoring_t3.objects.filter(Reference_No=Reference_No)
-    return render(request, 'inspection_monitoring/item_details.html', {'details': details})
+    return render(request, 'inspection_establishment/item_details.html', {'details': details})
 
 
 def save_sample_details(request):
@@ -521,37 +549,59 @@ def save_sample_details(request):
     HS_Code_Local = request.POST.get('HS_Code_Local')
     Sample_Type = request.POST.get('Sample_Type')
     Qty = request.POST.get('Qty')
-    Batch_No_Date = request.POST.get('Batch_No_Date')
+    Batch_No = request.POST.get('Batch_No')
+    Batch_Date = request.POST.get('Batch_Date')
     Test_Requested = request.POST.get('Test_Requested')
     Test_Report = request.POST.get('Test_Report')
-    date_format_collection = datetime.strptime(Collection_Date, '%d-%m-%Y').date()
-    date_of_submission = datetime.strptime(Submission_Date, '%d-%m-%Y').date()
+
+    if not Collection_Date:
+        date_format_collection = None
+    else:
+        date_format_collection = datetime.strptime(Collection_Date, '%d-%m-%Y').date()
+
+    if not Submission_Date:
+        date_of_submission = None
+    else:
+        date_of_submission = datetime.strptime(Submission_Date, '%d-%m-%Y').date()
+
+    if not Batch_Date:
+        BatchDate = None
+    else:
+        BatchDate = datetime.strptime(Batch_Date, '%d-%m-%Y').date()
+
+    if not Qty:
+        qty_collected = None
+    else:
+        qty_collected = Qty
+
 
     t_inspection_monitoring_t4.objects.create(
         Reference_No=Reference_No,
+        Collection_Type=Collection_Type,
         Collection_Date=date_format_collection,
         Submission_Date=date_of_submission,
         HS_Code_Imp=HS_Code_Imp,
         HS_Code_Local=HS_Code_Local,
         Sample_Type=Sample_Type,
-        Qty=Qty,
-        Batch_No_Date=Batch_No_Date,
+        Qty=qty_collected,
+        Batch_No=Batch_No,
+        Batch_Date=BatchDate,
         Test_Requested=Test_Requested,
         Test_Report=Test_Report
     )
     details = t_inspection_monitoring_t4.objects.filter(Reference_No=Reference_No)
-    return render(request, 'inspection_monitoring/sample_collection_details.html', {'details': details})
+    return render(request, 'inspection_establishment/sample_collection_details.html', {'details': details})
 
 
 def inspection_file(request):
     data = dict()
     myFile = request.FILES['document']
-    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/common_service/inspection_monitoring")
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/common_service/inspection_establishment")
     if fs.exists(myFile.name):
         data['form_is_valid'] = False
     else:
         fs.save(myFile.name, myFile)
-        file_url = "attachments" + "/" + str(timezone.now().year) + "/common_service/inspection_monitoring" + "/" \
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/common_service/inspection_establishment" + "/" \
                    + myFile.name
         data['form_is_valid'] = True
         data['file_url'] = file_url
@@ -570,21 +620,26 @@ def inspection_file_name(request):
                                          Attachment=fileName)
 
         file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
-    return render(request, 'inspection_monitoring/file_attachment.html', {'file_attach': file_attach})
+    return render(request, 'inspection_establishment/file_attachment.html', {'file_attach': file_attach})
 
 
-def submit_inspection_details(request):
+def submit_establishment_inspection_form(request):
     Application_No = request.POST.get('application_no')
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
     details = t_inspection_monitoring_t1.objects.filter(Reference_No=Application_No)
-    details.update(Application_Flag='C')
-    details.update(Application_Date=date.today())
-    return redirect(inspection_and_monitoring_form)
+    details.update(Created_Date=date.today())
+    return render(request, 'inspection_establishment/application_form.html',
+                  {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village})
+
+
 
 
 def draft_application_list(request):
     application_details = t_inspection_monitoring_t1.objects.filter(Application_Flag='P')
     service_details = t_service_master.objects.all()
-    return render(request, 'inspection_monitoring/draft_application.html',
+    return render(request, 'inspection_establishment/draft_application.html',
                   {'application_details': application_details, 'service_details': service_details})
 
 
@@ -599,7 +654,7 @@ def view_draft_details(request):
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
     unit = t_unit_master.objects.all()
-    return render(request, 'inspection_monitoring/draft_application_details.html',
+    return render(request, 'inspection_establishment/draft_application_details.html',
                   {'application_details': application_details, 'details': details, 't3_details': t3_details,
                    't4_details': t4_details, 'file_attach': file_attach, 'dzongkhag': dzongkhag,
                    'gewog': gewog, 'village': village, 'unit': unit})
@@ -640,10 +695,423 @@ def update_inspection_details(request):
     data['applNo'] = reference_no
     return JsonResponse(data)
 
-
 def submit_draft_inspection_details(request):
     Application_No = request.POST.get('application_no')
     details = t_inspection_monitoring_t1.objects.filter(Reference_No=Application_No)
-    details.update(Application_Flag='C')
-    details.update(Application_Date=date.today())
+    details.update(Created_Date=date.today())
     return redirect(draft_application_list)
+
+def load_establishment_attachment_details(request):
+    referenceNo = request.GET.get('refNo')
+    attachment_details = t_file_attachment.objects.filter(Application_No=referenceNo)
+    return render(request, 'inspection_commodity/file_attachment.html',
+                  {'file_attach': attachment_details})
+
+def delete_establishment_file(request):
+    File_Id = request.GET.get('file_id')
+    referenceNo = request.GET.get('refNo')
+    file = t_file_attachment.objects.filter(pk=File_Id)
+    for file in file:
+        fileName = file.Attachment
+        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/common_service/inspection_establishment")
+        fs.delete(str(fileName))
+    file.delete()
+    file_attach = t_file_attachment.objects.filter(Application_No=referenceNo)
+    return render(request, 'inspection_establishment/file_attachment.html', {'file_attach': file_attach})
+
+def delete_nc_details(request):
+    record_id = request.GET.get('record_id')
+    reference_no = request.GET.get('refNo')
+    record = t_inspection_monitoring_t2.objects.filter(Record_Id=record_id)
+    record.delete()
+    nc_inspection = t_inspection_monitoring_t2.objects.filter(Reference_No=reference_no)
+    return render(request, 'inspection_establishment/owner_manager_details.html',
+                  {'details': nc_inspection})
+
+def delete_seized_details(request):
+    record_id = request.GET.get('record_id')
+    reference_no = request.GET.get('refNo')
+    record = t_inspection_monitoring_t3.objects.filter(Record_Id=record_id)
+    record.delete()
+    details = t_inspection_monitoring_t3.objects.filter(Reference_No=reference_no)
+    return render(request, 'inspection_establishment/item_details.html',
+                  {'details': details})
+
+def delete_collection_details(request):
+    record_id = request.GET.get('record_id')
+    reference_no = request.GET.get('refNo')
+    record = t_inspection_monitoring_t4.objects.filter(Record_Id=record_id)
+    record.delete()
+    details = t_inspection_monitoring_t4.objects.filter(Reference_No=reference_no)
+    return render(request, 'inspection_establishment/sample_collection_details.html',
+                  {'details': details})
+
+def view_establishment_inspection_list(request):
+    application_details = t_inspection_monitoring_t1.objects.filter(Created_Date__isnull=False)
+    return render(request, 'inspection_establishment/establishment_inspection_list.html',
+                  {'application_details': application_details})
+
+def view_establishment_inspection_details(request):
+    reference_no = request.GET.get('reference_no')
+    application_details = t_inspection_monitoring_t1.objects.filter(Reference_No=reference_no)
+    details = t_inspection_monitoring_t2.objects.filter(Reference_No=reference_no)
+    seized_details = t_inspection_monitoring_t3.objects.filter(Reference_No=reference_no)
+    sample_details = t_inspection_monitoring_t4.objects.filter(Reference_No=reference_no)
+    file_attach = t_file_attachment.objects.filter(Application_No=reference_no)
+    for dzoCode in application_details:
+        dzo_code = dzoCode.Dzongkhag_Code
+    for gewogCode in application_details:
+        gewog_code = gewogCode.Gewog_Code
+    for vilCode in application_details:
+        vil_code = vilCode.Village_Code
+    dzongkhag = t_dzongkhag_master.objects.filter(Dzongkhag_Code=dzo_code)
+    gewog = t_gewog_master.objects.filter(Gewog_Code=gewog_code)
+    village = t_village_master.objects.filter(Village_Code=vil_code)
+    return render(request, 'inspection_establishment/establishment_inspection_details.html',
+                  {'application_details': application_details, 'details': details, 'seized_details': seized_details,
+                   'sample_details': sample_details, 'file_attach': file_attach, 'dzongkhag': dzongkhag,
+                   'gewog': gewog, 'village': village})
+
+
+
+
+#Commodity Inspection and Monitoring
+
+def commodity_inspection_form(request):
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    inspector_list = t_user_master.objects.filter(Login_Type='I')
+    unit = t_unit_master.objects.all()
+    return render(request, 'inspection_commodity/application_commodity.html',
+                  {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village,
+                   'inspector_list': inspector_list, 'unit': unit})
+
+
+def load_commodity_attachment_details(request):
+    application_id = request.GET.get('application_id')
+    attachment_details = t_file_attachment.objects.filter(Application_No=application_id, Role_Id='5')
+    return render(request, 'complaint_handling/investigation_file_attachment_page.html',
+                  {'file_attach': attachment_details})
+
+
+def add_commodity_file(request):
+    data = dict()
+    myFile = request.FILES['document']
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/common_service/inspection_commodity")
+    if fs.exists(myFile.name):
+        data['form_is_valid'] = False
+    else:
+        fs.save(myFile.name, myFile)
+        data['form_is_valid'] = True
+    return JsonResponse(data)
+
+
+def add_commodity_file_name(request):
+    if request.method == 'POST':
+        Reference_No = request.POST.get('refNo')
+        fileName = request.POST.get('filename')
+        Applicant_Id = request.session['email']
+        Role_Id = request.session['Role_Id']
+        fs = ("/attachments" + "/" + str(timezone.now().year) + "/common_service/complaint_handling/")
+        t_file_attachment.objects.create(Application_No=Reference_No, Applicant_Id=Applicant_Id,
+                                         Role_Id=Role_Id, File_Path=fs, Attachment=fileName)
+        file_attach = t_file_attachment.objects.filter(Application_No=Reference_No)
+        return render(request, 'inspection_commodity/commodity_file_attachment.html', {'file_attach': file_attach})
+
+
+def delete_commodity_file(request):
+    File_Id = request.GET.get('file_id')
+    referenceNo = request.GET.get('refNo')
+    file = t_file_attachment.objects.filter(pk=File_Id)
+    for file in file:
+        fileName = file.Attachment
+        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/common_service/inspection_commodity")
+        fs.delete(str(fileName))
+    file.delete()
+    file_attach = t_file_attachment.objects.filter(Application_No=referenceNo)
+    return render(request, 'inspection_commodity/commodity_file_attachment.html', {'file_attach': file_attach})
+
+def delete_commodity_details(request):
+    record_id = request.GET.get('record_id')
+    reference_no = request.GET.get('refNo')
+    record = t_commodity_inspection_t2.objects.filter(Record_Id=record_id)
+    record.delete()
+    commodity_inspection = t_commodity_inspection_t2.objects.filter(Reference_No=reference_no)
+    return render(request, 'inspection_commodity/commodity_details.html',
+                  {'commodity_inspection': commodity_inspection})
+
+
+def load_commodity_attachment_details(request):
+    referenceNo = request.GET.get('refNo')
+    attachment_details = t_file_attachment.objects.filter(Application_No=referenceNo)
+    return render(request, 'inspection_commodity/commodity_file_attachment.html',
+                  {'file_attach': attachment_details})
+
+def load_commodity_application_details(request):
+    reference_no = request.GET.get('refNo')
+    print(reference_no)
+    commodity_details = t_inspection_monitoring_t2.objects.filter(Reference_No=reference_no)
+    return render(request, 'inspection_commodity/commodity_details.html',
+                  {'commodity_details': commodity_details})
+
+def draft_inspection_application_details(request):
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    reference_no = request.GET.get('referenceNo')
+    application_details = t_inspection_monitoring_t1.objects.filter(Reference_No=reference_no)
+    commodity_details = t_inspection_monitoring_t2.objects.filter(Reference_No=reference_no)
+    return render(request, 'inspection_commodity/draft_application_details.html',
+                  {'application_details': application_details, 'dzongkhag': dzongkhag, 'gewog': gewog,
+                   'village': village, 'commodity_details': commodity_details})
+
+def save_inspection_report_application(request):
+    data = dict()
+    service_code = "CIM"
+    reference_no = get_commodity_Inspection_ref_no(request, service_code)
+    ownerName = request.POST.get('ownerName')
+    regNumber = request.POST.get('regNumber')
+    Dzongkhag = request.POST.get('dzongkhag')
+    Gewog = request.POST.get('gewog')
+    Village = request.POST.get('village')
+    address = request.POST.get('address')
+    contact_no = request.POST.get('contactNumber')
+    email = request.POST.get('email')
+    commodity = request.POST.get('commodity')
+    inspectionDate = request.POST.get('inspectionDate')
+    inspectionTeam = request.POST.get('inspectionTeam')
+    inspectionPurpose = request.POST.get('inspectionPurpose')
+    observation = request.POST.get('observation')
+    teamLeader = request.POST.get('teamLeader')
+    Login_Id = request.session['login_id']
+    date_of_inspection = datetime.strptime(inspectionDate, '%d-%m-%Y').date()
+
+    t_commodity_inspection_t1.objects.create(
+        Reference_No=reference_no,
+        FBO_Name=ownerName,
+        Registration_No=regNumber,
+        Dzongkhag_Code=Dzongkhag,
+        Gewog_Code=Gewog,
+        Village_Code=Village,
+        Address=address,
+        Contact_No=contact_no,
+        Email=email,
+        Inspection_Date=date_of_inspection,
+        Inspection_Team=inspectionTeam,
+        Team_Leader=teamLeader,
+        Commodity=commodity,
+        Purpose=inspectionPurpose,
+        Observation=observation,
+        Created_Date=None,
+        Created_By=Login_Id
+    )
+    data['refNo'] = reference_no
+    return JsonResponse(data)
+
+def get_commodity_Inspection_ref_no(request, service_code):
+    last_reference_no = t_commodity_inspection_t1.objects.aggregate(Max('Reference_No'))
+    lastRefNo = last_reference_no['Reference_No__max']
+    if not lastRefNo:
+        year = timezone.now().year
+        newRefNo = service_code + "/" + str(year) + "/" + "0001"
+    else:
+        substring = str(lastRefNo)[9:13]
+        substring = int(substring) + 1
+        RefNo = str(substring).zfill(4)
+        year = timezone.now().year
+        newRefNo = service_code + "/" + str(year) + "/" + RefNo
+    return newRefNo
+
+def save_commodity_details(request):
+    if request.method == 'POST':
+        reference_no = request.POST.get('refNo')
+        commodityDesc = request.POST.get('commodity_desc')
+        commodityRequirement = request.POST.get('commodity_requirement')
+        qtyInspected = request.POST.get('qty_inspected')
+        unit = request.POST.get('unit')
+        qtyCleared = request.POST.get('qty_cleared')
+        qtyRejected = request.POST.get('qty_rejected')
+        reasonReject = request.POST.get('reason_rejected')
+
+        t_commodity_inspection_t2.objects.create(
+            Reference_No=reference_no,
+            Commodity=commodityDesc,
+            Commodity_Requirement=commodityRequirement,
+            Qty_Inspected=qtyInspected,
+            Unit=unit,
+            Qty_Cleared=qtyCleared,
+            Qty_Rejected=qtyRejected,
+            Reason_For_Rejection=reasonReject)
+
+        commodity_inspection = t_commodity_inspection_t2.objects.filter(Reference_No=reference_no)
+        return render(request, 'inspection_commodity/commodity_details.html', {'commodity_inspection': commodity_inspection})
+
+def submit_commodity_inspection_form(request):
+    reference_no = request.POST.get('referenceNo')
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    details = t_commodity_inspection_t1.objects.filter(Reference_No=reference_no)
+    details.update(Created_Date=date.today())
+
+    return render(request, 'inspection_commodity/application_commodity.html',
+                  {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village})
+
+
+
+def draft_commodity_inspection_list(request):
+    application_details = t_commodity_inspection_t1.objects.filter(Created_Date__isnull=True)
+    return render(request, 'inspection_commodity/draft_application_list.html',
+                  {'application_details': application_details})
+
+
+def view_draft_commodity_inspection_details(request):
+    reference_no = request.GET.get('reference_no')
+    application_details = t_commodity_inspection_t1.objects.filter(Reference_No=reference_no)
+    details = t_commodity_inspection_t2.objects.filter(Reference_No=reference_no)
+    file_attach = t_file_attachment.objects.filter(Application_No=reference_no)
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    unit = t_unit_master.objects.all()
+    inspector_list = t_user_master.objects.filter(Login_Type='I')
+    return render(request, 'inspection_commodity/draft_application_details.html',
+                  {'application_details': application_details, 'details': details, 'file_attach': file_attach,
+                   'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village, 'unit': unit,
+                   'inspector_list': inspector_list})
+
+def update_inspection_report_application(request):
+    data = dict()
+    reference_no = request.POST.get('referenceNo')
+    ownerName = request.POST.get('ownerName')
+    regNumber = request.POST.get('regNumber')
+    Dzongkhag = request.POST.get('dzongkhag')
+    Gewog = request.POST.get('gewog')
+    Village = request.POST.get('village')
+    address = request.POST.get('address')
+    contact_no = request.POST.get('contactNumber')
+    email = request.POST.get('email')
+    commodity = request.POST.get('commodity')
+    inspectionDate = request.POST.get('inspectionDate')
+    inspectionTeam = request.POST.get('inspectionTeam')
+    inspectionPurpose = request.POST.get('inspectionPurpose')
+    observation = request.POST.get('observation')
+    teamLeader = request.POST.get('teamLeader')
+    Login_Id = request.session['login_id']
+    date_of_inspection = datetime.strptime(inspectionDate, '%d-%m-%Y').date()
+
+    application_details = t_commodity_inspection_t1.objects.filter(Reference_No=reference_no)
+    application_details.update(Reference_No=reference_no)
+    application_details.update(FBO_Name=ownerName)
+    application_details.update(Registration_No=regNumber)
+    application_details.update(Dzongkhag_Code=Dzongkhag)
+    application_details.update(Gewog_Code=Gewog)
+    application_details.update(Village_Code=Village)
+    application_details.update(Address=address)
+    application_details.update(Contact_No=contact_no)
+    application_details.update(Email=email)
+    application_details.update(Inspection_Date=date_of_inspection)
+    application_details.update(Inspection_Team=inspectionTeam)
+    application_details.update(Team_Leader=teamLeader)
+    application_details.update(Commodity=commodity)
+    application_details.update(Purpose=inspectionPurpose)
+    application_details.update(Observation=observation)
+    application_details.update(Created_Date=None)
+    application_details.update(Created_By=Login_Id)
+
+    data['refNo'] = reference_no
+    return JsonResponse(data)
+
+def update_commodity_details(request):
+    if request.method == 'POST':
+        reference_no = request.POST.get('refNo')
+        record_id = request.POST.get('recordId')
+        commodityDesc = request.POST.get('commodity_desc')
+        commodityRequirement = request.POST.get('commodity_requirement')
+        qtyInspected = request.POST.get('qty_inspected')
+        unit = request.POST.get('unit')
+        qtyCleared = request.POST.get('qty_cleared')
+        qtyRejected = request.POST.get('qty_rejected')
+        reasonReject = request.POST.get('reason_rejected')
+
+        commodity_details = t_commodity_inspection_t2.objects.filter(Record_id=record_id)
+
+        t_commodity_inspection_t2.objects.create(
+            Reference_No=reference_no,
+            Commodity=commodityDesc,
+            Commodity_Requirement=commodityRequirement,
+            Qty_Inspected=qtyInspected,
+            Unit=unit,
+            Qty_Cleared=qtyCleared,
+            Qty_Rejected=qtyRejected,
+            Reason_For_Rejection=reasonReject)
+
+        commodity_inspection = t_commodity_inspection_t2.objects.filter(Reference_No=reference_no)
+        return render(request, 'inspection_commodity/commodity_details.html', {'commodity_inspection': commodity_inspection})
+
+def view_commodity_inspection_list(request):
+    application_details = t_commodity_inspection_t1.objects.filter(Created_Date__isnull=False)
+    return render(request, 'inspection_commodity/commodity_inspection_list.html',
+                  {'application_details': application_details})
+
+
+def view_commodity_inspection_details(request):
+    reference_no = request.GET.get('reference_no')
+    application_details = t_commodity_inspection_t1.objects.filter(Reference_No=reference_no)
+    details = t_commodity_inspection_t2.objects.filter(Reference_No=reference_no)
+    file_attach = t_file_attachment.objects.filter(Application_No=reference_no)
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    unit = t_unit_master.objects.all()
+    inspector_list = t_user_master.objects.filter(Login_Type='I')
+    return render(request, 'inspection_commodity/commodity_inspection_details.html',
+                  {'application_details': application_details, 'details': details, 'file_attach': file_attach,
+                   'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village, 'unit': unit,
+                   'inspector_list': inspector_list})
+
+def view_commodity_inspection_details(request):
+    reference_no = request.GET.get('reference_no')
+    application_details = t_commodity_inspection_t1.objects.filter(Reference_No=reference_no)
+    details = t_commodity_inspection_t2.objects.filter(Reference_No=reference_no)
+    file_attach = t_file_attachment.objects.filter(Application_No=reference_no)
+    for dzoCode in application_details:
+        dzo_code = dzoCode.Dzongkhag_Code
+    for gewogCode in application_details:
+        gewog_code = gewogCode.Gewog_Code
+    for vilCode in application_details:
+        vil_code = vilCode.Village_Code
+    for inspectorCode in application_details:
+        inspector_code = inspectorCode.Team_Leader
+    dzongkhag = t_dzongkhag_master.objects.filter(Dzongkhag_Code=dzo_code)
+    gewog = t_gewog_master.objects.filter(Gewog_Code=gewog_code)
+    village = t_village_master.objects.filter(Village_Code=vil_code)
+    team_leader = t_user_master.objects.filter(Login_Id=inspector_code)
+    return render(request, 'inspection_commodity/commodity_inspection_details.html',
+                  {'application_details': application_details, 'details': details, 'file_attach': file_attach,
+                   'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village, 'team_leader': team_leader})
+
+def view_FHC_inspection_details(request):
+    reference_no = request.GET.get('reference_no')
+    application_details = t_commodity_inspection_t1.objects.filter(Reference_No=reference_no)
+    details = t_commodity_inspection_t2.objects.filter(Reference_No=reference_no)
+    file_attach = t_file_attachment.objects.filter(Application_No=reference_no)
+    for dzoCode in application_details:
+        dzo_code = dzoCode.Dzongkhag_Code
+    for gewogCode in application_details:
+        gewog_code = gewogCode.Gewog_Code
+    for vilCode in application_details:
+        vil_code = vilCode.Village_Code
+    for inspectorCode in application_details:
+        inspector_code = inspectorCode.Team_Leader
+    dzongkhag = t_dzongkhag_master.objects.filter(Dzongkhag_Code=dzo_code)
+    gewog = t_gewog_master.objects.filter(Gewog_Code=gewog_code)
+    village = t_village_master.objects.filter(Village_Code=vil_code)
+    team_leader = t_user_master.objects.filter(Login_Id=inspector_code)
+
+    return render(request, 'inspection_commodity/fit_for_human_consumption_certificate.html',
+                  {'application_details': application_details, 'details': details, 'file_attach': file_attach,
+                   'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village, 'team_leader': team_leader})
+
+

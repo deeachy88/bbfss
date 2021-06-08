@@ -1,0 +1,74 @@
+<div class="card">
+    <div class="card-header">
+        <div class="card-head-row">
+            <div class="card-tools pull-right">
+                <button type="button" class="btn btn-light" onclick="show_item_details_modal()">Add Details</button>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered" id="item_details">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Date of inspection</th>
+                    <th scope="col">Name Of Inspector</th>
+                    <th scope="col">Items seized</th>
+                    <th scope="col">Qty</th>
+                    <th scope="col">Unit</th>
+                    <th scope="col">Reason for seizer</th>
+                    <th scope="col">Fine Imposed</th>
+                    <th scope="col">Receipt No</th>
+                    <th scope="col">Receipt Date</th>
+                    <th scope="col">Detaintion and destruction No</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+               {% for item_details in details %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{item_details.Inspection_Date|date:"d-m-Y"}}</td>
+                        <td>{{item_details.Inspector_Name}}</td>
+                        <td>{{item_details.Items_Seized}}</td>
+                        <td>{{item_details.Qty_Seized}}</td>
+                        <td>{{item_details.Unit}}</td>
+                        <td>{{item_details.Reason}}</td>
+                        <td>{{item_details.Fine_Imposed}}</td>
+                        <td>{{item_details.Revenue_Receipt}}</td>
+                        <td>{{item_details.Receipt_Date|date:"d-m-Y"}}</td>
+                        <td>{{item_details.Detention_Destruction_No}}</td>
+                        <td>
+                            <button type="button"
+                                class="btn btn-danger btn-sm" onclick="DeleteSeizedDetails('{{ item_details.Record_Id }}')">
+                                <i class="zmdi zmdi-delete"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                      <td colspan="11" class="text-center">No Data</td>
+                    </tr>
+               {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="card-head-row">
+    <button type="button" class="btn btn-success" onclick="next_item_details()">Save-Next</button>
+</div>
+<script>
+function DeleteSeizedDetails(record_id)
+{
+    var refNo = $('#details_application_no').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'delete_seized_details' %}",
+        data :{'refNo':refNo , 'record_id': record_id},
+        success : function(responseText)
+        {
+            $('#item_details').html(responseText);
+        }
+    });
+}
+</script>

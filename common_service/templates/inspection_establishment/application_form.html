@@ -16,9 +16,9 @@
         <h4 class="card-title">Inspection And Monitoring</h4>
     </div>
     <div class="card-body">
-        <form method="post" id="inspection_monitoring_form">
+        <form method="post" id="inspection_establishment_form">
         {% csrf_token %}
-            <input type="hidden" name="application_no" id="applicationNo">
+            <input type="hidden" name="applicationNo" id="applicationNo">
             <div class="row justify-content-left">
                 <ul class="nav nav-pills nav-secondary" id="pills-mortem" role="tablist">
                     <li class="nav-item">
@@ -133,7 +133,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">CID</label>
-                                <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)">
+                                <input type="number" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="checkCID(this.value)">
                             </div>
                             <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
                         </div>
@@ -161,6 +161,15 @@
                             <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="form-label">Observation</label>
+                                <textarea class="form-control" id="observations" name="observations"></textarea>
+                            </div>
+                            <div class="alert alert-danger" id="observationsErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
                     <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
                         Save SuccessFul
                     </div>
@@ -168,92 +177,30 @@
                         <button type="button" class="btn btn-primary" onclick="save_inspection_details()">Save-Next</button>
                     </div>
                 </div>
-            <div class="tab-pane fade" id="nc_details" role="tabpanel" aria-labelledby="pills-nc">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-head-row">
-                            <div class="card-tools pull-right">
-                                <button type="button" class="btn btn-light" onclick="show_owner_manager_modal()">Add Details</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div id="details_owner_manager">
-                            {% include 'inspection_monitoring/owner_manager_details.html' %}
-                        </div>
+                <div class="tab-pane fade" id="nc_details" role="tabpanel" aria-labelledby="pills-nc">
+                    <div id="ncDetails">
+                        {% include 'inspection_establishment/owner_manager_details.html' %}
                     </div>
                 </div>
-                <div class="card-action">
-                    <button type="button" class="btn btn-success" onclick="save_nc_details()">Save-Next</button>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="seized_item_details" role="tabpanel" aria-labelledby="pills-seized-item">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-head-row">
-                            <div class="card-tools pull-right">
-                                <button type="button" class="btn btn-light" onclick="show_item_details_modal()">Add Details</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div id="item_details">
-                            {% include 'inspection_monitoring/item_details.html' %}
-                        </div>
+                <div class="tab-pane fade" id="seized_item_details" role="tabpanel" aria-labelledby="pills-seized-item">
+                    <div id="item_details">
+                            {% include 'inspection_establishment/item_details.html' %}
                     </div>
                 </div>
-                <div class="card-action">
-                    <button type="button" class="btn btn-success" onclick="next_item_details()">Save-Next</button>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="sample_collection_details" role="tabpanel" aria-labelledby="pills-sample-collection">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-head-row">
-                            <div class="card-tools pull-right">
-                                <button type="button" class="btn btn-light" onclick="show_sample_collection_details_modal()">Add Details</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div id="sample_collection">
-                            {% include 'inspection_monitoring/sample_collection_details.html' %}
-                        </div>
+                <div class="tab-pane fade" id="sample_collection_details" role="tabpanel" aria-labelledby="pills-sample-collection">
+                    <div id="sample_collection">
+                        {% include 'inspection_establishment/sample_collection_details.html' %}
                     </div>
                 </div>
-                <div class="card-action">
-                    <button type="button" class="btn btn-success" onclick="next_sample_collection()">Save-Next</button>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="mortem-file-attach">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-head-row">
-                            <div class="card-tools">
-                                <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="show_inspection_attachment_modal()">
-                                    <span class="btn-label">
-                                        <i class="fa fa-print"></i>
-                                    </span>
-                                    Add
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div id="inspection_attachment">
-                            {% include 'inspection_monitoring/file_attachment.html' %}
-                        </div>
+                <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="pills-profile-file">
+                    <div id="fileAttach">
+                        {% include 'inspection_establishment/file_attachment.html' %}
                     </div>
                 </div>
-                <div class="card-action">
-                    <button type="button" class="btn btn-success" onclick="submit_inspection_details()">Save</button>
-                </div>
-            </div>
             </div>
         </form>
     </div>
 </div>
-
 <form method="post" id="owner_manager_form">
     {% csrf_token %}
     <input type="hidden" id="owner_manager_app_no" name="owner_manager_app_no">
@@ -335,6 +282,9 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div id="saveMsg" class="alert alert-info" role="alert" style="display:none;">
+                            Save SuccessFul
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -428,6 +378,9 @@
                         </div>
                     </div>
                 </div>
+                <div id="saveSMsg" class="alert alert-info" role="alert" style="display:none;">
+                            Save SuccessFul
+                </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary" onclick="save_item_details()">Add</button>
@@ -504,17 +457,22 @@
                                         <div class="alert alert-danger" id="Sample_QtyErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Batch No And Date</label>
-                                        <input type="text" name="Batch_No_Date" class="form-control" id="Batch_No_Date" required>
-                                        <div class="alert alert-danger" id="Batch_No_DateErrorMsg" style="display:none"></div>
+                                        <label class="form-label">Batch No</label>
+                                        <input type="text" name="Batch_No" class="form-control" id="Batch_No" required>
+                                        <div class="alert alert-danger" id="Batch_NoErrorMsg" style="display:none"></div>
                                     </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Batch Date</label>
+                                        <input type="text" name="Batch_Date" id="Batch_Date" class="form-control date-picker flatpickr-input active">
+                                        <div class="alert alert-danger" id="Batch_DateErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Test Requested</label>
                                         <input type="text" name="Test_Requested" class="form-control" id="Test_Requested" required>
                                         <div class="alert alert-danger" id="Test_RequestedErrorMsg" style="display:none"></div>
                                     </div>
-                                </div>
-                                <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Test Report</label>
                                         <input type="text" name="Test_Report" class="form-control" id="Test_Report" required>
@@ -524,6 +482,9 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div id="saveCMsg" class="alert alert-info" role="alert" style="display:none;">
+                            Save SuccessFul
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -587,7 +548,7 @@ function save_inspection_details()
     var contactNumber = $('#contactNumber').val();
     var number_count = $('#contactNumber').val().length;
     var cidCount = $('#cid').val().length;
-
+    var observations = $('#observations').val();
     if(Inspection_Type == "")
     {
         $('#Inspection_TypeErrorMsg').html("Please Check One Inspection Type.");
@@ -677,7 +638,7 @@ function save_inspection_details()
         $.ajax({
             type : "POST",
             url : "{% url 'save_monitoring_form' %}",
-            data : $('#inspection_monitoring_form').serialize(),
+            data : $('#inspection_establishment_form').serialize(),
             success : function(data)
             {
                 $('#applicationNo').val(data.applNo);
@@ -688,17 +649,15 @@ function save_inspection_details()
                 $('#submitMsg').show();
                 setTimeout(function() {
                     $("#submitMsg").hide('blind', {}, 500)
-                }, 2000);
+                }, 1500);
                 setTimeout(function() {
                     $('#pills-nc').tab('show');
-                }, 3000);
+                }, 1500);
 
             }
         });
     }
 }
-
-
 
 function save_inspection_attachment()
 {
@@ -735,7 +694,7 @@ function save_inspection_attachment()
                 success : function(responseText)
                 {
                     $('#attachmentModal').modal('hide');
-                    $('#inspection_attachment').html(responseText);
+                    $('#fileAttach').html(responseText);
                     $('.modal-backdrop').remove();
                 }
             });
@@ -773,29 +732,45 @@ function checkContact(value)
 {
     var firstDigit = value.charAt(0);
     var secondDigit = value.charAt(1);
+    var length = value.length;
 
-    if(firstDigit != 7 && firstDigit != 1){
+    if (length <8){
+    $('#contactNumberErrorMsg').html("Contact Number must be 8 digit.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(1500).fadeOut('slow');
+    }
+    else if(firstDigit != 7 && firstDigit != 1){
         $('#contactNumberErrorMsg').html("Must Start with either 1 or 7.");
         $('#contactNumberErrorMsg').show();
-        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumberErrorMsg').delay(1500).fadeOut('slow');
         $('#contactNumber').val("");
     }else if(firstDigit == 1 && secondDigit != 6 && secondDigit != 7){
         $('#contactNumberErrorMsg').html("Second Digit Must Start with either 6 or 7.");
         $('#contactNumberErrorMsg').show();
-        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumberErrorMsg').delay(1500).fadeOut('slow');
         $('#contactNumber').val("");
     }else if(firstDigit == 7 && secondDigit == 6){
         $('#contactNumberErrorMsg').html("Second Digit Cannot be 6.");
         $('#contactNumberErrorMsg').show();
-        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumberErrorMsg').delay(1500).fadeOut('slow');
         $('#contactNumber').val("");
     }else if(firstDigit == 7 && secondDigit != 7){
         $('#contactNumberErrorMsg').html("Second Digit Must Start with 7.");
         $('#contactNumberErrorMsg').show();
-        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumberErrorMsg').delay(1500).fadeOut('slow');
         $('#contactNumber').val("");
     }
 
+}
+
+function checkCID(value)
+{
+    var length = value.length;
+    if (length <11){
+    $('#cidErrorMsg').html("CID must be 11 digit.");
+        $('#cidErrorMsg').show();
+        $('#cidErrorMsg').delay(1500).fadeOut('slow');
+    }
 }
 
 function save_owner_manager_details()
@@ -804,11 +779,18 @@ function save_owner_manager_details()
         type : "POST",
         url : "{% url 'save_owner_manager_details' %}",
         data : $('#owner_manager_form').serialize(),
-        success : function(responseText) {
-           $('#owner_manager_modal').modal('hide');
-           $('#details_owner_manager').html(responseText);
-           $('#pills-nc').tab('show');
-           $('.modal-backdrop').remove();
+        success : function(responseText)
+        {
+            $('#saveMsg').show();
+            setTimeout(function() {
+                $("#saveMsg").hide('blind', {}, 500)
+            }, 1500);
+            setTimeout(function() {
+                $('#ncDetails').html(responseText);
+                $('#owner_manager_modal').modal('hide');
+                $('#pills-nc').tab('show');
+                $('.modal-backdrop').remove();
+            }, 1500);
         }
     });
 }
@@ -819,12 +801,20 @@ function save_item_details()
         type : "POST",
         url : "{% url 'save_item_details' %}",
         data : $('#details_form').serialize(),
-        success : function(responseText) {
-           $('#details_model').modal('hide');
-           $('#item_details').html(responseText);
-           $('#pills-seized-item').tab('show');
-           $('.modal-backdrop').remove();
+        success : function(responseText)
+         {
+            $('#saveSMsg').show();
+            setTimeout(function() {
+                $("#saveSMsg").hide('blind', {}, 500)
+            }, 1500);
+            setTimeout(function() {
+                $('#item_details').html(responseText);
+                $('#details_model').modal('hide');
+                $('#pills-seized-item').tab('show');
+                $('.modal-backdrop').remove();
+            }, 1500);
         }
+
     });
 }
 
@@ -834,11 +824,18 @@ function save_sample_details()
         type : "POST",
         url : "{% url 'save_sample_details' %}",
         data : $('#sample_collection_form').serialize(),
-        success : function(responseText) {
-           $('#sample_collection_model').modal('hide');
-           $('#sample_collection').html(responseText);
-           $('#pills-sample-collection').tab('show');
-           $('.modal-backdrop').remove();
+        success : function(responseText)
+        {
+            $('#saveCMsg').show();
+            setTimeout(function() {
+                $("#saveCMsg").hide('blind', {}, 500)
+            }, 1500);
+            setTimeout(function() {
+                $('#sample_collection').html(responseText);
+                $('#sample_collection_model').modal('hide');
+                $('#pills-sample-collection').tab('show');
+                $('.modal-backdrop').remove();
+            }, 1500);
         }
     });
 }
@@ -882,10 +879,50 @@ function submit_inspection_details()
 {
     $.ajax({
         type : "POST",
-        url : "{% url 'submit_inspection_details' %}",
-        data : $('#inspection_monitoring_form').serialize(),
+        url : "{% url 'submit_establishment_inspection_form' %}",
+        data : $('#inspection_establishment_form').serialize(),
         success : function(responseText) {
            location.reload();
+        }
+    });
+}
+
+function getGewog(dzongkhag_id)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_gewog' %}",
+        data :{'dzongkhag_id':dzongkhag_id},
+        success : function(data)
+        {
+            $('#gewog').html(data);
+        }
+    });
+}
+
+function getVillage(gewog_id)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_village' %}",
+        data :{'gewog_id':gewog_id},
+        success : function(data)
+        {
+            $('#village').html(data);
+        }
+    });
+}
+
+function load_attachment_details()
+{
+    var refNo = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_establishment_attachment_details' %}",
+        data :{'refNo':refNo},
+        success : function(response)
+        {
+            $('#fileAttach').html(response);
         }
     });
 }

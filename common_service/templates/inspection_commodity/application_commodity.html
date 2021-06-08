@@ -1,0 +1,676 @@
+{% extends 'common_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<style>
+    option
+    {
+        background-color: black !important;
+    }
+</style>
+<div class="card">
+    <div class="card-header">
+        <h4 class="card-title">Inspection Report For Commodity</h4>
+    </div>
+    <div class="card-body">
+        <form method="post" id="commodity_application_form">
+        {% csrf_token %}
+            <input type="hidden" name="referenceNo" id="referenceNo">
+            <div class="row justify-content-left">
+                <ul class="nav nav-pills nav-secondary" id="pills-tab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadDetails()">Inspection Report Form</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="pills-details" data-toggle="pill" href="#details" role="tab" aria-controls="pills-details" aria-selected="false" onclick="load_details()">Inspected Commodity Details</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="pills-profile-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="tab-content mt-2 mb-3" id="pills-tabContent">
+                <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                    <div id="applicant_details">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Name of the Owner/Unit</label>
+                                    <input type="text" class="form-control" id="ownerName" name="ownerName">
+                                </div>
+                                <div class="alert alert-danger" id="ownerNameErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Registration Number</label>
+                                    <input type="text" class="form-control" id="regNumber" name="regNumber">
+                                </div>
+                                <div class="alert alert-danger" id="regNumberErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Dzongkhag</label>
+                                    <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
+                                        <option value="">--SELECT DZONGKHAG--</option>
+                                        {% for dzongkhag in dzongkhag %}
+                                                <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Gewog</label>
+                                    <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                        <option value="">--SELECT GEWOG--</option>
+                                        {% for gewog in gewog %}
+                                                <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Village</label>
+                                     <select class="form-control" name="village" id="village">
+                                        <option value="">--SELECT VILLAGE--</option>
+                                        {% for village in village %}
+                                                <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                                <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Address</label>
+                                    <textarea class="form-control" id="address" name="address"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="addressErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Contact Number</label>
+                                    <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                                </div>
+                                <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email" onchange="validateemailId(this.value)">
+                                </div>
+                                <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Commodity</label>
+                                    <textarea class="form-control" id="commodity" name="commodity"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="commodityErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Inspection Date</label>
+                                    <input type="date" name="inspectionDate" id="inspectionDate" class="form-control date-picker flatpickr-input active">
+                                </div>
+                                <div class="alert alert-danger" id="inspectionDateErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Inspection Team</label>
+                                    <textarea class="form-control" id="inspectionTeam" name="inspectionTeam"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="inspectionTeamErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Purpose of Inspection </label>
+                                    <select class="form-control form-control" id="inspectionPurpose" name="inspectionPurpose">
+                                        <option value="">-SELECT-</option>
+                                        <option value="Regular">Regular</option>
+                                        <option value="Fit for Human Consumption">Fit for Human Consumption</option>
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="inspectionPurposeErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                             <div class="col-md-8">
+                                <div class="form-group">
+                                    <label class="form-label">Observations</label>
+                                    <textarea class="form-control" id="observation" name="observation"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="observationErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Inspection Team Leader</label>
+                                <select class="form-control" name="teamLeader"  id="teamLeader">
+                                    <option value="">--TEAM LEADER--</option>
+                                    {% for inspector_list in inspector_list %}
+                                            <option value="{{ inspector_list.Login_Id }}">{{ inspector_list.Name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="alert alert-danger" id="teamLeaderErrorMsg" style="display:none"></div>
+                        </div>
+                        <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+                            Save SuccessFul
+                        </div>
+                        <div class="card-action">
+                            <button type="button" class="btn btn-primary" onclick="save_inspection_report()">Save & Next</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="details" role="tabpanel" aria-labelledby="pills-details">
+                    <div id="commodity_details">
+                        {% include 'inspection_commodity/commodity_details.html' %}
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="pills-profile-file">
+                    <div id="fileAttach">
+                        {% include 'inspection_commodity/commodity_file_attachment.html' %}
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<form method="post" id="commodity_form">
+    {% csrf_token %}
+    <input type="hidden" id="refNo" name="refNo">
+    <div class="modal fade" id="commodity_model" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label>Commodity</label>
+                                        <input type="text" name="commodity_desc" class="form-control" id="commodity_desc" required>
+                                        <div class="alert alert-danger" id="commodity_descErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label>Commodity Requirement</label>
+                                        <input type="text" name="commodity_requirement" class="form-control" id="commodity_requirement" required>
+                                        <div class="alert alert-danger" id="commodity_requirementErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label>Qty Inspected</label>
+                                        <input type="number" name="qty_inspected" class="form-control" id="qty_inspected" required>
+                                        <div class="alert alert-danger" id="qty_inspectedErrorMsg" style="display:none"></div>
+                                    </div>
+                                   <div class="form-group col-md-6">
+                                        <label>Unit</label>
+                                        <select class="form-control" name="unit"  id="unit">
+                                            <option value="">--SELECT UNIT--</option>
+                                            {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="alert alert-danger" id="unitErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label>Qty Cleared</label>
+                                        <input type="number" name="qty_cleared" class="form-control" id="qty_cleared" onchange="calculateRejected(this.value)">
+                                        <div class="alert alert-danger" id="qty_clearedErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label>Qty rejected</label>
+                                        <input type="number" name="qty_rejected" class="form-control" id="qty_rejected" required>
+                                        <div class="alert alert-danger" id="qty_rejectedErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label>Reason for Rejection</label>
+                                        <textarea name="reason_rejected" class="form-control" id="reason_rejected" required></textarea>
+                                        <div class="alert alert-danger" id="reason_rejectedErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="saveMsg" class="alert alert-info" role="alert" style="display:none;">
+                            Save SuccessFul
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="save_commodity_details()">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<form method="post" id="attachment_form" enctype="multipart/form-data">
+{% csrf_token %}
+    <input type="hidden" name="attachment_refNo" id="attachment_refNo">
+    <div class="modal fade" id="attachmentModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="attachmentModalLabel">Attach File(s) if Any</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label>Attach File</label>
+                                        <input type="file" name="document" id="document">
+                                        <div class="alert alert-danger" id="fileErrorMsg" style="display:none"></div>
+                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_commodity_attachment()"> Add </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+function save_inspection_report()
+{
+    var ownerName = $('#ownerName').val();
+    var regNumber = $('#regNumber').val();
+    var dzongkhag = $('#dzongkhag').val();
+    var gewog = $('#gewog').val();
+    var village = $('#village').val();
+    var address = $('#address').val();
+    var contactNumber = $('#contactNumber').val();
+    var email = $('#email').val();
+    var commodity = $('#commodity').val();
+    var inspectionDate = $('#inspectionDate').val();
+    var inspectionTeam = $('#inspectionTeam').val();
+    var inspectionPurpose = $('#inspectionPurpose').val();
+    var observation = $('#observation').val();
+    var teamLeader = $('#teamLeader').val();
+    var number_count = $('#contactNumber').val().length;
+
+    if(ownerName == "")
+    {
+        $('#ownerNameErrorMsg').html("Enter Name of Owner or Unit.");
+        $('#ownerNameErrorMsg').show();
+        $('#ownerNameErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(regNumber == "")
+    {
+        $('#regNumberMsg').html("Enter Registration Number.");
+        $('#regNumberMsg').show();
+        $('#regNumberMsg').delay(2000).fadeOut('slow');
+    }
+    else if(dzongkhag == "")
+    {
+        $('#dzongkhagErrorMsg').html("Select Dzongkhag.");
+        $('#dzongkhagErrorMsg').show();
+        $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(gewog == "")
+    {
+        $('#gewogErrorMsg').html("Select Gewog.");
+        $('#gewogErrorMsg').show();
+        $('#gewogErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(village == "")
+    {
+        $('#villageErrorMsg').html("Select Village.");
+        $('#villageErrorMsg').show();
+        $('#villageErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(address == "")
+    {
+        $('#addressErrorMsg').html("Enter Address.");
+        $('#addressErrorMsg').show();
+        $('#addressErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(contactNumber == "")
+    {
+        $('#contactNumberErrorMsg').html("Enter Contact Number.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(email == "")
+    {
+        $('#emailErrorMsg').html("Enter Contact Number.");
+        $('#emailErrorMsg').show();
+        $('#emailErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(commodity == "")
+    {
+        $('#commodityErrorMsg').html("Enter Commodity Details.");
+        $('#commodityErrorMsg').show();
+        $('#commodityErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if (inspectionDate == "")
+    {
+        $('#inspectionDateErrorMsg').html("Select Date of Inspection.");
+        $('#inspectionDateErrorMsg').show();
+        $('#inspectionDateErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(inspectionTeam == "")
+    {
+        $('#inspectionTeamErrorMsg').html("Enter Inspection Team.");
+        $('#inspectionTeamErrorMsg').show();
+        $('#inspectionTeamErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(inspectionPurpose == "")
+    {
+        $('#inspectionPurposeErrorMsg').html("Select Inspection Purpose.");
+        $('#inspectionPurposeErrorMsg').show();
+        $('#inspectionPurposeErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(teamLeader == "")
+    {
+        $('#teamLeaderErrorMsg').html("Select Inspection Team Leader.");
+        $('#teamLeaderErrorMsg').show();
+        $('#teamLeaderErrorMsg').delay(2000).fadeOut('slow');
+    }
+     else if(observation == "")
+    {
+        $('#observationErrorMsg').html("Enter Observation.");
+        $('#observationErrorMsg').show();
+        $('#observationErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(number_count < 8)
+    {
+        $('#contactNumberErrorMsg').html("Contact Number Cannot Be Less Than Eight.");
+        $('#contactNumberErrorMsg').show();
+        setTimeout('hideStatus("contactNumberErrorMsg")',2000);
+    }
+    else
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'save_inspection_report_application' %}",
+            data : $('#commodity_application_form').serialize(),
+            success : function(data)
+            {
+                url : "{% url 'load_commodity_application_details' %}",
+                $('#referenceNo').val(data.refNo);
+                $('#refNo').val(data.refNo);
+                $('#attachment_refNo').val(data.refNo);
+                $('#submitMsg').show();
+                setTimeout(function() {
+                    $("#submitMsg").hide('blind', {}, 500)
+                }, 2000);
+                setTimeout(function() {
+                    $('#pills-details').tab('show');
+                    $('#commodity_details_card').show();
+                }, 3000);
+            }
+        });
+    }
+}
+
+function loadDetails()
+{
+    var appid = $('#referenceNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_application_details' %}",
+        data :{'application_id':appid},
+        success : function(response)
+        {
+            $('#applicant_details').html(response);
+        }
+    });
+}
+function load_attachment_details()
+{
+    var refNo = $('#referenceNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_commodity_attachment_details' %}",
+        data :{'refNo':refNo},
+        success : function(response)
+        {
+            $('#fileAttach').html(response);
+        }
+    });
+}
+
+function getGewog(dzongkhag_id)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_gewog' %}",
+        data :{'dzongkhag_id':dzongkhag_id},
+        success : function(data)
+        {
+            $('#gewog').html(data);
+        }
+    });
+}
+
+function getVillage(gewog_id)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_village' %}",
+        data :{'gewog_id':gewog_id},
+        success : function(data)
+        {
+            $('#village').html(data);
+        }
+    });
+}
+
+function updateDetails()
+{
+    $.ajax({
+            type : "POST",
+            url : "{% url 'update_details' %}",
+            data : $('#permitForm').serialize(),
+            success : function(response)
+            {
+                $('.wrapper').html(response);
+                $('#pills-tab a:last').tab('show');
+            }
+    });
+}
+
+function save_commodity_attachment()
+{
+    var fileName = document.getElementById('document').files[0].name;
+    var fd = new FormData();
+    var file = document.getElementById('document').files[0];
+    fd.append('document', file);
+    token_value=$("input[name=csrfmiddlewaretoken]").val();
+    $.ajaxSetup
+    ({
+        beforeSend: function(xhr, settings)
+        {
+            xhr.setRequestHeader("X-CSRFToken", token_value);
+        }
+    });
+    $.ajax({
+        type : "POST",
+        url : "{% url 'add_commodity_file' %}",
+        data : fd,
+        dataType: 'json',
+        contentType: false,
+        processData: false,
+        success : function(data)
+        {
+            if (data.form_is_valid)
+            {
+                var refNo = $('#attachment_refNo').val();
+                var file_url = data.file_url
+                $.ajax
+                ({
+                    type : "POST",
+                    url : "{% url 'add_commodity_file_name' %}",
+                    data : {'refNo':refNo , 'filename':fileName, 'file_url':file_url},
+                    success : function(responseText)
+                    {
+                        $('#commodity_model').modal('hide');
+                        $('#attachmentModal').modal('hide');
+                        $('#file-attachment').html(responseText);
+                        $('.modal-backdrop').remove();
+
+                    }
+                });
+            }else
+            {
+                $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                $('#fileErrorMsg').show();
+                $('#fileErrorMsg').delay(2000).fadeOut('slow');
+            }
+        }
+    });
+}
+
+function save_commodity_details()
+{
+    var commodityDesc = $('#commodity_desc').val();
+    var commodityRequirement = $('#commodity_requirement').val();
+    var qtyInspected = $('#qty_inspected').val();
+    var unit = $('#unit').val();
+    var qtyCleared = $('#qty_cleared').val();
+    var qtyRejected = $('#qty_rejected').val();
+    var reasonReject = $('#reason_rejected').val();
+
+    if(commodityDesc == "")
+    {
+        $('#commodity_descErrorMsg').html("Enter Commodity");
+        $('#commodity_descErrorMsg').show();
+        $('#commodity_descErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(commodityRequirement == "")
+    {
+        $('#commodity_requirementErrorMsg').html("Enter Commodity Requirement");
+        $('#commodity_requirementErrorMsg').show();
+        $('#commodity_requirementErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(qtyInspected == "")
+    {
+        $('#qty_inspectedErrorMsg').html("Enter Quantity Inspected ");
+        $('#qty_inspectedErrorMsg').show();
+        $('#qty_inspectedErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(unit == "")
+    {
+        $('#unitErrorMsg').html("Select Unit");
+        $('#unitErrorMsg').show();
+        $('#unitErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(qtyCleared == "")
+    {
+        $('#qty_clearedErrorMsg').html("Enter Qty Cleared.");
+        $('#qty_clearedErrorMsg').show();
+        $('#qty_clearedErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(qtyRejected == "")
+    {
+        $('#qty_rejectedErrorMsg').html("Enter Qty Rejected.");
+        $('#qty_rejectedErrorMsg').show();
+        $('#qty_rejectedErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else{
+        $.ajax({
+            type : "POST",
+            url : "{% url 'save_commodity_details' %}",
+            data : $('#commodity_form').serialize(),
+            success : function(responseText)
+            {
+                $('#saveMsg').show();
+                setTimeout(function() {
+                    $("#saveMsg").hide('blind', {}, 500)
+                }, 2000);
+                setTimeout(function() {
+                    $('#commodity_details').html(responseText);
+                    $('#commodity_model').modal('hide');
+                    $('#pills-details').tab('show');
+                    $('#attachment_details_card').show();
+                }, 3000);
+            }
+        });
+    }
+}
+
+function show_commodity_model()
+{
+    $('#commodity_model').modal('show');
+
+}
+
+function checkContact(value)
+{
+    var firstDigit = value.charAt(0);
+    var secondDigit = value.charAt(1);
+    var length = value.length;
+
+    if (length <8){
+    $('#contactNumberErrorMsg').html("Contact Number must be 8 digit.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(1500).fadeOut('slow');
+    }
+    else if(firstDigit != 7 && firstDigit != 1){
+        $('#contactNumberErrorMsg').html("Must Start with either 1 or 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 1 && secondDigit != 6 && secondDigit != 7){
+        $('#contactNumberErrorMsg').html("Second Digit Must Start with either 6 or 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 7 && secondDigit == 6){
+        $('#contactNumberErrorMsg').html("Second Digit Cannot be 6.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 7 && secondDigit != 7){
+        $('#contactNumberErrorMsg').html("Second Digit Must Start with 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }
+}
+
+function calculateRejected(value)
+{
+    var qtyInspected = $('#qty_inspected').val();
+    var qtyCleared = value;
+    var qtyRejected = parseInt(qtyInspected) - parseInt(qtyCleared);
+    if(qtyCleared > qtyInspected){
+        $('#qty_clearedErrorMsg').html("Quantity Cleared cannot be greater than Quantity Inspected.");
+        $('#qty_clearedErrorMsg').show();
+        $('#qty_clearedErrorMsg').delay(1000).fadeOut('slow');
+        $('#qty_cleared').val("");
+    }else{
+        $("#qty_rejected").val(qtyRejected);
+    }
+}
+
+</script>
+{% endblock %}
