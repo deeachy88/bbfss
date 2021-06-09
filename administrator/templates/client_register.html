@@ -22,75 +22,91 @@
     <!-- Custom Theme Style -->
   </head>
 
-<body data-sa-theme="1">
-
+<body data-sa-theme="4">
 <div class="card">
     <div class="card-title text-center">
-        <img src="{% static 'assets/img/banner.png' %}" alt="placeholder 960" class="img-responsive" />
+        <img src="{% static 'assets/img/banner.png' %}" alt="placeholder 960" class="img-responsive" width="100%" />
     </div>
-    <div class="card-body">
+    <div class="card-body text-center">
         <h5 class="card-body__title">Client Registration</h5>
-        <br>
+        <hr>
         <form>
-            <div class="form-row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <input type="email" class="form-control" placeholder="First Name">
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <input type="password" class="form-control" placeholder="Last Name">
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <input type="text" class="form-control" placeholder="About yourself...">
+            <div class="form-check text-center">
+                <label>Document Type <font color="red"><font color='red'>*</font></font></label><br>
+                <label class="custom-control custom-radio">
+                    <input type="radio" name="radio-inline" class="custom-control-input" value="Individual">
+                    <span class="custom-control-indicator"></span>
+                    <span class="custom-control-description">Individual</span>
+                </label>
+                <label class="custom-control custom-radio">
+                    <input type="radio" name="radio-inline" class="custom-control-input" value="Organization">
+                    <span class="custom-control-indicator"></span>
+                    <span class="custom-control-description">Organization</span>
+                </label>
             </div>
             <div class="form-row">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="form-group">
-                        <input type="email" class="form-control" placeholder="Email Address">
+                        <input type="text" class="form-control form-control-md" name="Name" id="Name" placeholder="Name">
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <input type="password" class="form-control" placeholder="Password">
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <input type="text" class="form-control" placeholder="Address">
-            </div>
-            <div class="form-row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Phone Number">
-                    </div>
+                    <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        <div class="select">
-                            <select class="form-control">
-                                <option selected="">Interests</option>
-                                <option>...</option>
-                            </select>
-                        </div>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Email Address" onchange="validateemailId(this.value)">
                     </div>
+                    <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-4">
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Other">
+                        <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)" placeholder="Mobile No">
+                    </div>
+                    <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value),getLocation(this.value)">
+                            <option value="">--SELECT DZONGKHAG--</option>
+                            {% for dzongkhag in dzongkhag %}
+                                    <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                            <option value="">--SELECT GEWOG--</option>
+                            {% for gewog in gewog %}
+                                    <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                         <select class="form-control" name="village" id="village">
+                            <option value="">--SELECT VILLAGE--</option>
+                            {% for village in village %}
+                                    <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
+                            {% endfor %}
+                         </select>
+                    </div>
+                    <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <textarea class="form-control" placeholder="Address"></textarea>
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <div class="custom-control custom-checkbox mb-2">
-                    <input type="checkbox" class="custom-control-input" id="customCheck1">
-                    <label class="custom-control-label" for="customCheck1">Check me out</label>
-                </div>
-            </div>
-            <button type="submit" class="btn btn-theme">Create an Account</button>
+            <button type="submit" class="btn btn-primary">Create an Account</button>
         </form>
     </div>
 </div>

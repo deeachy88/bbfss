@@ -4,6 +4,14 @@
     margin-bottom: 0rem;
     box-shadow: 0 1px 5px rgb(0 0 0 / 10%);
 }
+.custom-control {
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    padding-left: 2rem;
+    margin-right: 1rem;
+    margin-top: 8px;
+}
 </style>
         <div class="card">
             <div class="card-header" role="tab" id="headingOne">
@@ -280,7 +288,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                           {% for crop in crop_details %}
+                           {% for crop in crop_production %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
                                     <td>{{crop.Crop_Name}}</td>
@@ -301,7 +309,7 @@
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                  <td colspan="3" class="text-center">No Data</td>
+                                  <td colspan="16" class="text-center">No Data</td>
                                 </tr>
                            {% endfor %}
                         </tbody>
@@ -358,7 +366,7 @@
                                     </tr>
                                     {% empty %}
                                     <tr>
-                                      <td colspan="14" class="text-center">No Data</td>
+                                      <td colspan="15" class="text-center">No Data</td>
                                     </tr>
                                {% endfor %}
                             </tbody>
@@ -374,27 +382,29 @@
                 </a>
             </div>
             <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
-                <div class="card-body">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">File</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                           {% for file_attach in file %}
+                <div id="file-attachment">
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
                                 <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td><a href="{{file_attach.Attachment}}"></a> </td>
+                                    <th scope="col">#</th>
+                                    <th scope="col">File</th>
                                 </tr>
-                                {% empty %}
-                                <tr>
-                                  <td colspan="3" class="text-center">No Data</td>
-                                </tr>
-                           {% endfor %}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                               {% for file_attach in file_attach %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td><a href="{{file_attach.Attachment}}"></a> </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="3" class="text-center">No Data</td>
+                                    </tr>
+                               {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -406,6 +416,18 @@
                 </a>
             </div>
             <div id="observations_tab" class="collapse" role="tabpanel" aria-labelledby="observations_tab" data-parent="#observations_tab" style="">
+                <div class="card-header">
+                    <div class="card-head-row">
+                        <div class="card-tools">
+                            <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="show_attachmentModal()">
+                                <span class="btn-label">
+                                    <i class="fa fa-print"></i>
+                                </span>
+                                Add
+                            </a>
+                        </div>
+                    </div>
+                </div>
                 <div class="card-body">
                     <table class="table table-bordered">
                         <thead>
@@ -415,10 +437,10 @@
                             </tr>
                         </thead>
                         <tbody>
-                           {% for file_attach in file %}
+                           {% for file_attach in file_attach %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td><a href="{{file_attach.Attachment}}"></a> </td>
+                                    <td><a href="{{file_attach.Attachment}}"></a> {{file_attach.Attachment}}</td>
                                 </tr>
                                 {% empty %}
                                 <tr>
@@ -432,6 +454,41 @@
         </div>
     <form method="post" id="organic_certificate_observation_form">
                 {% csrf_token %}
+    {% for application_details in application_details %}
+    {% if 'R' == application_details.Audit_Plan_Acceptance %}
+        <div class="card">
+            <div class="card-header" role="tab" id="audit_date_details">
+                <a class="collapsed" data-toggle="collapse" href="#audit_date_tab" aria-expanded="false" aria-controls="collapseTwo">
+                    Audit Date
+                </a>
+            </div>
+            <div id="audit_date_tab" class="collapse" role="tabpanel" aria-labelledby="audit_date_tab" data-parent="#audit_date_tab" style="">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Audit Date </label>
+                               <input type="date" name="date_of_audit" id="Audit_Date" class="form-control date-picker flatpickr-input active">
+                            </div>
+                        </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Remarks From Focal Officer </label>
+                                    <textarea type="text" class="form-control" disabled>{{ application_details.FO_Remarks }}</textarea>
+                                </div>
+                            </div>
+                    </div>
+                    <hr>
+                    <input type="hidden" name="audit_date_application_no" value="{{ application_details.Application_No }}">
+                    <button type="button" class="btn btn-flat btn-primary" onclick="resubmit_details()">
+                        <i class="ace-icon fa fa-times"></i>
+                        &nbsp;&nbsp;Send For Acceptance
+                    </button>
+                </div>
+            </div>
+        </div>
+    {% else %}
         <div class="card">
             <div class="card-header" role="tab" id="audit_findings">
                 <a class="collapsed" data-toggle="collapse" href="#audit_findings_tab" aria-expanded="false" aria-controls="collapseTwo">
@@ -756,7 +813,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Audit Date </label>
-                               <input type="date" name="Audit_Date" id="Audit_Date" class="form-control date-picker flatpickr-input active">
+                               <input type="date" class="form-control date-picker flatpickr-input active">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -774,16 +831,12 @@
                         </div>
                     </div>
                     <div class="row">
-                    {% for application_details in application_details %}
-                        {% if application_details.Audit_Plan_Acceptance == 'A' or  application_details.Audit_Plan_Acceptance == 'R' %}
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">Remarks From Client </label>
-                                    <textarea type="text" class="form-control" disabled>{{ application_details.Audit_Plan_Acceptance_Remarks }}</textarea>
-                                </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Remarks From Client </label>
+                                <textarea type="text" class="form-control" disabled>{{ application_details.Audit_Plan_Acceptance_Remarks }}</textarea>
                             </div>
-                        {% endif %}
-                    {% endfor %}
+                        </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Remarks From Focal Officer </label>
@@ -821,6 +874,7 @@
                                         <th scope="col">Non Conformity</th>
                                         <th scope="col">Non Conformity Category</th>
                                         <th scope="col">Description of nonconformity</th>
+                                        <th scope="col">Corrective Action Proposed</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -831,10 +885,11 @@
                                             <td>{{import.Non_Conformity}}</td>
                                             <td>{{import.Non_Conformity_Category}}</td>
                                             <td>{{import.Non_Conformity_Description}}</td>
+                                            <td>{{import.Corrective_Action_Proposed_Auditee}}</td>
                                         </tr>
                                         {% empty %}
                                         <tr>
-                                          <td colspan="5" class="text-center">No Data</td>
+                                          <td colspan="6" class="text-center">No Data</td>
                                         </tr>
                                     {% endfor %}
                                 </tbody>
@@ -843,25 +898,21 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                        {% for application_details in application_details %}
-                            <input type="hidden" name="det_application_no" value="{{ application_details.Application_No }}">
-                            {% if application_details.Audit_Plan_Acceptance == 'A' %}
-                                <button type="button" class="btn btn-flat btn-primary" onclick="approve_details()">
-                                    <i class="ace-icon fa fa-times"></i>
-                                    &nbsp;&nbsp;Approve
-                                </button>
-                            {% else %}
-                                <button type="button" class="btn btn-flat btn-primary" onclick="resubmit_details()">
-                                    <i class="ace-icon fa fa-times"></i>
-                                    &nbsp;&nbsp;Resubmit
-                                </button>
-                            {% endif %}
-                        {% endfor %}
-
-                        <button type="button" class="btn btn-primary" onclick="closeTeamModal()">Close Modal</button>
-                    </div>
+                    <input type="hidden" name="det_application_no" value="{{ application_details.Application_No }}">
+                    <button type="button" id="approve-btn" class="btn btn-flat btn-primary" onclick="approve_details()">
+                        <i class="ace-icon fa fa-times"></i>
+                        &nbsp;&nbsp;Approve
+                    </button>
+                    <button type="button" id="resubmit-btn" class="btn btn-flat btn-primary" onclick="resubmit_nc_details()">
+                        <i class="ace-icon fa fa-times"></i>
+                        &nbsp;&nbsp;Resubmit
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="closeTeamModal()">Close Modal</button>
+                </div>
             </div>
         </div>
+    {% endif %}
+ {% endfor %}
 </form>
         <div id="farmInputModal" class="modal" tabindex="-1">
             <div class="modal-dialog modal-lg">
@@ -913,7 +964,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title"></h5>
-                        <button type="button" class="close" onclick="closeModal()">
+                        <button type="button" class="close" data-dismiss="modal">
                             <span aria-hidden="true">&times;</span>
                         </button>
 
@@ -924,24 +975,29 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <label class="form-label">Clause Number</label>
-                                <input type="text" name="Clause_Number" id="Clause_Number">
+                                <input type="text" class="form-control" name="Clause_Number" id="Clause_Number">
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label">Nonconformity</label>
-                                <label class="custom-control custom-radio">
-                                    <input type="radio" name="Non_Conformity" class="custom-control-input" value="Yes">
-                                    <span class="custom-control-indicator"></span>
-                                    <span class="custom-control-description">Open</span>
-                                </label>
-                                <label class="custom-control custom-radio">
-                                    <input type="radio" name="Non_Conformity" class="custom-control-input" value="No">
-                                    <span class="custom-control-indicator"></span>
-                                    <span class="custom-control-description">Close</span>
-                                </label>
+                                <div class="form-group">
+                                    <label class="form-label">Audit Team Accept</label>&nbsp;
+                                    <div class="justify-content-center">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Non_Conformity" class="custom-control-input" value="Yes" onchange="Check_Accept(this.value)">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Open</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Non_Conformity" class="custom-control-input" value="No" onchange="Check_Accept(this.value)">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Close</span>
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label">Nonconformity Category</label>
                                 <select class="form-control" name="Non_Conformity_Category">
+                                    <option value="">-SELECT-</option>
                                     <option value="Critical">Critical</option>
                                     <option value="Major">Major</option>
                                     <option value="Minor">Minor</option>
@@ -953,6 +1009,10 @@
                                 <label class="form-label">Description of nonconformity</label>
                                 <textarea class="form-control" name="Non_Conformity_Description"></textarea>
                             </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Corrective Action Proposed</label>
+                                <textarea class="form-control" id="Corrective_Action_Proposed_Auditee" name="Corrective_Action_Proposed_Auditee" disabled></textarea>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -963,12 +1023,49 @@
                             &nbsp;&nbsp;Add
                         </button>
                         {% endfor %}
-                        <button type="button" class="btn btn-primary" onclick="closeNonConfirmModal()">Close Modal</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close Modal</button>
                     </div>
                     </form>
                   </div>
             </div>
         </div>
+
+        <form method="post" id="attachment_form" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="modal fade" id="attachmentModal" tabindex="-1">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                         <div class="modal-header">
+                            <h5 class="modal-title" id="attachmentModalLabel">Attach Files</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="col-lg-12">
+                                <div class="box box-primary">
+                                    <div class="box-body">
+                                        <div class="row">
+                                            <div class="form-group col-md-6">
+                                                <label>Attach File</label>
+                                                <input type="file" name="document" id="document">
+                                                <div class="alert alert-danger" id="fileErrorMsg" style="display:none"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            {% for application_details in application_details %}
+                            <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_attachment('{{application_details.Application_No}}')"> Submit </button>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
 
 <script>
 
@@ -1040,4 +1137,76 @@ function resubmit_details()
     });
 }
 
+function save_attachment(application_no)
+{
+    var fileName = document.getElementById('document').files[0].name;
+    var fd = new FormData();
+    var file = document.getElementById('document').files[0];
+    fd.append('document', file);
+    token_value=$("input[name=csrfmiddlewaretoken]").val();
+    $.ajaxSetup
+    ({
+        beforeSend: function(xhr, settings)
+        {
+            xhr.setRequestHeader("X-CSRFToken", token_value);
+        }
+    });
+        $.ajax({
+        type : "POST",
+        url : "{% url 'save_gap_audit_plan' %}",
+        data : fd,
+        dataType: 'json',
+        contentType: false,
+        processData: false,
+        success : function(data)
+        {
+            if (data.form_is_valid)
+            {
+                var file_url = data.file_url
+                $.ajax
+                ({
+                    type : "POST",
+                    url : "{% url 'save_gap_audit_plan_name' %}",
+                    data : {'appNo':application_no , 'filename':fileName, 'file_url':file_url},
+                    success : function(responseText)
+                    {
+                        $('#attachmentModal').modal('hide');
+                        $('#file-attachment').html(responseText);
+                        $('.modal-backdrop').remove();
+                    }
+                });
+            }else
+            {
+                $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                $('#fileErrorMsg').show();
+                $('#fileErrorMsg').delay(2000).fadeOut('slow');
+            }
+        }
+    });
+}
+
+function resubmit_nc_details()
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'resubmit_nc_details' %}",
+        data :$('#organic_certificate_observation_form').serialize(),
+        success : function(data)
+        {
+            location.reload();
+        }
+    });
+}
+
+function Check_Accept(value)
+{
+    if(value == 'Yes')
+    {
+        $("#Corrective_Action_Proposed_Auditee").removeAttr("disabled");
+    }
+    else
+    {
+        $("#Corrective_Action_Proposed_Auditee").attr("disabled", "disabled");
+    }
+}
 </script>

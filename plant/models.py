@@ -73,7 +73,6 @@ class t_workflow_details(models.Model):
     Application_Status = models.CharField(max_length=3, default=None, blank=True, null=True)
 
 
-
 class t_workflow_details_audit(models.Model):
     Audit_Record_Id = models.AutoField(primary_key=True)
     Workflow_Record_Id = models.IntegerField()
@@ -90,7 +89,7 @@ class t_workflow_details_audit(models.Model):
 
 class t_file_attachment(models.Model):
     File_Id = models.AutoField(primary_key=True)
-    Application_No = models.CharField(max_length=20, blank=True, null=True)
+    Application_No = models.CharField(max_length=100, blank=True, null=True)
     Applicant_Id = models.CharField(max_length=100, blank=True, null=True)
     Role_Id = models.IntegerField(blank=True, null=True)
     File_Path = models.CharField(max_length=250)

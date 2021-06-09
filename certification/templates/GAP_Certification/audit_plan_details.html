@@ -1,0 +1,61 @@
+<div class="card">
+    <div class="card-body">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">File</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for file_attach in file_attach %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{file_attach.Attachment}}</td>
+                        <td>
+                            <button type="button"
+                                class="btn btn-danger btn-sm" onclick="DeleteAttachment('{{ file_attach.File_Id }}')">
+                                <i class="zmdi zmdi-delete"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                      <td colspan="3" class="text-center">No Data</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+function save_details()
+{
+	$.ajax({
+			type : "POST",
+			url : "{% url 'submit_food_handler_application' %}",
+			data : $('#foodHandlerForm').serialize(),
+			cache : false,
+			dataType : "html",
+			success : function(responseText)
+			{
+                location.reload();
+			}
+	});
+}
+
+function DeleteAttachment(id)
+{
+    var appNo = $('#appNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'delete_agro_file' %}",
+        data :{'appNo':appNo , 'file_id': id},
+        success : function(responseText)
+        {
+            $('#fileAttach').html(responseText);
+        }
+    });
+}
+</script>

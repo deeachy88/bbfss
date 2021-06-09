@@ -279,7 +279,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                           {% for crop in crop_details %}
+                           {% for crop in crop_production %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
                                     <td>{{crop.Crop_Name}}</td>
@@ -300,7 +300,7 @@
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                  <td colspan="3" class="text-center">No Data</td>
+                                  <td colspan="15" class="text-center">No Data</td>
                                 </tr>
                            {% endfor %}
                         </tbody>
@@ -314,53 +314,57 @@
                     Pack House Details
                 </a>
             </div>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Pack House Name</th>
-                        <th scope="col">Address of the pack house</th>
-                        <th scope="col">Processing_Type</th>
-                        <th scope="col">For the previous year(From date)</th>
-                        <th scope="col">For the previous year(To date)</th>
-                        <th scope="col">Production</th>
-                        <th scope="col">Production  Unit</th>
-                        <th scope="col">Sold</th>
-                        <th scope="col">Sold Unit</th>
-                        <th scope="col">Balance Stock</th>
-                        <th scope="col">For the current year(From date)</th>
-                        <th scope="col">For the current year(To date)</th>
-                        <th scope="col">Production</th>
-                        <th scope="col">Sold</th>
-                        <th scope="col">Balance Stock</th>
-                    </tr>
-                </thead>
-                <tbody>
-                   {% for crop in pack_house_details %}
-                        <tr>
-                            <td>{{ forloop.counter }}</td>
-                            <td>{{crop.Pack_House_Name}}</td>
-                            <td>{{crop.Pack_House_Address}}</td>
-                            <td>{{crop.Processing_Type}}</td>
-                            <td>{{crop.P_From_Date}}</td>
-                            <td>{{crop.P_To_Date}}</td>
-                            <td>{{crop.P_Production}}</td>
-                            <td>{{crop.P_Production_Unit}}</td>
-                            <td>{{crop.P_Sold}}</td>
-                            <td>{{crop.P_Balance_Stock}}</td>
-                            <td>{{crop.C_From_Date}}</td>
-                            <td>{{crop.C_To_Date}}</td>
-                            <td>{{crop.C_Production}}</td>
-                            <td>{{crop.C_Sold}}</td>
-                            <td>{{crop.C_Balance_Stock}}</td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                          <td colspan="3" class="text-center">No Data</td>
-                        </tr>
-                   {% endfor %}
-                </tbody>
-            </table>
+             <div id="collapse_wild_collection" class="collapse" role="tabpanel" aria-labelledby="collapseCrop" data-parent="#accordion" style="">
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Pack House Name</th>
+                                <th scope="col">Address of the pack house</th>
+                                <th scope="col">Processing_Type</th>
+                                <th scope="col">For the previous year(From date)</th>
+                                <th scope="col">For the previous year(To date)</th>
+                                <th scope="col">Production</th>
+                                <th scope="col">Production  Unit</th>
+                                <th scope="col">Sold</th>
+                                <th scope="col">Sold Unit</th>
+                                <th scope="col">Balance Stock</th>
+                                <th scope="col">For the current year(From date)</th>
+                                <th scope="col">For the current year(To date)</th>
+                                <th scope="col">Production</th>
+                                <th scope="col">Sold</th>
+                                <th scope="col">Balance Stock</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           {% for crop in gap_house_details %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{crop.Pack_House_Name}}</td>
+                                    <td>{{crop.Pack_House_Address}}</td>
+                                    <td>{{crop.Processing_Type}}</td>
+                                    <td>{{crop.P_From_Date}}</td>
+                                    <td>{{crop.P_To_Date}}</td>
+                                    <td>{{crop.P_Production}}</td>
+                                    <td>{{crop.P_Production_Unit}}</td>
+                                    <td>{{crop.P_Sold}}</td>
+                                    <td>{{crop.P_Balance_Stock}}</td>
+                                    <td>{{crop.C_From_Date}}</td>
+                                    <td>{{crop.C_To_Date}}</td>
+                                    <td>{{crop.C_Production}}</td>
+                                    <td>{{crop.C_Sold}}</td>
+                                    <td>{{crop.C_Balance_Stock}}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                  <td colspan="16" class="text-center">No Data</td>
+                                </tr>
+                           {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+             </div>
         </div>
         <div class="card">
             <div class="card-header" role="tab" id="headingTwo">
@@ -393,7 +397,7 @@
                 </div>
             </div>
         </div>
-        <div class="card">
+        <!--<div class="card">
             <div class="card-header" role="tab" id="headingThree">
                 <a class="collapsed" data-toggle="collapse" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                     Confirmatory  Details
@@ -434,7 +438,7 @@
                                         <td>{{import.Non_Conformity_Description}}</td>
                                         <td>
                                             <button type="button"
-                                            class="btn btn-primary btn--icon btn-sm js-edit-details"
+                                            class="btn btn-primary btn&#45;&#45;icon btn-sm js-edit-details"
                                             data-url="{% url 'edit_feasibility_inspection' import.Record_Id %}">
                                             <i class="zmdi zmdi-edit"></i>
                                             </button>
@@ -450,30 +454,65 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>-->
         <div class="card">
             <div class="card-header" role="tab" id="headingFour">
                 <a class="collapsed" data-toggle="collapse" href="#collapseFour" aria-expanded="false" aria-controls="collapseTwo">
                     Audit Details
                 </a>
             </div>
-            <div id="collapseFour" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+            <div id="collapseFour" class="active" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
                 <div class="card-body">
+                    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Focal</span>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Ofiicer</span>
+                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Remarks</span>
+                        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="form-label">Remarks</label>
+                                {% for application_details in application_details %}
+                                <textarea class="form-control" disabled>{{application_details.FO_Remarks}}</textarea>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <!--<div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Team</span>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Leader</span>
+                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Remarks</span>
+                        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="form-label">Remarks</label>
+                                {% for application_details in application_details %}
+                                <textarea class="form-control" disabled>{{application_details.FO_Remarks}}</textarea>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>-->
                     <form method="post" id="audit_plan_form">
                     {% csrf_token %}
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Provisional Audit Date</label>
-                                 {% for application_details in application_details %}
-                                    <input type="hidden" name="Leader" value="{{application_details.Audit_Team_Leader}}">
-                                    <input type="text" id="Audit_Date" name="Audit_Date" value="{{application_details.Audit_Date}}" disabled>
-                                {% endfor %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Provisional Audit Date</label>
+                                     {% for application_details in application_details %}
+                                        <input type="hidden" name="Leader" value="{{application_details.Audit_Team_Leader}}">
+                                        <input type="text" class="form-control" id="Audit_Date" name="Audit_Date" value="{{application_details.Audit_Date}}" disabled>
+                                    {% endfor %}
+                                </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Audit Date Accept</label>
-                                    <div class="col-sm-4 justify-content-center">
+                                    <label class="form-label">Audit Date Accept</label>&nbsp;
+                                    <div class="justify-content-center">
                                         <label class="custom-control custom-radio">
                                             <input type="radio" name="acceptance" class="custom-control-input" value="A">
                                             <span class="custom-control-indicator"></span>
@@ -488,26 +527,27 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Remarks</label>
-                                <textarea class="form-control" name="remarks" id="remarks"></textarea>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-label">Remarks</label>
+                                    <textarea class="form-control" name="remarks" id="remarks"></textarea>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="card-action">
-                        <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
-                            Succesfull
+                        <div class="card-action">
+                            <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+                                Succesfull
+                            </div>
+                            {% for application_details in application_details %}
+                            <input type="hidden" value="{{ application_details.Application_No }}" name="application_id">
+                                <button type="button" class="btn btn-flat btn-primary" onclick="audit_team_accept()">
+                                    <i class="ace-icon fa fa-times"></i>
+                                    &nbsp;&nbsp;Send For Acceptance
+                                </button>
+                            {% endfor %}
+                            <button type="button" class="btn btn-primary" onclick="closeTeamModal()">Close Modal</button>
                         </div>
-                        {% for application_details in application_details %}
-                        <input type="hidden" value="{{ application_details.Application_No }}" name="application_id">
-                            <button type="button" class="btn btn-flat btn-primary" onclick="audit_team_accept()">
-                                <i class="ace-icon fa fa-times"></i>
-                                &nbsp;&nbsp;Send For Acceptance
-                            </button>
-                        {% endfor %}
-                        <button type="button" class="btn btn-primary" onclick="closeTeamModal()">Close Modal</button>
-                    </div>
                     </form>
                 </div>
             </div>

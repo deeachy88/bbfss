@@ -8,140 +8,20 @@ from django.template.loader import render_to_string
 from django.utils import timezone
 
 from administrator.models import t_dzongkhag_master, t_gewog_master, t_village_master, t_location_field_office_mapping, \
-    t_user_master, t_field_office_master, t_plant_crop_master, t_plant_pesticide_master, t_plant_crop_variety_master, \
-    t_service_master, t_unit_master
+    t_user_master, t_field_office_master, t_unit_master, t_service_master
 from bbfss import settings
-from livestock.forms import ImportFormProduct
+from livestock.forms import ImportFormProduct, MeatShopFeasibilityForm
 from livestock.models import t_livestock_clearance_meat_shop_t1, t_livestock_clearance_meat_shop_t2, \
     t_livestock_ante_post_mortem_t1, t_livestock_movement_permit_t1, t_livestock_export_certificate_t1, \
     t_livestock_ante_post_mortem_t2, t_livestock_movement_permit_t2, t_livestock_export_certificate_t2, \
     t_livestock_import_permit_product_t1, t_livestock_import_permit_animal_t1, t_livestock_movement_permit_t3, \
     t_livestock_import_permit_animal_inspection_t1, t_livestock_import_permit_product_inspection_t1, \
     t_livestock_import_permit_animal_t2, t_livestock_import_permit_product_t2, \
-    t_livestock_import_permit_product_inspection_t2, t_livestock_import_permit_animal_inspection_t2
-from plant.forms import ImportFormTwo
+    t_livestock_import_permit_product_inspection_t2, t_livestock_import_permit_animal_inspection_t2, \
+    t_livestock_clearance_meat_shop_t5, t_livestock_clearance_meat_shop_t4, t_livestock_clearance_meat_shop_t6, \
+    t_livestock_clearance_meat_shop_t3
 from plant.models import t_workflow_details, t_file_attachment, t_payment_details
-from plant.views import inspector_application
-
-
-def apply_clearance_meat_shop(request):
-    dzongkhag = t_dzongkhag_master.objects.all()
-    gewog = t_gewog_master.objects.all()
-    village = t_village_master.objects.all()
-    location = t_location_field_office_mapping.objects.all()
-    return render(request, 'clearance_meat_shop/apply_clearance_meat_shop.html',
-                  {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village,
-                   'location': location})
-
-
-def save_meat_shop_clearance(request):
-    data = dict()
-    service_code = "CMS"
-    last_application_no = get_meat_shop_application_no(request, service_code)
-
-    applicant_Id = request.session['email']
-    scope = request.POST.get('scope')
-    purpose = request.POST.get('purpose')
-    shopName = request.POST.get('shopName')
-    ownership = request.POST.get('ownership')
-    cid = request.POST.get('cid')
-    Name = request.POST.get('Name')
-    contact_number = request.POST.get('contactNumber')
-    email = request.POST.get('email')
-    dzongkhag = request.POST.get('dzongkhag')
-    gewog = request.POST.get('gewog')
-    village = request.POST.get('village')
-    clearance = request.POST.get('clearance')
-    proceeding = request.POST.get('proceeding')
-    proceedingReason = request.POST.get('proceedingReason')
-    inspectionDate = request.POST.get('inspectionDate')
-    date_format_ins = datetime.strptime(inspectionDate, '%d-%m-%Y').date()
-
-    t_livestock_clearance_meat_shop_t1.objects.create(
-        Application_No=last_application_no,
-        Applicant_Id=applicant_Id,
-        Scope=scope,
-        Purpose=purpose,
-        Name_Meat_Shop=shopName,
-        Ownership_Type=ownership,
-        CID=cid,
-        Name_Owner=Name,
-        Contact_No=contact_number,
-        Email=email,
-        Dzongkhag_Code=dzongkhag,
-        Gewog_Code=gewog,
-        Village_Code=village,
-        Establish_Type=None,
-        Establishment_Size=None,
-        Meat_Type=None,
-        Clearance_Type=clearance,
-        Any_Proceedings=proceeding,
-        Reason_Suspension=proceedingReason,
-        Desired_Inspection_Date=date_format_ins,
-        Resubmit_Date=None,
-        Desired_Reinspection_Date=None,
-        Remarks_Reinspection=None,
-        Inspection_Date=None,
-        Remarks_Inspection=None,
-        Inspection_Leader=None,
-        Inspection_Team=None,
-        Application_Status='P',
-        Meat_Shop_Clearance_No=None,
-        Approved_Date=None,
-        Validity_Period=None,
-        Validity=None
-    )
-    field = t_location_field_office_mapping.objects.filter(Location_Code=gewog)
-    for field_office in field:
-        field_office_id = field_office.Field_Office_Id_id
-    t_workflow_details.objects.create(Application_No=last_application_no, Applicant_Id=request.session['email'],
-                                      Assigned_To=None, Field_Office_Id=field_office_id, Section='Livestock',
-                                      Assigned_Role_Id='4', Action_Date=None, Application_Status='P',
-                                      Service_Code=service_code)
-    data['applNo'] = last_application_no
-    return JsonResponse(data)
-
-
-def get_meat_shop_application_no(request, service_code):
-    last_application_no = t_livestock_clearance_meat_shop_t1.objects.aggregate(Max('Application_No'))
-    lastAppNo = last_application_no['Application_No__max']
-    if not lastAppNo:
-        year = timezone.now().year
-        newAppNo = service_code + "/" + str(year) + "/" + "0001"
-    else:
-        substring = str(lastAppNo)[9:13]
-        substring = int(substring) + 1
-        AppNo = str(substring).zfill(4)
-        year = timezone.now().year
-        newAppNo = service_code + "/" + str(year) + "/" + AppNo
-    return newAppNo
-
-
-def load_application_details(request):
-    dzongkhag = t_dzongkhag_master.objects.all()
-    gewog = t_gewog_master.objects.all()
-    village = t_village_master.objects.all()
-    location = t_location_field_office_mapping.objects.all()
-    application_id = request.GET.get('application_id')
-    application_details = t_livestock_clearance_meat_shop_t1.objects.filter(Application_No=application_id)
-    return render(request, 'clearance_meat_shop/details_meat_shop.html',
-                  {'application_details': application_details, 'dzongkhag': dzongkhag, 'gewog': gewog,
-                   'village': village,
-                   'location_code': location})
-
-
-def load_attachment_details(request):
-    application_id = request.GET.get('application_id')
-    attachment_details = t_file_attachment.objects.filter(Application_No=application_id)
-    return render(request, 'clearance_meat_shop/meat_shop_file_attachment_page.html',
-                  {'file_attach': attachment_details})
-
-
-def meat_shop_clearance_app(request):
-    appNo = request.GET.get('appId')
-    meat_shop_inspection = t_livestock_clearance_meat_shop_t2.objects.filter(Application_No=appNo)
-    return render(request, 'clearance_meat_shop/apply_clearance_meat_shop.html',
-                  {'meat_shop_inspection': meat_shop_inspection, 'title': appNo})
+from plant.views import inspector_application, resubmit_application, focal_officer_application
 
 
 def load_gewog(request):
@@ -167,225 +47,688 @@ def clearance_print(request):
     return render(request, 'clearance_printing.html')
 
 
-def save_meat_shop_file(request):
+# MEAT SHOP REGISTRATON
+def meat_shop_registration_licensing(request):
+    unit = t_unit_master.objects.all()
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    return render(request, 'meat_shop_registration/registration_application.html',
+                  {'unit': unit, 'dzongkhag': dzongkhag, 'gewog': gewog})
+
+
+def save_meat_shop_registration(request):
+    data = dict()
+    service_code = "CMS"
+    new_food_business_registration_application = meat_shop_registration_application_no(service_code)
+    Business_Name = request.POST.get('Business_Name')
+    CID = request.POST.get('cid')
+    name = request.POST.get('name')
+    Contact_No = request.POST.get('contactNumber')
+    Email = request.POST.get('email')
+    address = request.POST.get('address')
+    current_status = request.POST.get('current_status')
+    name_manager = request.POST.get('name_manager')
+    license_criteria = request.POST.get('license_criteria')
+    product_category = request.POST.get('product_category')
+    product_proposed = request.POST.get('product_proposed')
+    identified_water_source = request.POST.get('identified_water_source')
+    no_of_years = request.POST.get('no_of_years')
+    production_volume = request.POST.get('production_volume')
+    volume_unit = request.POST.get('volume_unit')
+    history = request.POST.get('history')
+    previous_business = request.POST.get('previous_business')
+    outsourced_process = request.POST.get('outsourced_process')
+    legal_status = request.POST.get('legal_status')
+    larger_corporation = request.POST.get('larger_corporation')
+    relationship = request.POST.get('relationship')
+    licensed_before = request.POST.get('relationship')
+    license_number = request.POST.get('license_number')
+    reason = request.POST.get('license_number')
+    judicial_proceedings = request.POST.get('judicial_proceedings')
+    provided_details = request.POST.get('provided_details')
+    regulatory_proceedings_details = request.POST.get('regulatory_proceedings_details')
+    project_proposal = request.POST.get('project_proposal')
+    regulatory_proceedings = request.POST.get('regulatory_proceedings')
+    dzongkhag = request.POST.get('dzongkhag')
+    gewog = request.POST.get('gewog')
+
+    t_livestock_clearance_meat_shop_t1.objects.create(
+        Application_No=new_food_business_registration_application,
+        Application_Date=date.today(),
+        Applicant_Id=request.session['email'],
+        Business_Name=Business_Name,
+        CID=CID,
+        Name_Owner=name,
+        Contact_No=Contact_No,
+        Email=Email,
+        Address=address,
+        Name_Manager=name_manager,
+        License_Criteria=license_criteria,
+        Product_Category=product_category,
+        Product=product_proposed,
+        Current_Status=current_status,
+        Years_In_Production=no_of_years,
+        Volume_Last_Year=production_volume,
+        Volume_Unit=volume_unit,
+        Project_Proposal=project_proposal,
+        Water_Source=identified_water_source,
+        Site_History=history,
+        Previous_Business=previous_business,
+        Process_Outsource=outsourced_process,
+        Legal_Entity=legal_status,
+        Large_Corporation=larger_corporation,
+        Large_Corporation_Relation=relationship,
+        FBO_License_Status=licensed_before,
+        FBO_License_No=license_number,
+        Invalid_Reason=reason,
+        FBO_Judicial_Proceedings=judicial_proceedings,
+        Judicial_Proceedings_Details=provided_details,
+        FBO_Regulatory_Proceedings=regulatory_proceedings_details,
+        Regulatory_Proceedings_Details=regulatory_proceedings,
+        Inspection_Type=None,
+        FB_License_No=None,
+        FI_Inspection_Date=None,
+        FI_Inspection_Leader=None,
+        FI_Recommendation=None,
+        FR_Inspection_Date=None,
+        FR_Inspection_Leader=None,
+        FR_Inspection_Team=None,
+        Dzongkhag_Code=dzongkhag,
+        Gewog_Code=gewog
+
+    )
+
+    t_workflow_details.objects.create(Application_No=new_food_business_registration_application,
+                                      Applicant_Id=request.session['email'],
+                                      Assigned_To=None, Field_Office_Id=None, Section='Livestock',
+                                      Assigned_Role_Id='2', Action_Date=None, Application_Status='P',
+                                      Service_Code=service_code)
+    data['applNo'] = new_food_business_registration_application
+    data['outsourced_process'] = outsourced_process
+    return JsonResponse(data)
+
+
+def meat_shop_registration_application_no(service_code):
+    last_application_no = t_livestock_clearance_meat_shop_t1.objects.aggregate(Max('Application_No'))
+    lastAppNo = last_application_no['Application_No__max']
+    if not lastAppNo:
+        year = timezone.now().year
+        newAppNo = service_code + "/" + str(year) + "/" + "0001"
+    else:
+        substring = str(lastAppNo)[9:13]
+        substring = int(substring) + 1
+        AppNo = str(substring).zfill(4)
+        year = timezone.now().year
+        newAppNo = service_code + "/" + str(year) + "/" + AppNo
+    return newAppNo
+
+
+def meat_shop_file(request):
     data = dict()
     myFile = request.FILES['document']
-    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/livestock/meat_shop")
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/livestock/meat_shop_licensing")
     if fs.exists(myFile.name):
         data['form_is_valid'] = False
     else:
         fs.save(myFile.name, myFile)
+        file_url = "attachments" + "/" + str(
+            timezone.now().year) + "/livestock/meat_shop_licensing" + "/" + myFile.name
         data['form_is_valid'] = True
+        data['file_url'] = file_url
     return JsonResponse(data)
 
 
-def add_meat_shop_file_name(request):
+def meat_shop_file_name(request):
     if request.method == 'POST':
         Application_No = request.POST.get('appNo')
         fileName = request.POST.get('filename')
         Applicant_Id = request.session['email']
+        file_url = request.POST.get('file_url')
 
         t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
-                                         Role_Id=None,
+                                         File_Path=file_url, Role_Id=None,
                                          Attachment=fileName)
 
         file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
-    return render(request, 'clearance_meat_shop/meat_shop_file_attachment_page.html', {'file_attach': file_attach})
+    return render(request, 'meat_shop_registration/file_attachment.html', {'file_attach': file_attach})
 
 
-def delete_meat_shop_file(request):
+def delete_meat_shop_fh_file(request):
     File_Id = request.GET.get('file_id')
-    Application_No = request.GET.get('appNo');
+    Application_No = request.GET.get('appNo')
 
     file = t_file_attachment.objects.filter(pk=File_Id)
     for file in file:
         fileName = file.Attachment
-        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/livestock/meat_shop")
+        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/food/food_business_registration")
         fs.delete(str(fileName))
     file.delete()
 
     file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
-    return render(request, 'clearance_meat_shop/file_attachment_page.html', {'file_attach': file_attach})
+    return render(request, 'meat_shop_registration/file_attachment.html', {'file_attach': file_attach})
 
 
-def submit_details(request):
-    application_no = request.GET.get('appNo')
+def submit_meat_shop_application(request):
+    application_no = request.POST.get('application_no')
     workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
     workflow_details.update(Action_Date=date.today())
-    dzongkhag = t_dzongkhag_master.objects.all()
-    gewog = t_gewog_master.objects.all()
-    village = t_village_master.objects.all()
-    location = t_location_field_office_mapping.objects.all()
-
-    return render(request, 'clearance_meat_shop/apply_clearance_meat_shop.html',
-                  {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village,
-                   'location': location})
+    return redirect(meat_shop_registration_licensing)
 
 
-def details_ins_cms(request):
+def meat_shop_fo_approve(request):
+    application_no = request.POST.get('application_id')
+    remarks = request.POST.get('remarks')
+    field_office = request.POST.get('forwardTo')
+
+    workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
+    workflow_details.update(Assigned_To=None)
+    workflow_details.update(Field_Office_Id=field_office)
+    workflow_details.update(Action_Date=date.today())
+    workflow_details.update(Assigned_Role_Id='4')
+    workflow_details.update(Application_Status='I')  # feasibility inspection
+    details = t_livestock_clearance_meat_shop_t1.objects.filter(Application_No=application_no)
+    if remarks is not None:
+        details.update(FO_Remarks=remarks)
+    else:
+        details.update(FO_Remarks=None)
+    details.update(Field_Office_Id=field_office)
+    for email_id in details:
+        email = email_id.Email
+        send_meat_shop_approve_email(email)
+
+    return render(request, 'focal_officer_pending_list.html')
+
+
+def meat_shop_fo_reject(request):
+    application_no = request.GET.get('application_id')
+    remarks = request.POST.get('remarks')
+    workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
+    workflow_details.update(Action_Date=date.today())
+    workflow_details.update(Application_Status='R')
+    details = t_livestock_clearance_meat_shop_t1.objects.filter(Application_No=application_no)
+    details.update(FO_Remarks=remarks)
+    for email_id in details:
+        email = email_id.Email
+        send_meat_shop_reject_email(email, remarks)
+
+
+def send_meat_shop_approve_email(new_import_permit, Email, validity_date):
+    subject = 'APPLICATION APPROVED'
+    message = "Dear Sir," \
+              "" \
+              "Your Application for Meat Shop Licensing Has Been Approved. Your " \
+              "Registration No is:" + new_import_permit + " And is Valid TIll " + str(validity_date) + \
+              " Please Make Payment Before Validity Expires. "
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = [Email]
+    send_mail(subject, message, email_from, recipient_list)
+
+
+def send_meat_shop_reject_email(Email, remarks):
+    subject = 'APPLICATION REJECTED'
+    message = "Dear Sir," \
+              "" \
+              "Your Application for Meat Shop Licensing Has Been Rejected." \
+              " Reason: " + remarks + ""
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = [Email]
+    send_mail(subject, message, email_from, recipient_list)
+
+
+def meat_shop_inspection_team_details(request):
     application_id = request.GET.get('application_id')
-    currentObservation = request.GET.get('currentObservation')
-    decisionConform = request.GET.get('decisionConform')
-    t_livestock_clearance_meat_shop_t2.objects.create(Application_No=application_id,
-                                                      Observation=currentObservation,
-                                                      Action=decisionConform)
-    observation = t_livestock_clearance_meat_shop_t2.objects.filter(Application_No=application_id)
-    return render(request, 'clearance_meat_shop/observation_details.html', {'observation': observation})
+    name = request.GET.get('name')
+    designation = request.GET.get('designation')
+
+    t_livestock_clearance_meat_shop_t6.objects.create(Application_No=application_id,
+                                                      Meeting_Type='Feasibility Inspection ',
+                                                      Name=name, Designation=designation)
+    application_details = t_livestock_clearance_meat_shop_t6.objects.filter(Application_No=application_id)
+    return render(request, 'meat_shop_registration/inspection_team_details.html',
+                  {'application_details': application_details})
 
 
-def approve_application_cms(request):
+def meat_shop_team_details_feasibility_ins(request):
     application_id = request.GET.get('application_id')
-    Inspection_Leader = request.GET.get('Inspection_Leader')
-    Inspection_Team = request.GET.get('Inspection_Team')
+    name = request.GET.get('name')
+    designation = request.GET.get('designation')
+    opening_date = request.GET.get('opening_date')
+    closing_date = request.GET.get('closing_date')
+    date_open = datetime.strptime(opening_date, '%d-%m-%Y').date()
+    date_close = datetime.strptime(closing_date, '%d-%m-%Y').date()
+    t_livestock_clearance_meat_shop_t4.objects.create(Application_No=application_id,
+                                                      Meeting_Type='Feasibility Inspection',
+                                                      Name=name, Designation=designation,
+                                                      Open_Meeting_Date=date_open,
+                                                      Closing_Meeting_Date=date_close)
+    application_details = t_livestock_clearance_meat_shop_t4.objects.filter(Application_No=application_id,
+                                                                            Meeting_Type='Feasibility Inspection')
+    return render(request, 'meat_shop_registration/team_details.html', {'application_details': application_details})
+
+
+def meat_shop_concern_details_feasibility_ins(request):
+    application_id = request.GET.get('application_id')
+    Requirement = request.GET.get('Requirement')
+    Observation = request.GET.get('Observations')
+    Clause_No = request.GET.get('Clause_No')
+    Concern = request.GET.get('Concern')
+    Date = request.GET.get('Date')
+    date_chosen = datetime.strptime(Date, '%d-%m-%Y').date()
+    t_livestock_clearance_meat_shop_t5.objects.create(Application_No=application_id,
+                                                      Inspection_Type='Feasibility Inspection',
+                                                      Requirement=Requirement, Observation=Observation,
+                                                      Clause_No=Clause_No, Date=date_chosen, Concern=Concern)
+    application_details = t_livestock_clearance_meat_shop_t5.objects.filter(Application_No=application_id,
+                                                                            Inspection_Type='Feasibility Inspection')
+    return render(request, 'meat_shop_registration/concern_details.html', {'application_details': application_details})
+
+
+def approve_meat_shop_feasibility_inspection(request):
+    application_id = request.GET.get('application_id')
     remarks = request.GET.get('remarks')
     dateOfInspection = request.GET.get('dateOfInspection')
-    Meat_Shop_Clearance_No = meat_shop_clearance_no(request)
-    identification_No = request.GET.get('identification_No')
-    revision_no = request.GET.get('revision_no')
-    validity = request.GET.get('validity')
+    Clearance_No = feasibility_clearance_no(request)
     date_format_ins = datetime.strptime(dateOfInspection, '%d-%m-%Y').date()
     details = t_livestock_clearance_meat_shop_t1.objects.filter(Application_No=application_id)
 
     if remarks is not None:
-        details.update(Remarks_Inspection=remarks)
+        details.update(FI_Recommendation=remarks)
     else:
-        details.update(Remarks_Inspection=None)
-    if revision_no is not None:
-        details.update(Revision_No=revision_no)
-    else:
-        details.update(Revision_No=None)
+        details.update(FI_Recommendation=None)
 
-    details.update(Inspection_Leader=Inspection_Leader)
-    details.update(Inspection_Team=Inspection_Team)
-    details.update(Inspection_Date=date_format_ins)
-    details.update(Meat_Shop_Clearance_No=Meat_Shop_Clearance_No)
-    details.update(Identification_No=identification_No)
-    details.update(Validity_Period=validity)
-    details.update(Approved_Date=date.today())
-    details.update(Application_Status='A')
-    d = timedelta(days=int(validity))
-    validity_date = date.today() + d
-    details.update(Validity=validity_date)
+    details.update(FI_Inspection_Date=date_format_ins)
+    details.update(Conditional_Clearance_No=Clearance_No)
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
-    application_details.update(Application_Status='A')
+    application_details.update(Application_Status='FR')
+    application_details.update(Assigned_Role_Id=None)
+    for work_details in application_details:
+        user_id = work_details.Applicant_Id
+        login = t_user_master.objects.filter(Email_Id=user_id)
+        for login_id in login:
+            id = login_id.Login_Id
+            application_details.update(Assigned_To=id)
     for email_id in details:
         emailId = email_id.Email
-        send_cms_approve_email(Meat_Shop_Clearance_No, emailId, validity_date)
-    update_payment(application_id, Meat_Shop_Clearance_No, 'CMS', validity_date)
+        send_feasibility_approve_email(Clearance_No, emailId)
+
     return redirect(inspector_application)
 
 
-def reject_application_cms(request):
-    application_id = request.GET.get('application_id')
-    Inspection_Leader = request.GET.get('Inspection_Leader')
-    Inspection_Team = request.GET.get('Inspection_Team')
-    remarks = request.GET.get('remarks')
-    dateOfInspection = request.GET.get('dateOfInspection')
-    identification_No = request.GET.get('identification_No')
-    revision_no = request.GET.get('revision_no')
-    date_format_ins = datetime.strptime(dateOfInspection, '%d-%m-%Y').date()
-    details = t_livestock_clearance_meat_shop_t1.objects.filter(Application_No=application_id)
-    for email_id in details:
-        email = email_id.Email
-    if revision_no is not None:
-        details.update(Revision_No=revision_no)
-    else:
-        details.update(Revision_No=None)
-    details.update(Remarks_Inspection=remarks)
-    details.update(Inspection_Leader=Inspection_Leader)
-    details.update(Inspection_Team=Inspection_Team)
-    details.update(Inspection_Date=date_format_ins)
-    details.update(Identification_No=identification_No)
-    details.update(Application_Status='R')
-    application_details = t_workflow_details.objects.filter(Application_No=application_id)
-    application_details.update(Action_Date=date.today())
-    application_details.update(Application_Status='R')
-    send_cms_reject_email(remarks, details.Email)
-    return redirect(inspector_application)
-
-
-def resubmit_application_cms(request):
-    application_id = request.GET.get('application_id')
-    Inspection_Leader = request.GET.get('Inspection_Leader')
-    Inspection_Team = request.GET.get('Inspection_Team')
-    remarks = request.GET.get('remarks')
-    dateOfInspection = request.GET.get('dateOfInspection')
-    identification_No = request.GET.get('identification_No')
-    revision_no = request.GET.get('revision_no')
-
-    date_format_ins = datetime.strptime(dateOfInspection, '%d-%m-%Y').date()
-    details = t_livestock_clearance_meat_shop_t1.objects.filter(Application_No=application_id)
-
-    if revision_no is not None:
-        details.update(Revision_No=revision_no)
-    else:
-        details.update(Revision_No=None)
-    details.update(Remarks_Inspection=remarks)
-    details.update(Inspection_Leader=Inspection_Leader)
-    details.update(Inspection_Team=Inspection_Team)
-    details.update(Inspection_Date=date_format_ins)
-    details.update(Identification_No=identification_No)
-    details.update(Application_Status='RS')
-    application_details = t_workflow_details.objects.filter(Application_No=application_id)
-    application_details.update(Action_Date=date.today())
-    application_details.update(Application_Status='RS')
-    for login in application_details:
-        login_id = login.Applicant_Id
-    app_det = t_user_master.objects.filter(Email_Id=login_id)
-    for app in app_det:
-        user_id = app.Login_Id
-    application_details.update(Assigned_To=user_id)
-    for email_id in details:
-        email = email_id.Email
-        send_cms_resubmit_email(remarks, email)
-    return redirect(inspector_application)
-
-
-def meat_shop_clearance_no(request):
+def feasibility_clearance_no(request):
     global Field_Code
     Field_Office_Id = request.session['field_office_id']
     code = t_field_office_master.objects.filter(pk=Field_Office_Id)
     for code in code:
         Field_Code = code.Field_Office_Code
 
-    last_application_no = t_livestock_clearance_meat_shop_t1.objects.aggregate(Max('Meat_Shop_Clearance_No'))
-    lastAppNo = last_application_no['Meat_Shop_Clearance_No__max']
+    last_application_no = t_livestock_clearance_meat_shop_t1.objects.aggregate(Max('Conditional_Clearance_No'))
+    lastAppNo = last_application_no['Conditional_Clearance_No__max']
     if not lastAppNo:
         year = timezone.now().year
-        newAppNo = Field_Code + "/" + "CMS" + "/" + str(year) + "/" + "0001"
+        newAppNo = Field_Code + "/" + "FBR" + "/" + str(year) + "/" + "0001"
     else:
         substring = str(lastAppNo)[14:17]
         substring = int(substring) + 1
         AppNo = str(substring).zfill(4)
         year = timezone.now().year
-        newAppNo = Field_Code + "/" + "CMS" + "/" + str(year) + "/" + AppNo
+        newAppNo = Field_Code + "/" + "FBR" + "/" + str(year) + "/" + AppNo
     return newAppNo
 
 
-def send_cms_approve_email(new_meat_shop_clearance, Email, validity_date):
-    valid_till = validity_date.strftime('%d-%m-%Y')
-
+def send_feasibility_approve_email(Clearance_No, Email):
     subject = 'APPLICATION APPROVED'
-    message = "Dear Sir, Your Application for Clearance of meat shop Has Been Approved. Your " \
-              "Registration No is:" + new_meat_shop_clearance + " And is Valid Till " + str(valid_till) + \
-              "." + " Please Make Payment Before Validity Expires. "
+    message = "Dear Sir, Your Application for Feasibility Inspection of " \
+              "Food Business And License Registration  Has Been Approved. Your " \
+              "Registration No is:" + Clearance_No + " And is Valid Till " \
+                                                     "."
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
     send_mail(subject, message, email_from, recipient_list)
 
 
-def send_cms_reject_email(remarks, Email):
+def send_feasibility_reject_email(remarks, Email):
     subject = 'APPLICATION REJECTED'
-    message = "Dear " + "Sir" + " Your Application for Clearance of meat shop  Has Been Rejected Because" + remarks + ""
+    message = "Dear " + "Sir" + " Your Application for Feasibility Inspection of Food Business And License " \
+                                "Registration Has Been Rejected Because" + remarks + ""
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
     send_mail(subject, message, email_from, recipient_list)
 
 
-def send_cms_resubmit_email(remarks, Email):
-    subject = 'APPLICATION RESUBMIT'
-    message = "Dear " + "Sir" + " You Are Required To Resubmit Your Application For Clearance of meat shop Because " + remarks + ""
+def reject_meat_shop_feasibility_inspection(request):
+    application_id = request.GET.get('application_id')
+    remarks = request.GET.get('remarks')
+    dateOfInspection = request.GET.get('dateOfInspection')
+    date_format_ins = datetime.strptime(dateOfInspection, '%d-%m-%Y').date()
+    details = t_livestock_clearance_meat_shop_t1.objects.filter(Application_No=application_id)
+
+    details.update(FI_Recommendation=remarks)
+    details.update(FI_Inspection_Date=date_format_ins)
+    application_details = t_workflow_details.objects.filter(Application_No=application_id)
+    application_details.update(Action_Date=date.today())
+    application_details.update(Application_Status='IRS')
+    for email_id in application_details:
+        email = email_id.Applicant_Id
+        login_details = t_user_master.objects.filter(Email_Id=email)
+        login = login_details.Login_Id
+        application_details.update(Assigned_To=login)
+        application_details.update(Assigned_Role_Id=None)
+    send_feasibility_reject_email(remarks, details.Email)
+    return redirect(inspector_application)
+
+
+def resubmit_meat_shop_feasibility_inspection(request):
+    application_id = request.GET.get('application_id')
+    remarks = request.GET.get('remarks')
+    dateOfInspection = request.GET.get('dateOfInspection')
+    date_format_ins = datetime.strptime(dateOfInspection, '%d-%m-%Y').date()
+    details = t_livestock_clearance_meat_shop_t1.objects.filter(Application_No=application_id)
+
+    details.update(FI_Recommendation=remarks)
+    details.update(FI_Inspection_Date=date_format_ins)
+    application_details = t_workflow_details.objects.filter(Application_No=application_id)
+    for det in details:
+        field_office = det.Field_Office_Id
+        application_details.update(Field_Office_Id=field_office)
+    application_details.update(Action_Date=date.today())
+    application_details.update(Assigned_Role_Id='4')
+    application_details.update(Application_Status='I')  # feasibility inspection
+    application_details.update(Assigned_To=None)
+    return redirect(resubmit_application)
+
+
+def meat_shop_team_details_factory_ins(request):
+    application_id = request.GET.get('application_id')
+    name = request.GET.get('name')
+    designation = request.GET.get('designation')
+    opening_date = request.GET.get('opening_date')
+    closing_date = request.GET.get('closing_date')
+    date_open = datetime.strptime(opening_date, '%d-%m-%Y').date()
+    date_close = datetime.strptime(closing_date, '%d-%m-%Y').date()
+    t_livestock_clearance_meat_shop_t4.objects.create(Application_No=application_id,
+                                                      Meeting_Type='Factory Inspection',
+                                                      Name=name, Designation=designation,
+                                                      Open_Meeting_Date=date_open,
+                                                      Closing_Meeting_Date=date_close)
+    application_details = t_livestock_clearance_meat_shop_t4.objects.filter(Application_No=application_id,
+                                                                            Inspection_Type='Factory Inspection')
+    return render(request, 'meat_shop_registration/team_details.html', {'application_details': application_details})
+
+
+def meat_shop_concern_details_factory_ins(request):
+    application_id = request.GET.get('application_id')
+    Requirement = request.GET.get('Requirement')
+    Observation = request.GET.get('Observations')
+    Clause_No = request.GET.get('Clause_No')
+    Concern = request.GET.get('Concern')
+    Date = request.GET.get('Date')
+    date_chosen = datetime.strptime(Date, '%d-%m-%Y').date()
+    t_livestock_clearance_meat_shop_t5.objects.create(Application_No=application_id,
+                                                      Inspection_Type='Factory Inspection',
+                                                      Requirement=Requirement, Observation=Observation,
+                                                      Clause_No=Clause_No, Date=date_chosen, Concern=Concern)
+    application_details = t_livestock_clearance_meat_shop_t5.objects.filter(Application_No=application_id,
+                                                                            Inspection_Type='Factory Inspection')
+    return render(request, 'meat_shop_registration/concern_details.html', {'application_details': application_details})
+
+
+def approve_meat_shop_factory_inspection(request):
+    application_id = request.GET.get('application_id')
+    remarks = request.GET.get('remarks')
+    dateOfInspection = request.GET.get('dateOfInspection')
+    date_format_ins = datetime.strptime(dateOfInspection, '%d-%m-%Y').date()
+    details = t_livestock_clearance_meat_shop_t1.objects.filter(Application_No=application_id)
+
+    if remarks is not None:
+        details.update(FR_Recommendation=remarks)
+    else:
+        details.update(FR_Recommendation=None)
+
+    details.update(FR_Inspection_Date=date_format_ins)
+    application_details = t_workflow_details.objects.filter(Application_No=application_id)
+    application_details.update(Action_Date=date.today())
+    application_details.update(Application_Status='FRA')
+    application_details.update(Assigned_Role_Id='2')
+
+    return redirect(inspector_application)
+
+
+def meat_shop_submit(request):
+    application_id = request.GET.get('application_id')
+    remarks = request.GET.get('remarks')
+    validity = request.GET.get('validity')
+    clearance = factory_clearance_no(request)
+    details = t_livestock_clearance_meat_shop_t1.objects.filter(Application_No=application_id)
+    details.update(FB_License_No=clearance)
+    details.update(Approve_Date=date.today())
+    d = timedelta(days=int(validity))
+    validity_date = date.today() + d
+    details.update(Validity=validity_date)
+    application_details = t_workflow_details.objects.filter(Application_No=application_id)
+    application_details.update(Action_Date=date.today())
+    application_details.update(Application_Status='A')
+    t_payment_details.objects.create(Application_No=application_id,
+                                     Application_Date=date.today(),
+                                     Permit_No=clearance,
+                                     Service_Id='CMS',
+                                     Validity=validity_date,
+                                     Payment_Type=None,
+                                     Instrument_No=None,
+                                     Amount=None,
+                                     Receipt_No=None,
+                                     Receipt_Date=None,
+                                     Updated_By=None,
+                                     Updated_On=None)
+    for email_id in details:
+        emailId = email_id.Email
+        send_meat_shop_approve_email(clearance, emailId, validity_date)
+    return redirect(inspector_application)
+
+
+def factory_clearance_no(request):
+    global Field_Code
+    Field_Office_Id = request.session['field_office_id']
+    code = t_field_office_master.objects.filter(pk=Field_Office_Id)
+    for code in code:
+        Field_Code = code.Field_Office_Code
+
+    last_application_no = t_livestock_clearance_meat_shop_t1.objects.aggregate(Max('FB_License_No'))
+    lastAppNo = last_application_no['FB_License_No__max']
+    if not lastAppNo:
+        year = timezone.now().year
+        newAppNo = Field_Code + "/" + "FBR" + "/" + str(year) + "/" + "0001"
+    else:
+        substring = str(lastAppNo)[14:17]
+        substring = int(substring) + 1
+        AppNo = str(substring).zfill(4)
+        year = timezone.now().year
+        newAppNo = Field_Code + "/" + "FBR" + "/" + str(year) + "/" + AppNo
+    return newAppNo
+
+
+def send_factory_approve_email(Clearance_No, Email):
+    subject = 'APPLICATION APPROVED'
+    message = "Dear Sir, Your Application for Factory Inspection of " \
+              "Food Business And License Registration  Has Been Approved. Your " \
+              "Registration No is:" + Clearance_No + " And is Valid Till " \
+                                                     "."
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = [Email]
+    send_mail(subject, message, email_from, recipient_list)
+
+
+def send_factory_reject_email(remarks, Email):
+    subject = 'APPLICATION REJECTED'
+    message = "Dear " + "Sir" + " Your Application for Factory Inspection of Food Business And License " \
+                                "Registration Has Been Rejected Because" + remarks + ""
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = [Email]
+    send_mail(subject, message, email_from, recipient_list)
+
+
+def reject_meat_shop_factory_inspection(request):
+    application_id = request.GET.get('application_id')
+    remarks = request.GET.get('remarks')
+    dateOfInspection = request.GET.get('dateOfInspection')
+    date_format_ins = datetime.strptime(dateOfInspection, '%d-%m-%Y').date()
+    details = t_livestock_clearance_meat_shop_t1.objects.filter(Application_No=application_id)
+
+    details.update(FI_Recommendation=remarks)
+    details.update(FI_Inspection_Date=date_format_ins)
+    application_details = t_workflow_details.objects.filter(Application_No=application_id)
+    application_details.update(Action_Date=date.today())
+    application_details.update(Application_Status='RS')
+    application_details.update(Assigned_Role_Id=None)
+    for applicant in application_details:
+        email_id = applicant.Applicant_Id
+        print(email_id)
+        login_details = t_user_master.objects.filter(Email_Id=email_id)
+        for applicant_login in login_details:
+            login = applicant_login.Login_Id
+            print(login)
+            application_details.update(Assigned_To=login)
+    # send_feasibility_reject_email(remarks, details.Email)
+    return redirect(inspector_application)
+
+
+def resubmit_meat_shop_factory_inspection(request):
+    application_id = request.GET.get('application_id')
+    remarks = request.GET.get('remarks')
+    dateOfInspection = request.GET.get('dateOfInspection')
+    date_format_ins = datetime.strptime(dateOfInspection, '%d-%m-%Y').date()
+    details = t_livestock_clearance_meat_shop_t1.objects.filter(Application_No=application_id)
+
+    details.update(FI_Recommendation=remarks)
+    details.update(FI_Inspection_Date=date_format_ins)
+    application_details = t_workflow_details.objects.filter(Application_No=application_id)
+    application_details.update(Action_Date=date.today())
+    application_details.update(Application_Status='I')  # feasibility inspection
+    return redirect(resubmit_application)
+
+
+def edit_meat_shop_feasibility_details(request, Record_Id):
+    roles = get_object_or_404(t_livestock_clearance_meat_shop_t5, pk=Record_Id)
+    Concern_val = request.POST.get('Concern_val')
+    if request.method == 'POST':
+        form = MeatShopFeasibilityForm(request.POST, instance=roles)
+    else:
+        form = MeatShopFeasibilityForm(instance=roles)
+    return save_feasibility_details(request, form, Record_Id, Concern_val,
+                                    'meat_shop_registration/edit_feasibility_details.html')
+
+
+def save_feasibility_details(request, form, Record_Id, Concern_val, template_name):
+    data = dict()
+    if request.method == 'POST':
+        print(Concern_val)
+        import_det = t_livestock_clearance_meat_shop_t5.objects.filter(pk=Record_Id)
+        import_det.update(Concern=Concern_val)
+        data['form_is_valid'] = True
+        roles = t_livestock_clearance_meat_shop_t5.objects.all()
+        data['html_book_list'] = render_to_string('meat_shop_registration/feasibility_inspection.html', {
+            'roles': roles
+        })
+    context = {'form': form}
+    data['html_form'] = render_to_string(template_name, context, request=request)
+    return JsonResponse(data)
+
+
+def forward_meat_shop_application(request):
+    application_id = request.POST.get('application_id')
+    forwardTo = request.POST.get('forwardTo')
+
+    application_details = t_workflow_details.objects.filter(Application_No=application_id)
+    application_details.update(Assigned_To=forwardTo)
+    application_details.update(Action_Date=date.today())
+    application_details.update(Field_Office_Id=None)
+    application_details.update(Assigned_Role_Id='5')
+    Field_Office_Id = request.session['field_office_id']
+    Role_Id = request.session['Role_Id']
+    application_Lists = t_workflow_details.objects.filter(Assigned_To=Role_Id, Field_Office_Id=Field_Office_Id)
+    return render(request, 'oic_pending_list.html', {'application_details': application_Lists})
+
+
+def view_meat_shop_factory_inspection_application(request):
+    application_id = request.GET.get('application_id')
+    service_code = request.GET.get('service_code')
+
+    application_details = t_livestock_clearance_meat_shop_t1.objects.filter(
+        Application_No=application_id)
+    details = t_livestock_clearance_meat_shop_t2.objects.filter(Application_No=application_id)
+    file = t_file_attachment.objects.filter(Application_No=application_id)
+    unit = t_unit_master.objects.all()
+    inspection_details = t_livestock_clearance_meat_shop_t5.objects.filter(
+        Application_No=application_id)
+    team_details = t_livestock_clearance_meat_shop_t4.objects.filter(Application_No=application_id)
+    inspection_team_details = t_livestock_clearance_meat_shop_t6.objects.filter(
+        Application_No=application_id)
+    oic_list = t_field_office_master.objects.filter()
+    return render(request, 'meat_shop_registration/client_factory_inspect.html',
+                  {'application_details': application_details, 'details': details, 'file': file,
+                   'oic_list': oic_list, 'unit': unit, 'inspection_details': inspection_details,
+                   'team_details': team_details, 'inspection_team_details': inspection_team_details})
+
+
+def forward_meat_shop_factory_application(request):
+    application_id = request.POST.get('application_id')
+    forwardTo = request.POST.get('forwardTo')
+    Desired_FR_Inspection_Date = request.POST.get('date')
+    date_format_ins = datetime.strptime(Desired_FR_Inspection_Date, '%d-%m-%Y').date()
+
+    application_details = t_workflow_details.objects.filter(Application_No=application_id)
+    application_details.update(Assigned_To=None)
+    application_details.update(Action_Date=date.today())
+    application_details.update(Field_Office_Id=forwardTo)
+    application_details.update(Assigned_Role_Id='4')
+
+    details = t_livestock_clearance_meat_shop_t1.objects.filter(Application_No=application_id)
+    details.update(Desired_FR_Inspection_Date=date_format_ins)
+
+    return redirect(meat_factory_inspection_list)
+
+
+def save_meat_shop_details(request):
+    Application_No = request.POST.get('fh_details_application_no')
+    BP_Outsourced_To = request.POST.get('details_name')
+    Contact_No = request.POST.get('contact_number')
+    Address = request.POST.get('details_address')
+    BAFRA_License_No = request.POST.get('bafra_license_no')
+
+    t_livestock_clearance_meat_shop_t2.objects.create(Application_No=Application_No,
+                                                      BP_Outsourced_To=BP_Outsourced_To,
+                                                      Contact_No=Contact_No,
+                                                      Address=Address, BAFRA_License_No=BAFRA_License_No)
+    fh_details = t_livestock_clearance_meat_shop_t2.objects.filter(Application_No=Application_No)
+    return render(request, 'meat_shop_registration/details.html', {'fh_details': fh_details})
+
+
+def save_meat_shop_fh_details(request):
+    Application_No = request.POST.get('fh_application_no')
+    fh_name = request.POST.get('fh_name')
+    fh_license = request.POST.get('fh_license')
+
+    t_livestock_clearance_meat_shop_t3.objects.create(Application_No=Application_No, FH_Name=fh_name,
+                                                      FH_License_No=fh_license)
+    fh_details = t_livestock_clearance_meat_shop_t3.objects.filter(Application_No=Application_No)
+    return render(request, 'meat_shop_registration/food_handler_details.html', {'fh_details': fh_details})
+
+
+def send_meat_shop_acknowledge(request):
+    application_id = request.GET.get('application_id')
+    work_details = t_workflow_details.objects.filter(Application_No=application_id)
+    work_details.update(Application_Status='ACK')
+    application_details = t_livestock_clearance_meat_shop_t1.objects.filter(Application_No=application_id)
+    for app in application_details:
+        mail_id = app.Email
+        send_meat_shop_acknowledgement_mail(mail_id)
+    return redirect(focal_officer_application)
+
+
+def send_meat_shop_acknowledgement_mail(Email):
+    subject = 'APPLICATION ACKNOWLEGED'
+    message = "Dear Sir/Madam, Your Application for Meat Shop Licensing Has Been Accepted. " \
+              "You will Be Informed About The Inspection Later."
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
     send_mail(subject, message, email_from, recipient_list)
@@ -574,7 +917,18 @@ def approve_fo_la_import(request):
     for email_id in details:
         email = email_id.Email
         send_la_approve_email(permit_no, email, validity_date)
-    update_payment(application_no, permit_no, 'IAF', validity_date)
+    t_payment_details.objects.create(Application_No=application_no,
+                                     Application_Date=date.today(),
+                                     Permit_No=permit_no,
+                                     Service_Id='IAF',
+                                     Validity=validity_date,
+                                     Payment_Type=None,
+                                     Instrument_No=None,
+                                     Amount=None,
+                                     Receipt_No=None,
+                                     Receipt_Date=None,
+                                     Updated_By=None,
+                                     Updated_On=None)
 
 
 def reject_fo_la_import(request):
@@ -883,7 +1237,18 @@ def approve_fo_lp_import(request):
     for email_id in details:
         email = email_id.Email
         send_lp_approve_email(permit_no, email, validity_date)
-    update_payment(application_no, permit_no, 'ILP', validity_date)
+    t_payment_details.objects.create(Application_No=application_no,
+                                     Application_Date=date.today(),
+                                     Permit_No=permit_no,
+                                     Service_Id='ILP',
+                                     Validity=validity_date,
+                                     Payment_Type=None,
+                                     Instrument_No=None,
+                                     Amount=None,
+                                     Receipt_No=None,
+                                     Receipt_Date=None,
+                                     Updated_By=None,
+                                     Updated_On=None)
     return render(request, 'focal_officer_pending_list.html')
 
 
@@ -1248,7 +1613,18 @@ def approve_application_export(request):
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='A')
-    update_payment(application_id, Export_Permit_No, 'LEC', validity_date)
+    t_payment_details.objects.create(Application_No=application_id,
+                                     Application_Date=date.today(),
+                                     Permit_No=Export_Permit_No,
+                                     Service_Id='LEC',
+                                     Validity=validity_date,
+                                     Payment_Type=None,
+                                     Instrument_No=None,
+                                     Amount=None,
+                                     Receipt_No=None,
+                                     Receipt_Date=None,
+                                     Updated_By=None,
+                                     Updated_On=None)
     for email_id in details:
         emailId = email_id.Email
         send_lms_approve_email(Export_Permit_No, emailId, validity_date)
@@ -1546,7 +1922,18 @@ def approve_application_lmp(request):
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='A')
-    update_payment(application_id, Movement_Permit_No, 'LMP', validity_date)
+    t_payment_details.objects.create(Application_No=application_id,
+                                     Application_Date=date.today(),
+                                     Permit_No=Movement_Permit_No,
+                                     Service_Id='LMP',
+                                     Validity=validity_date,
+                                     Payment_Type=None,
+                                     Instrument_No=None,
+                                     Amount=None,
+                                     Receipt_No=None,
+                                     Receipt_Date=None,
+                                     Updated_By=None,
+                                     Updated_On=None)
     for email_id in details:
         emailId = email_id.Email
         send_lms_approve_email(Movement_Permit_No, emailId, validity_date)
@@ -1825,7 +2212,18 @@ def approve_application_apm(request):
     for email_id in details:
         emailId = email_id.Email
         send_apm_approve_email(Clearance_No, emailId, validity_date)
-    update_payment(application_id, Clearance_No, 'APM', validity_date)
+    t_payment_details.objects.create(Application_No=application_id,
+                                     Application_Date=date.today(),
+                                     Permit_No=Clearance_No,
+                                     Service_Id='APM',
+                                     Validity=validity_date,
+                                     Payment_Type=None,
+                                     Instrument_No=None,
+                                     Amount=None,
+                                     Receipt_No=None,
+                                     Receipt_Date=None,
+                                     Updated_By=None,
+                                     Updated_On=None)
     return redirect(inspector_application)
 
 
@@ -1896,16 +2294,9 @@ def send_apm_reject_email(remarks, Email):
 
 
 # Common
-def update_payment(application_id, Permit_No, Service_Id, Validity):
-    t_payment_details.objects.create(Application_No=application_id,
-                                     Application_Date=date.today(),
-                                     Permit_No=Permit_No,
-                                     Service_Id=Service_Id,
-                                     Validity=Validity,
-                                     Payment_Type=None,
-                                     Instrument_No=None,
-                                     Amount=None,
-                                     Receipt_No=None,
-                                     Receipt_Date=None,
-                                     Updated_By=None,
-                                     Updated_On=None)
+def meat_factory_inspection_list(request):
+    Login_Id = request.session['login_id']
+    new_import_app = t_workflow_details.objects.filter(Application_Status='FR', Action_Date__isnull=False)
+    service_details = t_service_master.objects.all()
+    return render(request, 'factory_inspection_list.html',
+                  {'service_details': service_details, 'application_details': new_import_app})

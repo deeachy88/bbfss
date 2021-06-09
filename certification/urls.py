@@ -28,6 +28,12 @@ urlpatterns = [
     path('forward_application_head_office', views.forward_application_head_office,
          name='forward_application_head_office'),
     path('approve_gap_application', views.approve_gap_application, name='approve_gap_application'),
+    path('save_gap_audit_plan', views.save_gap_audit_plan, name='save_gap_audit_plan'),
+    path('save_gap_audit_plan_name', views.save_gap_audit_plan_name, name='save_gap_audit_plan_name'),
+    path('resubmit_nc_details', views.resubmit_nc_details, name='resubmit_nc_details'),
+    path('edit_nc_details/<int:Record_Id>', views.edit_nc_details, name='edit_nc_details'),
+    path('gap_nc_response', views.gap_nc_response, name='gap_nc_response'),
+
 
     # Organic certificate
     path('organic_certificate', views.organic_certificate, name='organic_certificate'),
@@ -57,6 +63,11 @@ urlpatterns = [
          name='forward_application_team_leader'),
     path('approve_oc_application', views.approve_oc_application, name='approve_oc_application'),
     path('oc_application_team_leader', views.oc_application_team_leader, name='oc_application_team_leader'),
+    path('save_oc_audit_plan', views.save_oc_audit_plan, name='save_oc_audit_plan'),
+    path('save_oc_audit_plan_name', views.save_oc_audit_plan_name, name='save_oc_audit_plan_name'),
+    path('resubmit_oc_nc_details', views.resubmit_oc_nc_details, name='resubmit_oc_nc_details'),
+    path('edit_oc_nc_details/<int:Record_Id>', views.edit_oc_nc_details, name='edit_oc_nc_details'),
+    path('oc_nc_response', views.oc_nc_response, name='oc_nc_response'),
 
 
     # Food Product certificate
@@ -78,6 +89,19 @@ urlpatterns = [
     path('fpc_audit_plan_resubmit', views.fpc_audit_plan_resubmit, name='fpc_audit_plan_resubmit'),
     path('fpc_conform_observation', views.fpc_conform_observation, name='fpc_conform_observation'),
     path('approve_fpc_application', views.approve_fpc_application, name='approve_fpc_application'),
+    path('save_fpc_audit_plan', views.save_fpc_audit_plan, name='save_fpc_audit_plan'),
+    path('save_fpc_audit_plan_name', views.save_fpc_audit_plan_name, name='save_fpc_audit_plan_name'),
+    path('resubmit_fpc_nc_details', views.resubmit_fpc_nc_details, name='resubmit_fpc_nc_details'),
+    path('edit_fpc_nc_details/<int:Record_Id>', views.edit_fpc_nc_details, name='edit_fpc_nc_details'),
+    path('fpc_nc_response', views.fpc_nc_response, name='fpc_nc_response'),
+
+
+    # Common
+    path('certificate_pending_list', views.certificate_pending_list, name='certificate_pending_list'),
+    path('view_certificate_draft_details', views.view_certificate_draft_details, name='view_certificate_draft_details'),
+    path('update_food_product_form', views.update_food_product_form, name='update_food_product_form'),
+    path('update_oc_form', views.update_oc_form, name='update_oc_form'),
+    path('update_gap_form', views.update_gap_form, name='update_gap_form')
 
 ]
 if settings.DEBUG:

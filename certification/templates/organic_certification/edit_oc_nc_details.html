@@ -1,0 +1,69 @@
+{% load crispy_forms_tags %}
+<form method="post" action="{% url 'edit_fpc_nc_details' form.instance.Record_Id %}" class="js-details-update-form">
+{% csrf_token %}
+  <div class="modal-header">
+    <h4 class="modal-title"></h4>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+      <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    {{ form.Clause_Number|as_crispy_field }}
+                </div>
+            </div>
+
+            <div class="form-group col-md-4 mb-0">
+                {{ form.Non_Conformity.as_hidden }}
+                     <div class="form-check">
+                       <label class="form-label">Non Conformity</label><br>
+                        <label class="form-radio-label">
+                            <input class="form-radio-input" id="yes_radio" type="radio" name="Non_Conformity" value="Yes">
+                            <span class="form-radio-sign">Yes</span>
+                        </label>
+                        <label class="form-radio-label ml-3">
+                            <input class="form-radio-input" id="no_radio" type="radio" name="Non_Conformity" value="No">
+                            <span class="form-radio-sign">No</span>
+                        </label>
+                    </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    {{ form.Non_Conformity_Category|as_crispy_field }}
+                </div>
+            </div>
+      </div>
+      <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    {{ form.Non_Conformity_Description|as_crispy_field }}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    {{ form.Corrective_Action_Proposed_Auditee|as_crispy_field }}
+                </div>
+            </div>
+      </div>
+      <hr>
+  </div>
+  <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      <button type="submit" class="btn btn-primary">Save</button>
+  </div>
+</form>
+<script>
+    $(document).ready(function()
+     {
+        if($('#id_Non_Conformity').val() == "Yes")
+        {
+            $("#yes_radio").prop("checked", true);
+        }
+        else
+        {
+            $("#no_radio").prop("checked", true);
+        }
+     });
+</script>

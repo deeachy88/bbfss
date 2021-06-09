@@ -33,7 +33,7 @@
                     <div id="applicant_details">
                         <div class="row">
                             <div class="col-sm-2">
-                                <label class="form-label">Permit Type</label>
+                                <label class="form-label">Permit Type <font color="red">*</font></label>
                             </div>
                             <div class="col-sm-4 justify-content-center">
                                 <label class="custom-control custom-radio">
@@ -52,21 +52,21 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Applicant CID</label>
+                                    <label class="form-label">Applicant CID <font color="red">*</font></label>
                                     <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)">
                                 </div>
                                 <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Applicant Name</label>
+                                    <label class="form-label">Applicant Name <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="name" name="Name">
                                 </div>
                                 <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Dzongkhag</label>
+                                    <label class="form-label">Dzongkhag <font color="red">*</font></label>
                                     <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value),getLocation(this.value)">
                                         <option value="">--SELECT DZONGKHAG--</option>
                                         {% for dzongkhag in dzongkhag %}
@@ -80,7 +80,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Gewog</label>
+                                    <label class="form-label">Gewog <font color="red">*</font></label>
                                     <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
                                         <option value="">--SELECT GEWOG--</option>
                                         {% for gewog in gewog %}
@@ -92,7 +92,7 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Village</label>
+                                    <label class="form-label">Village <font color="red">*</font></label>
                                      <select class="form-control" name="village" id="village">
                                         <option value="">--SELECT VILLAGE--</option>
                                         {% for village in village %}
@@ -104,7 +104,7 @@
                             </div>
                              <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Contact Number</label>
+                                    <label class="form-label">Contact Number <font color="red">*</font></label>
                                     <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
                                 </div>
                                 <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
@@ -113,21 +113,21 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Email</label>
+                                    <label class="form-label">Email <font color="red">*</font></label>
                                     <input type="email" class="form-control" id="email" name="email" onchange="validateemailId(this.value)">
                                 </div>
                                 <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">License Number</label>
+                                    <label class="form-label">License Number <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="license_no" name="license_no">
                                 </div>
                                 <div class="alert alert-danger" id="license_noErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Business Name</label>
+                                    <label class="form-label">Business Name <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="business_name" name="business_name">
                                 </div>
                                 <div class="alert alert-danger" id="business_nameErrorMsg" style="display:none"></div>
@@ -136,7 +136,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">From Dzongkhag</label>
+                                    <label class="form-label">From Dzongkhag <font color="red">*</font></label>
                                     <select class="form-control" name="from_dzongkhag"  id="from_dzongkhag" onchange="getFromGewog(this.value)">
                                         <option value="">--SELECT DZONGKHAG--</option>
                                         {% for dzongkhag in dzongkhag %}
@@ -148,9 +148,9 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">From Gewog</label>
+                                    <label class="form-label">From Gewog <font color="red">*</font></label>
                                     <select class="form-control" name="from_gewog"  id="from_gewog">
-                                        <option value="">--SELECT LOCATION--</option>
+                                        <option value="">--SELECT GEWOG--</option>
                                         {% for location in location %}
                                                 <option value="{{ location.Location_Code }}">{{ location.Location_Name }}</option>
                                         {% endfor %}
@@ -160,7 +160,7 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">From Location</label>
+                                    <label class="form-label">From Location <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="from_location" name="from_location">
                                 </div>
                                 <div class="alert alert-danger" id="from_locationErrorMsg" style="display:none"></div>
@@ -169,7 +169,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">To Dzongkhag</label>
+                                    <label class="form-label">To Dzongkhag <font color="red">*</font></label>
                                     <select class="form-control" name="to_dzongkhag"  id="to_dzongkhag" onchange="getToGewog(this.value),getLocation(this.value)">
                                         <option value="">--SELECT DZONGKHAG--</option>
                                         {% for dzongkhag in dzongkhag %}
@@ -181,9 +181,9 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">To Gewog</label>
+                                    <label class="form-label">To Gewog <font color="red">*</font></label>
                                     <select class="form-control" name="to_gewog"  id="to_gewog">
-                                        <option value="">--SELECT LOCATION--</option>
+                                        <option value="">--SELECT GEWOG--</option>
                                         {% for location in location %}
                                                 <option value="{{ location.Location_Code }}">{{ location.Location_Name }}</option>
                                         {% endfor %}
@@ -193,7 +193,7 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">To Location</label>
+                                    <label class="form-label">To Location <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="to_exact_location" name="to_exact_location">
                                 </div>
                                 <div class="alert alert-danger" id="to_exact_locationErrorMsg" style="display:none"></div>
@@ -202,14 +202,14 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Authorized Route</label>
+                                    <label class="form-label">Authorized Route <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="route" name="route">
                                 </div>
                                 <div class="alert alert-danger" id="routeErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Means of Conveyance </label>
+                                    <label class="form-label">Means of Conveyance <font color="red">*</font></label>
                                     <select class="form-control form-control" id="conveyanceMeans" name="conveyanceMeans" onchange="conveyanceChange(this.value)">
                                         <option value="">-SELECT-</option>
                                         <option value="Air">Air</option>
@@ -220,7 +220,7 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Vehicle No</label>
+                                    <label class="form-label">Vehicle No <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="vehicleNo" name="vehicleNo">
                                 </div>
                                 <div class="alert alert-danger" id="vehicleNoErrorMsg" style="display:none"></div>
@@ -229,14 +229,24 @@
                          <div class="row">
                              <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Purpose Of Movement</label>
-                                    <input type="text" class="form-control" id="movementPurpose" name="movementPurpose">
+                                    <label class="form-label">Purpose Of Movement <font color="red">*</font></label>
+                                    <select class="form-control" id="movementPurpose" name="movementPurpose">
+                                        <option value="">--SELECT PURPOSE--</option>
+                                        <option value="Breeding">Breeding</option>
+                                        <option value="Migration">Migration</option>
+                                        <option value="Slaughter">Slaughter</option>
+                                        <option value="Tshethar">Tshethar</option>
+                                        <option value="Animal Show">Animal Show</option>
+                                        <option value="Sale">Sale</option>
+                                        <option value="Pet Movement">Pet Movement</option>
+                                        <option value="Pet Movement">Draught Work</option>
+                                    </select>
                                 </div>
                                 <div class="alert alert-danger" id="movementPurposeErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Expected Date of Movement</label>
+                                    <label class="form-label">Expected Date of Movement <font color="red">*</font></label>
                                     <input type="text" class="form-control date-picker flatpickr-input active" id="date" name="date"  placeholder="Pick a date" readonly="readonly">
                                 </div>
                                 <div class="alert alert-danger" id="dateErrorMsg" style="display:none"></div>
@@ -886,6 +896,16 @@ function save_movement_details()
 {
     $('#pills-tab a:last').tab('show');
 }
-
+function conveyanceChange(value)
+{
+    if(value == "Air")
+    {
+        $("#vehicleNo").attr("disabled", "disabled");
+    }
+    else
+    {
+        $("#vehicleNo").removeAttr("disabled");
+    }
+}
 </script>
 {% endblock %}

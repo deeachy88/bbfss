@@ -1,0 +1,861 @@
+{% extends 'common_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<style>
+    option
+    {
+        background-color: black !important;
+    }
+    .check {
+    margin-bottom: 0;
+    min-height: 2rem;
+}
+</style>
+<div class="card">
+    <div class="card-header">
+        <h4 class="card-title">Meat Shop Licensing</h4>
+    </div>
+    <div class="card-body">
+        <form method="post" id="FBR_form">
+        {% csrf_token %}
+            <input type="hidden" name="application_no" id="applicationNo">
+            <div class="row justify-content-left">
+                <ul class="nav nav-pills nav-secondary" id="pills-mortem" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadDetails()">Application Form</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="pills-details" data-toggle="pill" href="#details" role="tab" aria-controls="pills-details" aria-selected="false" onclick="load_details()">Outsourced Process</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="pills-food-handler" data-toggle="pill" href="#food-handler" role="tab" aria-controls="pills-food-handler" aria-selected="false" onclick="load_details()">Food Handlers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="fbr-file-attach" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="tab-content mt-2 mb-3" id="pills-mortemContent">
+                <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                    <div id="applicant_details">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Name of the Food Business <font color="red">*</font></label>
+                                    <input type="text" class="form-control" id="Business_Name" name="Business_Name">
+                                </div>
+                                <div class="alert alert-danger" id="Business_NameErrorMsg" style="display:none"></div>
+                            </div>
+                             <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">CID of the Owner <font color="red">*</font></label>
+                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)">
+                                </div>
+                                <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Name of the applicant/Owner <font color="red">*</font></label>
+                                    <input type="text" class="form-control" id="name" name="Name">
+                                </div>
+                                <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Name Of FB Representative <font color="red">*</font></label>
+                                    <input type="text" class="form-control" id="name_manager" name="name_manager">
+                                </div>
+                                <div class="alert alert-danger" id="name_managerErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Licensing Criteria <font color="red">*</font></label>
+                                    <select class="form-control" name="license_criteria"  id="license_criteria">
+                                        <option value="">--SELECT--</option>
+                                        <option value="BAFRA GHP">BAFRA GHP</option>
+                                        <option value="BAFRA GMP">BAFRA GMP</option>
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="license_criteriaErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Contact Number <font color="red">*</font></label>
+                                    <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                                </div>
+                                <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Email <font color="red">*</font></label>
+                                    <input type="email" class="form-control" id="email" name="email" onchange="validateemailId(this.value)">
+                                </div>
+                                <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Dzongkhag <font color="red">*</font></label>
+                                    <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
+                                        <option value="">--SELECT DZONGKHAG--</option>
+                                        {% for dzongkhag in dzongkhag %}
+                                                <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="to_dzongkhagErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Gewog <font color="red">*</font></label>
+                                    <select class="form-control" name="gewog"  id="gewog">
+                                        <option value="">--SELECT GEWOG--</option>
+                                        {% for gewog in gewog %}
+                                                <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="to_gewogErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Food Business Address <font color="red">*</font></label>
+                                    <textarea class="form-control" id="address" name="address"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="AddressErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Current status of functioning <font color="red">*</font></label>
+                                    <select class="form-control" name="current_status"  id="current_status">
+                                        <option value="">--SELECT--</option>
+                                        <option value="Project stage">Project stage</option>
+                                        <option value="Commissioned">Commissioned but regular production yet to start</option>
+                                        <option value="Regular">Regular production in progress</option>
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="current_statusErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Product Category <font color="red">*</font></label>
+                                    <select class="form-control" name="product_category"  id="product_category">
+                                        <option value="">--SELECT--</option>
+                                        <option value="Fresh land">Proposed</option>
+                                        <option value="Being Manufactured">Being Manufactured</option>
+                                    </select>
+                                    <div class="alert alert-danger" id="product_categoryErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Products proposed/being manufactured <font color="red">*</font></label>
+                                    <textarea class="form-control" id="product_proposed" name="product_proposed"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="product_proposedErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Identified water source</label>
+                                    <input type="text" class="form-control" id="identified_water_source" name="identified_water_source">
+                                </div>
+                                <div class="alert alert-danger" id="identified_water_sourceErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Number of years in production</label>
+                                    <input type="number" class="form-control" id="no_of_years" name="no_of_years">
+                                </div>
+                                <div class="alert alert-danger" id="no_of_yearsErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Production Volume(Last Calender Year)</label>
+                                    <input type="number" class="form-control" id="production_volume" name="production_volume">
+                                </div>
+                                <div class="alert alert-danger" id="production_volumeErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Volume Unit</label>
+                                <select class="form-control" name="volume_unit"  id="volume_unit">
+                                    <option value="">--SELECT--</option>
+                                    {% for unit in unit %}
+                                            <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="alert alert-danger" id="volume_unitErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Site History Details</label>
+                                <select class="form-control" name="history" id="history" onchange="checkSiteHistory(this.value)">
+                                    <option value="">--SELECT--</option>
+                                    <option value="Fresh land">Fresh land</option>
+                                    <option value="Converted structure">Converted structure</option>
+                                </select>
+                                <div class="alert alert-danger" id="historyErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <div class="form-check">
+                                    <label class="form-label">Any processes outsourced by the FB?</label><br>
+                                    <br><div class="form-group text-center">
+                                        <div class="form-check">
+                                            <label class="custom-control custom-radio">
+                                                <input type="radio" name="outsourced_process" class="custom-control-input" value="Yes">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">Yes</span>
+                                            </label>&nbsp;
+                                            <label class="custom-control custom-radio">
+                                                <input type="radio" name="outsourced_process" class="custom-control-input" value="No">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">No</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Legal Entity Status</label>
+                                <select class="form-control" name="legal_status"  id="legal_status">
+                                    <option value="">--SELECT--</option>
+                                    <option value="Private Ltd">Private Ltd</option>
+                                    <option value="Public Ltd">Public Ltd</option>
+                                    <option value="Government undertaking">Government undertaking</option>
+                                </select>
+                                <div class="alert alert-danger" id="legal_statusErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <div class="form-check">
+                                    <label class="form-label">Are you a part of a larger Corporation?</label><br>
+                                    <br><div class="form-group">
+                                        <div class="form-check">
+                                            <label class="custom-control custom-radio">
+                                                <input type="radio" name="larger_corporation" class="custom-control-input" value="Yes" onclick="checkCorporation(this.value)">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">Yes</span>
+                                            </label>&nbsp;
+                                            <label class="custom-control custom-radio">
+                                                <input type="radio" name="larger_corporation" class="custom-control-input" value="No" onclick="checkCorporation(this.value)">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">No</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4" id="previous_business_div" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label">What was the previous business conducted there?</label>
+                                    <textarea class="form-control" id="previous_business" name="previous_business"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="previous_businessErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <div class="form-check">
+                                    <label class="form-label">Relationship</label><br>
+                                    <input type="text" class="form-control" id="relationship" name="relationship">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <div class="form-check">
+                                    <label class="form-label">Has the FBO been licensed before?</label><br><br>
+                                    <div class="form-group">
+                                        <div class="form-check">
+                                            <label class="custom-control custom-radio">
+                                                <input type="radio" name="licensed_before" class="custom-control-input" value="Yes" onchange="checkFBO(this.value)">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">Yes</span>
+                                            </label>&nbsp;
+                                            <label class="custom-control custom-radio">
+                                                <input type="radio" name="licensed_before" class="custom-control-input" value="No" onchange="checkFBO(this.value)">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">No</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <div class="form-check">
+                                    <label class="form-label">If Yes, provide details of License number</label><br>
+                                    <input type="text" class="form-control" id="license_number" name="license_number">
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <div class="form-check">
+                                    <label class="form-label">Reasons why the License is no longer valid</label><br>
+                                    <textarea class="form-control" id="reason" name="reason"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <div class="form-check">
+                                    <label class="form-label">Any judicial proceedings relating to the FBOs operations/product?</label><br>
+                                    <br><div class="form-group">
+                                        <div class="form-check">
+                                            <label class="custom-control custom-radio">
+                                                <input type="radio" name="judicial_proceedings" class="custom-control-input" value="Yes" onchange="check_judicial_proceedings(this.value)">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">Yes</span>
+                                            </label>&nbsp;
+                                            <label class="custom-control custom-radio">
+                                                <input type="radio" name="judicial_proceedings" class="custom-control-input" value="No" onchange="check_judicial_proceedings(this.value)">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">No</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <div class="form-check">
+                                    <label class="form-label">Please provide details</label><br>
+                                    <textarea class="form-control" id="provided_details" name="provided_details"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <div class="form-check">
+                                    <label class="form-label">Any proceedings by any Regulatory body or suspension /cancellation /withdrawal of any relevant licensing/approvals under any Regulations </label><br>
+                                    <br><div class="form-group">
+                                        <div class="form-check">
+                                            <label class="custom-control custom-radio">
+                                                <input type="radio" name="regulatory_proceedings" class="custom-control-input" value="Yes" onchange="check_regulatory_proceedings(this.value)">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">Yes</span>
+                                            </label>&nbsp;
+                                            <label class="custom-control custom-radio">
+                                                <input type="radio" name="regulatory_proceedings" class="custom-control-input" value="No" onchange="check_regulatory_proceedings(this.value)">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">No</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <div class="form-check">
+                                    <label class="form-label">Please provide details</label><br>
+                                    <textarea class="form-control" id="regulatory_proceedings_details" name="regulatory_proceedings_details"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <div class="form-check">
+                                    <label class="form-label">Has a Project Proposal been prepared  </label><br>
+                                    <br><div class="form-group">
+                                        <div class="form-check">
+                                            <label class="custom-control custom-radio">
+                                                <input type="radio" name="project_proposal" class="custom-control-input" value="Yes">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">Yes</span>
+                                            </label>&nbsp;
+                                            <label class="custom-control custom-radio">
+                                                <input type="radio" name="project_proposal" class="custom-control-input" value="No">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">No</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+                        Save SuccessFul
+                    </div>
+                    <div class="card-action">
+                        <button type="button" class="btn btn-primary" onclick="save_fbr_form()">Save</button>
+                    </div>
+                </div>
+
+            <div class="tab-pane fade" id="details" role="tabpanel" aria-labelledby="pills-details">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-head-row">
+                            <div class="card-tools pull-right">
+                                <button type="button" class="btn btn-light" onclick="show_fbr_modal()">Add Details</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="fbr_details">
+                            {% include 'meat_shop_registration/details.html' %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-action">
+                    <button type="button" class="btn btn-success" onclick="save_fbr_details()">Save</button>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="food-handler" role="tabpanel" aria-labelledby="pills-food-handler">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-head-row">
+                            <div class="card-tools pull-right">
+                                <button type="button" class="btn btn-light" onclick="show_fh_modal()">Add Details</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="food_handler_details">
+                            {% include 'meat_shop_registration/food_handler_details.html' %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-action">
+                    <button type="button" class="btn btn-success" onclick="save_food_handler_details()">Save</button>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="mortem-file-attach">
+                <div id="file-attachment-mortem">
+                    {% include 'meat_shop_registration/file_attachment.html' %}
+                </div>
+            </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<form method="post" id="fh_details_form">
+    {% csrf_token %}
+    <input type="hidden" id="fh_details_application_no" name="fh_details_application_no">
+    <div class="modal fade" id="add_fh_details_model" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Name</label>
+                                        <input type="text" name="details_name" class="form-control" id="details_name" required>
+                                        <div class="alert alert-danger" id="details_nameErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Address Details</label>
+                                       <textarea name="details_address" class="form-control" id="details_address"></textarea>
+                                        <div class="alert alert-danger" id="details_addressErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Contact</label>
+                                        <input type="number" class="form-control" id="contact_number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contact_number" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                                        <div class="alert alert-danger" id="contact_numberErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Food Safety License Number</label>
+                                        <input type="text" name="bafra_license_no" class="form-control" id="bafra_license_no" required>
+                                        <div class="alert alert-danger" id="bafra_license_noErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="submit_fbr_details()">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form method="post" id="fh_form">
+    {% csrf_token %}
+    <input type="hidden" id="fh_application_no" name="fh_application_no">
+    <div class="modal fade" id="add_fh_details" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" >Add Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">FH Name</label>
+                                        <input type="text" name="fh_name" class="form-control" id="fh_name" required>
+                                        <div class="alert alert-danger" id="fh_nameErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">FH License No</label>
+                                        <input type="text" name="fh_license" class="form-control" id="fh_license" required>
+                                        <div class="alert alert-danger" id="fh_licenseErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="save_fh_details()">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form method="post" id="attachment_form" enctype="multipart/form-data">
+{% csrf_token %}
+    <input type="hidden" name="attachment_appNo" id="attachment_appNo">
+    <div class="modal fade" id="attachmentModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="attachmentModalLabel">Attach Files</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label>Attach File</label>
+                                        <input type="file" name="document" id="document">
+                                        <div class="alert alert-danger" id="fileErrorMsg" style="display:none"></div>
+                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_fbr_attachment()"> Submit </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+
+function save_fbr_form()
+{
+    $.ajax({
+            type : "POST",
+            url : "{% url 'save_meat_shop_registration' %}",
+            data : $('#FBR_form').serialize(),
+            success : function(data)
+            {
+                $('#applicationNo').val(data.applNo);
+                $('#fh_application_no').val(data.applNo);
+                $('#fh_details_application_no').val(data.applNo);
+                $('#attachment_appNo').val(data.applNo);
+                $('#submitMsg').show();
+                setTimeout(function() {
+                    $("#submitMsg").hide('blind', {}, 500)
+                }, 2000);
+                if(data.outsourced_process == 'Yes')
+                {
+                    setTimeout(function() {
+                        $('#pills-details').tab('show');
+                    }, 3000);
+                }
+                else
+                {
+                    setTimeout(function() {
+                        $('#pills-food-handler').tab('show');
+                    }, 3000);
+                }
+            }
+        });
+}
+
+
+
+function save_fbr_attachment()
+{
+    var fileName = document.getElementById('document').files[0].name;
+    var fd = new FormData();
+    var file = document.getElementById('document').files[0];
+    fd.append('document', file);
+    token_value=$("input[name=csrfmiddlewaretoken]").val();
+    $.ajaxSetup
+    ({
+        beforeSend: function(xhr, settings)
+        {
+            xhr.setRequestHeader("X-CSRFToken", token_value);
+        }
+    });
+    $.ajax({
+    type : "POST",
+    url : "{% url 'meat_shop_file' %}",
+    data : fd,
+    dataType: 'json',
+    contentType: false,
+    processData: false,
+    success : function(data)
+    {
+        if (data.form_is_valid)
+        {
+            var file_url = data.file_url
+            var appNo = $('#attachment_appNo').val();
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'meat_shop_file_name' %}",
+                data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
+                success : function(responseText)
+                {
+                    $('#attachmentModal').modal('hide');
+                    $('#file-attachment-mortem').html(responseText);
+                    $('.modal-backdrop').remove();
+                }
+            });
+        }
+        else
+        {
+            $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+            $('#fileErrorMsg').show();
+            $('#fileErrorMsg').delay(2000).fadeOut('slow');
+        }
+    }
+});
+
+}
+
+function show_fbr_modal()
+{
+    $('#add_fh_details_model').modal('show');
+}
+function show_fh_modal()
+{
+    $('#add_fh_details').modal('show');
+}
+
+function show_fbr_attach_model()
+{
+    $('#attachmentModal').modal('show');
+}
+
+
+function submit_fbr_details()
+    {
+        var BP_Outsourced_To = $('#details_name').val();
+        var details_address = $('#details_address').val();
+        var contact_number = $('#contact_number').val();
+
+
+        if(BP_Outsourced_To == "")
+        {
+            $('#details_nameErrorMsg').html("Enter Name.");
+            $('#details_nameErrorMsg').show();
+            $('#details_nameErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(details_address == "")
+        {
+            $('#details_addressErrorMsg').html("Enter Address.");
+            $('#details_addressErrorMsg').show();
+            $('#details_addressErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(contact_number == "")
+        {
+            $('#contact_numberErrorMsg').html("Enter Contact Number.");
+            $('#contact_numberErrorMsg').show();
+            $('#contact_numberErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else{
+            $.ajax({
+                type : "POST",
+                url : "{% url 'save_meat_shop_details' %}",
+                data : $('#fh_details_form').serialize(),
+                success : function(responseText) {
+                   $('#add_fh_details_model').modal('hide');
+                   $('#fbr_details').html(responseText);
+                   $('#pills-details').tab('show');
+                   $('.modal-backdrop').remove();
+                }
+            });
+        }
+    }
+
+function validateemailId(emailId)
+{
+    var pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+    var no=emailId.match(pattern);
+
+    if(no==null)
+    {
+        $('#emailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
+        $('#email').val("");
+        $('#emailErrorMsg').show();
+        $('#emailErrorMsg').delay(2000).fadeOut('slow');
+    }else{
+     $('#emailErrorMsg').hide();
+    }
+
+}
+
+function checkContact(value)
+{
+    var firstDigit = value.charAt(0);
+    var secondDigit = value.charAt(1);
+
+    if(firstDigit != 7 && firstDigit != 1){
+        $('#contactNumberErrorMsg').html("Must Start with either 1 or 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 1 && secondDigit != 6 && secondDigit != 7){
+        $('#contactNumberErrorMsg').html("Second Digit Must Start with either 6 or 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 7 && secondDigit == 6){
+        $('#contactNumberErrorMsg').html("Second Digit Cannot be 6.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 7 && secondDigit != 7){
+        $('#contactNumberErrorMsg').html("Second Digit Must Start with 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }
+
+}
+
+function save_food_handler_details()
+{
+    $('#fbr-file-attach').tab('show');
+}
+
+function save_fbr_details()
+{
+    $('#pills-food-handler').tab('show');
+}
+
+function checkFBO(value)
+{
+    if(value == "No")
+    {
+        $("#license_number").attr("disabled", "disabled");
+    }
+    else
+    {
+        $("#license_number").removeAttr("disabled");
+    }
+}
+
+function checkCorporation(value)
+{
+    if(value == "Yes")
+    {
+        $('#previous_business_div').show();
+        $("#relationship").removeAttr("disabled");
+    }
+    else
+    {
+        $('#previous_business_div').hide();
+        $("#relationship").attr("disabled", "disabled");
+    }
+
+}
+
+function check_judicial_proceedings(value)
+{
+    if(value == "No")
+    {
+        $("#provided_details").attr("disabled", "disabled");
+    }
+    else
+    {
+        $("#provided_details").removeAttr("disabled");
+    }
+}
+
+function check_regulatory_proceedings(value)
+{
+    if(value == "No")
+    {
+        $("#regulatory_proceedings_details").attr("disabled", "disabled");
+    }
+    else
+    {
+        $("#regulatory_proceedings_details").removeAttr("disabled");
+    }
+}
+
+function save_fh_details()
+{
+    var fh_name = $('#fh_name').val();
+    var fh_license = $('#fh_license').val();
+
+    if(fh_name == "")
+    {
+        $('#fh_nameErrorMsg').html("Enter FH Name.");
+        $('#fh_nameErrorMsg').show();
+        $('#fh_nameErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(fh_name == "")
+    {
+        $('#fh_nameErrorMsg').html("Enter License No.");
+        $('#fh_nameErrorMsg').show();
+        $('#fh_nameErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else
+    {
+        $.ajax({
+                type : "POST",
+                url : "{% url 'save_meat_shop_fh_details' %}",
+                data : $('#fh_form').serialize(),
+                success : function(responseText) {
+                   $('#add_fh_details').modal('hide');
+                   $('#food_handler_details').html(responseText);
+                   $('#pills-file').tab('show');
+                   $('.modal-backdrop').remove();
+                }
+            });
+    }
+}
+
+function getGewog(dzongkhag_id)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_gewog' %}",
+        data :{'dzongkhag_id':dzongkhag_id},
+        success : function(data)
+        {
+            $('#gewog').html(data);
+        }
+    });
+}
+</script>
+{% endblock %}

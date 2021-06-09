@@ -8,6 +8,8 @@ urlpatterns = [
     path('focal_officer_application', views.focal_officer_application, name='focal_officer_application'),
     path('oic_application', views.oic_application, name='oic_application'),
     path('inspector_application', views.inspector_application, name='inspector_application'),
+
+    # movement permit
     path('apply_movement_permit', views.apply_movement_permit, name='apply_movement_permit'),
     path('save_details', views.save_details, name='save_details'),
     path('save_movement_permit', views.save_movement_permit, name='save_movement_permit'),
@@ -104,6 +106,7 @@ urlpatterns = [
     path('update_nursery_details', views.update_nursery_details, name='update_nursery_details'),
     path('load_details', views.load_details, name='load_details'),
     path('load_file_details', views.load_file_details, name='load_file_details'),
+    path('load_location_nursery', views.load_location_nursery, name='load_location_nursery'),
 
     # Seed Certification
     path('seed_certificate_application', views.seed_certificate_application, name='seed_certificate_application'),

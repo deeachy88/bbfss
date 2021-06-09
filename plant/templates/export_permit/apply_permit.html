@@ -27,7 +27,7 @@ option {
         <form method="post" id="permitForm">
         {% csrf_token %}
             <input type="hidden" id="applicationNo" name="applicationNo">
-            <div class="row justify-content-center">
+            <div class="row justify-content-left">
                 <div class="form-check text-center">
                     <label class="form-label">Certificate Type <font color="red">*</font></label><br>
                     <label class="form-radio-label">
@@ -41,7 +41,7 @@ option {
                 </div>
             </div>
             <div id='Phytosanitary'>
-                <div class="row justify-content-center">
+                <div class="row justify-content-left">
                     <ul class="nav nav-pills nav-secondary" id="pills-tab-phyto" role="tablist">
                         <li class="nav-item">
                             <a class="nav-link active" id="pills-phyto-tab" data-toggle="pill" href="#phyto-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="load_details()">Home</a>
@@ -57,19 +57,19 @@ option {
                         <div class="row">
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label class="form-label">License No</label>
+                                    <label class="form-label">License No <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="p_License_No" name="p_License_No">
                                 </div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label class="form-label">CID</label>
+                                    <label class="form-label">CID <font color="red">*</font></label>
                                     <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="p_cid" name="p_cid" maxlength="11" onkeypress="return isNumberKey(event)">
                                 </div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label class="form-label">Exporter Name</label>
+                                    <label class="form-label">Exporter Name <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="p_Exporter_Name" name="p_Exporter_Name">
                                 </div>
                             </div>
@@ -77,19 +77,19 @@ option {
                         <div class="row">
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label class="form-label">Exporter Address</label>
+                                    <label class="form-label">Exporter Address <font color="red">*</font></label>
                                     <textarea class="form-control" id="p_Exporter_Address" name="p_Exporter_Address" rows="3"></textarea>
                                 </div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label class="form-label">Contact Number</label>
+                                    <label class="form-label">Contact Number <font color="red">*</font></label>
                                     <input type="number" class="form-control" id="p_Contact_No" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="p_Contact_No" maxlength="8" onkeypress="return isNumberKey(event)">
                                 </div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label class="form-label">Email</label>
+                                    <label class="form-label">Email <font color="red">*</font></label>
                                     <input type="email" class="form-control" id="p_Email" name="p_Email">
                                 </div>
                             </div>
@@ -97,7 +97,7 @@ option {
                         <div class="row">
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label class="form-label">Dzongkhag</label>
+                                    <label class="form-label">Dzongkhag <font color="red">*</font></label>
                                     <select class="form-control" name="p_Dzongkhag_Code"  id="p_Dzongkhag_Code" onchange="getLocation(this.value),getLocation(this.value)">
                                         <option value="">--SELECT DZONGKHAG--</option>
                                         {% for dzongkhag in dzongkhag %}
@@ -108,7 +108,7 @@ option {
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label class="form-label">Location</label>
+                                    <label class="form-label">Location <font color="red">*</font></label>
                                     <select class="form-control" name="p_Location_Code"  id="p_Location_Code">
                                         <option value="">--SELECT LOCATION--</option>
                                         {% for location in location %}
@@ -119,7 +119,7 @@ option {
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label class="form-label">Name & Address of Consignee</label>
+                                    <label class="form-label">Name & Address of Consignee <font color="red">*</font></label>
                                     <textarea class="form-control" id="p_Name_Address" name="p_Name_Address" rows="3"></textarea>
                                 </div>
                             </div>
@@ -127,13 +127,13 @@ option {
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label class="form-label">Botanical name of the commodity</label>
+                                    <label class="form-label">Botanical name of the commodity <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="p_Botanical_Name" name="p_Botanical_Name">
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label class="form-label">Description of the Commodity</label>
+                                    <label class="form-label">Description of the Commodity <font color="red">*</font></label>
                                     <textarea class="form-control" id="p_Description" name="p_Description" rows="3"></textarea>
                                 </div>
                             </div>
@@ -142,7 +142,7 @@ option {
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label class="form-label">Quantity (Gross Weight)</label>
+                                    <label class="form-label">Quantity (Gross Weight) <font color="red">*</font></label>
                                     <input type="number" class="form-control" id="p_Qty_Gross" name="p_Qty_Gross">
                                 </div>
                             </div>
@@ -171,7 +171,7 @@ option {
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label class="form-label">Quantity (Net Weight)</label>
+                                    <label class="form-label">Quantity (Net Weight) <font color="red">*</font></label>
                                     <input type="number" class="form-control" id="p_Qty_Net" name="p_Qty_Net">
                                 </div>
                             </div>
@@ -199,7 +199,7 @@ option {
                         </div>
                         <div class="row">
                             <div class="col-sm-6">
-                                <label class="form-label">Importing Country</label>
+                                <label class="form-label">Importing Country <font color="red">*</font></label>
                                 <select class="form-control" name="p_Country_Code"  id="p_Country_Code">
                                     <option value="">--SELECT COUNTRY--</option>
                                     {% for country in country %}
@@ -209,7 +209,7 @@ option {
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label class="form-label">Declared point of Entry</label>
+                                    <label class="form-label">Declared point of Entry <font color="red">*</font></label>
                                     <select class="form-control" name="p_Entry_Point"  id="p_Entry_Point">
                                         <option value="">--SELECT--</option>
                                         {% for entry_point in entry_point %}
@@ -222,26 +222,26 @@ option {
                         <div class="row">
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label class="form-label">Number of Packages</label>
+                                    <label class="form-label">Number of Packages <font color="red">*</font></label>
                                     <textarea class="form-control" id="p_Package_number" name="p_Package_number" rows="3"></textarea>
                                 </div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label class="form-label">Description of Packages</label>
+                                    <label class="form-label">Description of Packages <font color="red">*</font></label>
                                     <textarea class="form-control" id="p_Package_description" name="p_Package_description" rows="3"></textarea>
                                 </div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label class="form-label">Distinguishing Marks</label>
+                                    <label class="form-label">Distinguishing Marks <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="p_Distinguish_Marks" name="p_Distinguish_Marks">
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-2">
-                                <label class="form-label">Purpose/End Use</label>
+                                <label class="form-label">Purpose/End Use <font color="red">*</font></label>
                             </div>
                             <div class="col-sm-10 justify-content-center">
                                 <div class="form-check text-center">
@@ -276,7 +276,7 @@ option {
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label class="form-label">Mode of conveyance </label>
+                                    <label class="form-label">Mode of conveyance <font color="red">*</font></label>
                                     <select class="form-control form-control" id="p_conveyanceMeans" name="p_conveyanceMeans">
                                         <option value="">-SELECT-</option>
                                         <option value="Sea">Sea</option>
@@ -290,7 +290,7 @@ option {
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label class="form-label">Conveyance Name</label>
+                                    <label class="form-label">Conveyance Name <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="p_Conveyance_Name" name="p_Conveyance_Name">
                                 </div>
                                 <div class="alert alert-danger" id="p_Conveyance_NameErrorMsg" style="display:none"></div>
@@ -302,7 +302,7 @@ option {
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                        <!--<div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
                             <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
                                 <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Pre-</span>
                                 <span class="px-2 small text-muted font-weight-bold text-muted form-label">Application</span>
@@ -350,14 +350,14 @@ option {
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Chemical Name</label>
+                                    <label class="form-label">Chemical Name <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="p_chemcial_name" name="p_chemcial_name">
                                 </div>
                                 <div class="alert alert-danger" id="p_chemcial_nameErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Treatment </label>
+                                    <label class="form-label">Treatment <font color="red">*</font></label>
                                     <select class="form-control form-control" id="p_treatment" name="p_treatment" onchange="showValue(this.value)">
                                         <option value="">-SELECT-</option>
                                         <option value="Fumigation">Fumigation</option>
@@ -416,7 +416,7 @@ option {
                                 </div>
                                 <div class="alert alert-danger" id="p_additional_Info_ErrorMsg" style="display:none"></div>
                             </div>
-                        </div>
+                        </div>-->
                         <div class="card-footer">
                             <button type="button" class="btn btn-primary" onclick="save_export_permit()">Save</button>
                         </div>
@@ -430,7 +430,7 @@ option {
                 </div>
             </div>
             <div id="Cordyceps">
-                <div class="row justify-content-center">
+                <div class="row justify-content-left">
                     <ul class="nav nav-pills nav-secondary" id="pills-tab-cordyceps" role="tablist">
                         <li class="nav-item">
                             <a class="nav-link active" id="pills-cordyceps-tab" data-toggle="pill" href="#cordyceps-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="load_agro_details()">Home</a>
@@ -443,7 +443,7 @@ option {
                 <div class="tab-content mt-2 mb-3" id="pills-tab-cordyceps-tabContent">
                     <div class="tab-pane fade show active" id="cordyceps-home" role="tabpanel" aria-labelledby="pills-phyto-tab">
                         <div id="cordyceps-details">
-                        <div class="row justify-content-center">
+                        <div class="row justify-content-left">
                             <div class="form-check text-center">
                                 <label class="form-label">Applicant Type <font color="red">*</font></label><br>
                                 <label class="form-radio-label">
@@ -464,19 +464,19 @@ option {
                         <div class="row">
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label class="form-label">CID</label>
+                                    <label class="form-label">CID <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="c_cid" name="c_cid">
                                 </div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label class="form-label">Name</label>
+                                    <label class="form-label">Name <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="c_Exporter_Name" name="c_Exporter_Name">
                                 </div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label class="form-label">Email</label>
+                                    <label class="form-label">Email <font color="red">*</font></label>
                                     <input type="email" class="form-control" id="c_Email" name="c_Email">
                                 </div>
                             </div>
@@ -484,13 +484,13 @@ option {
                         <div class="row">
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label class="form-label">Contact Number</label>
+                                    <label class="form-label">Contact Number <font color="red">*</font></label>
                                     <input type="number" class="form-control" id="c_Contact_No" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="c_Contact_No" maxlength="8" onkeypress="return isNumberKey(event)">
                                 </div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label class="form-label">Dzongkhag</label>
+                                    <label class="form-label">Dzongkhag <font color="red">*</font></label>
                                     <select class="form-control" name="c_Dzongkhag_Code"  id="c_Dzongkhag_Code" onchange="getLocation(this.value),getLocation(this.value)">
                                         <option value="">--SELECT DZONGKHAG--</option>
                                         {% for dzongkhag in dzongkhag %}
@@ -501,7 +501,7 @@ option {
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label class="form-label">Location</label>
+                                    <label class="form-label">Location <font color="red">*</font></label>
                                     <select class="form-control" name="c_Location_Code"  id="c_Location_Code">
                                         <option value="">--SELECT LOCATION--</option>
                                         {% for location in location %}
@@ -516,7 +516,7 @@ option {
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                        <label class="form-label">Current Address</label>
+                                        <label class="form-label">Current Address <font color="red">*</font></label>
                                         <textarea class="form-control" id="c_current_address" name="c_current_address" rows="4"></textarea>
                                     </div>
                                 </div>
@@ -530,13 +530,13 @@ option {
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                        <label class="form-label">Date Of Inspection Requested</label>
+                                        <label class="form-label">Date Of Inspection Requested <font color="red">*</font></label>
                                         <input type="text" class="form-control date-picker flatpickr-input active" id="date" name="date_for_Inspection"  placeholder="Pick a date" readonly="readonly">
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                        <label class="form-label">Place Of Inspection Requested</label>
+                                        <label class="form-label">Place Of Inspection Requested <font color="red">*</font></label>
                                         <input type="text" class="form-control" id="c_requested_place" name="requested_place">
                                     </div>
                                 </div>

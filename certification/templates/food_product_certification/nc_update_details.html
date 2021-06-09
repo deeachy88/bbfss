@@ -1,0 +1,38 @@
+{% for import in audit_observation %}
+    <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{import.Clause_Number}}</td>
+        <td>{{import.Non_Conformity}}</td>
+        <td>{{import.Non_Conformity_Category}}</td>
+        <td>{{import.Non_Conformity_Description}}</td>
+        <td>{{import.Corrective_Action_Proposed_Auditee}}</td>
+        <td>
+            <button type="button"
+            class="btn btn-primary btn-sm js-edit-details"
+            data-url="{% url 'edit_fpc_nc_details' import.Record_Id %}">
+            <i class="zmdi zmdi-edit"></i>
+            </button>
+        </td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="6" class="text-center">No Data</td>
+    </tr>
+{% endfor %}
+<input type="hidden" id="count" value="{{message_count}}">
+<script>
+    $(document).ready(function()
+     {
+        var row_count = $("#count").val();
+        if(row_count > 0)
+        {
+            $("#approve-btn").hide();
+            $("#resubmit-btn").show();
+        }
+        else
+        {
+            $("#approve-btn").show();
+            $("#resubmit-btn").hide();
+        }
+     });
+</script>

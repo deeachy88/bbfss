@@ -4,6 +4,14 @@
     margin-bottom: 0rem;
     box-shadow: 0 1px 5px rgb(0 0 0 / 10%);
 }
+.custom-control {
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    padding-left: 2rem;
+    margin-right: 1rem;
+    margin-top: 8px;
+}
 </style>
         <div class="card">
             <div class="card-header" role="tab" id="headingOne">
@@ -104,7 +112,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Address</label>
-                                        <<textarea class="form-control" disabled>{{application_details.Present_Address}}</textarea>
+                                        <textarea class="form-control" disabled>{{application_details.Present_Address}}</textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -216,39 +224,43 @@
                 </div>
             </div>
         </div>
-        <div class="card">
-            <div class="card-header" role="tab" id="farmer_group_details">
-                <a class="collapsed" data-toggle="collapse" href="#collapse_farmer_group" aria-expanded="false" aria-controls="collapse_farmer_group">
-                    Crop Production Details
-                </a>
-            </div>
-            <div id="collapse_farmer_group" class="collapse" role="tabpanel" aria-labelledby="collapse_farmer_group" data-parent="#accordion" style="">
-                <div class="card-body">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">CID</th>
-                                <th scope="col">Name</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                           {% for farmer_group in farmer_group %}
+        {% for application_details in application_details %}
+            {% if application_details.Application_Type == 'F' %}
+            <div class="card">
+                <div class="card-header" role="tab" id="farmer_group_details">
+                    <a class="collapsed" data-toggle="collapse" href="#collapse_farmer_group" aria-expanded="false" aria-controls="collapse_farmer_group">
+                        Farmer Group Details
+                    </a>
+                </div>
+                <div id="collapse_farmer_group" class="collapse" role="tabpanel" aria-labelledby="collapse_farmer_group" data-parent="#accordion" style="">
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
                                 <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>{{farmer_group.CID}}</td>
-                                    <td>{{farmer_group.Name}}</td>
+                                    <th scope="col">#</th>
+                                    <th scope="col">CID</th>
+                                    <th scope="col">Name</th>
                                 </tr>
-                                {% empty %}
-                                <tr>
-                                  <td colspan="3" class="text-center">No Data</td>
-                                </tr>
-                           {% endfor %}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                               {% for farmer_group in farmer_group %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{farmer_group.CID}}</td>
+                                        <td>{{farmer_group.Name}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="3" class="text-center">No Data</td>
+                                    </tr>
+                               {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-        </div>
+            {% endif %}
+        {% endfor %}
         <div class="card">
             <div class="card-header" role="tab" id="crop_details">
                 <a class="collapsed" data-toggle="collapse" href="#collapseCrop" aria-expanded="false" aria-controls="collapseCrop">
@@ -279,7 +291,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                           {% for crop in crop_details %}
+                           {% for crop in crop_production %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
                                     <td>{{crop.Crop_Name}}</td>
@@ -300,7 +312,7 @@
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                  <td colspan="3" class="text-center">No Data</td>
+                                  <td colspan="16" class="text-center">No Data</td>
                                 </tr>
                            {% endfor %}
                         </tbody>
@@ -311,7 +323,7 @@
         <div class="card">
             <div class="card-header" role="tab" id="wild_collection_details">
                 <a class="collapsed" data-toggle="collapse" href="#collapse_wild_collection" aria-expanded="false" aria-controls="collapse_wild_collection">
-                    Crop Production Details
+                    Wild Collection Details
                 </a>
             </div>
             <div id="collapse_wild_collection" class="collapse" role="tabpanel" aria-labelledby="collapse_wild_collection" data-parent="#accordion" style="">
@@ -346,7 +358,7 @@
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                  <td colspan="3" class="text-center">No Data</td>
+                                  <td colspan="9" class="text-center">No Data</td>
                                 </tr>
                            {% endfor %}
                         </tbody>
@@ -357,7 +369,7 @@
         <div class="card">
             <div class="card-header" role="tab" id="animal_husbandry_details">
                 <a class="collapsed" data-toggle="collapse" href="#collapse_animal_husbandry" aria-expanded="false" aria-controls="collapse_animal_husbandry">
-                    Crop Production Details
+                   Animal Husbandry Details
                 </a>
             </div>
             <div id="collapse_animal_husbandry" class="collapse" role="tabpanel" aria-labelledby="collapse_animal_husbandry" data-parent="#accordion" style="">
@@ -375,7 +387,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                           {% for animal in animal_husbandry %}
+                           {% for animal in ah_details %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
                                     <td>{{animal.Livestock_Type}}</td>
@@ -418,7 +430,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                           {% for aqua in aquaculture_details %}
+                           {% for aqua in aqua_details %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
                                     <td>{{aqua.Aquaculture_Type}}</td>
@@ -432,7 +444,7 @@
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                  <td colspan="7" class="text-center">No Data</td>
+                                  <td colspan="9" class="text-center">No Data</td>
                                 </tr>
                            {% endfor %}
                         </tbody>
@@ -461,7 +473,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                           {% for aqua in aquaculture_details %}
+                           {% for aqua in api_details %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
                                     <td>{{aqua.Common_Name}}</td>
@@ -484,7 +496,7 @@
         <div class="card">
             <div class="card-header" role="tab" id="processing_details">
                 <a class="collapsed" data-toggle="collapse" href="#collapse_processing_details" aria-expanded="false" aria-controls="collapse_processing_details">
-                    Apiculture Details
+                    Processing Unit Details
                 </a>
             </div>
             <div id="collapse_processing_details" class="collapse" role="tabpanel" aria-labelledby="collapse_processing_details" data-parent="#accordion" style="">
@@ -511,7 +523,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                           {% for processing in processing_details %}
+                           {% for processing in processing_unit %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
                                     <td>{{processing.Production_House_Name}}</td>
@@ -532,7 +544,7 @@
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                  <td colspan="7" class="text-center">No Data</td>
+                                  <td colspan="16" class="text-center">No Data</td>
                                 </tr>
                            {% endfor %}
                         </tbody>
@@ -579,13 +591,38 @@
             </div>
             <div id="collapseFour" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
                 <div class="card-body">
+                    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Focal</span>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Ofiicer</span>
+                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Details</span>
+                        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="form-label">Remarks</label>
+                                {% for application_details in application_details %}
+                                <textarea class="form-control" disabled>{{application_details.FO_Remarks}}</textarea>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
                     <br>
+                    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Audit</span>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Team</span>
+                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Details</span>
+                        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                    </div>
                     <div id="audit_team_details">
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
                                     <th scope="col">Name</th>
+                                    <th scope="col">Role</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -593,6 +630,7 @@
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
                                         <td>{{audit.Name}}</td>
+                                        <td>{{audit.Role}}</td>
                                     </tr>
                                     {% empty %}
                                     <tr>
@@ -603,37 +641,46 @@
                         </table>
                     </div>
                     <br>
-                    <form method="post" id="audit_team_form">
+                <form method="post" id="audit_team_form">
                     {% csrf_token %}
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Audit Team Leader</label>
                                  {% for application_details in application_details %}
-                                    <input type="text" id="team_leader" name="team_leader" value="{{application_details.Audit_Team_Leader}}" disabled>
+                                    <input type="hidden" class="form-control" id="team_leader" name="team_leader" value="{{application_details.Audit_Team_Leader}}" disabled>
+                                    <select class="form-control" disabled>
+                                    {% for user_details in user_details %}
+                                        <option value="{{user_details.Login_Id}}"{% if application_details.Audit_Team_Leader == user_details.Login_Id %}selected{% endif %}>
+                                            {{ user_details.Name }}
+                                        </option>
+                                    {% endfor %}
+                                    </select>
                                 {% endfor %}
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">Audit Team Accept</label>
-                                    <div class="col-sm-4 justify-content-center">
-                                        <label class="custom-control custom-radio">
-                                            <input type="radio" name="acceptance" class="custom-control-input" value="A">
-                                            <span class="custom-control-indicator"></span>
-                                            <span class="custom-control-description">Accept</span>
-                                        </label>
-                                        <label class="custom-control custom-radio">
-                                            <input type="radio" name="acceptance" class="custom-control-input" value="R">
-                                            <span class="custom-control-indicator"></span>
-                                            <span class="custom-control-description">Reject</span>
-                                        </label>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">Remarks</label>
+                                <label class="form-label">Audit Team Accept</label>&nbsp;
+                                <div class="justify-content-center">
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" name="acceptance" class="custom-control-input" value="A">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Accept</span>
+                                    </label>
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" name="acceptance" class="custom-control-input" value="R">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Reject</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="form-label">Response</label>
                                 <textarea class="form-control" name="remarks" id="remarks"></textarea>
                             </div>
                         </div>
@@ -643,20 +690,20 @@
                             Succesfull
                         </div>
                         {% for application_details in application_details %}
-                            <input type="hidden" value="{{ application_details.Application_No }}" name="application_id">
-                            <button type="button" class="btn btn-flat btn-primary" onclick="forward_application('{{ application_details.Application_No }}')">
+                        <input type="hidden" value="{{ application_details.Application_No }}" name="application_id">
+                            <button type="button" class="btn btn-flat btn-primary" onclick="audit_team_accept('{{ application_details.Application_No }}')">
                                 <i class="ace-icon fa fa-times"></i>
-                                &nbsp;&nbsp;Send For Acceptance
+                                &nbsp;&nbsp;Submit
                             </button>
                         {% endfor %}
-                        <button type="button" class="btn btn-primary" onclick="closeTeamModal()">Close Modal</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close Modal</button>
                     </div>
-                    </form>
+                </form>
                 </div>
             </div>
         </div>
 <script>
-function forward_application()
+function audit_team_accept()
 {
     $.ajax({
         type : "GET",
