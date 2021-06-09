@@ -22,8 +22,7 @@ from food.models import t_food_export_certificate_t1, t_food_licensing_food_hand
     t_food_business_registration_licensing_t4, t_food_business_registration_licensing_t5, \
     t_food_business_registration_licensing_t6
 from livestock.models import t_livestock_clearance_meat_shop_t2
-from livestock.views import update_payment
-from plant.models import t_workflow_details, t_file_attachment
+from plant.models import t_workflow_details, t_file_attachment, t_payment_details
 from plant.views import inspector_application, resubmit_application, focal_officer_application
 
 
@@ -265,7 +264,7 @@ def send_fbr_approve_email(new_import_permit, Email, validity_date):
     message = "Dear Sir," \
               "" \
               "Your Application for Import Permit for Food Products Has Been Approved. Your " \
-              "Import Permit No is:" + new_import_permit + " And is Valid TIll " + str(validity_date) + \
+              "Registration No is:" + new_import_permit + " And is Valid TIll " + str(validity_date) + \
               " Please Make Payment Before Validity Expires. "
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
@@ -1612,3 +1611,18 @@ def factory_inspection_list(request):
     service_details = t_service_master.objects.all()
     return render(request, 'factory_inspection_list.html',
                   {'service_details': service_details, 'application_details': new_import_app})
+
+
+def update_payment(application_no, permit_no, service_code, validity_date):
+    t_payment_details.objects.create(Application_No=application_no,
+                                     Application_Date=date.today(),
+                                     Permit_No=permit_no,
+                                     Service_Id=service_code,
+                                     Validity=validity_date,
+                                     Payment_Type=None,
+                                     Instrument_No=None,
+                                     Amount=None,
+                                     Receipt_No=None,
+                                     Receipt_Date=None,
+                                     Updated_By=None,
+                                     Updated_On=None)

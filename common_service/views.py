@@ -13,11 +13,8 @@ from bbfss import settings
 
 from common_service.models import t_common_complaint_t1, t_inspection_monitoring_t1, t_inspection_monitoring_t2, \
     t_inspection_monitoring_t3, t_inspection_monitoring_t4
-from livestock.models import t_livestock_clearance_meat_shop_t1, t_livestock_clearance_meat_shop_t2
-from livestock.views import meat_shop_clearance_no, update_payment
 
 from plant.models import t_workflow_details, t_file_attachment
-from plant.views import inspector_application
 
 
 def co_complaint_list(request):
@@ -53,9 +50,11 @@ def investigation_report_details(request):
                   {'complaint_details': details, 'user_details': user_details, 'dzongkhag': dzongkhag, 'gewog': gewog,
                    'village': village, 'file': file})
 
+
 def complaint_closed_list(request):
     complaint_closed_details = t_workflow_details.objects.filter(Application_Status='C', Assigned_Role_Id='3')
     return render(request, 'complaint_closed_list.html', {'complaint_details': complaint_closed_details})
+
 
 def complaint_closed_details(request):
     Application_No = request.GET.get('application_id')
@@ -71,6 +70,7 @@ def complaint_closed_details(request):
     return render(request, 'complaint_handling/complaint_officer_complaint_close_details.html',
                   {'complaint_details': details, 'user_details': user_details, 'dzongkhag': dzongkhag, 'gewog': gewog,
                    'village': village, 'file': file})
+
 
 def investigation_complaint_list(request):
     Login_Id = request.session['login_id']
@@ -92,7 +92,12 @@ def co_complaint_details(request):
     inspector_list = t_user_master.objects.all()
 
     return render(request, 'complaint_handling/complaint_officer_complaint_forward.html', {'complaint_details': details,
-     'inspector_list': inspector_list, 'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village, 'file': file})
+                                                                                           'inspector_list': inspector_list,
+                                                                                           'dzongkhag': dzongkhag,
+                                                                                           'gewog': gewog,
+                                                                                           'village': village,
+                                                                                           'file': file})
+
 
 def investigation_complaint_details(request):
     application_no = request.GET.get('application_id')
@@ -104,8 +109,12 @@ def investigation_complaint_details(request):
     investigation_file = t_file_attachment.objects.filter(Application_No=application_no, Role_Id='5')
 
     return render(request, 'complaint_handling/investigation_complaint_update.html', {'complaint_details': details,
-      'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village, 'complaint_file': complaint_file,
-      'investigation_file': investigation_file})
+                                                                                      'dzongkhag': dzongkhag,
+                                                                                      'gewog': gewog,
+                                                                                      'village': village,
+                                                                                      'complaint_file': complaint_file,
+                                                                                      'investigation_file': investigation_file})
+
 
 def apply_complaint_form(request):
     dzongkhag = t_dzongkhag_master.objects.all()
@@ -113,6 +122,7 @@ def apply_complaint_form(request):
     village = t_village_master.objects.all()
     return render(request, 'complaint_handling/submit_complaint.html',
                   {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village})
+
 
 def save_complaint(request):
     data = dict()
@@ -153,11 +163,13 @@ def save_complaint(request):
     data['applNo'] = last_application_no
     return JsonResponse(data)
 
+
 def load_complaint_attachment_details(request):
     application_id = request.GET.get('application_id')
     attachment_details = t_file_attachment.objects.filter(Application_No=application_id, Role_Id='8')
     return render(request, 'complaint_handling/complaint_file_attachment_page.html',
                   {'file_attach': attachment_details})
+
 
 def save_complaint_file(request):
     data = dict()
@@ -169,6 +181,7 @@ def save_complaint_file(request):
         fs.save(myFile.name, myFile)
         data['form_is_valid'] = True
     return JsonResponse(data)
+
 
 def add_complaint_file_name(request):
     if request.method == 'POST':
@@ -182,6 +195,7 @@ def add_complaint_file_name(request):
 
         complaint_file = t_file_attachment.objects.filter(Application_No=Application_No, Rold_id='8')
     return render(request, 'complaint_handling/complaint_file_attachment_page.html', {'complaint_file': complaint_file})
+
 
 def delete_complaint_file(request):
     File_Id = request.GET.get('file_id')
@@ -203,6 +217,7 @@ def load_investigation_attachment_details(request):
     return render(request, 'complaint_handling/investigation_file_attachment_page.html',
                   {'file_attach': attachment_details})
 
+
 def save_investigation_file(request):
     data = dict()
     myFile = request.FILES['document']
@@ -214,6 +229,7 @@ def save_investigation_file(request):
         data['form_is_valid'] = True
     return JsonResponse(data)
 
+
 def add_investigation_file_name(request):
     if request.method == 'POST':
         Application_No = request.POST.get('appNo')
@@ -223,7 +239,9 @@ def add_investigation_file_name(request):
         t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
                                          Role_Id='5', File_Path=fs, Attachment=fileName)
         investigation_file = t_file_attachment.objects.filter(Application_No=Application_No, Role_Id='5')
-    return render(request, 'complaint_handling/investigation_file_attachment_page.html', {'investigation_file': investigation_file})
+    return render(request, 'complaint_handling/investigation_file_attachment_page.html',
+                  {'investigation_file': investigation_file})
+
 
 def delete_investigation_file(request):
     File_Id = request.GET.get('file_id')
@@ -235,7 +253,9 @@ def delete_investigation_file(request):
         fs.delete(str(fileName))
     file.delete()
     investigation_file = t_file_attachment.objects.filter(Application_No=Application_No, Role_Id='5')
-    return render(request, 'complaint_handling/investigation_file_attachment_page.html', {'investigation_file': investigation_file})
+    return render(request, 'complaint_handling/investigation_file_attachment_page.html',
+                  {'investigation_file': investigation_file})
+
 
 def submit_complaint(request):
     application_no = request.GET.get('appNo')
@@ -264,15 +284,18 @@ def complaint_details(request):
                   {'complaint_details': complaint_details, 'inspector_list': inspector_list, 'dzongkhag': dzongkhag,
                    'gewog': gewog, 'village': village, 'file': file})
 
+
 def load_gewog(request):
     dzongkhag_id = request.GET.get('dzongkhag_id')
     gewog_list = t_gewog_master.objects.filter(Dzongkhag_Code_id=dzongkhag_id).order_by('Gewog_Name')
     return render(request, 'gewog_list.html', {'gewog_list': gewog_list})
 
+
 def load_village(request):
     gewog_id = request.GET.get('gewog_id')
     village_list = t_village_master.objects.filter(Gewog_Code_id=gewog_id).order_by('Village_Name')
     return render(request, 'village_list.html', {'village_list': village_list})
+
 
 def acknowledge_complaint(request):
     app_no = request.POST.get('applicationNo')
@@ -282,7 +305,7 @@ def acknowledge_complaint(request):
         email = email_id.Email
         application_date = email_id.Application_Date
 
-    workflow_details = t_workflow_details.objects.filter(Application_No = app_no)
+    workflow_details = t_workflow_details.objects.filter(Application_No=app_no)
     c_details.update(Acknowledge='Y')
     c_details.update(Acknowledge_Remarks=remarks)
     c_details.update(Acknowledge_Date=date.today())
@@ -291,6 +314,7 @@ def acknowledge_complaint(request):
     workflow_details.update(Application_Status='A')
     send_acknowledge_email(app_no, application_date, remarks, email)
     return redirect(co_complaint_list)
+
 
 def forward_complaint_by_co(request):
     app_no = request.POST.get('applicationNo')
@@ -313,7 +337,7 @@ def forward_complaint_to_co(request):
     app_no = request.POST.get('applicationNo')
     investigation_report = request.POST.get('investigationReport')
     investigation_date = request.POST.get('investigationDate')
-    #forward_to = request.POST.get('forwardTo')
+    # forward_to = request.POST.get('forwardTo')
     forward_details = t_common_complaint_t1.objects.filter(Application_No=app_no)
 
     forward_details.update(Investigation_Report=investigation_report)
@@ -324,8 +348,9 @@ def forward_complaint_to_co(request):
     application_details.update(Action_Date=date.today())
     application_details.update(Assigned_To=None)
     application_details.update(Assigned_Role_Id='3')
-    application_details.update(Application_Status='IR')  #IR - Investigation Report complete
+    application_details.update(Application_Status='IR')  # IR - Investigation Report complete
     return redirect(investigation_complaint_list)
+
 
 def close_complaint(request):
     app_no = request.POST.get('applicationNo')
@@ -344,15 +369,16 @@ def close_complaint(request):
     application_details = t_workflow_details.objects.filter(Application_No=app_no)
     application_details.update(Action_Date=date.today())
     application_details.update(Assigned_To=None)
-    #application_details.update(Assigned_Role_Id=None)
+    # application_details.update(Assigned_Role_Id=None)
     application_details.update(Application_Status='C')
     send_close_email(app_no, application_date, closure_remarks, email, investigation_report, investigation_date)
     return redirect(investigation_report_list)
 
 
-def send_acknowledge_email(app_no, app_date,ack_remarks, email_id):
+def send_acknowledge_email(app_no, app_date, ack_remarks, email_id):
     subject = 'COMPLAINT APPLICATION ACCEPTED'
-    message = "Dear Sir/Madam, This has reference to your application number " + app_no + " dated: " + str(app_date) + ", regarding your complaint on " + ack_remarks + ". Kindly quote this complaint registration number in all your future correspondence. We will inform you of the outcome of the complaint as soon as investigation is over."
+    message = "Dear Sir/Madam, This has reference to your application number " + app_no + " dated: " + str(
+        app_date) + ", regarding your complaint on " + ack_remarks + ". Kindly quote this complaint registration number in all your future correspondence. We will inform you of the outcome of the complaint as soon as investigation is over."
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [email_id]
     send_mail(subject, message, email_from, recipient_list)
@@ -361,8 +387,8 @@ def send_acknowledge_email(app_no, app_date,ack_remarks, email_id):
 def send_close_email(app_no, app_date, close_remarks, email_id, in_report, in_date):
     subject = 'COMPLAINT CLOSED'
     message = "Dear " + "Sir/Madam, This has reference to your complaint registered with us Registration No." \
-                        "" + app_no + " dated " + str(app_date) + ". Please find below our decision or findings here :"\
-                        "" + close_remarks + ".Thank You"
+                        "" + app_no + " dated " + str(app_date) + ". Please find below our decision or findings here :" \
+                                                                  "" + close_remarks + ".Thank You"
 
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [email_id]
@@ -382,9 +408,6 @@ def get_complaint_application_no(request, service_code):
         year = timezone.now().year
         newAppNo = service_code + "/" + str(year) + "/" + AppNo
     return newAppNo
-
-
-
 
 
 def inspection_and_monitoring_form(request):

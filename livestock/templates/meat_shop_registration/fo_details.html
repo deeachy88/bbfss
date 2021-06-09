@@ -1,0 +1,432 @@
+<form method="post" id="applicationForm">
+    {% csrf_token %}
+    <div class="animated fadeIn">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        {% for application_details in application_details %}
+                            <div id="applicant_details">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Name of the Food Business</label>
+                                            <input type="text" class="form-control" value="{{application_details.Business_Name}}" disabled>
+                                        </div>
+                                    </div>
+                                     <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">CID of the Owner</label>
+                                            <input type="text" class="form-control" value="{{application_details.CID}}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Name of the applicant/Owner</label>
+                                            <input type="text" class="form-control" value="{{application_details.Name_Owner}}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Name of the Top Manager</label>
+                                            <input type="text" class="form-control" value="{{application_details.Name_Manager}}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Licensing Criteria </label>
+                                            <input type="text" class="form-control" value="{{application_details.License_Criteria}}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Contact Number</label>
+                                            <input type="number" class="form-control" value="{{application_details.Contact_No}}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Email</label>
+                                            <input type="email" class="form-control" value="{{application_details.Email}}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Food Business Address</label>
+                                            <textarea class="form-control" disabled>{{application_details.Address}}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Current status of functioning</label>
+                                            <select class="form-control" disabled>
+                                                {% if application_details.Current_Status == "Project stage" %}
+                                                    <option value="Project stage" selected>Project stage</option>
+                                                    <option value="Commissioned">Commissioned but regular production yet to start</option>
+                                                    <option value="Regular">Regular production in progress</option>
+                                                {% elif application_details.Current_Status == "Commissioned" %}
+                                                    <option value="Project stage">Project stage</option>
+                                                    <option value="Commissioned" selected>Commissioned but regular production yet to start</option>
+                                                    <option value="Regular">Regular production in progress</option>
+                                                {% else %}
+                                                    <option value="Project stage">Project stage</option>
+                                                    <option value="Commissioned">Commissioned but regular production yet to start</option>
+                                                    <option value="Regular" selected>Regular production in progress</option>
+                                                {% endif%}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Product Category</label>
+                                            <select class="form-control" disabled>
+                                                {% if application_details.Product_Category == "Fresh land" %}
+                                                    <option value="Fresh land" selected>Proposed</option>
+                                                    <option value="Being Manufactured">Being Manufactured</option>
+                                                {% else %}
+                                                    <option value="Fresh land">Proposed</option>
+                                                    <option value="Being Manufactured" selected>Being Manufactured</option>
+                                                {% endif%}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Products proposed/being manufactured</label>
+                                            <textarea class="form-control" disabled>{{application_details.Product}}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Identified water source</label>
+                                            <input type="text" class="form-control" value="{{application_details.Water_Source}}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Number of years in production</label>
+                                            <input type="text" class="form-control" value="{{application_details.Years_In_Production}}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Production Volume(Last Calender Year)</label>
+                                            <input type="number" class="form-control" value="{{application_details.Volume_Last_Year}}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Volume Unit</label>
+                                        <select class="form-control" name="volume_unit"  id="volume_unit">
+                                            <option value="">--SELECT--</option>
+                                            {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="alert alert-danger" id="volume_unitErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Site History Details</label>
+                                        <select class="form-control" name="history" id="history" onchange="checkSiteHistory(this.value)">
+                                            <option value="">--SELECT--</option>
+                                            <option value="Fresh land">Fresh land</option>
+                                            <option value="Converted structure">Converted structure</option>
+                                        </select>
+                                        <div class="alert alert-danger" id="historyErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-md-4" id="previous_business_div" style="display:none">
+                                        <div class="form-group">
+                                            <label class="form-label">What was the previous business conducted there?</label>
+                                            <textarea class="form-control" id="previous_business" name="previous_business"></textarea>
+                                        </div>
+                                        <div class="alert alert-danger" id="previous_businessErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label class="form-label">Any processes outsourced by the FB?</label><br>
+                                            <br><div class="form-group text-center">
+                                                <div class="form-check">
+                                                    <label class="custom-control custom-radio">
+                                                        <input type="radio" name="outsourced_process" class="custom-control-input" value="Yes">
+                                                        <span class="custom-control-indicator"></span>
+                                                        <span class="custom-control-description">Yes</span>
+                                                    </label>&nbsp;
+                                                    <label class="custom-control custom-radio">
+                                                        <input type="radio" name="outsourced_process" class="custom-control-input" value="No">
+                                                        <span class="custom-control-indicator"></span>
+                                                        <span class="custom-control-description">No</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Legal Entity Status</label>
+                                        <select class="form-control" name="legal_status"  id="legal_status">
+                                            <option value="">--SELECT--</option>
+                                            <option value="Private Ltd">Private Ltd</option>
+                                            <option value="Public Ltd">Public Ltd</option>
+                                            <option value="Government undertaking">Government undertaking (Pull from master table)</option>
+                                        </select>
+                                        <div class="alert alert-danger" id="legal_statusErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label class="form-label">Are you a part of a larger Corporation?</label><br>
+                                            <br><div class="form-group">
+                                                <div class="form-check">
+                                                    <label class="custom-control custom-radio">
+                                                        <input type="radio" name="larger_corporation" class="custom-control-input" value="Yes" onclick="checkCorporation(this.value)">
+                                                        <span class="custom-control-indicator"></span>
+                                                        <span class="custom-control-description">Yes</span>
+                                                    </label>&nbsp;
+                                                    <label class="custom-control custom-radio">
+                                                        <input type="radio" name="larger_corporation" class="custom-control-input" value="No" onclick="checkCorporation(this.value)">
+                                                        <span class="custom-control-indicator"></span>
+                                                        <span class="custom-control-description">No</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label class="form-label">Relationship</label><br>
+                                            <input type="text" class="form-control" id="relationship" name="relationship">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label class="form-label">Has the FBO been licensed before?</label><br><br>
+                                            <div class="form-group">
+                                                <div class="form-check">
+                                                    <label class="custom-control custom-radio">
+                                                        <input type="radio" name="licensed_before" class="custom-control-input" value="Yes">
+                                                        <span class="custom-control-indicator"></span>
+                                                        <span class="custom-control-description">Yes</span>
+                                                    </label>&nbsp;
+                                                    <label class="custom-control custom-radio">
+                                                        <input type="radio" name="licensed_before" class="custom-control-input" value="No">
+                                                        <span class="custom-control-indicator"></span>
+                                                        <span class="custom-control-description">No</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label class="form-label">If Yes, provide details of License number</label><br>
+                                            <input type="text" class="form-control" id="license_number" name="license_number">
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label class="form-label">Reasons why the License is no longer valid</label><br>
+                                            <textarea class="form-control" id="reason" name="reason"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label class="form-label">Any judicial proceedings relating to the FBOs operations/product?</label><br>
+                                            <br><div class="form-group">
+                                                <div class="form-check">
+                                                    <label class="custom-control custom-radio">
+                                                        <input type="radio" name="judicial_proceedings" class="custom-control-input" value="Yes">
+                                                        <span class="custom-control-indicator"></span>
+                                                        <span class="custom-control-description">Yes</span>
+                                                    </label>&nbsp;
+                                                    <label class="custom-control custom-radio">
+                                                        <input type="radio" name="judicial_proceedings" class="custom-control-input" value="No">
+                                                        <span class="custom-control-indicator"></span>
+                                                        <span class="custom-control-description">No</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label class="form-label">Please provide details</label><br>
+                                            <textarea class="form-control" id="provided_details" name="provided_details"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label class="form-label">Any proceedings by any Regulatory body or suspension /cancellation /withdrawal of any relevant licensing/approvals under any Regulations </label><br>
+                                            <br><div class="form-group">
+                                                <div class="form-check">
+                                                    <label class="custom-control custom-radio">
+                                                        <input type="radio" name="regulatory_proceedings" class="custom-control-input" value="Yes">
+                                                        <span class="custom-control-indicator"></span>
+                                                        <span class="custom-control-description">Yes</span>
+                                                    </label>&nbsp;
+                                                    <label class="custom-control custom-radio">
+                                                        <input type="radio" name="regulatory_proceedings" class="custom-control-input" value="No">
+                                                        <span class="custom-control-indicator"></span>
+                                                        <span class="custom-control-description">No</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label class="form-label">Please provide details</label><br>
+                                            <textarea class="form-control" id="regulatory_proceedings_details" name="regulatory_proceedings_details"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label class="form-label">Has a Project Proposal been prepared  </label><br>
+                                            <br><div class="form-group">
+                                                <div class="form-check">
+                                                    <label class="custom-control custom-radio">
+                                                        <input type="radio" name="project_proposal" class="custom-control-input" value="Yes">
+                                                        <span class="custom-control-indicator"></span>
+                                                        <span class="custom-control-description">Yes</span>
+                                                    </label>&nbsp;
+                                                    <label class="custom-control custom-radio">
+                                                        <input type="radio" name="project_proposal" class="custom-control-input" value="No">
+                                                        <span class="custom-control-indicator"></span>
+                                                        <span class="custom-control-description">No</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <br>
+                        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">File</span>
+                                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Attachments</span>
+                            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                        </div>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">File</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               {% for file_attach in file %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{file_attach.Attachment}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="3" class="text-center">No Data</td>
+                                    </tr>
+                               {% endfor %}
+                            </tbody>
+                        </table>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-label">Remarks(If Reject Please Fill THe Remarks)</label>
+                                    <textarea class="form-control" rows="3" id="remarks" name="remarks"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <br>
+                        <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+                            Application Approved
+                        </div>
+                        <div id="rejectMsg" class="alert alert-info" role="alert" style="display:none;">
+                            Application Rejected
+                        </div>
+                        <div class="modal-footer justify-content-center">
+                            <select class="form-control col-md-6" name="forwardTo"  id="forwardTo">
+                                <option value="">--SELECT OIC--</option>
+                                {% for oic_list in oic_list %}
+                                        <option value="{{ oic_list.Field_Office_Id }}">{{ oic_list.Field_Office }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" onclick="fbr_fo_approve('{{ application_details.Application_No }}')"> Approve </button>
+                            <button type="button" class="btn btn-danger" onclick="fbr_fo_reject('{{ application_details.Application_No }}')"> Reject </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    function fbr_fo_approve(application_id)
+        {
+            remarks = $('#remarks').val();
+            forwardTo = $('#forwardTo').val();
+            $.ajax({
+                type : "POST",
+                url : "{% url 'meat_shop_fo_approve' %}",
+                data :{'application_id':application_id ,'forwardTo':forwardTo,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(data) {
+                    $('#submitMsg').show();
+                    setTimeout(function()
+                    {
+                        $("#submitMsg").hide('blind', {}, 500)
+                    }, 2000);
+                    setTimeout(function()
+                    {
+                        $('#import_detailsModal').modal('hide');
+                    }, 3000);
+                    setTimeout(function()
+                    {
+                         location.reload();
+                    }, 3000);
+
+                }
+            });
+
+        }
+    function fbr_fo_reject(application_id)
+        {
+            remarks = $('#remarks').val();
+
+            if(remarks == "")
+            {
+                $('#remarksErrorMsg').html("Remarks Cannot Be Empty.");
+                $('#remarksErrorMsg').show();
+                $('#remarksErrorMsg').delay(2000).fadeOut('slow');
+            }
+            $.ajax({
+                type : "POST",
+                url : "{% url 'meat_shop_fo_reject' %}",
+                data :{'application_id':application_id ,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(data) {
+                    $('#import_detailsModal').modal('hide');
+                    $('#rejectMsg').show();
+                    setTimeout(function()
+                    {
+                        $("#rejectMsg").hide('blind', {}, 500)
+                    }, 2000);
+                    setTimeout(function()
+                    {
+                         location.reload();
+                    }, 3000);
+                }
+            });
+        }
+</script>

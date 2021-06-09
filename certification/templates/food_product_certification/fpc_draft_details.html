@@ -1,0 +1,768 @@
+{% load crispy_forms_tags %}
+{% block content %}
+{% load static %}
+<style>
+    option
+    {
+        background-color: black !important;
+    }
+    .check {
+    margin-bottom: 0;
+    min-height: 2rem;
+}
+</style>
+<div class="card">
+    <div class="card-header">
+        <h4 class="card-title">Food Product Certification Application</h4>
+    </div>
+    <div class="card-body">
+        <form method="post" id="food_product_form">
+        {% csrf_token %}
+            <div class="row justify-content-left">
+                <ul class="nav nav-pills nav-secondary" id="pills-mortem" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadDetails()">Application Form</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="file-attach" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="certification_standards" data-toggle="pill" href="#certification-standards" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">Standards</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="tab-content mt-2 mb-3" id="pills-mortemContent">
+                <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                    {% for application_details in application_details %}
+                        <input type="hidden" name="application_no" id="applicationNo" value="{{application_details.Application_No}}">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Name Of the Firm <font color="red">*</font></label>
+                                    <input type="text" class="form-control" value="{{application_details.Firm_Name}}" id="Firm_Name" name="Firm_Name">
+                                    <div class="alert alert-danger" id="Firm_NameErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Address <font color="red">*</font></label>
+                                    <textarea class="form-control" id="Firm_Address" name="Firm_Address">{{application_details.Firm_Address}}</textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Dzongkhag <font color="red">*</font></label>
+                                    <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
+                                        {% for dzongkhag in dzongkhag %}
+                                            <option value="{{dzongkhag.Dzongkhag_Code}}"{% if application_details.Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>
+                                                {{ dzongkhag.Dzongkhag_Name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Gewog <font color="red">*</font></label>
+                                    <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                        {% for gewog in gewog %}
+                                            <option value="{{ gewog.Gewog_Code }}"{% if application_details.Gewog_Code == gewog.Gewog_Code %}selected{% endif %}>{{ gewog.Gewog_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Village <font color="red">*</font></label>
+                                     <select class="form-control" name="village" id="village">
+                                        {% for village in village %}
+                                            <option value="{{ village.Village_Code }}" {% if application_details.Village_Code == village.Village_Code %}selected{% endif %}>{{ village.Village_Name }}</option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Email <font color="red">*</font></label>
+                                    <input type="email" class="form-control" value="{{application_details.Firm_Email}}" id="Firm_Email" name="Firm_Email">
+                                    <div class="alert alert-danger" id="Firm_EmailErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Contact Number <font color="red">*</font></label>
+                                    <input type="number" class="form-control" value="{{application_details.Firm_Contact_No}}" id="Firm_Contact_No" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="Firm_Contact_No" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                                    <div class="alert alert-danger" id="Firm_Contact_NoErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">Factory</span>
+                                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Details</span>
+                            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Name Of Factory <font color="red">*</font></label>
+                                    <input type="text" class="form-control" value="{{application_details.Factory_Name}}" name="Factory_Name" id="Factory_Name">
+                                    <div class="alert alert-danger" id="Factory_NameErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Address <font color="red">*</font></label>
+                                    <textarea class="form-control" id="Factory_Address" name="Factory_Address">{{application_details.Factory_Address}}</textarea>
+                                    <div class="alert alert-danger" id="Factory_AddressErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Contact Number <font color="red">*</font></label>
+                                    <input type="number" class="form-control" value="{{application_details.Factory_Contact_No}}" id="Factory_Contact_No" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="Factory_Contact_No" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                                </div>
+                                <div class="alert alert-danger" id="Factory_Contact_NoErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Email <font color="red">*</font></label>
+                                    <input type="email" class="form-control" value="{{application_details.Factory_Email}}" id="Factory_Email" name="Factory_Email" onchange="validateemailId(this.value)">
+                                </div>
+                                <div class="alert alert-danger" id="Factory_EmailErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">Product</span>
+                                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Information</span>
+                            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Brief description of the product <font color="red">*</font></label>
+                                    <textarea class="form-control" id="Product_Description" name="Product_Description">{{application_details.Product_Description}}</textarea>
+                                </div>
+                                <div class="alert alert-danger" id="Product_DescriptionErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Product Trade Mark(s) <font color="red">*</font></label>
+                                    <textarea class="form-control" id="Product_Trade_Mark" name="Product_Trade_Mark">{{application_details.Product_Trade_Mark}}</textarea>
+                                </div>
+                                <div class="alert alert-danger" id="Product_Trade_MarkErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">Production</span>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">Details</span>
+                                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Previous</span>
+                                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Year</span>
+                            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">From date <font color="red">*</font></label>
+                                    <input type="text" class="form-control date-picker flatpickr-input active" name="P_From_Date" id="P_From_Date" value="{{application_details.P_From_Date}}">
+                                </div>
+                                <div class="alert alert-danger" id="P_From_DateErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">To date <font color="red">*</font></label>
+                                     <input type="text" class="form-control date-picker flatpickr-input active" id="P_To_Date" name="P_To_Date" value="{{application_details.P_To_Date}}">
+                                </div>
+                                <div class="alert alert-danger" id="P_To_DateErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Production(Quantity) <font color="red">*</font></label>
+                                <input type="text" name="P_Production" class="form-control" id="P_Production" value="{{application_details.P_Production}}">
+                                <div class="alert alert-danger" id="productionErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Unit <font color="red">*</font></label>
+                                    <!--<input type="text" class="form-control" value="{{application_details.P_Production_Unit}}">-->
+                                    <select class="form-control" name="P_Production_Unit" id="P_Production_Unit">
+                                        <option value="">--SELECT--</option>
+                                        {% for unit in unit %}
+                                            <option value="{{ unit.Unit }}" {% if application_details.P_Production_Unit == unit.Unit %}selected{% endif %}>{{ unit.Unit }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <div class="alert alert-danger" id="P_Production_UnitErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Value <font color="red">*</font></label>
+                                <input type="text" name="P_Production_Value" class="form-control" id="P_Production_Value" value="{{application_details.P_Production_Value}}">
+                                <div class="alert alert-danger" id="P_Production_ValueErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">Production</span>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">Details</span>
+                                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Current</span>
+                                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Year</span>
+                            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">From date <font color="red">*</font></label>
+                                     <input type="text" name="C_From_Date" id="C_From_Date" class="form-control date-picker flatpickr-input active" value="{{application_details.C_From_Date}}">
+                                    <div class="alert alert-danger" id="C_From_DateErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">To date <font color="red">*</font></label>
+                                     <input type="text" name="C_To_Date" id="C_To_Date" class="form-control date-picker flatpickr-input active" value="{{application_details.C_To_Date}}">
+                                    <div class="alert alert-danger" id="to_current_yearErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Production(Quantity) <font color="red">*</font></label>
+                                <input type="text" name="C_Production" class="form-control" id="C_Production" value="{{application_details.C_Production}}">
+                                <div class="alert alert-danger" id="C_ProductionErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Unit <font color="red">*</font></label>
+                                <select class="form-control" name="C_Production_Unit" id="C_Production_Unit">
+                                    {% for unit in unit %}
+                                        <option value="{{ unit.Unit }}" {% if application_details.C_Production_Unit == unit.Unit %}selected{% endif %}>{{ unit.Unit }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="alert alert-danger" id="C_Production_UnitErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Value <font color="red">*</font></label>
+                                <input type="number" name="C_Production_Value" class="form-control" id="C_Production_Value" value="{{application_details.C_Production_Value}}">
+                                <div class="alert alert-danger" id="C_Production_ValueErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">Export</span>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">Details</span>
+                                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Previous</span>
+                                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Year</span>
+                            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">From date <font color="red">*</font></label>
+                                     <input type="text" name="P_Export_From_Date" id="P_Export_From_Date" class="form-control date-picker flatpickr-input active" value="{{application_details.P_Export_From_Date}}">
+                                </div>
+                                <div class="alert alert-danger" id="P_Export_From_DateErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">To date <font color="red">*</font></label>
+                                     <input type="text" name="P_Export_To_Date" id="P_Export_To_Date" class="form-control date-picker flatpickr-input active" value="{{application_details.P_Export_To_Date}}">
+                                    <div class="alert alert-danger" id="P_Export_To_DateErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Export(Quantity) <font color="red">*</font></label>
+                                <input type="text" name="P_Export" class="form-control" id="P_Export" value="{{application_details.P_Export}}">
+                                <div class="alert alert-danger" id="P_ExportErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Export Unit <font color="red">*</font></label>
+                                <select class="form-control" name="P_Export_Unit" id="P_Export_Unit">
+                                    <option value="">--SELECT--</option>
+                                    {% for unit in unit %}
+                                        <option value="{{ unit.Unit }}" {% if application_details.P_Export_Unit == unit.Unit %}selected{% endif %}>{{ unit.Unit }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="alert alert-danger" id="export_unitErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Export Value <font color="red">*</font></label>
+                                <input type="text" name="P_Export_Value" class="form-control" id="P_Export_Value" value="{{application_details.P_Export_Value}}">
+                                 <div class="alert alert-danger" id="P_Export_ValueErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                            <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                                <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                    <span class="px-2 small text-muted font-weight-bold text-muted form-label">Export</span>
+                                    <span class="px-2 small text-muted font-weight-bold text-muted form-label">Details</span>
+                                    <span class="px-1 small text-muted font-weight-bold text-muted form-label">Current</span>
+                                    <span class="px-1 small text-muted font-weight-bold text-muted form-label">Year</span>
+                                <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                            </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">From date <font color="red">*</font></label>
+                                     <input type="text" name="C_Export_From_Date" id="C_Export_From_Date" class="form-control date-picker flatpickr-input active" value="{{application_details.C_Export_From_Date}}">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">To date <font color="red">*</font></label>
+                                    <input type="text" name="C_Export_To_Date" id="C_Export_To_Date" class="form-control date-picker flatpickr-input active" value="{{application_details.C_Export_To_Date}}">
+                                </div>
+                                <div class="alert alert-danger" id="C_Export_From_DateErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Export(Quantity) <font color="red">*</font></label>
+                                <input type="number" name="C_Export" class="form-control" id="C_Export" value="{{application_details.C_Export}}">
+                                <div class="alert alert-danger" id="export_yearErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Unit <font color="red">*</font></label>
+                                <select class="form-control" name="C_Export_Unit" id="C_Export_Unit">
+                                    <option value="">--SELECT--</option>
+                                    {% for unit in unit %}
+                                        <option value="{{ unit.Unit }}" {% if application_details.C_Export_Unit == unit.Unit %}selected{% endif %}>{{ unit.Unit }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="alert alert-danger" id="C_Export_UnitErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Value <font color="red">*</font></label>
+                                <input type="text" name="currentValue" class="form-control" id="currentValue" value="{{application_details.C_Export_Value}}">
+                                <div class="alert alert-danger" id="currentValueErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                     <br><br>
+                    {% endfor %}
+                    <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+                        Update SuccessFul
+                    </div>
+                    <div class="card-action">
+                        <button type="button" class="btn btn-primary" onclick="update_food_product_form()">Update</button>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="mortem-file-attach">
+                    <div id="file-attachment-mortem">
+                        <div class="card-header">
+                            <div class="card-head-row">
+                                <div class="card-tools">
+                                    <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="show_attachment_modal()">
+                                        <span class="btn-label">
+                                            <i class="fa fa-print"></i>
+                                        </span>
+                                        Add
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">File</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                   {% for file_attach in file_attach %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td>{{file_attach.Attachment}}</td>
+                                                <td>
+                                                    <button type="button"
+                                                        class="btn btn-danger btn-sm" onclick="DeleteAttachment('{{ file_attach.File_Id }}')">
+                                                        <i class="zmdi zmdi-delete"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                              <td colspan="3" class="text-center">No Data</td>
+                                            </tr>
+                                   {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <button type="button" class="btn btn-success" onclick="next_file_attach()">Save-Next</button>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="certification-standards" role="tabpanel" aria-labelledby="mortem-file-attach">
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="form-label">Standard(s) for which we wish to be certified</label><br><br>
+                        </div>
+                        <div class="form-group col-md-6" >
+                            <select class="form-control form-control" id="Standard" name="Standard" onchange="checkStandards(this.value)">
+                                <option value="">-SELECT-</option>
+                                <option value="BTR 11: 2017 Packaged Drinking Water">1.BTR 11: 2017 Packaged Drinking Water</option>
+                                <option value="BTR 12: 2017 Packaged Natural Mineral Water">2.BTR 12: 2017 Packaged Natural Mineral Water</option>
+                                <option value="BTR 13: General Fruit Juices and Nectar">3.BTR 13: General Fruit Juices and Nectar</option>
+                                <option value="BTS 299:2020 Bhutan Standard for Butter">4.BTS 299:2020 Bhutan Standard for Butter</option>
+                                <option value="BTS 300:2020 Bhutan Standard for Datshi">5.BTS 300:2020 Bhutan Standard for Datshi</option>
+                                <option value="BTS 301:2020 (IS 10484:1983) Bhutan Standard for Paneer">6.BTS 301:2020 (IS 10484:1983) Bhutan Standard for Paneer</option>
+                                <option value="BTS 303:2020 Bhutan Standard for Buckwheat Flour">7.BTS 303:2020 Bhutan Standard for Buckwheat Flour</option>
+                                <option value="BTS 304:2020 Bhutan Standard for Herbal Tea">8.BTS 304:2020 Bhutan Standard for Herbal Tea</option>
+                                <option value="Others">Others</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4" >
+                            <input type="text" class="form-control" id="other_standard" name="other_standard" disabled>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <div class="form-check">
+                                <label class="form-label">With a view to ensure the similarity of the process of production of the mentioned commodities as per related standard, we shall keep regular records and maintain all required documentation to fulfill the requirements of the identified Standard (refer previous point) and any other additional documentation required by the BAFRA as the Certification Body</label><br><br>
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Agree">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Agree</span>
+                                        </label>&nbsp;
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Disagree">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Disagree</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <div class="form-check">
+                                <label class="form-label">We are willing to change our operational practices, as may be required from time to time to keep in line with our policy which may be directed by BAFRA.</label><br><br>
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Agree">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Agree</span>
+                                        </label>&nbsp;
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Disagree">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Disagree</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <div class="form-check">
+                                <label class="form-label">If BAFRA desires to make a preliminary inspection or investigation then, we, agree to give all our reasonable opportunity and privileges to BAFRA and accordingly provide our cooperation as per certification requirements.</label><br><br>
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Terms_Abide" class="custom-control-input" value="Agree">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Agree</span>
+                                        </label>&nbsp;
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Terms_Abide" class="custom-control-input" value="Disagree">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Disagree</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <div class="form-check">
+                                <label class="form-label">If the certificate is awarded, we will abide by all the terms and conditions of the certification, so long as it remains valid for use and also comply with the Rules and Regulations. If the license/certificate becomes prolonged or it is cancelled, then we, shall ensure that any use of the Standard Mark on any commodity under the license will be stopped immediately and all related advertisement, materials will be taken back and other necessary action will be taken</label><br><br>
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Agree">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Agree</span>
+                                        </label>&nbsp;
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Disagree">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Disagree</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <button type="button" class="btn btn-primary" onclick="submit_fpc_certificate()">Save</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<form method="post" id="attachment_form" enctype="multipart/form-data">
+{% csrf_token %}
+    <input type="hidden" name="attachment_appNo" id="attachment_appNo">
+    <div class="modal fade" id="attachmentModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="attachmentModalLabel">Attach Files</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label>Attach File</label>
+                                        <input type="file" name="document" id="document">
+                                        <div class="alert alert-danger" id="fileErrorMsg" style="display:none"></div>
+                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_mortem_attachment()"> Submit </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script src="{% static 'assets/js/app.min.js' %}"></script>
+<script>
+
+function update_food_product_form()
+{
+        $.ajax({
+            type : "POST",
+            url : "{% url 'update_food_product_form' %}",
+            data : $('#food_product_form').serialize(),
+            success : function(data)
+            {
+                $('#attachment_appNo').val(data.applNo);
+                $('#submitMsg').show();
+                setTimeout(function() {
+                    $("#submitMsg").hide('blind', {}, 500)
+                }, 2000);
+                setTimeout(function() {
+                    $('#file-attach').tab('show');
+                }, 3000);
+            }
+        });
+}
+
+
+
+function save_mortem_attachment()
+{
+    var fileName = document.getElementById('document').files[0].name;
+    var fd = new FormData();
+    var file = document.getElementById('document').files[0];
+    fd.append('document', file);
+    token_value=$("input[name=csrfmiddlewaretoken]").val();
+    $.ajaxSetup
+    ({
+        beforeSend: function(xhr, settings)
+        {
+            xhr.setRequestHeader("X-CSRFToken", token_value);
+        }
+    });
+    $.ajax({
+    type : "POST",
+    url : "{% url 'food_product_certificate_file' %}",
+    data : fd,
+    dataType: 'json',
+    contentType: false,
+    processData: false,
+    success : function(data)
+    {
+        if (data.form_is_valid)
+        {
+            var file_url = data.file_url
+            var appNo = $('#attachment_appNo').val();
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'food_product_certificate_file_name' %}",
+                data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
+                success : function(responseText)
+                {
+                    $('#attachmentModal').modal('hide');
+                    $('#file-attachment-mortem').html(responseText);
+                    $('.modal-backdrop').remove();
+                }
+            });
+        }
+        else
+        {
+            $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+            $('#fileErrorMsg').show();
+            $('#fileErrorMsg').delay(2000).fadeOut('slow');
+        }
+    }
+});
+
+}
+
+function show_modal()
+{
+    $('#add_mortem_details').modal('show');
+}
+
+function show_attachment_modal()
+{
+    $('#attachmentModal').modal('show');
+}
+
+
+function save_mortem_details()
+    {
+        var Species = $('#Species').val();
+        var Nos = $('#Nos').val();
+        var qty = $('#qty').val();
+        var remarks = $('#remarks').val();
+
+        if(Species == "")
+        {
+            $('#SpeciesErrorMsg').html("Select Species.");
+            $('#SpeciesErrorMsg').show();
+            $('#SpeciesErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(Nos == "")
+        {
+            $('#NosErrorMsg').html("Enter Nos.");
+            $('#NosErrorMsg').show();
+            $('#NosErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(qty == "")
+        {
+            $('#qtyErrorMsg').html("Enter Quantity.");
+            $('#qtyErrorMsg').show();
+            $('#qtyErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(remarks == "")
+        {
+            $('#remarksErrorMsg').html("Enter Remarks.");
+            $('#remarksErrorMsg').show();
+            $('#remarksErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else{
+            $.ajax({
+                type : "POST",
+                url : "{% url 'save_mortem_details' %}",
+                data : $('#mortem_details_form').serialize(),
+                success : function(responseText) {
+                   $('#add_mortem_details').modal('hide');
+                   $('#mortem_details').html(responseText);
+                   $('#pills-details').tab('show');
+                   $('.modal-backdrop').remove();
+                }
+            });
+        }
+    }
+
+function validateemailId(emailId)
+{
+    var pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+    var no=emailId.match(pattern);
+
+    if(no==null)
+    {
+        $('#emailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
+        $('#email').val("");
+        $('#emailErrorMsg').show();
+        $('#emailErrorMsg').delay(2000).fadeOut('slow');
+    }else{
+     $('#emailErrorMsg').hide();
+    }
+
+}
+
+function checkContact(value)
+{
+    var firstDigit = value.charAt(0);
+    var secondDigit = value.charAt(1);
+
+    if(firstDigit != 7 && firstDigit != 1){
+        $('#contactNumberErrorMsg').html("Must Start with either 1 or 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 1 && secondDigit != 6 && secondDigit != 7){
+        $('#contactNumberErrorMsg').html("Second Digit Must Start with either 6 or 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 7 && secondDigit == 6){
+        $('#contactNumberErrorMsg').html("Second Digit Cannot be 6.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 7 && secondDigit != 7){
+        $('#contactNumberErrorMsg').html("Second Digit Must Start with 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }
+
+}
+
+function  submit_organic_certificate()
+{
+    $.ajax({
+        type : "POST",
+        url : "{% url 'submit_organic_certificate' %}",
+        data : $('#food_product_form').serialize(),
+        success : function(responseText) {
+           location.reload();
+        }
+    });
+}
+
+function checkStandards(value)
+{
+    if(value == "Others")
+    {
+        $("#other_standard").removeAttr("disabled");
+    }
+    else
+    {
+        $("#other_standard").attr("disabled", "disabled");
+    }
+}
+function next_file_attach()
+{
+    $('#certification_standards').tab('show');
+}
+function submit_fpc_certificate()
+{
+    $.ajax({
+        type : "POST",
+        url : "{% url 'submit_food_product_certificate' %}",
+        data : $('#food_product_form').serialize(),
+        success : function(responseText) {
+           location.reload();
+        }
+    });
+}
+</script>
+{% endblock %}

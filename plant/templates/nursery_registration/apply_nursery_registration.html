@@ -4,7 +4,7 @@
 
 <div class="card">
     <div class="card-header">
-        <h4 class="card-title">Registration Form For Seed Grower (Private/Government)</h4>
+        <h4 class="card-title">Registration of Nursery/ Seed Growers</h4>
     </div>
     <div class="card-body">
         <form method="post" id="seedForm">
@@ -30,21 +30,21 @@
 
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label class="form-label">License No</label>
+                                    <label class="form-label">License No <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="License_No" name="License_No">
                                 </div>
                                 <div class="alert alert-danger" id="License_NoErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label class="form-label">Company Name</label>
+                                    <label class="form-label">Company Name <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="Company_Name" name="Company_Name">
                                 </div>
                                 <div class="alert alert-danger" id="Company_NameErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label class="form-label">Company_Address</label>
+                                    <label class="form-label">Company_Address <font color="red">*</font></label>
                                     <textarea class="form-control" id="Company_Address" name="Company_Address" rows="3"></textarea>
                                 </div>
                                 <div class="alert alert-danger" id="Company_AddressErrorMsg" style="display:none"></div>
@@ -53,21 +53,21 @@
                         <div class="row">
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label class="form-label">CID</label>
+                                    <label class="form-label">CID <font color="red">*</font></label>
                                     <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="CID" name="CID" maxlength="11" onkeypress="return isNumberKey(event)">
                                 </div>
                                 <div class="alert alert-danger" id="CIDErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label class="form-label">Owner Name</label>
+                                    <label class="form-label">Owner Name <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="Owner_Name" name="Owner_Name">
                                 </div>
                                 <div class="alert alert-danger" id="Owner_NameErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label class="form-label">Contact Number</label>
+                                    <label class="form-label">Contact Number <font color="red">*</font></label>
                                     <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNo" maxlength="8" onkeypress="return isNumberKey(event)">
                                 </div>
                                 <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
@@ -76,15 +76,15 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Email</label>
+                                    <label class="form-label">Email <font color="red">*</font></label>
                                     <input type="email" class="form-control" id="email" name="email">
                                 </div>
                                 <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Dzongkhag</label>
-                                    <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value),getLocation(this.value)">
+                                    <label class="form-label">Dzongkhag <font color="red">*</font></label>
+                                    <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getLocation(this.value)">
                                         <option value="">--SELECT DZONGKHAG--</option>
                                         {% for dzongkhag in dzongkhag %}
                                                 <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
@@ -95,9 +95,9 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Gewog</label>
+                                    <label class="form-label">Gewog <font color="red">*</font></label>
                                     <select class="form-control" name="location_code"  id="location" onchange="getVillage(this.value)">
-                                        <option value="">--SELECT LOCATION--</option>
+                                        <option value="">--SELECT GEWOG--</option>
                                         {% for location in location %}
                                                 <option value="{{ location.Location_Code }}">{{ location.Location_Name }}</option>
                                         {% endfor %}
@@ -109,11 +109,11 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Village</label>
+                                    <label class="form-label">Village <font color="red">*</font></label>
                                      <select class="form-control" name="village" id="village">
                                         <option value="">--SELECT VILLAGE--</option>
                                         {% for village in village %}
-                                                <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
+                                            <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
                                         {% endfor %}
                                      </select>
                                     <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
@@ -121,7 +121,7 @@
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label class="form-label">Nursery Category</label>
+                                    <label class="form-label">Nursery Category <font color="red">*</font></label>
                                     <select class="form-control form-control" id="Nursery_Category" name="Nursery_Category">
                                         <option value="">-SELECT-</option>
                                         <option value="Agro-Forestry">Agro-Forestry</option>
@@ -134,7 +134,7 @@
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label class="form-label">Area</label>
+                                    <label class="form-label">Area <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="Area" name="Area">
                                 </div>
                                 <div class="alert alert-danger" id="AreaErrorMsg" style="display:none"></div>
@@ -143,14 +143,14 @@
                         <div class="row">
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label class="form-label">Unit Area</label>
+                                    <label class="form-label">Unit Area <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="Unit_Area" name="Unit_Area">
                                 </div>
                                 <div class="alert alert-danger" id="Unit_AreaErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label class="form-label">Nursery Type</label>
+                                    <label class="form-label">Nursery Type <font color="red">*</font></label>
                                     <select class="form-control form-control" id="Nursery_Type" name="Nursery_Type">
                                         <option value="">-SELECT-</option>
                                         <option value="Bi-annual">Bi-annual</option>
@@ -360,7 +360,7 @@ function getLocation(dzongkhag_id)
 {
     $.ajax({
         type : "GET",
-        url : "{% url 'load_location' %}",
+        url : "{% url 'load_location_nursery' %}",
         data :{'dzongkhag_id':dzongkhag_id},
         success : function(data) {
             $('#location').html(data);

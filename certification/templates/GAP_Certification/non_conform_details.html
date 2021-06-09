@@ -6,6 +6,7 @@
             <th scope="col">Non Conformity</th>
             <th scope="col">Non Conformity Category</th>
             <th scope="col">Description of nonconformity</th>
+            <th scope="col">Corrective Action Proposed</th>
         </tr>
     </thead>
     <tbody>
@@ -13,14 +14,37 @@
             <tr>
                 <td>{{ forloop.counter }}</td>
                 <td>{{conform_details.Clause_Number}}</td>
-                <td>{{conform_details.Non_Conformity}}</td>
+                {% if conform_details.Non_Conformity == 'Yes' %}
+                <td>Open</td>
+                {% else %}
+                <td>Close</td>
+                {% endif %}
                 <td>{{conform_details.Non_Conformity_Category}}</td>
                 <td>{{conform_details.Non_Conformity_Description}}</td>
+                <td>{{conform_details.Corrective_Action_Proposed_Auditee}}</td>
             </tr>
             {% empty %}
             <tr>
               <td colspan="5" class="text-center">No Data</td>
             </tr>
         {% endfor %}
+
     </tbody>
 </table>
+<input type="hidden" id="count" value="{{message_count}}">
+<script>
+    $(document).ready(function()
+     {
+        var row_count = $("#count").val();
+        if(row_count > 0)
+        {
+            $("#approve-btn").hide();
+            $("#resubmit-btn").show();
+        }
+        else
+        {
+            $("#approve-btn").show();
+            $("#resubmit-btn").hide();
+        }
+     });
+</script>

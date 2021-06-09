@@ -15,7 +15,20 @@ option {
         <form method="post" id="importForm">
             {% csrf_token %}
             <input type="text" id="applicationNo" name="applicationNo" style="display:none">
-            <div class="row justify-content-center">
+            <div class="row justify-content-left">
+                <ul class="nav nav-pills nav-secondary" id="pills-tab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadAppDetails()">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="loadDetails()">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="pills-profile-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment()">Attach File</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="row justify-content-left">
                 <div class="form-check text-center">
                     <label class="form-label">Import Type <font color="red">*</font></label><br>
                     <label class="form-radio-label">
@@ -29,40 +42,27 @@ option {
                 </div>
             </div>
             <div id="plant">
-                <div class="row justify-content-center">
-                    <ul class="nav nav-pills nav-secondary" id="pills-tab" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadAppDetails()">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="loadDetails()">Profile</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="pills-profile-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment()">Attach File</a>
-                        </li>
-                    </ul>
-                </div>
                 <div class="tab-content mt-2 mb-3" id="pills-tabContent">
                     <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
                         <div id="plant_details">
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="form-label">License Number</label>
+                                        <label class="form-label">License Number <font color="red">*</font></label>
                                         <input type="text" class="form-control" id="regNo" name="p_regNo">
                                     </div>
                                     <div class="alert alert-danger" id="regNoErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="form-label">Business Name</label>
+                                        <label class="form-label">Business Name <font color="red">*</font></label>
                                         <input type="text" class="form-control" id="business_name" name="p_businessName">
                                     </div>
                                     <div class="alert alert-danger" id="business_nameErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="form-label">Applicant CID</label>
+                                        <label class="form-label">Applicant CID <font color="red">*</font></label>
                                         <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="p_cid_number" maxlength="11" onkeypress="return isNumberKey(event)">
                                     </div>
                                     <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
@@ -71,21 +71,21 @@ option {
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="form-label">Applicant Name</label>
+                                        <label class="form-label">Applicant Name <font color="red">*</font></label>
                                         <input type="text" class="form-control" id="name" name="p_Name">
                                     </div>
                                     <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="form-label">Present Address</label>
+                                        <label class="form-label">Present Address <font color="red">*</font></label>
                                         <textarea class="form-control" rows="3" id="presentAddress" name="p_presentAddress"></textarea>
                                     </div>
                                     <div class="alert alert-danger" id="presentAddressErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="form-label">Contact Number</label>
+                                        <label class="form-label">Contact Number <font color="red">*</font></label>
                                         <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="p_contactNo" maxlength="8" onkeypress="return isNumberKey(event)">
                                     </div>
                                     <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
@@ -94,21 +94,21 @@ option {
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="form-label">Email</label>
+                                        <label class="form-label">Email <font color="red">*</font></label>
                                         <input type="email" class="form-control" id="email" name="p_email">
                                     </div>
                                     <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="form-label">Name And Address Supplier</label>
-                                        <textarea class="form-control" rows="5" id="supplier" name="p_supplier"></textarea>
+                                        <label class="form-label">Name And Address Supplier <font color="red">*</font></label>
+                                        <textarea class="form-control" rows="3" id="supplier" name="p_supplier"></textarea>
                                     </div>
                                     <div class="alert alert-danger" id="supplierErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="form-label">Country Of Origin</label>
+                                        <label class="form-label">Country Of Origin <font color="red">*</font></label>
                                          <select class="form-control" name="Country_Of_Origin"  id="Country_Of_Origin">
                                             <option value="">--SELECT--</option>
                                             {% for country in country %}
@@ -120,12 +120,9 @@ option {
                                 </div>
                             </div>
                             <div class="row">
-
-                            </div>
-                            <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="form-label">Means of Conveyance </label>
+                                        <label class="form-label">Means of Conveyance <font color="red">*</font></label>
                                         <select class="form-control form-control" id="conveyanceMeans" name="p_conveyanceMeans">
                                             <option value="">-SELECT-</option>
                                             <option value="Air">Air</option>
@@ -136,7 +133,7 @@ option {
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="form-label">Place Of Entry</label>
+                                        <label class="form-label">Place Of Entry <font color="red">*</font></label>
                                          <select class="form-control" name="p_entry_point"  id="entryPlace">
                                             <option value="">--SELECT--</option>
                                             {% for location in location %}
@@ -148,7 +145,7 @@ option {
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="form-label">Purpose</label>
+                                        <label class="form-label">Purpose <font color="red">*</font></label>
                                         <textarea class="form-control" rows="3" id="movementPurpose" name="p_movementPurpose"></textarea>
                                     </div>
                                     <div class="alert alert-danger" id="movementPurposeErrorMsg" style="display:none"></div>
@@ -157,14 +154,14 @@ option {
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="form-label">Final Destination</label>
+                                        <label class="form-label">Final Destination <font color="red">*</font></label>
                                         <input type="text" class="form-control" id="finalDestination" name="p_final_Destination">
                                     </div>
                                     <div class="alert alert-danger" id="finalDestinationErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="form-label">Expected Arrival Date</label>
+                                        <label class="form-label">Expected Arrival Date <font color="red">*</font></label>
                                         <input type="text" class="form-control date-picker flatpickr-input active" id="expectedDate" name="p_expected_arrival_date"  placeholder="Pick a date" readonly="readonly">
                                     </div>
                                     <div class="alert alert-danger" id="dateErrorMsg" style="display:none"></div>
@@ -202,7 +199,7 @@ option {
                 </div>
             </div>
             <div id="agro_import">
-                <div class="row justify-content-center">
+                <div class="row justify-content-left">
                     <ul class="nav nav-pills nav-secondary" id="agro-tab" role="tablist">
                         <li class="nav-item">
                             <a class="nav-link active" id="agro-home-tab" data-toggle="pill" href="#agro-home" role="tab" aria-controls="agro-home" aria-selected="true" onclick="loadAgroDetails()">Home</a>

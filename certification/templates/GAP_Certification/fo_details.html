@@ -473,19 +473,18 @@
                 {% endfor %}
                     <div class="row">
                         {% for application_details in application_details %}
-
                             {% if application_details.Audit_Team_Acceptance == 'A' %}
+                            <input type="hidden" class="form-control" id="team_leader" name="team_leader" value="{{application_details.Audit_Team_Leader}}">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-label">Audit Team Leader</label>
-                                            <input type="text" class="form-control" id="team_leader" name="team_leader" value="{{application_details.Audit_Team_Leader}}" disabled>
-                                            <select class="form-control">
-                                            {% for user in user_details %}
-                                                <option value="{{user.Login_Id}}"{% if user.Login_Id == application_details.Audit_Team_Leader %}selected{% endif %}>
-                                                    {{ user.Name }}
+                                            <select class="form-control" disabled>
+                                            {% for team_leader in team_leader %}
+                                                <option value="{{team_leader.Login_Id}}"{% if application_details.Audit_Team_Leader == team_leader.Login_Id %}selected{% endif %}>
+                                                    {{ team_leader.Name }}
                                                 </option>
                                             {% endfor %}
-                                            </select>
+                                        </select>
                                     </div>
                                 </div>
                             {% else %}
@@ -627,7 +626,7 @@ function send_for_acceptance(application_id)
 function forward_application(application_id)
 {
     remarks = $('#remarks_fo').val();
-    leader = $('#leader').val();
+    leader = $('#team_leader').val();
     $.ajax({
         type : "GET",
         url : "{% url 'gap_application_team_leader' %}",
