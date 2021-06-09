@@ -1,0 +1,77 @@
+<div class="card">
+    <div class="card-header">
+        <div class="card-head-row">
+            <div class="card-tools pull-right">
+                <button type="button" class="btn btn-light" onclick="show_sample_collection_details_modal()">Add Details</button>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered" id="item_details">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Collection Type</th>
+                    <th scope="col">Date of Collection</th>
+                    <th scope="col">Date of Submission</th>
+                    <th scope="col">HS Code Imp</th>
+                    <th scope="col">HS Code Local</th>
+                    <th scope="col">Sample Type</th>
+                    <th scope="col">Qty</th>
+                    <th scope="col">Batch No.</th>
+                    <th scope="col">Batch Date</th>
+                    <th scope="col">Test requested </th>
+                    <th scope="col">Test report </th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+               {% for sample_details in details %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{sample_details.Collection_Type}}</td>
+                        <td>{{sample_details.Collection_Date|date:"d-m-Y"}}</td>
+                        <td>{{sample_details.Submission_Date|date:"d-m-Y"}}</td>
+                        <td>{{sample_details.HS_Code_Imp}}</td>
+                        <td>{{sample_details.HS_Code_Local}}</td>
+                        <td>{{sample_details.Sample_Type}}</td>
+                        <td>{{sample_details.Qty}}</td>
+                        <td>{{sample_details.Batch_No}}</td>
+                        <td>{{sample_details.Batch_Date|date:"d-m-Y"}}</td>
+                        <td>{{sample_details.Test_Requested}}</td>
+                        <td>{{sample_details.Test_Report}}</td>
+                        <td>
+                            <button type="button"
+                                class="btn btn-danger btn-sm" onclick="DeleteCollectionDetails('{{ sample_details.Record_Id }}')">
+                                <i class="zmdi zmdi-delete"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                      <td colspan="11" class="text-center">No Data</td>
+                    </tr>
+               {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="card-action">
+    <button type="button" class="btn btn-success" onclick="next_sample_collection()">Save-Next</button>
+</div>
+<script>
+
+function DeleteCollectionDetails(record_id)
+{
+    var refNo = $('#sample_collection_application_no').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'delete_collection_details' %}",
+        data :{'refNo':refNo , 'record_id': record_id},
+        success : function(responseText)
+        {
+            $('#sample_collection').html(responseText);
+        }
+    });
+}
+</script>

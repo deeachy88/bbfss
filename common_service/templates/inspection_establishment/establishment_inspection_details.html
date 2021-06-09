@@ -1,0 +1,271 @@
+{% load crispy_forms_tags %}
+{% load static %}
+<style>
+    option
+    {
+        background-color: black !important;
+    }
+    .check {
+    margin-bottom: 0;
+    min-height: 2rem;
+}
+</style>
+<div class="card">
+    <div class="card-header">
+        <h4 class="card-title">Establishment Inspection And Monitoring</h4>
+    </div>
+    <div class="card-body">
+        {% for application_details in application_details %}
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label">Inspection Type: &nbsp;&nbsp; </label><label>{{ application_details.Inspection_Type }}</label>
+                    </div>
+                    <div class="alert alert-danger" id="Inspection_TypeErrorMsg" style="display:none"></div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label">Inspection Report Date: &nbsp;&nbsp; </label><label>{{ application_details.Inspection_Report_Date|date:'d-m-Y'}}</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label">Name of FBO: &nbsp;&nbsp; </label><label>{{ application_details.FBO_Name }}</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label">Food Safety License No</label>: &nbsp;&nbsp; </label><label>{{ application_details.License_No }}</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label">Address: &nbsp;&nbsp; </label><label>{{ application_details.Address }}</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        {% for dzongkhag in dzongkhag %}
+                        <label class="form-label">Dzongkhag: &nbsp;&nbsp; </label><label>{{ dzongkhag.Dzongkhag_Name }}</label>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        {% for gewog in gewog %}
+                        <label class="form-label">Gewog: &nbsp;&nbsp; </label><label>{{ gewog.Gewog_Name }}</label>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        {% for village in village %}
+                        <label class="form-label">Village: &nbsp;&nbsp; </label><label>{{ village.Village_Name }}</label>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label">CID: &nbsp;&nbsp; </label><label>{{ application_details.CID }}</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label">Name of Owner: &nbsp;&nbsp; </label><label>{{ application_details.Name_Of_Owner }}</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label">Email: &nbsp;&nbsp; </label><label>{{ application_details.Email }}</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-label">Contact Number: &nbsp;&nbsp; </label><label>{{ application_details.Contact_No }}</label>
+                    </div>
+                </div>
+            </div>
+    </div>
+        {% endfor %}
+    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Non</span>
+            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Conformity</span>
+        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+    </div>
+    <div class="card-body">
+        <div id="details_owner_manager">
+            <table class="table table-bordered" id="nc-details-table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Date of inspection</th>
+                        <th scope="col">Name Of Inspector</th>
+                        <th scope="col">NCs observed </th>
+                        <th scope="col">Corrective Action</th>
+                        <th scope="col">Date line for correction</th>
+                        <th scope="col">Corrected/not corrected</th>
+                        <th scope="col">Fine Imposed</th>
+                        <th scope="col">Receipt No</th>
+                        <th scope="col">Receipt Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                   {% for ncs in details %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ncs.Inspection_Date|date:'d-m-Y'}}</td>
+                            <td>{{ncs.Inspector_Name}}</td>
+                            <td>{{ncs.Observation}}</td>
+                            <td>{{ncs.Correction_Proposed}}</td>
+                            <td>{{ncs.Date_Line_Correction|date:'d-m-Y'}}</td>
+                            <td>{{ncs.Correction_Taken}}</td>
+                            <td>{{ncs.Fine_Imposed}}</td>
+                            <td>{{ncs.Revenue_Receipt}}</td>
+                            <td>{{ncs.Receipt_Date|date:'d-m-Y'}}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                          <td colspan="10" class="text-center">No Data</td>
+                        </tr>
+                   {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Seized</span>
+            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Items</span>
+        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+    </div>
+    <div class="card-body">
+        <div id="item_details">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Date of inspection</th>
+                        <th scope="col">Name Of Inspector</th>
+                        <th scope="col">Items Seized</th>
+                        <th scope="col">Qty</th>
+                        <th scope="col">Unit</th>
+                        <th scope="col">Reason for Seizer</th>
+                        <th scope="col">Fine Imposed</th>
+                        <th scope="col">Receipt No</th>
+                        <th scope="col">Receipt Date</th>
+                        <th scope="col">Detaintion and Destruction No</th>
+                    </tr>
+                </thead>
+                <tbody>
+                   {% for seized_items in seized_details %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{seized_items.Inspection_Date|date:'d-m-Y'}}</td>
+                            <td>{{seized_items.Inspector_Name}}</td>
+                            <td>{{seized_items.Items_Seized}}</td>
+                            <td>{{seized_items.Qty_Seized}}</td>
+                            <td>{{seized_items.Unit}}</td>
+                            <td>{{seized_items.Reason}}</td>
+                            <td>{{seized_items.Fine_Imposed}}</td>
+                            <td>{{seized_items.Revenue_Receipt}}</td>
+                            <td>{{seized_items.Receipt_Date|date:'d-m-Y'}}</td>
+                            <td>{{seized_items.Detention_Destruction_No}}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                          <td colspan="11" class="text-center">No Data</td>
+                        </tr>
+                   {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Sample</span>
+            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Details</span>
+        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+    </div>
+    <div class="card-body">
+        <div id="sample_collection">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Collection Type </th>
+                        <th scope="col">Date of Collection</th>
+                        <th scope="col">Date of Submission</th>
+                        <th scope="col">HS Code (Imp)</th>
+                        <th scope="col">HS Code (Local)</th>
+                        <th scope="col">Sample Type</th>
+                        <th scope="col">Qty</th>
+                        <th scope="col">Batch No.</th>
+                        <th scope="col">Batch Date</th>
+                        <th scope="col">Test Requested </th>
+                        <th scope="col">Test Report </th>
+                    </tr>
+                </thead>
+                <tbody>
+                   {% for sample_details in sample_details %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{sample_details.Collection_Type}}</td>
+                            <td>{{sample_details.Collection_Date|date:'d-m-Y'}}</td>
+                            <td>{{sample_details.Submission_Date|date:'d-m-Y'}}</td>
+                            <td>{{sample_details.HS_Code_Imp}}</td>
+                            <td>{{sample_details.HS_Code_Local}}</td>
+                            <td>{{sample_details.Sample_Type}}</td>
+                            <td>{{sample_details.Qty}}</td>
+                            <td>{{sample_details.Batch_No}}</td>
+                            <td>{{sample_details.Batch_Date|date:'d-m-Y'}}</td>
+                            <td>{{sample_details.Test_Requested}}</td>
+                            <td>{{sample_details.Test_Report}}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                          <td colspan="11" class="text-center">No Data</td>
+                        </tr>
+                   {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+            <span class="px-2 small text-muted font-weight-bold text-muted form-label">File</span>
+            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Attachments</span>
+        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+    </div>
+    <div class="card-body">
+        <div id="inspection_attachment">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">File</th>
+                    </tr>
+                </thead>
+                <tbody>
+                   {% for file_attach in file_attach %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{file_attach.Attachment}}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                          <td colspan="3" class="text-center">No Data</td>
+                        </tr>
+                   {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

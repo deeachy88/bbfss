@@ -97,10 +97,10 @@
                         </tr>
                     </thead>
                     <tbody>
-                       {% for file_attach in file %}
+                       {% for complaint_file in complaint_file %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-                                <td><a href='..{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                                <td><a href='..{{complaint_file.File_Path}}/{{complaint_file.Attachment}}' target="_blank">{{complaint_file.Attachment}}</a></td>
                             </tr>
                             {% empty %}
                             <tr>
@@ -111,7 +111,7 @@
                 </table>
                 <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
                     <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
-                        <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Forward </span>&nbsp;&nbsp;&nbsp;
+                        <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Assignment</span>&nbsp;&nbsp;&nbsp;
                         <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Remarks</span>
                     <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
                 </div>
@@ -157,6 +157,26 @@
                         </div>
                     </div>
                 </div>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">Sl No</th>
+                            <th scope="col">File Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                       {% for investigation_file in investigation_file %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td><a href='..{{investigation_file.File_Path}}/{{investigation_file.Attachment}}' target="_blank">{{investigation_file.Attachment}}</a></td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                              <td colspan="3" class="text-center">No Data</td>
+                            </tr>
+                       {% endfor %}
+                    </tbody>
+                </table>
                 {% endfor %}
                     <div class="row">
                         <div class="col-md-12">

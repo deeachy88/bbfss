@@ -1,0 +1,89 @@
+<div class="card">
+    <div class="card-header">
+        <div class="card-head-row">
+            <div class="card-tools pull-right">
+                <button type="button" class="btn btn-light" onclick="show_commodity_model()">Add Details</button>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Commodity</th>
+                    <th scope="col">Commodity Requirement</th>
+                    <th scope="col">Qty Inspected</th>
+                    <th scope="col">Unit</th>
+                    <th scope="col">Qty Cleared</th>
+                    <th scope="col">Qty Rejected</th>
+                    <th scope="col">Reason for Rejection</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for commodity_inspection in commodity_inspection %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{commodity_inspection.Commodity}}</td>
+                        <td>{{commodity_inspection.Commodity_Requirement}}</td>
+                        <td>{{commodity_inspection.Qty_Inspected}}</td>
+                        <td>{{commodity_inspection.Unit}}</td>
+                        <td>{{commodity_inspection.Qty_Cleared}}</td>
+                        <td>{{commodity_inspection.Qty_Rejected}}</td>
+                        <td>{{commodity_inspection.Reason_For_Rejection}}</td>
+                        <td>
+                            <button type="button"
+                                class="btn btn-danger btn-sm" onclick="DeleteCommodityDetails('{{ commodity_inspection.Record_Id }}')">
+                                <i class="zmdi zmdi-delete"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                      <td colspan="8" class="text-center">No Data</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="card-head-row">
+    <button type="button" class="btn btn-success" onclick="save_next()">Save & Next</button>
+</div>
+<script>
+function save_next()
+{
+    $('#pills-tab a:last').tab('show');
+}
+
+function validateemailId(emailId)
+{
+    var pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+    var no=emailId.match(pattern);
+
+    if(no==null)
+    {
+        $('#emailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
+        $('#email').val("");
+        $('#emailErrorMsg').show();
+        $('#emailErrorMsg').delay(2000).fadeOut('slow');
+    }else{
+     $('#emailErrorMsg').hide();
+    }
+
+}
+function DeleteCommodityDetails(record_id)
+{
+    var refNo = $('#refNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'delete_commodity_details' %}",
+        data :{'refNo':refNo , 'record_id': record_id},
+        success : function(responseText)
+        {
+            $('#details').html(responseText);
+        }
+    });
+}
+</script>

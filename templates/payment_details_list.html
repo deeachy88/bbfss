@@ -6,10 +6,10 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <strong class="card-title">Application Lists</strong>
+                    <strong class="card-title">Payment Pending List</strong>
                 </div>
                     <div class="card-body">
-                        <table class="table table-bordered">
+                        <table id="payment_pending_table" class="table table-striped table-bordered">
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
@@ -63,7 +63,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Payment Type</label>
-                                <select class="form-control" name="Payment_Type" id="Payment_Type">
+                                <select class="form-control" name="Payment_Type" id="Payment_Type" onchange="checkPaymentType(this.value)">
                                     <option value="">--SELECT--</option>
                                     <option value="Cash">Cash</option>
                                     <option value="Cheque">Cheque</option>
@@ -153,6 +153,20 @@
                 }
             }
         });
+    }
+    function checkPaymentType(payment_type)
+    {
+        var p_type = payment_type;
+        if(p_type == "Cash")
+        {
+            $('#Instrument_No').val("");
+            $("#Instrument_No" ).prop( "disabled", true );
+
+        }
+        else
+        {
+            $("#Instrument_No" ).prop( "disabled", false );
+        }
     }
 </script>
 {% endblock %}

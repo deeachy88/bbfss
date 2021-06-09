@@ -1,0 +1,74 @@
+<div class="card">
+    <div class="card-header">
+        <div class="card-head-row">
+            <div class="card-tools pull-right">
+                <button type="button" class="btn btn-light" onclick="show_owner_manager_modal()">Add Details</button>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered" id="nc-details-table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Date of inspection</th>
+                    <th scope="col">Name Of Inspector</th>
+                    <th scope="col">NCs observed </th>
+                    <th scope="col">Action Action</th>
+                    <th scope="col">Date line for Action</th>
+                    <th scope="col">Corrected/not corrected</th>
+                    <th scope="col">Fine Imposed</th>
+                    <th scope="col">Receipt No</th>
+                    <th scope="col">Receipt Date</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+               {% for nc_details in details %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{nc_details.Inspection_Date|date:"d-m-Y"}}</td>
+                        <td>{{nc_details.Inspector_Name}}</td>
+                        <td>{{nc_details.Observation}}</td>
+                        <td>{{nc_details.Correction_Proposed}}</td>
+                        <td>{{nc_details.Date_Line_Correction}}</td>
+                        <td>{{nc_details.Correction_Taken}}</td>
+                        <td>{{nc_details.Fine_Imposed}}</td>
+                        <td>{{nc_details.Revenue_Receipt}}</td>
+                        <td>{{nc_details.Receipt_Date|date:"d-m-Y"}}</td>
+                        <td>
+                            <button type="button"
+                                class="btn btn-danger btn-sm" onclick="DeleteNCDetails('{{ nc_details.Record_Id }}')">
+                                <i class="zmdi zmdi-delete"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                      <td colspan="10" class="text-center">No Data</td>
+                    </tr>
+               {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="card-head-row">
+    <button type="button" class="btn btn-success" onclick="save_nc_details()">Save-Next</button>
+</div>
+<script>
+
+function DeleteNCDetails(record_id)
+{
+    var refNo = $('#owner_manager_app_no').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'delete_nc_details' %}",
+        data :{'refNo':refNo , 'record_id': record_id},
+        success : function(responseText)
+        {
+            $('#ncDetails').html(responseText);
+        }
+    });
+}
+
+</script>

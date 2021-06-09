@@ -16,22 +16,22 @@
         <h4 class="card-title">Inspection And Monitoring</h4>
     </div>
     <div class="card-body">
-        <form method="post" id="inspection_monitoring_form">
+        <form method="post" id="inspection_establishment_form">
         {% csrf_token %}
-            <input type="hidden" name="application_no" id="applicationNo">
+            <input type="hidden" name="applicationNo" id="applicationNo">
             <div class="row justify-content-left">
                 <ul class="nav nav-pills nav-secondary" id="pills-mortem" role="tablist">
                     <li class="nav-item">
                         <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadDetails()">General Information</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-nc" data-toggle="pill" href="#nc_details" role="tab" aria-controls="pills-nc" aria-selected="false" onclick="load_details()">NCs</a>
+                        <a class="nav-link" id="pills-nc" data-toggle="pill" href="#nc_details" role="tab" aria-controls="pills-nc" aria-selected="false" onclick="load_nc_details()">NCs</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-seized-item" data-toggle="pill" href="#seized_item_details" role="tab" aria-controls="pills-seized-item" aria-selected="false" onclick="load_details()">Seized Item Details</a>
+                        <a class="nav-link" id="pills-seized-item" data-toggle="pill" href="#seized_item_details" role="tab" aria-controls="pills-seized-item" aria-selected="false" onclick="load_seized_details()">Seized Item Details</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-sample-collection" data-toggle="pill" href="#sample_collection_details" role="tab" aria-controls="pills-sample-collection" aria-selected="false" onclick="load_details()">Sample Collection Details</a>
+                        <a class="nav-link" id="pills-sample-collection" data-toggle="pill" href="#sample_collection_details" role="tab" aria-controls="pills-sample-collection" aria-selected="false" onclick="load_sample_details()">Sample Collection Details</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="file-attach" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
@@ -133,7 +133,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">CID</label>
-                                <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)">
+                                <input type="number" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="checkCID(this.value)">
                             </div>
                             <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
                         </div>
@@ -161,6 +161,15 @@
                             <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="form-label">Observation</label>
+                                <textarea class="form-control" id="observations" name="observations"></textarea>
+                            </div>
+                            <div class="alert alert-danger" id="observationsErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
                     <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
                         Save SuccessFul
                     </div>
@@ -168,92 +177,30 @@
                         <button type="button" class="btn btn-primary" onclick="save_inspection_details()">Save-Next</button>
                     </div>
                 </div>
-            <div class="tab-pane fade" id="nc_details" role="tabpanel" aria-labelledby="pills-nc">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-head-row">
-                            <div class="card-tools pull-right">
-                                <button type="button" class="btn btn-light" onclick="show_owner_manager_modal()">Add Details</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div id="details_owner_manager">
-                            {% include 'inspection_monitoring/owner_manager_details.html' %}
-                        </div>
+                <div class="tab-pane fade" id="nc_details" role="tabpanel" aria-labelledby="pills-nc">
+                    <div id="ncDetails">
+                        {% include 'inspection_establishment/owner_manager_details.html' %}
                     </div>
                 </div>
-                <div class="card-action">
-                    <button type="button" class="btn btn-success" onclick="save_nc_details()">Save-Next</button>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="seized_item_details" role="tabpanel" aria-labelledby="pills-seized-item">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-head-row">
-                            <div class="card-tools pull-right">
-                                <button type="button" class="btn btn-light" onclick="show_item_details_modal()">Add Details</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div id="item_details">
-                            {% include 'inspection_monitoring/item_details.html' %}
-                        </div>
+                <div class="tab-pane fade" id="seized_item_details" role="tabpanel" aria-labelledby="pills-seized-item">
+                    <div id="item_details">
+                            {% include 'inspection_establishment/item_details.html' %}
                     </div>
                 </div>
-                <div class="card-action">
-                    <button type="button" class="btn btn-success" onclick="next_item_details()">Save-Next</button>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="sample_collection_details" role="tabpanel" aria-labelledby="pills-sample-collection">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-head-row">
-                            <div class="card-tools pull-right">
-                                <button type="button" class="btn btn-light" onclick="show_sample_collection_details_modal()">Add Details</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div id="sample_collection">
-                            {% include 'inspection_monitoring/sample_collection_details.html' %}
-                        </div>
+                <div class="tab-pane fade" id="sample_collection_details" role="tabpanel" aria-labelledby="pills-sample-collection">
+                    <div id="sample_collection">
+                        {% include 'inspection_establishment/sample_collection_details.html' %}
                     </div>
                 </div>
-                <div class="card-action">
-                    <button type="button" class="btn btn-success" onclick="next_sample_collection()">Save-Next</button>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="mortem-file-attach">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-head-row">
-                            <div class="card-tools">
-                                <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="show_inspection_attachment_modal()">
-                                    <span class="btn-label">
-                                        <i class="fa fa-print"></i>
-                                    </span>
-                                    Add
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div id="inspection_attachment">
-                            {% include 'inspection_monitoring/file_attachment.html' %}
-                        </div>
+                <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="pills-profile-file">
+                    <div id="fileAttach">
+                        {% include 'inspection_establishment/file_attachment.html' %}
                     </div>
                 </div>
-                <div class="card-action">
-                    <button type="button" class="btn btn-success" onclick="submit_inspection_details()">Save</button>
-                </div>
-            </div>
             </div>
         </form>
     </div>
 </div>
-
 <form method="post" id="owner_manager_form">
     {% csrf_token %}
     <input type="hidden" id="owner_manager_app_no" name="owner_manager_app_no">
@@ -279,7 +226,7 @@
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Inspector Name</label>
                                         <input type="text" name="Inspector_Name" class="form-control" id="Inspector_Name" required>
-                                        <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
+                                        <div class="alert alert-danger" id="Inspector_NameErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Observation</label>
@@ -289,27 +236,27 @@
                                             <option value="Major">Major</option>
                                             <option value="NCs observed">NCs observed</option>
                                         </select>
-                                        <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
+                                        <div class="alert alert-danger" id="ObservationErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Correction Proposed</label>
+                                            <label class="form-label">Action Proposed</label>
                                              <input type="text" name="Correction_Proposed" id="Correction_Proposed" class="form-control">
                                         </div>
                                         <div class="alert alert-danger" id="Correction_ProposedErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Date Line Correction</label>
+                                            <label class="form-label">Date Line for Action</label>
                                              <input type="text" name="Date_Line_Correction" id="Date_Line_Correction" class="form-control date-picker flatpickr-input active">
                                         </div>
                                         <div class="alert alert-danger" id="Date_Line_CorrectionErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Correction Taken</label>
+                                            <label class="form-label">Action Taken</label>
                                              <input type="text" name="Correction_Taken" id="Correction_Taken" class="form-control">
                                         </div>
                                         <div class="alert alert-danger" id="Correction_TakenErrorMsg" style="display:none"></div>
@@ -322,7 +269,7 @@
                                         <div class="alert alert-danger" id="Fine_ImposedErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Revenue Receipt</label>
+                                        <label class="form-label">Revenue Receipt No</label>
                                         <input type="text" name="Revenue_Receipt" class="form-control" id="Revenue_Receipt" required>
                                         <div class="alert alert-danger" id="Revenue_ReceiptErrorMsg" style="display:none"></div>
                                     </div>
@@ -335,6 +282,9 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div id="saveMsg" class="alert alert-info" role="alert" style="display:none;">
+                            Save SuccessFul
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -370,7 +320,7 @@
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Inspector Name</label>
                                         <input type="text" name="Item_Inspector_Name" class="form-control" id="Item_Inspector_Name" required>
-                                        <div class="alert alert-danger" id="Item_ErrorMsg" style="display:none"></div>
+                                        <div class="alert alert-danger" id="Item_Inspector_NameErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Item Seized</label>
@@ -382,7 +332,7 @@
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Quantity Seized</label>
                                         <input type="number" class="form-control" id="Qty_Seized" name="Qty_Seized">
-                                        <div class="alert alert-danger" id="previous_to_dateErrorMsg" style="display:none"></div>
+                                        <div class="alert alert-danger" id="Qty_SeizedErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Unit </label>
@@ -427,6 +377,9 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div id="saveSMsg" class="alert alert-info" role="alert" style="display:none;">
+                            Save SuccessFul
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -504,17 +457,22 @@
                                         <div class="alert alert-danger" id="Sample_QtyErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Batch No And Date</label>
-                                        <input type="text" name="Batch_No_Date" class="form-control" id="Batch_No_Date" required>
-                                        <div class="alert alert-danger" id="Batch_No_DateErrorMsg" style="display:none"></div>
+                                        <label class="form-label">Batch No</label>
+                                        <input type="text" name="Batch_No" class="form-control" id="Batch_No" required>
+                                        <div class="alert alert-danger" id="Batch_NoErrorMsg" style="display:none"></div>
                                     </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Batch Date</label>
+                                        <input type="text" name="Batch_Date" id="Batch_Date" class="form-control date-picker flatpickr-input active">
+                                        <div class="alert alert-danger" id="Batch_DateErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Test Requested</label>
                                         <input type="text" name="Test_Requested" class="form-control" id="Test_Requested" required>
                                         <div class="alert alert-danger" id="Test_RequestedErrorMsg" style="display:none"></div>
                                     </div>
-                                </div>
-                                <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Test Report</label>
                                         <input type="text" name="Test_Report" class="form-control" id="Test_Report" required>
@@ -524,6 +482,9 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div id="saveCMsg" class="alert alert-info" role="alert" style="display:none;">
+                            Save SuccessFul
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -573,6 +534,7 @@
 
 function save_inspection_details()
 {
+    var referenceNo = $('#applicationNo').val();
     var Inspection_Type = $('#Inspection_Type').val();
     var inspection_report_date = $('#inspection_report_date').val();
     var FBO_Name = $('#FBO_Name').val();
@@ -587,7 +549,7 @@ function save_inspection_details()
     var contactNumber = $('#contactNumber').val();
     var number_count = $('#contactNumber').val().length;
     var cidCount = $('#cid').val().length;
-
+    var observations = $('#observations').val();
     if(Inspection_Type == "")
     {
         $('#Inspection_TypeErrorMsg').html("Please Check One Inspection Type.");
@@ -672,12 +634,12 @@ function save_inspection_details()
         $('#contactNumberErrorMsg').show();
         setTimeout('hideStatus("contactNumberErrorMsg")',2000);
     }
-    else
+    else if(referenceNo == "")
     {
         $.ajax({
             type : "POST",
             url : "{% url 'save_monitoring_form' %}",
-            data : $('#inspection_monitoring_form').serialize(),
+            data : $('#inspection_establishment_form').serialize(),
             success : function(data)
             {
                 $('#applicationNo').val(data.applNo);
@@ -688,17 +650,39 @@ function save_inspection_details()
                 $('#submitMsg').show();
                 setTimeout(function() {
                     $("#submitMsg").hide('blind', {}, 500)
-                }, 2000);
+                }, 1500);
                 setTimeout(function() {
                     $('#pills-nc').tab('show');
-                }, 3000);
+                }, 1500);
+
+            }
+        });
+    }
+    else if(referenceNo != "")
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'update_inspection_establishment_application' %}",
+            data : $('#inspection_establishment_form').serialize(),
+            success : function(data)
+            {
+                $('#applicationNo').val(data.applNo);
+                $('#owner_manager_app_no').val(data.applNo);
+                $('#details_application_no').val(data.applNo);
+                $('#sample_collection_application_no').val(data.applNo);
+                $('#attachment_appNo').val(data.applNo);
+                $('#submitMsg').show();
+                setTimeout(function() {
+                    $("#submitMsg").hide('blind', {}, 500)
+                }, 1500);
+                setTimeout(function() {
+                    $('#pills-nc').tab('show');
+                }, 1500);
 
             }
         });
     }
 }
-
-
 
 function save_inspection_attachment()
 {
@@ -735,7 +719,7 @@ function save_inspection_attachment()
                 success : function(responseText)
                 {
                     $('#attachmentModal').modal('hide');
-                    $('#inspection_attachment').html(responseText);
+                    $('#fileAttach').html(responseText);
                     $('.modal-backdrop').remove();
                 }
             });
@@ -751,6 +735,69 @@ function save_inspection_attachment()
 
 }
 
+
+function loadDetails()
+{
+    var refNo = $('#applicationNo').val();
+    if(refNo == "")
+        {
+            $("#pills-home-tab").prop('disabled', true);
+            $("#pills-nc").prop('disabled', true);
+            $('#pills-seized-item').prop('disabled', true);
+            $('#pills-sample-collection').prop('disabled', true);
+            $('#file-attach').prop('disabled', true);
+        }
+   else if(refNo != "")
+        {
+            $("#pills-home-tab").prop('disabled', false);
+            $("#pills-nc").prop('disabled', false);
+            $('#pills-seized-item').prop('disabled', false);
+            $('#pills-sample-collection').prop('disabled', false);
+            $('#file-attach').prop('disabled', false);
+        }
+}
+
+function load_nc_details()
+{
+    var refNo = $('#owner_manager_app_no').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_establishment_nc_details' %}",
+        data :{'refNo':refNo},
+        success : function(response)
+        {
+            $('#ncDetails').html(response);
+        }
+    });
+}
+
+function load_seized_details()
+{
+    var refNo = $('#details_application_no').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_establishment_seized_details' %}",
+        data :{'refNo':refNo},
+        success : function(response)
+        {
+            $('#item_details').html(response);
+        }
+    });
+}
+
+function load_sample_details()
+{
+    var refNo = $('#sample_collection_application_no').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_establishment_sample_details' %}",
+        data :{'refNo':refNo},
+        success : function(response)
+        {
+            $('#sample_collection').html(response);
+        }
+    });
+}
 
 function validateemailId(emailId)
 {
@@ -773,74 +820,269 @@ function checkContact(value)
 {
     var firstDigit = value.charAt(0);
     var secondDigit = value.charAt(1);
+    var length = value.length;
 
-    if(firstDigit != 7 && firstDigit != 1){
+    if (length <8){
+    $('#contactNumberErrorMsg').html("Contact Number must be 8 digit.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(1500).fadeOut('slow');
+    }
+    else if(firstDigit != 7 && firstDigit != 1){
         $('#contactNumberErrorMsg').html("Must Start with either 1 or 7.");
         $('#contactNumberErrorMsg').show();
-        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumberErrorMsg').delay(1500).fadeOut('slow');
         $('#contactNumber').val("");
     }else if(firstDigit == 1 && secondDigit != 6 && secondDigit != 7){
         $('#contactNumberErrorMsg').html("Second Digit Must Start with either 6 or 7.");
         $('#contactNumberErrorMsg').show();
-        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumberErrorMsg').delay(1500).fadeOut('slow');
         $('#contactNumber').val("");
     }else if(firstDigit == 7 && secondDigit == 6){
         $('#contactNumberErrorMsg').html("Second Digit Cannot be 6.");
         $('#contactNumberErrorMsg').show();
-        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumberErrorMsg').delay(1500).fadeOut('slow');
         $('#contactNumber').val("");
     }else if(firstDigit == 7 && secondDigit != 7){
         $('#contactNumberErrorMsg').html("Second Digit Must Start with 7.");
         $('#contactNumberErrorMsg').show();
-        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumberErrorMsg').delay(1500).fadeOut('slow');
         $('#contactNumber').val("");
     }
 
 }
 
+function checkCID(value)
+{
+    var length = value.length;
+    if (length <11){
+    $('#cidErrorMsg').html("CID must be 11 digit.");
+        $('#cidErrorMsg').show();
+        $('#cidErrorMsg').delay(1500).fadeOut('slow');
+    }
+}
+
 function save_owner_manager_details()
 {
-    $.ajax({
-        type : "POST",
-        url : "{% url 'save_owner_manager_details' %}",
-        data : $('#owner_manager_form').serialize(),
-        success : function(responseText) {
-           $('#owner_manager_modal').modal('hide');
-           $('#details_owner_manager').html(responseText);
-           $('#pills-nc').tab('show');
-           $('.modal-backdrop').remove();
-        }
-    });
+    var Inspection_Date = $('#Inspection_Date').val();
+    var Inspector_Name = $('#Inspector_Name').val();
+    var Observation = $('#Observation').val();
+    var Correction_Proposed = $('#Correction_Proposed').val();
+    var Date_Line_Correction = $('#Date_Line_Correction').val();
+    var Correction_Taken = $('#Correction_Taken').val();
+
+    if(Inspection_Date == "")
+    {
+        $('#Inspection_DateErrorMsg').html("Enter Inspection Date.");
+        $('#Inspection_DateErrorMsg').show();
+        $('#Inspection_DateErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Inspector_Name == "")
+    {
+        $('#Inspector_NameErrorMsg').html("Enter Inspector Name.");
+        $('#Inspector_NameErrorMsg').show();
+        $('#Inspector_NameErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Observation == "")
+    {
+        $('#ObservationErrorMsg').html("Select Observation.");
+        $('#ObservationErrorMsg').show();
+        $('#ObservationErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Date_Line_Correction == "")
+    {
+        $('#Date_Line_CorrectionErrorMsg').html("Enter date Line for Action.");
+        $('#Date_Line_CorrectionErrorMsg').show();
+        $('#Date_Line_CorrectionErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Correction_Taken == "")
+    {
+        $('#Correction_TakenErrorMsg').html("Enter Action Taken.");
+        $('#Correction_TakenErrorMsg').show();
+        $('#Correction_TakenErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else{
+        $.ajax({
+            type : "POST",
+            url : "{% url 'save_owner_manager_details' %}",
+            data : $('#owner_manager_form').serialize(),
+            success : function(responseText)
+            {
+                $('#saveMsg').show();
+                setTimeout(function() {
+                    $("#saveMsg").hide('blind', {}, 500)
+                }, 1500);
+                setTimeout(function() {
+                    $('#ncDetails').html(responseText);
+                    $('#owner_manager_modal').modal('hide');
+                    $('#pills-nc').tab('show');
+                    $('.modal-backdrop').remove();
+                }, 1500);
+            }
+        });
+    }
 }
 
 function save_item_details()
 {
-    $.ajax({
-        type : "POST",
-        url : "{% url 'save_item_details' %}",
-        data : $('#details_form').serialize(),
-        success : function(responseText) {
-           $('#details_model').modal('hide');
-           $('#item_details').html(responseText);
-           $('#pills-seized-item').tab('show');
-           $('.modal-backdrop').remove();
-        }
-    });
+    var item_Inspection_Date = $('#item_Inspection_Date').val();
+    var Item_Inspector_Name = $('#Item_Inspector_Name').val();
+    var Items_Seized = $('#Items_Seized').val();
+    var Qty_Seized = $('#Qty_Seized').val();
+    var Unit = $('#Unit').val();
+    var reason = $('#reason').val();
+
+    if(item_Inspection_Date == "")
+    {
+        $('#item_Inspection_DateErrorMsg').html("Enter Inspection Date.");
+        $('#item_Inspection_DateErrorMsg').show();
+        $('#item_Inspection_DateErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Item_Inspector_Name == "")
+    {
+        $('#Item_Inspector_NameErrorMsg').html("Enter Inspector Name.");
+        $('#Item_Inspector_NameErrorMsg').show();
+        $('#Item_Inspector_NameErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Items_Seized == "")
+    {
+        $('#Items_SeizedErrorMsg').html("Enter Item Seized details.");
+        $('#Items_SeizedErrorMsg').show();
+        $('#Items_SeizedErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Unit == "")
+    {
+        $('#UnitErrorMsg').html("Select Unit.");
+        $('#UnitErrorMsg').show();
+        $('#UnitErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(reason == "")
+    {
+        $('#reasonErrorMsg').html("Enter REason for Rejection.");
+        $('#reasonErrorMsg').show();
+        $('#reasonErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else{
+        $.ajax({
+            type : "POST",
+            url : "{% url 'save_item_details' %}",
+            data : $('#details_form').serialize(),
+            success : function(responseText)
+             {
+                $('#saveSMsg').show();
+                setTimeout(function() {
+                    $("#saveSMsg").hide('blind', {}, 500)
+                }, 1500);
+                setTimeout(function() {
+                    $('#item_details').html(responseText);
+                    $('#details_model').modal('hide');
+                    $('#pills-seized-item').tab('show');
+                    $('.modal-backdrop').remove();
+                }, 1500);
+            }
+        });
+    }
 }
 
 function save_sample_details()
 {
-    $.ajax({
-        type : "POST",
-        url : "{% url 'save_sample_details' %}",
-        data : $('#sample_collection_form').serialize(),
-        success : function(responseText) {
-           $('#sample_collection_model').modal('hide');
-           $('#sample_collection').html(responseText);
-           $('#pills-sample-collection').tab('show');
-           $('.modal-backdrop').remove();
-        }
-    });
+    var Collection_Type = $('#Collection_Type').val();
+    var Collection_Date = $('#Collection_Date').val();
+    var Submission_Date = $('#Submission_Date').val();
+    var HS_Code_Imp = $('#HS_Code_Imp').val();
+    var HS_Code_Local = $('#HS_Code_Local').val();
+    var Sample_Type = $('#Sample_Type').val();
+    var Qty = $('#Qty').val();
+    var Batch_No = $('#Batch_No').val();
+    var Batch_Date = $('#Batch_Date').val();
+    var Test_Requested = $('#Test_Requested').val();
+    var Test_Report = $('#Test_Report').val();
+
+    if(Collection_Type == "")
+    {
+        $('#Collection_TypeErrorMsg').html("Enter Collection Type.");
+        $('#Collection_TypeErrorMsg').show();
+        $('#Collection_TypeErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Collection_Date == "")
+    {
+        $('#Collection_DateErrorMsg').html("Select Collection Date.");
+        $('#Collection_DateErrorMsg').show();
+        $('#Collection_DateErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Submission_Date == "")
+    {
+        $('#Submission_DateErrorMsg').html("Select Submission Date.");
+        $('#Submission_DateErrorMsg').show();
+        $('#Submission_DateErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(HS_Code_Imp == "")
+    {
+        $('#HS_Code_ImpErrorMsg').html("Enter HS Code (imp).");
+        $('#HS_Code_ImpErrorMsg').show();
+        $('#HS_Code_ImpErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(HS_Code_Local == "")
+    {
+        $('#HS_Code_LocalErrorMsg').html("Enter HS Code (Local).");
+        $('#HS_Code_LocalErrorMsg').show();
+        $('#HS_Code_LocalErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Sample_Type == "")
+    {
+        $('#Sample_TypeErrorMsg').html("Enter Sample Type.");
+        $('#Sample_TypeErrorMsg').show();
+        $('#Sample_TypeErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Qty == "")
+    {
+        $('#QtyErrorMsg').html("Enter Quantity.");
+        $('#QtyErrorMsg').show();
+        $('#QtyErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Batch_No == "")
+    {
+        $('#Batch_NoErrorMsg').html("Enter Batch No.");
+        $('#Batch_NoErrorMsg').show();
+        $('#Batch_NoErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Batch_Date == "")
+    {
+        $('#Batch_DateErrorMsg').html("Enter Batch Date.");
+        $('#Batch_DateErrorMsg').show();
+        $('#Batch_DateErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Test_Requested == "")
+    {
+        $('#Test_RequestedErrorMsg').html("Enter test Requested.");
+        $('#Test_RequestedErrorMsg').show();
+        $('#Test_RequestedErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Test_Report == "")
+    {
+        $('#Test_ReportErrorMsg').html("Enter Test Report.");
+        $('#Test_ReportErrorMsg').show();
+        $('#Test_ReportErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else{
+        $.ajax({
+            type : "POST",
+            url : "{% url 'save_sample_details' %}",
+            data : $('#sample_collection_form').serialize(),
+            success : function(responseText)
+            {
+                $('#saveCMsg').show();
+                setTimeout(function() {
+                    $("#saveCMsg").hide('blind', {}, 500)
+                }, 1500);
+                setTimeout(function() {
+                    $('#sample_collection').html(responseText);
+                    $('#sample_collection_model').modal('hide');
+                    $('#pills-sample-collection').tab('show');
+                    $('.modal-backdrop').remove();
+                }, 1500);
+            }
+        });
+    }
 }
 
 function show_owner_manager_modal()
@@ -878,14 +1120,42 @@ function next_sample_collection()
     $('#file-attach').tab('show');
 }
 
-function submit_inspection_details()
+function getGewog(dzongkhag_id)
 {
     $.ajax({
-        type : "POST",
-        url : "{% url 'submit_inspection_details' %}",
-        data : $('#inspection_monitoring_form').serialize(),
-        success : function(responseText) {
-           location.reload();
+        type : "GET",
+        url : "{% url 'load_gewog' %}",
+        data :{'dzongkhag_id':dzongkhag_id},
+        success : function(data)
+        {
+            $('#gewog').html(data);
+        }
+    });
+}
+
+function getVillage(gewog_id)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_village' %}",
+        data :{'gewog_id':gewog_id},
+        success : function(data)
+        {
+            $('#village').html(data);
+        }
+    });
+}
+
+function load_attachment_details()
+{
+    var refNo = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_establishment_attachment_details' %}",
+        data :{'refNo':refNo},
+        success : function(response)
+        {
+            $('#fileAttach').html(response);
         }
     });
 }
