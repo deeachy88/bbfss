@@ -18,8 +18,8 @@ from plant.models import t_workflow_details, t_file_attachment
 from plant.views import inspector_application
 
 def co_complaint_list(request):
-    complaint_details = t_workflow_details.objects.filter(Application_Status='P', Assigned_Role_Id='3').order_by('Application_No').reverse() | \
-                        t_workflow_details.objects.filter(Application_Status='A', Assigned_Role_Id='3').order_by('Application_No').reverse()
+    complaint_details = t_workflow_details.objects.filter(Application_Status='P', Assigned_Role_Id='3', Action_Date__isnull=False).order_by('Application_No').reverse() | \
+                        t_workflow_details.objects.filter(Application_Status='A', Assigned_Role_Id='3', Action_Date__isnull=False).order_by('Application_No').reverse()
     return render(request, 'complaint_officer_pending_list.html', {'complaint_details': complaint_details})
 
 def investigation_report_list(request):  # list of investigation report submitted to the Complaint Officer
