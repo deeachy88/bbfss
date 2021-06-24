@@ -1,12 +1,12 @@
 <div class="scrollbar-inner">
     {% if request.session.role == 'Agency Admin' %}
         <ul class="navigation">
-            <li class="navigation__active"><a href="http://127.0.0.1:8000/login/"><i class="zmdi zmdi-home"></i> Home</a></li>
+            <li class="navigation__active"><a href="http://127.0.0.1:8000/login/"><font color="white"><i class="zmdi zmdi-home"></i>&nbsp; &nbsp;Home</font></a></li>
 
-            <li class="@@typeactive"><a href="http://127.0.0.1:8000/user"><i class="zmdi zmdi-format-underlined"></i> Users</a></li>
+            <li class="@@typeactive"><a href="http://127.0.0.1:8000/user"><font color="white"><i class="zmdi zmdi-accounts"></i>&nbsp; &nbsp;</i> Users</font></a></li>
 
             <li class="navigation__sub @@tableactive">
-                <a href="#"><i class="zmdi zmdi-view-list"></i> Masters</a>
+                <a href="#"><font color="white"><i class="zmdi zmdi-view-list"></i>&nbsp; &nbsp;Masters</font></a>
                 <ul>
                     <li class="@@normaltableactive"><a href="{% url 'role_page' %}">Role</a></li>
                     <li class="@@datatableactive"><a href="{% url 'division' %}">Division</a></li>
@@ -32,11 +32,18 @@
             </li>
 
             <li class="navigation__sub @@formactive">
-                <a href="#"><i class="zmdi zmdi-collection-text"></i> Client Manage</a>
+                <a href="#"><font color="white"><i class="zmdi zmdi-account-calendar"></i>&nbsp; &nbsp;Client Manage</font></a>
 
                 <ul>
                     <li class="@@datatableactive"><a href="{% url 'new_registration' %}">New Registration</a></li>
                     <li class="@@datatableactive"><a href="{% url 'registered_clients' %}">Registered Clients</a></li>
+                </ul>
+            </li>
+            <li class="navigation__sub @@formactive">
+                <a href="#"><font color="white"><i class="zmdi zmdi-collection-text" ></i>&nbsp; &nbsp;Reports</font></a>
+                <ul>
+                    <li class="@@datatableactive"><a href="{% url 'certificate_reportForm' %}">1) List of Certificates Issued</a></li>
+                    <li class="@@datatableactive"><a href="{% url 'view_commodity_inspection_list' %}">2) List of Permits Issued</a></li>
                 </ul>
             </li>
         </ul>
@@ -47,7 +54,7 @@
             <li class="@@datatableactive"><a href="{% url 'focal_officer_application' %}"><i class="zmdi zmdi-collection-text"></i> Pending Applications</a></li>
             <li class="@@datatableactive"><a href="{% url 'payment_details' %}"><i class="zmdi zmdi-collection-text"></i>Payment Details</a></li>
             <li class="navigation__sub @@formactive">
-                <a href="#"><font color="white"><i class="zmdi zmdi-collection-text" ></i>&nbsp; &nbsp;Establishment Inspection</font></a>
+                <a href="#"><font color="white"><i class="zmdi zmdi-collection-text" ></i>&nbsp; &nbsp;Inspection-Establishment</font></a>
                 <ul>
                     <li class="@@datatableactive"><a href="{% url 'establishment_inspection_form' %}">Add Report</a></li>
                    <!-- <li class="@@datatableactive"><a href="{% url 'draft_application_list' %}">Draft Report</a></li>-->
@@ -55,7 +62,7 @@
                 </ul>
             </li>
              <li class="navigation__sub @@formactive">
-                <a href="#"><font color="white"><i class="zmdi zmdi-collection-text" ></i>&nbsp; &nbsp;Commodity Inspection</font></a>
+                <a href="#"><font color="white"><i class="zmdi zmdi-collection-text" ></i>&nbsp; &nbsp;Inspection-Commodity</font></a>
                 <ul>
                     <li class="@@datatableactive"><a href="{% url 'commodity_inspection_form' %}">Add Report</a></li>
 <!--
@@ -64,6 +71,7 @@
                     <li class="@@datatableactive"><a href="{% url 'view_commodity_inspection_list' %}">View Reports</a></li>
                 </ul>
             </li>
+
         </ul>
     {% elif request.session.role == 'Complaint Officer' %}
         <ul class="navigation">
@@ -85,7 +93,7 @@
             <li class="@@datatableactive"><a href="{% url 'payment_details' %}"><i class="zmdi zmdi-collection-text"></i>Payment Details</a></li>
             <li class="@@datatableactive"><a href="{% url 'investigation_complaint_list' %}"><i class="zmdi zmdi-collection-text"></i>Complaint List</a></li>
             <li class="navigation__sub @@formactive">
-                <a href="#"><font color="white"><i class="zmdi zmdi-collection-text" ></i>&nbsp; &nbsp;Establishment Inspection</font></a>
+                <a href="#"><font color="white"><i class="zmdi zmdi-collection-text" ></i>&nbsp; &nbsp;Inspection-Establishment</font></a>
                 <ul>
                     <li class="@@datatableactive"><a href="{% url 'establishment_inspection_form' %}">Add Report</a></li>
                    <!-- <li class="@@datatableactive"><a href="{% url 'draft_application_list' %}">Draft Report</a></li>-->
@@ -93,7 +101,7 @@
                 </ul>
             </li>
              <li class="navigation__sub @@formactive">
-                <a href="#"><font color="white"><i class="zmdi zmdi-collection-text" ></i>&nbsp; &nbsp;Commodity Inspection</font></a>
+                <a href="#"><font color="white"><i class="zmdi zmdi-collection-text" ></i>&nbsp; &nbsp;Inspection-Commodity</font></a>
                 <ul>
                     <li class="@@datatableactive"><a href="{% url 'commodity_inspection_form' %}">Add Report</a></li>
 <!--
@@ -117,7 +125,7 @@
             <li class="@@datatableactive"><a href="{% url 'payment_details' %}"><i class="zmdi zmdi-collection-text"></i>Payment Details</a></li>
             <li class="@@datatableactive"><a href="{% url 'investigation_complaint_list' %}"><i class="zmdi zmdi-collection-text"></i>Complaint List</a></li>
             <li class="navigation__sub @@formactive">
-                <a href="#"><font color="white"><i class="zmdi zmdi-collection-text" ></i>&nbsp; &nbsp;Establishment Inspection</font></a>
+                <a href="#"><font color="white"><i class="zmdi zmdi-collection-text" ></i>&nbsp; &nbsp;Inspection-Establishment</font></a>
                 <ul>
                     <li class="@@datatableactive"><a href="{% url 'establishment_inspection_form' %}">Add Report</a></li>
                    <!-- <li class="@@datatableactive"><a href="{% url 'draft_application_list' %}">Draft Report</a></li>-->
@@ -125,7 +133,7 @@
                 </ul>
             </li>
              <li class="navigation__sub @@formactive">
-                <a href="#"><font color="white"><i class="zmdi zmdi-collection-text" ></i>&nbsp; &nbsp;Commodity Inspection</font></a>
+                <a href="#"><font color="white"><i class="zmdi zmdi-collection-text" ></i>&nbsp; &nbsp;Inspection-Commodity</font></a>
                 <ul>
                     <li class="@@datatableactive"><a href="{% url 'commodity_inspection_form' %}">Add Report</a></li>
 <!--

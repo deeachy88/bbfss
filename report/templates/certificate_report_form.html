@@ -1,0 +1,35 @@
+{% extends 'common_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div id="AppDetails">
+<div class="animated fadeIn">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <strong class="card-title">Report Form</strong>
+                </div>
+                    <div class="card-body">
+
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<script>
+    function viewCertificatesIssuedList(refNo)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'view_certificateList' %}",
+            data :{'reference_no':refNo},
+            success : function(data)
+            {
+                $('#AppDetails').html(data);
+            }
+        });
+    }
+</script>
+{% endblock %}
