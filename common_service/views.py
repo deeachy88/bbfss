@@ -12,7 +12,8 @@ from administrator.models import t_dzongkhag_master, t_gewog_master, t_village_m
 from bbfss import settings
 
 from common_service.models import t_common_complaint_t1, t_inspection_monitoring_t1, t_inspection_monitoring_t2, \
-    t_inspection_monitoring_t3, t_inspection_monitoring_t4, t_commodity_inspection_t1, t_commodity_inspection_t2
+    t_inspection_monitoring_t3, t_inspection_monitoring_t4, t_commodity_inspection_t1, t_commodity_inspection_t2, \
+    t_feebback
 
 from plant.models import t_workflow_details, t_file_attachment
 from plant.views import inspector_application
@@ -1168,4 +1169,50 @@ def view_FHC_inspection_details(request):
                   {'application_details': application_details, 'details': details, 'file_attach': file_attach,
                    'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village, 'team_leader': team_leader})
 
+# FEEDBACK
 
+def submit_feedback_form(request):
+    return render(request, 'feedback/submit_feedback.html')
+
+def submit_feedback(request):
+    data = dict()
+    service_code = "FED"
+    last_reference_no = get_feedback_reference_no(request, service_code)
+    applicant_Id = request.session['email']
+    complainantName = request.POST.get('complainantName')
+    contact_number = request.POST.get('contactNumber')
+    email = request.POST.get('email')
+    address = request.POST.get('address')
+    feedbackCategory = request.POST.get('feedbackCategory')
+    feedback = request.POST.get('feedback')
+
+    t_feebback.objects.create(
+        Reference_No=last_reference_no,
+        Created_By=applicant_Id,
+        Created_Date=date.today(),
+        Name=complainantName,
+        Contact_No=contact_number,
+        Email=email,
+        Address=address,
+        Feedback_Category=feedbackCategory,
+        Feedback=feedback
+    )
+    return render(request, 'feedback/submit_feedback.html')
+
+def feedback_list(request):
+    feedback_details = t_feebback.objects.all().order_by('Created_Date').reverse()
+    return render(request, 'feedback/feedback_list.html', {'feedback_details': feedback_details})
+
+def get_feedback_reference_no(request, service_code):
+    last_reference_no = t_feebback.objects.aggregate(Max('Reference_No'))
+    lastRefNo = last_reference_no['Reference_No__max']
+    if not lastRefNo:
+        year = timezone.now().year
+        newRefNo = service_code + "/" + str(year) + "/" + "0001"
+    else:
+        substring = str(lastRefNo)[9:13]
+        substring = int(substring) + 1
+        RefNo = str(substring).zfill(4)
+        year = timezone.now().year
+        newRefNo = service_code + "/" + str(year) + "/" + RefNo
+    return newRefNo

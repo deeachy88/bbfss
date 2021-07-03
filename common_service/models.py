@@ -130,3 +130,15 @@ class t_commodity_inspection_t2(models.Model):
     Qty_Rejected = models.IntegerField(blank=True, null=True)
     Reason_For_Rejection = models.CharField(max_length=250, blank=True, null=True)
 
+# FEEDBACK
+class t_feebback(models.Model):
+    Record_Id = models.AutoField(primary_key=True)
+    Reference_No = models.CharField(max_length=100, blank=True, null=True)
+    Name = models.CharField(max_length=200, blank=True, null=True)
+    Address = models.TextField(blank=True, null=True)
+    Email = models.CharField(max_length=100, blank=True, null=True)
+    Contact_No = models.IntegerField(blank=True, null=True)
+    Feedback_Category = models.CharField(max_length=100, blank=True, null=True)
+    Feedback = models.TextField(blank=True, null=True)
+    Created_By = models.CharField(max_length=100, blank=True, null=True)
+    Created_Date = models.DateField(blank=True, null=True)

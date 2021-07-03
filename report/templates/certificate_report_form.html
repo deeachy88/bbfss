@@ -1,35 +1,94 @@
 {% extends 'common_dashboard.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-<div id="AppDetails">
-<div class="animated fadeIn">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header">
-                    <strong class="card-title">Report Form</strong>
-                </div>
-                    <div class="card-body">
-
+<div id="CertificateDetails">
+    <form id="certificateReportForm" xmlns="http://www.w3.org/1999/html">
+        <div class="card">
+            <div class="card-header">
+                <strong class="card-title">Certificate Report Form</strong>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">From Date <font color="red">*</font></label>
+                            <input type="text" class="form-control date-picker flatpickr-input active" id="fromDate" name="fromDate"  placeholder="Pick a date" readonly="readonly">
+                        </div>
+                        <div class="alert alert-danger" id="fromDateErrorMsg" style="display:none"></div>
                     </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">To Date <font color="red">*</font></label>
+                            <input type="text" class="form-control date-picker flatpickr-input active" id="toDate" name="toDate"  placeholder="Pick a date" readonly="readonly">
+                        </div>
+                        <div class="alert alert-danger" id="toDateErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Service Name <font color="red">*</font></label>
+                            <select class="form-control" id="serviceId" name="serviceId">
+                                <option value="">--SELECT SERVICE--</option>
+                                <option value="16">GAP</option>
+                                <option value="17">Organic Certificate</option>
+                                <option value="18">Food Product Certificate</option>
+                            </select>
+                        </div>
+                        <div class="alert alert-danger" id="serviceErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input type="button" class="btn btn-primary btn-lg pull-right" value="View" onclick="viewCertificatesIssuedList()">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+    </form>
 </div>
-</div>
-
 <script>
-    function viewCertificatesIssuedList(refNo)
+function viewCertificatesIssuedList()
     {
-        $.ajax({
-            type : "GET",
-            url : "{% url 'view_certificateList' %}",
-            data :{'reference_no':refNo},
-            success : function(data)
-            {
-                $('#AppDetails').html(data);
-            }
-        });
+        var from_date = $('#fromDate').val();
+        var to_date = $('#toDate').val();
+        var service_id = $('#serviceId').val();
+
+        if(from_date == "")
+        {
+            $('#fromDateErrorMsg').html("Select From Date.");
+            $('#fromDateErrorMsg').show();
+            $('#fromDateErrorMsg').delay(3000).fadeOut('slow');
+        }
+        else if(to_date == "")
+        {
+            $('#toDateErrorMsg').html("Select To Date.");
+            $('#toDateErrorMsg').show();
+            $('#toDateErrorMsg').delay(3000).fadeOut('slow');
+        }
+        else if(service_id == "")
+        {
+            $('#serviceErrorMsg').html("Select Service.");
+            $('#serviceErrorMsg').show();
+            $('#serviceErrorMsg').delay(3000).fadeOut('slow');
+        }
+        else
+        {
+            var fDate = moment(from_date, "DD.MM.YYYY").format("YYYY-MM-DD");
+            var tDate = moment(to_date, "DD.MM.YYYY").format("YYYY-MM-DD");
+             $.ajax({
+                    type : "GET",
+                    url : "{% url 'view_certificate_list' %}",
+                    data :{'from_date':fDate,'to_date':tDate, 'service_id':service_id},
+                    success : function(data)
+                    {
+                        $('#CertificateDetails').html(data);
+                    }
+                });
+        }
     }
+
 </script>
 {% endblock %}

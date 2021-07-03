@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'certification',
     'common_service',
     'mathfilters',
+    'report',
 ]
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 MIDDLEWARE = [

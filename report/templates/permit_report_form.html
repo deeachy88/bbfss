@@ -1,0 +1,106 @@
+{% extends 'common_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div id="PermitDetails">
+    <form id="certificateReportForm" xmlns="http://www.w3.org/1999/html">
+        <div class="card">
+            <div class="card-header">
+                <strong class="card-title">Permit Report Form</strong>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">From Date <font color="red">*</font></label>
+                            <input type="text" class="form-control date-picker flatpickr-input active" id="fromDate" name="fromDate"  placeholder="Pick a date" readonly="readonly">
+                        </div>
+                        <div class="alert alert-danger" id="fromDateErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">To Date <font color="red">*</font></label>
+                            <input type="text" class="form-control date-picker flatpickr-input active" id="toDate" name="toDate"  placeholder="Pick a date" readonly="readonly">
+                        </div>
+                        <div class="alert alert-danger" id="toDateErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Service Name <font color="red">*</font></label>
+                            <select class="form-control" id="serviceId" name="serviceId">
+                                <option value="">--SELECT SERVICE--</option>
+                                <option value="1">List of Movement Permit For Plant And Products Issued</option>
+                                <option value="2">List of Import Permit For Plant And Plant Products Issued</option>
+                                <option value="3">List of Export Permit For Plant And Plant Products Issued</option>
+                                <option value="4">List of Nurseries/Seed Growers Registered</option>
+                                <option value="5">List of Seed Certification Issued</option>
+                                <option value="6">List of Meat Shop License Issued</option>
+                                <option value="7">List of Ante Mortem And Post Mortem Certificate Issued</option>
+                                <option value="8">List of Movement Permit For Livestock Issued</option>
+                                <option value="9">List of Import Permit for Livestock Products Issued</option>
+                                <option value="10">List of Import Permit For Live Animal And Fish Issued</option>
+                                <option value="11">List of Export Certificate for Animal and Animal Products Issued</option>
+                                <option value="12">List of Export Certificate for Food Products Issued</option>
+                                <option value="13">List of Food Handler Certificate Issued</option>
+                                <option value="14">List of Import Permit for Food Products Issued</option>
+                                <option value="15">List of Food Business Registered And License Issued</option>
+                            </select>
+                        </div>
+                        <div class="alert alert-danger" id="serviceErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input type="button" class="btn btn-primary btn-lg pull-right" value="View" onclick="viewPermitIssuedList()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+function viewPermitIssuedList()
+    {
+        var from_date = $('#fromDate').val();
+        var to_date = $('#toDate').val();
+        var service_id = $('#serviceId').val();
+
+        if(from_date == "")
+        {
+            $('#fromDateErrorMsg').html("Select From Date.");
+            $('#fromDateErrorMsg').show();
+            $('#fromDateErrorMsg').delay(3000).fadeOut('slow');
+        }
+        else if(to_date == "")
+        {
+            $('#toDateErrorMsg').html("Select To Date.");
+            $('#toDateErrorMsg').show();
+            $('#toDateErrorMsg').delay(3000).fadeOut('slow');
+        }
+        else if(service_id == "")
+        {
+            $('#serviceErrorMsg').html("Select Service.");
+            $('#serviceErrorMsg').show();
+            $('#serviceErrorMsg').delay(3000).fadeOut('slow');
+        }
+        else
+        {
+            var fDate = moment(from_date, "DD.MM.YYYY").format("YYYY-MM-DD");
+            var tDate = moment(to_date, "DD.MM.YYYY").format("YYYY-MM-DD");
+             $.ajax({
+                    type : "GET",
+                    url : "{% url 'view_permit_list' %}",
+                    data :{'from_date':fDate,'to_date':tDate, 'service_id':service_id},
+                    success : function(data)
+                    {
+                        $('#PermitDetails').html(data);
+                    }
+                });
+        }
+    }
+
+</script>
+{% endblock %}

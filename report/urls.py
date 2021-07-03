@@ -1,14 +1,13 @@
 from django.conf import settings
 from django.conf.urls.static import static
+from . import views
 from django.urls import path
-from common_service import views
 
 urlpatterns = [
-    # Complaint service
-    path('certificate_reportForm', views.certificate_reportForm, name='certificate_reportForm'),
-    path('permit_reportFrom', views.permit_reportFrom, name='permit_reportFrom'),
-    path('view_certificateList', views.view_certificateList, name='view_certificateList'),
-    path('view_permitList', views.view_permitList, name='view_permitList'),
+    path('certificate_report_form', views.certificate_report_form, name='certificate_report_form'),
+    path('permit_report_form', views.permit_report_form, name='permit_report_form'),
+    path('view_certificate_list', views.view_certificate_list, name='view_certificate_list'),
+    path('view_permit_list', views.view_permit_list, name='view_permit_list'),
 
 ]
 
