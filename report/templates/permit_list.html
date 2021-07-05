@@ -1,0 +1,693 @@
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+<div id="CertificateDetails">
+    <div class="animated fadeIn">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Report.</h4>
+                    </div>
+                    <div class="card-body">
+                    {% for service_name in service_name %}
+                        {% if service_name.Service_Id == 1 %}
+                            <h4 class="card-title">List of Movement Permit For Plant And Products Issued</h4>
+                            <table id="certificate_1_table" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Permit Type</th>
+                                        <th scope="col">Applicant</th>
+                                        <th scope="col">Nursery Name</th>
+                                        <th scope="col">Contact No</th>
+                                        <th scope="col">From Location</th>
+                                        <th scope="col">To Location</th>
+                                        <th scope="col">Movement Permit Number</th>
+                                        <th scope="col">Approve Date</th>
+                                        <th scope="col">Validity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for permit_details in permit_details %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            {% if permit_details.Application_Type == 'P' %}
+                                                <td>Plant & Plant Products</td>
+                                            {% elif permit_details.Application_Type == 'A' %}
+                                                <td>Agrochemicals</td>
+                                            {% elif permit_details.Application_Type == 'O' %}
+                                                <td>Others</td>
+                                            {% endif %}
+                                            <td>{{permit_details.Applicant_Name}}</td>
+                                            <td>{{permit_details.Nursery_Name}}</td>
+                                            <td>{{permit_details.Contact_No}}</td>
+                                            <td>{{permit_details.From_Dzongkhag_Code}},{{permit_details.From_Gewog_Code}},{{permit_details.From_Village_Code}}</td>
+                                            <td>{{permit_details.To_Dzongkhag_Code}},{{permit_details.To_Gewog_Code}},{{permit_details.To_Village_Code}}</td>
+                                            <td>{{permit_details.Movement_Permit_No}}</td>
+                                            <td>{{permit_details.Approved_Date}}</td>
+                                            <td>{{permit_details.Validity}}</td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                          <td colspan="10" class="text-center">No Data</td>
+                                        </tr>
+                                        {% endfor %}
+                                </tbody>
+                            </table>
+                        {% elif service_name.Service_Id == 2 %}
+                            <h4 class="card-title">List of Import Permit For Plant And Plant Products Issued</h4>
+                            <table id="certificate_2_table" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Permit Type</th>
+                                        <th scope="col">Applicant</th>
+                                        <th scope="col">Business Name</th>
+                                        <th scope="col">License No</th>
+                                        <th scope="col">Contact No</th>
+                                        <th scope="col">Purpose</th>
+                                        <th scope="col">Final Destination</th>
+                                        <th scope="col">Import Permit Number</th>
+                                        <th scope="col">Approve Date</th>
+                                        <th scope="col">Validity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for permit_details in permit_details %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            {% if permit_details.Application_Type == 'P' %}
+                                                <td>Plant & Plant Products</td>
+                                            {% elif permit_details.Application_Type == 'A' %}
+                                                <td>Agrochemicals</td>
+                                            {% endif %}
+                                            <td>{{permit_details.Applicant_Name}}</td>
+                                            <td>{{permit_details.Business_Name}}</td>
+                                            <td>{{permit_details.License_No}}</td>
+                                            <td>{{permit_details.Contact_No}}</td>
+                                            <td>{{permit_details.Purpose}}</td>
+                                            <td>{{permit_details.Final_Destination}}</td>
+                                            <td>{{permit_details.Clearance_Ref_No}}</td>
+                                            <td>{{permit_details.Approve_Date}}</td>
+                                            <td>{{permit_details.Validity}}</td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                          <td colspan="11" class="text-center">No Data</td>
+                                        </tr>
+                                        {% endfor %}
+                                </tbody>
+                            </table>
+                        {% elif service_name.Service_Id == 3 %}
+                            <h4 class="card-title">List of Export Permit For Plant And Plant Products Issued</h4>
+                            <table id="certificate_3_table" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Certificate Type</th>
+                                        <th scope="col">Exporter Name</th>
+                                        <th scope="col">Address</th>
+                                        <th scope="col">Gross Qty</th>
+                                        <th scope="col">Net Qty</th>
+                                        <th scope="col">Importing Country</th>
+                                        <th scope="col">Export Certificate</th>
+                                        <th scope="col">Approve Date</th>
+                                        <th scope="col">Validity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for permit_details in permit_details %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            {% if permit_details.Application_Type == 'P' %}
+                                                <td>Phytosanitary</td>
+                                            {% elif permit_details.Application_Type == 'C' %}
+                                                <td>Cordyceps</td>
+                                            {% endif %}
+                                            <td>{{permit_details.Exporter_Name}}</td>
+                                            <td>{{permit_details.Exporter_Address}}</td>
+                                            <td>{{permit_details.Qty_Gross}}, {{permit_details.Unit_Gross}}</td>
+                                            <td>{{permit_details.Qty_Net}}, {{permit_details.Unit_Net}}</td>
+                                            <td>{{permit_details.Importing_Country}}</td>
+                                            <td>{{permit_details.Factory_Address}}</td>
+                                            <td>{{permit_details.Export_Permit}}</td>
+                                            <td>{{permit_details.Approve_Date}}</td>
+                                            <td>{{permit_details.Validity}}</td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                          <td colspan="10" class="text-center">No Data</td>
+                                        </tr>
+                                        {% endfor %}
+                                </tbody>
+                            </table>
+                        {% elif service_name.Service_Id == 4 %}
+                            <h4 class="card-title">List of Nurseries/Seed Growers Registered</h4>
+                            <table id="certificate_4_table" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Nursery Name</th>
+                                        <th scope="col">Nursery Address</th>
+                                        <th scope="col">License No</th>
+                                        <th scope="col">Owner Name</th>
+                                        <th scope="col">Contact No</th>
+                                        <th scope="col">Area</th>
+                                        <th scope="col">Nursery Type</th>
+                                        <th scope="col">Registration Number</th>
+                                        <th scope="col">Approve Date</th>
+                                        <th scope="col">Validity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for permit_details in permit_details %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{permit_details.Company_Name}}</td>
+                                            <td>{{permit_details.Company_Address}}</td>
+                                            <td>{{permit_details.License_No}}</td>
+                                            <td>{{permit_details.Owner_Name}}</td>
+                                            <td>{{permit_details.contactNo}}</td>
+                                            <td>{{permit_details.Area}}</td>
+                                            <td>{{permit_details.Nursery_Type}}</td>
+                                            <td>{{permit_details.Clearance_Number}}</td>
+                                            <td>{{permit_details.Approve_Date}}</td>
+                                            <td>{{permit_details.Validity}}</td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                          <td colspan="11" class="text-center">No Data</td>
+                                        </tr>
+                                        {% endfor %}
+                                </tbody>
+                            </table>
+                        {% elif service_name.Service_Id == 5 %}
+                            <h4 class="card-title">List of Seed Certification Issued</h4>
+                            <table id="certificate_5_table" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Nursery Name</th>
+                                        <th scope="col">Nursery Address</th>
+                                        <th scope="col">License No</th>
+                                        <th scope="col">Owner Name</th>
+                                        <th scope="col">Contact No</th>
+                                        <th scope="col">Location</th>
+                                        <th scope="col">Nursery Type</th>
+                                        <th scope="col">Registration Number</th>
+                                        <th scope="col">Approve Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for permit_details in permit_details %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{permit_details.Company_Name}}</td>
+                                            <td>{{permit_details.Company_Address}}</td>
+                                            <td>{{permit_details.License_No}}</td>
+                                            <td>{{permit_details.Owner_Name}}</td>
+                                            <td>{{permit_details.contactNo}}</td>
+                                            <td>{{permit_details.Dzongkhag_Code}},{{permit_details.Gewog_Code}},{{permit_details.Village_Code}}</td>
+                                            <td>{{permit_details.Nursery_Type}}</td>
+                                            <td>{{permit_details.Seed_Certificate}}</td>
+                                            <td>{{permit_details.Approve_Date}}</td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                          <td colspan="10" class="text-center">No Data</td>
+                                        </tr>
+                                        {% endfor %}
+                                </tbody>
+                            </table>
+                        {% elif service_name.Service_Id == 6 %}
+                            <h4 class="card-title">List of Meat Shop License Issued</h4>
+                            <table id="certificate_6_table" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Business Name</th>
+                                        <th scope="col">Address</th>
+                                        <th scope="col">Contact No</th>
+                                        <th scope="col">Email</th>
+                                        <th scope="col">License Number</th>
+                                        <th scope="col">Approve Date</th>
+                                        <th scope="col">Validity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for permit_details in permit_details %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{permit_details.Business_Name}}</td>
+                                            <td>{{permit_details.Address}}</td>
+                                            <td>{{permit_details.Contact_No}}</td>
+                                            <td>{{permit_details.Email}}</td>
+                                            <td>{{permit_details.Conditional_Clearance_No}}</td>
+                                            <td>{{permit_details.Approve_Date}}</td>
+                                            <td>{{permit_details.Validity}}</td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                          <td colspan="8" class="text-center">No Data</td>
+                                        </tr>
+                                        {% endfor %}
+                                </tbody>
+                            </table>
+                        {% elif service_name.Service_Id == 7 %}
+                            <h4 class="card-title">List of Ante Mortem And Post Mortem Certificate Issued</h4>
+                            <table id="certificate_7_table" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Applicant</th>
+                                        <th scope="col">Address</th>
+                                        <th scope="col">Location</th>
+                                        <th scope="col">Inspection Date</th>
+                                        <th scope="col">Contact No</th>
+                                        <th scope="col">Certificate Number</th>
+                                        <th scope="col">Approve Date</th>
+                                        <th scope="col">Validity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for permit_details in permit_details %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{permit_details.Applicant_Name}}</td>
+                                            <td>{{permit_details.Address}}</td>
+                                            <td>{{permit_details.Exact_Location}}</td>
+                                            <td>{{permit_details.Inspection_Date}}</td>
+                                            <td>{{permit_details.Contact_No}}</td>
+                                            <td>{{permit_details.Clearance_No}}</td>
+                                            <td>{{permit_details.Approved_Date}}</td>
+                                            <td>{{permit_details.Validity}}</td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                          <td colspan="9" class="text-center">No Data</td>
+                                        </tr>
+                                        {% endfor %}
+                                </tbody>
+                            </table>
+                        {% elif service_name.Service_Id == 8 %}
+                            <h4 class="card-title">List of Movement Permit For Livestock Issued</h4>
+                            <table id="certificate_8_table" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Permit Type</th>
+                                        <th scope="col">Applicant</th>
+                                        <th scope="col">Contact No</th>
+                                        <th scope="col">From Location</th>
+                                        <th scope="col">To Location</th>
+                                        <th scope="col">Movement Purpose</th>
+                                        <th scope="col">Authorized Route</th>
+                                        <th scope="col">Permit Number</th>
+                                        <th scope="col">Approve Date</th>
+                                        <th scope="col">Validity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for permit_details in permit_details %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            {% if permit_details.Permit_Type == 'A' %}
+                                                <td>Animal</td>
+                                            {% elif permit_details.Permit_Type == 'AP' %}
+                                                <td>Animal Products</td>
+                                            {% endif %}
+                                            <td>{{permit_details.Applicant_Name}}</td>
+                                            <td>{{permit_details.Contact_No}}</td>
+                                            <td>{{permit_details.From_Location}}</td>
+                                            <td>{{permit_details.To_Location}}</td>
+                                            <td>{{permit_details.Movement_Purpose}}</td>
+                                            <td>{{permit_details.Authorized_Route}}</td>
+                                            <td>{{permit_details.Movement_Permit_No}}</td>
+                                            <td>{{permit_details.Approved_Date}}</td>
+                                            <td>{{permit_details.Validity}}</td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                          <td colspan="11" class="text-center">No Data</td>
+                                        </tr>
+                                        {% endfor %}
+                                </tbody>
+                            </table>
+                        {% elif service_name.Service_Id == 9 %}
+                            <h4 class="card-title">List of Import Permit for Livestock Products Issued</h4>
+                            <table id="certificate_9_table" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Importer Type</th>
+                                        <th scope="col">Importer</th>
+                                        <th scope="col">Address</th>
+                                        <th scope="col">Contact No</th>
+                                        <th scope="col">Import Type</th>
+                                        <th scope="col">Origin of Source of Products</th>
+                                        <th scope="col">Exporter's Name and address </th>
+                                        <th scope="col">Final_Destination</th>
+                                        <th scope="col">Permit Number</th>
+                                        <th scope="col">Approve Date</th>
+                                        <th scope="col">Validity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for permit_details in permit_details %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        {% if permit_details.Permit_Type == 'Individual' %}
+                                            <td>Individual</td>
+                                            <td>{{permit_details.Applicant_Name}}</td>
+                                        {% elif permit_details.Permit_Type == 'Commercial' %}
+                                            <td>Commercial</td>
+                                            <td>{{permit_details.Business_Name}}</td>
+                                        {% elif permit_details.Permit_Type == 'Institution' %}
+                                            <td>Institution</td>
+                                            <td>{{permit_details.Business_Name}}</td>
+                                        {% endif %}
+                                        <td>{{permit_details.Present_Address}}</td>
+                                        <td>{{permit_details.Contact_No}}</td>
+                                        <td>{{permit_details.Application_Type}}</td>
+                                        <td>{{permit_details.Origin_Source_Products}}</td>
+                                        <td>{{permit_details.Name_And_Address_Supplier}}</td>
+                                        <td>{{permit_details.Final_Destination}}</td>
+                                        <td>{{permit_details.Import_Permit_No}}</td>
+                                        <td>{{permit_details.Approve_Date}}</td>
+                                        <td>{{permit_details.Validity}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="12" class="text-center">No Data</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        {% elif service_name.Service_Id == 10 %}
+                            <h4 class="card-title">List of Import Permit For Live Animal And Fish Issued</h4>
+                            <table id="certificate_10_table" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Importer Type</th>
+                                        <th scope="col">Importer</th>
+                                        <th scope="col">Address</th>
+                                        <th scope="col">Contact No</th>
+                                        <th scope="col">Import Type</th>
+                                        <th scope="col">Origin of Source of Products</th>
+                                        <th scope="col">Exporter's Name and address </th>
+                                        <th scope="col">Final_Destination</th>
+                                        <th scope="col">Permit Number</th>
+                                        <th scope="col">Approve Date</th>
+                                        <th scope="col">Validity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for permit_details in permit_details %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        {% if permit_details.Import_Type == 'Individual' %}
+                                            <td>Individual</td>
+                                            <td>{{permit_details.Applicant_Name}}</td>
+                                        {% elif permit_details.Import_Type == 'Commercial' %}
+                                            <td>Commercial</td>
+                                            <td>{{permit_details.Business_Name}}</td>
+                                        {% elif permit_details.Import_Type == 'Institution' %}
+                                            <td>Institution</td>
+                                            <td>{{permit_details.Business_Name}}</td>
+                                        {% endif %}
+                                        <td>{{permit_details.Present_Address}}</td>
+                                        <td>{{permit_details.Contact_No}}</td>
+                                        <td>{{permit_details.Application_Type}}</td>
+                                        <td>{{permit_details.Origin_Source_Products}}</td>
+                                        <td>{{permit_details.Name_And_Address_Supplier}}</td>
+                                        <td>{{permit_details.Final_Destination}}</td>
+                                        <td>{{permit_details.Import_Permit_No}}</td>
+                                        <td>{{permit_details.Approve_Date}}</td>
+                                        <td>{{permit_details.Validity}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="12" class="text-center">No Data</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        {% elif service_name.Service_Id == 11 %}
+                            <h4 class="card-title">List of Export Certificate for Animal and Animal Products Issued</h4>
+                            <table id="certificate_11_table" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Certificate Type</th>
+                                        <th scope="col">Exporter Type</th>
+                                        <th scope="col">Exporter Name</th>
+                                        <th scope="col">Address</th>
+                                        <th scope="col">Contact No</th>
+                                        <th scope="col">Origin Source of Products</th>
+                                        <th scope="col">Importer Name & Address</th>
+                                        <th scope="col">Place of Exit</th>
+                                        <th scope="col">Export Certificate</th>
+                                        <th scope="col">Approve Date</th>
+                                        <th scope="col">Validity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for permit_details in permit_details %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            {% if permit_details.Application_Type == 'A' %}
+                                                <td>Animal</td>
+                                            {% elif permit_details.Application_Type == 'AP' %}
+                                                <td>Animal Products</td>
+                                            {% endif %}
+
+                                            {% if permit_details.Exporter_Type == 'Individual' %}
+                                                <td>Individual</td>
+                                                <td>{{permit_details.Applicant_Name}}</td>
+                                            {% elif permit_details.Application_Type == 'Commercial' %}
+                                                <td>Commercial</td>
+                                                <td>{{permit_details.Business_Name}}</td>
+                                            {% elif permit_details.Application_Type == 'Institution' %}
+                                                <td>Institution</td>
+                                                <td>{{permit_details.Business_Name}}</td>
+                                            {% endif %}
+
+                                            <td>{{permit_details.Present_Address}}</td>
+                                            <td>{{permit_details.Contact_No}}</td>
+                                            <td>{{permit_details.Origin_Source_Products}}</td>
+                                            <td>{{permit_details.Importer_Name_Address}}</td>
+                                            <td>{{permit_details.Place_of_Exit}}</td>
+                                            <td>{{permit_details.Export_Permit_No}}</td>
+                                            <td>{{permit_details.Approve_Date}}</td>
+                                            <td>{{permit_details.Validity}}</td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                          <td colspan="12" class="text-center">No Data</td>
+                                        </tr>
+                                        {% endfor %}
+                                </tbody>
+                            </table>
+                        {% elif service_name.Service_Id == 12 %}
+                            <h4 class="card-title">List of Export Certificate for Food Products Issued</h4>
+                            <table id="certificate_12_table" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Exporter Name</th>
+                                        <th scope="col">Address</th>
+                                        <th scope="col">Contact No</th>
+                                        <th scope="col">Importer Name</th>
+                                        <th scope="col">Importer Address</th>
+                                        <th scope="col">Importing Country</th>
+                                        <th scope="col">Product Name</th>
+                                        <th scope="col">No of Package</th>
+                                        <th scope="col">Description</th>
+                                        <th scope="col">Quantity</th>
+                                        <th scope="col">Export Certificate</th>
+                                        <th scope="col">Approve Date</th>
+                                        <th scope="col">Validity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for permit_details in permit_details %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{permit_details.Exporters_Name}}</td>
+                                            <td>{{permit_details.Exporters_Address}}</td>
+                                            <td>{{permit_details.Contact_No}}</td>
+                                            <td>{{permit_details.Importer_Name}}</td>
+                                            <td>{{permit_details.Importer_Address}}</td>
+                                            <td>{{permit_details.Importing_Country}}</td>
+                                            <td>{{permit_details.Product_Name}}</td>
+                                            <td>{{permit_details.No_Of_Packages}}</td>
+                                            <td>{{permit_details.Description_Of_Packages}}</td>
+                                            <td>{{permit_details.Quantity}}, {{permit_details.Unit}}</td>
+                                            <td>{{permit_details.Export_Permit_No}}</td>
+                                            <td>{{permit_details.Approved_Date}}</td>
+                                            <td>{{permit_details.Validity}}</td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                          <td colspan="14" class="text-center">No Data</td>
+                                        </tr>
+                                        {% endfor %}
+                                </tbody>
+                            </table>
+                        {% elif service_name.Service_Id == 13 %}
+                            <h4 class="card-title">List of Food Handler Certificate Issued</h4>
+                            <table id="certificate_13_table" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Nationality</th>
+                                        <th scope="col">Applicant Name</th>
+                                        <th scope="col">Contact_No</th>
+                                        <th scope="col">Training Batch No</th>
+                                        <th scope="col">From_Date</th>
+                                        <th scope="col">To Date</th>
+                                        <th scope="col">Assessment Score</th>
+                                        <th scope="col">License No</th>
+                                        <th scope="col">Approved Date</th>
+                                        <th scope="col">Validity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for permit_details in permit_details %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{permit_details.Nationality}}</td>
+                                            <td>{{permit_details.Applicant_Name}}</td>
+                                            <td>{{permit_details.Contact_No}}</td>
+                                            <td>{{permit_details.Training_Batch_No}}</td>
+                                            <td>{{permit_details.Training_From_Date}}</td>
+                                            <td>{{permit_details.Training_To_Date}}</td>
+                                            <td>{{permit_details.Assessment_Score}}</td>
+                                            <td>{{permit_details.FH_License_No}}</td>
+                                            <td>{{permit_details.Approve_Date}}</td>
+                                            <td>{{permit_details.Validity}}</td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                          <td colspan="11" class="text-center">No Data</td>
+                                        </tr>
+                                        {% endfor %}
+                                </tbody>
+                            </table>
+                        {% elif service_name.Service_Id == 14 %}
+                            <h4 class="card-title">List of Import Permit for Food Products Issued</h4>
+                            <table id="certificate_14_table" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Importer Type</th>
+                                        <th scope="col">Importer</th>
+                                        <th scope="col">Address</th>
+                                        <th scope="col">Contact No</th>
+                                        <th scope="col">Origin Country</th>
+                                        <th scope="col">Place Of Entry</th>
+                                        <th scope="col">Final_Destination</th>
+                                        <th scope="col">Permit Number</th>
+                                        <th scope="col">Approve Date</th>
+                                        <th scope="col">Validity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for permit_details in permit_details %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        {% if permit_details.Import_Type == 'Individual' %}
+                                            <td>Individual</td>
+                                            <td>{{permit_details.Applicant_Name}}</td>
+                                        {% elif permit_details.Import_Type == 'Commercial' %}
+                                            <td>Commercial</td>
+                                            <td>{{permit_details.Applicant_Name}}</td>
+                                        {% elif permit_details.Import_Type == 'Institution' %}
+                                            <td>Institution</td>
+                                            <td>{{permit_details.Applicant_Name}}</td>
+                                        {% endif %}
+                                        <td>{{permit_details.Present_Address}}</td>
+                                        <td>{{permit_details.Contact_No}}</td>
+                                        <td>{{permit_details.Origin_Country_Food}}</td>
+                                        <td>{{permit_details.Place_Of_Entry}}</td>
+                                        <td>{{permit_details.Final_Destination}}</td>
+                                        <td>{{permit_details.Import_Permit_No}}</td>
+                                        <td>{{permit_details.Approve_Date}}</td>
+                                        <td>{{permit_details.Validity}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="11" class="text-center">No Data</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        {% elif service_name.Service_Id == 15 %}
+                            <h4 class="card-title">List of Food Business Registered And License Issued</h4>
+                            <table id="certificate_15_table" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Business Name</th>
+                                        <th scope="col">Owner</th>
+                                        <th scope="col">Address</th>
+                                        <th scope="col">Contact No</th>
+                                        <th scope="col">License Criteria</th>
+                                        <th scope="col">Conditional Clearance No</th>
+                                        <th scope="col">FB License No</th>
+                                        <th scope="col">Approve Date</th>
+                                        <th scope="col">Validity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for permit_details in permit_details %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{permit_details.Business_Name}}</td>
+                                            <td>{{permit_details.Name_Owner}}</td>
+                                            <td>{{permit_details.Address}}</td>
+                                            <td>{{permit_details.Contact_No}}</td>
+                                            <td>{{permit_details.License_Criteria}}</td>
+                                            <td>{{permit_details.Conditional_Clearance_No}}</td>
+                                            <td>{{permit_details.FB_License_No}}</td>
+                                            <td>{{permit_details.Approve_Date}}</td>
+                                            <td>{{permit_details.Validity}}</td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                          <td colspan="10" class="text-center">No Data</td>
+                                        </tr>
+                                        {% endfor %}
+                                </tbody>
+                            </table>
+                        {% endif %}
+                    {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function()
+     {
+        $('#certificate_1_table').DataTable();
+        $('#certificate_2_table').DataTable();
+        $('#certificate_3_table').DataTable();
+        $('#certificate_4_table').DataTable();
+        $('#certificate_5_table').DataTable();
+        $('#certificate_6_table').DataTable();
+        $('#certificate_7_table').DataTable();
+        $('#certificate_8_table').DataTable();
+        $('#certificate_9_table').DataTable();
+        $('#certificate_10_table').DataTable();
+        $('#certificate_11_table').DataTable();
+        $('#certificate_12_table').DataTable();
+        $('#certificate_13_table').DataTable();
+        $('#certificate_14_table').DataTable();
+        $('#certificate_15_table').DataTable();
+    });
+</script>
+{% endblock %}

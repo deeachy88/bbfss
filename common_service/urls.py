@@ -100,7 +100,12 @@ urlpatterns = [
     path('view_commodity_inspection_details', views.view_commodity_inspection_details,
          name='view_commodity_inspection_details'),
     path('view_FHC_inspection_details', views.view_FHC_inspection_details,
-         name='view_FHC_inspection_details')
+         name='view_FHC_inspection_details'),
+
+# Commodity Inspection and Monitoring
+    path('submit_feedback_form', views.submit_feedback_form, name='submit_feedback_form'),
+    path('submit_feedback', views.submit_feedback, name='submit_feedback'),
+    path('feedback_list', views.feedback_list, name='feedback_list'),
 ]
 
 if settings.DEBUG:

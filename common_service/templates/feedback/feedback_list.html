@@ -1,0 +1,53 @@
+{% extends 'common_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="animated fadeIn">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <strong class="card-title">Feedback List</strong>
+                </div>
+                    <div class="card-body">
+                        <div class="table-responsive data-table">
+                        <table id="feedback_table" class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Address</th>
+                                    <th scope="col">Contact No</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Feedback Category</th>
+                                    <th scope="col">Feedback</th>
+                                    <th scope="col">Date</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for feedback_details in feedback_details %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{feedback_details.Name}}</td>
+                                        <td>{{feedback_details.Address}}</td>
+                                        <td>{{feedback_details.Contact_No}}</td>
+                                        <td>{{feedback_details.Email}}</td>
+                                        <td>{{feedback_details.Feedback_Category}}</td>
+                                        <td>{{feedback_details.Feedback}}</td>
+                                        <td>{{feedback_details.Created_Date|date:"d-m-Y"}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="8" class="text-center">No Data</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

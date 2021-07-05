@@ -78,4 +78,7 @@ urlpatterns = [
     path('livestock_product', views.livestock_product_manage, name='livestock_product_page'),
     path('edit_livestock_product/<int:Product_Id>', views.edit_livestock_product, name='edit_livestock_product'),
     path('delete_livestock_product/<int:Product_Id>', views.delete_livestock_product, name='delete_livestock_product'),
+    path('unit', views.unit_manage, name='unit'),
+    path('edit_unit/<int:Unit_Id>', views.edit_unit, name='edit_unit'),
+    path('delete_unit/<int:Unit_Id>', views.delete_unit, name='delete_unit')
 ]

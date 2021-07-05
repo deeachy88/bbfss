@@ -9,60 +9,62 @@
                     <strong class="card-title">Registered Clients</strong>
                 </div>
                 <div class="card-body">
-                    <table id="role-table" class="table table-striped table-bordered">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Name</th>
-		                        <th>Email Id</th>
-		                        <th>Mobile Number</th>
-                                <th>Registration Type</th>
-                                <th>CID</th>
-                                <th>Agency</th>
-                                <th>License No</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {% for clients in reg_clients %}
-                            <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td>{{clients.Name}}</td>
-                                <td>{{clients.Email_Id}}</td>
-                                <td>{{clients.Mobile_Number}}</td>
-                               {% if clients.Client_Type == "I" %}
-                                <td>Individual</td>
-                                {% else %}
-                                 <td>Organization</td>
-                                {% endif %}
-                                <td>{{clients.CID}}</td>
-                                <td>{{clients.Agency}}</td>
-                                <td>{{clients.License_No}}</td>
-                                <td>
-                                    <div class="form-button-action">
-                                        <form action="{% url 'deactivate_client' clients.Email_Id clients.Name %}" method="post">
-                                           {% csrf_token %}
-                                            <button type="submit" data-toggle="tooltip" title="Deactivate" class="btn btn-link btn-primary btn-xs">
-												<i class="fa fa-lock fa-fw"></i>
-											</button>
-                                        </form>
-                                        <form action="{% url 'reset_client_password' clients.Email_Id clients.Name %}" method="post">
-                                           {% csrf_token %}
-                                            <button type="submit" data-toggle="tooltip" title="Reset Password" class="btn btn-link btn-primary btn-xs">
-												<i class="fa fa-key fa-fw"></i>
-											</button>
-                                        </form>
+                    <div class="table-responsive data-table">
+                        <table id="client-table" class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Email Id</th>
+                                    <th>Mobile Number</th>
+                                    <th>Registration Type</th>
+                                    <th>CID</th>
+                                    <th>Agency</th>
+                                    <th>License No</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for clients in reg_clients %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{clients.Name}}</td>
+                                    <td>{{clients.Email_Id}}</td>
+                                    <td>{{clients.Mobile_Number}}</td>
+                                   {% if clients.Client_Type == "I" %}
+                                    <td>Individual</td>
+                                    {% else %}
+                                     <td>Organization</td>
+                                    {% endif %}
+                                    <td>{{clients.CID}}</td>
+                                    <td>{{clients.Agency}}</td>
+                                    <td>{{clients.License_No}}</td>
+                                    <td>
+                                        <div class="form-button-action">
+                                            <form action="{% url 'deactivate_client' clients.Email_Id clients.Name %}" method="post">
+                                               {% csrf_token %}
+                                                <button type="submit" data-toggle="tooltip" title="Deactivate" class="btn btn-link btn-primary btn-xs">
+                                                    <i class="fa fa-lock fa-fw"></i>
+                                                </button>
+                                            </form>
+                                            <form action="{% url 'reset_client_password' clients.Email_Id clients.Name %}" method="post">
+                                               {% csrf_token %}
+                                                <button type="submit" data-toggle="tooltip" title="Reset Password" class="btn btn-link btn-primary btn-xs">
+                                                    <i class="fa fa-key fa-fw"></i>
+                                                </button>
+                                            </form>
 
-                                    </div>
-                                </td>
-                            </tr>
-                        {% empty %}
-                            <tr>
-                              <td colspan="9" class="text-center">No Registered Clients</td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                  <td colspan="9" class="text-center">No Registered Clients</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

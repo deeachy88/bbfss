@@ -1,0 +1,198 @@
+{% extends 'common_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<style>
+option {
+    background-color: black !important;
+}
+</style>
+<div class="card">
+    <div class="card-header">
+        <h4 class="card-title">FEEDBACK Form</h4>
+    </div>
+    <div class="card-body">
+        <form method="post" id="feedbackForm">
+             {% csrf_token %}
+            <div id="feedback_form">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label  class="form-label">Name <font color="red">*</font></label>
+                            <input type="text" class="form-control" id="complainantName" name="complainantName">
+                        </div>
+                        <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Address <font color="red">*</font></label>
+                            <input type="text" class="form-control" id="address" name="address">
+                        </div>
+                        <div class="alert alert-danger" id="addressErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Email <font color="red">*</font></label>
+                            <input type="email" class="form-control" id="email" name="email" onchange="validateemailId(this.value)">
+                        </div>
+                        <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Contact Number <font color="red">*</font></label>
+                            <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                        </div>
+                        <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                         <div class="form-group">
+                            <label class="form-label">Feedback Category <font color="red">*</font></label>
+                            <select class="form-control form-control" id="feedbackCategory" name="feedbackCategory">
+                                <option value="">-SELECT-</option>
+                                <option value="General">General</option>
+                                <option value="Service Related">Service Related</option>
+                            </select>
+                        </div>
+                        <div class="alert alert-danger" id="feedbackCategoryErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Feedback <font color="red">*</font></label>
+                            <textarea class="form-control" id="feedback" name="feedback"></textarea>
+                        </div>
+                        <div class="alert alert-danger" id="feedbackErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+                <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+                    Submit SuccessFul
+                </div>
+                <div class="card-action">
+                    <button type="button" class="btn btn-primary" value="Submit" onclick="Submit_form(this.form)">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+function Submit_form(form)
+    {
+        var name = $('#complainantName').val();
+        var contactNumber = $('#contactNumber').val();
+        var email = $('#email').val();
+        var address = $('#address').val();
+        var feedbackCategory = $('#feedbackCategory').val();
+        var feedback = $('#feedback').val();
+        var number_count = $('#contactNumber').val().length;
+
+        if(name == "")
+        {
+            $('#nameErrorMsg').html("Enter Name .");
+            $('#nameErrorMsg').show();
+            $('#nameErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(address == "")
+        {
+            $('#addressErrorMsg').html("Enter Address Number.");
+            $('#addressErrorMsg').show();
+            $('#addressErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(email == "")
+        {
+            $('#emailErrorMsg').html("Enter email Id.");
+            $('#emailErrorMsg').show();
+            $('#emailErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(contactNumber == "")
+        {
+            $('#contactNumberErrorMsg').html("Enter Contact Number.");
+            $('#contactNumberErrorMsg').show();
+            $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(feedbackCategory == "")
+        {
+            $('#feedbackCategoryErrorMsg').html("Select Feedback Category.");
+            $('#feedbackCategoryErrorMsg').show();
+            $('#feedbackCategoryErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(feedback == "")
+        {
+            $('#feedbackErrorMsg').html("Enter Feedback.");
+            $('#feedbackErrorMsg').show();
+            $('#feedbackErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(number_count < 8)
+        {
+            $('#contactNumberErrorMsg').html("Contact Number Cannot Be Less Than Eight.");
+            $('#contactNumberErrorMsg').show();
+            setTimeout('hideStatus("contactNumberErrorMsg")',2000);
+        }
+
+        $.ajax({
+            type : "POST",
+            url : "{% url 'submit_feedback' %}",
+            data : $('#feedbackForm').serialize(),
+            success : function(data) {
+                $('#submitMsg').show();
+                setTimeout(function() {
+                    $("#submitMsg").hide('blind', {}, 2000)
+                }, 4000);
+                location.reload();
+            }
+        });
+    }
+
+function validateemailId(emailId)
+{
+    var pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+    var no=emailId.match(pattern);
+
+    if(no==null)
+    {
+        $('#emailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
+        $('#email').val("");
+        $('#emailErrorMsg').show();
+        $('#emailErrorMsg').delay(2000).fadeOut('slow');
+    }else{
+     $('#emailErrorMsg').hide();
+    }
+}
+function checkContact(value)
+{
+    var firstDigit = value.charAt(0);
+    var secondDigit = value.charAt(1);
+    var length = value.length;
+
+    if (length <8){
+    $('#contactNumberErrorMsg').html("Contact Number must be 8 digit.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(1500).fadeOut('slow');
+    }
+    else if(firstDigit != 7 && firstDigit != 1){
+        $('#contactNumberErrorMsg').html("Must Start with either 1 or 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 1 && secondDigit != 6 && secondDigit != 7){
+        $('#contactNumberErrorMsg').html("Second Digit Must Start with either 6 or 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 7 && secondDigit == 6){
+        $('#contactNumberErrorMsg').html("Second Digit Cannot be 6.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 7 && secondDigit != 7){
+        $('#contactNumberErrorMsg').html("Second Digit Must Start with 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }
+
+}
+
+</script>
+{% endblock %}

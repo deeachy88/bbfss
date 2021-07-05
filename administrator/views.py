@@ -15,14 +15,14 @@ from django.template.loader import render_to_string
 from administrator.forms import UserForm, LocationFieldMappingForm, FieldOfficeForm, FodderVarietyForm, PlantFodderForm, \
     PlantProductForm, PesticideForm, OrnamentalPlantForm, CropSpeciesForm, ChemicalForm, CropVarietyForm, CropForm, \
     ServiceForm, DivisionForm, SectionForm, RoleForm, CropCategoryForm, LivestockSpeciesForm, \
-    LivestockSpeciesBreedForm, LivestockProductForm
+    LivestockSpeciesBreedForm, LivestockProductForm, UnitForm
 from administrator.models import t_user_master, t_security_question_master, t_role_master, t_forgot_password, \
     t_section_master, t_village_master, t_gewog_master, t_dzongkhag_master, t_location_field_office_mapping, \
     t_field_office_master, t_plant_fodder_variety_master, t_plant_fodder_master, t_plant_product_master, \
     t_plant_pesticide_master, t_plant_ornamental_master, t_plant_crop_species_master, t_plant_chemical_master, \
     t_plant_crop_variety_master, t_plant_crop_master, t_service_master, t_division_master, \
     t_plant_crop_category_master, t_livestock_species_master, t_livestock_category_master, \
-    t_livestock_species_breed_master, t_livestock_product_master
+    t_livestock_species_breed_master, t_livestock_product_master, t_unit_master
 
 from bbfss import settings
 from plant.models import t_payment_details
@@ -392,6 +392,56 @@ def save_division_form(request, form, template_name):
     data['html_form'] = render_to_string(template_name, context, request=request)
     return JsonResponse(data)
 
+def unit_manage(request):
+    if request.method == 'POST':
+        form = UnitForm(request.POST)
+        if form.is_valid():
+            form.save()
+            unit = t_unit_master.objects.all()
+            return render(request, 'unit.html', {'form': form, 'unit': unit})
+    else:
+        unit = t_unit_master.objects.all()
+        form = UnitForm()
+        return render(request, 'unit.html', {'form': form, 'unit': unit})
+
+
+def edit_unit(request, Unit_Id):
+    print(Unit_Id)
+    unit = get_object_or_404(t_unit_master, pk=Unit_Id)
+    if request.method == 'POST':
+        form = UnitForm(request.POST, instance=unit)
+    else:
+        form = UnitForm(instance=unit)
+    return save_unit_form(request, form, 'edit_unit.html')
+
+def delete_unit(request, Unit_Id):
+    unit = get_object_or_404(t_unit_master, pk=Unit_Id)
+    data = dict()
+    if request.method == 'POST':
+        unit.delete()
+        data['form_is_valid'] = True  # This is just to play along with the existing code
+        unit = t_unit_master.objects.all()
+        data['html_form'] = render_to_string('unit.html', {'unit': unit})
+    else:
+        context = {'unit': unit}
+        data['html_form'] = render_to_string('unit_delete.html', context, request=request)
+    return JsonResponse(data)
+
+def save_unit_form(request, form, template_name):
+    data = dict()
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            data['form_is_valid'] = True
+            division = t_division_master.objects.all()
+            data['html_division_list'] = render_to_string('division.html', {
+                'division': division
+            })
+        else:
+            data['form_is_valid'] = False
+    context = {'form': form}
+    data['html_form'] = render_to_string(template_name, context, request=request)
+    return JsonResponse(data)
 
 def crop_category_manage(request):
     if request.method == 'POST':
@@ -1299,7 +1349,6 @@ def payment_list(request):
     service_details = t_service_master.objects.all()
     return render(request, 'payment_details_list.html', {'application_details': application_details,
                                                          'service_details': service_details})
-
 
 def update_payment_details(request):
     Application_No = request.POST.get('application_no')
