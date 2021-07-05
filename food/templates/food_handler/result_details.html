@@ -1,0 +1,48 @@
+<table class="table table-bordered" id="food-table">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Applicant</th>
+            <th scope="col">Contact Number</th>
+            <th scope="col">Application No</th>
+            <th scope="col">Application Date</th>
+            <th scope="col">Minimum Qualifying Marks</th>
+            <th scope="col">Photo</th>
+            <th scope="col">Update Details</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for application_details in application_details %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{application_details.Applicant_Name}}</td>
+                <td>{{application_details.Contact_No}}</td>
+                <td><button class="btn btn-primary btn-link" onclick="viewApplicationDetails('{{application_details.Application_No}}')">{{application_details.Application_No}}</button></td>
+                <td>{{application_details.Application_Date|date:"d-m-Y"}}</td>
+                <td>{{application_details.Minimum_Score}}</td>
+                {% for details in file_attach %}
+                    {% if application_details.Application_No == details.Application_No %}
+                        <td><img src="{{ details.File_Path}}" alt="connect" style="max-height:70px"></td>
+                    {% endif %}
+                {% endfor %}
+                <td><button type="button" class="btn btn-warning btn-sm js-edit-food_handler" onclick="edit_details('{{application_details.Application_No}}')">Edit</button></td>
+                <input type="hidden" value="{{application_details.Application_No}}" id="appNo_{{ forloop.counter }}">
+            </tr>
+        {% empty %}
+            <tr>
+              <td colspan="7" class="text-center">No Data</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+function show_details_modal(application_no,Training_Batch_No)
+{
+    $('#Application_No').val(application_no);
+    $('#batch_No').val(Training_Batch_No);
+    $('#details_Modal').modal('show');
+}
+
+
+</script>

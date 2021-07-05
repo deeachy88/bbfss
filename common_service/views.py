@@ -334,11 +334,10 @@ def forward_complaint_to_co(request):
     app_no = request.POST.get('applicationNo')
     investigation_report = request.POST.get('investigationReport')
     investigation_date = request.POST.get('investigationDate')
-    ins_investigation_date = datetime.strptime(investigation_date, '%d-%m-%Y').date()
     forward_details = t_common_complaint_t1.objects.filter(Application_No=app_no)
 
     forward_details.update(Investigation_Report=investigation_report)
-    forward_details.update(Investigation_Date=ins_investigation_date)
+    forward_details.update(Investigation_Date=investigation_date)
     forward_details.update(Application_Status='IR')
 
     application_details = t_workflow_details.objects.filter(Application_No=app_no)

@@ -80,88 +80,88 @@
           <div class="modal-body">
             {% csrf_token %}
               <div class="col-lg-12">
-                            <div class="row">
-                                <div class="form-group col-md-6">
-                                    <label for="name">Name</label>
-                                    <input type="text" name="name" class="form-control" id="name" required>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="empId">Employee_Id</label>
-                                    <input type="text" name="Employee_Id" class="form-control" id="empId" required>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="form-group col-md-6">
-                                    <div class="form-check">
-                                        <label>Gender</label><br>
-                                        <label class="form-radio-label">
-                                            <input class="form-radio-input" type="radio" name="gender" value="M" checked="">
-                                            <span class="form-radio-sign">Male</span>
-                                        </label>
-                                        <label class="form-radio-label ml-3">
-                                            <input class="form-radio-input" type="radio" name="gender" value="F">
-                                            <span class="form-radio-sign">Female</span>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="email" class=" requiredField">
-                                        Email<span class="asteriskField">*</span>
-                                    </label>
-                                    <div class="">
-                                        <input type="email" name="email" maxlength="254" class="emailinput form-control" id="email" required>
-                                    </div>
-                                    <div id="errorEmailId" class="alert alert-danger" role="alert" style="display: none;">
-                                        A user with this email already exists.
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="form-group col-md-6">
-                                    <label for="mobile">Mobile Number</label>
-                                    <input type="text" name="mobile" maxlength="8" minlength="8" class="form-control" id="mobile" required>
-                                </div>
-                                <div class="form-group col-md-6">
-                                     <label for="role">Role</label>
-                                     <select class="form-control select2-selection select2-selection--single" id="role" name="role" onchange="roleChange(this.value)" required>
-                                          <option value="">--SELECT ROLE--</option>
-                                        {% for role in role %}
-                                                <option value="{{ role.Role_Id }}">{{ role.Role_Name }}</option>
-                                        {% endfor %}
-                                     </select>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="form-group col-md-6" id="divisionDiv">
-                                     <label for="division">Division</label>
-                                     <select class="form-control" id="division" name="division" onchange="getSection(this.value)">
-                                        <option value="">--SELECT DIVISION--</option>
-                                        {% for division in division %}
-                                                <option value="{{ division.Division_Id }}">{{ division.Division_Name }}</option>
-                                        {% endfor %}
-                                     </select>
-                                </div>
-                                <div class="form-group col-md-6" id="sectionDiv">
-                                     <label for="section">Section</label>
-                                     <select class="form-control" id="section" name="section">
-                                        <option value="">--SELECT SECTION--</option>
-                                        {% for section in section %}
-                                                <option value="{{ section.Section_Id }}">{{ section.Section_Name }}</option>
-                                        {% endfor %}
-                                     </select>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="form-group col-md-6" id="fieldDiv">
-                                     <label for="fieldOffice">Field Office</label>
-                                     <select class="form-control" id="fieldOffice" name="field">
-                                        <option value="">--SELECT Field Office--</option>
-                                        {% for field_office in field_office %}
-                                                <option value="{{ field_office.Field_Office_Id }}">{{ field_office.Field_Office }}</option>
-                                        {% endfor %}
-                                     </select>
-                                </div>
-                            </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="name">Name</label>
+                        <input type="text" name="name" class="form-control" id="name" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="empId">Employee_Id</label>
+                        <input type="text" name="Employee_Id" class="form-control" id="empId" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <div class="form-check">
+                            <label>Gender</label><br>
+                            <label class="form-radio-label">
+                                <input class="form-radio-input" type="radio" name="gender" value="M" checked="">
+                                <span class="form-radio-sign">Male</span>
+                            </label>
+                            <label class="form-radio-label ml-3">
+                                <input class="form-radio-input" type="radio" name="gender" value="F">
+                                <span class="form-radio-sign">Female</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="email" class=" requiredField">
+                            Email<span class="asteriskField">*</span>
+                        </label>
+                        <div class="">
+                            <input type="email" name="email" maxlength="254" class="emailinput form-control" id="email" required>
+                        </div>
+                        <div id="errorEmailId" class="alert alert-danger" role="alert" style="display: none;">
+                            A user with this email already exists.
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="mobile">Mobile Number</label>
+                        <input type="text" name="mobile" maxlength="8" minlength="8" class="form-control" id="mobile" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                         <label for="role">Role</label>
+                         <select class="form-control select2-selection select2-selection--single" id="role" name="role" onchange="roleChange(this.value)" required>
+                              <option value="">--SELECT ROLE--</option>
+                            {% for role in role %}
+                                    <option value="{{ role.Role_Id }}">{{ role.Role_Name }}</option>
+                            {% endfor %}
+                         </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6" id="divisionDiv">
+                         <label for="division">Division</label>
+                         <select class="form-control" id="division" name="division" onchange="getSection(this.value)">
+                            <option value="">--SELECT DIVISION--</option>
+                            {% for division in division %}
+                                    <option value="{{ division.Division_Id }}">{{ division.Division_Name }}</option>
+                            {% endfor %}
+                         </select>
+                    </div>
+                    <div class="form-group col-md-6" id="sectionDiv">
+                         <label for="section">Section</label>
+                         <select class="form-control" id="section" name="section">
+                            <option value="">--SELECT SECTION--</option>
+                            {% for section in section %}
+                                    <option value="{{ section.Section_Id }}">{{ section.Section_Name }}</option>
+                            {% endfor %}
+                         </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6" id="fieldDiv">
+                         <label for="fieldOffice">Field Office</label>
+                         <select class="form-control" id="fieldOffice" name="field">
+                            <option value="">--SELECT Field Office--</option>
+                            {% for field_office in field_office %}
+                                    <option value="{{ field_office.Field_Office_Id }}">{{ field_office.Field_Office }}</option>
+                            {% endfor %}
+                         </select>
+                    </div>
+                </div>
               </div>
           </div>
           <div class="modal-footer">

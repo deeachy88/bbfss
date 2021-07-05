@@ -46,6 +46,29 @@
                                     <span class="custom-control-indicator"></span>
                                     <span class="custom-control-description">Animal Product</span>
                                 </label>
+                                <div class="alert alert-danger" id="permitTypeErrorMsg" style="display:none"></div>
+                            </div>
+                        </div><br>
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label class="form-label">Application Type <font color="red">*</font></label>
+                            </div>
+                            <div class="col-sm-4 justify-content-center">
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" name="Application_Type" class="custom-control-input" value="Individual" onclick="enableForms(this.value)">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Individual</span>
+                                </label>
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" name="Application_Type" class="custom-control-input" value="Commercial" onclick="enableForms(this.value)">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Commercial</span>
+                                </label>
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" name="Application_Type" class="custom-control-input" value="Institution" onclick="enableForms(this.value)">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Institution</span>
+                                </label>
                                 <div class="alert alert-danger" id="applicationTypeErrorMsg" style="display:none"></div>
                             </div>
                         </div><br>
@@ -654,32 +677,7 @@ function save_movement_permit()
     }
 }
 
-function loadDetails()
-{
-    var appid = $('#applicationNo').val();
-    $.ajax({
-        type : "GET",
-        url : "{% url 'load_application_details' %}",
-        data :{'application_id':appid},
-        success : function(response)
-        {
-            $('#applicant_details').html(response);
-        }
-    });
-}
-function load_attachment_details()
-{
-    var appid = $('#applicationNo').val();
-    $.ajax({
-        type : "GET",
-        url : "{% url 'load_attachment_details' %}",
-        data :{'application_id':appid},
-        success : function(response)
-        {
-            $('#fileAttach').html(response);
-        }
-    });
-}
+
 
 function getGewog(dzongkhag_id)
 {
@@ -905,6 +903,38 @@ function conveyanceChange(value)
     else
     {
         $("#vehicleNo").removeAttr("disabled");
+    }
+}
+
+function enableForms(value)
+{
+    if(value == "Individual")
+    {
+        $("#license_no").attr("disabled", "disabled");
+        $("#business_name").attr("disabled", "disabled");
+        $("#cid").removeAttr("disabled");
+        $("#dzongkhag").removeAttr("disabled");
+        $("#gewog").removeAttr("disabled");
+        $("#village").removeAttr("disabled");
+    }
+    else if(value == "Commercial")
+    {
+        $("#cid").attr("disabled", "disabled");
+        $("#dzongkhag").attr("disabled", "disabled");
+        $("#gewog").attr("disabled", "disabled");
+        $("#village").attr("disabled", "disabled");
+        $("#license_no").removeAttr("disabled");
+        $("#business_name").removeAttr("disabled");
+
+    }
+    else
+    {
+        $("#cid").attr("disabled", "disabled");
+        $("#dzongkhag").attr("disabled", "disabled");
+        $("#gewog").attr("disabled", "disabled");
+        $("#village").attr("disabled", "disabled");
+        $("#license_no").removeAttr("disabled");
+        $("#business_name").removeAttr("disabled");
     }
 }
 </script>

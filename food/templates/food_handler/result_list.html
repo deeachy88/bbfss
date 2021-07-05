@@ -1,52 +1,101 @@
-
 <table class="table table-bordered">
     <thead>
         <tr>
             <th scope="col">#</th>
-            <th class="center">
-                <label class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="all" onclick="checkAll()">
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description">All</span>
-                </label>
-            </th>
             <th scope="col">Applicant</th>
             <th scope="col">Contact Number</th>
             <th scope="col">Application No</th>
-            <th scope="col">Application Date</th>
             <th scope="col">Minimum Qualifying Marks</th>
-            <th scope="col">Assessment Score</th>
+            <th scope="col">Score</th>
+            <th scope="col">Attendance</th>
+            <th scope="col">Photo</th>
+            <th scope="col">Update Details</th>
         </tr>
     </thead>
     <tbody>
-        {% if application_details %}
-            <input type="hidden" value="{{ application_details|length }}" id="counter">
-        {% endif %}
         {% for application_details in application_details %}
+        <input type="hidden" value="{{ application_details.Training_Batch_No }}" id="batch">
             <tr>
                 <td>{{ forloop.counter }}</td>
-                <td class="center">
-                    <label class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" onclick="check_condition_details()"  value="Yes" id="check_{{ forloop.counter }}">
-                        <span class="custom-control-indicator"></span>
-                        <input type="hidden" id="checkedVals" name="checkedVals"/>
-                    </label>
-                </td>
                 <td>{{application_details.Applicant_Name}}</td>
                 <td>{{application_details.Contact_No}}</td>
-                <td><button class="btn btn-primary btn-link" onclick="viewApplicationDetails('{{application_details.Application_No}}')">{{application_details.Application_No}}</button></td>
-                <td>{{application_details.Application_Date|date:"d-m-Y"}}</td>
+                <td><button type="button" class="btn btn-primary btn-link" onclick="view_Details('{{application_details.Application_No}}')">{{application_details.Application_No}}</button></td>
                 <td>{{application_details.Minimum_Score}}</td>
-                <td><input type="text" class="form-control" name="score" id="cost_{{ forloop.counter }}" disabled></td>
+                <td>{{application_details.Assessment_Score}}</td>
+                <td>{{application_details.Attendance}}</td>
+                    {% for details in file_attach %}
+                        {% if application_details.Application_No == details.Application_No %}
+                            <td><img src="{{ details.File_Path}}" alt="connect" style="max-height:70px"></td>
+                        {% endif %}
+                    {% empty %}
+                        <td>No Image</td>
+                    {% endfor %}
+                <td><button type="button" class="btn btn-warning btn-sm" onclick="show_details_modal('{{application_details.Application_No}}')"><i class="zmdi zmdi-upload zmdi-hc-fw"></i></button></td>
                 <input type="hidden" value="{{application_details.Application_No}}" id="appNo_{{ forloop.counter }}">
             </tr>
         {% empty %}
             <tr>
-              <td colspan="5" class="text-center">No Data</td>
+              <td colspan="8" class="text-center">No Data</td>
             </tr>
         {% endfor %}
     </tbody>
 </table>
-<div class="card-action">
-    <button type="button" class="btn btn-primary btn-md pull-right" onclick="update_result()"> Update </button>
+<div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+    Details Saved
 </div>
+<div class="card-action">
+    <button type="button" class="btn btn-primary" value="Submit" onclick="update_food_handler_status()">Update</button>
+</div>
+
+<script>
+function show_details_modal(application_no)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'get_food_handler_details' %}",
+        data :{'application_id':application_no},
+        success : function(data)
+        {
+            $('#edit_details_application').html(data);
+            $('#modal-food').modal('show');
+        }
+    });
+
+}
+
+function update_food_handler_status()
+{
+    var batch = $('#batch').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'update_food_handler_status' %}",
+        data :{'batch':batch},
+        success : function(data)
+        {
+            $('#submitMsg').show();
+            setTimeout(function()
+            {
+                $("#submitMsg").hide('blind', {}, 500)
+            }, 2000);
+            setTimeout(function()
+            {
+                location.reload();
+            }, 3000);
+        }
+    });
+}
+
+function view_Details(appId)
+{
+        $.ajax({
+            type : "GET",
+            url : "{% url 'food_handler_application_details' %}",
+            data :{'application_id':appId},
+            success : function(data)
+            {
+                $('#details_application').html(data);
+                $('#app-details-Modal').modal('show');
+            }
+        });
+}
+</script>

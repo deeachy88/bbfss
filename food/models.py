@@ -78,9 +78,10 @@ class t_food_licensing_food_handler_t1(models.Model):
     Applicant_Id = models.CharField(max_length=100, default=None, blank=True, null=True)
     OIC_Remarks = models.TextField(default=None, blank=True, null=True)
     Inspection_Remarks = models.TextField(default=None, blank=True, null=True)
-    Attendance = models.CharField(max_length=5, default='No', blank=True, null=True)
+    Attendance = models.CharField(max_length=5, default=None, blank=True, null=True)
     Training_Venue = models.CharField(max_length=100, default=None, blank=True, null=True)
     Training_Batch = models.CharField(max_length=100, default=None, blank=True, null=True)
+    App_Status = models.CharField(max_length=5, default=None, blank=True, null=True)
 
 
 class t_food_import_permit_t1(models.Model):
@@ -245,7 +246,6 @@ class t_food_business_registration_licensing_t1(models.Model):
     FI_Inspection_Team = models.CharField(max_length=200, default=None, blank=True, null=True)
     Dzongkhag_Code = models.IntegerField(default=None, blank=True, null=True)
     Gewog_Code = models.IntegerField(default=None, blank=True, null=True)
-
 
 
 class t_food_business_registration_licensing_t2(models.Model):

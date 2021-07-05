@@ -65,6 +65,12 @@ urlpatterns = [
          name='food_handler_forward_application'),
     path('reject_food_handler_application', views.reject_food_handler_application,
          name='reject_food_handler_application'),
+    path('food_handler_image', views.food_handler_image, name='food_handler_image'),
+    path('food_handler_image_name', views.food_handler_image_name, name='food_handler_image_name'),
+    path('food_handler_image_update', views.food_handler_image_update, name='food_handler_image_update'),
+    path('food_handler_image_name_update', views.food_handler_image_name_update,
+         name='food_handler_image_name_update'),
+    path('food_handler_update', views.food_handler_update, name='food_handler_update'),
 
     # import permit
     path('food_import_application', views.food_import_application, name='food_import_application'),
@@ -88,7 +94,12 @@ urlpatterns = [
     path('result_update', views.result_update, name='result_update'),
     path('update_list', views.update_list, name='update_list'),
     path('factory_inspection_list', views.factory_inspection_list, name='factory_inspection_list'),
-
+    path('food_handler_application_details', views.food_handler_application_details,
+         name='food_handler_application_details'),
+    path('get_food_handler_details', views.get_food_handler_details, name='get_food_handler_details'),
+    path('delete_food_handler_photo', views.delete_food_handler_photo, name='delete_food_handler_photo'),
+    path('food_handler', views.food_handler, name='food_handler'),
+    path('update_food_handler_status', views.update_food_handler_status, name='update_food_handler_status')
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -72,6 +72,7 @@ urlpatterns = [
     path('plant_import_update', views.plant_import_update, name='plant_import_update'),
     path('agro_import_update', views.agro_import_update, name='agro_import_update'),
 
+
     # certificate Printing
     path('certificate_print', views.certificate_print, name='certificate_print'),
     path('view_certificate_details', views.view_certificate_details, name='view_certificate_details'),
@@ -134,7 +135,8 @@ urlpatterns = [
     path('update_resubmit_details', views.update_resubmit_details, name='update_resubmit_details'),
     path('get_variety', views.get_variety, name='get_variety'),
     path('get_crop', views.get_crop, name='get_crop'),
-    path('validate_receipt_no', views.validate_receipt_no, name='validate_receipt_no')
+    path('validate_receipt_no', views.validate_receipt_no, name='validate_receipt_no'),
+    path('get_citizen_details', views.get_citizen_details, name='get_citizen_details')
 
 ]
 if settings.DEBUG:

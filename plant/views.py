@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.utils import timezone
+import requests
 
 from administrator.models import t_dzongkhag_master, t_gewog_master, t_village_master, t_location_field_office_mapping, \
     t_user_master, t_field_office_master, t_plant_crop_master, t_plant_pesticide_master, t_plant_crop_variety_master, \
@@ -43,10 +44,6 @@ from certification.models import t_certification_gap_t1, t_certification_gap_t2,
 
 def focal_officer_application(request):
     Role_Id = request.session['Role_Id']
-    section_id = request.session['section']
-
-    service_details = t_service_master.objects.all()
-
     application_details = t_workflow_details.objects.filter(Assigned_Role_Id=Role_Id,
                                                             Application_Status='ATA', Action_Date__isnull=False) \
                           | t_workflow_details.objects.filter(Assigned_Role_Id=Role_Id,
@@ -59,6 +56,7 @@ def focal_officer_application(request):
                                                               Application_Status='CA', Action_Date__isnull=False) \
                           | t_workflow_details.objects.filter(Assigned_Role_Id=Role_Id,
                                                               Application_Status='FRA', Action_Date__isnull=False)
+    service_details = t_service_master.objects.all()
     # ACK - Acknowledgement Sent
     return render(request, 'focal_officer_pending_list.html', {'application_details': application_details,
                                                                'service_details': service_details})
@@ -239,6 +237,7 @@ def load_location(request):
     location_list = t_location_field_office_mapping.objects.filter(Dzongkhag_Code_id=dzongkhag_id).order_by(
         'Location_Name')
     return render(request, 'movement_permit/location_list.html', {'location_list': location_list})
+
 
 def load_location_nursery(request):
     dzongkhag_id = request.GET.get('dzongkhag_id')
@@ -972,10 +971,13 @@ def apply_import_permit(request):
     variety = t_plant_crop_variety_master.objects.all()
     location = t_field_office_master.objects.filter(Is_Entry_Point="Y")
     country = t_country_master.objects.all()
-
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
     return render(request, 'import_permit/apply_import_permit.html',
                   {'crop': crop, 'pesticide': pesticide, 'variety': variety,
-                   'location': location, 'country': country})
+                   'location': location, 'country': country, 'dzongkhag': dzongkhag, 'gewog': gewog,
+                   'village': village})
 
 
 def save_import_permit(request):
@@ -984,53 +986,39 @@ def save_import_permit(request):
     last_application_no = get_import_application_no(request, service_code)
 
     Applicant_Id = request.session['email']
-    importType = request.POST.get('importType')
-
-    regNo = request.POST.get('p_regNo')
-    companyName = request.POST.get('p_businessName')
-    presentAddress = request.POST.get('p_presentAddress')
-    cid = request.POST.get('p_cid_number')
-    Name = request.POST.get('p_Name')
-    contact_number = request.POST.get('p_contactNo')
-    email = request.POST.get('p_email')
-    supplier = request.POST.get('p_supplier')
-    conveyanceMeans = request.POST.get('p_conveyanceMeans')
-    entry_place = request.POST.get('p_entry_point')
-    movementPurpose = request.POST.get('p_movementPurpose')
-    finalDestination = request.POST.get('p_final_Destination')
-    expectedDate = request.POST.get('p_expected_arrival_date')
-
-    a_regNo = request.POST.get('a_regNo')
-    a_businessName = request.POST.get('a_businessName')
-    a_presentAddress = request.POST.get('a_presentAddress')
-    a_cid_number = request.POST.get('a_cid_number')
-    a_Name = request.POST.get('a_Name')
-    a_contactNo = request.POST.get('a_contactNo')
-    a_email = request.POST.get('a_email')
-    a_supplier = request.POST.get('a_supplier')
-    a_conveyanceMeans = request.POST.get('a_conveyanceMeans')
-    a_entry_point = request.POST.get('a_entry_point')
-    a_movementPurpose = request.POST.get('a_movementPurpose')
-    a_final_Destination = request.POST.get('a_final_Destination')
-    a_expected_arrival_date = request.POST.get('a_expected_arrival_date')
-    Country_Of_Origin = request.POST.get('Country_Of_Origin')
-    Agro_Country_Of_Origin = request.POST.get('Agro_Country_Of_Origin')
-    if importType == "P":
+    importType = request.POST.get('Import_Type')
+    Applicant_Type = request.POST.get('Application_Type')
+    Nationality = request.POST.get('Nationality_Type')
+    print(Nationality);
+    if Applicant_Type == "Commercial":
+        regNo = request.POST.get('regNo')
+        business_name = request.POST.get('business_name')
+        commercial_presentAddress = request.POST.get('commercial_presentAddress')
+        com_contactNumber = request.POST.get('com_contactNumber')
+        com_email = request.POST.get('com_email')
+        com_supplier = request.POST.get('com_email')
+        Com_Country_Of_Origin = request.POST.get('Com_Country_Of_Origin')
+        com_conveyanceMeans = request.POST.get('Com_Country_Of_Origin')
+        com_entry_point = request.POST.get('com_entry_point')
+        com_movementPurpose = request.POST.get('com_movementPurpose')
+        com_final_Destination = request.POST.get('com_final_Destination')
+        arrival_date = request.POST.get('com_expected_arrival_date')
+        com_expected_arrival_date = datetime.strptime(arrival_date, '%d-%m-%Y').date()
         t_plant_import_permit_t1.objects.create(
             Application_No=last_application_no,
             Import_Type=importType,
             License_No=regNo,
-            Business_Name=companyName,
-            CID=cid,
-            Applicant_Name=Name,
-            Present_Address=presentAddress,
-            Contact_No=contact_number,
-            Email=email,
-            Name_And_Address_Supplier=supplier,
-            Means_of_Conveyance=conveyanceMeans,
-            Place_Of_Entry=entry_place,
-            Purpose=movementPurpose,
-            Final_Destination=finalDestination,
+            Business_Name=business_name,
+            CID=None,
+            Applicant_Name=None,
+            Present_Address=commercial_presentAddress,
+            Contact_No=com_contactNumber,
+            Email=com_email,
+            Name_And_Address_Supplier=com_supplier,
+            Means_of_Conveyance=com_conveyanceMeans,
+            Place_Of_Entry=com_entry_point,
+            Purpose=com_movementPurpose,
+            Final_Destination=com_final_Destination,
             Import_Inspection_Submit_Date=None,
             Proposed_Inspection_Date=None,
             Actual_Point_Of_Entry=None,
@@ -1042,52 +1030,149 @@ def save_import_permit(request):
             Inspection_Leader=None,
             Inspection_Team=None,
             Clearance_Ref_No=None,
-            Expected_Arrival_Date=expectedDate,
+            Expected_Arrival_Date=com_expected_arrival_date,
             FO_Remarks=None,
             Inspection_Remarks=None,
-            Country_Of_Origin=Country_Of_Origin,
-            Application_Date=date.today(),
-            Applicant_Id=Applicant_Id
+            Country_Of_Origin=Com_Country_Of_Origin,
+            Application_Date=None,
+            Applicant_Id=Applicant_Id,
+            Approved_Date=None,
+            Validity_Period=None,
+            Validity=None,
+            Application_Type=Applicant_Type,
+            Nationality=None,
+            Dzongkhag_Code=None,
+            Gewog_Code=None,
+            Nationality_Type=None,
+            Village_Code=None,
+            passport_number=None
         )
     else:
-        t_plant_import_permit_t1.objects.create(
-            Application_No=last_application_no,
-            Import_Type=importType,
-            License_No=a_regNo,
-            Business_Name=a_businessName,
-            CID=a_cid_number,
-            Applicant_Name=a_Name,
-            Present_Address=a_presentAddress,
-            Contact_No=a_contactNo,
-            Email=a_email,
-            Name_And_Address_Supplier=a_supplier,
-            Means_of_Conveyance=a_conveyanceMeans,
-            Place_Of_Entry=a_entry_point,
-            Purpose=a_movementPurpose,
-            Final_Destination=a_final_Destination,
-            Import_Inspection_Submit_Date=None,
-            Proposed_Inspection_Date=None,
-            Actual_Point_Of_Entry=None,
-            Inspection_Request_Remarks=None,
-            Import_Permit_No=None,
-            Inspection_Date=None,
-            Inspection_Type=None,
-            Inspection_Time=None,
-            Inspection_Leader=None,
-            Inspection_Team=None,
-            Clearance_Ref_No=None,
-            Expected_Arrival_Date=a_expected_arrival_date,
-            FO_Remarks=None,
-            Inspection_Remarks=None,
-            Country_Of_Origin=Agro_Country_Of_Origin,
-            Application_Date=date.today(),
-            Applicant_Id=Applicant_Id
-        )
+        if Nationality == "Bhutanese":
+            cid = request.POST.get('p_cid_number')
+            Name = request.POST.get('name')
+            dzongkhag = request.POST.get('dzongkhag')
+            gewog = request.POST.get('gewog')
+            village = request.POST.get('village')
+            contactNumber = request.POST.get('contactNumber')
+            email = request.POST.get('email')
+            supplier = request.POST.get('supplier')
+            Country_Of_Origin = request.POST.get('Country_Of_Origin')
+            conveyanceMeans = request.POST.get('conveyanceMeans')
+            entry_point = request.POST.get('entry_point')
+            B_movementPurpose = request.POST.get('B_movementPurpose')
+            B_finalDestination = request.POST.get('B_finalDestination')
+            Date_expected = request.POST.get('date_expected')
+            print(Date_expected)
+            B_expectedDate = datetime.strptime(Date_expected, '%d-%m-%Y').date()
+
+            t_plant_import_permit_t1.objects.create(
+                Application_No=last_application_no,
+                Import_Type=importType,
+                License_No=None,
+                Business_Name=None,
+                CID=cid,
+                Applicant_Name=Name,
+                Present_Address=None,
+                Contact_No=contactNumber,
+                Email=email,
+                Name_And_Address_Supplier=supplier,
+                Means_of_Conveyance=conveyanceMeans,
+                Place_Of_Entry=entry_point,
+                Purpose=B_movementPurpose,
+                Final_Destination=B_finalDestination,
+                Import_Inspection_Submit_Date=None,
+                Proposed_Inspection_Date=None,
+                Actual_Point_Of_Entry=None,
+                Inspection_Request_Remarks=None,
+                Import_Permit_No=None,
+                Inspection_Date=None,
+                Inspection_Type=None,
+                Inspection_Time=None,
+                Inspection_Leader=None,
+                Inspection_Team=None,
+                Clearance_Ref_No=None,
+                Expected_Arrival_Date=B_expectedDate,
+                FO_Remarks=None,
+                Inspection_Remarks=None,
+                Country_Of_Origin=Country_Of_Origin,
+                Application_Date=None,
+                Applicant_Id=Applicant_Id,
+                Approved_Date=None,
+                Validity_Period=None,
+                Validity=None,
+                Application_Type=Applicant_Type,
+                Nationality=None,
+                Dzongkhag_Code=dzongkhag,
+                Gewog_Code=gewog,
+                Nationality_Type=Nationality,
+                Village_Code=village,
+                passport_number=None
+            )
+        else:
+            passport_name = request.POST.get('passport_name')
+            Address = request.POST.get('Address')
+            p_email = request.POST.get('p_email')
+            p_contactNumber = request.POST.get('p_contactNumber')
+            name_supplier = request.POST.get('name_supplier')
+            Origin = request.POST.get('Origin')
+            p_conveyanceMeans = request.POST.get('p_conveyanceMeans')
+            p_entry_point = request.POST.get('p_entry_point')
+            p_movementPurpose = request.POST.get('p_movementPurpose')
+            p_finalDestination = request.POST.get('p_finalDestination')
+            date_format = request.POST.get('p_expectedDate')
+            p_expectedDate = datetime.strptime(date_format, '%d-%m-%Y').date()
+            passport = request.POST.get('passport')
+            nationality = request.POST.get('nationality')
+            t_plant_import_permit_t1.objects.create(
+                Application_No=last_application_no,
+                Import_Type=importType,
+                License_No=None,
+                Business_Name=None,
+                CID=None,
+                Applicant_Name=passport_name,
+                Present_Address=Address,
+                Contact_No=p_contactNumber,
+                Email=p_email,
+                Name_And_Address_Supplier=name_supplier,
+                Means_of_Conveyance=p_conveyanceMeans,
+                Place_Of_Entry=p_entry_point,
+                Purpose=p_movementPurpose,
+                Final_Destination=p_finalDestination,
+                Import_Inspection_Submit_Date=None,
+                Proposed_Inspection_Date=None,
+                Actual_Point_Of_Entry=None,
+                Inspection_Request_Remarks=None,
+                Import_Permit_No=None,
+                Inspection_Date=None,
+                Inspection_Type=None,
+                Inspection_Time=None,
+                Inspection_Leader=None,
+                Inspection_Team=None,
+                Clearance_Ref_No=None,
+                Expected_Arrival_Date=p_expectedDate,
+                FO_Remarks=None,
+                Inspection_Remarks=None,
+                Country_Of_Origin=Origin,
+                Application_Date=None,
+                Applicant_Id=Applicant_Id,
+                Approved_Date=None,
+                Validity_Period=None,
+                Validity=None,
+                Application_Type=Applicant_Type,
+                Nationality=nationality,
+                Dzongkhag_Code=None,
+                Gewog_Code=None,
+                Nationality_Type=Nationality,
+                Village_Code=None,
+                passport_number=passport
+            )
     t_workflow_details.objects.create(Application_No=last_application_no, Applicant_Id=request.session['email'],
                                       Assigned_To=None, Field_Office_Id=None, Section='Plant',
                                       Assigned_Role_Id='2', Action_Date=None, Application_Status='P',
                                       Service_Code=service_code)
     data['applNo'] = last_application_no
+    data['importType'] = importType
     return JsonResponse(data)
 
 
@@ -4643,7 +4728,8 @@ def resubmit_app_details(request):
                                'crop_production': crop_production, 'audit_team': audit_team,
                                'processing_unit': processing_unit, 'wild_collection': wild_collection,
                                'ah_details': ah_details, 'aqua_details': aqua_details, 'api_details': api_details,
-                               'dzongkhag': dzongkhag, 'village': village, 'gewog': gewog, 'user_details':user_details})
+                               'dzongkhag': dzongkhag, 'village': village, 'gewog': gewog,
+                               'user_details': user_details})
             elif status == 'APR':
                 application_details = t_certification_organic_t1.objects.filter(Application_No=appNo)
                 details = t_certification_organic_t2.objects.filter(Application_No=appNo)
@@ -4660,7 +4746,7 @@ def resubmit_app_details(request):
                 dzongkhag = t_dzongkhag_master.objects.all()
                 gewog = t_gewog_master.objects.all()
                 village = t_village_master.objects.all()
-                
+
                 return render(request, 'organic_certification/audit_plan_accept.html',
                               {'application_details': application_details, 'details': details, 'file': file,
                                'crop_production': crop_production, 'audit_team': audit_team,
@@ -4806,3 +4892,13 @@ def validate_receipt_no(request):
         status = "Exists"
         data['status'] = status
         return JsonResponse(data)
+
+
+def get_citizen_details(request):
+    data = dict()
+    cid = request.GET.get('cidNo')
+    print(cid)
+    response = requests.get('https://datahub-apim.dit.gov.bt/dcrc_citizen_details_api/1.0.0' + "/" + cid)
+    geodata = response.getCitizenDetail().get(0).json()
+    print(geodata)
+    return JsonResponse(data)

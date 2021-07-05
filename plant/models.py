@@ -99,6 +99,8 @@ class t_file_attachment(models.Model):
 class t_plant_import_permit_t1(models.Model):
     Application_No = models.CharField(max_length=30, primary_key=True)
     Import_Type = models.CharField(max_length=1, default=None)
+    Application_Type = models.CharField(max_length=10, default=None)
+    Nationality_Type = models.CharField(max_length=10, default=None)
     License_No = models.CharField(max_length=100, blank=True, null=True)
     Business_Name = models.CharField(max_length=100, blank=True, null=True)
     CID = models.BigIntegerField(blank=True, null=True)
@@ -131,6 +133,11 @@ class t_plant_import_permit_t1(models.Model):
     Approved_Date = models.DateField(default=None, blank=True, null=True)
     Validity_Period = models.CharField(default=None, max_length=10, blank=True, null=True)
     Validity = models.DateField(default=None, blank=True, null=True)
+    passport_number = models.CharField(default=None, max_length=100, blank=True, null=True)
+    Nationality = models.CharField(max_length=10, default=None, blank=True, null=True)
+    Dzongkhag_Code = models.IntegerField(default=None, blank=True, null=True)
+    Gewog_Code = models.IntegerField(default=None, blank=True, null=True)
+    Village_Code = models.IntegerField(default=None, blank=True, null=True)
 
 
 class t_plant_import_permit_t2(models.Model):

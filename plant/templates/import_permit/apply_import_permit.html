@@ -5,6 +5,11 @@
 option {
     background-color: black !important;
 }
+.custom-control {
+    margin-bottom: 0;
+    margin-top: 6px;
+    min-height: 1.3rem;
+}
 </style>
 
 <div class="card">
@@ -20,355 +25,537 @@ option {
                     <li class="nav-item">
                         <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadAppDetails()">Home</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" id="plant_details">
                         <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="loadDetails()">Profile</a>
+                    </li>
+                    <li class="nav-item" id="agro_details" style="display:none">
+                        <a class="nav-link" id="agro-profile-tab" data-toggle="pill" href="#agro-details" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_details()">Profile</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="pills-profile-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment()">Attach File</a>
                     </li>
                 </ul>
             </div>
-            <div class="row justify-content-left">
-                <div class="form-check text-center">
-                    <label class="form-label">Import Type <font color="red">*</font></label><br>
-                    <label class="form-radio-label">
-                        <input class="form-radio-input" type="radio" name="importType" id="plantRadio" value="P" onclick="changeSelection(this.value)"  checked>
-                        <span class="form-radio-sign">Plant And Plant Products</span>
-                    </label>
-                    <label class="form-radio-label ml-3">
-                        <input class="form-radio-input" type="radio" name="importType" id="agroRadio" value="A" onclick="changeSelection(this.value)">
-                        <span class="form-radio-sign">Agrochemicals</span>
-                    </label>
+            <div class="tab-content mt-2 mb-3" id="pills-tabContent">
+                <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label class="form-label">Import Type <font color="red">*</font></label>
+                        </div>
+                        <div class="col-sm-8 justify-content-center">
+                            <label class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" name="Import_Type" id="plantRadio" value="P" checked>
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Plant And Plant Products</span>
+                            </label>
+                            <label class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" name="Import_Type" id="agroRadio" value="A">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Agrochemicals</span>
+                            </label>
+                        </div>
+                        <div class="alert alert-danger" id="Import_TypeErrorMsg" style="display:none"></div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label class="form-label">Application Type <font color="red">*</font></label>
+                        </div>
+                        <div class="col-sm-8 justify-content-center">
+                            <label class="custom-control custom-radio">
+                                <input type="radio" name="Application_Type" class="custom-control-input" value="Personal" onclick="change_selection(this.value)">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Personal</span>
+                            </label>
+                            <label class="custom-control custom-radio">
+                                <input type="radio" name="Application_Type" class="custom-control-input" value="Commercial" onclick="change_selection(this.value)">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Commercial</span>
+                            </label>
+                            <div class="alert alert-danger" id="Application_TypeErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row nationality-div" style="display:none">
+                        <div class="col-sm-3">
+                            <label class="form-label">Nationality <font color="red">*</font></label>
+                        </div>
+                        <div class="col-sm-8 justify-content-center">
+                            <label class="custom-control custom-radio">
+                                <input type="radio" name="Nationality_Type" class="custom-control-input" id="bhutanese_radio" value="Bhutanese" onclick="checkNationality(this.value)">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Bhutanese</span>
+                            </label>
+                            <label class="custom-control custom-radio">
+                                <input type="radio" name="Nationality_Type" class="custom-control-input" id="non_bhutanese_radio" value="Non-Bhutanese" onclick="checkNationality(this.value)">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Non-Bhutanese</span>
+                            </label>
+                            <div class="alert alert-danger" id="Nationality_ErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <br>
+                    <div id="commercial_div" style="display:none;">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">License Number <font color="red">*</font></label>
+                                    <input type="text" class="form-control" id="regNo" name="regNo">
+                                </div>
+                                <div class="alert alert-danger" id="regNoErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Business Name <font color="red">*</font></label>
+                                    <input type="text" class="form-control" id="business_name" name="p_businessName">
+                                </div>
+                                <div class="alert alert-danger" id="business_nameErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Present Address <font color="red">*</font></label>
+                                    <textarea class="form-control" rows="2" id="commercial_presentAddress" name="commercial_presentAddress"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="commercial_presentAddressErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Contact Number <font color="red">*</font></label>
+                                    <input type="number" class="form-control" id="com_contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="com_contactNumber" maxlength="8" onkeypress="return isNumberKey(event)">
+                                </div>
+                                <div class="alert alert-danger" id="com_contactNumberErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Email <font color="red">*</font></label>
+                                    <input type="email" class="form-control" id="com_email" name="com_email" onchange="validateemailId(this.value)">
+                                </div>
+                                <div class="alert alert-danger" id="com_emailErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Name And Address Supplier <font color="red">*</font></label>
+                                    <textarea class="form-control" rows="2" id="com_supplier" name="com_supplier"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="com_supplierErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Country Of Origin <font color="red">*</font></label>
+                                     <select class="form-control" name="Com_Country_Of_Origin"  id="Com_Country_Of_Origin">
+                                        <option value="">--SELECT--</option>
+                                        {% for country in country %}
+                                            <option value="{{ country.Country_Name }}">{{ country.Country_Name }}</option>
+                                        {% endfor %}
+                                     </select>
+                                    <div class="alert alert-danger" id="Com_Country_Of_OriginErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Means of Conveyance <font color="red">*</font></label>
+                                    <select class="form-control form-control" id="com_conveyanceMeans" name="com_conveyanceMeans">
+                                        <option value="">-SELECT-</option>
+                                        <option value="Air">Air</option>
+                                        <option value="Vehicular">Vehicular</option>
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="com_conveyanceMeansErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Place Of Entry <font color="red">*</font></label>
+                                     <select class="form-control" name="com_entry_point"  id="com_entry_point">
+                                        <option value="">--SELECT--</option>
+                                        {% for location in location %}
+                                            <option value="{{ location.Field_Office_Id }}">{{ location.Field_Office }}</option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                                <div class="alert alert-danger" id="com_entry_pointErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Purpose <font color="red">*</font></label>
+                                    <textarea class="form-control" rows="2" id="movementPurpose" name="com_movementPurpose"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="movementPurposeErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Final Destination <font color="red">*</font></label>
+                                    <input type="text" class="form-control" id="finalDestination" name="com_final_Destination">
+                                </div>
+                                <div class="alert alert-danger" id="finalDestinationErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Expected Arrival Date <font color="red">*</font></label>
+                                    <input type="text" class="form-control date-picker flatpickr-input active" id="expectedDate" name="com_expected_arrival_date"  placeholder="Pick a date" readonly="readonly">
+                                </div>
+                                <div class="alert alert-danger" id="dateErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 justify-content-center">
+                            <div class="form-group">
+                                <label class="form-label">Products are derived from GMO? <font color="red">*</font></label><br>
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" name="GMO" value="Yes" onclick="GMO_Check(this.value)">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Yes</span>
+                                </label>
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" name="GMO" value="No" onclick="GMO_Check(this.value)">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">No</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="bhutanese_div" style="display:none;">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Applicant CID <font color="red">*</font></label>
+                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="p_cid_number" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCitizenDetails(this.value)">
+                                </div>
+                                <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Applicant Name <font color="red">*</font></label>
+                                    <input type="text" class="form-control" id="name" name="name">
+                                </div>
+                                <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Dzongkhag &nbsp;<font color='red'>*</font></label>
+                                    <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value),getLocation(this.value)">
+                                        <option value="">--SELECT DZONGKHAG--</option>
+                                        {% for dzongkhag in dzongkhag %}
+                                                <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Gewog &nbsp;<font color='red'>*</font></label>
+                                    <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                        <option value="">--SELECT GEWOG--</option>
+                                        {% for gewog in gewog %}
+                                                <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Village &nbsp;<font color='red'>*</font></label>
+                                     <select class="form-control" name="village" id="village">
+                                        <option value="">--SELECT VILLAGE--</option>
+                                        {% for village in village %}
+                                                <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                                <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Contact Number <font color="red">*</font></label>
+                                    <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)">
+                                </div>
+                                <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Email <font color="red">*</font></label>
+                                    <input type="email" class="form-control" id="email" name="email" onchange="validateemailId(this.value)">
+                                </div>
+                                <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Name And Address Supplier <font color="red">*</font></label>
+                                    <textarea class="form-control" rows="2" id="supplier" name="supplier"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="supplierErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Country Of Origin <font color="red">*</font></label>
+                                     <select class="form-control" name="Country_Of_Origin"  id="Country_Of_Origin">
+                                        <option value="">--SELECT--</option>
+                                        {% for country in country %}
+                                            <option value="{{ country.Country_Name }}">{{ country.Country_Name }}</option>
+                                        {% endfor %}
+                                     </select>
+                                    <div class="alert alert-danger" id="Country_Of_OriginErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Means of Conveyance <font color="red">*</font></label>
+                                    <select class="form-control form-control" id="conveyanceMeans" name="conveyanceMeans">
+                                        <option value="">-SELECT-</option>
+                                        <option value="Air">Air</option>
+                                        <option value="Vehicular">Vehicular</option>
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="conveyanceMeansErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Place Of Entry <font color="red">*</font></label>
+                                     <select class="form-control" name="entry_point"  id="entry_point">
+                                        <option value="">--SELECT--</option>
+                                        {% for location in location %}
+                                            <option value="{{ location.Field_Office_Id }}">{{ location.Field_Office }}</option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                                <div class="alert alert-danger" id="entry_pointErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Purpose <font color="red">*</font></label>
+                                    <textarea class="form-control" rows="2" id="B_movementPurpose" name="B_movementPurpose"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="B_movementPurposeErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Final Destination <font color="red">*</font></label>
+                                    <input type="text" class="form-control" id="B_finalDestination" name="B_final_Destination">
+                                </div>
+                                <div class="alert alert-danger" id="B_final_DestinationErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Expected Arrival Date <font color="red">*</font></label>
+                                    <input type="text" class="form-control date-picker flatpickr-input active" id="B_expectedDate" name="date_expected"  placeholder="Pick a date" readonly="readonly">
+                                </div>
+                                <div class="alert alert-danger" id="B_expectedDateErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4 justify-content-center">
+                                <div class="form-group">
+                                    <label class="form-label">Products are derived from GMO? <font color="red">*</font></label><br>
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input" name="GMO" value="Yes" onclick="GMO_Check(this.value)">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Yes</span>
+                                    </label>
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input" name="GMO" value="No" onclick="GMO_Check(this.value)">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">No</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="non_bhutanese_div" style="display:none;">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Passport No <font color="red">*</font></label>
+                                    <input type="text" class="form-control" id="passport" name="passport">
+                                </div>
+                                <div class="alert alert-danger" id="passportErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Nationality <font color="red">*</font></label>
+                                    <input type="text" class="form-control" id="nationality" name="nationality">
+                                </div>
+                                <div class="alert alert-danger" id="nationalityErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Email <font color="red">*</font></label>
+                                    <input type="email" class="form-control" id="p_email" name="p_email" onchange="validateemailId(this.value)">
+                                </div>
+                                <div class="alert alert-danger" id="p_emailErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Name <font color="red">*</font></label>
+                                    <input type="text" class="form-control" id="passport_name" name="passport_name">
+                                </div>
+                                <div class="alert alert-danger" id="passport_nameErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Address <font color="red">*</font></label>
+                                    <textarea class="form-control" id="Address" name="Address"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="AddressErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Contact Number <font color="red">*</font></label>
+                                    <input type="number" class="form-control" id="p_contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="p_contactNumber" maxlength="8" onkeypress="return isNumberKey(event)">
+                                </div>
+                                <div class="alert alert-danger" id="p_contactNumberErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Name And Address Supplier <font color="red">*</font></label>
+                                    <textarea class="form-control" rows="2" id="name_supplier" name="name_supplier"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="name_supplierErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Country Of Origin <font color="red">*</font></label>
+                                     <select class="form-control" name="Origin" id="Origin">
+                                        <option value="">--SELECT--</option>
+                                        {% for country in country %}
+                                            <option value="{{ country.Country_Name }}">{{ country.Country_Name }}</option>
+                                        {% endfor %}
+                                     </select>
+                                    <div class="alert alert-danger" id="OriginErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Means of Conveyance <font color="red">*</font></label>
+                                    <select class="form-control form-control" id="p_conveyanceMeans" name="p_conveyanceMeans">
+                                        <option value="">-SELECT-</option>
+                                        <option value="Air">Air</option>
+                                        <option value="Vehicular">Vehicular</option>
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="p_conveyanceMeansErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Place Of Entry <font color="red">*</font></label>
+                                     <select class="form-control" name="p_entry_point"  id="p_entry_point">
+                                        <option value="">--SELECT--</option>
+                                        {% for location in location %}
+                                            <option value="{{ location.Field_Office_Id }}">{{ location.Field_Office }}</option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                                <div class="alert alert-danger" id="p_entry_pointErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Purpose <font color="red">*</font></label>
+                                    <textarea class="form-control" rows="2" id="p_movementPurpose" name="p_movementPurpose"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="p_movementPurposeErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Final Destination <font color="red">*</font></label>
+                                    <input type="text" class="form-control" id="p_finalDestination" name="p_finalDestination">
+                                </div>
+                                <div class="alert alert-danger" id="p_finalDestinationErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Expected Arrival Date <font color="red">*</font></label>
+                                    <input type="text" class="form-control date-picker flatpickr-input active" id="p_expectedDate" name="p_expectedDate"  placeholder="Pick a date" readonly="readonly">
+                                </div>
+                                <div class="alert alert-danger" id="p_expectedDateErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-sm-6 justify-content-center">
+                                <div class="form-group">
+                                    <label class="form-label">Products are derived from GMO? <font color="red">*</font></label><br>
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input" name="GMO" value="Yes" onclick="GMO_Check(this.value)">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Yes</span>
+                                    </label>
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input" name="GMO" value="No" onclick="GMO_Check(this.value)">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">No</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-action" style="display:none">
+                        <button type="button" class="btn btn-primary" id="save_details_button" onclick="import_save()">Save</button>
+                    </div>
                 </div>
-            </div>
-            <div id="plant">
-                <div class="tab-content mt-2 mb-3" id="pills-tabContent">
-                    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-                        <div id="plant_details">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">License Number <font color="red">*</font></label>
-                                        <input type="text" class="form-control" id="regNo" name="p_regNo">
-                                    </div>
-                                    <div class="alert alert-danger" id="regNoErrorMsg" style="display:none"></div>
+                <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-head-row">
+                                <div class="card-tools pull-right">
+                                    <button type="button" class="btn btn-light" onclick="show_plant_modal()">Add</button>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Business Name <font color="red">*</font></label>
-                                        <input type="text" class="form-control" id="business_name" name="p_businessName">
-                                    </div>
-                                    <div class="alert alert-danger" id="business_nameErrorMsg" style="display:none"></div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Applicant CID <font color="red">*</font></label>
-                                        <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="p_cid_number" maxlength="11" onkeypress="return isNumberKey(event)">
-                                    </div>
-                                    <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Applicant Name <font color="red">*</font></label>
-                                        <input type="text" class="form-control" id="name" name="p_Name">
-                                    </div>
-                                    <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Present Address <font color="red">*</font></label>
-                                        <textarea class="form-control" rows="3" id="presentAddress" name="p_presentAddress"></textarea>
-                                    </div>
-                                    <div class="alert alert-danger" id="presentAddressErrorMsg" style="display:none"></div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Contact Number <font color="red">*</font></label>
-                                        <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="p_contactNo" maxlength="8" onkeypress="return isNumberKey(event)">
-                                    </div>
-                                    <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Email <font color="red">*</font></label>
-                                        <input type="email" class="form-control" id="email" name="p_email">
-                                    </div>
-                                    <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Name And Address Supplier <font color="red">*</font></label>
-                                        <textarea class="form-control" rows="3" id="supplier" name="p_supplier"></textarea>
-                                    </div>
-                                    <div class="alert alert-danger" id="supplierErrorMsg" style="display:none"></div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Country Of Origin <font color="red">*</font></label>
-                                         <select class="form-control" name="Country_Of_Origin"  id="Country_Of_Origin">
-                                            <option value="">--SELECT--</option>
-                                            {% for country in country %}
-                                                <option value="{{ country.Country_Name }}">{{ country.Country_Name }}</option>
-                                            {% endfor %}
-                                         </select>
-                                        <div class="alert alert-danger" id="Country_Of_OriginErrorMsg" style="display:none"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Means of Conveyance <font color="red">*</font></label>
-                                        <select class="form-control form-control" id="conveyanceMeans" name="p_conveyanceMeans">
-                                            <option value="">-SELECT-</option>
-                                            <option value="Air">Air</option>
-                                            <option value="Vehicular">Vehicular</option>
-                                        </select>
-                                    </div>
-                                    <div class="alert alert-danger" id="convMeansErrorMsg" style="display:none"></div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Place Of Entry <font color="red">*</font></label>
-                                         <select class="form-control" name="p_entry_point"  id="entryPlace">
-                                            <option value="">--SELECT--</option>
-                                            {% for location in location %}
-                                                <option value="{{ location.Field_Office_Id }}">{{ location.Field_Office }}</option>
-                                            {% endfor %}
-                                         </select>
-                                    </div>
-                                    <div class="alert alert-danger" id="entryPlaceErrorMsg" style="display:none"></div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Purpose <font color="red">*</font></label>
-                                        <textarea class="form-control" rows="3" id="movementPurpose" name="p_movementPurpose"></textarea>
-                                    </div>
-                                    <div class="alert alert-danger" id="movementPurposeErrorMsg" style="display:none"></div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Final Destination <font color="red">*</font></label>
-                                        <input type="text" class="form-control" id="finalDestination" name="p_final_Destination">
-                                    </div>
-                                    <div class="alert alert-danger" id="finalDestinationErrorMsg" style="display:none"></div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Expected Arrival Date <font color="red">*</font></label>
-                                        <input type="text" class="form-control date-picker flatpickr-input active" id="expectedDate" name="p_expected_arrival_date"  placeholder="Pick a date" readonly="readonly">
-                                    </div>
-                                    <div class="alert alert-danger" id="dateErrorMsg" style="display:none"></div>
-                                </div>
-                            </div>
-                            <div class="card-action">
-                                <button type="button" class="btn btn-primary" onclick="import_save()">Save</button>
                             </div>
                         </div>
-                    </div>
-                    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="card-head-row">
-                                    <div class="card-tools pull-right">
-                                        <button type="button" class="btn btn-light" onclick="show_plant_modal()">Add</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div id="Details">
-                                    {% include 'import_permit/import_page_plant.html' %}
-                                </div>
-                            </div>
-                            <div class="card-action">
-                                <button type="button" class="btn btn-success" onclick="plant_import_save()">Save</button>
+                        <div class="card-body">
+                            <div id="Details">
+                                {% include 'import_permit/import_page_plant.html' %}
                             </div>
                         </div>
-                    </div>
-                    <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="pills-profile-file">
-                        <div id="fileAttachPlant">
-                            {% include 'import_permit/plant_attachment_page.html' %}
+                        <div class="card-action">
+                            <button type="button" class="btn btn-success" onclick="plant_import_save()">Save</button>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div id="agro_import">
-                <div class="row justify-content-left">
-                    <ul class="nav nav-pills nav-secondary" id="agro-tab" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" id="agro-home-tab" data-toggle="pill" href="#agro-home" role="tab" aria-controls="agro-home" aria-selected="true" onclick="loadAgroDetails()">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="agro-profile-tab" data-toggle="pill" href="#agro-details" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_details()">Profile</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="agro-profile-file" data-toggle="pill" href="#agro-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="agro_attachment()">Attach File</a>
-                        </li>
-                    </ul>
+                <div class="tab-pane fade" id="agro-details" role="tabpanel" aria-labelledby="pills-profile-tab">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-head-row">
+                                <div class="card-tools pull-right">
+                                    <button type="button" class="btn btn-light" onclick="show_agro_modal()">Add</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="AgroDetails">
+                                {% include 'import_permit/import_page_agro.html' %}
+                            </div>
+                        </div>
+                        <div class="card-action">
+                            <button type="button" class="btn btn-success" onclick="agro_import_save()">Save</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="tab-content mt-2 mb-3" id="agro-tabContent">
-                    <div class="tab-pane fade show active" id="agro-home" role="tabpanel" aria-labelledby="agro-home-tab">
-                        <div id="agro_details">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">License Number</label>
-                                        <input type="text" class="form-control" id="reg_No" name="a_regNo">
-                                    </div>
-                                    <div class="alert alert-danger" id="reg_NoErrorMsg" style="display:none"></div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Business Name</label>
-                                        <input type="text" class="form-control" id="businessName" name="a_businessName">
-                                    </div>
-                                    <div class="alert alert-danger" id="businessNameErrorMsg" style="display:none"></div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Applicant CID</label>
-                                        <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="app_cid" name="a_cid_number" maxlength="11" onkeypress="return isNumberKey(event)">
-                                    </div>
-                                    <div class="alert alert-danger" id="app_cidErrorMsg" style="display:none"></div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Applicant Name</label>
-                                        <input type="text" class="form-control" id="app_name" name="a_Name">
-                                    </div>
-                                    <div class="alert alert-danger" id="app_nameErrorMsg" style="display:none"></div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Present Address</label>
-                                        <textarea class="form-control" rows="3" id="present_address" name="a_presentAddress"></textarea>
-                                    </div>
-                                    <div class="alert alert-danger" id="present_addressErrorMsg" style="display:none"></div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Contact Number</label>
-                                        <input type="number" class="form-control" id="contact_number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="a_contactNo"  maxlength="8" onkeypress="return isNumberKey(event)">
-                                    </div>
-                                    <div class="alert alert-danger" id="contact_numberErrorMsg" style="display:none"></div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Email</label>
-                                        <input type="email" class="form-control" id="emailId" name="a_email">
-                                    </div>
-                                    <div class="alert alert-danger" id="emailIdErrorMsg" style="display:none"></div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Name And Address Supplier</label>
-                                        <textarea class="form-control" rows="3" id="agro_supplier" name="a_supplier"></textarea>
-                                    </div>
-                                    <div class="alert alert-danger" id="agro_supplierErrorMsg" style="display:none"></div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Country Of Origin</label>
-                                         <select class="form-control" name="Agro_Country_Of_Origin"  id="Agro_Country_Of_Origin">
-                                            <option value="">--SELECT--</option>
-                                            {% for country in country %}
-                                                <option value="{{ country.Country_Name }}">{{ country.Country_Name }}</option>
-                                            {% endfor %}
-                                         </select>
-                                        <div class="alert alert-danger" id="Agro_Country_Of_OriginErrorMsg" style="display:none"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Means of Conveyance </label>
-                                        <select class="form-control form-control" id="agro_conveyanceMeans" name="a_conveyanceMeans">
-                                            <option value="">-SELECT-</option>
-                                            <option value="Air">Air</option>
-                                            <option value="Vehicular">Vehicular</option>
-                                        </select>
-                                    </div>
-                                    <div class="alert alert-danger" id="agro_conveyanceMeansErrorMsg" style="display:none"></div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Place Of Entry</label>
-                                         <select class="form-control" name="a_entry_point"  id="entry_place">
-                                            <option value="">--SELECT--</option>
-                                            {% for location in location %}
-                                                    <option value="{{ location.Location_Code }}">{{ location.Location_Name }}</option>
-                                            {% endfor %}
-                                         </select>
-                                    </div>
-                                    <div class="alert alert-danger" id="entry_placeErrorMsg" style="display:none"></div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Purpose</label>
-                                        <textarea class="form-control" rows="3" id="movement_Purpose" name="a_movementPurpose"></textarea>
-                                    </div>
-                                    <div class="alert alert-danger" id="movement_PurposeErrorMsg" style="display:none"></div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Final Destination</label>
-                                        <input type="text" class="form-control" id="final_Destination" name="a_final_Destination">
-                                    </div>
-                                    <div class="alert alert-danger" id="final_DestinationErrorMsg" style="display:none"></div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Expected Arrival Date</label>
-                                        <input type="text" class="form-control date-picker flatpickr-input active" id="expected_Date" name="a_expected_arrival_date" readonly="readonly">
-                                    </div>
-                                    <div class="alert alert-danger" id="expected_DateErrorMsg" style="display:none"></div>
-                                </div>
-                            </div>
-                            <div class="card-action">
-                                    <button type="button" class="btn btn-primary" onclick="import_save()">Save</button>
-                            </div>
-                        </div>
+                <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="pills-profile-file">
+                    <div id="fileAttachPlant">
+                        {% include 'import_permit/plant_attachment_page.html' %}
                     </div>
-                    <div class="tab-pane fade" id="agro-details" role="tabpanel" aria-labelledby="pills-profile-tab">
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="card-head-row">
-                                    <div class="card-tools pull-right">
-                                        <button type="button" class="btn btn-light" onclick="show_agro_modal()">Add</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div id="AgroDetails">
-                                    {% include 'import_permit/import_page_agro.html' %}
-                                </div>
-                            </div>
-                            <div class="card-action">
-                                <button type="button" class="btn btn-success" onclick="agro_import_save()">Save</button>
-                            </div>
-                        </div>
+                </div>
+                <div class="tab-pane fade" id="agro-attachment" role="tabpanel" aria-labelledby="pills-profile-file">
+                    <div id="agro_fileAttach">
+                        {% include 'import_permit/agro_attachment_page.html' %}
                     </div>
-                    <div class="tab-pane fade" id="agro-attachment" role="tabpanel" aria-labelledby="pills-profile-file">
-                        <div id="agro_fileAttach">
-                            {% include 'import_permit/agro_attachment_page.html' %}
-                        </div>
-                    </div>
-				</div>
-
-
+                </div>
             </div>
         </form>
     </div>
@@ -377,161 +564,161 @@ option {
     {% csrf_token %}
     <input type="hidden" name="appNo" id="plant_applicationNo" value="{{ applicationNo }}">
     <div class="modal fade" id="add_plant_details" tabindex="-1">
-            <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                             <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Add Details</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                    </button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="col-lg-12">
-                                    <div class="box box-primary">
-                                        <div class="box-body">
-                                            <input type="text" name="importType" value="P" style="display:none"/>
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label class="form-label">Import Category </label>
-                                                        <select class="form-control form-control" id="plant_import_category" name="plant_import_category">
-                                                            <option value="">-SELECT-</option>
-                                                            <option value="Seed">Seed</option>
-                                                            <option value="Plant">Plant</option>
-                                                            <option value="Plant Products">Plant Products</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="alert alert-danger" id="plant_import_categoryErrorMsg" style="display:none"></div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label class="form-label">Crop</label>
-                                                        <select class="form-control" name="crop_id"  id="crop_id" onchange="getVariety(this.value)">
-                                                            <option value="">--SELECT--</option>
-                                                            {% for crop in crop %}
-                                                                    <option value="{{ crop.Crop_Id }}">{{ crop.Crop_Common_Name }}</option>
-                                                            {% endfor %}
-                                                        </select>
-                                                    </div>
-                                                    <div class="alert alert-danger" id="crop_idErrorMsg" style="display:none"></div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label class="form-label">Crop Variety</label>
-                                                        <select class="form-control" name="crop_variety_id"  id="crop_variety">
-                                                            <option value="">--SELECT--</option>
-                                                            {% for variety in variety %}
-                                                                    <option value="{{ variety.Crop_Variety_Id }}">{{ variety.Crop_Variety_Name }}</option>
-                                                            {% endfor %}
-                                                        </select>
-                                                    </div>
-                                                    <div class="alert alert-danger" id="crop_varietyErrorMsg" style="display:none"></div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label class="form-label">Unit </label>
-                                                        <input type="text" class="form-control" id="unit" name="unit">
-                                                    </div>
-                                                    <div class="alert alert-danger" id="unitErrorMsg" style="display:none"></div>
-                                                </div>
-                                                <div class="form-group col-md-6">
-                                                    <div class="form-group">
-                                                        <label class="form-label">Quantity</label>
-                                                        <input type="text" class="form-control" id="qty" name="qty">
-                                                    </div>
-                                                    <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
-                                                </div>
-                                            </div>
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <input type="text" name="importType" value="P" style="display:none"/>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Import Category </label>
+                                            <select class="form-control form-control" id="plant_import_category" name="plant_import_category">
+                                                <option value="">-SELECT-</option>
+                                                <option value="Seed">Seed</option>
+                                                <option value="Plant">Plant</option>
+                                                <option value="Plant Products">Plant Products</option>
+                                            </select>
                                         </div>
+                                        <div class="alert alert-danger" id="plant_import_categoryErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Crop</label>
+                                            <select class="form-control" name="crop_id"  id="crop_id" onchange="getVariety(this.value)">
+                                                <option value="">--SELECT--</option>
+                                                {% for crop in crop %}
+                                                        <option value="{{ crop.Crop_Id }}">{{ crop.Crop_Common_Name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="alert alert-danger" id="crop_idErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Crop Variety</label>
+                                            <select class="form-control" name="crop_variety_id"  id="crop_variety">
+                                                <option value="">--SELECT--</option>
+                                                {% for variety in variety %}
+                                                        <option value="{{ variety.Crop_Variety_Id }}">{{ variety.Crop_Variety_Name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="alert alert-danger" id="crop_varietyErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Unit </label>
+                                            <input type="text" class="form-control" id="unit" name="unit">
+                                        </div>
+                                        <div class="alert alert-danger" id="unitErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Quantity</label>
+                                            <input type="text" class="form-control" id="qty" name="qty">
+                                        </div>
+                                        <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                             </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" onclick="save_details_plant()">Add</button>
                         </div>
                     </div>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="save_details_plant()">Add</button>
             </div>
+            </div>
+        </div>
     </div>
 </form>
 <form method="post" id="save_agro_form">
     {% csrf_token %}
     <input type="hidden" name="appNo" id="agro_applicationNo" value="{{ title }}">
     <div class="modal fade" id="add_agro_details" tabindex="-1">
-            <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                             <div class="modal-header">
-                                    <h5 class="modal-title">Add Details</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                    </button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="col-lg-12">
-                                    <div class="box box-primary">
-                                        <div class="box-body">
-                                            <input type="text" name="importType" value="A" style="display:none"/>
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label class="form-label">Import Category </label>
-                                                        <select class="form-control form-control" id="agro_import_category" name="agro_import_category">
-                                                            <option value="">-SELECT-</option>
-                                                            <option value="Seed">Pesticides</option>
-                                                            <option value="Plant">Bio-Pesticides</option>
-                                                            <option value="Plant Products">Plant Products</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="alert alert-danger" id="agro_import_categoryErrorMsg" style="display:none"></div>
-                                                </div>
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                 <div class="modal-header">
+                        <h5 class="modal-title">Add Details</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                        </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <input type="text" name="importType" value="A" style="display:none"/>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Import Category </label>
+                                            <select class="form-control form-control" id="agro_import_category" name="agro_import_category">
+                                                <option value="">-SELECT-</option>
+                                                <option value="Seed">Pesticides</option>
+                                                <option value="Plant">Bio-Pesticides</option>
+                                                <option value="Plant Products">Plant Products</option>
+                                            </select>
+                                        </div>
+                                        <div class="alert alert-danger" id="agro_import_categoryErrorMsg" style="display:none"></div>
+                                    </div>
 
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label class="form-label">Pesticide</label>
-                                                        <select class="form-control" name="pesticide_id"  id="pesticide_id">
-                                                            <option value="">--SELECT--</option>
-                                                            {% for pesticide in pesticide %}
-                                                                    <option value="{{ pesticide.Pesticide_Id }}">{{ pesticide.Pesticide_Name }}</option>
-                                                            {% endfor %}
-                                                        </select>
-                                                    </div>
-                                                    <div class="alert alert-danger" id="pesticide_idErrorMsg" style="display:none"></div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label class="form-label">Description</label>
-                                                        <textarea class="form-control" rows="5" id="description" name="description"></textarea>
-                                                    </div>
-                                                    <div class="alert alert-danger" id="descriptionErrorMsg" style="display:none"></div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label class="form-label">Unit </label>
-                                                        <input type="text" class="form-control" id="agro_unit" name="agro_unit">
-                                                    </div>
-                                                    <div class="alert alert-danger" id="agro_unitErrorMsg" style="display:none"></div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label class="form-label">Quantity</label>
-                                                        <input type="text" class="form-control" id="agro_qty" name="agro_qty">
-                                                    </div>
-                                                </div>
-                                            </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Pesticide</label>
+                                            <select class="form-control" name="pesticide_id"  id="pesticide_id">
+                                                <option value="">--SELECT--</option>
+                                                {% for pesticide in pesticide %}
+                                                        <option value="{{ pesticide.Pesticide_Id }}">{{ pesticide.Pesticide_Name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="alert alert-danger" id="pesticide_idErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Description</label>
+                                            <textarea class="form-control" rows="5" id="description" name="description"></textarea>
+                                        </div>
+                                        <div class="alert alert-danger" id="descriptionErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Unit </label>
+                                            <input type="text" class="form-control" id="agro_unit" name="agro_unit">
+                                        </div>
+                                        <div class="alert alert-danger" id="agro_unitErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Quantity</label>
+                                            <input type="text" class="form-control" id="agro_qty" name="agro_qty">
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" onclick="save_details_agro()">Add</button>
                         </div>
                     </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="save_details_agro()">Add</button>
+                </div>
             </div>
+        </div>
     </div>
 </form>
 
@@ -607,284 +794,388 @@ option {
     </div>
 </form>
 <script>
-    function changeSelection(importType)
+    function change_selection(importType)
     {
-        if(importType == "P")
+        if(importType == "Personal")
         {
-            $("#plant").show();
-            $("#agro_import").hide();
+            $('.nationality-div').show();
+            $('#commercial_div').hide();
+            $('.card-action').hide();
         }
         else
         {
-            $("#agro_import").show();
-            $("#plant").hide();
-            $("#agro-profile-tab").prop('disabled', true);
-            $("#agro-profile-file").prop('disabled', true);
+            $('.nationality-div').hide();
+            $('#commercial_div').show();
+            $('#bhutanese_div').hide();
+            $('#non_bhutanese_div').hide();
+            $("#bhutanese_radio").prop("checked", false);
+            $("#non_bhutanese_radio").prop("checked", false);
+            $('.card-action').show();
+        }
+    }
+    function checkNationality(value)
+    {
+        if(value == "Bhutanese")
+        {
+           $('#bhutanese_div').show();
+           $('#non_bhutanese_div').hide();
+           $('.card-action').show();
+        }
+        else
+        {
+            $('#bhutanese_div').hide();
+            $('#non_bhutanese_div').show();
+            $('.card-action').show();
+        }
+    }
+    function GMO_Check(value)
+    {
+        if(value=="Yes")
+        {
+            $('#save_details_button').hide();
+        }
+        else
+        {
+            $('#save_details_button').show();
         }
     }
 
     function import_save()
     {
-        if($('#plantRadio').prop('checked'))
+        var Import_Type = $("input[name=Import_Type]:checked").length;
+        var Application_Type = $("input[name=Application_Type]:checked").length;
+        var Nationality = $("input[name=Nationality_Type]:checked").length;
+        alert(Nationality);
+        var app_type = $('input[name="Application_Type"]:checked').val();
+        var nationality_type = $('input[name="Nationality"]:checked').val();
+
+        var regNo = $('#regNo').val();
+        var business_name = $('#business_name').val();
+        var commercial_presentAddress = $('#commercial_presentAddress').val();
+        var com_contactNumber = $('#com_contactNumber').val();
+        var com_email = $('#com_email').val();
+        var com_supplier = $('#com_supplier').val();
+        var Com_Country_Of_Origin = $('#Com_Country_Of_Origin').val();
+        var com_conveyanceMeans = $('#com_conveyanceMeans').val();
+        var com_entry_point = $('#com_entry_point').val();
+        var movementPurpose = $('#movementPurpose').val();
+        var finalDestination = $('#finalDestination').val();
+        var expectedDate = $('#expectedDate').val();
+
+        var cid = $('#cid').val();
+        var contactNumber = $('#contactNumber').val();
+        var email = $('#email').val();
+        var supplier = $('#supplier').val();
+        var Country_Of_Origin = $('#Country_Of_Origin').val();
+        var conveyanceMeans = $('#conveyanceMeans').val();
+        var entry_point = $('#entry_point').val();
+        var B_movementPurpose = $('#B_movementPurpose').val();
+        var B_finalDestination = $('#B_finalDestination').val();
+        var B_expectedDate = $('#B_expectedDate').val();
+
+        var passport = $('#passport').val();
+        var nationality = $('#nationality').val();
+        var passport_name = $('#passport_name').val();
+        var Address = $('#Address').val();
+        var p_contactNumber = $('#p_contactNumber').val();
+        var p_email = $('#p_email').val();
+        var name_supplier = $('#name_supplier').val();
+        var Origin = $('#Origin').val();
+        var p_conveyanceMeans = $('#p_conveyanceMeans').val();
+        var p_entry_point = $('#p_entry_point').val();
+        var p_movementPurpose = $('#p_movementPurpose').val();
+        var p_finalDestination = $('#p_finalDestination').val();
+        var p_expectedDate = $('#p_expectedDate').val();
+
+        var cidCount = $('#cid').val().length;
+        var number_count = $('#contactNumber').val().length;
+        var com_number_count = $('#com_contactNumber').val().length;
+        var p_number_count = $('#p_contactNumber').val().length;
+        var Import_Type = $("input[name=Import_Type]:checked").length;
+        var Application_Type = $("input[name=Application_Type]:checked").length;
+        var app_type = $('input[name="Application_Type"]:checked').val();
+        var Nationality = $("input[name=Nationality]:checked").length;
+
+        if(Import_Type < 1)
         {
-            var regNo = $('#regNo').val();
-            var business_name = $('#business_name').val();
-            var cid = $('#cid').val();
-            var name = $('#name').val();
-            var presentAddress = $('#presentAddress').val();
-            var contactNumber = $('#contactNumber').val();
-            var email = $('#email').val();
-            var supplier = $('#supplier').val();
-            var convMeans = $('#conveyanceMeans').val();
-            var entryPlace = $('#entryPlace').val();
-            var movementPurpose = $('#movementPurpose').val();
-            var finalDestination = $('#finalDestination').val();
-            var date = $('#expectedDate').val();
-            var cidCount = $('#cid').val().length;
-            var number_count = $('#contactNumber').val().length;
+            $('#Import_TypeErrorMsg').html("Please Check One Import Type.");
+            $('#Import_TypeErrorMsg').show();
+            $('#Import_TypeErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(Application_Type < 1)
+        {
+            $('#Application_TypeErrorMsg').html("Please Check One Application Type.");
+            $('#Application_TypeErrorMsg').show();
+            $('#Application_TypeErrorMsg').delay(2000).fadeOut('slow');
+        }
 
-            if(regNo == "")
-            {
-                $('#regNoErrorMsg').html("Enter CID.");
-                $('#regNoErrorMsg').show();
-                $('#regNoErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(business_name == "")
-            {
-                $('#business_nameErrorMsg').html("Enter Contact Number.");
-                $('#business_nameErrorMsg').show();
-                $('#business_nameErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(cid == "")
-            {
-                $('#cidErrorMsg').html("Enter Contact Number.");
-                $('#cidErrorMsg').show();
-                $('#cidErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(name == "")
-            {
-                $('#nameErrorMsg').html("Enter Contact Number.");
-                $('#nameErrorMsg').show();
-                $('#nameErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(presentAddress == "")
-            {
-                $('#presentAddressErrorMsg').html("Enter Contact Number.");
-                $('#presentAddressErrorMsg').show();
-                $('#presentAddressErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(contactNumber == "")
-            {
-                $('#contactNumberErrorMsg').html("Select Place Of Entry.");
-                $('#contactNumberErrorMsg').show();
-                $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(email == "")
-            {
-                $('#emailErrorMsg').html("Enter Contact Number.");
-                $('#emailErrorMsg').show();
-                $('#emailErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(supplier == "")
-            {
-                $('#supplierErrorMsg').html("Enter Contact Number.");
-                $('#supplierErrorMsg').show();
-                $('#supplierErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(convMeans == "")
-            {
-                $('#convMeansErrorMsg').html("Select Means Of Conveyance.");
-                $('#convMeansErrorMsg').show();
-                $('#convMeansErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(entryPlace == "")
-            {
-                $('#entryPlaceErrorMsg').html("Select Place Of Entry.");
-                $('#entryPlaceErrorMsg').show();
-                $('#entryPlaceErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(movementPurpose == "")
-            {
-                $('#movementPurposeErrorMsg').html("Enter Purpose Of Movement.");
-                $('#movementPurposeErrorMsg').show();
-                $('#movementPurposeErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(finalDestination == "")
-            {
-                $('#finalDestinationErrorMsg').html("Enter Final Destination.");
-                $('#finalDestinationErrorMsg').show();
-                $('#finalDestinationErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(date == "")
-            {
-                $('#dateErrorMsg').html("Select A Date.");
-                $('#dateErrorMsg').show();
-                $('#dateErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(cidCount < 11)
-            {
-                $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits.");
-                $('#cidErrorMsg').show();
-                setTimeout('hideStatus("cidErrorMsg")',2000);
-            }
-            else if(number_count < 8)
-            {
-                $('#contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
-                $('#contactNumberErrorMsg').show();
-                setTimeout('hideStatus("contactNumberErrorMsg")',2000);
-            }
-            else
-            {
-                $.ajax({
-                    type : "POST",
-                    url : "{% url 'save_import_permit' %}",
-                    data : $('#importForm').serialize(),
-                    success : function(data) {
-                        $('#applicationNo').val(data.applNo);
-                        $('#plant_applicationNo').val(data.applNo);
+        else if(app_type == "Commercial" && regNo == "")
+        {
+            $('#regNoErrorMsg').html("Enter License Number.");
+            $('#regNoErrorMsg').show();
+            $('#regNoErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(app_type == "Commercial" && business_name == "")
+        {
+            $('#business_nameErrorMsg').html("Enter Business Name.");
+            $('#business_nameErrorMsg').show();
+            $('#business_nameErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(app_type == "Commercial" && commercial_presentAddress == "")
+        {
+            $('#commercial_presentAddressErrorMsg').html("Enter Present Address.");
+            $('#commercial_presentAddressErrorMsg').show();
+            $('#commercial_presentAddressErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(app_type == "Commercial" && com_contactNumber == "")
+        {
+            $('#com_contactNumberErrorMsg').html("Enter Contact Number.");
+            $('#com_contactNumberErrorMsg').show();
+            $('#com_contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(app_type == "Commercial" && com_email == "")
+        {
+            $('#com_emailErrorMsg').html("Enter Email.");
+            $('#com_emailErrorMsg').show();
+            $('#com_emailErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(app_type == "Commercial" && com_supplier == "")
+        {
+            $('#com_supplierErrorMsg').html("Enter Name And Address Of Supplier.");
+            $('#com_supplierErrorMsg').show();
+            $('#com_supplierErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(app_type == "Commercial" && Com_Country_Of_Origin == "")
+        {
+            $('#Com_Country_Of_OriginErrorMsg').html("Select Country oF Origin.");
+            $('#Com_Country_Of_OriginErrorMsg').show();
+            $('#Com_Country_Of_OriginErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(app_type == "Commercial" && com_conveyanceMeans == "")
+        {
+            $('#com_conveyanceMeansErrorMsg').html("Select Means of Conveyance.");
+            $('#com_conveyanceMeansErrorMsg').show();
+            $('#com_conveyanceMeansErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(app_type == "Commercial" && com_entry_point == "")
+        {
+            $('#com_entry_pointErrorMsg').html("Select Place Of Entry.");
+            $('#com_entry_pointErrorMsg').show();
+            $('#com_entry_pointErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(app_type == "Commercial" && movementPurpose == "")
+        {
+            $('#movementPurposeErrorMsg').html("Enter Purpose.");
+            $('#movementPurposeErrorMsg').show();
+            $('#movementPurposeErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(app_type == "Commercial" && finalDestination == "")
+        {
+            $('#finalDestinationErrorMsg').html("Enter Final Destination.");
+            $('#finalDestinationErrorMsg').show();
+            $('#finalDestinationErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(app_type == "Commercial" && expectedDate == "")
+        {
+            $('#dateErrorMsg').html("Select Expected Arrival Date.");
+            $('#dateErrorMsg').show();
+            $('#dateErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(app_type == "Commercial" && com_number_count < 8)
+        {
+            $('#com_contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
+            $('#com_contactNumberErrorMsg').show();
+            setTimeout('hideStatus("com_contactNumberErrorMsg")',2000);
+        }
+        else if(app_type == "Personal" && cid == "")
+        {
+            $('#cidErrorMsg').html("Enter CID.");
+            $('#cidErrorMsg').show();
+            $('#cidErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(app_type == "Personal" && nationality_type == "Bhutanese" && contactNumber == "")
+        {
+            $('#com_contactNumberErrorMsg').html("Enter Contact Number.");
+            $('#com_contactNumberErrorMsg').show();
+            $('#com_contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(app_type == "Personal" && nationality_type == "Bhutanese"  && email == "")
+        {
+            $('#contactNumberErrorMsg').html("Enter Email.");
+            $('#contactNumberErrorMsg').show();
+            $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(app_type == "Personal" && nationality_type == "Bhutanese" && supplier == "")
+        {
+            $('#com_supplierErrorMsg').html("Enter Name And Address Of Supplier.");
+            $('#com_supplierErrorMsg').show();
+            $('#com_supplierErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(app_type == "Personal" && nationality_type == "Bhutanese" && Country_Of_Origin == "")
+        {
+            $('#Com_Country_Of_OriginErrorMsg').html("Select Country oF Origin.");
+            $('#Com_Country_Of_OriginErrorMsg').show();
+            $('#Com_Country_Of_OriginErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(app_type == "Personal"  && nationality_type == "Bhutanese" && conveyanceMeans == "")
+        {
+            $('#com_conveyanceMeansErrorMsg').html("Select Means of Conveyance.");
+            $('#com_conveyanceMeansErrorMsg').show();
+            $('#com_conveyanceMeansErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(app_type == "Personal" && nationality_type == "Bhutanese" && entry_point == "")
+        {
+            $('#com_entry_pointErrorMsg').html("Select Place Of Entry.");
+            $('#com_entry_pointErrorMsg').show();
+            $('#com_entry_pointErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(app_type == "Personal" && nationality_type == "Bhutanese" && B_movementPurpose == "")
+        {
+            $('#movementPurposeErrorMsg').html("Enter Purpose.");
+            $('#movementPurposeErrorMsg').show();
+            $('#movementPurposeErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(app_type == "Personal" && nationality_type == "Bhutanese" && B_finalDestination == "")
+        {
+            $('#finalDestinationErrorMsg').html("Enter Final Destination.");
+            $('#finalDestinationErrorMsg').show();
+            $('#finalDestinationErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(app_type == "Personal" && nationality_type == "Bhutanese" && B_expectedDate == "")
+        {
+            $('#dateErrorMsg').html("Select Expected Arrival Date.");
+            $('#dateErrorMsg').show();
+            $('#dateErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(app_type == "Personal" && nationality_type == "Bhutanese" && number_count < 8)
+        {
+            $('#com_contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
+            $('#com_contactNumberErrorMsg').show();
+            setTimeout('hideStatus("com_contactNumberErrorMsg")',2000);
+        }
 
-                        $('#pills-profile-tab').tab('show');
-                    }
-                });
-            }
+        else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && passport == "")
+        {
+            $('#passportErrorMsg').html("Enter Nationality.");
+            $('#passportErrorMsg').show();
+            $('#passportErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && nationality == "")
+        {
+            $('#nationalityErrorMsg').html("Enter Nationality.");
+            $('#nationalityErrorMsg').show();
+            $('#nationalityErrorMsg').delay(2000).fadeOut('slow');
+        }
+         else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && passport_name == "")
+        {
+            $('#cidErrorMsg').html("Enter CID.");
+            $('#cidErrorMsg').show();
+            $('#cidErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && Address == "")
+        {
+            $('#AddressErrorMsg').html("Enter Address.");
+            $('#AddressErrorMsg').show();
+            $('#AddressErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && p_email == "")
+        {
+            $('#passport_nameErrorMsg').html("Enter Email.");
+            $('#passport_nameErrorMsg').show();
+            $('#passport_nameErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && p_contactNumber == "")
+        {
+            $('#p_contactNumberErrorMsg').html("Enter Contact Number.");
+            $('#p_contactNumberErrorMsg').show();
+            $('#p_contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && name_supplier == "")
+        {
+            $('#name_supplierErrorMsg').html("Enter Name And Address Of Supplier.");
+            $('#name_supplierErrorMsg').show();
+            $('#name_supplierErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && Origin == "")
+        {
+            $('#OriginErrorMsg').html("Select Country oF Origin.");
+            $('#OriginErrorMsg').show();
+            $('#OriginErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && p_conveyanceMeans == "")
+        {
+            $('#p_conveyanceMeansErrorMsg').html("Select Means of Conveyance.");
+            $('#p_conveyanceMeansErrorMsg').show();
+            $('#p_conveyanceMeansErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && p_entry_point == "")
+        {
+            $('#p_entry_pointErrorMsg').html("Select Place Of Entry.");
+            $('#p_entry_pointErrorMsg').show();
+            $('#p_entry_pointErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && p_movementPurpose == "")
+        {
+            $('#p_movementPurposeErrorMsg').html("Enter Purpose.");
+            $('#p_movementPurposeErrorMsg').show();
+            $('#p_movementPurposeErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && p_finalDestination == "")
+        {
+            $('#p_finalDestinationErrorMsg').html("Enter Final Destination.");
+            $('#p_finalDestinationErrorMsg').show();
+            $('#p_finalDestinationErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && p_expectedDate == "")
+        {
+            $('#p_expectedDateErrorMsg').html("Select Expected Arrival Date.");
+            $('#p_expectedDateErrorMsg').show();
+            $('#p_expectedDateErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && p_number_count < 8)
+        {
+            $('#com_contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
+            $('#com_contactNumberErrorMsg').show();
+            setTimeout('hideStatus("com_contactNumberErrorMsg")',2000);
         }
         else
         {
-            var regNo = $('#reg_No').val();
-            var business_name = $('#businessName').val();
-            var cid = $('#app_cid').val();
-            var name = $('#app_name').val();
-            var presentAddress = $('#present_address').val();
-            var contactNumber = $('#contact_number').val();
-            var email = $('#emailId').val();
-            var supplier = $('#agro_supplier').val();
-            var convMeans = $('#agro_conveyanceMeans').val();
-            var entryPlace = $('#entry_place').val();
-            var movementPurpose = $('#movement_Purpose').val();
-            var finalDestination = $('#final_Destination').val();
-            var date = $('#expected_Date').val();
-            var cidCount = $('#app_cid').val().length;
-            var number_count = $('#contact_number').val().length;
-
-            if(regNo == "")
-            {
-                $('#reg_NoErrorMsg').html("Enter CID.");
-                $('#reg_NoErrorMsg').show();
-                $('#reg_NoErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(business_name == "")
-            {
-                $('#businessNameErrorMsg').html("Enter Contact Number.");
-                $('#businessNameErrorMsg').show();
-                $('#businessNameErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(cid == "")
-            {
-                $('#app_cidErrorMsg').html("Enter CID.");
-                $('#app_cidErrorMsg').show();
-                $('#app_cidErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(name == "")
-            {
-                $('#app_nameErrorMsg').html("Enter Contact Number.");
-                $('#app_nameErrorMsg').show();
-                $('#app_nameErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(presentAddress == "")
-            {
-                $('#present_addressErrorMsg').html("Enter Contact Number.");
-                $('#present_addressErrorMsg').show();
-                $('#present_addressErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(contactNumber == "")
-            {
-                $('#contact_numberErrorMsg').html("Select Place Of Entry.");
-                $('#contact_numberErrorMsg').show();
-                $('#contact_numberErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(email == "")
-            {
-                $('#emailIdErrorMsg').html("Enter Contact Number.");
-                $('#emailIdErrorMsg').show();
-                $('#emailIdErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(supplier == "")
-            {
-                $('#agro_supplierErrorMsg').html("Enter Contact Number.");
-                $('#agro_supplierErrorMsg').show();
-                $('#agro_supplierErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(convMeans == "")
-            {
-                $('#agro_conveyanceMeansErrorMsg').html("Select Means Of Conveyance.");
-                $('#agro_conveyanceMeansErrorMsg').show();
-                $('#agro_conveyanceMeansErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(entryPlace == "")
-            {
-                $('#entry_placeErrorMsg').html("Select Place Of Entry.");
-                $('#entry_placeErrorMsg').show();
-                $('#entry_placeErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(movementPurpose == "")
-            {
-                $('#movement_PurposeErrorMsg').html("Enter Purpose Of Movement.");
-                $('#movement_PurposeErrorMsg').show();
-                $('#movement_PurposeErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(finalDestination == "")
-            {
-                $('#final_DestinationErrorMsg').html("Enter Final Destination.");
-                $('#final_DestinationErrorMsg').show();
-                $('#final_DestinationErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(date == "")
-            {
-                $('#expected_DateErrorMsg').html("Select A Date.");
-                $('#expected_DateErrorMsg').show();
-                $('#expected_DateErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else
-            {
-                $.ajax({
-                        type : "POST",
-                        url : "{% url 'save_import_permit' %}",
-                        data : $('#importForm').serialize(),
-                        cache : false,
-                        dataType : "html",
-                        success : function(data)
-                        {
-                            $('#applicationNo').val(data.applNo);
-                            $('#agro_applicationNo').val(data.applNo);
-                            $('#agro-profile-tab').tab('show');
-                        }
-                });
-            }
+            $.ajax({
+                type : "POST",
+                url : "{% url 'save_import_permit' %}",
+                data : $('#importForm').serialize(),
+                success : function(data) {
+                    $('#applicationNo').val(data.applNo);
+                    if(data.importType == "P")
+                    {
+                        $('#plant_applicationNo').val(data.applNo);
+                        $('#pills-profile-tab').tab('show');
+                        $('#agro-profile-tab').tab('hide');
+                    }
+                    else
+                    {
+                         $('#agro_applicationNo').val(data.applNo);
+                         $('#agro-profile-tab').tab('show');
+                         $('#pills-profile-tab').tab('hide');
+                    }
+                }
+            });
         }
     }
 
-    function getVariety(crop_id)
-    {
+    function getCitizenDetails(cidNo)
+	{
         $.ajax({
             type : "GET",
-            url : "{% url 'load_variety' %}",
-            data :{'crop_id':crop_id},
+            url : "{% url 'get_citizen_details' %}",
+            data :{'cidNo':cidNo},
             success : function(data)
             {
-                $('#crop_variety').html(data);
+
             }
         });
     }
 
-    function plant_import_save()
-    {
-        $('#pills-tab a:last').tab('show');
-    }
-
-    function agro_import_save()
-    {
-        $('#agro-tab a:last').tab('show');
-    }
 
     function show_plant_modal()
     {
@@ -901,10 +1192,6 @@ option {
         $('#plant_attachmentModal').modal('show');
     }
 
-    function show_agro_attachment_modal()
-    {
-        $('#agro_attachmentModal').modal('show');
-    }
 
     function save_details_plant()
     {
@@ -1106,90 +1393,26 @@ option {
         });
     }
 
-function loadAppDetails()
-{
-    var appNo = $('#applicationNo').val();
-    $.ajax({
-        type : "GET",
-        url : "{% url 'load_import_details' %}",
-        data :{'application_id':appNo},
-        success : function(response)
-        {
-            $('#plant_details').html(response);
-            $("#pills-profile-tab").prop('disabled', false);
-            $("#pills-profile-file").prop('disabled', false);
-        }
-    });
-}
+function getVariety(crop_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_variety' %}",
+            data :{'crop_id':crop_id},
+            success : function(data)
+            {
+                $('#crop_variety').html(data);
+            }
+        });
+    }
+    function plant_import_save()
+    {
+        $('#pills-tab a:last').tab('show');
+    }
 
-function loadDetails()
-{
-    var appNo = $('#applicationNo').val();
-    $.ajax({
-        type : "GET",
-        url : "{% url 'details_plant' %}",
-        data :{'application_id':appNo},
-        success : function(response)
-        {
-            $('#Details').html(response);
-        }
-    });
-}
-function load_attachment()
-{
-
-    var appNo = $('#applicationNo').val();
-    $.ajax({
-        type : "GET",
-        url : "{% url 'permit_attachment_plant' %}",
-        data :{'application_id':appNo},
-        success : function(response)
-        {
-            $('#fileAttachPlant').html(response);
-        }
-    });
-}
-
-function loadAgroDetails()
-{
-    var appNo = $('#applicationNo').val();
-    $.ajax({
-        type : "GET",
-        url : "{% url 'agro_details_permit' %}",
-        data :{'application_id':appNo},
-        success : function(response)
-        {
-            $('#agro_details').html(response);
-            $("#agro-profile-tab").prop('disabled', false);
-            $("#agro-profile-file").prop('disabled', false);
-        }
-    });
-}
-function load_details()
-{
-    var appNo = $('#applicationNo').val();
-    $.ajax({
-        type : "GET",
-        url : "{% url 'details_agro' %}",
-        data :{'application_id':appNo},
-        success : function(response)
-        {
-            $('#AgroDetails').html(response);
-        }
-    });
-}
-function agro_attachment()
-{
-    var appNo = $('#applicationNo').val();
-    $.ajax({
-        type : "GET",
-        url : "{% url 'permit_attachment_agro' %}",
-        data :{'application_id':appNo},
-        success : function(response)
-        {
-            $('#agro_fileAttach').html(response);
-        }
-    });
-}
+    function agro_import_save()
+    {
+        $('#pills-tab a:last').tab('show');
+    }
 </script>
 {% endblock %}

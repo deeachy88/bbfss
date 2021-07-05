@@ -32,6 +32,9 @@
                         <div id="result-details" style="display:none">
                             <hr>
                         </div>
+                        <div id="result-details-edit" style="display:none">
+                            <hr>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -39,6 +42,114 @@
     </div>
 </div>
 </form>
+<form method="post" id="details_form" enctype="multipart/form-data">
+{% csrf_token %}
+    <div class="modal fade" id="details_Modal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="attachmentModalLabel">Attach Files</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <input type="hidden" name="Application_No" id="Application_No">
+                            <input type="hidden" name="batch_No" id="batch_No">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Attendance</label><br>
+                                        <div class="form-check" style="margin-top: 12px;">
+                                            <label class="custom-control custom-radio">
+                                                <input type="radio" name="Attendance" class="custom-control-input" value="P" onclick="checkThis(this.value)">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">Present</span>
+                                            </label>&nbsp;
+                                            <label class="custom-control custom-radio">
+                                                <input type="radio" name="Attendance" class="custom-control-input" value="A" onclick="checkThis(this.value)">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">Absent</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6 score_div">
+                                        <label>Score</label>
+                                        <input type="text" class="form-control" name="score">
+                                    </div>
+                                </div>
+                                <div class="row file_div">
+                                    <div class="form-group col-md-6" style="margin-top: 26px;">
+                                        <label>Upload Image</label>
+                                        <input type="file" name="document" id="document">
+                                        <div class="alert alert-danger" id="fileErrorMsg" style="display:none"></div>
+                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_details()"> Submit </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<div class="modal fade" id="app-details-Modal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+             <div class="modal-header">
+                <h5 class="modal-title" id="agro_attachmentModalLabel">Applicant Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="col-lg-12">
+                    <div class="box box-primary">
+                        <div class="box-body">
+                            <div id="details_application">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-food">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content edit">
+            <div class="modal-header">
+                <h5 class="modal-title">Applicant Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="col-lg-12">
+                    <div class="box box-primary">
+                        <div class="box-body">
+                            <div id="edit_details_application">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary btn-lg pull-right" onclick="update_details()"> Submit </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     function update_result()
     {
@@ -105,7 +216,7 @@
         }
     }
 
-    function view_update_list(batch)
+    function view_update_list()
     {
         $.ajax
         ({
@@ -118,6 +229,201 @@
                 $("#result-details").show();
             }
         });
+    }
+
+    function save_details()
+    {
+        var fileName = document.getElementById('document').files[0].name;
+        alert(filename);
+        var fd = new FormData();
+        var file = document.getElementById('document').files[0];
+        fd.append('document', file);
+        token_value=$("input[name=csrfmiddlewaretoken]").val();
+        $.ajaxSetup
+        ({
+            beforeSend: function(xhr, settings)
+            {
+                xhr.setRequestHeader("X-CSRFToken", token_value);
+            }
+        });
+        $.ajax({
+        type : "POST",
+        url : "{% url 'food_handler_image' %}",
+        data : fd,
+        dataType: 'json',
+        contentType: false,
+        processData: false,
+        success : function(data)
+        {
+            if (data.form_is_valid)
+            {
+                var file_url = data.file_url
+                var appNo = $('#Application_No').val();
+                var batch_No = $('#batch_No').val();
+                var score = $('#score').val();
+                var attendance = $('input[name="Attendance"]:checked').val();
+                $.ajax
+                ({
+                    type : "POST",
+                    url : "{% url 'food_handler_image_name' %}",
+                    data : {'appNo':appNo ,'filename':fileName, 'file_url':file_url, 'batch_No':batch_No , 'score':score, 'attendance':attendance},
+                    success : function(responseText)
+                    {
+                        $('#details_Modal').modal('hide');
+                        $('#result-details').html(responseText);
+                        $('.modal-backdrop').remove();
+                    }
+                });
+            }
+            else
+            {
+                $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                $('#fileErrorMsg').show();
+                $('#fileErrorMsg').delay(2000).fadeOut('slow');
+            }
+        }
+        });
+    }
+
+    function checkThis(value)
+    {
+        if(value == "P")
+        {
+            $('.file_div').show();
+            $('.score_div').show();
+        }
+        else
+        {
+             $('.file_div').hide();
+             $('.score_div').hide();
+        }
+    }
+
+    function checkFor(value)
+    {
+        if(value == "P")
+        {
+            $('.file_div').show();
+            $('.score_div').show();
+            $('#delete_button').show();
+        }
+        else
+        {
+             $('.file_div').hide();
+             $('.score_div').hide();
+             $('#delete_button').hide();
+
+        }
+    }
+
+    function edit_details(App_Id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'get_food_handler_details' %}",
+            data :{'application_id':App_Id},
+            success : function(data)
+            {
+                $('#edit_details_application').html(data);
+                $('#modal-food').modal('show');
+            }
+        });
+    }
+
+    function update_details()
+    {
+        var attendance = $('input[name="Attendance"]:checked').val();
+        if(attendance == "P")
+        {
+            if(document.getElementById("image").files.length == 0 )
+            {
+                var Application_No = $('#edit_application_no').val();
+                var batch_No = $('#batch_No').val();
+                var score = $('#score').val();
+                var attendance = $('input[name="Attendance"]:checked').val();
+                $.ajax
+                ({
+                    type : "GET",
+                    url : "{% url 'food_handler_update' %}",
+                    data : {'Application_No':Application_No , 'batch_No':batch_No , 'score':score, 'attendance':attendance},
+                    success : function(responseText)
+                    {
+                        $('#modal-food').modal('hide');
+                        $('#result-details').html(responseText);
+                        $('.modal-backdrop').remove();
+                    }
+                });
+            }
+            else
+            {
+                var fileName = document.getElementById('image').files[0].name;
+                var fd = new FormData();
+                var file = document.getElementById('image').files[0];
+                fd.append('image', file);
+                token_value=$("input[name=csrfmiddlewaretoken]").val();
+                $.ajaxSetup
+                ({
+                    beforeSend: function(xhr, settings)
+                    {
+                        xhr.setRequestHeader("X-CSRFToken", token_value);
+                    }
+                });
+                $.ajax({
+                type : "POST",
+                url : "{% url 'food_handler_image_update' %}",
+                data : fd,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success : function(data)
+                {
+                    if (data.form_is_valid)
+                    {
+                        var file_url = data.file_url
+                        var Application_No = $('#edit_application_no').val();
+                        var batch_No = $('#batch_No').val();
+                        var score = $('#score').val();
+                        var attendance = $('input[name="Attendance"]:checked').val();
+                        $.ajax
+                        ({
+                            type : "POST",
+                            url : "{% url 'food_handler_image_name_update' %}",
+                            data : {'Application_No':Application_No ,'filename':fileName, 'file_url':file_url, 'batch_No':batch_No , 'score':score, 'attendance':attendance},
+                            success : function(responseText)
+                            {
+                                $('#modal-food').modal('hide');
+                                $('#result-details').html(responseText);
+                                $('.modal-backdrop').remove();
+                            }
+                        });
+                    }
+                    else
+                    {
+                        $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                        $('#fileErrorMsg').show();
+                        $('#fileErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                }
+                });
+            }
+        }
+        else
+        {
+            var Application_No = $('#edit_application_no').val();
+            var attendance = $('input[name="Attendance"]:checked').val();
+            $.ajax
+            ({
+                type : "GET",
+                url : "{% url 'food_handler' %}",
+                data : {'Application_No':Application_No, 'attendance':attendance},
+                success : function(responseText)
+                {
+                    $('#modal-food').modal('hide');
+                    $('#result-details').html(responseText);
+                    $('.modal-backdrop').remove();
+                }
+            });
+        }
     }
 
 </script>

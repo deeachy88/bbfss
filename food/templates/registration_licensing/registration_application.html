@@ -135,7 +135,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Current status of functioning <font color="red">*</font></label>
-                                    <select class="form-control" name="current_status"  id="current_status">
+                                    <select class="form-control" name="current_status"  id="current_status" onchange="enableStatus(this.value)">
                                         <option value="">--SELECT--</option>
                                         <option value="Project stage">Project stage</option>
                                         <option value="Commissioned">Commissioned but regular production yet to start</option>
@@ -206,6 +206,15 @@
                                 </select>
                                 <div class="alert alert-danger" id="historyErrorMsg" style="display:none"></div>
                             </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">What was the previous business conducted there?</label>
+                                    <textarea class="form-control" id="previous_business" name="previous_business"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="previous_businessErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="form-group col-md-4">
                                 <div class="form-check">
                                     <label class="form-label">Any processes outsourced by the FB?</label><br>
@@ -225,9 +234,6 @@
                                     </div>
                                 </div>
                             </div>
-
-                        </div>
-                        <div class="row">
                             <div class="form-group col-md-4">
                                 <label class="form-label">Legal Entity Status</label>
                                 <select class="form-control" name="legal_status"  id="legal_status">
@@ -257,21 +263,14 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4" id="previous_business_div" style="display:none">
-                                <div class="form-group">
-                                    <label class="form-label">What was the previous business conducted there?</label>
-                                    <textarea class="form-control" id="previous_business" name="previous_business"></textarea>
-                                </div>
-                                <div class="alert alert-danger" id="previous_businessErrorMsg" style="display:none"></div>
-                            </div>
+                        </div>
+                        <div class="row">
                             <div class="form-group col-md-4">
                                 <div class="form-check">
                                     <label class="form-label">Relationship</label><br>
                                     <input type="text" class="form-control" id="relationship" name="relationship">
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="form-group col-md-4">
                                 <div class="form-check">
                                     <label class="form-label">Has the FBO been licensed before?</label><br><br>
@@ -297,14 +296,15 @@
                                     <input type="text" class="form-control" id="license_number" name="license_number">
                                 </div>
                             </div>
+
+                        </div>
+                        <div class="row">
                             <div class="form-group col-md-4">
                                 <div class="form-check">
                                     <label class="form-label">Reasons why the License is no longer valid</label><br>
                                     <textarea class="form-control" id="reason" name="reason"></textarea>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="form-group col-md-4">
                                 <div class="form-check">
                                     <label class="form-label">Any judicial proceedings relating to the FBOs operations/product?</label><br>
@@ -766,10 +766,12 @@ function checkFBO(value)
     if(value == "No")
     {
         $("#license_number").attr("disabled", "disabled");
+        $("#reason").removeAttr("disabled");
     }
     else
     {
         $("#license_number").removeAttr("disabled");
+        $("#reason").attr("disabled", "disabled");
     }
 }
 
@@ -856,6 +858,33 @@ function getGewog(dzongkhag_id)
             $('#gewog').html(data);
         }
     });
+}
+
+function enableStatus(value)
+{
+    if(value == "Regular")
+    {
+         $("#no_of_years").removeAttr("disabled");
+         $("#production_volume").removeAttr("disabled");
+    }
+    else
+    {
+        $("#no_of_years").attr("disabled", "disabled");
+        $("#production_volume").attr("disabled", "disabled");
+    }
+}
+function checkSiteHistory(value)
+{
+    if(value == "Converted structure")
+    {
+         $("#previous_business").removeAttr("disabled");
+
+    }
+    else
+    {
+        $("#previous_business").attr("disabled", "disabled");
+
+    }
 }
 </script>
 {% endblock %}

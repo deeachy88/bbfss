@@ -5,37 +5,16 @@ from django.db import models
 
 class t_livestock_clearance_meat_shop_t1(models.Model):
     Application_No = models.CharField(max_length=30, primary_key=True)
-    Application_Date = models.DateField()
+    Application_Date = models.DateField(default=None, blank=True, null=True)
     Applicant_Id = models.CharField(max_length=30, default=None, blank=True, null=True)
-    Business_Name = models.CharField(max_length=30, blank=True, null=True)
+    Meat_Shop_Name = models.CharField(max_length=100, default=None, blank=True, null=True)
     CID = models.BigIntegerField(blank=True, null=True)
     Name_Owner = models.CharField(max_length=30, blank=True, null=True)
+    Representative = models.CharField(max_length=20, blank=True, null=True)
+    License_Criteria = models.CharField(max_length=100, blank=True, null=True)
     Contact_No = models.IntegerField()
     Email = models.CharField(max_length=30, blank=True, null=True)
     Address = models.CharField(max_length=250, blank=True, null=True)
-    Name_Manager = models.CharField(max_length=100, blank=True, null=True)
-    License_Criteria = models.CharField(max_length=100, blank=True, null=True)
-    Product_Category = models.TextField(blank=True, null=True)
-    Product = models.TextField(blank=True, null=True)
-    Current_Status = models.CharField(max_length=250, blank=True, null=True)
-    Years_In_Production = models.IntegerField()
-    Volume_Last_Year = models.CharField(max_length=100, blank=True, null=True)
-    Volume_Unit = models.CharField(max_length=10, default=None, blank=True, null=True)
-    Project_Proposal = models.CharField(max_length=5, blank=True, null=True)
-    Water_Source = models.CharField(max_length=100, blank=True, null=True)
-    Site_History = models.CharField(max_length=100, blank=True, null=True)
-    Previous_Business = models.CharField(max_length=250, blank=True, null=True)
-    Process_Outsource = models.CharField(max_length=10, blank=True, null=True)
-    Legal_Entity = models.CharField(max_length=100, blank=True, null=True)
-    Large_Corporation = models.CharField(max_length=10, blank=True, null=True)
-    Large_Corporation_Relation = models.CharField(max_length=100, blank=True, null=True)
-    FBO_License_Status = models.CharField(max_length=100, blank=True, null=True)
-    FBO_License_No = models.CharField(max_length=100, blank=True, null=True)
-    Invalid_Reason = models.TextField(blank=True, null=True)
-    FBO_Judicial_Proceedings = models.CharField(max_length=100, blank=True, null=True)
-    Judicial_Proceedings_Details = models.CharField(max_length=100, blank=True, null=True)
-    FBO_Regulatory_Proceedings = models.CharField(max_length=100, blank=True, null=True)
-    Regulatory_Proceedings_Details = models.CharField(max_length=100, blank=True, null=True)
     Inspection_Type = models.CharField(max_length=100, blank=True, null=True)
     Desired_FI_Inspection_Date = models.DateField(blank=True, null=True)
     Desired_FR_Inspection_Date = models.DateField(blank=True, null=True)
@@ -60,16 +39,14 @@ class t_livestock_clearance_meat_shop_t1(models.Model):
     FI_Inspection_Team = models.CharField(max_length=200, default=None, blank=True, null=True)
     Dzongkhag_Code = models.IntegerField(default=None, blank=True, null=True)
     Gewog_Code = models.IntegerField(default=None, blank=True, null=True)
+    Village_Code = models.IntegerField(default=None, blank=True, null=True)
     FO_Remarks = models.TextField(blank=True, null=True)
 
 
 class t_livestock_clearance_meat_shop_t2(models.Model):
     Record_Id = models.AutoField(primary_key=True)
     Application_No = models.CharField(max_length=30)
-    BP_Outsourced_To = models.CharField(max_length=100)
-    Contact_No = models.IntegerField(default=None)
-    Address = models.TextField()
-    BAFRA_License_No = models.CharField(max_length=100, blank=True, null=True)
+    Meat_Item = models.CharField(max_length=100)
 
 
 class t_livestock_clearance_meat_shop_t3(models.Model):
@@ -111,7 +88,7 @@ class t_livestock_clearance_meat_shop_t6(models.Model):
 
 class t_livestock_import_permit_product_t1(models.Model):
     Application_No = models.CharField(max_length=30, primary_key=True)
-    Application_Type = models.CharField(max_length=50, default=None)
+    Application_Type = models.CharField(max_length=50, default=None, blank=True, null=True)
     Import_Type = models.CharField(max_length=50, default=None)
     License_No = models.CharField(max_length=100, blank=True, null=True)
     Business_Name = models.CharField(max_length=100, blank=True, null=True)
@@ -158,7 +135,7 @@ class t_livestock_import_permit_product_inspection_t1(models.Model):
     Import_Permit_No = models.CharField(max_length=20, blank=True, null=True)
     Validity_Period = models.IntegerField(blank=True, null=True)
     Validity = models.DateField(blank=True, null=True)
-    Application_Type = models.CharField(max_length=50, default=None)
+    Application_Type = models.CharField(max_length=50, default=None, blank=True, null=True)
     Import_Type = models.CharField(max_length=50, default=None)
     License_No = models.CharField(max_length=100, blank=True, null=True)
     Business_Name = models.CharField(max_length=100, blank=True, null=True)
@@ -214,7 +191,7 @@ class t_livestock_import_permit_product_inspection_t3(models.Model):
 
 class t_livestock_import_permit_animal_t1(models.Model):
     Application_No = models.CharField(max_length=30, primary_key=True)
-    Application_Type = models.CharField(max_length=50, default=None)
+    Application_Type = models.CharField(max_length=50, default=None, blank=True, null=True)
     Import_Type = models.CharField(max_length=50, default=None)
     License_No = models.CharField(max_length=100, blank=True, null=True)
     Business_Name = models.CharField(max_length=100, blank=True, null=True)
@@ -264,7 +241,7 @@ class t_livestock_import_permit_animal_inspection_t1(models.Model):
     Import_Permit_No = models.CharField(max_length=20, blank=True, null=True)
     Validity_Period = models.IntegerField(blank=True, null=True)
     Validity = models.DateField(blank=True, null=True)
-    Application_Type = models.CharField(max_length=50, default=None)
+    Application_Type = models.CharField(max_length=50, default=None, blank=True, null=True)
     Import_Type = models.CharField(max_length=50, default=None)
     License_No = models.CharField(max_length=100, blank=True, null=True)
     Business_Name = models.CharField(max_length=100, blank=True, null=True)
@@ -324,7 +301,7 @@ class t_livestock_import_permit_animal_inspection_t3(models.Model):
 class t_livestock_export_certificate_t1(models.Model):
     Application_No = models.CharField(max_length=30, primary_key=True)
     Application_Date = models.DateField(blank=True, null=True)
-    Application_Type = models.CharField(max_length=50, default=None)
+    Application_Type = models.CharField(max_length=50, default=None, blank=True, null=True)
     Exporter_Type = models.CharField(max_length=50, default=None)
     Nationality = models.CharField(max_length=50, blank=True, null=True)
     Country = models.CharField(max_length=100, blank=True, null=True)
@@ -385,6 +362,7 @@ class t_livestock_export_certificate_t3(models.Model):
 class t_livestock_movement_permit_t1(models.Model):
     Application_No = models.CharField(max_length=20, primary_key=True)
     Permit_Type = models.CharField(max_length=3, default=None)
+    Application_Type = models.CharField(max_length=20, default=None, blank=True, null=True)
     CID = models.BigIntegerField()
     Applicant_Name = models.CharField(max_length=250)
     Dzongkhag_Code = models.IntegerField(default=None, blank=True, null=True)

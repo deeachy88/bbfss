@@ -231,7 +231,7 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="expectedArrivalDate">Expected Arrival Date <font color="red">*</font></label>
+                                    <label class="form-label">Expected Arrival Date <font color="red">*</font></label>
                                     <input type="text" class="form-control date-picker flatpickr-input active" id="expectedArrivalDate" name="expectedArrivalDate">
                                 </div>
                                 <div class="alert alert-danger" id="dateErrorMsg" style="display:none"></div>
@@ -544,33 +544,7 @@ function save_food_permit_details()
     }
 }
 
-function loadDetails()
-{
-    var appid = $('#applicationNo').val();
-    $.ajax({
-    type : "GET",
-    url : "{% url 'load_application_details' %}",
-    data :{'application_id':appid},
-    success : function(response)
-    {
-        $('#applicant_details').html(response);
-    }
-    });
-}
 
-function load_attachment_details()
-{
-    var appid = $('#applicationNo').val();
-    $.ajax({
-    type : "GET",
-    url : "{% url 'load_attachment_details' %}",
-    data :{'application_id':appid},
-    success : function(response)
-    {
-    $('#fileAttach').html(response);
-    }
-    });
-}
 
 function getGewog(dzongkhag_id)
 {

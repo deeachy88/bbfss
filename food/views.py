@@ -1168,6 +1168,91 @@ def send_reject_mail(remarks, Email):
     send_mail(subject, message, email_from, recipient_list)
 
 
+def food_handler_image(request):
+    data = dict()
+    myFile = request.FILES['document']
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/food/food_handlers")
+    if fs.exists(myFile.name):
+        data['form_is_valid'] = False
+    else:
+        fs.save(myFile.name, myFile)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/food/food_handlers" + "/" + myFile.name
+        data['form_is_valid'] = True
+        data['file_url'] = file_url
+    return JsonResponse(data)
+
+
+def food_handler_image_name(request):
+    if request.method == 'POST':
+        Application_No = request.POST.get('appNo')
+        fileName = request.POST.get('filename')
+        Applicant_Id = request.session['email']
+        file_url = request.POST.get('file_url')
+        batch_no = request.POST.get('batch_No')
+        score = request.POST.get('score')
+        attendance = request.POST.get('attendance')
+        t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
+                                         File_Path=file_url, Role_Id=None,
+                                         Attachment=fileName)
+
+        file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+        details = t_food_licensing_food_handler_t1.objects.filter(Application_No=Application_No)
+        details.update(Attendance=attendance)
+        details.update(Assessment_Score=score)
+        app_details = t_food_licensing_food_handler_t1.objects.filter(Training_Batch_No=batch_no)
+    return render(request, 'food_handler/result_list.html', {'application_details': details,
+                                                             'file_attach': file_attach})
+
+
+def food_handler_image_update(request):
+    data = dict()
+    myFile = request.FILES['image']
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/food/food_handlers")
+    if fs.exists(myFile.name):
+        data['form_is_valid'] = False
+    else:
+        fs.save(myFile.name, myFile)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/food/food_handlers" + "/" + myFile.name
+        data['form_is_valid'] = True
+        data['file_url'] = file_url
+    return JsonResponse(data)
+
+
+def food_handler_image_name_update(request):
+    if request.method == 'POST':
+        Application_No = request.POST.get('Application_No')
+        fileName = request.POST.get('filename')
+        Applicant_Id = request.session['email']
+        file_url = request.POST.get('file_url')
+        batch_no = request.POST.get('batch_No')
+        score = request.POST.get('score')
+        attendance = request.POST.get('attendance')
+        t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
+                                         File_Path=file_url, Role_Id=None, Attachment=fileName)
+        file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+        details = t_food_licensing_food_handler_t1.objects.filter(Application_No=Application_No)
+        details.update(Attendance=attendance)
+        details.update(Assessment_Score=score)
+        app_details = t_food_licensing_food_handler_t1.objects.filter(Training_Batch_No=batch_no)
+    return render(request, 'food_handler/result_list.html', {'application_details': details,
+                                                             'file_attach': file_attach})
+
+
+def food_handler_update(request):
+    Application_No = request.GET.get('Application_No')
+    Applicant_Id = request.session['email']
+    batch_no = request.GET.get('batch_No')
+    score = request.GET.get('score')
+    attendance = request.GET.get('attendance')
+
+    details = t_food_licensing_food_handler_t1.objects.filter(Application_No=Application_No)
+    details.update(Attendance=attendance)
+    details.update(Assessment_Score=score)
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+    return render(request, 'food_handler/result_list.html', {'application_details': details,
+                                                             'file_attach': file_attach})
+
+
 # Common
 def food_handler_application(request):
     service_code = "FHC"
@@ -1202,6 +1287,7 @@ def update_batch_no(request):
                        Training_To_Date=to_Date, Inspection_Remarks=remarks, Training_Venue=Training_Venue,
                        Training_Batch=training_batch)
         send_batch_mail(batchNo, from_training_Date, to_training_Date, remarks, email)
+    return redirect(food_handler_application)
 
 
 def send_batch_mail(batchNo, from_training_Date, to_training_Date, remarks, Email):
@@ -1216,7 +1302,7 @@ def send_batch_mail(batchNo, from_training_Date, to_training_Date, remarks, Emai
 
 
 def result_update_list(request):
-    result_details = t_food_licensing_food_handler_t1.objects.filter(Training_Batch_No__isnull=False).distinct(
+    result_details = t_food_licensing_food_handler_t1.objects.filter(Training_Batch_No__isnull=False,App_Status__isnull=True ).distinct(
         'Training_Batch_No')
     return render(request, 'food_handler/food_handler_result_list.html',
                   {'application_details': result_details})
@@ -1225,8 +1311,9 @@ def result_update_list(request):
 def update_list(request):
     batch_no = request.POST.get('Training_Batch_No')
     result_details = t_food_licensing_food_handler_t1.objects.filter(Training_Batch_No=batch_no)
+    file_attach = t_file_attachment.objects.all()
     return render(request, 'food_handler/result_list.html',
-                  {'application_details': result_details})
+                  {'application_details': result_details, 'file_attach': file_attach})
 
 
 def result_update(request):
@@ -1626,3 +1713,66 @@ def update_payment(application_no, permit_no, service_code, validity_date):
                                      Receipt_Date=None,
                                      Updated_By=None,
                                      Updated_On=None)
+
+
+def food_handler_application_details(request):
+    app_id = request.GET.get('application_id')
+    application_details = t_food_licensing_food_handler_t1.objects.filter(Application_No=app_id)
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+    field_office = t_field_office_master.objects.all()
+    return render(request, 'food_handler/food_handler_application_details.html',
+                  {'application_details': application_details, 'dzongkhag': dzongkhag, 'gewog': gewog,
+                   'village': village, 'field_office': field_office})
+
+
+def get_food_handler_details(request):
+    app_id = request.GET.get('application_id')
+    application_details = t_food_licensing_food_handler_t1.objects.filter(Application_No=app_id)
+    attachment = t_file_attachment.objects.filter(Application_No=app_id)
+    count = t_file_attachment.objects.filter(Application_No=app_id).count()
+    return render(request, 'food_handler/edit_food_handler_details.html',
+                  {'application_details': application_details, 'attachment': attachment, 'count': count})
+
+
+def delete_food_handler_photo(request):
+    data = dict()
+    File_Id = request.GET.get('file_id')
+    Application_No = request.GET.get('appNo')
+
+    file = t_file_attachment.objects.filter(pk=File_Id)
+    for file in file:
+        fileName = file.Attachment
+        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/food/food_handlers")
+        fs.delete(str(fileName))
+    file.delete()
+
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No).count()
+    data['Count'] = file_attach
+    return JsonResponse(data)
+
+
+def food_handler(request):
+    Application_No = request.GET.get('Application_No')
+    attendance = request.GET.get('attendance')
+    file = t_file_attachment.objects.filter(Application_No=Application_No)
+    for file in file:
+        fileName = file.Attachment
+        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/food/food_handlers")
+        fs.delete(str(fileName))
+    file.delete()
+    details = t_food_licensing_food_handler_t1.objects.filter(Application_No=Application_No)
+    details.update(Assessment_Score=None)
+    details.update(Attendance=attendance)
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+    application_details = t_food_licensing_food_handler_t1.objects.filter(Application_No=Application_No)
+    return render(request, 'food_handler/result_list.html', {'application_details': application_details,
+                                                             'file_attach': file_attach})
+
+
+def update_food_handler_status(request):
+    Application_No = request.GET.get('batch')
+    details = t_food_licensing_food_handler_t1.objects.filter(Training_Batch_No=Application_No)
+    details.update(App_Status='Yes')
+    return redirect(update_list)

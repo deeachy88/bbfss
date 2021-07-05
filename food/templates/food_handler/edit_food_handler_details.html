@@ -1,0 +1,109 @@
+<style>
+    .imagePreview {
+    width: 100%;
+    height: 180px;
+    box-shadow: 0px -3px 6px 2px rgb(0 0 0 / 20%);
+}
+
+</style>
+<div class="animated fadeIn">
+           <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    {% for application_details in application_details %}
+                        <input type="hidden" value="{{application_details.Attendance}}" id="attendance_val">
+                        <input type="hidden" value="{{application_details.Training_Batch_No}}" id="batch_No">
+                        <input type="hidden" id="edit_application_no" value="{{ application_details.Application_No}}">
+                        <input type="hidden" value="{{count}}" id="count">
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="form-label">Attendance</label><br>
+                                <div class="form-check" style="margin-top: 12px;">
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" name="Attendance" id="present_radio" class="custom-control-input" value="P" onclick="checkFor(this.value)">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Present</span>
+                                    </label>&nbsp;
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" name="Attendance" id="absent_radio" class="custom-control-input" value="A" onclick="checkFor(this.value)">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Absent</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6 score_div">
+                                <label class="form-label">Score</label>
+                                <input type="text" class="form-control" name="score" id="score" value="{{application_details.Assessment_Score}}">
+                            </div>
+                        </div>
+                    {% endfor %}
+                    {% for details in attachment %}
+                        <div class="row" id="image_div">
+                            <div class="form-group col-md-6 score_div">
+                                    <label class="form-label">Image</label>
+                                    <img src="{{ details.File_Path}}" class="form-control imagePreview" alt="connect" style="max-height:100px;max-width:100px">
+                            </div>
+                            <!--<i class="zmdi zmdi-delete zmdi-hc-fw imgAdd" onclick="deleteFile('{{ details.File_Id}}')"></i>-->
+                            <button type="button" id="delete_button" class="btn btn-danger" onclick="deleteFile('{{ details.File_Id}}')" style="margin-top: 112px;margin-left: -208px;padding-left: 4px;padding-right: 4px;border-radius: -78px;border-radius: 50%;width: 35px;height: 35px;line-height: 14px;font-size: 20px;"><i class="zmdi zmdi-delete zmdi-hc-fw"></i></button>
+
+                        </div>
+                    {% endfor %}
+                    <div class="row" id="file_div" style="display:none">
+                        <div class="form-group col-md-6" style="margin-top: 26px;">
+                            <label>Upload Image</label>
+                            <input type="file" name="image" id="image">
+                            <div class="alert alert-danger" id="fileErrorMsg" style="display:none"></div>
+                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+<script>
+$( document ).ready(function() {
+    count = $('#count').val();
+    attendance = $('#attendance_val').val();
+    if(count == "0")
+    {
+        $("#present_radio").prop("checked", false);
+        $("#absent_radio").prop("checked", false);
+        $("#score").val("");
+        $("#file_div").show();
+    }
+    else
+    {
+        if(attendance == "P")
+        {
+            $("#present_radio").prop("checked", true);
+        }
+        else
+        {
+            $("#absent_radio").prop("checked", true);
+        }
+    }
+});
+
+function deleteFile(id)
+{
+    var appNo = $('#application_No').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'delete_food_handler_photo' %}",
+        data :{'appNo':appNo , 'file_id': id},
+        success : function(data)
+        {
+            count = data.Count
+            if(count ==  0)
+            {
+                $('#image_div').hide();
+                $('#file_div').show();
+            }
+            else
+            {
+                $('.file_div').hide();
+                $('#file_div').show();
+            }
+        }
+    });
+}
+</script>

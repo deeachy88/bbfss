@@ -50,7 +50,7 @@
                                                     <td>{{details.Applicant_Name}}</td>
                                                     <td>{{details.Contact_No}}</td>
                                                     <input type="hidden" value="{{details.Email}}" id="cost_{{ forloop.counter }}">
-                                                    <input type="hidden" value="{{details.Application_No}}" id="appNo_{{ forloop.counter }}">
+                                                    <input type="hidden" value="{{details.Application_No}}" id="applicationNo_{{ forloop.counter }}">
                                                 {% endif %}
                                             {% endfor %}
                                         </tr>
@@ -72,7 +72,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Training Batch</label>
-                                        <select class="form-control form-control" id="Training_Batch" name="Training_Batch" onchange="conveyanceChange(this.value)">
+                                        <select class="form-control form-control" id="Training_Batch" name="Training_Batch">
                                             <option value="">-SELECT-</option>
                                             <option value="Meat Shop">Meat Shop</option>
                                             <option value="Food & Beverage Services">Food & Beverage Services</option>
@@ -161,10 +161,11 @@
         for (var i=1;i<=counterId;i++)
         {
            var idnCode ="";
+           var appNo ="";
            if($("#check_"+i).is(':checked'))
            {
                 idnCode = $('#cost_'+i).val();
-                appNo = $('#appNo_'+i).val();
+                appNo = $('#applicationNo_'+i).val();
            }
            if(parseInt(countFlag) > 0){
                 vals = vals + '#';

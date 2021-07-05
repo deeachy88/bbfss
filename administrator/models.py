@@ -262,6 +262,7 @@ class t_user_master(models.Model):
     Division_Id = models.ForeignKey(t_division_master, on_delete=models.CASCADE, null=True, blank=True)
     Field_Office_Id = models.ForeignKey(t_field_office_master, on_delete=models.CASCADE, null=True, blank=True)
     Role_Id = models.ForeignKey(t_role_master, on_delete=models.CASCADE, null=True, blank=True)
+    Is_Officiating = models.CharField(max_length=3, default='No', null=True, blank=True)
 
 
 class t_forgot_password(models.Model):

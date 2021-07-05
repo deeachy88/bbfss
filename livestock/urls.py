@@ -14,7 +14,7 @@ urlpatterns = [
     path('submit_meat_shop_application', views.submit_meat_shop_application,
          name='submit_meat_shop_application'),
     path('delete_meat_shop_fh_file', views.delete_meat_shop_fh_file, name='delete_meat_shop_fh_file'),
-    path('save_meat_shop_details', views.save_meat_shop_details, name='save_meat_shop_details'),
+    path('save_meat_item_details', views.save_meat_shop_details, name='save_meat_item_details'),
     path('save_meat_shop_fh_details', views.save_meat_shop_fh_details, name='save_meat_shop_fh_details'),
     path('meat_shop_fo_approve', views.meat_shop_fo_approve, name='meat_shop_fo_approve'),
     path('meat_shop_fo_reject', views.meat_shop_fo_reject, name='meat_shop_fo_reject'),

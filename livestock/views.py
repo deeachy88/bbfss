@@ -52,99 +52,73 @@ def meat_shop_registration_licensing(request):
     unit = t_unit_master.objects.all()
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
     return render(request, 'meat_shop_registration/registration_application.html',
-                  {'unit': unit, 'dzongkhag': dzongkhag, 'gewog': gewog})
+                  {'unit': unit, 'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village})
 
 
 def save_meat_shop_registration(request):
     data = dict()
     service_code = "CMS"
-    new_food_business_registration_application = meat_shop_registration_application_no(service_code)
-    Business_Name = request.POST.get('Business_Name')
+    new_meat_shop_application = meat_shop_registration_application_no(service_code)
+    Meat_Shop_Name = request.POST.get('Business_Name')
     CID = request.POST.get('cid')
     name = request.POST.get('name')
+    name_manager = request.POST.get('name_manager')
+    License_Criteria = request.POST.get('license_criteria')
     Contact_No = request.POST.get('contactNumber')
     Email = request.POST.get('email')
-    address = request.POST.get('address')
-    current_status = request.POST.get('current_status')
-    name_manager = request.POST.get('name_manager')
-    license_criteria = request.POST.get('license_criteria')
-    product_category = request.POST.get('product_category')
-    product_proposed = request.POST.get('product_proposed')
-    identified_water_source = request.POST.get('identified_water_source')
-    no_of_years = request.POST.get('no_of_years')
-    production_volume = request.POST.get('production_volume')
-    volume_unit = request.POST.get('volume_unit')
-    history = request.POST.get('history')
-    previous_business = request.POST.get('previous_business')
-    outsourced_process = request.POST.get('outsourced_process')
-    legal_status = request.POST.get('legal_status')
-    larger_corporation = request.POST.get('larger_corporation')
-    relationship = request.POST.get('relationship')
-    licensed_before = request.POST.get('relationship')
-    license_number = request.POST.get('license_number')
-    reason = request.POST.get('license_number')
-    judicial_proceedings = request.POST.get('judicial_proceedings')
-    provided_details = request.POST.get('provided_details')
-    regulatory_proceedings_details = request.POST.get('regulatory_proceedings_details')
-    project_proposal = request.POST.get('project_proposal')
-    regulatory_proceedings = request.POST.get('regulatory_proceedings')
     dzongkhag = request.POST.get('dzongkhag')
     gewog = request.POST.get('gewog')
+    village = request.POST.get('village')
+    address = request.POST.get('address')
 
     t_livestock_clearance_meat_shop_t1.objects.create(
-        Application_No=new_food_business_registration_application,
-        Application_Date=date.today(),
+        Application_No=new_meat_shop_application,
+        Application_Date=None,
         Applicant_Id=request.session['email'],
-        Business_Name=Business_Name,
         CID=CID,
         Name_Owner=name,
         Contact_No=Contact_No,
         Email=Email,
-        Address=address,
-        Name_Manager=name_manager,
-        License_Criteria=license_criteria,
-        Product_Category=product_category,
-        Product=product_proposed,
-        Current_Status=current_status,
-        Years_In_Production=no_of_years,
-        Volume_Last_Year=production_volume,
-        Volume_Unit=volume_unit,
-        Project_Proposal=project_proposal,
-        Water_Source=identified_water_source,
-        Site_History=history,
-        Previous_Business=previous_business,
-        Process_Outsource=outsourced_process,
-        Legal_Entity=legal_status,
-        Large_Corporation=larger_corporation,
-        Large_Corporation_Relation=relationship,
-        FBO_License_Status=licensed_before,
-        FBO_License_No=license_number,
-        Invalid_Reason=reason,
-        FBO_Judicial_Proceedings=judicial_proceedings,
-        Judicial_Proceedings_Details=provided_details,
-        FBO_Regulatory_Proceedings=regulatory_proceedings_details,
-        Regulatory_Proceedings_Details=regulatory_proceedings,
+        Address=None,
+        License_Criteria=License_Criteria,
         Inspection_Type=None,
+        Desired_FI_Inspection_Date=None,
+        Desired_FR_Inspection_Date=None,
         FB_License_No=None,
         FI_Inspection_Date=None,
         FI_Inspection_Leader=None,
+        FI_Response=None,
         FI_Recommendation=None,
         FR_Inspection_Date=None,
         FR_Inspection_Leader=None,
+        FR_Response=None,
+        FR_Recommendation=None,
+        Field_Office_Id=None,
+        Conditional_Clearance_No=None,
+        Clearance_Approve_Date=None,
+        Clearance_Validity_Period=None,
+        Clearance_Validity=None,
+        Approve_Date=None,
+        Validity_Period=None,
+        Validity=None,
         FR_Inspection_Team=None,
+        FI_Inspection_Team=None,
         Dzongkhag_Code=dzongkhag,
-        Gewog_Code=gewog
-
+        Gewog_Code=gewog,
+        FO_Remarks=None,
+        Representative=name_manager,
+        Village_Code=village,
+        Meat_Shop_Name=Meat_Shop_Name
     )
 
-    t_workflow_details.objects.create(Application_No=new_food_business_registration_application,
+    t_workflow_details.objects.create(Application_No=new_meat_shop_application,
                                       Applicant_Id=request.session['email'],
                                       Assigned_To=None, Field_Office_Id=None, Section='Livestock',
                                       Assigned_Role_Id='2', Action_Date=None, Application_Status='P',
                                       Service_Code=service_code)
-    data['applNo'] = new_food_business_registration_application
-    data['outsourced_process'] = outsourced_process
+    data['applNo'] = new_meat_shop_application
     return JsonResponse(data)
 
 
@@ -689,22 +663,20 @@ def forward_meat_shop_factory_application(request):
 
 
 def save_meat_shop_details(request):
-    Application_No = request.POST.get('fh_details_application_no')
-    BP_Outsourced_To = request.POST.get('details_name')
-    Contact_No = request.POST.get('contact_number')
-    Address = request.POST.get('details_address')
-    BAFRA_License_No = request.POST.get('bafra_license_no')
+    Application_No = request.POST.get('fh_application_no')
+    print(Application_No)
+
+    meat_name = request.POST.get('meat_name')
 
     t_livestock_clearance_meat_shop_t2.objects.create(Application_No=Application_No,
-                                                      BP_Outsourced_To=BP_Outsourced_To,
-                                                      Contact_No=Contact_No,
-                                                      Address=Address, BAFRA_License_No=BAFRA_License_No)
-    fh_details = t_livestock_clearance_meat_shop_t2.objects.filter(Application_No=Application_No)
-    return render(request, 'meat_shop_registration/details.html', {'fh_details': fh_details})
+                                                      Meat_Item=meat_name)
+    meat_details = t_livestock_clearance_meat_shop_t2.objects.filter(Application_No=Application_No)
+    return render(request, 'meat_shop_registration/details.html', {'meat_details': meat_details})
 
 
 def save_meat_shop_fh_details(request):
     Application_No = request.POST.get('fh_application_no')
+
     fh_name = request.POST.get('fh_name')
     fh_license = request.POST.get('fh_license')
 
@@ -1714,6 +1686,7 @@ def save_movement_permit_application(request):
     service_code = "LMP"
     application_no = livestock_movement_permit_application_no(service_code)
     Permit_Type = request.POST.get('Permit_Type')
+    Application_Type = request.POST.get('Permit_Type')
     CID = request.POST.get('cid')
     Name = request.POST.get('Name')
     Dzongkhag = request.POST.get('dzongkhag')
@@ -1738,6 +1711,7 @@ def save_movement_permit_application(request):
     t_livestock_movement_permit_t1.objects.create(
         Application_No=application_no,
         Permit_Type=Permit_Type,
+        Application_Type=Application_Type,
         CID=CID,
         Applicant_Name=Name,
         Dzongkhag_Code=Dzongkhag,
