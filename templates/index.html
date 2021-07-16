@@ -8,7 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>BAFRA | BBFSS </title>
+    <title>BAFRA | Bhutan Biosecurity and Food Safety System</title>
 
     <!-- Bootstrap -->
     <link href="{% static 'styles/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -48,8 +48,10 @@
 }
 .footer
 {
-    margin-top: 85px;
+    margin-top: 450px;
     margin-bottom: 1rem;
+    border-top: 1px solid #afb3b0;
+    padding: 1rem 1rem 1rem;
 }
 body {
     color: #73879C;
@@ -64,63 +66,55 @@ body {
    {% block content %}
     <div>
       <a class="hiddenanchor" id="signup"></a>
-      <a class="hiddenanchor" id="signin"></a>
       <header class="header justify-content-center text-center" style="background-color: white;">
                 <img src="{% static 'assets/img/banner.png' %}" alt="placeholder 960" class="img-responsive" />
       </header>
-      <div class="login_wrapper">
-        <div class="animate form login_form">
-          <section class="login_content">
-            <form action="{% url 'login' %}" id="loginForm" method="post">
-              {% csrf_token %}
-              <h1>Login Form</h1>
-              <h2 class="form-signin-heading">{{ message }}</h2>
-              <div>
-                <input type="text" name="username" class="form-control" placeholder="Username" required/>
-              </div>
-              <div>
-                <input type="password" name="password" class="form-control" placeholder="Password" required />
-              </div>
-              <div>
-                <button class="btn-login submit" href="index.html">Log in</button>
-                <a class="reset_pass" href="#">Lost your password?</a>
-              </div>
+      <div class="card-body text-center">
+        <h5 class="card-body__title">Login Form</h5>
+          <div class="login_wrapper">
+            <div class="animate form login_form">
+              <section class="login_content">
+                <form action="{% url 'login' %}" id="loginForm" method="post">
+                  {% csrf_token %}
 
-              <div class="clearfix"></div>
+                  <h2 class="form-signin-heading">{{ message }}</h2>
+                  <div>
+                    <input type="text" name="username" class="form-control" placeholder="Username" required/>
+                  </div>
+                  <div>
+                    <input type="password" name="password" class="form-control" placeholder="Password" required />
+                  </div>
+                  <div>
+                    <button class="btn-login submit" href="index.html">Log in</button>
+                    <a class="reset_pass" href="#">Lost your password?</a>
+                  </div>
+                  <div class="clearfix"></div>
+                  <div class="separator">
+                    <a href="http://127.0.0.1:8000/register" class="font-small blue-text d-flex justify-content-center">
+                        Client Register
+                    </a>
+                    <div class="clearfix"></div>
+                  </div>
+                </form>
+              </section>
+            </div>
 
-              <div class="separator">
-                <a href="http://127.0.0.1:8000/register" class="font-small blue-text d-flex justify-content-center">
-                    Client Register
-                </a>
-
-                <div class="clearfix"></div>
-                <br />
-
-                <div>
-                  <p class="footer">©2021 All Rights Reserved. Bhutan Bio Security And Food Safety System(BBFSS)</p>
-                </div>
-              </div>
-            </form>
-          </section>
-        </div>
-
-        <div id="register" class="animate form registration_form">
-          <section class="login_content">
-
-              <h1>Create Account</h1>
-              <div class="clearfix"></div>
-              <div class="separator">
-                <p class="change_link">Already a member ?
-                </p>
-          {% endblock %}
-                <div class="clearfix"></div>
-                <br />
-
-                <div>
-                  <p class="footer text-center">©2021 All Rights Reserved. Bhutan Bio Food Security System(BBFSS)</p>
-                </div>
-              </div>
-          </section>
+            <div id="register" class="animate form registration_form">
+              <section class="login_content">
+                  <h1>Create Account</h1>
+                  <div class="clearfix"></div>
+                  <div class="separator">
+                    <p class="change_link">Already a member ?
+                    </p>
+              {% endblock %}
+                    <div class="clearfix"></div>
+                    <br />
+                  </div>
+              </section>
+            </div>
+          </div>
+        <div class="card-body text-center">
+              <p class="footer">©2021 All Rights Reserved. Bhutan Biosecurity And Food Safety System (BBFSS)</p>
         </div>
       </div>
     </div>
