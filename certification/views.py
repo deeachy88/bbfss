@@ -2083,7 +2083,7 @@ def fpc_nc_response(request):
 # Common
 def certificate_pending_list(request):
     Login_Id = request.session['email']
-    print(Login_Id)
+
     application_details = t_workflow_details.objects.filter(Applicant_Id=Login_Id, Service_Code='OC',
                                                             Action_Date__isnull=True) \
                           | t_workflow_details.objects.filter(Applicant_Id=Login_Id, Service_Code='FPC',

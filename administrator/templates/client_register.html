@@ -30,92 +30,230 @@
     font-weight: 400;
     line-height: 1.471;
 }
+.badge {
+    position: absolute;
+    right: -5px;
+    top: -13px;
+    font-size: 24px;
+    border: 0px solid #ddd;
+}
+.card {
+    margin-bottom: 2.3rem;
+    box-shadow: 0 0px 0px rgb(0 0 0 / 10%);
+}
+.card {
+    position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: rgb(19 25 54);
+    background-clip: border-box;
+    border: 1px solid transparent;
+    border-radius: 2px;
+}
+.content__title {
+    margin-bottom: 0rem;
+    padding: 0rem 0rem 0;
+}
 </style>
 <body>
+<header class="content__title">
+    <img src="{% static 'assets/img/banner.png' %}" alt="placeholder 960" class="img-responsive" width="100%" />
+</header>
 <div class="card">
-    <div class="card-title text-center">
-        <img src="{% static 'assets/img/banner.png' %}" alt="placeholder 960" class="img-responsive" width="100%" />
-    </div>
     <div class="card-body text-center">
         <h5 class="card-body__title">Client Registration</h5>
+        <div class="actions">
+            <a href="{% url 'index' %}" data-toggle="tooltip" data-placement="top" title="Back To Login" class="actions__item zmdi zmdi-arrow-left"></a>
+        </div>
         <hr>
-        <form>
+        <form method="post" id="registration_form">
+        {% csrf_token %}
             <div class="form-check text-center">
-                <label>Document Type <font color="red"><font color='red'>*</font></font></label><br>
+                <label>Client Type <font color="red"><font color='red'>*</font></font></label><br>
                 <label class="custom-control custom-radio">
-                    <input type="radio" name="radio-inline" class="custom-control-input" value="Individual">
+                    <input type="radio" name="Client_Type" class="custom-control-input" value="Individual" onclick="changeOnClick(this.value)">
                     <span class="custom-control-indicator"></span>
                     <span class="custom-control-description">Individual</span>
                 </label>
                 <label class="custom-control custom-radio">
-                    <input type="radio" name="radio-inline" class="custom-control-input" value="Organization">
+                    <input type="radio" name="Client_Type" class="custom-control-input" value="Organization" onclick="changeOnClick(this.value)">
                     <span class="custom-control-indicator"></span>
                     <span class="custom-control-description">Organization</span>
                 </label>
+                <div class="alert alert-danger" id="Client_TypeErrorMsg" style="display:none"></div>
+            </div><br>
+            <div id="individualDiv">
+                <div class="form-row">
+                     <div class="col-md-4">
+                        <div class="form-group">
+                            <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCitizenDetails(this.value);" placeholder="CID">
+                        </div>
+                         <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                        <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
+                     </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <input type="text" class="form-control form-control-md" name="Name" id="Name" placeholder="Name">
+                        </div>
+                        <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                        <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Email Address" onchange="validateemailId(this.value)">
+                        </div>
+                        <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                        <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+                <div class="form-row">
+                     <div class="col-md-4">
+                        <div class="form-group">
+                            <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)" placeholder="Contact No">
+                        </div>
+                         <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                        <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
+                     </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value),getLocation(this.value)">
+                                <option value="">--SELECT DZONGKHAG--</option>
+                                {% for dzongkhag in dzongkhag %}
+                                        <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                        <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                <option value="">--SELECT GEWOG--</option>
+                                {% for gewog in gewog %}
+                                        <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                        <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                             <select class="form-control" name="village" id="village">
+                                <option value="">--SELECT VILLAGE--</option>
+                                {% for village in village %}
+                                        <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
+                                {% endfor %}
+                             </select>
+                        </div>
+                        <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                        <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <textarea class="form-control" placeholder="Address" id="Address"></textarea>
+                        </div>
+                        <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                        <div class="alert alert-danger" id="AddressErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
             </div>
-            <div class="form-row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <input type="text" class="form-control form-control-md" name="Name" id="Name" placeholder="Name">
+            <div id="organizationDiv" style="display:none">
+                <div class="form-row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <input type="text" class="form-control form-control-md" name="Org_Name" id="Org_Name" placeholder="Organization Name">
+                        </div>
+                        <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                        <div class="alert alert-danger" id="Org_NameErrorMsg" style="display:none"></div>
                     </div>
-                    <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="License_No" name="License_No" placeholder="License Number">
+                        </div>
+
+                        <div class="alert alert-danger" id="License_NoErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <input type="text" class="form-control form-control-md" name="Contact_Person" id="Contact_Person" placeholder="Contact Person">
+                        </div>
+                        <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                        <div class="alert alert-danger" id="Contact_PersonErrorMsg" style="display:none"></div>
+                    </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <input type="email" class="form-control" id="email" name="email" placeholder="Email Address" onchange="validateemailId(this.value)">
+                <div class="form-row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <input type="email" class="form-control" id="emailId" name="emailId" placeholder="Email Address" onchange="validateemailId(this.value)">
+                        </div>
+                        <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                        <div class="alert alert-danger" id="emailIdErrorMsg" style="display:none"></div>
                     </div>
-                    <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <input type="number" class="form-control" id="mobile_number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="mobile_number" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)" placeholder="Contact No">
+                        </div>
+                        <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                        <div class="alert alert-danger" id="mobile_numberErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <select class="form-control" name="org_dzongkhag"  id="org_dzongkhag" onchange="getGewog(this.value),getLocation(this.value)">
+                                <option value="">--SELECT ORGANIZATION DZONGKHAG--</option>
+                                {% for dzongkhag in dzongkhag %}
+                                        <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                        <div class="alert alert-danger" id="org_dzongkhagErrorMsg" style="display:none"></div>
+                    </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)" placeholder="Mobile No">
+                <div class="form-row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <select class="form-control" name="org_gewog" id="org_gewog" onchange="getVillage(this.value)">
+                                <option value="">--SELECT ORGANIZATION GEWOG--</option>
+                                {% for gewog in gewog %}
+                                        <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                        <div class="alert alert-danger" id="org_gewogErrorMsg" style="display:none"></div>
                     </div>
-                    <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                             <select class="form-control" name="org_village" id="org_village">
+                                <option value="">--SELECT ORGANIZATION VILLAGE--</option>
+                                {% for village in village %}
+                                        <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
+                                {% endfor %}
+                             </select>
+                        </div>
+                        <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                        <div class="alert alert-danger" id="org_villageErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <textarea class="form-control" placeholder="Address" name="org_address" id="org_address"></textarea>
+                        </div>
+                        <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                        <div class="alert alert-danger" id="org_addressErrorMsg" style="display:none"></div>
+                    </div>
                 </div>
             </div>
-            <div class="form-row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value),getLocation(this.value)">
-                            <option value="">--SELECT DZONGKHAG--</option>
-                            {% for dzongkhag in dzongkhag %}
-                                    <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
-                            <option value="">--SELECT GEWOG--</option>
-                            {% for gewog in gewog %}
-                                    <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                         <select class="form-control" name="village" id="village">
-                            <option value="">--SELECT VILLAGE--</option>
-                            {% for village in village %}
-                                    <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
-                            {% endfor %}
-                         </select>
-                    </div>
-                    <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
-                </div>
+            <div id="sucessMsg" class="alert alert-info" role="alert" style="display:none;">
+                Your Registration Was Successfull
             </div>
-            <div class="form-row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <textarea class="form-control" placeholder="Address"></textarea>
-                    </div>
-                </div>
-            </div>
-            <button type="submit" class="btn btn-primary">Create an Account</button>
+            <button type="button" onclick="save_client()" class="btn btn-primary">Register</button>
         </form>
     </div>
 </div>
@@ -124,4 +262,244 @@
 <script src="{% static 'assets/bower_components/popper.js/dist/umd/popper.min.js' %}"></script>
 <script src="{% static 'assets/bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'assets/js/app.min.js' %}"></script>
+<script>
+    function changeOnClick(value)
+    {
+        if(value == "Individual")
+        {
+            $('#individualDiv').show();
+            $('#organizationDiv').hide();
+        }
+        else
+        {
+            $('#organizationDiv').show();
+            $('#individualDiv').hide();
+        }
+    }
+
+    function save_client()
+    {
+        var Client_Type = $("input[name=Client_Type]:checked").length;
+        if(Client_Type < 1)
+        {
+            $('#Client_TypeErrorMsg').html("Please Check One Client Type.");
+            $('#Client_TypeErrorMsg').show();
+            $('#Client_TypeErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(Client_Type == "Individual")
+        {
+            cid = $('#cid').val();
+            Name = $('#Name').val();
+            email = $('#email').val();
+            contactNumber = $('#contactNumber').val();
+            dzongkhag = $('#dzongkhag').val();
+            gewog = $('#gewog').val();
+            village = $('#village').val();
+            Address = $('#Address').val();
+
+            if(cid == "")
+            {
+                $('#cidErrorMsg').html("Enter CID Number.");
+                $('#cidErrorMsg').show();
+                $('#cidErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(Name == "")
+            {
+                $('#NameErrorMsg').html("Enter Name.");
+                $('#NameErrorMsg').show();
+                $('#NameErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(email == "")
+            {
+                $('#emailErrorMsg').html("Enter Email.");
+                $('#emailErrorMsg').show();
+                $('#emailErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(contactNumber == "")
+            {
+                $('#contactNumberErrorMsg').html("Enter Contact Number.");
+                $('#contactNumberErrorMsg').show();
+                $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(Address == "")
+            {
+                $('#AddressErrorMsg').html("Enter Address.");
+                $('#AddressErrorMsg').show();
+                $('#AddressErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else
+            {
+                $.ajax({
+                    type : "POST",
+                    url : "{% url 'check_email_id' %}",
+                    data : $('#registration_form').serialize(),
+                    success : function(data)
+                    {
+                        if(data.Count == "1")
+                        {
+                            $('#email').val("");
+                            $('#emailErrorMsg').html("Email Already Exists.Try With Another Email");
+                            $('#emailErrorMsg').show();
+                            $('#emailErrorMsg').delay(2000).fadeOut('slow');
+                        }
+                        else
+                        {
+                            $.ajax({
+                                type : "POST",
+                                url : "{% url 'register' %}",
+                                data : $('#registration_form').serialize(),
+                                success : function(data)
+                                {
+                                    $('#sucessMsg').show();
+                                    setTimeout(function() {
+                                        $("#successMsg").hide('blind', {}, 500)
+                                    }, 2000);
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        }
+        else
+        {
+            Org_Name = $('#Org_Name').val();
+            Contact_Person = $('#Contact_Person').val();
+            emailId = $('#emailId').val();
+            mobile_number = $('#mobile_number').val();
+            org_dzongkhag = $('#org_dzongkhag').val();
+            org_gewog = $('#org_gewog').val();
+            org_village = $('#org_village').val();
+            org_address = $('#org_address').val();
+
+            if(Org_Name == "")
+            {
+                $('#Org_NameErrorMsg').html("Enter Organization Name.");
+                $('#Org_NameErrorMsg').show();
+                $('#Org_NameErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(Contact_Person == "")
+            {
+                $('#Contact_PersonErrorMsg').html("Enter Contact Person.");
+                $('#Contact_PersonErrorMsg').show();
+                $('#Contact_PersonErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(emailId == "")
+            {
+                $('#emailIdErrorMsg').html("Enter Email.");
+                $('#emailIdErrorMsg').show();
+                $('#emailIdErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(mobile_number == "")
+            {
+                $('#mobile_numberErrorMsg').html("Enter Contact Number.");
+                $('#mobile_numberErrorMsg').show();
+                $('#mobile_numberErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(org_dzongkhag == "")
+            {
+                $('#org_dzongkhagErrorMsg').html("Select Dzongkhag.");
+                $('#org_dzongkhagErrorMsg').show();
+                $('#org_dzongkhagErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(org_gewog == "")
+            {
+                $('#org_gewogErrorMsg').html("Select Gewog.");
+                $('#org_gewogErrorMsg').show();
+                $('#org_gewogErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(org_village == "")
+            {
+                $('#org_villageErrorMsg').html("Select Village.");
+                $('#org_villageErrorMsg').show();
+                $('#org_villageErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(org_address == "")
+            {
+                $('#org_addressErrorMsg').html("Enter Address.");
+                $('#org_addressErrorMsg').show();
+                $('#org_addressErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else
+            {
+                $.ajax({
+                    type : "POST",
+                    url : "{% url 'check_email_id' %}",
+                    data : $('#registration_form').serialize(),
+                    success : function(data)
+                    {
+                        if(data.Count == "1")
+                        {
+                            $('#email').val("");
+                            $('#emailErrorMsg').html("Email Already Exists.Try With Another Email");
+                            $('#emailErrorMsg').show();
+                            $('#emailErrorMsg').delay(2000).fadeOut('slow');
+                        }
+                        else
+                        {
+                            $.ajax({
+                                type : "POST",
+                                url : "{% url 'register' %}",
+                                data : $('#registration_form').serialize(),
+                                success : function(data)
+                                {
+                                    $('#sucessMsg').show();
+                                    setTimeout(function() {
+                                        $("#successMsg").hide('blind', {}, 500)
+                                    }, 2000);
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+function validateemailId(emailId)
+{
+    var pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+    var no=emailId.match(pattern);
+
+    if(no==null)
+    {
+        $('#emailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
+        $('#email').val("");
+        $('#emailErrorMsg').show();
+        $('#emailErrorMsg').delay(2000).fadeOut('slow');
+    }else{
+     $('#emailErrorMsg').hide();
+    }
+
+}
+
+function checkContact(value)
+{
+    var firstDigit = value.charAt(0);
+    var secondDigit = value.charAt(1);
+
+    if(firstDigit != 7 && firstDigit != 1){
+        $('#contactNumberErrorMsg').html("Must Start with either 1 or 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 1 && secondDigit != 6 && secondDigit != 7){
+        $('#contactNumberErrorMsg').html("Second Digit Must Start with either 6 or 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 7 && secondDigit == 6){
+        $('#contactNumberErrorMsg').html("Second Digit Cannot be 6.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 7 && secondDigit != 7){
+        $('#contactNumberErrorMsg').html("Second Digit Must Start with 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }
+
+}
+</script>
 </html>

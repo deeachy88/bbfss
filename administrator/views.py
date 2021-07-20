@@ -32,6 +32,9 @@ def home(request):
     return render(request, 'index.html')
 
 
+def dashboard(request):
+    return render(request, 'dashboard.html')
+
 def login(request):
     _message = 'Please sign in'
     if request.method == 'POST':
@@ -52,7 +55,7 @@ def login(request):
                                 for main_role in main_role:
                                     Role_Id = main_role.Role_Id
                                 request.session['Login_Id'] = user.Login_Id
-                                request.session['Email_Id'] = user.Email_Id
+                                request.session['email'] = user.Email_Id
                                 request.session['Role_Id'] = Role_Id
                                 security = t_security_question_master.objects.all()
                             return render(request, 'update_password.html', {'security': security})
@@ -62,8 +65,8 @@ def login(request):
                                 request.session['email'] = user.Email_Id
                                 request.session['name'] = user.Name
                                 request.session['role'] = client
-                                request.session['login_id'] = user.Login_Id
-                                return render(request, 'common_dashboard.html')
+                                request.session['Login_Id'] = user.Login_Id
+                                return render(request, 'dashboard.html')
                             else:
                                 mainrole = t_role_master.objects.filter(Role_Id=user.Role_Id_id)
                                 for mainroles in mainrole:
@@ -76,45 +79,45 @@ def login(request):
                                     DG = "DG"
                                     if admin == str(mainroles.Role_Name):
                                         request.session['role'] = admin
-                                        request.session['login_id'] = user.Login_Id
+                                        request.session['Login_Id'] = user.Login_Id
                                         request.session['email'] = user.Email_Id
                                     elif DG == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
                                         request.session['role'] = DG
-                                        request.session['login_id'] = user.Login_Id
+                                        request.session['Login_Id'] = user.Login_Id
                                         request.session['email'] = user.Email_Id
                                     elif focal_officer == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
                                         request.session['role'] = focal_officer
                                         request.session['Role_Id'] = mainroles.Role_Id
                                         request.session['section'] = user.Section_Id_id
-                                        request.session['login_id'] = user.Login_Id
+                                        request.session['Login_Id'] = user.Login_Id
                                         request.session['email'] = user.Email_Id
                                     elif complaint_officer == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
                                         request.session['role'] = complaint_officer
-                                        request.session['login_id'] = user.Login_Id
+                                        request.session['Login_Id'] = user.Login_Id
                                         request.session['email'] = user.Email_Id
                                     elif OIC == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
                                         request.session['role'] = OIC
                                         request.session['Role_Id'] = mainroles.Role_Id
                                         request.session['field_office_id'] = user.Field_Office_Id_id
-                                        request.session['login_id'] = user.Login_Id
+                                        request.session['Login_Id'] = user.Login_Id
                                         request.session['email'] = user.Email_Id
                                     elif Inspector == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
                                         request.session['role'] = Inspector
                                         request.session['field_office_id'] = user.Field_Office_Id_id
-                                        request.session['login_id'] = user.Login_Id
+                                        request.session['Login_Id'] = user.Login_Id
                                         request.session['email'] = user.Email_Id
                                     elif Chief == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
                                         request.session['role'] = Chief
                                         request.session['Division_Id'] = user.Division_Id_id
-                                        request.session['login_id'] = user.Login_Id
+                                        request.session['Login_Id'] = user.Login_Id
                                         request.session['email'] = user.Email_Id
-                                return render(request, 'common_dashboard.html')
+                                return render(request, 'dashboard.html')
                     else:
                         _message = 'Your account is not activated'
                 else:
@@ -241,6 +244,11 @@ def user(request):
                                              'division': division, 'field_office': field_office})
 
 
+def forgot_password(request):
+    security = t_security_question_master.objects.all()
+    return render(request, 'forgot_password.html', {'security': security})
+
+
 def edit_user(request, Login_Id):
     details = get_object_or_404(t_user_master, Login_Id=Login_Id)
     if request.method == 'POST':
@@ -259,9 +267,10 @@ def save_user_form(request, form, Login_Id, template_name):
         contact_number = request.POST.get('contact_number')
         address = request.POST.get('address')
         role = request.POST.get('role_id')
-        t_user_master.objects.filter(Login_Id=Login_Id).update(name=username, email=email, contact_number=contact_number,
-                                                   address=address,
-                                                   role_id_id=role)
+        t_user_master.objects.filter(Login_Id=Login_Id).update(name=username, email=email,
+                                                               contact_number=contact_number,
+                                                               address=address,
+                                                               role_id_id=role)
         books = t_user_master.objects.all()
         data['html_user_list'] = render_to_string('user.html', {
             'books': books
@@ -392,6 +401,7 @@ def save_division_form(request, form, template_name):
     data['html_form'] = render_to_string(template_name, context, request=request)
     return JsonResponse(data)
 
+
 def unit_manage(request):
     if request.method == 'POST':
         form = UnitForm(request.POST)
@@ -414,6 +424,7 @@ def edit_unit(request, Unit_Id):
         form = UnitForm(instance=unit)
     return save_unit_form(request, form, 'edit_unit.html')
 
+
 def delete_unit(request, Unit_Id):
     unit = get_object_or_404(t_unit_master, pk=Unit_Id)
     data = dict()
@@ -426,6 +437,7 @@ def delete_unit(request, Unit_Id):
         context = {'unit': unit}
         data['html_form'] = render_to_string('unit_delete.html', context, request=request)
     return JsonResponse(data)
+
 
 def save_unit_form(request, form, template_name):
     data = dict()
@@ -442,6 +454,7 @@ def save_unit_form(request, form, template_name):
     context = {'form': form}
     data['html_form'] = render_to_string(template_name, context, request=request)
     return JsonResponse(data)
+
 
 def crop_category_manage(request):
     if request.method == 'POST':
@@ -1180,40 +1193,42 @@ def delete_location_mapping(request, Location_Code):
 
 def register(request):
     if request.method == 'POST':
-        client = request.POST['client']
+        client = request.POST['Client_Type']
         cid = request.POST['cid']
-        name = request.POST['name']
-        gender = request.POST['gender']
+        name = request.POST['Name']
         email = request.POST['email']
-        contact_number = request.POST['contactnumber']
-        address = request.POST['address']
-
-        contactPerson = request.POST['contactPerson']
-        emailId = request.POST['emailId']
-        mobile_number = request.POST['mobile_number']
-        org_agency = request.POST['org_agency']
-        org_license = request.POST['org_license']
+        contact_number = request.POST['contactNumber']
         dzongkhag = request.POST['dzongkhag']
         gewog = request.POST['gewog']
         village = request.POST['village']
+        address = request.POST['Address']
+
+        org_name = request.POST['Org_Name']
+        org_license = request.POST['License_No']
+        contactPerson = request.POST['Contact_Person']
+        emailId = request.POST['emailId']
+        mobile_number = request.POST['mobile_number']
+        org_dzongkhag = request.POST['dzongkhag']
+        org_gewog = request.POST['gewog']
+        org_village = request.POST['village']
         org_address = request.POST['org_address']
-        if client == "I":
-            t_user_master.objects.create(Login_Type="C", Client_Type="I", Name=name, Employee_Id=None, Gender=gender,
+        if client == "Individual":
+            t_user_master.objects.create(Login_Type="C", Client_Type="I", Name=name, Employee_Id=None, Gender=None,
                                          Mobile_Number=contact_number, Email_Id=email, Password=None,
                                          Password_Salt=None, CID=cid, Agency=None, License_No=None,
                                          Address=address, Is_Active="N", Logical_Delete="N",
                                          Last_Login_Date=None, Created_By=None, Created_On=None,
-                                         Updated_By=None, Updated_On=None, Dzongkhag_Code_id=None,
-                                         Gewog_Code_id=None, Section_Id_id=None, Village_Code_id=None,
+                                         Updated_By=None, Updated_On=None, Dzongkhag_Code_id=dzongkhag,
+                                         Gewog_Code_id=gewog, Section_Id_id=None, Village_Code_id=village,
                                          Accept_Reject=None, Division_Id_id=None, Field_Office_Id_id=None)
         else:
             t_user_master.objects.create(Login_Type="C", Client_Type="O", Name=contactPerson, Employee_Id=None,
-                                         Gender=gender, Mobile_Number=mobile_number, Email_Id=emailId, Password=None,
-                                         Password_Salt=None, CID=None, Agency=org_agency, License_No=org_license,
+                                         Gender=None, Mobile_Number=mobile_number, Email_Id=emailId, Password=None,
+                                         Password_Salt=None, CID=None, Agency=org_name, License_No=org_license,
                                          Address=org_address, Is_Active="N", Logical_Delete="N",
                                          Last_Login_Date=None, Created_By=None, Created_On=None,
-                                         Updated_By=None, Updated_On=None, Dzongkhag_Code_id=dzongkhag,
-                                         Gewog_Code_id=gewog, Section_Id_id=None, Village_Code_id=village,
+                                         Updated_By=None, Updated_On=None, Dzongkhag_Code_id=org_dzongkhag,
+                                         Gewog_Code_id=org_gewog, Section_Id_id=None, Village_Code_id=org_village,
                                          Accept_Reject=None, Division_Id_id=None, Field_Office_Id_id=None)
         return render(request, 'client_register.html')
     else:
@@ -1316,6 +1331,18 @@ def load_gewog(request):
     return render(request, 'gewog_list.html', {'gewog_list': gewog_list})
 
 
+def load_security_question(request):
+    email_id = request.GET.get('email')
+    login_details = t_user_master.objects.filter(Email_Id=email_id)
+    for id_details in login_details:
+        login_id = id_details.Login_Id
+        details = t_security_question_master.objects.filter(Login_Id=login_id)
+        for security_details in details:
+            question_id = security_details.Security_Question_Id
+            security = t_security_question_master.objects.filter(Question_Id=question_id)
+            return render(request, 'forgot_pass_list.html', {'security': security})
+
+
 def load_village(request):
     gewog_id = request.GET.get('gewog_id')
     village_list = t_village_master.objects.filter(Gewog_Code_id=gewog_id).order_by('Village_Name')
@@ -1349,6 +1376,7 @@ def payment_list(request):
     service_details = t_service_master.objects.all()
     return render(request, 'payment_details_list.html', {'application_details': application_details,
                                                          'service_details': service_details})
+
 
 def update_payment_details(request):
     Application_No = request.POST.get('application_no')
@@ -1395,6 +1423,7 @@ def save_livestock_species_form(request, form, template_name):
     data['html_form'] = render_to_string(template_name, context, request=request)
     return JsonResponse(data)
 
+
 def edit_livestock_species(request, Species_Id):
     species = get_object_or_404(t_livestock_species_master, pk=Species_Id)
     if request.method == 'POST':
@@ -1402,6 +1431,7 @@ def edit_livestock_species(request, Species_Id):
     else:
         form = LivestockSpeciesForm(instance=species)
     return save_livestock_species_form(request, form, 'edit_livestock_species.html')
+
 
 def delete_livestock_species(request, Species_Id):
     species = get_object_or_404(t_livestock_species_master, pk=Species_Id)
@@ -1415,6 +1445,7 @@ def delete_livestock_species(request, Species_Id):
         context = {'species': species}
         data['html_form'] = render_to_string('livestock_species_delete.html', context, request=request)
     return JsonResponse(data)
+
 
 def livestock_species_breed_manage(request):
     if request.method == 'POST':
@@ -1446,6 +1477,7 @@ def save_livestock_species_breed_form(request, form, template_name):
     data['html_form'] = render_to_string(template_name, context, request=request)
     return JsonResponse(data)
 
+
 def edit_livestock_species_breed(request, Species_Breed_Id):
     breed = get_object_or_404(t_livestock_species_breed_master, pk=Species_Breed_Id)
     if request.method == 'POST':
@@ -1453,6 +1485,7 @@ def edit_livestock_species_breed(request, Species_Breed_Id):
     else:
         form = LivestockSpeciesBreedForm(instance=breed)
     return save_livestock_species_breed_form(request, form, 'edit_livestock_species_breed.html')
+
 
 def delete_livestock_species_breed(request, Species_Breed_Id):
     breed = get_object_or_404(t_livestock_species_breed_master, pk=Species_Breed_Id)
@@ -1466,6 +1499,7 @@ def delete_livestock_species_breed(request, Species_Breed_Id):
         context = {'breed': breed}
         data['html_form'] = render_to_string('livestock_species_breed_delete.html', context, request=request)
     return JsonResponse(data)
+
 
 def livestock_product_manage(request):
     if request.method == 'POST':
@@ -1505,6 +1539,7 @@ def save_livestock_product_form(request, form, template_name):
     data['html_form'] = render_to_string(template_name, context, request=request)
     return JsonResponse(data)
 
+
 def delete_livestock_product(request, Product_Id):
     product = get_object_or_404(t_livestock_product_master, pk=Product_Id)
     data = dict()
@@ -1516,4 +1551,60 @@ def delete_livestock_product(request, Product_Id):
     else:
         context = {'product': product}
         data['html_form'] = render_to_string('livestock_product_delete.html', context, request=request)
+    return JsonResponse(data)
+
+
+def check_email_id(request):
+    data = dict()
+    email = request.POST.get('email')
+    message_count = t_user_master.objects.filter(Email_Id=email).count()
+    data['count'] = message_count
+    return JsonResponse(data)
+
+
+def check_email_id_org(request):
+    data = dict()
+    email = request.POST.get('emailId')
+    message_count = t_user_master.objects.filter(Email_Id=email).count()
+    data['count'] = message_count
+    return JsonResponse(data)
+
+
+def account_settings(request):
+    email_id = request.session['email']
+    application_details = t_user_master.objects.filter(Email_Id=email_id)
+    return render(request, 'account_settings.html', {'application_details': application_details})
+
+
+def change_password(request):
+    data = dict()
+    email_id = request.session['email']
+    password_value = make_password(request.POST.get('password_confirmation'))
+    application_details = t_user_master.objects.filter(Email_Id=email_id)
+    application_details.update(Password=password_value)
+    data['message'] = "update_successful"
+    return JsonResponse(data)
+
+
+def check_user_password(request):
+    data = dict()
+    _username = request.session['email']
+    _password = request.GET.get('current_password')
+    user_details = t_user_master.objects.filter(Email_Id=_username)
+    for user_data in user_details:
+        check_pass = check_password(_password, user_data.Password)
+        if check_pass:
+            data['form_is_valid'] = True
+        else:
+            data['form_is_valid'] = False
+        return JsonResponse(data)
+
+
+def change_mobile_number(request):
+    data = dict()
+    email_id = request.session['email']
+    new_mobile = request.POST.get('new_mobile')
+    application_details = t_user_master.objects.filter(Email_Id=email_id)
+    application_details.update(Mobile_Number=new_mobile)
+    data['message'] = "update_successful"
     return JsonResponse(data)

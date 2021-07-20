@@ -16,10 +16,10 @@
                         <a class="nav-link active" id="pills-seed-tab" data-toggle="pill" href="#seed-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadPageDetails()">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-seed-details" data-toggle="pill" href="#seed-reg-details" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_details()">Details</a>
+                        <a class="nav-link" id="pills-nursery-seed-details" data-toggle="pill" href="#seed-reg-details" role="tab" aria-controls="pills-nursery-seed-details" aria-selected="false" onclick="load_details()">Details</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-seed-file" data-toggle="pill" href="#seed-file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment()">Attach File</a>
+                        <a class="nav-link" id="pills-nursery-seed-file" data-toggle="pill" href="#seed-file-attachment" role="tab" aria-controls="pills-nursery-seed-file" aria-selected="false" onclick="load_attachment()">Attach File</a>
                     </li>
                 </ul>
             </div>
@@ -166,7 +166,7 @@
                     </div>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="seed-reg-details" role="tabpanel" aria-labelledby="pills-seed-details">
+                <div class="tab-pane fade" id="seed-reg-details" role="tabpanel" aria-labelledby="pills-nursery-seed-details">
                     <div class="card">
                         <div class="card-header">
                             <div class="card-head-row">
@@ -185,7 +185,7 @@
                         <button type="button" class="btn btn-success" onclick="save_seed_form()">Save</button>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="seed-file-attachment" role="tabpanel" aria-labelledby="pills-seed-file">
+                <div class="tab-pane fade" id="seed-file-attachment" role="tabpanel" aria-labelledby="pills-nursery-seed-file">
                     <div id="seedAttach">
                         {% include 'nursery_registration/file_attachment_page.html' %}
                     </div>
@@ -377,7 +377,7 @@ function save_nursery_form()
         success : function(data) {
             $('#applicationNo').val(data.applNo);
             $('#plant_applicationNo').val(data.applNo);
-            $('#pills-seed-details').tab('show');
+            $('#pills-nursery-seed-details').tab('show');
         }
     });
 }
@@ -439,7 +439,7 @@ function save_nursery_details()
         success : function(responseText) {
            $('#add_details').modal('hide');
            $('#seed-details').html(responseText);
-           $('#pills-seed-details').tab('show');
+           $('#pills-nursery-seed-details').tab('show');
            $('.modal-backdrop').remove();
         }
     });
@@ -460,8 +460,8 @@ function loadPageDetails()
         success : function(response)
         {
             $('#seed_app_details').html(response);
-            $("#pills-seed-details").prop('disabled', false);
-            $("#pills-seed-file").prop('disabled', false);
+            $("#pills-nursery-seed-details").prop('disabled', false);
+            $("#pills-nursery-seed-file").prop('disabled', false);
         }
     });
 }
@@ -502,7 +502,7 @@ function update_nursery_details()
         data : $('#seedForm').serialize(),
         success : function(data)
         {
-            $('#pills-seed-details').tab('show');
+            $('#pills-nursery-seed-details').tab('show');
         }
     });
 }

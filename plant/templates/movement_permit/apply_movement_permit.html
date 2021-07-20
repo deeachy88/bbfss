@@ -18,15 +18,15 @@ option {
 
             <div id="plant">
                 <div class="row align-left">
-                    <ul class="nav nav-pills nav-secondary" id="pills-tab" role="tablist">
+                    <ul class="nav nav-pills nav-s econdary" id="pills-tab" role="tablist">
                         <li class="nav-item">
                             <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadPageDetails()">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_details()">Details</a>
+                            <a class="nav-link" id="movement-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_details()">Details</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="pills-profile-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="plant_attachment()">Attach File</a>
+                            <a class="nav-link" id="movement-profile-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="plant_attachment()">Attach File</a>
                         </li>
                     </ul>
                 </div>
@@ -74,7 +74,7 @@ option {
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Applicant CID &nbsp;<font color='red'>*</font></label>
-                                        <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)">
+                                        <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCitizenDetails(this.value);">
                                     </div>
                                     <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
                                 </div>
@@ -257,7 +257,7 @@ option {
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="movement-profile-tab">
                         <div class="card">
                             <div class="card-header">
                                 <div class="card-head-row">
@@ -276,7 +276,7 @@ option {
                             <button type="button" class="btn btn-success" onclick="save_details_form()">Save</button>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="pills-profile-file">
+                    <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="movement-profile-file">
                         <div id="fileAttach">
                             {% include 'movement_permit/file_attachment_page.html' %}
                         </div>
@@ -552,7 +552,7 @@ function save()
                     $("#submitMsg").hide('blind', {}, 500)
                 }, 2000);
                  setTimeout(function() {
-                    $('#pills-profile-tab').tab('show');
+                    $('#movement-profile-tab').tab('show');
                 }, 3000);
             }
         });
@@ -582,8 +582,8 @@ function loadPageDetails()
         success : function(response)
         {
             $('#plant_details').html(response);
-            $("#pills-profile-tab").prop('disabled', false);
-            $("#pills-profile-file").prop('disabled', false);
+            $("#movement-profile-tab").prop('disabled', false);
+            $("#movement-profile-file").prop('disabled', false);
         }
     });
 }
@@ -675,7 +675,7 @@ function updateDetails()
         data : $('#permitForm').serialize(),
         success : function(response)
         {
-            $('#pills-profile-tab').tab('show');
+            $('#movement-profile-tab').tab('show');
         }
     });
 }
@@ -832,5 +832,19 @@ function checkContact(value)
     }
 
 }
+
+function getCitizenDetails(cidNo)
+	{
+
+	    $.ajax({
+            type : "GET",
+            url : "{% url 'get_citizen_details' %}",
+            data :{'cidNo':cidNo},
+            success : function(data)
+            {
+
+            }
+        });
+    }
 </script>
 {% endblock %}

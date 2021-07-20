@@ -8,7 +8,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.utils import timezone
 import requests
-
+import time
 from administrator.models import t_dzongkhag_master, t_gewog_master, t_village_master, t_location_field_office_mapping, \
     t_user_master, t_field_office_master, t_plant_crop_master, t_plant_pesticide_master, t_plant_crop_variety_master, \
     t_service_master, t_country_master, t_plant_crop_category_master, t_unit_master, t_section_master, \
@@ -63,7 +63,7 @@ def focal_officer_application(request):
 
 
 def oic_application(request):
-    Login_Id = request.session['login_id']
+    Login_Id = request.session['Login_Id']
     print(Login_Id)
     Field_Office_Id = request.session['field_office_id']
     Role_Id = request.session['Role_Id']
@@ -82,7 +82,7 @@ def oic_application(request):
 
 
 def inspector_application(request):
-    Login_Id = request.session['login_id']
+    Login_Id = request.session['Login_Id']
     print(Login_Id)
     new_import_app = t_workflow_details.objects.filter(Assigned_To=Login_Id,
                                                        Application_Status='AP', Action_Date__isnull=False) | \
@@ -1970,7 +1970,7 @@ def update_inspection_call_details(request):
                                           Assigned_To=None, Field_Office_Id=field_office_id, Section='Livestock',
                                           Assigned_Role_Id='4', Action_Date=None, Application_Status='P',
                                           Service_Code=service_code)
-        login_id = request.session['login_id']
+        login_id = request.session['Login_Id']
         application_details = t_workflow_details.objects.filter(Assigned_To=login_id)
         return render(request, 'inspection_call.html', {'application_details': application_details})
     elif service_code == 'ILP':
@@ -2040,7 +2040,7 @@ def update_inspection_call_details(request):
                                           Assigned_To=None, Field_Office_Id=field_office_id, Section='Livestock',
                                           Assigned_Role_Id='4', Action_Date=None, Application_Status='P',
                                           Service_Code=service_code)
-        login_id = request.session['login_id']
+        login_id = request.session['Login_Id']
         application_details = t_workflow_details.objects.filter(Assigned_To=login_id)
         return render(request, 'inspection_call.html', {'application_details': application_details})
     elif service_code == 'FIP':
@@ -2112,7 +2112,7 @@ def update_inspection_call_details(request):
                                           Assigned_To=None, Field_Office_Id=field_office_id, Section='Food',
                                           Assigned_Role_Id='4', Action_Date=date.today(), Application_Status='P',
                                           Service_Code=service_code)
-        login_id = request.session['login_id']
+        login_id = request.session['Login_Id']
         application_details = t_workflow_details.objects.filter(Assigned_To=login_id)
         return render(request, 'inspection_call.html', {'application_details': application_details})
 
@@ -2170,7 +2170,7 @@ def update_resubmit_details(request):
 
     application = t_plant_clearence_nursery_seed_grower_t1.objects.filter(Application_No=appNo)
     application.update(Desired_Inspection_Date=inspection_date, Resubmit_Remarks=Resubmit_Remarks)
-    login_id = request.session['login_id']
+    login_id = request.session['Login_Id']
     application_details = t_workflow_details.objects.filter(Assigned_To=login_id)
     return render(request, 'inspection_call.html', {'application_details': application_details})
 
@@ -2370,7 +2370,7 @@ def assign_to_inspector(request):
     application_details.update(Action_Date=date.today())
     application_details.update(Assigned_Role_Id='5')
     Field_Office_Id = request.session['field_office_id']
-    Login_Id = request.session['login_id']
+    Login_Id = request.session['Login_Id']
     application_details = t_workflow_details.objects.filter(Assigned_To=Login_Id, Field_Office_Id=Field_Office_Id)
     return render(request, 'import_permit/oic_application.html', {'application_details': application_details})
 
@@ -3185,7 +3185,7 @@ def get_export_permit_no(request):
 
 
 def export_complete(request):
-    Login_Id = request.session['login_id']
+    Login_Id = request.session['Login_Id']
     export_permit = get_export_permit_no(request)
     Application_No = request.POST.get('appNo')
     Inspection_Date = request.POST.get('date')
@@ -4070,9 +4070,7 @@ def certificate_print(request):
 
 def view_certificate_details(request):
     service_code = request.GET.get('service_code')
-    print(service_code)
     login_id = request.session['email']
-    print(login_id)
     if service_code == 'MPP':
         application_details = t_plant_movement_permit_t1.objects.filter(Applicant_Id=login_id,
                                                                         Movement_Permit_No__isnull=False)
@@ -4583,7 +4581,7 @@ def get_certificate_details(request, t_livestock_import_permit_product_inspectio
 
 # Common Details
 def call_for_inspection(request):
-    login_id = request.session['login_id']
+    login_id = request.session['Login_Id']
     application_details = t_workflow_details.objects.filter(Assigned_To=login_id)
     service_details = t_service_master.objects.all()
     payment_details = t_payment_details.objects.all()
@@ -4601,7 +4599,7 @@ def application_status(request):
 
 
 def resubmit_application(request):
-    login_id = request.session['login_id']
+    login_id = request.session['Login_Id']
     print(login_id)
     application_details = t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS') \
                           | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS') \
@@ -4897,8 +4895,10 @@ def validate_receipt_no(request):
 def get_citizen_details(request):
     data = dict()
     cid = request.GET.get('cidNo')
-    print(cid)
-    response = requests.get('https://datahub-apim.dit.gov.bt/dcrc_citizen_details_api/1.0.0' + "/" + cid)
-    geodata = response.getCitizenDetail().get(0).json()
-    print(geodata)
+    url = 'https://staging-datahub-apim.dit.gov.bt/dcrc_citizen_details_api/1.0.0/citizendetails'
+    params = {'cid': cid, 'access_token': '18b1d996-102a-31e6-92f7-5d86debb33ee'}
+    r = requests.get(url, params=params, verify=True)
+    books = r.json()
+    print(books)
+
     return JsonResponse(data)

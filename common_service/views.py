@@ -64,7 +64,7 @@ def complaint_closed_details(request):
                    'village': village, 'file': file})
 
 def investigation_complaint_list(request):
-    Login_Id = request.session['login_id']
+    Login_Id = request.session['Login_Id']
     # Role_Id = request.session['Role_Id']
     global investigation_list
     in_complaint_list = t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='A')
@@ -434,7 +434,7 @@ def save_monitoring_form(request):
     email = request.POST.get('email')
     contactNumber = request.POST.get('contactNumber')
     observations = request.POST.get('observations')
-    Login_Id = request.session['login_id']
+    Login_Id = request.session['Login_Id']
     date_format_ins = datetime.strptime(inspection_report_date, '%d-%m-%Y').date()
 
     t_inspection_monitoring_t1.objects.create(
@@ -937,7 +937,7 @@ def save_inspection_report_application(request):
     inspectionPurpose = request.POST.get('inspectionPurpose')
     observation = request.POST.get('observation')
     teamLeader = request.POST.get('teamLeader')
-    Login_Id = request.session['login_id']
+    Login_Id = request.session['Login_Id']
     date_of_inspection = datetime.strptime(inspectionDate, '%d-%m-%Y').date()
 
     t_commodity_inspection_t1.objects.create(
@@ -1052,7 +1052,7 @@ def update_inspection_commodity_application(request):
     inspectionPurpose = request.POST.get('inspectionPurpose')
     observation = request.POST.get('observation')
     teamLeader = request.POST.get('teamLeader')
-    Login_Id = request.session['login_id']
+    Login_Id = request.session['Login_Id']
     date_of_inspection = datetime.strptime(inspectionDate, '%d-%m-%Y').date()
 
     application_details = t_commodity_inspection_t1.objects.filter(Reference_No=reference_no)

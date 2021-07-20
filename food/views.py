@@ -326,8 +326,11 @@ def concern_details_feasibility_ins(request):
                                                              Requirement=Requirement, Observation=Observation,
                                                              Clause_No=Clause_No, Date=date_chosen, Concern=Concern)
     application_details = t_food_business_registration_licensing_t5.objects.filter(Application_No=application_id,
-                                                                                   Inspection_Type='Feasibility Inspection')
-    return render(request, 'registration_licensing/concern_details.html', {'application_details': application_details})
+                                                                                   Inspection_Type='Feasibility '
+                                                                                                   'Inspection')
+    message_count = t_food_business_registration_licensing_t5.objects.filter(Concern='Yes').count()
+    return render(request, 'registration_licensing/concern_details.html', {'application_details': application_details,
+                                                                           'message_count': message_count})
 
 
 def approve_feasibility_inspection(request):
@@ -478,7 +481,9 @@ def concern_details_factory_ins(request):
                                                              Clause_No=Clause_No, Date=date_chosen, Concern=Concern)
     application_details = t_food_business_registration_licensing_t5.objects.filter(Application_No=application_id,
                                                                                    Inspection_Type='Factory Inspection')
-    return render(request, 'registration_licensing/concern_details.html', {'application_details': application_details})
+    message_count = t_food_business_registration_licensing_t5.objects.filter(Concern='Yes').count()
+    return render(request, 'registration_licensing/concern_details.html', {'application_details': application_details,
+                                                                           'message_count': message_count})
 
 
 def approve_factory_inspection(request):
@@ -1256,7 +1261,7 @@ def food_handler_update(request):
 # Common
 def food_handler_application(request):
     service_code = "FHC"
-    Login_Id = request.session['login_id']
+    Login_Id = request.session['Login_Id']
 
     application_details = t_workflow_details.objects.filter(Assigned_Role_Id='5', Assigned_To=Login_Id,
                                                             Application_Status='A', Service_Code=service_code)
@@ -1693,7 +1698,7 @@ def fip_clearance_no(request):
 
 
 def factory_inspection_list(request):
-    Login_Id = request.session['login_id']
+    Login_Id = request.session['Login_Id']
     new_import_app = t_workflow_details.objects.filter(Application_Status='FR', Action_Date__isnull=False)
     service_details = t_service_master.objects.all()
     return render(request, 'factory_inspection_list.html',

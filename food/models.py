@@ -204,7 +204,7 @@ class t_food_business_registration_licensing_t1(models.Model):
     Product_Category = models.TextField(blank=True, null=True)
     Product = models.TextField(blank=True, null=True)
     Current_Status = models.CharField(max_length=250, blank=True, null=True)
-    Years_In_Production = models.IntegerField()
+    Years_In_Production = models.IntegerField(default=None, blank=True, null=True)
     Volume_Last_Year = models.CharField(max_length=100, blank=True, null=True)
     Volume_Unit = models.CharField(max_length=10, default=None, blank=True, null=True)
     Project_Proposal = models.CharField(max_length=5, blank=True, null=True)

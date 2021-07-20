@@ -26,13 +26,13 @@ option {
                         <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadAppDetails()">Home</a>
                     </li>
                     <li class="nav-item" id="plant_details">
-                        <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="loadDetails()">Profile</a>
+                        <a class="nav-link" id="import-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="loadDetails()">Profile</a>
                     </li>
                     <li class="nav-item" id="agro_details" style="display:none">
                         <a class="nav-link" id="agro-profile-tab" data-toggle="pill" href="#agro-details" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_details()">Profile</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-profile-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment()">Attach File</a>
+                        <a class="nav-link" id="pills-import-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment()">Attach File</a>
                     </li>
                 </ul>
             </div>
@@ -508,7 +508,7 @@ option {
                         <button type="button" class="btn btn-primary" id="save_details_button" onclick="import_save()">Save</button>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="import-profile-tab">
                     <div class="card">
                         <div class="card-header">
                             <div class="card-head-row">
@@ -527,7 +527,7 @@ option {
                         </div>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="agro-details" role="tabpanel" aria-labelledby="pills-profile-tab">
+                <div class="tab-pane fade" id="agro-details" role="tabpanel" aria-labelledby="import-profile-tab">
                     <div class="card">
                         <div class="card-header">
                             <div class="card-head-row">
@@ -546,12 +546,12 @@ option {
                         </div>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="pills-profile-file">
+                <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="pills-import-file">
                     <div id="fileAttachPlant">
                         {% include 'import_permit/plant_attachment_page.html' %}
                     </div>
                 </div>
-                <div class="tab-pane fade" id="agro-attachment" role="tabpanel" aria-labelledby="pills-profile-file">
+                <div class="tab-pane fade" id="agro-attachment" role="tabpanel" aria-labelledby="pills-import-file">
                     <div id="agro_fileAttach">
                         {% include 'import_permit/agro_attachment_page.html' %}
                     </div>
@@ -794,6 +794,7 @@ option {
     </div>
 </form>
 <script>
+
     function change_selection(importType)
     {
         if(importType == "Personal")
@@ -1149,14 +1150,14 @@ option {
                     if(data.importType == "P")
                     {
                         $('#plant_applicationNo').val(data.applNo);
-                        $('#pills-profile-tab').tab('show');
+                        $('#import-profile-tab').tab('show');
                         $('#agro-profile-tab').tab('hide');
                     }
                     else
                     {
                          $('#agro_applicationNo').val(data.applNo);
                          $('#agro-profile-tab').tab('show');
-                         $('#pills-profile-tab').tab('hide');
+                         $('#import-profile-tab').tab('hide');
                     }
                 }
             });
@@ -1234,7 +1235,7 @@ option {
                     success : function(responseText) {
                        $('#add_plant_details').modal('hide');
                        $('#Details').html(responseText);
-                       $('#pills-profile-tab').tab('show');
+                       $('#import-profile-tab').tab('show');
                        $('.modal-backdrop').remove();
                     }
                 });

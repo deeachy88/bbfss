@@ -2269,7 +2269,7 @@ def send_apm_reject_email(remarks, Email):
 
 # Common
 def meat_factory_inspection_list(request):
-    Login_Id = request.session['login_id']
+    Login_Id = request.session['Login_Id']
     new_import_app = t_workflow_details.objects.filter(Application_Status='FR', Action_Date__isnull=False)
     service_details = t_service_master.objects.all()
     return render(request, 'factory_inspection_list.html',

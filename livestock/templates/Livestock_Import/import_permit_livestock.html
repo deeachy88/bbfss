@@ -25,10 +25,10 @@
                         <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadDetails()">Application Form</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-details" data-toggle="pill" href="#details" role="tab" aria-controls="pills-details" aria-selected="false" onclick="load_details()">Details</a>
+                        <a class="nav-link" id="pills-lp-details" data-toggle="pill" href="#details" role="tab" aria-controls="pills-lp-details" aria-selected="false" onclick="load_details()">Details</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-profile-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
+                        <a class="nav-link" id="pills-lp-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
                     </li>
                 </ul>
             </div>
@@ -237,7 +237,7 @@
                         <button type="button" class="btn btn-primary" onclick="permit_save_details()">Save</button>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="details" role="tabpanel" aria-labelledby="pills-details">
+                <div class="tab-pane fade" id="details" role="tabpanel" aria-labelledby="pills-lp-details">
                     <div class="card">
                         <div class="card-header">
                             <div class="card-head-row">
@@ -256,7 +256,7 @@
                         <button type="button" class="btn btn-success" onclick="save_details_form()">Save</button>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="pills-profile-file">
+                <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="pills-lp-file">
                     <div id="fileAttach">
                         {% include 'Livestock_Import/file_attachment.html' %}
                     </div>
@@ -532,7 +532,7 @@ function permit_save_details()
                 }, 2000);
                 setTimeout(function()
                 {
-                    $('#pills-details').tab('show');
+                    $('#pills-lp-details').tab('show');
                 }, 3000);
             }
         });
@@ -692,7 +692,7 @@ function save_permit_details_form()
             success : function(responseText) {
                $('#permit_details_model').modal('hide');
                $('#permit_details').html(responseText);
-               $('#pills-details').tab('show');
+               $('#pills-lp-details').tab('show');
                $('.modal-backdrop').remove();
             }
         });

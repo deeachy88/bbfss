@@ -1,0 +1,349 @@
+{% extends 'common_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="animated fadeIn">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <strong class="card-title">General Account Setting</strong>
+                </div>
+                <div class="card-body">
+                    {% for application_details in application_details %}
+                        <ul class="list-group col-md-12 col-sm-12 col-xs-12 list-group-horizontal">
+                            <li class="list-group-item d-flex justify-content-between">
+                                <strong>Name</strong>
+                                <span class="pull-right">{{application_details.Name}}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <strong>Email Address</strong>
+                                <span class="pull-right">
+                                    {{application_details.Email_Id}}
+                                </span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <strong>Password</strong>
+                                <span class="pull-right">
+                                    <a data-toggle="modal" href="#" data-target="#modal_changepassword" class="btn btn-xs btn-info"><i class="fa fa-key fa-fw"></i> Change Password</a>
+                                </span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <strong>Contact Number</strong>
+                                <span class="pull-right">
+                                    {{application_details.Mobile_Number}}&nbsp;
+                                    <a data-toggle="modal" href="#" data-target="#modal_editMobile" class="btn btn-xs btn-info">
+                                        <i class="zmdi zmdi-edit"></i>
+                                    </a>
+                                </span>
+                            </li>
+                      </ul>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<form method="post" id="edit_password" class="form-horizontal" role="form">
+    	 {% csrf_token %}
+    <div class="modal fade" id="modal_changepassword" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+            <div class="modal-header">
+            		<h4 class="modal-title" id="myModalLabel">Change Password</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+             <div class="modal-body">
+             <div class="col-lg-12">
+                <input type="hidden" id="uid" value="<%=dto.getLoginId() %>">
+                <div class="alert alert-danger col-md-12 col-sm-12 col-xs-12" id="passworderrorMsgDiv" style="display:none">
+                         <i class="fa fa-times fa-fw"></i>
+                         <span id="passwordChangeErrorMsg"></span>
+                </div>
+                    <div class="alert alert-success col-md-12 col-sm-12 col-xs-12" id="successMsg" style="display:none">
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Email: &nbsp;<font color='red'>*</font></label>
+                                            {% for application_details in application_details %}
+                                                <input type="text" class="form-control" value="{{application_details.Email_Id}}" disabled>
+                                            {% endfor %}
+                                    </div>
+                                </div>
+                                 <div class="col-md-6">
+                                      <div class="form-group">
+                                            <label class="form-label">Current Password &nbsp;<font color='red'>*</font></label>
+                                            <input type="password" class="form-control" id="current_password" name="current_password" onchange="check_password()">
+                                      </div>
+                                      <div class="alert alert-danger" id="passwordErrorDiv" style="display:none"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">New Password &nbsp;<font color='red'>*</font></label>
+                                        <input type="password" class="form-control" id="new_password" name="new_password" required autofocus tabindex="1">
+                                    </div>
+                                </div>
+                                 <div class="col-md-6">
+                                    <label class="form-label">Confirm Password &nbsp;<font color='red'>*</font></label>
+                                    <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required autofocus tabindex="1">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+             </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="changePassword()">Change Password</button>
+                <span id="loader" style="display:none">
+                    <i class="fa fa-spinner fa-pulse fa-2x"></i>
+                </span>
+            </div>
+        </div>
+     </div>
+    </div>
+</form>
+
+<form method="post" id="edit_mobile_number" class="form-horizontal" role="form">
+     {% csrf_token %}
+    <div class="modal fade" id="modal_editMobile" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Change Mobile Number</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body justify-content-center text-center">
+			       		<div class="alert alert-success" id="mobilesuccessMsgDiv" style="display:none"></div>
+                    	<div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Current Contact Number &nbsp;<font color='red'>*</font></label>
+                                    {% for application_details in application_details %}
+                                        <input type="text" class="form-control" id="current_mobile" value="{{application_details.Mobile_Number}}" disabled>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">New Contact Number &nbsp;<font color='red'>*</font></label>
+                                    <input type="text" class="form-control" name="new_mobile" id="new_mobile" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                    			    <div class="alert alert-danger" id="contactErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                    	</div>
+                </div>
+                <div class="modal-footer">
+                	<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                	<button type="button" class="btn btn-primary" onclick="changeMobileNumber()">Change Contact Number</button>
+                	<span id="loaderMobile" style="display:none">
+                		<i class="fa fa-spinner fa-pulse fa-2x"></i>
+                	</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    function isNumberKey(evt)
+    {
+       var charCode = (evt.which) ? evt.which : event.keyCode
+       if (charCode > 31 && (charCode < 48 || charCode > 57))
+          return false;
+
+       return true;
+    }
+    function checkContact(value)
+	{
+		var firstDigit = value.charAt(0);
+		var secondDigit = value.charAt(1);
+
+		if(firstDigit != 7 && firstDigit != 1){
+			$('#contactErrorMsg').html("Must Start with either 1 or 7.");
+			$('#contactErrorMsg').show();
+			$('#contactErrorMsg').delay(2000).fadeOut('slow');
+			$('#new_mobile').val("");
+		}else if(firstDigit == 1 && secondDigit != 6 && secondDigit != 7){
+			$('#contactErrorMsg').html("Second Digit Must Start with either 6 or 7.");
+			$('#contactErrorMsg').show();
+			$('#contactErrorMsg').delay(2000).fadeOut('slow');
+			$('#new_mobile').val("");
+		}else if(firstDigit == 7 && secondDigit == 6){
+			$('#contactErrorMsg').html("Second Digit Cannot be 6.");
+			$('#contactErrorMsg').show();
+			$('#contactErrorMsg').delay(2000).fadeOut('slow');
+			$('#new_mobile').val("");
+		}else if(firstDigit == 7 && secondDigit != 7){
+			$('#contactErrorMsg').html("Second Digit Must Start with 7.");
+			$('#contactErrorMsg').show();
+			$('#contactErrorMsg').delay(2000).fadeOut('slow');
+			$('#new_mobile').val("");
+		}
+
+	}
+
+	function changePassword()
+	{
+		var uid = $('#uid').val();
+		var current_password = $('#current_password').val();
+		var new_password = $('#new_password').val();
+		var password_confirmation = $('#password_confirmation').val();
+		var pattern=/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/;
+		var no=new_password.match(pattern);
+
+		if(current_password == "")
+		{
+			$('#passwordChangeErrorMsg').html("");
+			$('#passwordChangeErrorMsg').html("Current password cannot be empty");
+	      	$('#passworderrorMsgDiv').show();
+	      	$('#passworderrorMsgDiv').delay(2000).fadeOut('slow');
+	      	return;
+		}
+		if(new_password == "")
+		{
+			$('#passwordChangeErrorMsg').html("");
+			$('#passwordChangeErrorMsg').html("New password cannot be empty");
+	      	$('#passworderrorMsgDiv').show();
+	      	$('#passworderrorMsgDiv').delay(2000).fadeOut('slow');
+	      	return;
+		}
+		if(password_confirmation == "")
+		{
+			$('#passwordChangeErrorMsg').html("");
+			$('#passwordChangeErrorMsg').html("Password Confirmation cannot be empty");
+	      	$('#passworderrorMsgDiv').show();
+            $('#passworderrorMsgDiv').delay(2000).fadeOut('slow');
+	      	return;
+		}
+		if(current_password == new_password)
+		{
+			$('#passwordChangeErrorMsg').html("");
+			$('#passwordChangeErrorMsg').html("New password and Current password cannot be the same");
+	      	$('#passworderrorMsgDiv').show();
+	      	$('#passworderrorMsgDiv').delay(2000).fadeOut('slow');
+	      	$('#newpassword').val("");
+	      	$('#cpassword').val("");
+	      	$('#password_confirmation').val("");
+	      	return;
+		}
+		if(new_password != password_confirmation)
+		{
+			$('#passwordChangeErrorMsg').html("");
+			$('#passwordChangeErrorMsg').html("New password and Password Confirmation doesnot match");
+	      	$('#passworderrorMsgDiv').show();
+	      	$('#passworderrorMsgDiv').delay(2000).fadeOut('slow');
+	      	$('#newpassword').val("");
+	      	$('#password_confirmation').val("");
+	      	return;
+		}
+		if(no==null)
+		{
+			$('#passwordChangeErrorMsg').html("Password Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters");
+	      	$('#passworderrorMsgDiv').show();
+	      	$('#passworderrorMsgDiv').delay(2000).fadeOut('slow');
+		}
+		else
+		{
+			$.ajax({
+				type : "POST",
+				url : "{% url 'change_password' %}",
+				data : $('#edit_password').serialize(),
+				success: function(data)
+				{
+                    if(data.message == "update_successful")
+                    {
+                        $('#successMsg').html("Password Changed Successful.");
+                        $('#successMsg').show();
+                        $('#successMsg').delay(2000).fadeOut('slow');
+                        $('#current_password').val("");
+		                $('#new_password').val("");
+		                $('#password_confirmation').val("");
+                        setTimeout(function() {
+                            $('#modal_changepassword').modal('hide');
+                        }, 3000);
+                         setTimeout(function() {
+                           location.reload();
+                        }, 3000);
+                    }
+				}
+			});
+		}
+	}
+
+	function changeMobileNumber()
+	{
+		var new_mobile = $('#new_mobile').val();
+		var current_mobile = $('#current_mobile').val();
+
+		if(new_mobile == "")
+		{
+			$('#mobileChangeErrorMsg').html("");
+			$('#mobileChangeErrorMsg').html("New mobile number cannot be empty");
+	      	$('#mobileerrorMsgDiv').show();
+	      	setTimeout('hideStatus("mobileerrorMsgDiv")',3000);
+
+	      	return;
+		}
+		if(new_mobile == current_mobile)
+		{
+			$('#mobileChangeErrorMsg').html("");
+			$('#mobileChangeErrorMsg').html("New mobile number and Current mobile number cannot be the same");
+	      	$('#mobileerrorMsgDiv').show();
+	      	$('#mobileerrorMsgDiv').delay(2000).fadeOut('slow');
+	      	$('#new_mobile').val("");
+	      	return;
+		}
+		else
+		{
+		    $.ajax({
+				type : "POST",
+				url : "{% url 'change_mobile_number' %}",
+				data : $('#edit_mobile_number').serialize(),
+				success: function(data)
+				{
+                    if(data.message == "update_successful")
+                    {
+                        $('#mobilesuccessMsgDiv').html("Mobile number has been changed successfully.");
+                        $('#mobilesuccessMsgDiv').show();
+                        $('#mobilesuccessMsgDiv').delay(2000).fadeOut('slow');
+                        $('#new_mobile').val("");
+                        setTimeout(function() {
+                            $('#modal_editMobile').modal('hide');
+                        }, 3000);
+                         setTimeout(function() {
+                           location.reload();
+                        }, 3000);
+
+                    }
+				}
+			});
+		}
+	}
+
+	function check_password()
+	{
+        $.ajax({
+            type : "GET",
+            url : "{% url 'check_user_password' %}",
+            data : $('#edit_password').serialize(),
+            success: function(data)
+            {
+                if (data.form_is_valid)
+                {
+                    $('#passwordErrorDiv').hide();
+                }
+                else
+                {
+                    $('#passwordErrorDiv').html("Current Password Doesnot Match");
+                    $('#passwordErrorDiv').show();
+                    $('#passwordErrorDiv').delay(2000).fadeOut('slow');
+                }
+            }
+        });
+	}
+</script>
+{% endblock %}

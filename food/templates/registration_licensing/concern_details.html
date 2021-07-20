@@ -26,9 +26,20 @@
         {% endfor %}
     </tbody>
 </table>
+<input type="hidden" id="count" value="{{message_count}}">
 <script>
-$(function()
-{
-
-});
-    </script>
+    $(document).ready(function()
+     {
+        var row_count = $("#count").val();
+        if(row_count > 0)
+        {
+            $("#approve_button").hide();
+            $("#resubmit-btn").show();
+        }
+        else
+        {
+            $("#approve_button").show();
+            $("#resubmit-btn").hide();
+        }
+     });
+</script>
