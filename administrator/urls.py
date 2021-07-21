@@ -75,8 +75,10 @@ urlpatterns = [
     path('edit_livestock_species/<int:Species_Id>', views.edit_livestock_species, name='edit_livestock_species'),
     path('delete_livestock_species/<int:Species_Id>', views.delete_livestock_species, name='delete_livestock_species'),
     path('livestock_species_breed', views.livestock_species_breed_manage, name='livestock_species_breed_page'),
-    path('edit_livestock_species_breed/<int:Species_Breed_Id>', views.edit_livestock_species_breed, name='edit_livestock_species_breed'),
-    path('delete_livestock_species_breed/<int:Species_Breed_Id>', views.delete_livestock_species_breed, name='delete_livestock_species_breed'),
+    path('edit_livestock_species_breed/<int:Species_Breed_Id>', views.edit_livestock_species_breed,
+         name='edit_livestock_species_breed'),
+    path('delete_livestock_species_breed/<int:Species_Breed_Id>', views.delete_livestock_species_breed,
+         name='delete_livestock_species_breed'),
     path('livestock_product', views.livestock_product_manage, name='livestock_product_page'),
     path('edit_livestock_product/<int:Product_Id>', views.edit_livestock_product, name='edit_livestock_product'),
     path('delete_livestock_product/<int:Product_Id>', views.delete_livestock_product, name='delete_livestock_product'),
@@ -89,5 +91,7 @@ urlpatterns = [
     path('account_settings', views.account_settings, name='account_settings'),
     path('change_password', views.change_password, name='change_password'),
     path('check_user_password', views.check_user_password, name='check_user_password'),
-    path('change_mobile_number', views.change_mobile_number, name='change_mobile_number')
+    path('change_mobile_number', views.change_mobile_number, name='change_mobile_number'),
+    path('update_password', views.update_password, name='update_password'),
+    path('get_security_answer', views.get_security_answer, name='get_security_answer')
 ]

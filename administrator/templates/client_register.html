@@ -112,7 +112,7 @@
                 <div class="form-row">
                      <div class="col-md-4">
                         <div class="form-group">
-                            <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)" placeholder="Contact No">
+                            <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onchange="checkContact(this.value)" placeholder="Contact No">
                         </div>
                          <span class="badge"><font color='red'><font color='red'>*</font></font></span>
                         <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
@@ -157,7 +157,7 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <textarea class="form-control" placeholder="Address" id="Address"></textarea>
+                            <textarea class="form-control" placeholder="Address" id="Address" name="Address"></textarea>
                         </div>
                         <span class="badge"><font color='red'><font color='red'>*</font></font></span>
                         <div class="alert alert-danger" id="AddressErrorMsg" style="display:none"></div>
@@ -279,8 +279,10 @@
 
     function save_client()
     {
-        var Client_Type = $("input[name=Client_Type]:checked").length;
-        if(Client_Type < 1)
+        var Client = $("input[name=Client_Type]:checked").length;
+        var Client_Type = $('input[name="Client_Type"]:checked').val();
+
+        if(Client < 1)
         {
             $('#Client_TypeErrorMsg').html("Please Check One Client Type.");
             $('#Client_TypeErrorMsg').show();
@@ -335,7 +337,8 @@
                     data : $('#registration_form').serialize(),
                     success : function(data)
                     {
-                        if(data.Count == "1")
+                        alert(data.count);
+                        if(data.count == "1")
                         {
                             $('#email').val("");
                             $('#emailErrorMsg').html("Email Already Exists.Try With Another Email");
@@ -352,8 +355,11 @@
                                 {
                                     $('#sucessMsg').show();
                                     setTimeout(function() {
-                                        $("#successMsg").hide('blind', {}, 500)
+                                        $('#successMsg').delay(2000).fadeOut('slow');
                                     }, 2000);
+                                    setTimeout(function() {
+                                        location.reload();
+                                    }, 3000);
                                 }
                             });
                         }
@@ -428,7 +434,7 @@
                     data : $('#registration_form').serialize(),
                     success : function(data)
                     {
-                        if(data.Count == "1")
+                        if(data.count == "1")
                         {
                             $('#email').val("");
                             $('#emailErrorMsg').html("Email Already Exists.Try With Another Email");
@@ -445,8 +451,11 @@
                                 {
                                     $('#sucessMsg').show();
                                     setTimeout(function() {
-                                        $("#successMsg").hide('blind', {}, 500)
+                                        $('#successMsg').delay(2000).fadeOut('slow');
                                     }, 2000);
+                                    setTimeout(function() {
+                                        location.reload();
+                                    }, 3000);
                                 }
                             });
                         }
@@ -467,7 +476,8 @@ function validateemailId(emailId)
         $('#email').val("");
         $('#emailErrorMsg').show();
         $('#emailErrorMsg').delay(2000).fadeOut('slow');
-    }else{
+    }else
+    {
      $('#emailErrorMsg').hide();
     }
 

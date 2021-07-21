@@ -35,6 +35,7 @@ def home(request):
 def dashboard(request):
     return render(request, 'dashboard.html')
 
+
 def login(request):
     _message = 'Please sign in'
     if request.method == 'POST':
@@ -1336,11 +1337,11 @@ def load_security_question(request):
     login_details = t_user_master.objects.filter(Email_Id=email_id)
     for id_details in login_details:
         login_id = id_details.Login_Id
-        details = t_security_question_master.objects.filter(Login_Id=login_id)
+        details = t_forgot_password.objects.filter(Login_Id=login_id)
         for security_details in details:
             question_id = security_details.Security_Question_Id
             security = t_security_question_master.objects.filter(Question_Id=question_id)
-            return render(request, 'forgot_pass_list.html', {'security': security})
+    return render(request, 'forgot_pass_list.html', {'security': security})
 
 
 def load_village(request):
@@ -1608,3 +1609,38 @@ def change_mobile_number(request):
     application_details.update(Mobile_Number=new_mobile)
     data['message'] = "update_successful"
     return JsonResponse(data)
+
+
+def update_password(request):
+    data = dict()
+    email_id = request.POST.get('email')
+    password = get_random_password_string(8)
+    password_value = make_password(password)
+    application_details = t_user_master.objects.filter(Email_Id=email_id)
+    application_details.update(Password=password_value)
+    data['message'] = "update_successful"
+    for details in application_details:
+        send_reset_pass_mail(details.Name, email_id, password)
+    return JsonResponse(data)
+
+
+def get_security_answer(request):
+    data = dict()
+    email_id = request.POST.get('email')
+    question_id = request.POST.get('questionId')
+    details = t_user_master.objects.filter(Email_Id=email_id)
+    for app_details in details:
+        login_id = app_details.Login_Id
+        application_details = t_forgot_password.objects.filter(Login_Id=login_id, Security_Question_Id=question_id)
+        for application in application_details:
+            data["answer"] = application.Answer
+    return JsonResponse(data)
+
+
+def send_reset_pass_mail(name, email, password):
+    subject = 'PASSWORD_RESET'
+    message = "Dear " + name + " Your password has been reset for Bhutan Bio-Food Security System. Your Login Id is " \
+              + email + " And Password is " + password + ""
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = [email]
+    send_mail(subject, message, email_from, recipient_list)
