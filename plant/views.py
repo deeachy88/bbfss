@@ -163,9 +163,9 @@ def save_movement_permit(request):
         Applicant_Name=Applicant_Name,
         Contact_No=Contact_No,
         Email=Email,
-        Dzongkhag_Code=Dzongkhag_Code,
-        Gewog_Code=Gewog_Code,
-        Village_Code=Village_Code,
+        dzongkhag=Dzongkhag_Code,
+        gewog=Gewog_Code,
+        village=Village_Code,
         From_Dzongkhag_Code=From_Dzongkhag_Code,
         From_Gewog_Code=From_Gewog_Code,
         From_Location=From_Location,
@@ -1041,10 +1041,10 @@ def save_import_permit(request):
             Validity=None,
             Application_Type=Applicant_Type,
             Nationality=None,
-            Dzongkhag_Code=None,
-            Gewog_Code=None,
+            dzongkhag=None,
+            gewog=None,
             Nationality_Type=None,
-            Village_Code=None,
+            village=None,
             passport_number=None
         )
     else:
@@ -1103,10 +1103,10 @@ def save_import_permit(request):
                 Validity=None,
                 Application_Type=Applicant_Type,
                 Nationality=None,
-                Dzongkhag_Code=dzongkhag,
-                Gewog_Code=gewog,
+                dzongkhag=dzongkhag,
+                gewog=gewog,
                 Nationality_Type=Nationality,
-                Village_Code=village,
+                village=village,
                 passport_number=None
             )
         else:
@@ -1161,10 +1161,10 @@ def save_import_permit(request):
                 Validity=None,
                 Application_Type=Applicant_Type,
                 Nationality=nationality,
-                Dzongkhag_Code=None,
-                Gewog_Code=None,
+                dzongkhag=None,
+                gewog=None,
                 Nationality_Type=Nationality,
-                Village_Code=None,
+                village=None,
                 passport_number=passport
             )
     t_workflow_details.objects.create(Application_No=last_application_no, Applicant_Id=request.session['email'],
@@ -3781,9 +3781,9 @@ def save_seed_cert(request):
         Owner_Name=Owner_Name,
         Contact_No=contactNo,
         Email=email,
-        Dzongkhag_Code=dzongkhag,
-        Gewog_Code=gewog,
-        Village_Code=village,
+        dzongkhag=dzongkhag,
+        gewog=gewog,
+        village=village,
         Inspection_Date=None,
         Inspection_Leader=None,
         Inspection_Team=None,
@@ -4074,42 +4074,42 @@ def view_certificate_details(request):
     if service_code == 'MPP':
         application_details = t_plant_movement_permit_t1.objects.filter(Applicant_Id=login_id,
                                                                         Movement_Permit_No__isnull=False)
-        return render(request, 'certification_certificates/movement_certificate_printing_details.html',
+        return render(request, 'certificates/movement_certificate_printing_details.html',
                       {'application_details': application_details})
     elif service_code == 'IPP':
         application_details = t_plant_import_permit_t1.objects.filter(Applicant_Id=login_id,
                                                                       Import_Permit_No__isnull=False)
-        return render(request, 'certification_certificates/import_certificate_printing_details.html',
+        return render(request, 'certificates/import_certificate_printing_details.html',
                       {'application_details': application_details})
     elif service_code == 'EPP':
         application_details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(Applicant_Id=login_id,
                                                                                                 Export_Permit__isnull=False)
-        return render(request, 'certification_certificates/export_certificate_printing_details.html',
+        return render(request, 'certificates/export_certificate_printing_details.html',
                       {'application_details': application_details})
     elif service_code == 'RNS':
         application_details = t_plant_clearence_nursery_seed_grower_t1.objects.filter(Applicant_Id=login_id,
                                                                                       Clearance_Number__isnull=False)
-        return render(request, 'certification_certificates/nursery_certificate_printing_details.html',
+        return render(request, 'certificates/nursery_certificate_printing_details.html',
                       {'application_details': application_details})
     elif service_code == 'RSC':
         application_details = t_plant_seed_certification_t1.objects.filter(Applicant_Id=login_id,
                                                                            Seed_Certificate__isnull=False)
-        return render(request, 'certification_certificates/seed_certificate_printing_details.html',
+        return render(request, 'certificates/seed_certificate_printing_details.html',
                       {'application_details': application_details})
     elif service_code == 'FFC':
         application_details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(Applicant_Id=login_id,
                                                                                                 Export_Permit__isnull=False)
-        return render(request, 'certification_certificates/fit_for_consumption_details.html',
+        return render(request, 'certificates/fit_for_consumption_details.html',
                       {'application_details': application_details})
     elif service_code == 'NC':
         application_details = t_plant_clearence_nursery_seed_grower_t1.objects.filter(Applicant_Id=login_id,
                                                                                       Clearance_Number__isnull=False)
-        return render(request, 'certification_certificates/nursery_clearance_details.html',
+        return render(request, 'certificates/nursery_clearance_details.html',
                       {'application_details': application_details})
     elif service_code == 'RF':
         application_details = t_plant_import_permit_t1.objects.filter(Applicant_Id=login_id,
                                                                       Clearance_Ref_No__isnull=False)
-        return render(request, 'certification_certificates/release_form_details.html',
+        return render(request, 'certificates/release_form_details.html',
                       {'application_details': application_details})
     # LIVESTOCK_CERTIFICATE_DETAILS
     elif service_code == 'APM':
@@ -4895,10 +4895,12 @@ def validate_receipt_no(request):
 def get_citizen_details(request):
     data = dict()
     cid = request.GET.get('cidNo')
-    url = 'https://staging-datahub-apim.dit.gov.bt/dcrc_citizen_details_api/1.0.0/citizendetails'
-    params = {'cid': cid, 'access_token': '18b1d996-102a-31e6-92f7-5d86debb33ee'}
-    r = requests.get(url, params=params, verify=True)
-    books = r.json()
-    print(books)
-
+    header = {'Authorization': 'Bearer 18b1d996-102a-31e6-92f7-5d86debb33ee'}
+    url = 'https://staging-datahub-apim.dit.gov.bt/dcrc_citizen_details_api/1.0.0/citizendetails/' + cid
+    # params = {'cid': cid}
+    response = requests.get(url, headers=header, verify=False)
+    data['dzongkhagName'] = response.dzongkhagName
+    data['gewogName'] = response.gewogName
+    data['villageName'] = response.villageName
+    data['Name'] = response.firstName + "" + response.middleName + "" + response.lastName
     return JsonResponse(data)

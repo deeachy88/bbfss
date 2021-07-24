@@ -14,7 +14,19 @@
     <link rel="stylesheet" href="{% static 'assets/bower_components/fullcalendar/dist/fullcalendar.min.css' %}">
     <link rel="stylesheet" href="{% static 'assets/bower_components/flatpickr/dist/flatpickr.min.css' %}" />
     <!-- App styles -->
+    <link rel="stylesheet" href="{% static 'assets/fontawesome/css/all.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/app.min.css' %}">
+    <style>
+        .dt-buttons
+        {
+            display: flex;
+            font-size: 18px;
+        }
+        .dt-button{
+            padding-right: 5px;
+        }
+
+    </style>
 </head>
     <body data-sa-theme="4">
         <main class="main">
@@ -143,6 +155,11 @@
         <script src="{% static 'assets/bower_components/flatpickr/dist/flatpickr.min.js' %}"></script>
         <script src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js'></script>
         <script src="{% static 'styles/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+        <script src="{% static 'assets/bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+        <script src="{% static 'assets/bower_components/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+        <script src="{% static 'assets/bower_components/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+        <script src="{% static 'assets/bower_components/jszip/dist/jszip.min.js' %}"></script>
+        <script src="{% static 'assets/bower_components/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
         <script src="{% static 'assets/js/app.min.js' %}"></script>
         <script src="{% static 'assets/js/user.js' %}"></script>
 	    <script src="{% static 'assets/js/division.js' %}"></script>
@@ -163,6 +180,8 @@
         <script src="{% static 'assets/js/livestock_product.js' %}"></script>
         <script src="{% static 'assets/js/moment.js' %}"></script>
         <script src="{% static 'assets/js/jQuery.print.js' %}"></script>
+        <script src="{% static 'assets/js/pdfmake.min.js' %}"></script>
+        <script src="{% static 'assets/js/vfs_fonts.js' %}"></script>
         <script>
             function isNumberKey(evt)
             {
@@ -171,13 +190,75 @@
                     return false;
                 return true;
             }
+            $(function ()
+            {
+                $("#user-table").DataTable({
+                    dom: 'Bfrtip',
+                    buttons: [
+
+                        {
+                            extend: 'excelHtml5',
+                            title: 'List Of Users',
+                            text:'<i class="fas fa-file-excel"></i>',
+                            titleAttr: 'Excel'
+                        },
+                        {
+                            extend: 'pdfHtml5',
+                            title: 'List Of Users',
+                            text:'<i class="fas fa-file-pdf"></i>',
+                            titleAttr: 'PDF'
+                        },
+                         {
+                            extend: 'print',
+                            title: 'List Of Users',
+                            text: '<i class="fas fa-print"></i>',
+                            titleAttr: 'Print'
+                        },
+                    ]
+                });
+            });
+
+            window.export.onclick = function() {
+
+		   if (!window.Blob) {
+		      alert('Your legacy browser does not support this action.');
+		      return;
+		   }
+
+		   var html, link, blob, url, css;
+
+		   // EU A4 use: size: 841.95pt 595.35pt;
+		   // US Letter use: size:11.0in 8.5in;
+
+		   css = (
+		     '<style>' +
+		     '@page WordSection1{size: 841.95pt 595.35pt;mso-page-orientation: landscape;}' +
+		     'div.WordSection1 {page: WordSection1;}' +
+		     'table{border-collapse:collapse;}th{border:1px gray solid;width:5em;padding:2px;}td{border:1px gray solid;width:5em;padding:2px;}'+
+		     '</style>'
+		   );
+
+		   html = window.docx.innerHTML;
+		   blob = new Blob(['\ufeff', css + html], {
+		     type: 'application/msword'
+		   });
+		   url = URL.createObjectURL(blob);
+		   link = document.createElement('A');
+		   link.href = url;
+		   // Set default file name.
+		   // Word will append file extension - do not add an extension here.
+		   link.download = 'Users';
+		   document.body.appendChild(link);
+		   if (navigator.msSaveOrOpenBlob ) navigator.msSaveOrOpenBlob( blob, 'Document.doc'); // IE10-11
+		   		else link.click();  // other browsers
+		   document.body.removeChild(link);
+		 };
 
             $(document).ready(function()
              {
                 $("#sectionDiv").hide();
                 $("#divisionDiv").hide();
                 $("#fieldDiv").hide();
-                $('#user-table').DataTable();
                 $("#unit-table").DataTable();
                 $("#pesticide-table").DataTable();
                 $("#crop-table").DataTable();
@@ -271,6 +352,9 @@
 
                     $("#pills-lp-details").prop('disabled', true);
                     $("#pills-lp-file").prop('disabled', true);
+
+                    $("#seed_details").prop('disabled', true);
+                    $("#seed_details").prop('disabled', true);
                 }
                 if($("#referenceNo").val() == "")
                 {

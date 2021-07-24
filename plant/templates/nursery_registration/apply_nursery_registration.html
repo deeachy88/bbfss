@@ -44,7 +44,7 @@
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label class="form-label">Company_Address <font color="red">*</font></label>
+                                    <label class="form-label">Company Address <font color="red">*</font></label>
                                     <textarea class="form-control" id="Company_Address" name="Company_Address" rows="3"></textarea>
                                 </div>
                                 <div class="alert alert-danger" id="Company_AddressErrorMsg" style="display:none"></div>
@@ -54,14 +54,14 @@
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="form-label">CID <font color="red">*</font></label>
-                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="CID" name="CID" maxlength="11" onkeypress="return isNumberKey(event)">
+                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="CID" name="CID" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCitizenDetails(this.value);">
                                 </div>
                                 <div class="alert alert-danger" id="CIDErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="form-label">Owner Name <font color="red">*</font></label>
-                                    <input type="text" class="form-control" id="Owner_Name" name="Owner_Name">
+                                    <input type="text" class="form-control" id="Owner_Name" name="Owner_Name" disabled>
                                 </div>
                                 <div class="alert alert-danger" id="Owner_NameErrorMsg" style="display:none"></div>
                             </div>
@@ -84,24 +84,14 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Dzongkhag <font color="red">*</font></label>
-                                    <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getLocation(this.value)">
-                                        <option value="">--SELECT DZONGKHAG--</option>
-                                        {% for dzongkhag in dzongkhag %}
-                                                <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
-                                        {% endfor %}
-                                    </select>
+                                    <input type="text" class="form-control" name="dzongkhag"  id="dzongkhag" disabled>
                                 </div>
                                 <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Gewog <font color="red">*</font></label>
-                                    <select class="form-control" name="location_code"  id="location" onchange="getVillage(this.value)">
-                                        <option value="">--SELECT GEWOG--</option>
-                                        {% for location in location %}
-                                                <option value="{{ location.Location_Code }}">{{ location.Location_Name }}</option>
-                                        {% endfor %}
-                                     </select>
+                                    <input type="text" class="form-control" name="gewog" id="gewog" disabled>
                                 </div>
                                 <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
                             </div>
@@ -110,12 +100,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Village <font color="red">*</font></label>
-                                     <select class="form-control" name="village" id="village">
-                                        <option value="">--SELECT VILLAGE--</option>
-                                        {% for village in village %}
-                                            <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
-                                        {% endfor %}
-                                     </select>
+                                     <input type="text" class="form-control" name="village" id="village" disabled>
                                     <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
                                 </div>
                             </div>
@@ -370,16 +355,104 @@ function getLocation(dzongkhag_id)
 
 function save_nursery_form()
 {
-    $.ajax({
-        type : "POST",
-        url : "{% url 'save_nursery_reg' %}",
-        data : $('#seedForm').serialize(),
-        success : function(data) {
-            $('#applicationNo').val(data.applNo);
-            $('#plant_applicationNo').val(data.applNo);
-            $('#pills-nursery-seed-details').tab('show');
-        }
-    });
+    var License_No = $('#License_No').val();
+    var Company_Name = $('#Company_Name').val();
+    var Company_Address =  $('#Company_Address').val();
+    var CID = $('#CID').val();
+    var contactNumber = $('#contactNumber').val();
+    var email = $('#email').val();
+    var Nursery_Category = $('#Nursery_Category').val();
+    var Area = $('#Area').val();
+    var Unit_Area = $('#Unit_Area').val();
+    var Nursery_Type = $('#Nursery_Type').val();
+    var cidCount = $('#CID').val().length;
+    var number_count = $('#contactNumber').val().length;
+
+    if(License_No == "")
+    {
+        $('#License_NoErrorMsg').html("Enter License Number.");
+        $('#License_NoErrorMsg').show();
+        $('#License_NoErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Company_Name == "")
+    {
+        $('#Company_NameErrorMsg').html("Enter Company Name.");
+        $('#Company_NameErrorMsg').show();
+        $('#Company_NameErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Company_Address == "")
+    {
+        $('#Company_AddressErrorMsg').html("Enter Company Address.");
+        $('#Company_AddressErrorMsg').show();
+        $('#Company_AddressErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(CID == "")
+    {
+        $('#CIDErrorMsg').html("Enter CID.");
+        $('#CIDErrorMsg').show();
+        $('#CIDErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(contactNumber == "")
+    {
+        $('#contactNumberErrorMsg').html("Enter Contact Number.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(email == "")
+    {
+        $('#emailErrorMsg').html("Enter Email.");
+        $('#emailErrorMsg').show();
+        $('#emailErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Nursery_Category == "")
+    {
+        $('#Nursery_CategoryErrorMsg').html("Select Nursery Category.");
+        $('#Nursery_CategoryErrorMsg').show();
+        $('#Nursery_CategoryErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Area == "")
+    {
+        $('#AreaErrorMsg').html("Enter Area.");
+        $('#AreaErrorMsg').show();
+        $('#AreaErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Unit_Area == "")
+    {
+        $('#Unit_AreaErrorMsg').html("Enter Unit Area.");
+        $('#Unit_AreaErrorMsg').show();
+        $('#Unit_AreaErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Nursery_Type == "")
+    {
+        $('#Nursery_TypeErrorMsg').html("Select Nursery Type.");
+        $('#Nursery_TypeErrorMsg').show();
+        $('#Nursery_TypeErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(cidCount < 11)
+    {
+        $('#CIDErrorMsg').html("Cannot Be Less Than Eleven Digits.");
+        $('#CIDErrorMsg').show();
+        setTimeout('hideStatus("CIDErrorMsg")',2000);
+    }
+    else if(number_count < 8)
+    {
+        $('#contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
+        $('#contactNumberErrorMsg').show();
+        setTimeout('hideStatus("contactNumberErrorMsg")',2000);
+    }
+    else
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'save_nursery_reg' %}",
+            data : $('#seedForm').serialize(),
+            success : function(data) {
+                $('#applicationNo').val(data.applNo);
+                $('#plant_applicationNo').val(data.applNo);
+                $('#pills-nursery-seed-details').tab('show');
+            }
+        });
+    }
 }
 
 function save_attachment()
@@ -532,5 +605,22 @@ function getVariety(crop_id)
         }
     });
 }
+
+function getCitizenDetails(cidNo)
+	{
+
+	    $.ajax({
+            type : "GET",
+            url : "{% url 'get_citizen_details' %}",
+            data :{'cidNo':cidNo},
+            success : function(data)
+            {
+                $('#Owner_Name').val(data.Name);
+                $('#dzongkhag').val(data.dzongkhagName);
+                $('#gewog').val(data.gewogName);
+                $('#village').val(data.villageName);
+            }
+        });
+    }
 </script>
 {% endblock %}

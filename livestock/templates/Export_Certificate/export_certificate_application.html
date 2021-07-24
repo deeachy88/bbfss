@@ -53,35 +53,35 @@
                             </div>
                             <div class="col-sm-4 justify-content-center">
                                 <label class="custom-control custom-radio">
-                                    <input type="radio" name="Exporter_Type" class="custom-control-input" value="Individual">
+                                    <input type="radio" name="Exporter_Type" class="custom-control-input" value="Individual" onclick="enableForms(this.value)">
                                     <span class="custom-control-indicator"></span>
                                     <span class="custom-control-description">Individual</span>
                                 </label>
                                 <label class="custom-control custom-radio">
-                                    <input type="radio" name="Exporter_Type" class="custom-control-input" value="Commercial">
+                                    <input type="radio" name="Exporter_Type" class="custom-control-input" value="Commercial" onclick="enableForms(this.value)">
                                     <span class="custom-control-indicator"></span>
                                     <span class="custom-control-description">Commercial</span>
                                 </label>
                                 <label class="custom-control custom-radio">
-                                    <input type="radio" name="Exporter_Type" class="custom-control-input" value="Institution">
+                                    <input type="radio" name="Exporter_Type" class="custom-control-input" value="Institution" onclick="enableForms(this.value)">
                                     <span class="custom-control-indicator"></span>
                                     <span class="custom-control-description">Institution</span>
                                 </label>
                                 <div class="alert alert-danger" id="exporterTypeErrorMsg" style="display:none"></div>
                             </div>
                         </div><br>
-                        <div class="row">
+                        <div class="row showNationality">
                             <div class="col-sm-2">
                                 <label class="form-label">Nationality <font color="red">*</font></label>
                             </div>
                             <div class="col-sm-4 justify-content-center">
                                 <label class="custom-control custom-radio">
-                                    <input type="radio" name="Nationality" class="custom-control-input" value="Bhutanese">
+                                    <input type="radio" name="Nationality" class="custom-control-input" value="Bhutanese" onchange="checkNationality(this.value)">
                                     <span class="custom-control-indicator"></span>
                                     <span class="custom-control-description">Bhutanese</span>
                                 </label>
                                 <label class="custom-control custom-radio">
-                                    <input type="radio" name="Nationality" class="custom-control-input" value="Non-Bhutanese">
+                                    <input type="radio" name="Nationality" class="custom-control-input" value="Non-Bhutanese" onchange="checkNationality(this.value)">
                                     <span class="custom-control-indicator"></span>
                                     <span class="custom-control-description">Non-Bhutanese</span>
                                 </label>
@@ -90,17 +90,24 @@
                         </div>
                         <br>
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-4 bhutanese_div">
                                 <div class="form-group">
                                     <label class="form-label">Applicant CID <font color="red">*</font></label>
-                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)">
+                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
                                 </div>
                                 <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4 non_bhutanese_div" style="display:none">
+                                <div class="form-group">
+                                    <label class="form-label">Passport No <font color="red">*</font></label>
+                                    <input type="text" class="form-control" id="passport" name="passport">
+                                </div>
+                                <div class="alert alert-danger" id="passportErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Name <font color="red">*</font></label>
-                                    <input type="text" class="form-control" id="name" name="Name">
+                                    <input type="text" class="form-control" id="name" name="Name" disabled>
                                 </div>
                                 <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
                             </div>
@@ -112,40 +119,25 @@
                                 <div class="alert alert-danger" id="presentAddressErrorMsg" style="display:none"></div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row bhutanese_div">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Dzongkhag <font color="red">*</font></label>
-                                    <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value),getLocation(this.value)">
-                                        <option value="">--SELECT DZONGKHAG--</option>
-                                        {% for dzongkhag in dzongkhag %}
-                                                <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
-                                        {% endfor %}
-                                    </select>
+                                    <label class="form-label">Dzongkhag &nbsp;<font color='red'>*</font></label>
+                                    <input type="text" class="form-control" name="dzongkhag"  id="dzongkhag" disabled>
                                 </div>
                                 <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Gewog <font color="red">*</font></label>
-                                    <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
-                                        <option value="">--SELECT GEWOG--</option>
-                                        {% for gewog in gewog %}
-                                                <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
-                                        {% endfor %}
-                                    </select>
+                                    <label class="form-label">Gewog &nbsp;<font color='red'>*</font></label>
+                                    <input type="text" class="form-control" name="gewog" id="gewog" disabled>
                                 </div>
                                 <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Village <font color="red">*</font></label>
-                                     <select class="form-control" name="village" id="village">
-                                        <option value="">--SELECT VILLAGE--</option>
-                                        {% for village in village %}
-                                                <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
-                                        {% endfor %}
-                                     </select>
+                                    <label class="form-label">Village &nbsp;<font color='red'>*</font></label>
+                                    <input type="text" class="form-control" name="village" id="village" disabled>
                                 </div>
                                 <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
                             </div>
@@ -938,5 +930,51 @@ function liv_attachment_modal()
 {
     $('#attachmentModal').modal('show');
 }
+
+function checkNationality(value)
+{
+    if(value == "Bhutanese")
+    {
+        $('.bhutanese_div').show();
+        $('.non_bhutanese_div').hide();
+    }
+    else
+    {
+        $('.bhutanese_div').hide();
+        $('.non_bhutanese_div').show();
+    }
+}
+
+function enableForms(value)
+{
+    if(value == "Individual")
+    {
+        $("#license_no").attr("disabled", "disabled");
+        $("#business_name").attr("disabled", "disabled");
+        $("#cid").removeAttr("disabled");
+        $(".showNationality").show();
+    }
+    else if(value == "Commercial")
+    {
+        $("#cid").attr("disabled", "disabled");
+        $("#dzongkhag").attr("disabled", "disabled");
+        $("#gewog").attr("disabled", "disabled");
+        $("#village").attr("disabled", "disabled");
+        $("#license_no").removeAttr("disabled");
+        $("#business_name").removeAttr("disabled");
+         $(".showNationality").hide();
+    }
+    else
+    {
+        $("#cid").attr("disabled", "disabled");
+        $("#dzongkhag").attr("disabled", "disabled");
+        $("#gewog").attr("disabled", "disabled");
+        $("#village").attr("disabled", "disabled");
+        $("#license_no").removeAttr("disabled");
+        $("#business_name").removeAttr("disabled");
+        $(".showNationality").hide();
+    }
+}
+
 </script>
 {% endblock %}

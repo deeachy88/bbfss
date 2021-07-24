@@ -46,53 +46,37 @@
                              <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">CID of the Owner <font color="red">*</font></label>
-                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)">
+                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCitizenDetails(this.value);">
                                 </div>
                                 <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Name of the applicant/Owner <font color="red">*</font></label>
-                                    <input type="text" class="form-control" id="name" name="Name">
+                                    <input type="text" class="form-control" id="name" name="Name" disabled>
                                 </div>
                                 <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                         <div class="row">
-
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Dzongkhag <font color="red">*</font></label>
-                                    <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
-                                        <option value="">--SELECT DZONGKHAG--</option>
-                                        {% for dzongkhag in dzongkhag %}
-                                                <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
-                                        {% endfor %}
-                                    </select>
+                                    <label class="form-label">Dzongkhag &nbsp;<font color='red'>*</font></label>
+                                    <input type="text" class="form-control" name="dzongkhag"  id="dzongkhag" disabled>
                                 </div>
-                                <div class="alert alert-danger" id="to_dzongkhagErrorMsg" style="display:none"></div>
+                                <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Gewog <font color="red">*</font></label>
-                                    <select class="form-control" name="gewog"  id="gewog">
-                                        <option value="">--SELECT GEWOG--</option>
-                                        {% for gewog in gewog %}
-                                                <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
-                                        {% endfor %}
-                                    </select>
+                                    <label class="form-label">Gewog &nbsp;<font color='red'>*</font></label>
+                                    <input type="text" class="form-control" name="gewog" id="gewog" disabled>
                                 </div>
-                                <div class="alert alert-danger" id="to_gewogErrorMsg" style="display:none"></div>
+                                <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Village <font color="red">*</font></label>
-                                     <select class="form-control" name="village" id="village">
-                                        <option value="">--SELECT VILLAGE--</option>
-                                        {% for village in village %}
-                                                <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
-                                        {% endfor %}
-                                     </select>
+                                    <label class="form-label">Village &nbsp;<font color='red'>*</font></label>
+                                    <input type="text" class="form-control" name="village" id="village" disabled>
                                 </div>
                                 <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
                             </div>
@@ -252,25 +236,92 @@
 
 function save_fbr_form()
 {
-    $.ajax({
-            type : "POST",
-            url : "{% url 'save_meat_shop_registration' %}",
-            data : $('#FBR_form').serialize(),
-            success : function(data)
-            {
-                $('#applicationNo').val(data.applNo);
-                $('#fh_application_no').val(data.applNo);
-                $('#attachment_appNo').val(data.applNo);
-                $('#submitMsg').show();
-                setTimeout(function() {
-                    $("#submitMsg").hide('blind', {}, 500)
-                }, 2000);
-                setTimeout(function() {
-                    $('#pills-details').tab('show');
-                }, 3000);
+    var Business_Name = $('#Business_Name').val();
+    var cid = $('#cid').val();
+    var name_manager = $('#name_manager').val();
+    var license_criteria = $('#license_criteria').val();
+    var contactNumber = $('#contactNumber').val();
+    var email = $('#email').val();
+    var address = $('#address').val();
+    var cidCount = $('#cid').val().length;
+    var number_count = $('#contactNumber').val().length;
 
-            }
+    if(Business_Name == "")
+    {
+        $('#Business_NameErrorMsg').html("Enter Meat Shop Name.");
+        $('#Business_NameErrorMsg').show();
+        $('#Business_NameErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(cid == "")
+    {
+        $('#cidErrorMsg').html("Enter CID Number.");
+        $('#cidErrorMsg').show();
+        $('#cidErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(name_manager == "")
+    {
+        $('#name_managerErrorMsg').html("Enter Representatives Name.");
+        $('#name_managerErrorMsg').show();
+        $('#name_managerErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(license_criteria == "")
+    {
+        $('#license_criteriaErrorMsg').html("Select Licensing Criteria.");
+        $('#license_criteriaErrorMsg').show();
+        $('#license_criteriaErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(contactNumber == "")
+    {
+        $('#contactNumberErrorMsg').html("Enter Contact Number.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(email == "")
+    {
+        $('#emailErrorMsg').html("Enter Contact Number.");
+        $('#emailErrorMsg').show();
+        $('#emailErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(address == "")
+    {
+        $('#addressErrorMsg').html("Enter Address.");
+        $('#addressErrorMsg').show();
+        $('#addressErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(cidCount < 11)
+    {
+        $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits.");
+        $('#cidErrorMsg').show();
+        setTimeout('hideStatus("cidErrorMsg")',2000);
+    }
+    else if(number_count < 8)
+    {
+        $('#contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
+        $('#contactNumberErrorMsg').show();
+        setTimeout('hideStatus("contactNumberErrorMsg")',2000);
+    }
+    else
+    {
+        $.ajax({
+        type : "POST",
+        url : "{% url 'save_meat_shop_registration' %}",
+        data : $('#FBR_form').serialize(),
+        success : function(data)
+        {
+            $('#applicationNo').val(data.applNo);
+            $('#fh_application_no').val(data.applNo);
+            $('#attachment_appNo').val(data.applNo);
+            $('#submitMsg').show();
+            setTimeout(function() {
+                $("#submitMsg").hide('blind', {}, 500)
+            }, 2000);
+            setTimeout(function() {
+                $('#pills-details').tab('show');
+            }, 3000);
+
+        }
         });
+    }
 }
 
 

@@ -77,14 +77,14 @@
                         <div class="col-md-4 individual_details">
                             <div class="form-group">
                                 <label class="form-label">Applicant CID <font color="red">*</font></label>
-                                <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)">
+                                <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
                             </div>
                             <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-4 individual_details">
                             <div class="form-group">
                                 <label class="form-label">Name <font color="red">*</font></label>
-                                <input type="text" class="form-control" id="name" name="Name">
+                                <input type="text" class="form-control" id="name" name="Name" disabled>
                             </div>
                             <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
                         </div>
@@ -105,12 +105,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Dzongkhag <font color="red">*</font></label>
-                                <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
-                                    <option value="">--SELECT DZONGKHAG--</option>
-                                    {% for dzongkhag in dzongkhag %}
-                                            <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
-                                    {% endfor %}
-                                </select>
+                                <input type="text" class="form-control" name="dzongkhag"  id="dzongkhag" disabled>
                             </div>
                             <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
                         </div>
@@ -119,24 +114,14 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Gewog <font color="red">*</font></label>
-                                <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
-                                    <option value="">--SELECT GEWOG--</option>
-                                    {% for gewog in gewog %}
-                                            <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
-                                    {% endfor %}
-                                </select>
+                                <input type="text" class="form-control" name="gewog" id="gewog" disabled>
                             </div>
                             <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Village <font color="red">*</font></label>
-                                 <select class="form-control" name="village" id="village">
-                                    <option value="">--SELECT VILLAGE--</option>
-                                    {% for village in village %}
-                                            <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
-                                    {% endfor %}
-                                 </select>
+                                 <input type="text" class="form-control" name="village" id="village" disabled>
                             </div>
                             <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
                         </div>
@@ -1528,5 +1513,22 @@ function checkStandards(value)
         $("#other_standard").attr("disabled", "disabled");
     }
 }
+
+function getCitizenDetails(cidNo)
+	{
+
+	    $.ajax({
+            type : "GET",
+            url : "{% url 'get_citizen_details' %}",
+            data :{'cidNo':cidNo},
+            success : function(data)
+            {
+                $('#name').val(data.Name);
+                $('#dzongkhag').val(data.dzongkhagName);
+                $('#gewog').val(data.gewogName);
+                $('#village').val(data.villageName);
+            }
+        });
+    }
 </script>
 {% endblock %}

@@ -49,14 +49,14 @@
                              <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">CID of the Owner <font color="red">*</font></label>
-                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)">
+                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCitizenDetails(this.value);">
                                 </div>
                                 <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Name of the applicant/Owner <font color="red">*</font></label>
-                                    <input type="text" class="form-control" id="name" name="Name">
+                                    <input type="text" class="form-control" id="name" name="Name" disabled>
                                 </div>
                                 <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
                             </div>
@@ -99,30 +99,19 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Dzongkhag <font color="red">*</font></label>
-                                    <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
-                                        <option value="">--SELECT DZONGKHAG--</option>
-                                        {% for dzongkhag in dzongkhag %}
-                                                <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
-                                        {% endfor %}
-                                    </select>
+                                    <input type="text" class="form-control" name="dzongkhag"  id="dzongkhag" disabled>
                                 </div>
                                 <div class="alert alert-danger" id="to_dzongkhagErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Gewog <font color="red">*</font></label>
-                                    <select class="form-control" name="gewog"  id="gewog">
-                                        <option value="">--SELECT GEWOG--</option>
-                                        {% for gewog in gewog %}
-                                                <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
-                                        {% endfor %}
-                                    </select>
+                                    <input type="text" class="form-control" name="gewog" id="gewog" disabled>
                                 </div>
                                 <div class="alert alert-danger" id="to_gewogErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                         <div class="row">
-
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Food Business Address <font color="red">*</font></label>
@@ -567,7 +556,221 @@
 
 function save_fbr_form()
 {
-    $.ajax({
+    var Business_Name = $('#Business_Name').val();
+    var cid = $('#cid').val();
+    var name_manager = $('#name_manager').val();
+    var license_criteria = $('#license_criteria').val();
+    var contactNumber = $('#contactNumber').val();
+    var email = $('#email').val();
+    var address = $('#address').val();
+    var cidCount = $('#cid').val().length;
+    var number_count = $('#contactNumber').val().length;
+    var current_status = $('#current_status').val();
+    var product_category = $('#product_category').val();
+    var product_proposed = $('#product_proposed').val();
+    var no_of_years = $('#no_of_years').val();
+    var production_volume = $('#production_volume').val();
+    var volume_unit = $('#volume_unit').val();
+    var history = $('#history').val();
+    var previous_business = $('#previous_business').val();
+    var outsourced_process = $("input[name=outsourced_process]:checked").length;
+    var legal_status = $('#legal_status').val();
+    var larger_corporation = $("input[name=larger_corporation]:checked").length;
+    var larger_corporation_val = $("input[name=larger_corporation]:checked").val();
+    var relationship = $('#relationship').val();
+    var licensed_before = $("input[name=licensed_before]:checked").length;
+    var licensed_before_val = $("input[name=licensed_before]:checked").val();
+    var license_number = $('#license_number').val();
+    var reason = $('#reason').val();
+    var judicial_proceedings = $("input[name=judicial_proceedings]:checked").length;
+    var judicial_proceedings_val = $("input[name=judicial_proceedings]:checked").val();
+    var regulatory_proceedings = $("input[name=regulatory_proceedings]:checked").length;
+    var regulatory_proceedings_val = $("input[name=regulatory_proceedings]:checked").val();
+    var project_proposal = $("input[name=project_proposal]:checked").length;
+
+    if(Business_Name == "")
+    {
+        $('#Business_NameErrorMsg').html("Enter Meat Shop Name.");
+        $('#Business_NameErrorMsg').show();
+        $('#Business_NameErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(cid == "")
+    {
+        $('#cidErrorMsg').html("Enter CID Number.");
+        $('#cidErrorMsg').show();
+        $('#cidErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(name_manager == "")
+    {
+        $('#name_managerErrorMsg').html("Enter Representatives Name.");
+        $('#name_managerErrorMsg').show();
+        $('#name_managerErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(license_criteria == "")
+    {
+        $('#license_criteriaErrorMsg').html("Select Licensing Criteria.");
+        $('#license_criteriaErrorMsg').show();
+        $('#license_criteriaErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(contactNumber == "")
+    {
+        $('#contactNumberErrorMsg').html("Enter Contact Number.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(email == "")
+    {
+        $('#emailErrorMsg').html("Enter Contact Number.");
+        $('#emailErrorMsg').show();
+        $('#emailErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(address == "")
+    {
+        $('#addressErrorMsg').html("Enter Address.");
+        $('#addressErrorMsg').show();
+        $('#addressErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(cidCount < 11)
+    {
+        $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits.");
+        $('#cidErrorMsg').show();
+        setTimeout('hideStatus("cidErrorMsg")',2000);
+    }
+    else if(number_count < 8)
+    {
+        $('#contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
+        $('#contactNumberErrorMsg').show();
+        setTimeout('hideStatus("contactNumberErrorMsg")',2000);
+    }
+    else if(current_status == "")
+    {
+        $('#current_statusErrorMsg').html("Select Current Status Of Functioning.");
+        $('#current_statusErrorMsg').show();
+        setTimeout('hideStatus("current_statusErrorMsg")',2000);
+    }
+    else if(product_category == "")
+    {
+        $('#product_categoryErrorMsg').html("Select Product Category.");
+        $('#product_categoryErrorMsg').show();
+        setTimeout('hideStatus("product_categoryErrorMsg")',2000);
+    }
+    else if(product_proposed == "")
+    {
+        $('#product_proposedErrorMsg').html("Select Product Proposed/Being Manufactured.");
+        $('#product_proposedErrorMsg').show();
+        setTimeout('hideStatus("product_proposedErrorMsg")',2000);
+    }
+    else if(identified_water_source == "")
+    {
+        $('#identified_water_sourceErrorMsg').html("Enter Identified Water Source.");
+        $('#identified_water_sourceErrorMsg').show();
+        setTimeout('hideStatus("identified_water_sourceErrorMsg")',2000);
+    }
+    else if(current_status == "Regular" && no_of_years == "")
+    {
+        $('#no_of_yearsErrorMsg').html("Enter Number Of Years In Production.");
+        $('#no_of_yearsErrorMsg').show();
+        setTimeout('hideStatus("no_of_yearsErrorMsg")',2000);
+    }
+    else if(current_status == "Regular" && production_volume == "")
+    {
+        $('#production_volumeErrorMsg').html("Enter Production Volume(Last Calender Year).");
+        $('#production_volumeErrorMsg').show();
+        setTimeout('hideStatus("production_volumeErrorMsg")',2000);
+    }
+    else if(current_status == "Regular" && volume_unit == "")
+    {
+        $('#production_volumeErrorMsg').html("Enter Volume Unit.");
+        $('#production_volumeErrorMsg').show();
+        setTimeout('hideStatus("production_volumeErrorMsg")',2000);
+    }
+    else if(history == "")
+    {
+        $('#historyErrorMsg').html("Select Site History Details.");
+        $('#historyErrorMsg').show();
+        setTimeout('hideStatus("historyErrorMsg")',2000);
+    }
+    else if(history == "Converted structure" && previous_business == "")
+    {
+        $('#previous_businessErrorMsg').html("Enter Previous Business Conducted.");
+        $('#previous_businessErrorMsg').show();
+        setTimeout('hideStatus("previous_businessErrorMsg")',2000);
+    }
+    else if(outsourced_process < 1)
+    {
+        $('#outsourced_processErrorMsg').html("Please Select One.");
+        $('#outsourced_processErrorMsg').show();
+        setTimeout('hideStatus("outsourced_processErrorMsg")',2000);
+    }
+    else if(legal_status == "")
+    {
+        $('#legal_statusErrorMsg').html("Please Select One.");
+        $('#legal_statusErrorMsg').show();
+        setTimeout('hideStatus("legal_statusErrorMsg")',2000);
+    }
+    else if(larger_corporation == "")
+    {
+        $('#larger_corporationErrorMsg').html("Please Select One.");
+        $('#larger_corporationErrorMsg').show();
+        setTimeout('hideStatus("larger_corporationErrorMsg")',2000);
+    }
+    else if(larger_corporation_val == "Yes" && relationship == "")
+    {
+        $('#relationshipErrorMsg').html("Enter Relationship.");
+        $('#relationshipErrorMsg').show();
+        setTimeout('hideStatus("relationshipErrorMsg")',2000);
+    }
+    else if(licensed_before < 1)
+    {
+        $('#licensed_beforeErrorMsg').html("Please Select One.");
+        $('#licensed_beforeErrorMsg').show();
+        setTimeout('hideStatus("licensed_beforeErrorMsg")',2000);
+    }
+    else if(licensed_before == "Yes" && license_number == "")
+    {
+        $('#license_numberErrorMsg').html("Enter License No.");
+        $('#license_numberErrorMsg').show();
+        setTimeout('hideStatus("license_numberErrorMsg")',2000);
+    }
+    else if(licensed_before == "No" && reason == "")
+    {
+        $('#reasonErrorMsg').html("Enter Reason.");
+        $('#reasonErrorMsg').show();
+        setTimeout('hideStatus("reasonErrorMsg")',2000);
+    }
+    else if(judicial_proceedings < 1)
+    {
+        $('#judicial_proceedingsErrorMsg').html("Please Select One.");
+        $('#judicial_proceedingsErrorMsg').show();
+        setTimeout('hideStatus("judicial_proceedingsErrorMsg")',2000);
+    }
+    else if(judicial_proceedings_val == "Yes" && provided_details == "")
+    {
+        $('#provided_detailsErrorMsg').html("Provide Details.");
+        $('#provided_detailsErrorMsg').show();
+        setTimeout('hideStatus("provided_detailsErrorMsg")',2000);
+    }
+    else if(regulatory_proceedings < 1)
+    {
+        $('#regulatory_proceedingsErrorMsg').html("Please Select One.");
+        $('#regulatory_proceedingsErrorMsg').show();
+        setTimeout('hideStatus("regulatory_proceedingsErrorMsg")',2000);
+    }
+    else if(regulatory_proceedings_val == "Yes" && regulatory_proceedings_details == "")
+    {
+        $('#regulatory_proceedings_detailsErrorMsg').html("Provide Details.");
+        $('#regulatory_proceedings_detailsErrorMsg').show();
+        setTimeout('hideStatus("regulatory_proceedings_detailsErrorMsg")',2000);
+    }
+    else if(project_proposal < 1)
+    {
+        $('#project_proposalErrorMsg').html("Please Select One.");
+        $('#project_proposalErrorMsg').show();
+        setTimeout('hideStatus("project_proposalErrorMsg")',2000);
+    }
+    else
+    {
+        $.ajax({
             type : "POST",
             url : "{% url 'save_food_business_registration' %}",
             data : $('#FBR_form').serialize(),
@@ -595,6 +798,7 @@ function save_fbr_form()
                 }
             }
         });
+    }
 }
 
 
@@ -866,11 +1070,13 @@ function enableStatus(value)
     {
          $("#no_of_years").removeAttr("disabled");
          $("#production_volume").removeAttr("disabled");
+         $("#volume_unit").removeAttr("disabled");
     }
     else
     {
         $("#no_of_years").attr("disabled", "disabled");
         $("#production_volume").attr("disabled", "disabled");
+        $("#volume_unit").attr("disabled", "disabled");
     }
 }
 function checkSiteHistory(value)
@@ -885,6 +1091,23 @@ function checkSiteHistory(value)
         $("#previous_business").attr("disabled", "disabled");
 
     }
+}
+
+function getCitizenDetails(cidNo)
+{
+
+    $.ajax({
+        type : "GET",
+        url : "{% url 'get_citizen_details' %}",
+        data :{'cidNo':cidNo},
+        success : function(data)
+        {
+            $('#name').val(data.Name);
+            $('#dzongkhag').val(data.dzongkhagName);
+            $('#gewog').val(data.gewogName);
+            $('#village').val(data.villageName);
+        }
+    });
 }
 </script>
 {% endblock %}

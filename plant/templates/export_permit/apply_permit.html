@@ -64,13 +64,13 @@ option {
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="form-label">CID <font color="red">*</font></label>
-                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="p_cid" name="p_cid" maxlength="11" onkeypress="return isNumberKey(event)">
+                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="p_cid" name="p_cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCitizenDetails(this.value);">
                                 </div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="form-label">Exporter Name <font color="red">*</font></label>
-                                    <input type="text" class="form-control" id="p_Exporter_Name" name="p_Exporter_Name">
+                                    <input type="text" class="form-control" id="p_Exporter_Name" name="p_Exporter_Name" disabled>
                                 </div>
                             </div>
                         </div>
@@ -465,13 +465,13 @@ option {
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="form-label">CID <font color="red">*</font></label>
-                                    <input type="text" class="form-control" id="c_cid" name="c_cid">
+                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="c_cid" name="c_cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCidDetails(this.value);">
                                 </div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="form-label">Name <font color="red">*</font></label>
-                                    <input type="text" class="form-control" id="c_Exporter_Name" name="c_Exporter_Name">
+                                    <input type="text" class="form-control" id="c_Exporter_Name" name="c_Exporter_Name" disabled>
                                 </div>
                             </div>
                             <div class="col-sm-4">
@@ -857,30 +857,296 @@ option {
             $("#retailContent").show();
         }
     }
+
     function save_export_permit()
     {
         if($('#phytoRadio').prop('checked'))
         {
+            var p_License_No = $('#p_License_No').val();
+            var p_cid = $('#p_cid').val();
+            var p_Exporter_Address = $('#p_Exporter_Address').val();
+            var p_Contact_No = $('#p_Contact_No').val();
+            var p_Email = $('#p_Email').val();
+            var p_Dzongkhag_Code = $('#p_Dzongkhag_Code').val();
+            var p_Location_Code = $('#p_Location_Code').val();
+            var p_Name_Address = $('#p_Name_Address').val();
+            var p_Botanical_Name = $('#p_Botanical_Name').val();
+            var p_Description = $('#p_Description').val();
+            var p_Qty_Gross = $('#p_Qty_Gross').val();
+            var p_Unit_Gross = $("input[name=p_Unit_Gross]:checked").length;
+            var p_Qty_Net = $('#p_Qty_Net').val();
+            var p_Unit_Net = $("input[name=p_Unit_Net]:checked").length;
+            var p_Country_Code = $('#p_Country_Code').val();
+            var p_Entry_Point = $('#p_Entry_Point').val();
 
-            $.ajax({
-                    type : "POST",
-                    url : "{% url 'submit_export' %}",
-                    data : $('#permitForm').serialize(),
-                    cache : false,
-                    dataType : "html",
-                    success : function(data)
-                    {
-                        $('#applicationNo').val(data.applicationNo);
-                        $('#phyto_attachment_applicationNo').val(data.applicationNo);
-                        $('#pills-tab-phyto a:last').tab('show');
-                    }
-            });
-
+            if(p_License_No == "")
+            {
+                $('#p_License_NoErrorMsg').html("Enter License No.");
+                $('#p_License_NoErrorMsg').show();
+                $('#p_License_NoErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(p_cid == "")
+            {
+                $('#p_cidErrorMsg').html("Enter CID.");
+                $('#p_cidErrorMsg').show();
+                $('#p_cidErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(p_cid == "")
+            {
+                $('#p_cidErrorMsg').html("Enter CID.");
+                $('#p_cidErrorMsg').show();
+                $('#p_cidErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(p_Exporter_Address == "")
+            {
+                $('#p_Exporter_AddressErrorMsg').html("Enter Address.");
+                $('#p_Exporter_AddressErrorMsg').show();
+                $('#p_Exporter_AddressErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(p_Contact_No == "")
+            {
+                $('#p_Contact_NoErrorMsg').html("Enter Contact No.");
+                $('#p_Contact_NoErrorMsg').show();
+                $('#p_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(p_Email == "")
+            {
+                $('#p_EmailErrorMsg').html("Enter Email.");
+                $('#p_EmailErrorMsg').show();
+                $('#p_EmailErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(p_Dzongkhag_Code == "")
+            {
+                $('#p_Dzongkhag_CodeErrorMsg').html("Select Dzongkhag.");
+                $('#p_Dzongkhag_CodeErrorMsg').show();
+                $('#p_Dzongkhag_CodeErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(p_Location_Code == "")
+            {
+                $('#p_Location_CodeErrorMsg').html("Select Location.");
+                $('#p_Location_CodeErrorMsg').show();
+                $('#p_Location_CodeErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(p_Name_Address == "")
+            {
+                $('#p_Name_AddressErrorMsg').html("Enter Name & Address of Consignee.");
+                $('#p_Name_AddressErrorMsg').show();
+                $('#p_Name_AddressErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(p_Botanical_Name == "")
+            {
+                $('#p_Botanical_NameErrorMsg').html("Enter Botanical Name Of the Commodity.");
+                $('#p_Botanical_NameErrorMsg').show();
+                $('#p_Botanical_NameErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(p_Description == "")
+            {
+                $('#p_DescriptionErrorMsg').html("Description Of The Commodity.");
+                $('#p_DescriptionErrorMsg').show();
+                $('#p_DescriptionErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(p_Qty_Gross == "")
+            {
+                $('#p_Qty_GrossErrorMsg').html("Enter Quantity (Gross Weight).");
+                $('#p_Qty_GrossErrorMsg').show();
+                $('#p_Qty_GrossErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(p_Unit_Gross < 1)
+            {
+                $('#p_Unit_GrossErrorMsg').html("Select One Unit.");
+                $('#p_Unit_GrossErrorMsg').show();
+                $('#p_Unit_GrossErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(p_Qty_Net == "")
+            {
+                $('#p_Qty_NetErrorMsg').html("Enter Quantity (Net Weight).");
+                $('#p_Qty_NetErrorMsg').show();
+                $('#p_Qty_NetErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(p_Unit_Net < 1)
+            {
+                $('#p_Unit_NetErrorMsg').html("Select One Unit.");
+                $('#p_Unit_NetErrorMsg').show();
+                $('#p_Unit_NetErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(p_Country_Code == "")
+            {
+                $('#p_Country_CodeErrorMsg').html("Select Country.");
+                $('#p_Country_CodeErrorMsg').show();
+                $('#p_Country_CodeErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(p_Entry_Point == "")
+            {
+                $('#p_Entry_PointErrorMsg').html("Select Entry Point.");
+                $('#p_Entry_PointErrorMsg').show();
+                $('#p_Entry_PointErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(p_purpose < 1)
+            {
+                $('#p_purposeErrorMsg').html("Select One Purpose/End Use.");
+                $('#p_purposeErrorMsg').show();
+                $('#p_purposeErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(p_conveyanceMeans == "")
+            {
+                $('#p_conveyanceMeansErrorMsg').html("Select Mode Of Conveyance.");
+                $('#p_conveyanceMeansErrorMsg').show();
+                $('#p_conveyanceMeansErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(p_Conveyance_Name == "")
+            {
+                $('#p_Conveyance_NameErrorMsg').html("Enter Conveyance Name.");
+                $('#p_Conveyance_NameErrorMsg').show();
+                $('#p_Conveyance_NameErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else
+            {
+                $.ajax({
+                        type : "POST",
+                        url : "{% url 'submit_export' %}",
+                        data : $('#permitForm').serialize(),
+                        cache : false,
+                        dataType : "html",
+                        success : function(data)
+                        {
+                            $('#applicationNo').val(data.applicationNo);
+                            $('#phyto_attachment_applicationNo').val(data.applicationNo);
+                            $('#pills-tab-phyto a:last').tab('show');
+                        }
+                });
+            }
         }
         else
         {
+            var ApplicantType = $("input[name=ApplicantType]:checked").length;
+            var ApplicantTypeVal = $('input[name="ApplicantType"]:checked').val();
+            var c_cid = $('#c_cid').val();
+            var c_Exporter_Name = $('#c_Exporter_Name').val();
+            var c_Email = $('#c_Email').val();
+            var c_Contact_No = $('#c_Contact_No').val();
+            var c_Dzongkhag_Code = $('#c_Dzongkhag_Code').val();
+            var c_Location_Code = $('#c_Location_Code').val();
 
+            var c_current_address = $('#c_current_address').val();
+            var date_for_Inspection = $('#date').val();
+            var c_requested_place = $('#c_requested_place').val();
 
+            if(ApplicantType < 1)
+            {
+                $('#ApplicantTypeErrorMsg').html("Select One Unit.");
+                $('#ApplicantTypeErrorMsg').show();
+                $('#ApplicantTypeErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(ApplicantTypeVal == "bothRadio" && c_cid == "")
+            {
+                $('#c_cidErrorMsg').html("Enter CID.");
+                $('#c_cidErrorMsg').show();
+                $('#c_cidErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(ApplicantTypeVal == "bothRadio" && c_Contact_No == "")
+            {
+                $('#c_Contact_NoErrorMsg').html("Enter Contact No.");
+                $('#c_Contact_NoErrorMsg').show();
+                $('#c_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(ApplicantTypeVal == "bothRadio" && c_Email == "")
+            {
+                $('#c_EmailErrorMsg').html("Enter Email.");
+                $('#c_EmailErrorMsg').show();
+                $('#c_EmailErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(ApplicantTypeVal == "bothRadio" && c_Dzongkhag_Code == "")
+            {
+                $('#c_Dzongkhag_CodeErrorMsg').html("Select Dzongkhag.");
+                $('#c_Dzongkhag_CodeErrorMsg').show();
+                $('#c_Dzongkhag_CodeErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(ApplicantTypeVal == "bothRadio" && c_Location_Code == "")
+            {
+                $('#c_Location_CodeErrorMsg').html("Select Location.");
+                $('#c_Location_CodeErrorMsg').show();
+                $('#c_Location_CodeErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(ApplicantTypeVal == "bothRadio" && c_current_address == "")
+            {
+                $('#c_current_addressErrorMsg').html("Enter Current Address.");
+                $('#c_current_addressErrorMsg').show();
+                $('#c_current_addressErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(ApplicantTypeVal == "bothRadio" && date_for_Inspection == "")
+            {
+                $('#date_for_InspectionErrorMsg').html("Select Date For Inspection");
+                $('#date_for_InspectionErrorMsg').show();
+                $('#date_for_InspectionErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(ApplicantTypeVal == "bothRadio" && c_requested_place == "")
+            {
+                $('#c_requested_placeErrorMsg').html("Enter Place Of Inspection.");
+                $('#c_requested_placeErrorMsg').show();
+                $('#c_requested_placeErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(ApplicantTypeVal == "directRadio" && c_cid == "")
+            {
+                $('#c_cidErrorMsg').html("Enter CID.");
+                $('#c_cidErrorMsg').show();
+                $('#c_cidErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(ApplicantTypeVal == "directRadio" && c_Contact_No == "")
+            {
+                $('#c_Contact_NoErrorMsg').html("Enter Contact No.");
+                $('#c_Contact_NoErrorMsg').show();
+                $('#c_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(ApplicantTypeVal == "directRadio" && c_Email == "")
+            {
+                $('#c_EmailErrorMsg').html("Enter Email.");
+                $('#c_EmailErrorMsg').show();
+                $('#c_EmailErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(ApplicantTypeVal == "directRadio" && c_Dzongkhag_Code == "")
+            {
+                $('#c_Dzongkhag_CodeErrorMsg').html("Select Dzongkhag.");
+                $('#c_Dzongkhag_CodeErrorMsg').show();
+                $('#c_Dzongkhag_CodeErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(ApplicantTypeVal == "directRadio" && c_Location_Code == "")
+            {
+                $('#c_Location_CodeErrorMsg').html("Select Location.");
+                $('#c_Location_CodeErrorMsg').show();
+                $('#c_Location_CodeErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(ApplicantTypeVal == "retailRadio" && c_cid == "")
+            {
+                $('#c_cidErrorMsg').html("Enter CID.");
+                $('#c_cidErrorMsg').show();
+                $('#c_cidErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(ApplicantTypeVal == "retailRadio" && c_Contact_No == "")
+            {
+                $('#c_Contact_NoErrorMsg').html("Enter Contact No.");
+                $('#c_Contact_NoErrorMsg').show();
+                $('#c_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(ApplicantTypeVal == "retailRadio" && c_Email == "")
+            {
+                $('#c_EmailErrorMsg').html("Enter Email.");
+                $('#c_EmailErrorMsg').show();
+                $('#c_EmailErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(ApplicantTypeVal == "retailRadio" && c_Dzongkhag_Code == "")
+            {
+                $('#c_Dzongkhag_CodeErrorMsg').html("Select Dzongkhag.");
+                $('#c_Dzongkhag_CodeErrorMsg').show();
+                $('#c_Dzongkhag_CodeErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(ApplicantTypeVal == "retailRadio" && c_Location_Code == "")
+            {
+                $('#c_Location_CodeErrorMsg').html("Select Location.");
+                $('#c_Location_CodeErrorMsg').show();
+                $('#c_Location_CodeErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else
+            {
                 $.ajax({
                         type : "POST",
                         url : "{% url 'submit_export' %}",
@@ -894,8 +1160,10 @@ option {
                             $('#pills-tab-cordyceps a:last').tab('show');
                         }
                 });
+            }
         }
     }
+
 
     function save_phyto_attachment()
     {
@@ -1051,6 +1319,32 @@ option {
         });
     }
 
+function getCitizenDetails(cidNo)
+	{
 
+	    $.ajax({
+            type : "GET",
+            url : "{% url 'get_citizen_details' %}",
+            data :{'cidNo':cidNo},
+            success : function(data)
+            {
+                $('#p_Exporter_Name').val(data.Name);
+            }
+        });
+    }
+
+    function getCidDetails(cidNo)
+	{
+
+	    $.ajax({
+            type : "GET",
+            url : "{% url 'get_citizen_details' %}",
+            data :{'cidNo':cidNo},
+            success : function(data)
+            {
+                $('#c_Exporter_Name').val(data.Name);
+            }
+        });
+    }
 </script>
 {% endblock %}
