@@ -4592,7 +4592,8 @@ def call_for_inspection(request):
 
 def application_status(request):
     login_id = request.session['email']
-    application_details = t_workflow_details.objects.filter(Applicant_Id=login_id)
+    application_details = t_workflow_details.objects.filter(Applicant_Id=login_id,
+                                                            Action_Date__isnull=False)
     service_details = t_service_master.objects.all()
 
     return render(request, 'application_status.html', {'application_details': application_details,
@@ -4631,7 +4632,7 @@ def call_for_inspection_details(request):
         location_details = t_field_office_master.objects.filter(Is_Entry_Point='Y')
         return render(request, 'nursery_registration/inspection_call_details.html',
                       {'application_details': application_details, 'seed_details': details, 'file': file,
-                        'application_no': application_no, 'location': location_details})
+                       'application_no': application_no, 'location': location_details})
     elif service_id == 'ILP':
         application_details = t_livestock_import_permit_product_t1.objects.filter(Application_No=application_no)
         details = t_livestock_import_permit_product_t2.objects.filter(Application_No=application_no)
