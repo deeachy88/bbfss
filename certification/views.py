@@ -18,7 +18,7 @@ from certification.models import t_certification_food_t2, t_certification_organi
     t_certification_food_t1, t_certification_gap_t3, t_certification_food_t3, t_certification_organic_t10, \
     t_certification_food_t5, t_certification_gap_t2, t_certification_gap_t7, t_certification_gap_t8
 from plant.models import t_file_attachment, t_workflow_details, t_payment_details
-
+import pandas as pd
 # Organic Certification
 from plant.views import focal_officer_application, inspector_application
 
@@ -62,8 +62,10 @@ def save_organic_certificate(request):
     address = request.POST.get('address')
     farm_location = request.POST.get('farm_location')
     inspectionDate = request.POST.get('inspectionDate')
-    date_format_ins = datetime.strptime(inspectionDate, '%d-%m-%Y').date()
     farm_name = request.POST.get('farm_name')
+    business_license_no = request.POST.get('business_license_no')
+    technical_in_charge = request.POST.get('technical_in_charge')
+    management_in_charge = request.POST.get('management_in_charge')
     t_certification_organic_t1.objects.create(
         Application_No=organic_certificate_app_no,
         Application_Date=None,
@@ -136,7 +138,10 @@ def save_organic_certificate(request):
         Farm_Name=farm_name,
         Audit_Type=None,
         Others_Standards=None,
-        Terms_Standards=None
+        Terms_Standards=None,
+        License_Number=business_license_no,
+        Technical_In_Charge=technical_in_charge,
+        Manager_In_Charge=management_in_charge
     )
 
     t_workflow_details.objects.create(Application_No=organic_certificate_app_no,
@@ -2497,3 +2502,12 @@ def update_payment(application_no, permit_no, service_code, validity_date):
                                      Receipt_Date=None,
                                      Updated_By=None,
                                      Updated_On=None)
+
+
+def date_month(request):
+    date1 = request.GET.get('from_date')
+    date2 = request.GET.get('to_date')
+    d1 = datetime.strptime(date1, "%d-%m-%Y").date()
+    d2 = datetime.strptime(date2, "%d-%m-%Y").date()
+    month_list = [i.strftime("%B") for i in pd.date_range(start=d1, end=d2, freq='MS')]
+    return render(request, 'GAP_Certification/month_list.html', {'month_list': month_list})

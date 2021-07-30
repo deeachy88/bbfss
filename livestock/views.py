@@ -71,6 +71,7 @@ def save_meat_shop_registration(request):
     dzongkhag = request.POST.get('dzongkhag')
     gewog = request.POST.get('gewog')
     village = request.POST.get('village')
+    location = request.POST.get('location')
     address = request.POST.get('address')
 
     t_livestock_clearance_meat_shop_t1.objects.create(
@@ -110,12 +111,15 @@ def save_meat_shop_registration(request):
         FO_Remarks=None,
         Representative=name_manager,
         Village_Code=village,
-        Meat_Shop_Name=Meat_Shop_Name
+        Meat_Shop_Name=Meat_Shop_Name,
+        Location_Code=location
     )
-
+    field_id = t_location_field_office_mapping.objects.filter(pk=location)
+    for field_office in field_id:
+        field_office_id = field_office.Field_Office_Id_id
     t_workflow_details.objects.create(Application_No=new_meat_shop_application,
                                       Applicant_Id=request.session['email'],
-                                      Assigned_To=None, Field_Office_Id=None, Section='Livestock',
+                                      Assigned_To=None, Field_Office_Id=field_office_id, Section='Livestock',
                                       Assigned_Role_Id='2', Action_Date=None, Application_Status='P',
                                       Service_Code=service_code)
     data['applNo'] = new_meat_shop_application
@@ -1398,6 +1402,7 @@ def save_livestock_export(request):
     inspectionDate = request.POST.get('inspectionDate')
     date_format_ins = datetime.strptime(inspectionDate, '%d-%m-%Y').date()
     export_date = datetime.strptime(Export_Expected_Date, '%d-%m-%Y').date()
+    passport = request.POST.get('passport')
 
     t_livestock_export_certificate_t1.objects.create(
         Application_No=application_no,
@@ -1433,7 +1438,8 @@ def save_livestock_export(request):
         Approve_Date=None,
         Validity_Period=None,
         Validity=None,
-        Applicant_Id=applicant_Id
+        Applicant_Id=applicant_Id,
+        Passport_No=passport
     )
     field = t_location_field_office_mapping.objects.filter(Location_Code=Place_of_Exit)
     for field_office in field:

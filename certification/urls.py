@@ -101,7 +101,8 @@ urlpatterns = [
     path('view_certificate_draft_details', views.view_certificate_draft_details, name='view_certificate_draft_details'),
     path('update_food_product_form', views.update_food_product_form, name='update_food_product_form'),
     path('update_oc_form', views.update_oc_form, name='update_oc_form'),
-    path('update_gap_form', views.update_gap_form, name='update_gap_form')
+    path('update_gap_form', views.update_gap_form, name='update_gap_form'),
+    path('date_month', views.date_month, name='date_month')
 
 ]
 if settings.DEBUG:

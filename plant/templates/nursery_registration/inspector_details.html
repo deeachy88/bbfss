@@ -14,6 +14,55 @@
                 <div class="row">
                     <div class="col-sm-4">
                         <div class="form-group">
+                            <label class="form-label">License No</label>
+                            <input type="text" class="form-control" value="{{application_details.License_No}}" disabled>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label class="form-label">Company Name</label>
+                            <input type="text" class="form-control" value="{{application_details.Company_Name}}" disabled>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label class="form-label">Company_Address</label>
+                            <textarea class="form-control" disabled rows="4">{{application_details.Company_Address}}</textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label class="form-label">CID</label>
+                            <input type="text" class="form-control" value="{{application_details.CID}}" disabled>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label class="form-label">Owner Name</label>
+                            <input type="text" class="form-control" value="{{application_details.Owner_Name}}" disabled>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label class="form-label">Contact Number</label>
+                            <input type="number" class="form-control" value="{{application_details.contactNo}}" disabled>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" value="{{application_details.email}}" disabled>
+                        </div>
+                    </div>
+                </div>
+                </hr>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
                             <label class="form-label">Nursery Category</label>
                             <select class="form-control form-control" id="Nursery_Category" name="Nursery_Category">
                                 {% if application_details.Nursery_Category == "Agro-Forestry" %}
@@ -30,48 +79,8 @@
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">
-                            <label class="form-label">License No</label>
-                            <input type="text" class="form-control" value="{{application_details.License_No}}" disabled>
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <label class="form-label">Company Name</label>
-                            <input type="text" class="form-control" value="{{application_details.Company_Name}}" disabled>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <label class="form-label">Company_Address</label>
-                            <textarea class="form-control" disabled rows="4">{{application_details.Company_Address}}</textarea>
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <label class="form-label">CID</label>
-                            <input type="text" class="form-control" value="{{application_details.CID}}" disabled>
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <label class="form-label">Owner Name</label>
-                            <input type="text" class="form-control" value="{{application_details.Owner_Name}}" disabled>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <label class="form-label">Contact Number</label>
-                            <input type="number" class="form-control" value="{{application_details.contactNo}}" disabled>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="form-label">Email</label>
-                            <input type="email" class="form-control" value="{{application_details.email}}" disabled>
+                            <label class="form-label">Area</label>
+                            <input type="text" class="form-control" id="Area" name="Area" value="{{application_details.Area}}" disabled>
                         </div>
                     </div>
                     <div class="col-sm-4">
@@ -82,61 +91,6 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <label class="form-label">Area</label>
-                            <input type="text" class="form-control" id="Area" name="Area" value="{{application_details.Area}}" disabled>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="form-label">Dzongkhag</label>
-                            <select class="form-control" name="dzongkhag"  id="dzongkhag" disabled>
-                                <option value="">--SELECT DZONGKHAG--</option>
-                                {% for dzongkhag in dzongkhag %}
-                                    <option value="{{dzongkhag.Dzongkhag_Code}}"{% if application_details.Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>
-                                        {{ dzongkhag.Dzongkhag_Name }}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="form-label">Gewog</label>
-                            <select class="form-control" name="gewog" id="gewog" disabled>
-                                <option value="">--SELECT GEWOG--</option>
-                                {% for gewog in gewog %}
-                                    <option value="{{ gewog.Gewog_Code }}"{% if application_details.Gewog_Code == gewog.Gewog_Code %}selected{% endif %}>{{ gewog.Gewog_Name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="form-label">Village</label>
-                             <select class="form-control" name="village" id="village" disabled>
-                                <option value="">--SELECT VILLAGE--</option>
-                                {% for village in village %}
-                                        <option value="{{ village.Village_Code }}" {% if application_details.Village_Code == village.Village_Code %}selected{% endif %}>{{ village.Village_Name }}</option>
-                                {% endfor %}
-                             </select>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="form-label">Location</label>
-                             <select class="form-control" name="location_code"  id="location">
-                                <option value="">--SELECT LOCATION--</option>
-                                {% for location in location %}
-                                        <option value="{{ location.Location_Code }}">{{ location.Location_Name }}</option>
-                                {% endfor %}
-                             </select>
-                        </div>
-                    </div>
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label class="form-label">Nursery Type</label>
@@ -152,7 +106,79 @@
                         </div>
                         <div class="alert alert-danger" id="Nursery_TypeErrorMsg" style="display:none"></div>
                     </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Dzongkhag</label>
+                            <input type="text" class="form-control" value="{{application_details.Dzongkhag}}" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Gewog</label>
+                            <input type="text" class="form-control" value="{{application_details.Gewog}}" readonly="readonly">
+                        </div>
+                    </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Village</label>
+                            <input type="text" class="form-control" value="{{application_details.Village}}" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Place Of Entry</label>
+                             <select class="form-control" disabled>
+                                <option value="">--SELECT--</option>
+                                {% for location in location %}
+                                        <option value="{{ location.Location_Code }}" {% if application_details.Location_Code == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                {% endfor %}
+                             </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#exItem" aria-expanded="true" aria-controls="exItem2">File Attachment</button>
+            </h5>
+          </div>
+          <div id="exItem" class="collapse show" aria-labelledby="exItem2Header" data-parent="#exampleAccordion">
+            <div class="card-body">
+                <table id="details-table" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Crop Category</th>
+                            <th scope="col">Crop</th>
+                            <th scope="col">Crop Variety</th>
+                            <th scope="col">Source</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for seed_details in seed_details %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{seed_details.Crop_Category}}</td>
+                                <td>{{seed_details.Crop}}</td>
+                                <td>{{seed_details.Variety}}</td>
+                                <td>{{seed_details.Source}}</td>
+                                <td>{{seed_details.Qty}}</td>
+                                <td>{{seed_details.Remarks}}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center">No Data</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
           </div>
         </div>

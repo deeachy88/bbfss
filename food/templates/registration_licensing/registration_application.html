@@ -64,6 +64,23 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
+                                    <label class="form-label">Contact Number <font color="red">*</font></label>
+                                    <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                                </div>
+                                <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Email <font color="red">*</font></label>
+                                    <input type="email" class="form-control" id="email" name="email" onchange="validateemailId(this.value)">
+                                </div>
+                                <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
                                     <label class="form-label">Name Of FB Representative <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="name_manager" name="name_manager">
                                 </div>
@@ -82,36 +99,42 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Contact Number <font color="red">*</font></label>
-                                    <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                                    <label class="form-label">Dzongkhag</label>
+                                    <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
+                                        <option value="">--SELECT DZONGKHAG--</option>
+                                        {% for dzongkhag in dzongkhag %}
+                                                <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                        {% endfor %}
+                                    </select>
                                 </div>
-                                <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
+                                <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Email <font color="red">*</font></label>
-                                    <input type="email" class="form-control" id="email" name="email" onchange="validateemailId(this.value)">
-                                </div>
-                                <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Dzongkhag <font color="red">*</font></label>
-                                    <input type="text" class="form-control" name="dzongkhag"  id="dzongkhag" disabled>
-                                </div>
-                                <div class="alert alert-danger" id="to_dzongkhagErrorMsg" style="display:none"></div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Gewog <font color="red">*</font></label>
-                                    <input type="text" class="form-control" name="gewog" id="gewog" disabled>
+                                    <label class="form-label">Gewog</label>
+                                    <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                        <option value="">--SELECT GEWOG--</option>
+                                        {% for gewog in gewog %}
+                                                <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
+                                        {% endfor %}
+                                    </select>
                                 </div>
                                 <div class="alert alert-danger" id="to_gewogErrorMsg" style="display:none"></div>
                             </div>
-                        </div>
-                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Village</label>
+                                     <select class="form-control" name="village" id="village">
+                                        <option value="">--SELECT VILLAGE--</option>
+                                        {% for village in village %}
+                                                <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                                <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
+                            </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Food Business Address <font color="red">*</font></label>
@@ -285,7 +308,6 @@
                                     <input type="text" class="form-control" id="license_number" name="license_number">
                                 </div>
                             </div>
-
                         </div>
                         <div class="row">
                             <div class="form-group col-md-4">
@@ -368,7 +390,7 @@
                         </div>
                     </div>
                     <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
-                        Save SuccessFul
+                        Save Successful
                     </div>
                     <div class="card-action">
                         <button type="button" class="btn btn-primary" onclick="save_fbr_form()">Save</button>

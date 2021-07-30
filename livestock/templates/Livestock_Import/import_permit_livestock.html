@@ -80,12 +80,12 @@
                             </div>
                             <div class="col-sm-4 justify-content-center">
                                 <label class="custom-control custom-radio">
-                                    <input type="radio" name="nationality" class="custom-control-input" value="Bhutanese" onchange="checkNationality(this.value)">
+                                    <input type="radio" name="nationality" class="custom-control-input" value="Bhutanese" id="Bhutanese" onchange="checkNationality(this.value)">
                                     <span class="custom-control-indicator"></span>
                                     <span class="custom-control-description">Bhutanese</span>
                                 </label>
                                 <label class="custom-control custom-radio">
-                                    <input type="radio" name="nationality" class="custom-control-input" value="Non-Bhutanese" onchange="checkNationality(this.value)">
+                                    <input type="radio" name="nationality" class="custom-control-input" value="Non-Bhutanese" id="Non-Bhutanese" onchange="checkNationality(this.value)">
                                     <span class="custom-control-indicator"></span>
                                     <span class="custom-control-description">Non-Bhutanese</span>
                                 </label>
@@ -723,6 +723,8 @@ function enableForms(value)
         $("#business_name").attr("disabled", "disabled");
         $("#cid").removeAttr("disabled");
         $(".showNationality").show();
+        $("#Bhutanese").prop("checked", false);
+        $("#Non-Bhutanese").prop("checked", false);
     }
     else if(value == "Commercial")
     {
@@ -732,7 +734,11 @@ function enableForms(value)
         $("#village").attr("disabled", "disabled");
         $("#license_no").removeAttr("disabled");
         $("#business_name").removeAttr("disabled");
-         $(".showNationality").hide();
+        $(".showNationality").hide();
+        $('.bhutanese_div').show();
+        $('.non_bhutanese_div').hide();
+        $("#Bhutanese").prop("checked", false);
+        $("#Non-Bhutanese").prop("checked", false);
     }
     else
     {
@@ -742,7 +748,11 @@ function enableForms(value)
         $("#village").attr("disabled", "disabled");
         $("#license_no").removeAttr("disabled");
         $("#business_name").removeAttr("disabled");
-         $(".showNationality").hide();
+        $(".showNationality").hide();
+        $('.bhutanese_div').show();
+        $('.non_bhutanese_div').hide();
+        $("#Bhutanese").prop("checked", false);
+        $("#Non-Bhutanese").prop("checked", false);
     }
 }
 </script>

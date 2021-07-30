@@ -6,7 +6,7 @@
                 <div class="card">
                     <div class="card-body">
                         {% for application_details in application_details %}
-                            {% if application_details.Import_Type == 'P' %}
+                            {% if application_details.Import_Type == "P" %}
                                 <div class="row justify-content-center">
                                     <div class="form-check text-center">
                                         <label>Import Type <font color="red">*</font></label><br>
@@ -109,12 +109,7 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="form-label">Dzongkhag &nbsp;<font color='red'>*</font></label>
-                                                <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value),getLocation(this.value)">
-                                                    <option value="">--SELECT DZONGKHAG--</option>
-                                                    {% for dzongkhag in dzongkhag %}
-                                                            <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
-                                                    {% endfor %}
-                                                </select>
+                                                <input type="text" class="form-control" value="{{application_details.dzongkhag}}" disabled>
                                             </div>
                                             <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
                                         </div>
@@ -123,24 +118,14 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="form-label">Gewog &nbsp;<font color='red'>*</font></label>
-                                                <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
-                                                    <option value="">--SELECT GEWOG--</option>
-                                                    {% for gewog in gewog %}
-                                                            <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
-                                                    {% endfor %}
-                                                </select>
+                                                <input type="text" class="form-control" value="{{application_details.gewog}}" disabled>
                                             </div>
                                             <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="form-label">Village &nbsp;<font color='red'>*</font></label>
-                                                 <select class="form-control" name="village" id="village">
-                                                    <option value="">--SELECT VILLAGE--</option>
-                                                    {% for village in village %}
-                                                            <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
-                                                    {% endfor %}
-                                                 </select>
+                                                <input type="text" class="form-control" value="{{application_details.village}}" disabled>
                                             </div>
                                             <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
                                         </div>
@@ -456,7 +441,8 @@
                                     </div>
                                 </div>
                             </div>
-                        {% endif %}
+                            {% endif %}
+                        {% endfor %}
                                 <br>
                                 {% if application_details.Import_Type == 'P' %}
                                     <table class="table table-bordered">
@@ -562,17 +548,18 @@
                                     </table>
                                 {% endif %}
                             </div>
-                        <div class="form-group">
-                            <label for="remarks">Remarks(If Reject Please Fill THe Remarks)</label>
-                            <textarea class="form-control" rows="5" id="remarks" name="remarks"></textarea>
-                            <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
-                        </div>
-                        <br>
-                        <div class="float-right">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" onclick="fo_approve('{{ application_details.Application_No }}')"> Approve </button>
-                            <button type="button" class="btn btn-danger" onclick="fo_reject('{{ application_details.Application_No }}')"> Reject </button>
-                        </div>
+                     {% for application_details in application_details %}
+                            <div class="form-group">
+                                <label for="remarks">Remarks(If Reject Please Fill THe Remarks)</label>
+                                <textarea class="form-control" rows="5" id="remarks" name="remarks"></textarea>
+                                <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
+                            </div>
+                            <br>
+                            <div class="float-right">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" onclick="fo_approve('{{ application_details.Application_No }}')"> Approve </button>
+                                <button type="button" class="btn btn-danger" onclick="fo_reject('{{ application_details.Application_No }}')"> Reject </button>
+                            </div>
                         {% endfor %}
                     </div>
                 </div>

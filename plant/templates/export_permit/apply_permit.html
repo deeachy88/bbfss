@@ -27,19 +27,25 @@ option {
         <form method="post" id="permitForm">
         {% csrf_token %}
             <input type="hidden" id="applicationNo" name="applicationNo">
-            <div class="row justify-content-left">
-                <div class="form-check text-center">
-                    <label class="form-label">Certificate Type <font color="red">*</font></label><br>
-                    <label class="form-radio-label">
-                        <input class="form-radio-input" type="radio" name="certificateType" id="phytoRadio" value="P" checked onchange="changeExportType(this.value)">
-                        <span class="form-radio-sign">Phytosanitary Certificate</span>
+            <div class="row">
+                <div class="col-sm-3">
+                    <label class="form-label">Certificate Type <font color="red">*</font></label>
+                </div>
+                <div class="col-sm-8 justify-content-center">
+                    <label class="custom-control custom-radio">
+                        <input type="radio" class="custom-control-input" name="Import_Type" id="phytoRadio" value="P" checked onchange="changeExportType(this.value)">
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">Phytosanitary Certificate</span>
                     </label>
-                    <label class="form-radio-label ml-3">
-                        <input class="form-radio-input" type="radio" name="certificateType" id="cordycepRadio" value="C" onchange="changeExportType(this.value)">
-                        <span class="form-radio-sign">Export Certificate</span>
+                    <label class="custom-control custom-radio">
+                        <input type="radio" class="custom-control-input" name="Import_Type" id="cordycepRadio" value="C" onchange="changeExportType(this.value)">
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">Export Certificate</span>
                     </label>
                 </div>
+                <div class="alert alert-danger" id="Certificate_TypeErrorMsg" style="display:none"></div>
             </div>
+            <br>
             <div id='Phytosanitary'>
                 <div class="row justify-content-left">
                     <ul class="nav nav-pills nav-secondary" id="pills-tab-phyto" role="tablist">
@@ -429,7 +435,7 @@ option {
                     </div>
                 </div>
             </div>
-            <div id="Cordyceps">
+            <div id="Cordyceps" style="display:none;">
                 <div class="row justify-content-left">
                     <ul class="nav nav-pills nav-secondary" id="pills-tab-cordyceps" role="tablist">
                         <li class="nav-item">
@@ -443,24 +449,31 @@ option {
                 <div class="tab-content mt-2 mb-3" id="pills-tab-cordyceps-tabContent">
                     <div class="tab-pane fade show active" id="cordyceps-home" role="tabpanel" aria-labelledby="pills-phyto-tab">
                         <div id="cordyceps-details">
-                        <div class="row justify-content-left">
-                            <div class="form-check text-center">
-                                <label class="form-label">Applicant Type <font color="red">*</font></label><br>
-                                <label class="form-radio-label">
-                                    <input class="form-radio-input" type="radio" name="ApplicantType" id="bothRadio" value="bothRadio" onclick="changeRadio(this.value)"  checked>
-                                    <span class="form-radio-sign">Both Export and Retail </span>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <label class="form-label">Applicant Type <font color="red">*</font></label>
+                            </div>
+                            <div class="col-sm-8 justify-content-center">
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" name="ApplicantType" id="bothRadio" value="bothRadio" checked onclick="changeRadio(this.value)">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Both Export and Retail</span>
                                 </label>
-                                <label class="form-radio-label ml-3">
-                                    <input class="form-radio-input" type="radio" name="ApplicantType" id="directRadio" value="directRadio" onclick="changeRadio(this.value)">
-                                    <span class="form-radio-sign">Direct Export Only</span>
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" name="ApplicantType" id="directRadio" value="directRadio" onclick="changeRadio(this.value)">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Direct Export Only</span>
                                 </label>
-                                <label class="form-radio-label ml-3">
-                                    <input class="form-radio-input" type="radio" name="ApplicantType" id="retailRadio" value="retailRadio" onclick="changeRadio(this.value)">
-                                    <span class="form-radio-sign">Retail Outlets Only</span>
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" name="ApplicantType" id="retailRadio" value="retailRadio" onclick="changeRadio(this.value)">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Retail Outlets Only</span>
                                 </label>
                             </div>
+                            <div class="alert alert-danger" id="Applicant_TypeErrorMsg" style="display:none"></div>
                         </div>
                         <br>
+
                         <div class="row">
                             <div class="col-sm-4">
                                 <div class="form-group">
@@ -537,7 +550,7 @@ option {
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label class="form-label">Place Of Inspection Requested <font color="red">*</font></label>
-                                        <input type="text" class="form-control" id="c_requested_place" name="requested_place">
+                                        <input type="text" class="form-control" id="c_requested_place" name="Desired_Inspection_Place">
                                     </div>
                                 </div>
                             </div>

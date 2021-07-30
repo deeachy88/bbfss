@@ -66,6 +66,25 @@
                         </div>
                         <div class="col-sm-4">
                             <div class="form-group">
+                                <label class="form-label">Contact Number <font color="red">*</font></label>
+                                <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNo" maxlength="8" onkeypress="return isNumberKey(event)">
+                            </div>
+                            <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Email <font color="red">*</font></label>
+                                <input type="email" class="form-control" id="email" name="email">
+                            </div>
+                            <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
                                 <label class="form-label">Nursery Category <font color="red">*</font></label>
                                 <select class="form-control form-control" id="Nursery_Category" name="Nursery_Category">
                                     <option value="">-SELECT-</option>
@@ -77,44 +96,29 @@
                             </div>
                             <div class="alert alert-danger" id="Nursery_CategoryErrorMsg" style="display:none"></div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <label class="form-label">Contact Number <font color="red">*</font></label>
-                                <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNo" maxlength="8" onkeypress="return isNumberKey(event)">
-                            </div>
-                            <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">Email <font color="red">*</font></label>
-                                <input type="email" class="form-control" id="email" name="email">
-                            </div>
-                            <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
-                        </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Dzongkhag <font color="red">*</font></label>
-                                <input type="text" class="form-control" name="dzongkhag"  id="dzongkhag" disabled>
+                                <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getLocation(this.value)">
+                                    <option value="">--SELECT DZONGKHAG--</option>
+                                    {% for dzongkhag in dzongkhag %}
+                                            <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
                             <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
                         </div>
-                    </div>
-                    <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="form-label">Gewog <font color="red">*</font></label>
-                                 <input type="text" class="form-control" name="gewog" id="gewog" disabled>
+                                <label class="form-label">Location <font color="red">*</font></label>
+                                 <select class="form-control" name="location"  id="location">
+                                    <option value="">--SELECT LOCATION--</option>
+                                    {% for location in location %}
+                                        <option value="{{ location.Location_Code }}">{{ location.Location_Name }}</option>
+                                    {% endfor %}
+                                 </select>
+                                <div class="alert alert-danger" id="locationErrorMsg" style="display:none"></div>
                             </div>
-                            <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">Village <font color="red">*</font></label>
-                                <input type="text" class="form-control" name="village" id="village" disabled>
-                            </div>
-                            <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
                         </div>
                     </div>
                     <div class="card-footer">
@@ -358,9 +362,13 @@ function save_certificate_details()
     var Company_Name = $('#Company_Name').val();
     var Company_Address =  $('#Company_Address').val();
     var CID = $('#CID').val();
-    var Nursery_Category = $('#Nursery_Category').val();
     var contactNumber = $('#contactNumber').val();
     var email = $('#email').val();
+    var Nursery_Category = $('#Nursery_Category').val();
+    var dzongkhag = $('#dzongkhag').val();
+    var location = $('#location').val();
+    var numbcount = $('#contactNumber').val().length;
+    var cidCount = $('#cid').val().length;
 
     if(License_No == "")
     {
@@ -386,12 +394,7 @@ function save_certificate_details()
         $('#CIDErrorMsg').show();
         $('#CIDErrorMsg').delay(2000).fadeOut('slow');
     }
-    else if(Nursery_Category == "")
-    {
-        $('#Nursery_CategoryErrorMsg').html("Select Nursery Category.");
-        $('#Nursery_CategoryErrorMsg').show();
-        $('#Nursery_CategoryErrorMsg').delay(2000).fadeOut('slow');
-    }
+
     else if(contactNumber == "")
     {
         $('#contactNumberErrorMsg').html("Enter Contact Number.");
@@ -403,6 +406,36 @@ function save_certificate_details()
         $('#emailErrorMsg').html("Enter Email.");
         $('#emailErrorMsg').show();
         $('#emailErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Nursery_Category == "")
+    {
+        $('#Nursery_CategoryErrorMsg').html("Select Nursery Category.");
+        $('#Nursery_CategoryErrorMsg').show();
+        $('#Nursery_CategoryErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(dzongkhag == "")
+    {
+        $('#dzongkhagErrorMsg').html("Select Dzongkhag.");
+        $('#dzongkhagErrorMsg').show();
+        $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(location == "")
+    {
+        $('#locationErrorMsg').html("Select Location.");
+        $('#locationErrorMsg').show();
+        $('#locationErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(cidCount < 11)
+    {
+        $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits.");
+        $('#cidErrorMsg').show();
+        $('#cidErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(numbcount < 8)
+    {
+        $('#contactNumberErrorMsg').html("Connot Be Less Than Eight Digits.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
     }
     else
     {

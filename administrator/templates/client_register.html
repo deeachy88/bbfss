@@ -96,7 +96,7 @@
                      </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <input type="text" class="form-control form-control-md" name="Name" id="Name" placeholder="Name">
+                            <input type="text" class="form-control form-control-md" name="Name" id="Name" placeholder="Name" disabled>
                         </div>
                         <span class="badge"><font color='red'><font color='red'>*</font></font></span>
                         <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
@@ -119,24 +119,14 @@
                      </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value),getLocation(this.value)">
-                                <option value="">--SELECT DZONGKHAG--</option>
-                                {% for dzongkhag in dzongkhag %}
-                                        <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
-                                {% endfor %}
-                            </select>
+                             <input type="text" class="form-control" name="dzongkhag"  id="dzongkhag" placeholder="Dzongkhag" disabled>
                         </div>
                         <span class="badge"><font color='red'><font color='red'>*</font></font></span>
                         <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
-                                <option value="">--SELECT GEWOG--</option>
-                                {% for gewog in gewog %}
-                                        <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
-                                {% endfor %}
-                            </select>
+                            <input type="text" class="form-control" name="gewog"  id="gewog" placeholder="Gewog" disabled>
                         </div>
                         <span class="badge"><font color='red'><font color='red'>*</font></font></span>
                         <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
@@ -145,12 +135,7 @@
                 <div class="form-row">
                     <div class="col-md-4">
                         <div class="form-group">
-                             <select class="form-control" name="village" id="village">
-                                <option value="">--SELECT VILLAGE--</option>
-                                {% for village in village %}
-                                        <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
-                                {% endfor %}
-                             </select>
+                            <input type="text" class="form-control" name="village"  id="village" placeholder="Village" disabled>
                         </div>
                         <span class="badge"><font color='red'><font color='red'>*</font></font></span>
                         <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
@@ -510,6 +495,22 @@ function checkContact(value)
         $('#contactNumber').val("");
     }
 
+}
+
+function getCitizenDetails(cidNo)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'get_citizen_details' %}",
+        data :{'cidNo':cidNo},
+        success : function(data)
+        {
+            $('#name').val(data.Name);
+            $('#dzongkhag').val(data.dzongkhagName);
+            $('#gewog').val(data.gewogName);
+            $('#village').val(data.villageName);
+        }
+    });
 }
 </script>
 </html>

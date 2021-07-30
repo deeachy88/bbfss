@@ -61,26 +61,20 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Dzongkhag &nbsp;<font color='red'>*</font></label>
-                                    <input type="text" class="form-control" name="dzongkhag"  id="dzongkhag" disabled>
+                                    <label class="form-label">Email <font color="red">*</font></label>
+                                    <input type="email" class="form-control" id="email" name="email" onchange="validateemailId(this.value)">
                                 </div>
-                                <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
+                                <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Gewog &nbsp;<font color='red'>*</font></label>
-                                    <input type="text" class="form-control" name="gewog" id="gewog" disabled>
+                                    <label class="form-label">Contact Number <font color="red">*</font></label>
+                                    <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
                                 </div>
-                                <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Village &nbsp;<font color='red'>*</font></label>
-                                    <input type="text" class="form-control" name="village" id="village" disabled>
-                                </div>
-                                <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
+                                <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
                             </div>
                         </div>
+                        <hr>
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
@@ -102,26 +96,60 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Contact Number <font color="red">*</font></label>
-                                    <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                                    <label class="form-label">Meat Shop Address <font color="red">*</font></label>
+                                    <textarea class="form-control" id="address" name="address"></textarea>
                                 </div>
-                                <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
+                                <div class="alert alert-danger" id="AddressErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Email <font color="red">*</font></label>
-                                    <input type="email" class="form-control" id="email" name="email" onchange="validateemailId(this.value)">
+                                    <label class="form-label">Dzongkhag &nbsp;<font color='red'>*</font></label>
+                                    <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value),getLocation(this.value)">
+                                        <option value="">--SELECT DZONGKHAG--</option>
+                                        {% for dzongkhag in dzongkhag %}
+                                                <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                        {% endfor %}
+                                    </select>
                                 </div>
-                                <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
+                                <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Meat Shop Address <font color="red">*</font></label>
-                                    <textarea class="form-control" id="address" name="address"></textarea>
+                                    <label class="form-label">Gewog &nbsp;<font color='red'>*</font></label>
+                                    <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                        <option value="">--SELECT GEWOG--</option>
+                                        {% for gewog in gewog %}
+                                                <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
+                                        {% endfor %}
+                                    </select>
                                 </div>
-                                <div class="alert alert-danger" id="AddressErrorMsg" style="display:none"></div>
+                                <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Village &nbsp;<font color='red'>*</font></label>
+                                    <select class="form-control" name="village" id="village">
+                                        <option value="">--SELECT VILLAGE--</option>
+                                        {% for village in village %}
+                                                <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Location &nbsp;<font color='red'>*</font></label>
+                                    <select class="form-control" name="location_code"  id="location">
+                                        <option value="">--SELECT LOCATION--</option>
+                                        {% for location in location %}
+                                                <option value="{{ location.Location_Code }}">{{ location.Location_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="location_codeErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                     </div>
@@ -242,7 +270,13 @@ function save_fbr_form()
     var license_criteria = $('#license_criteria').val();
     var contactNumber = $('#contactNumber').val();
     var email = $('#email').val();
+    var name_manager = $('#name_manager').val();
+    var license_criteria = $('#license_criteria').val();
     var address = $('#address').val();
+    var dzongkhag = $('#dzongkhag').val();
+    var gewog = $('#gewog').val();
+    var village = $('#village').val();
+    var location = $('#location').val();
     var cidCount = $('#cid').val().length;
     var number_count = $('#contactNumber').val().length;
 
@@ -258,18 +292,6 @@ function save_fbr_form()
         $('#cidErrorMsg').show();
         $('#cidErrorMsg').delay(2000).fadeOut('slow');
     }
-    else if(name_manager == "")
-    {
-        $('#name_managerErrorMsg').html("Enter Representatives Name.");
-        $('#name_managerErrorMsg').show();
-        $('#name_managerErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(license_criteria == "")
-    {
-        $('#license_criteriaErrorMsg').html("Select Licensing Criteria.");
-        $('#license_criteriaErrorMsg').show();
-        $('#license_criteriaErrorMsg').delay(2000).fadeOut('slow');
-    }
     else if(contactNumber == "")
     {
         $('#contactNumberErrorMsg').html("Enter Contact Number.");
@@ -282,11 +304,47 @@ function save_fbr_form()
         $('#emailErrorMsg').show();
         $('#emailErrorMsg').delay(2000).fadeOut('slow');
     }
+    else if(name_manager == "")
+    {
+        $('#name_managerErrorMsg').html("Enter Representatives Name.");
+        $('#name_managerErrorMsg').show();
+        $('#name_managerErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(license_criteria == "")
+    {
+        $('#license_criteriaErrorMsg').html("Select Licensing Criteria.");
+        $('#license_criteriaErrorMsg').show();
+        $('#license_criteriaErrorMsg').delay(2000).fadeOut('slow');
+    }
     else if(address == "")
     {
         $('#addressErrorMsg').html("Enter Address.");
         $('#addressErrorMsg').show();
         $('#addressErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(dzongkhag == "")
+    {
+        $('#dzongkhagErrorMsg').html("Select Dzongkhag.");
+        $('#dzongkhagErrorMsg').show();
+        $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(gewog == "")
+    {
+        $('#gewogErrorMsg').html("Select Gewog.");
+        $('#gewogErrorMsg').show();
+        $('#gewogErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(village == "")
+    {
+        $('#villageErrorMsg').html("Select Village.");
+        $('#villageErrorMsg').show();
+        $('#villageErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(location == "")
+    {
+        $('#location_codeErrorMsg').html("Select Location.");
+        $('#location_codeErrorMsg').show();
+        $('#location_codeErrorMsg').delay(2000).fadeOut('slow');
     }
     else if(cidCount < 11)
     {

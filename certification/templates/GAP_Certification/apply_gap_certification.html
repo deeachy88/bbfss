@@ -22,22 +22,22 @@
             <div class="row justify-content-left">
                 <ul class="nav nav-pills nav-secondary" id="pills-mortem" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadDetails()">Application Form</a>
+                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Application Form</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-farmers-group" data-toggle="pill" href="#farmers_group_details" role="tab" aria-controls="pills-farmers-group" aria-selected="false" onclick="load_details()">Farmer Group Details</a>
+                        <a class="nav-link" id="pills-farmers-group" data-toggle="pill" href="#farmers_group_details" role="tab" aria-controls="pills-farmers-group" aria-selected="false">Farmer Group Details</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-crop-production" data-toggle="pill" href="#crop_production_details" role="tab" aria-controls="pills-crop-production" aria-selected="false" onclick="load_details()">Crop Production </a>
+                        <a class="nav-link" id="pills-crop-production" data-toggle="pill" href="#crop_production_details" role="tab" aria-controls="pills-crop-production" aria-selected="false">Crop Production </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-pack-house" data-toggle="pill" href="#pack_house_details" role="tab" aria-controls="pills-pack-house" aria-selected="false" onclick="load_details()">Pack House Details</a>
+                        <a class="nav-link" id="pills-pack-house" data-toggle="pill" href="#pack_house_details" role="tab" aria-controls="pills-pack-house" aria-selected="false">Pack House Details</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="file-attach" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
+                        <a class="nav-link" id="file-attach" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false">File Attachment</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="certification_standards" data-toggle="pill" href="#certification-standards" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">Standards</a>
+                        <a class="nav-link" id="certification_standards" data-toggle="pill" href="#certification-standards" role="tab" aria-controls="pills-profile" aria-selected="false">Standards</a>
                     </li>
                 </ul>
             </div>
@@ -90,26 +90,59 @@
                             </div>
                             <div class="alert alert-danger" id="farmers_group_numberErrorMsg" style="display:none"></div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-4 individual_details">
                             <div class="form-group">
                                 <label class="form-label">Dzongkhag <font color="red">*</font></label>
-                                <input type="text" class="form-control" name="dzongkhag"  id="dzongkhag" disabled>
+                                <input type="text" class="form-control" name="dzongkhag" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-4 farmer_group_details" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label">Dzongkhag <font color="red">*</font></label>
+                                <select class="form-control" name="dzongkhag"  id="dzongkhag">
+                                    <option value="">--SELECT--</option>
+                                    {% for dzongkhag in dzongkhag %}
+                                            <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
                             <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-4 individual_details">
                             <div class="form-group">
                                 <label class="form-label">Gewog <font color="red">*</font></label>
-                                <input type="text" class="form-control" name="gewog" id="gewog" disabled>
+                                <input type="text" class="form-control" name="gewog" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-4 farmer_group_details" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label">Gewog <font color="red">*</font></label>
+                                <select class="form-control" name="gewog"  id="gewog">
+                                    <option value="">--SELECT--</option>
+                                    {% for gewog in gewog %}
+                                        <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
                             <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-4 individual_details">
                             <div class="form-group">
                                 <label class="form-label">Village <font color="red">*</font></label>
-                                 <input type="text" class="form-control" name="village" id="village" disabled>
+                                <input type="text" class="form-control" name="village" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-4 farmer_group_details" style="display:none">
+                            <div class="form-group">
+                                <label class="form-label">Village <font color="red">*</font></label>
+                                <select class="form-control"name="village" id="village">
+                                    <option value="">--SELECT--</option>
+                                    {% for village in village %}
+                                            <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
                             <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
                         </div>
@@ -157,23 +190,20 @@
                                 <label class="form-label">Business License Number (if applicable)</label>
                                  <input type="text" name="business_license_no" id="business_license_no" class="form-control">
                             </div>
-                            <div class="alert alert-danger" id="business_license_noErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Name of the Technical Incharge(if different from the owner)</label>
-                                 <input type="text" name="inspectionDate" id="inspectionDate" class="form-control">
+                                 <input type="text" name="technical_in_charge" id="technical_in_charge" class="form-control">
                             </div>
-                            <div class="alert alert-danger" id="inspectionDateErrorMsg" style="display:none"></div>
                         </div>
                     </div>
                     <div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Name of the Management Incharge (if different from the owner)</label>
-                                 <input type="text" name="management_incharge" id="management_incharge" class="form-control">
+                                 <input type="text" name="management_in_charge" id="management_in_charge" class="form-control">
                             </div>
-                            <div class="alert alert-danger" id="management_inchargeErrorMsg" style="display:none"></div>
                         </div>
                     </div>
                     <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
@@ -389,7 +419,7 @@
                                         <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label for="area_unit">Area Unit</label>
+                                        <label class="form-label">Area Unit</label>
                                         <input type="text" name="area_unit" class="form-control" id="area_unit" required>
                                         <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
                                     </div>
@@ -405,7 +435,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">For the previous year(To date)</label>
-                                             <input type="text" name="to_year" id="to_year" class="form-control date-picker flatpickr-input active">
+                                             <input type="text" name="to_year" id="to_year" class="form-control date-picker flatpickr-input active" onchange="get_month()">
                                         </div>
                                         <div class="alert alert-danger" id="to_yearErrorMsg" style="display:none"></div>
                                     </div>
@@ -419,18 +449,20 @@
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label>Yield Unit</label>
+                                        <label class="form-label">Yield Unit</label>
                                         <input type="text" name="Yield_Unit" class="form-control" id="Yield_Unit" required>
                                         <div class="alert alert-danger" id="Yield_UnitErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label>Harvest Month</label>
-                                        <input type="text" name="harvest_month" class="form-control" id="harvest_month" required>
+                                        <label class="form-label">Harvest Month</label>
+                                        <select class="form-control" name="harvest_month"  id="harvest_month">
+                                            <option value="">--SELECT--</option>
+                                        </select>
                                         <div class="alert alert-danger" id="harvest_monthErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label>Sold</label>
-                                        <input type="text" name="sold" class="form-control" id="sold" required>
+                                        <label class="form-label">Sold</label>
+                                        <input type="text" name="sold" class="form-control" id="sold" required onchange="getBalance(this.value)">
                                         <div class="alert alert-danger" id="soldErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
@@ -441,8 +473,8 @@
                                         <div class="alert alert-danger" id="sold_unitErrorMsg" style="display:none"></div>
                                     </div>-->
                                     <div class="form-group col-md-4">
-                                        <label>Balance Stock</label>
-                                        <input type="text" name="balance_stock" class="form-control" id="balance_stock" required>
+                                        <label class="form-label">Balance Stock</label>
+                                        <input type="text" name="balance_stock" class="form-control" id="balance_stock" disabled>
                                         <div class="alert alert-danger" id="balance_stockErrorMsg" style="display:none"></div>
                                     </div>
                                     <!--<div class="form-group col-md-4">
@@ -462,7 +494,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">For the current year(To date)</label>
-                                             <input type="text" name="to_current_year" id="to_current_year" class="form-control date-picker flatpickr-input active">
+                                             <input type="text" name="to_current_year" id="to_current_year" class="form-control date-picker flatpickr-input active" onchange="get_current_month()">
                                         </div>
                                         <div class="alert alert-danger" id="to_current_yearErrorMsg" style="display:none"></div>
                                     </div>
@@ -476,13 +508,15 @@
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label>Yield Unit</label>
+                                        <label class="form-label">Yield Unit</label>
                                         <input type="text" name="estimated_Yield_Unit" class="form-control" id="estimated_Yield_Unit" required>
                                         <div class="alert alert-danger" id="estimated_Yield_UnitErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label>Harvest Month</label>
-                                        <input type="text" name="estimated_harvest_month" class="form-control" id="estimated_harvest_month" required>
+                                        <label class="form-label">Harvest Month</label>
+                                        <select class="form-control" name="estimated_harvest_month"  id="estimated_harvest_month">
+                                            <option value="">--SELECT--</option>
+                                        </select>
                                         <div class="alert alert-danger" id="estimated_harvest_monthErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
@@ -552,7 +586,7 @@
                                 <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Sold</label>
-                                        <input type="number" name="previous_sold" class="form-control" id="previous_sold" required>
+                                        <input type="number" name="previous_sold" class="form-control" id="previous_sold" required onchange="getBalanceStock(this.value)">
                                         <div class="alert alert-danger" id="previous_soldErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -562,7 +596,7 @@
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Balance Stock</label>
-                                        <input type="number" name="stock_balance" class="form-control" id="stock_balance" required>
+                                        <input type="number" name="stock_balance" class="form-control" id="stock_balance" readonly="readonly">
                                         <div class="alert alert-danger" id="stock_balanceErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
@@ -591,7 +625,7 @@
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Sold</label>
-                                        <input type="number" name="current_sold" class="form-control" id="current_sold" required>
+                                        <input type="number" name="current_sold" class="form-control" id="current_sold" onchange="get_current_stock_bal(this.value)">
                                         <div class="alert alert-danger" id="current_soldErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -599,12 +633,11 @@
                                         <input type="text" name="current_sold_unit" class="form-control" id="current_sold_unit" required>
                                         <div class="alert alert-danger" id="current_sold_unitErrorMsg" style="display:none"></div>
                                     </div>
-
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Balance Stock</label>
-                                        <input type="number" name="current_stock_balance" class="form-control" id="current_stock_balance" required>
+                                        <input type="number" name="current_stock_balance" class="form-control" id="current_stock_balance" disabled>
                                         <div class="alert alert-danger" id="current_stock_balanceErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -756,19 +789,19 @@ function save_gap_certification()
         $('#farmers_group_numberErrorMsg').show();
         $('#farmers_group_numberErrorMsg').delay(2000).fadeOut('slow');
     }
-    else if(dzongkhag == "")
+    else if($('#farmers_radio').prop('checked') && dzongkhag == "")
     {
         $('#dzongkhagErrorMsg').html("Select Dzongkhag.");
         $('#dzongkhagErrorMsg').show();
         $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
     }
-    else if(gewog == "")
+    else if($('#farmers_radio').prop('checked') && gewog == "")
     {
         $('#gewogErrorMsg').html("Select Gewog.");
         $('#gewogErrorMsg').show();
         $('#gewogErrorMsg').delay(2000).fadeOut('slow');
     }
-    else if(village == "")
+    else if($('#farmers_radio').prop('checked') && village == "")
     {
         $('#villageErrorMsg').html("Select Village.");
         $('#villageErrorMsg').show();
@@ -1074,6 +1107,57 @@ function getCitizenDetails(cidNo)
             $('#village').val(data.villageName);
         }
     });
+}
+
+function get_month()
+{
+    var from_date = $('#prev_year').val();
+    var  to_date = $('#to_year').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'date_month' %}",
+        data :{'from_date':from_date, 'to_date':to_date},
+        success : function(data)
+        {
+            $('#harvest_month').html(data);
+        }
+    });
+}
+
+function get_current_month()
+{
+    var from_date = $('#current_year').val();
+    var  to_date = $('#to_current_year').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'date_month' %}",
+        data :{'from_date':from_date, 'to_date':to_date},
+        success : function(data)
+        {
+            $('#estimated_harvest_month').html(data);
+        }
+    });
+}
+
+function getBalance(sold)
+{
+    var yield = $('#yield').val();
+    var balance = yield - sold;
+    $('#balance_stock').val(balance);
+}
+
+function getBalanceStock(sold)
+{
+    var production = $('#production').val();
+    balance_production = production - sold
+    $('#stock_balance').val(balance_production);
+}
+
+function get_current_stock_bal(sold)
+{
+    var production = $('#current_Production').val();
+    balance_production = production - sold
+    $('#current_stock_balance').val(balance_production);
 }
 </script>
 {% endblock %}
