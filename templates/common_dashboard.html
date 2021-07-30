@@ -38,7 +38,6 @@
                         </svg>
                     </div>
                 </div>
-
                 <header class="header">
                     <div class="navigation-trigger" data-sa-action="aside-open" data-sa-target=".sidebar">
                         <i class="zmdi zmdi-menu"></i>
@@ -46,7 +45,6 @@
                     <div class="logo hidden-sm-down">
                         <h1><a href="index-2.html">BAFRA | Bhutan Biosecurity and Food Safety System</a></h1>
                     </div>
-
                     <ul class="top-nav">
                         <li class="dropdown hidden-xs-down">
                             <a href="#" data-toggle="dropdown"><i class="zmdi zmdi-accounts"></i></a>
@@ -81,7 +79,6 @@
                             </div>
                         </li>
                     </ul>
-
                     <div class="clock hidden-md-down">
                         <div class="time">
                             <span class="hours"></span>
@@ -90,11 +87,9 @@
                         </div>
                     </div>
                 </header>
-
                 <aside class="sidebar sidebar--hidden">
                     {% include 'side-bar.html' %}
                 </aside>
-
                 <section class="content content--full">
                     {% block content %}
 
@@ -105,7 +100,6 @@
                 </footer>
             </div>
         </main>
-
         <!-- Older IE warning message -->
             <!--[if IE]>
                 <div class="ie-warning">
@@ -183,48 +177,70 @@
         <script src="{% static 'assets/js/pdfmake.min.js' %}"></script>
         <script src="{% static 'assets/js/vfs_fonts.js' %}"></script>
         <script>
-            function isNumberKey(evt)
-            {
-                var charCode = (evt.which) ? evt.which : evt.keyCode
-                if (charCode > 31 && (charCode < 48 || charCode > 57))
-                    return false;
-                return true;
-            }
-            $(function ()
-            {
-                $("#user-table").DataTable({
-                    dom: 'Bfrtip',
-                    buttons: [
-
-                        {
-                            extend: 'excelHtml5',
-                            title: 'List Of Users',
-                            text:'<i class="fas fa-file-excel"></i>',
-                            titleAttr: 'Excel'
-                        },
-                        {
-                            extend: 'pdfHtml5',
-                            title: 'List Of Users',
-                            text:'<i class="fas fa-file-pdf"></i>',
-                            titleAttr: 'PDF'
-                        },
-                         {
-                            extend: 'print',
-                            title: 'List Of Users',
-                            text: '<i class="fas fa-print"></i>',
-                            titleAttr: 'Print'
-                        },
-                    ]
-                });
+        function isNumberKey(evt)
+        {
+            var charCode = (evt.which) ? evt.which : evt.keyCode
+            if (charCode > 31 && (charCode < 48 || charCode > 57))
+                return false;
+            return true;
+        }
+        $(function ()
+        {
+            $("#user-table").DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        title: 'List Of Users',
+                        text:'<i class="fas fa-file-excel"></i>',
+                        titleAttr: 'Excel'
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        title: 'List Of Users',
+                        text:'<i class="fas fa-file-pdf"></i>',
+                        titleAttr: 'PDF'
+                    },
+                     {
+                        extend: 'print',
+                        title: 'List Of Users',
+                        text: '<i class="fas fa-print"></i>',
+                        titleAttr: 'Print'
+                    },
+                ]
+            });
+            //Report- List of Plant Crops
+            $("#crop-table").DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        title: 'List of Plant Crops',
+                        text:'<i class="fas fa-file-excel"></i>',
+                        titleAttr: 'Excel'
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        title: 'List of Plant Crops',
+                        text:'<i class="fas fa-file-pdf"></i>',
+                        titleAttr: 'PDF'
+                    },
+                     {
+                        extend: 'print',
+                        title: 'List of Plant Crops',
+                        text: '<i class="fas fa-print"></i>',
+                        titleAttr: 'Print'
+                    },
+                ]
             });
 
-            window.export.onclick = function() {
+        });
 
+        window.export.onclick = function() {
 		   if (!window.Blob) {
 		      alert('Your legacy browser does not support this action.');
 		      return;
 		   }
-
 		   var html, link, blob, url, css;
 
 		   // EU A4 use: size: 841.95pt 595.35pt;
@@ -254,264 +270,259 @@
 		   document.body.removeChild(link);
 		 };
 
-            $(document).ready(function()
-             {
-                $("#sectionDiv").hide();
-                $("#divisionDiv").hide();
-                $("#fieldDiv").hide();
-                $("#unit-table").DataTable();
-                $("#pesticide-table").DataTable();
-                $("#crop-table").DataTable();
-                $("#species-table").DataTable();
-                $("#chemical-table").DataTable();
-                $("#variety-table").DataTable();
-                $("#fodder-variety-table").DataTable();
-                $("#plant-fodder-table").DataTable();
-                $("#ornamental-table").DataTable();
-                $("#product-table").DataTable();
-                $("#location-table").DataTable();
-                $("#details-table").DataTable();
-                $('#complaint_table').DataTable();
-                $('#commodity_draft_table').DataTable();
-                $('#payment_pending_table').DataTable();
-                $('#client-table').DataTable();
-                $('#registered-client-table').DataTable();
-                $('#species-breed-table').DataTable();
-                $('#livestock-product-table').DataTable();
-                $('#certificate_gap_table').DataTable();
-                $('#certificate_org_table').DataTable();
-                $('#certificate_fpc_table').DataTable();
-                $('#certificate_1_table').DataTable();
-                $('#certificate_2_table').DataTable();
-                $('#certificate_3_table').DataTable();
-                $('#certificate_4_table').DataTable();
-                $('#certificate_5_table').DataTable();
-                $('#certificate_6_table').DataTable();
-                $('#certificate_7_table').DataTable();
-                $('#certificate_8_table').DataTable();
-                $('#certificate_9_table').DataTable();
-                $('#certificate_10_table').DataTable();
-                $('#certificate_11_table').DataTable();
-                $('#certificate_12_table').DataTable();
-                $('#certificate_13_table').DataTable();
-                $('#certificate_14_table').DataTable();
-                $('#certificate_15_table').DataTable();
-                $('#feedback_table').DataTable();
-                $("#agro").hide();
-                $("#agro_import").hide();
-                $("#Cordyceps").hide();
-                $('#f_email_div').hide();
+        $(document).ready(function()
+         {
+            $("#sectionDiv").hide();
+            $("#divisionDiv").hide();
+            $("#fieldDiv").hide();
+            $("#unit-table").DataTable();
+            $("#pesticide-table").DataTable();
+            $("#species-table").DataTable();
+            $("#chemical-table").DataTable();
+            $("#variety-table").DataTable();
+            $("#fodder-variety-table").DataTable();
+            $("#plant-fodder-table").DataTable();
+            $("#ornamental-table").DataTable();
+            $("#product-table").DataTable();
+            $("#location-table").DataTable();
+            $("#details-table").DataTable();
+            $('#complaint_table').DataTable();
+            $('#commodity_draft_table').DataTable();
+            $('#payment_pending_table').DataTable();
+            $('#client-table').DataTable();
+            $('#registered-client-table').DataTable();
+            $('#species-breed-table').DataTable();
+            $('#livestock-product-table').DataTable();
+            $('#certificate_gap_table').DataTable();
+            $('#certificate_org_table').DataTable();
+            $('#certificate_fpc_table').DataTable();
+            $('#certificate_1_table').DataTable();
+            $('#certificate_2_table').DataTable();
+            $('#certificate_3_table').DataTable();
+            $('#certificate_4_table').DataTable();
+            $('#certificate_5_table').DataTable();
+            $('#certificate_6_table').DataTable();
+            $('#certificate_7_table').DataTable();
+            $('#certificate_8_table').DataTable();
+            $('#certificate_9_table').DataTable();
+            $('#certificate_10_table').DataTable();
+            $('#certificate_11_table').DataTable();
+            $('#certificate_12_table').DataTable();
+            $('#certificate_13_table').DataTable();
+            $('#certificate_14_table').DataTable();
+            $('#certificate_15_table').DataTable();
+            $('#feedback_table').DataTable();
+            $("#agro").hide();
+            $("#agro_import").hide();
+            $("#Cordyceps").hide();
+            $('#f_email_div').hide();
 
-                if($("#applicationNo").val() == "")
-                {
-                    $("#pills-profile-tab").prop('disabled', true);
-                    $("#pills-profile-file").prop('disabled', true);
-                    $("#pills-complaint-file").prop('disabled', true);
-                    $("#pills-phyto-file").prop('disabled', true);
-                    $("#cordyceps-file-attachment").prop('disabled', true);
-                    $('#pills-details').prop('disabled', true);
-                    $("#mortem-file-attach").prop('disabled', true);
-                    $("#pills-crop-production").prop('disabled', true);
-                    $("#pills-wild-collection").prop('disabled', true);
-                    $("#pills-animal-husbandry").prop('disabled', true);
-                    $("#pills-aquaculture").prop('disabled', true);
-                    $("#pills-apiculture").prop('disabled', true);
-                    $("#pills-processing-unit").prop('disabled', true);
-                    $("#organic-file-attach").prop('disabled', true);
-                    $("#certification_standards").prop('disabled', true);
-                    $("#pills-nc").prop('disabled', true);
-                    $("#pills-seized-item").prop('disabled', true);
-                    $('#pills-sample-collection').prop('disabled', true);
-                    $('#file-attach').prop('disabled', true);
-                    $("#import-profile-tab").prop('disabled', true);
-                    $("#pills-import-file").prop('disabled', true);
-                    $("#pills-seed-certification-details").prop('disabled', true);
-                    $("#pills-seed-certification-file").prop('disabled', true);
-                    $("#movement-profile-tab").prop('disabled', true);
-                    $("#movement-profile-file").prop('disabled', true);
-                    $("#pills-outsourced-details").prop('disabled', true);
-                    $("#pills-food-handler").prop('disabled', true);
-                    $("#fbr-file-attach").prop('disabled', true);
-                    $("#pills-food-import-details").prop('disabled', true);
-                    $("#pills-food-import-file").prop('disabled', true);
-                    $("#pills-export-file").prop('disabled', true);
-                    $("#pills-training-file").prop('disabled', true);
+            if($("#applicationNo").val() == "")
+            {
+                $("#pills-profile-tab").prop('disabled', true);
+                $("#pills-profile-file").prop('disabled', true);
+                $("#pills-complaint-file").prop('disabled', true);
+                $("#pills-phyto-file").prop('disabled', true);
+                $("#cordyceps-file-attachment").prop('disabled', true);
+                $('#pills-details').prop('disabled', true);
+                $("#mortem-file-attach").prop('disabled', true);
+                $("#pills-crop-production").prop('disabled', true);
+                $("#pills-wild-collection").prop('disabled', true);
+                $("#pills-animal-husbandry").prop('disabled', true);
+                $("#pills-aquaculture").prop('disabled', true);
+                $("#pills-apiculture").prop('disabled', true);
+                $("#pills-processing-unit").prop('disabled', true);
+                $("#organic-file-attach").prop('disabled', true);
+                $("#certification_standards").prop('disabled', true);
+                $("#pills-nc").prop('disabled', true);
+                $("#pills-seized-item").prop('disabled', true);
+                $('#pills-sample-collection').prop('disabled', true);
+                $('#file-attach').prop('disabled', true);
+                $("#import-profile-tab").prop('disabled', true);
+                $("#pills-import-file").prop('disabled', true);
+                $("#pills-seed-certification-details").prop('disabled', true);
+                $("#pills-seed-certification-file").prop('disabled', true);
+                $("#movement-profile-tab").prop('disabled', true);
+                $("#movement-profile-file").prop('disabled', true);
+                $("#pills-outsourced-details").prop('disabled', true);
+                $("#pills-food-handler").prop('disabled', true);
+                $("#fbr-file-attach").prop('disabled', true);
+                $("#pills-food-import-details").prop('disabled', true);
+                $("#pills-food-import-file").prop('disabled', true);
+                $("#pills-export-file").prop('disabled', true);
+                $("#pills-training-file").prop('disabled', true);
 
-                    $("#pills-farmers-group").prop('disabled', true);
-                    $("#pills-crop-production").prop('disabled', true);
-                    $("#pills-pack-house").prop('disabled', true);
-                    $("#certification_standards").prop('disabled', true);
-                    $("#file-attach").prop('disabled', true);
+                $("#pills-farmers-group").prop('disabled', true);
+                $("#pills-crop-production").prop('disabled', true);
+                $("#pills-pack-house").prop('disabled', true);
+                $("#certification_standards").prop('disabled', true);
+                $("#file-attach").prop('disabled', true);
 
-                    $("#pills-wild-collection").prop('disabled', true);
-                    $("#pills-animal-husbandry").prop('disabled', true);
-                    $("#pills-aquaculture").prop('disabled', true);
-                    $("#pills-apiculture").prop('disabled', true);
-                    $("#pills-processing-unit").prop('disabled', true);
-                    $("#organic-file-attach").prop('disabled', true);
+                $("#pills-wild-collection").prop('disabled', true);
+                $("#pills-animal-husbandry").prop('disabled', true);
+                $("#pills-aquaculture").prop('disabled', true);
+                $("#pills-apiculture").prop('disabled', true);
+                $("#pills-processing-unit").prop('disabled', true);
+                $("#organic-file-attach").prop('disabled', true);
 
-                    $("#pills-lp-details").prop('disabled', true);
-                    $("#pills-lp-file").prop('disabled', true);
+                $("#pills-lp-details").prop('disabled', true);
+                $("#pills-lp-file").prop('disabled', true);
 
-                    $("#seed_details").prop('disabled', true);
-                    $("#seed_details").prop('disabled', true);
+                $("#seed_details").prop('disabled', true);
+                $("#seed_details").prop('disabled', true);
+            }
+            if($("#referenceNo").val() == "")
+            {
+                $("#pills-profile-tab").prop('disabled', true);
+                $("#pills-profile-file").prop('disabled', true);
+                $('#pills-details').prop('disabled', true);
+            }
+            if($("#referenceNo").val() != "")
+            {
+                $("#pills-profile-tab").prop('disabled', false);
+                $("#pills-profile-file").prop('disabled', false);
+                $('#pills-details').prop('disabled', false);
+            }
+        });
+
+        function save_form()
+        {
+            var commodity = $('#commodity').val();
+            var qty = $('#qty').val();
+            var remarks = $('#remarks').val();
+            var unit = $('#unit').val();
+
+            if(commodity == "")
+            {
+                $('#commodityErrorMsg').html("Enter Commodity.");
+                $('#commodityErrorMsg').show();
+                $('#commodityErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(qty == "")
+            {
+                $('#qtyErrorMsg').html("Enter Quantity.");
+                $('#qtyErrorMsg').show();
+                $('#qtyErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(remarks == "")
+            {
+                $('#remarksErrorMsg').html("Enter Remarks.");
+                $('#remarksErrorMsg').show();
+                $('#remarksErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(unit == "")
+            {
+                $('#unitErrorMsg').html("Select Unit.");
+                $('#unitErrorMsg').show();
+                $('#unitErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else{
+                $.ajax({
+                    type : "POST",
+                    url : "{% url 'save_details_movement' %}",
+                    data : $('#save_form').serialize(),
+                    success : function(responseText) {
+                       $('#add_details').modal('hide');
+                       $('#Details').html(responseText);
+                       $('#pills-profile-tab').tab('show');
+                       $('.modal-backdrop').remove();
+                    }
+                });
+            }
+        }
+
+        function forwardApplication(application_id)
+        {
+            forwardTo = $('#forwardTo').val();
+
+            $.ajax({
+                type : "POST",
+                url : "{% url 'forward_application' %}",
+                data :{'application_id':application_id ,'forwardTo':forwardTo, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(data) {
+                    $('#application-details-modal').modal('hide');
+                    $('#submitMsg').show();
+                    setTimeout(function() {
+                        $("#submitMsg").hide('blind', {}, 500)
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#application-details-modal').modal('hide');
+                    }, 3000);
+                    setTimeout(function()
+                    {
+                        location.reload();
+                    }, 3000);
+
                 }
-                if($("#referenceNo").val() == "")
-                {
-                    $("#pills-profile-tab").prop('disabled', true);
-                    $("#pills-profile-file").prop('disabled', true);
-                    $('#pills-details').prop('disabled', true);
-                }
-                if($("#referenceNo").val() != "")
-                {
-                    $("#pills-profile-tab").prop('disabled', false);
-                    $("#pills-profile-file").prop('disabled', false);
-                    $('#pills-details').prop('disabled', false);
-                }
-
             });
+        }
 
-            function save_form()
-            {
-                var commodity = $('#commodity').val();
-                var qty = $('#qty').val();
-                var remarks = $('#remarks').val();
-                var unit = $('#unit').val();
+        function approveApplication(application_id)
+        {
+            Inspection_Leader = $('#teamLeader').val();
+            Inspection_Team = $('#insTeam').val();
+            remarks = $('#remarks').val();
+            dateOfInspection = $('#dateOfInspection').val();
 
-                if(commodity == "")
-                {
-                    $('#commodityErrorMsg').html("Enter Commodity.");
-                    $('#commodityErrorMsg').show();
-                    $('#commodityErrorMsg').delay(2000).fadeOut('slow');
+            $.ajax({
+                type : "POST",
+                url : "{% url 'approve_application' %}",
+                data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks , 'dateOfInspection':dateOfInspection , csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(data) {
+                    location.reload();
                 }
-                else if(qty == "")
-                {
-                    $('#qtyErrorMsg').html("Enter Quantity.");
-                    $('#qtyErrorMsg').show();
-                    $('#qtyErrorMsg').delay(2000).fadeOut('slow');
+            });
+        }
+
+        function rejectApplication(application_id)
+        {
+            Inspection_Leader = $('#teamLeader').val();
+            Inspection_Team = $('#insTeam').val();
+            remarks = $('#remarks').val();
+            dateOfInspection = $('#dateOfInspection').val();
+
+            $.ajax({
+                type : "POST",
+                url : "{% url 'reject_application' %}",
+                data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks , 'dateOfInspection':dateOfInspection , csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(data) {
+                    $('#application-details-modal').modal('hide');
+                    location.reload();
                 }
-                else if(remarks == "")
-                {
-                    $('#remarksErrorMsg').html("Enter Remarks.");
-                    $('#remarksErrorMsg').show();
-                    $('#remarksErrorMsg').delay(2000).fadeOut('slow');
+            });
+        }
+
+        function add_details(application_id)
+        {
+            currentObservation = $('#currentObservation').val();
+            decisionConform = $('#decisionConform').val();
+
+            $.ajax({
+                type : "GET",
+                url : "{% url 'add_details_ins' %}",
+                data :{'application_id':application_id,'currentObservation':currentObservation,'decisionConform':decisionConform},
+                success : function(data) {
+                    $('#details').html(data);
+                    $('#details').show();
+                    $('#addModal').modal('hide');
                 }
-                else if(unit == "")
-                {
-                    $('#unitErrorMsg').html("Select Unit.");
-                    $('#unitErrorMsg').show();
-                    $('#unitErrorMsg').delay(2000).fadeOut('slow');
-                }
-                else{
-                    $.ajax({
-                        type : "POST",
-                        url : "{% url 'save_details_movement' %}",
-                        data : $('#save_form').serialize(),
-                        success : function(responseText) {
-                           $('#add_details').modal('hide');
-                           $('#Details').html(responseText);
-                           $('#pills-profile-tab').tab('show');
-                           $('.modal-backdrop').remove();
-                        }
-                    });
-                }
-            }
+            });
+        }
 
+        function save_details_form()
+        {
+            $('#pills-tab a:last').tab('show');
+        }
 
+        function show_attachmentModal()
+        {
+            $('#attachmentModal').modal('show');
+        }
 
-            function forwardApplication(application_id)
-            {
-                forwardTo = $('#forwardTo').val();
-
-                $.ajax({
-                    type : "POST",
-                    url : "{% url 'forward_application' %}",
-                    data :{'application_id':application_id ,'forwardTo':forwardTo, csrfmiddlewaretoken: '{{ csrf_token }}'},
-                    success : function(data) {
-                        $('#application-details-modal').modal('hide');
-                        $('#submitMsg').show();
-                        setTimeout(function() {
-                            $("#submitMsg").hide('blind', {}, 500)
-                        }, 2000);
-                        setTimeout(function() {
-                            $('#application-details-modal').modal('hide');
-                        }, 3000);
-                        setTimeout(function()
-                        {
-                            location.reload();
-                        }, 3000);
-
-                    }
-                });
-            }
-
-
-            function approveApplication(application_id)
-            {
-                Inspection_Leader = $('#teamLeader').val();
-                Inspection_Team = $('#insTeam').val();
-                remarks = $('#remarks').val();
-                dateOfInspection = $('#dateOfInspection').val();
-
-                $.ajax({
-                    type : "POST",
-                    url : "{% url 'approve_application' %}",
-                    data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks , 'dateOfInspection':dateOfInspection , csrfmiddlewaretoken: '{{ csrf_token }}'},
-                    success : function(data) {
-                        location.reload();
-                    }
-                });
-            }
-
-            function rejectApplication(application_id)
-            {
-                Inspection_Leader = $('#teamLeader').val();
-                Inspection_Team = $('#insTeam').val();
-                remarks = $('#remarks').val();
-                dateOfInspection = $('#dateOfInspection').val();
-
-                $.ajax({
-                    type : "POST",
-                    url : "{% url 'reject_application' %}",
-                    data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks , 'dateOfInspection':dateOfInspection , csrfmiddlewaretoken: '{{ csrf_token }}'},
-                    success : function(data) {
-                        $('#application-details-modal').modal('hide');
-                        location.reload();
-                    }
-                });
-            }
-
-            function add_details(application_id)
-            {
-                currentObservation = $('#currentObservation').val();
-                decisionConform = $('#decisionConform').val();
-
-                $.ajax({
-                    type : "GET",
-                    url : "{% url 'add_details_ins' %}",
-                    data :{'application_id':application_id,'currentObservation':currentObservation,'decisionConform':decisionConform},
-                    success : function(data) {
-                        $('#details').html(data);
-                        $('#details').show();
-                        $('#addModal').modal('hide');
-                    }
-                });
-            }
-
-            function save_details_form()
-            {
-                $('#pills-tab a:last').tab('show');
-            }
-
-            function show_attachmentModal()
-            {
-                $('#attachmentModal').modal('show');
-            }
-
-            function show_agro_attachmentModal()
-            {
-                $('#agro_attachmentModal').modal('show');
-            }
+        function show_agro_attachmentModal()
+        {
+            $('#agro_attachmentModal').modal('show');
+        }
         </script>
     </body>
 </html>

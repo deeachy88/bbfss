@@ -10,10 +10,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='t_livestock_clearance_meat_shop_t1',
-            name='Name_Manager',
-        ),
+
         migrations.AddField(
             model_name='t_livestock_clearance_meat_shop_t1',
             name='Meat_Shop_Name',
