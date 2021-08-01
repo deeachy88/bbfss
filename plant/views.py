@@ -1063,7 +1063,6 @@ def save_import_permit(request):
             B_movementPurpose = request.POST.get('B_movementPurpose')
             B_finalDestination = request.POST.get('B_finalDestination')
             Date_expected = request.POST.get('date_expected')
-            print(Date_expected)
             B_expectedDate = datetime.strptime(Date_expected, '%d-%m-%Y').date()
 
             t_plant_import_permit_t1.objects.create(
@@ -1232,9 +1231,7 @@ def save_import_agro(request):
 
 def fo_app_details(request):
     Application_No = request.GET.get('application_id')
-    print(Application_No)
     service_code = request.GET.get('service_code')
-    print(service_code)
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()

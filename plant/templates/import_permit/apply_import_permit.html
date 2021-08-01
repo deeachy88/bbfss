@@ -123,7 +123,7 @@ option {
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Contact Number <font color="red">*</font></label>
-                                    <input type="number" class="form-control" id="com_contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="com_contactNumber" maxlength="8" onkeypress="return isNumberKey(event)">
+                                    <input type="number" class="form-control" id="com_contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="com_contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkComContact(this.value)">
                                 </div>
                                 <div class="alert alert-danger" id="com_contactNumberErrorMsg" style="display:none"></div>
                             </div>
@@ -260,7 +260,7 @@ option {
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Contact Number <font color="red">*</font></label>
-                                    <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)">
+                                    <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
                                 </div>
                                 <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
                             </div>
@@ -376,7 +376,7 @@ option {
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Email <font color="red">*</font></label>
-                                    <input type="email" class="form-control" id="p_email" name="p_email" onchange="validateemailId(this.value)">
+                                    <input type="email" class="form-control" id="p_email" name="p_email" onchange="validatePassemailId(this.value)">
                                 </div>
                                 <div class="alert alert-danger" id="p_emailErrorMsg" style="display:none"></div>
                             </div>
@@ -399,7 +399,7 @@ option {
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Contact Number <font color="red">*</font></label>
-                                    <input type="number" class="form-control" id="p_contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="p_contactNumber" maxlength="8" onkeypress="return isNumberKey(event)">
+                                    <input type="number" class="form-control" id="p_contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="p_contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkNonContact(this.value)">
                                 </div>
                                 <div class="alert alert-danger" id="p_contactNumberErrorMsg" style="display:none"></div>
                             </div>
@@ -832,7 +832,7 @@ option {
         var Application_Type = $("input[name=Application_Type]:checked").length;
         var Nationality = $("input[name=Nationality_Type]:checked").length;
         var app_type = $('input[name="Application_Type"]:checked').val();
-        var nationality_type = $('input[name="Nationality"]:checked').val();
+        var nationality_type = $('input[name="Nationality_Type"]:checked').val();
 
         var regNo = $('#regNo').val();
         var business_name = $('#business_name').val();
@@ -872,13 +872,12 @@ option {
         var p_finalDestination = $('#p_finalDestination').val();
         var p_expectedDate = $('#p_expectedDate').val();
 
-        var cidCount = $('#cid').val().length;
+        var cid_Count = $('#cid').val().length;
         var number_count = $('#contactNumber').val().length;
         var com_number_count = $('#com_contactNumber').val().length;
         var p_number_count = $('#p_contactNumber').val().length;
         var Import_Type = $("input[name=Import_Type]:checked").length;
         var Application_Type = $("input[name=Application_Type]:checked").length;
-        var app_type = $('input[name="Application_Type"]:checked').val();
         var Nationality = $("input[name=Nationality]:checked").length;
 
         if(Import_Type < 1)
@@ -899,230 +898,275 @@ option {
             $('#regNoErrorMsg').html("Enter License Number.");
             $('#regNoErrorMsg').show();
             $('#regNoErrorMsg').delay(2000).fadeOut('slow');
+            $('#regNo').focus();
         }
         else if(app_type == "Commercial" && business_name == "")
         {
             $('#business_nameErrorMsg').html("Enter Business Name.");
             $('#business_nameErrorMsg').show();
             $('#business_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#business_name').focus();
         }
         else if(app_type == "Commercial" && commercial_presentAddress == "")
         {
             $('#commercial_presentAddressErrorMsg').html("Enter Present Address.");
             $('#commercial_presentAddressErrorMsg').show();
             $('#commercial_presentAddressErrorMsg').delay(2000).fadeOut('slow');
+            $('#commercial_presentAddress').focus();
         }
         else if(app_type == "Commercial" && com_contactNumber == "")
         {
             $('#com_contactNumberErrorMsg').html("Enter Contact Number.");
             $('#com_contactNumberErrorMsg').show();
             $('#com_contactNumberErrorMsg').delay(2000).fadeOut('slow');
+            $('#com_contactNumber').focus();
+        }
+        else if(app_type == "Commercial" && com_number_count < 8)
+        {
+            $('#com_contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
+            $('#com_contactNumberErrorMsg').show();
+            $('#com_contactNumberErrorMsg').delay(2000).fadeOut('slow');
+            $('#com_contactNumber').focus();
         }
         else if(app_type == "Commercial" && com_email == "")
         {
             $('#com_emailErrorMsg').html("Enter Email.");
             $('#com_emailErrorMsg').show();
             $('#com_emailErrorMsg').delay(2000).fadeOut('slow');
+            $('#com_email').focus();
         }
         else if(app_type == "Commercial" && com_supplier == "")
         {
             $('#com_supplierErrorMsg').html("Enter Name And Address Of Supplier.");
             $('#com_supplierErrorMsg').show();
             $('#com_supplierErrorMsg').delay(2000).fadeOut('slow');
+            $('#com_supplier').focus();
         }
         else if(app_type == "Commercial" && Com_Country_Of_Origin == "")
         {
             $('#Com_Country_Of_OriginErrorMsg').html("Select Country oF Origin.");
             $('#Com_Country_Of_OriginErrorMsg').show();
             $('#Com_Country_Of_OriginErrorMsg').delay(2000).fadeOut('slow');
+            $('#Com_Country_Of_Origin').focus();
         }
         else if(app_type == "Commercial" && com_conveyanceMeans == "")
         {
             $('#com_conveyanceMeansErrorMsg').html("Select Means of Conveyance.");
             $('#com_conveyanceMeansErrorMsg').show();
             $('#com_conveyanceMeansErrorMsg').delay(2000).fadeOut('slow');
+            $('#com_conveyanceMeans').focus();
         }
         else if(app_type == "Commercial" && com_entry_point == "")
         {
             $('#com_entry_pointErrorMsg').html("Select Place Of Entry.");
             $('#com_entry_pointErrorMsg').show();
             $('#com_entry_pointErrorMsg').delay(2000).fadeOut('slow');
+            $('#com_entry_point').focus();
         }
         else if(app_type == "Commercial" && movementPurpose == "")
         {
             $('#movementPurposeErrorMsg').html("Enter Purpose.");
             $('#movementPurposeErrorMsg').show();
             $('#movementPurposeErrorMsg').delay(2000).fadeOut('slow');
+            $('#movementPurpose').focus();
         }
         else if(app_type == "Commercial" && finalDestination == "")
         {
             $('#finalDestinationErrorMsg').html("Enter Final Destination.");
             $('#finalDestinationErrorMsg').show();
             $('#finalDestinationErrorMsg').delay(2000).fadeOut('slow');
+            $('#finalDestination').focus();
         }
         else if(app_type == "Commercial" && expectedDate == "")
         {
             $('#dateErrorMsg').html("Select Expected Arrival Date.");
             $('#dateErrorMsg').show();
             $('#dateErrorMsg').delay(2000).fadeOut('slow');
+            $('#expectedDate').focus();
         }
-        else if(app_type == "Commercial" && com_number_count < 8)
-        {
-            $('#com_contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
-            $('#com_contactNumberErrorMsg').show();
-            setTimeout('hideStatus("com_contactNumberErrorMsg")',2000);
-        }
-        else if(app_type == "Personal" && cid == "")
+        else if(app_type == "Personal" && nationality_type == "Bhutanese" && cid == "")
         {
             $('#cidErrorMsg').html("Enter CID.");
             $('#cidErrorMsg').show();
             $('#cidErrorMsg').delay(2000).fadeOut('slow');
+            $('#cid').focus();
+        }
+        else if(app_type == "Personal" && nationality_type == "Bhutanese" && cid_Count < 11)
+        {
+            $('#cidErrorMsg').html("Cannot Be Less Than Eleven.");
+            $('#cidErrorMsg').show();
+            $('#cidErrorMsg').delay(2000).fadeOut('slow');
+            $('#cid').focus();
         }
         else if(app_type == "Personal" && nationality_type == "Bhutanese" && contactNumber == "")
         {
-            $('#com_contactNumberErrorMsg').html("Enter Contact Number.");
-            $('#com_contactNumberErrorMsg').show();
-            $('#com_contactNumberErrorMsg').delay(2000).fadeOut('slow');
+            $('#contactNumberErrorMsg').html("Enter Contact Number.");
+            $('#contactNumberErrorMsg').show();
+            $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+            $('#contactNumber').focus();
+        }
+        else if(app_type == "Personal" && nationality_type == "Bhutanese" && number_count < 8)
+        {
+            $('#contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
+            $('#contactNumberErrorMsg').show();
+            $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+            $('#contactNumber').focus();
         }
         else if(app_type == "Personal" && nationality_type == "Bhutanese"  && email == "")
         {
-            $('#contactNumberErrorMsg').html("Enter Email.");
-            $('#contactNumberErrorMsg').show();
-            $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+            $('#emailErrorMsg').html("Enter Email.");
+            $('#emailErrorMsg').show();
+            $('#emailErrorMsg').delay(2000).fadeOut('slow');
+            $('#email').focus();
         }
         else if(app_type == "Personal" && nationality_type == "Bhutanese" && supplier == "")
         {
-            $('#com_supplierErrorMsg').html("Enter Name And Address Of Supplier.");
-            $('#com_supplierErrorMsg').show();
-            $('#com_supplierErrorMsg').delay(2000).fadeOut('slow');
+            $('#supplierErrorMsg').html("Enter Name And Address Of Supplier.");
+            $('#supplierErrorMsg').show();
+            $('#supplierErrorMsg').delay(2000).fadeOut('slow');
+            $('#supplier').focus();
         }
         else if(app_type == "Personal" && nationality_type == "Bhutanese" && Country_Of_Origin == "")
         {
-            $('#Com_Country_Of_OriginErrorMsg').html("Select Country oF Origin.");
-            $('#Com_Country_Of_OriginErrorMsg').show();
-            $('#Com_Country_Of_OriginErrorMsg').delay(2000).fadeOut('slow');
+            $('#Country_Of_OriginErrorMsg').html("Select Country oF Origin.");
+            $('#Country_Of_OriginErrorMsg').show();
+            $('#Country_Of_OriginErrorMsg').delay(2000).fadeOut('slow');
+            $('#Country_Of_OriginErrorMsg').focus();
         }
         else if(app_type == "Personal"  && nationality_type == "Bhutanese" && conveyanceMeans == "")
         {
-            $('#com_conveyanceMeansErrorMsg').html("Select Means of Conveyance.");
-            $('#com_conveyanceMeansErrorMsg').show();
-            $('#com_conveyanceMeansErrorMsg').delay(2000).fadeOut('slow');
+            $('#conveyanceMeansErrorMsg').html("Select Means of Conveyance.");
+            $('#conveyanceMeansErrorMsg').show();
+            $('#conveyanceMeansErrorMsg').delay(2000).fadeOut('slow');
+            $('#conveyanceMeans').focus();
         }
         else if(app_type == "Personal" && nationality_type == "Bhutanese" && entry_point == "")
         {
-            $('#com_entry_pointErrorMsg').html("Select Place Of Entry.");
-            $('#com_entry_pointErrorMsg').show();
-            $('#com_entry_pointErrorMsg').delay(2000).fadeOut('slow');
+            $('#entry_pointErrorMsg').html("Select Place Of Entry.");
+            $('#entry_pointErrorMsg').show();
+            $('#entry_pointErrorMsg').delay(2000).fadeOut('slow');
+            $('#entry_point').focus();
         }
         else if(app_type == "Personal" && nationality_type == "Bhutanese" && B_movementPurpose == "")
         {
             $('#movementPurposeErrorMsg').html("Enter Purpose.");
             $('#movementPurposeErrorMsg').show();
             $('#movementPurposeErrorMsg').delay(2000).fadeOut('slow');
+            $('#B_movementPurpose').focus();
         }
         else if(app_type == "Personal" && nationality_type == "Bhutanese" && B_finalDestination == "")
         {
             $('#finalDestinationErrorMsg').html("Enter Final Destination.");
             $('#finalDestinationErrorMsg').show();
             $('#finalDestinationErrorMsg').delay(2000).fadeOut('slow');
+            $('#B_finalDestination').focus();
         }
         else if(app_type == "Personal" && nationality_type == "Bhutanese" && B_expectedDate == "")
         {
             $('#dateErrorMsg').html("Select Expected Arrival Date.");
             $('#dateErrorMsg').show();
             $('#dateErrorMsg').delay(2000).fadeOut('slow');
+            $('#B_expectedDate').focus();
         }
-        else if(app_type == "Personal" && nationality_type == "Bhutanese" && number_count < 8)
-        {
-            $('#com_contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
-            $('#com_contactNumberErrorMsg').show();
-            setTimeout('hideStatus("com_contactNumberErrorMsg")',2000);
-        }
-
         else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && passport == "")
         {
-            $('#passportErrorMsg').html("Enter Nationality.");
+            $('#passportErrorMsg').html("Enter Passport No.");
             $('#passportErrorMsg').show();
             $('#passportErrorMsg').delay(2000).fadeOut('slow');
+            $('#passport').focus();
         }
         else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && nationality == "")
         {
             $('#nationalityErrorMsg').html("Enter Nationality.");
             $('#nationalityErrorMsg').show();
             $('#nationalityErrorMsg').delay(2000).fadeOut('slow');
+            $('#nationality').focus();
         }
          else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && passport_name == "")
         {
             $('#cidErrorMsg').html("Enter CID.");
             $('#cidErrorMsg').show();
             $('#cidErrorMsg').delay(2000).fadeOut('slow');
+            $('#passport_name').focus();
+        }
+        else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && p_email == "")
+        {
+            $('#p_emailErrorMsg').html("Enter Email.");
+            $('#p_emailErrorMsg').show();
+            $('#p_emailErrorMsg').delay(2000).fadeOut('slow');
+            $('#p_email').focus();
         }
         else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && Address == "")
         {
             $('#AddressErrorMsg').html("Enter Address.");
             $('#AddressErrorMsg').show();
             $('#AddressErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && p_email == "")
-        {
-            $('#passport_nameErrorMsg').html("Enter Email.");
-            $('#passport_nameErrorMsg').show();
-            $('#passport_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#Address').focus();
         }
         else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && p_contactNumber == "")
         {
             $('#p_contactNumberErrorMsg').html("Enter Contact Number.");
             $('#p_contactNumberErrorMsg').show();
             $('#p_contactNumberErrorMsg').delay(2000).fadeOut('slow');
+            $('#p_contactNumber').focus();
+        }
+        else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && p_number_count < 8)
+        {
+            $('#p_contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
+            $('#p_contactNumberErrorMsg').show();
+            $('#p_contactNumberErrorMsg').delay(2000).fadeOut('slow');
+            $('#p_contactNumber').focus();
         }
         else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && name_supplier == "")
         {
             $('#name_supplierErrorMsg').html("Enter Name And Address Of Supplier.");
             $('#name_supplierErrorMsg').show();
             $('#name_supplierErrorMsg').delay(2000).fadeOut('slow');
+            $('#name_supplier').focus();
         }
         else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && Origin == "")
         {
             $('#OriginErrorMsg').html("Select Country oF Origin.");
             $('#OriginErrorMsg').show();
             $('#OriginErrorMsg').delay(2000).fadeOut('slow');
+            $('#Origin').focus();
         }
         else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && p_conveyanceMeans == "")
         {
             $('#p_conveyanceMeansErrorMsg').html("Select Means of Conveyance.");
             $('#p_conveyanceMeansErrorMsg').show();
             $('#p_conveyanceMeansErrorMsg').delay(2000).fadeOut('slow');
+            $('#p_conveyanceMeans').focus();
         }
         else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && p_entry_point == "")
         {
             $('#p_entry_pointErrorMsg').html("Select Place Of Entry.");
             $('#p_entry_pointErrorMsg').show();
             $('#p_entry_pointErrorMsg').delay(2000).fadeOut('slow');
+            $('#p_entry_point').focus();
         }
         else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && p_movementPurpose == "")
         {
             $('#p_movementPurposeErrorMsg').html("Enter Purpose.");
             $('#p_movementPurposeErrorMsg').show();
             $('#p_movementPurposeErrorMsg').delay(2000).fadeOut('slow');
+            $('#p_movementPurpose').focus();
         }
         else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && p_finalDestination == "")
         {
             $('#p_finalDestinationErrorMsg').html("Enter Final Destination.");
             $('#p_finalDestinationErrorMsg').show();
             $('#p_finalDestinationErrorMsg').delay(2000).fadeOut('slow');
+            $('#p_finalDestination').focus();
         }
         else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && p_expectedDate == "")
         {
             $('#p_expectedDateErrorMsg').html("Select Expected Arrival Date.");
             $('#p_expectedDateErrorMsg').show();
             $('#p_expectedDateErrorMsg').delay(2000).fadeOut('slow');
+            $('#p_expectedDate').focus();
         }
-        else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && p_number_count < 8)
-        {
-            $('#com_contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
-            $('#com_contactNumberErrorMsg').show();
-            setTimeout('hideStatus("com_contactNumberErrorMsg")',2000);
-        }
+
         else
         {
             $.ajax({
@@ -1416,5 +1460,142 @@ function getVariety(crop_id)
             }
         });
     }
+
+    function checkContact(value)
+    {
+        var firstDigit = value.charAt(0);
+        var secondDigit = value.charAt(1);
+
+        if(firstDigit != 7 && firstDigit != 1){
+            $('#contactNumberErrorMsg').html("Must Start with either 1 or 7.");
+            $('#contactNumberErrorMsg').show();
+            $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+            $('#contactNumber').val("");
+        }else if(firstDigit == 1 && secondDigit != 6 && secondDigit != 7){
+            $('#contactNumberErrorMsg').html("Second Digit Must Start with either 6 or 7.");
+            $('#contactNumberErrorMsg').show();
+            $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+            $('#contactNumber').val("");
+        }else if(firstDigit == 7 && secondDigit == 6){
+            $('#contactNumberErrorMsg').html("Second Digit Cannot be 6.");
+            $('#contactNumberErrorMsg').show();
+            $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+            $('#contactNumber').val("");
+        }else if(firstDigit == 7 && secondDigit != 7){
+            $('#contactNumberErrorMsg').html("Second Digit Must Start with 7.");
+            $('#contactNumberErrorMsg').show();
+            $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+            $('#contactNumber').val("");
+        }
+
+    }
+
+    function checkNonContact(value)
+    {
+        var firstDigit = value.charAt(0);
+        var secondDigit = value.charAt(1);
+
+        if(firstDigit != 7 && firstDigit != 1){
+            $('#p_contactNumberErrorMsg').html("Must Start with either 1 or 7.");
+            $('#p_contactNumberErrorMsg').show();
+            $('#p_contactNumberErrorMsg').delay(2000).fadeOut('slow');
+            $('#p_contactNumber').val("");
+        }else if(firstDigit == 1 && secondDigit != 6 && secondDigit != 7){
+            $('#p_contactNumberErrorMsg').html("Second Digit Must Start with either 6 or 7.");
+            $('#p_contactNumberErrorMsg').show();
+            $('#p_contactNumberErrorMsg').delay(2000).fadeOut('slow');
+            $('#p_contactNumber').val("");
+        }else if(firstDigit == 7 && secondDigit == 6){
+            $('#p_contactNumberErrorMsg').html("Second Digit Cannot be 6.");
+            $('#p_contactNumberErrorMsg').show();
+            $('#p_contactNumberErrorMsg').delay(2000).fadeOut('slow');
+            $('#p_contactNumber').val("");
+        }else if(firstDigit == 7 && secondDigit != 7){
+            $('#p_contactNumberErrorMsg').html("Second Digit Must Start with 7.");
+            $('#p_contactNumberErrorMsg').show();
+            $('#p_contactNumberErrorMsg').delay(2000).fadeOut('slow');
+            $('#p_contactNumber').val("");
+        }
+
+    }
+
+    function checkComContact(value)
+    {
+        var firstDigit = value.charAt(0);
+        var secondDigit = value.charAt(1);
+
+        if(firstDigit != 7 && firstDigit != 1){
+            $('#com_contactNumberErrorMsg').html("Must Start with either 1 or 7.");
+            $('#com_contactNumberErrorMsg').show();
+            $('#com_contactNumberErrorMsg').delay(2000).fadeOut('slow');
+            $('#com_contactNumber').val("");
+        }else if(firstDigit == 1 && secondDigit != 6 && secondDigit != 7){
+            $('#com_contactNumberErrorMsg').html("Second Digit Must Start with either 6 or 7.");
+            $('#com_contactNumberErrorMsg').show();
+            $('#com_contactNumberErrorMsg').delay(2000).fadeOut('slow');
+            $('#com_contactNumber').val("");
+        }else if(firstDigit == 7 && secondDigit == 6){
+            $('#com_contactNumberErrorMsg').html("Second Digit Cannot be 6.");
+            $('#com_contactNumberErrorMsg').show();
+            $('#com_contactNumberErrorMsg').delay(2000).fadeOut('slow');
+            $('#com_contactNumber').val("");
+        }else if(firstDigit == 7 && secondDigit != 7){
+            $('#com_contactNumberErrorMsg').html("Second Digit Must Start with 7.");
+            $('#com_contactNumberErrorMsg').show();
+            $('#com_contactNumberErrorMsg').delay(2000).fadeOut('slow');
+            $('#com_contactNumber').val("");
+        }
+    }
+
+function validateemailId(emailId)
+{
+    var pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+    var no=emailId.match(pattern);
+
+    if(no==null)
+    {
+        $('#com_emailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
+        $('#com_email').val("");
+        $('#com_emailErrorMsg').show();
+        $('#com_emailErrorMsg').delay(2000).fadeOut('slow');
+    }else{
+     $('#com_emailErrorMsg').hide();
+    }
+
+}
+
+function validateemailId(emailId)
+{
+    var pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+    var no=emailId.match(pattern);
+
+    if(no==null)
+    {
+        $('#emailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
+        $('#email').val("");
+        $('#emailErrorMsg').show();
+        $('#emailErrorMsg').delay(2000).fadeOut('slow');
+    }else{
+     $('#emailErrorMsg').hide();
+    }
+
+}
+
+function validatePassemailId(emailId)
+{
+    var pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+    var no=emailId.match(pattern);
+
+    if(no==null)
+    {
+        $('#p_emailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
+        $('#p_email').val("");
+        $('#p_emailErrorMsg').show();
+        $('#p_emailErrorMsg').delay(2000).fadeOut('slow');
+    }else{
+     $('#p_emailErrorMsg').hide();
+    }
+
+}
 </script>
 {% endblock %}

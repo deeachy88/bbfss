@@ -119,6 +119,60 @@
                                 </div>
                             </div>
                         {% endfor %}
+                        <br>
+                        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">Meat</span>
+                                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Items</span>
+                            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                        </div>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Meat_Item</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               {% for Meat_Item in details %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{file_attach.Meat_Item}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="3" class="text-center">No Data</td>
+                                    </tr>
+                               {% endfor %}
+                            </tbody>
+                        </table>
+                        <br>
+                        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">File</span>
+                                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Attachments</span>
+                            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                        </div>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">File</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               {% for file_attach in file %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{file_attach.Attachment}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="3" class="text-center">No Data</td>
+                                    </tr>
+                               {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                         <div class="modal-footer justify-content-center">
                             <select class="form-control col-md-6" name="forwardTo"  id="forwardTo">

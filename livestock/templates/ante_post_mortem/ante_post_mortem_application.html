@@ -50,7 +50,8 @@
                                     <span class="custom-control-indicator"></span>
                                     <span class="custom-control-description">Post-mortem</span>
                                 </label>
-                                <div class="alert alert-danger" id="applicationTypeErrorMsg" style="display:none"></div>
+                                <br>
+                                <div class="alert alert-danger" id="Inspection_TypeErrorMsg" style="display:none"></div>
                             </div>
                         </div><br>
                         <div class="row">
@@ -237,7 +238,7 @@
                                         <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label for="remarks">Remarks</label>
+                                        <label class="form-label">Remarks</label>
                                         <input type="text" name="remarks" class="form-control" id="remarks" required>
                                         <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
                                     </div>
@@ -294,11 +295,8 @@
 
 function save_mortem_form()
 {
+    var Inspection_Type = $("input[name=Inspection_Type]:checked").length;
     var cid = $('#cid').val();
-    var name = $('#name').val();
-    var dzongkhag = $('#dzongkhag').val();
-    var gewog = $('#gewog').val();
-    var village = $('#village').val();
     var address = $('#present_address').val();
     var contactNumber = $('#contactNumber').val();
     var email = $('#email').val();
@@ -310,41 +308,40 @@ function save_mortem_form()
     var cidCount = $('#cid').val().length;
     var number_count = $('#contactNumber').val().length;
 
-    if(cid == "")
+    if(Inspection_Type < 1)
+    {
+        $('#Inspection_TypeErrorMsg').html("Please Check One Inspection Type.");
+        $('#Inspection_TypeErrorMsg').show();
+        $('#Inspection_TypeErrorMsg').delay(2000).fadeOut('slow');
+        $('#Inspection_Type').focus();
+    }
+    else if(cid == "")
     {
         $('#cidErrorMsg').html("Enter CID Number.");
         $('#cidErrorMsg').show();
         $('#cidErrorMsg').delay(2000).fadeOut('slow');
+        $('#cid').focus();
     }
-    else if(name == "")
+    else if(cidCount < 11)
     {
-        $('#nameErrorMsg').html("Enter Name .");
-        $('#nameErrorMsg').show();
-        $('#nameErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(dzongkhag == "")
-    {
-        $('#dzongkhagErrorMsg').html("Select Dzongkhag.");
-        $('#dzongkhagErrorMsg').show();
-        $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(gewog == "")
-    {
-        $('#gewogErrorMsg').html("Select Gewog.");
-        $('#gewogErrorMsg').show();
-        $('#gewogErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(village == "")
-    {
-        $('#villageErrorMsg').html("Select Village.");
-        $('#villageErrorMsg').show();
-        $('#villageErrorMsg').delay(2000).fadeOut('slow');
+        $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits.");
+        $('#cidErrorMsg').show();
+        $('#cidErrorMsg').delay(2000).fadeOut('slow');
+        $('#cid').focus();
     }
     else if(contactNumber == "")
     {
         $('#contactNumberErrorMsg').html("Enter Contact Number.");
         $('#contactNumberErrorMsg').show();
         $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').focus();
+    }
+    else if(number_count < 8)
+    {
+        $('#contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').focus();
     }
     else if(email == "")
     {
@@ -381,18 +378,6 @@ function save_mortem_form()
         $('#inspectionDateErrorMsg').html("Enter Inspection Date.");
         $('#inspectionDateErrorMsg').show();
         $('#inspectionDateErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(cidCount < 11)
-    {
-        $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits.");
-        $('#cidErrorMsg').show();
-        setTimeout('hideStatus("cidErrorMsg")',2000);
-    }
-    else if(number_count < 8)
-    {
-        $('#contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
-        $('#contactNumberErrorMsg').show();
-        setTimeout('hideStatus("contactNumberErrorMsg")',2000);
     }
     else
     {

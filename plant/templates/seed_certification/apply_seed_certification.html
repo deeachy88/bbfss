@@ -67,7 +67,7 @@
                         <div class="col-sm-4">
                             <div class="form-group">
                                 <label class="form-label">Contact Number <font color="red">*</font></label>
-                                <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNo" maxlength="8" onkeypress="return isNumberKey(event)">
+                                <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNo" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
                             </div>
                             <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
                         </div>
@@ -76,7 +76,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Email <font color="red">*</font></label>
-                                <input type="email" class="form-control" id="email" name="email">
+                                <input type="email" class="form-control" id="email" name="email" onchange="validateemailId(this.value)">
                             </div>
                             <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
                         </div>
@@ -367,75 +367,85 @@ function save_certificate_details()
     var Nursery_Category = $('#Nursery_Category').val();
     var dzongkhag = $('#dzongkhag').val();
     var location = $('#location').val();
-    var numbcount = $('#contactNumber').val().length;
-    var cidCount = $('#cid').val().length;
+    var count = $('#contactNumber').val().length;
+    var cidCount = $('#CID').val().length;
 
     if(License_No == "")
     {
         $('#License_NoErrorMsg').html("Enter License Number.");
         $('#License_NoErrorMsg').show();
         $('#License_NoErrorMsg').delay(2000).fadeOut('slow');
+        $('#License_No').focus();
     }
     else if(Company_Name == "")
     {
         $('#Company_NameErrorMsg').html("Enter Company Name.");
         $('#Company_NameErrorMsg').show();
         $('#Company_NameErrorMsg').delay(2000).fadeOut('slow');
+        $('#Company_Name').focus();
     }
     else if(Company_Address == "")
     {
         $('#Company_AddressErrorMsg').html("Enter Company Address.");
         $('#Company_AddressErrorMsg').show();
         $('#Company_AddressErrorMsg').delay(2000).fadeOut('slow');
+        $('#Company_Address').focus();
     }
     else if(CID == "")
     {
         $('#CIDErrorMsg').html("Enter CID.");
         $('#CIDErrorMsg').show();
         $('#CIDErrorMsg').delay(2000).fadeOut('slow');
-    }
-
-    else if(contactNumber == "")
-    {
-        $('#contactNumberErrorMsg').html("Enter Contact Number.");
-        $('#contactNumberErrorMsg').show();
-        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(email == "")
-    {
-        $('#emailErrorMsg').html("Enter Email.");
-        $('#emailErrorMsg').show();
-        $('#emailErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(Nursery_Category == "")
-    {
-        $('#Nursery_CategoryErrorMsg').html("Select Nursery Category.");
-        $('#Nursery_CategoryErrorMsg').show();
-        $('#Nursery_CategoryErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(dzongkhag == "")
-    {
-        $('#dzongkhagErrorMsg').html("Select Dzongkhag.");
-        $('#dzongkhagErrorMsg').show();
-        $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(location == "")
-    {
-        $('#locationErrorMsg').html("Select Location.");
-        $('#locationErrorMsg').show();
-        $('#locationErrorMsg').delay(2000).fadeOut('slow');
+        $('#CID').focus();
     }
     else if(cidCount < 11)
     {
         $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits.");
         $('#cidErrorMsg').show();
         $('#cidErrorMsg').delay(2000).fadeOut('slow');
+        $('#CID').focus();
     }
-    else if(numbcount < 8)
+    else if(contactNumber == "")
     {
-        $('#contactNumberErrorMsg').html("Connot Be Less Than Eight Digits.");
+        $('#contactNumberErrorMsg').html("Enter Contact Number.");
         $('#contactNumberErrorMsg').show();
         $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').focus();
+    }
+    else if(count < 8)
+    {
+        $('#contactNumberErrorMsg').html("Cannot Be Less Than Eight Digits.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').focus();
+    }
+    else if(email == "")
+    {
+        $('#emailErrorMsg').html("Enter Email.");
+        $('#emailErrorMsg').show();
+        $('#emailErrorMsg').delay(2000).fadeOut('slow');
+        $('#email').focus();
+    }
+    else if(Nursery_Category == "")
+    {
+        $('#Nursery_CategoryErrorMsg').html("Select Nursery Category.");
+        $('#Nursery_CategoryErrorMsg').show();
+        $('#Nursery_CategoryErrorMsg').delay(2000).fadeOut('slow');
+        $('#Nursery_Category').focus();
+    }
+    else if(dzongkhag == "")
+    {
+        $('#dzongkhagErrorMsg').html("Select Dzongkhag.");
+        $('#dzongkhagErrorMsg').show();
+        $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
+        $('#dzongkhag').focus();
+    }
+    else if(location == "")
+    {
+        $('#locationErrorMsg').html("Select Location.");
+        $('#locationErrorMsg').show();
+        $('#locationErrorMsg').delay(2000).fadeOut('slow');
+        $('#location').focus();
     }
     else
     {
@@ -549,5 +559,51 @@ function getCitizenDetails(cidNo)
             }
         });
     }
+
+function validateemailId(emailId)
+{
+    var pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+    var no=emailId.match(pattern);
+
+    if(no==null)
+    {
+        $('#emailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
+        $('#email').val("");
+        $('#emailErrorMsg').show();
+        $('#emailErrorMsg').delay(2000).fadeOut('slow');
+    }else{
+     $('#emailErrorMsg').hide();
+    }
+
+}
+
+function checkContact(value)
+{
+    var firstDigit = value.charAt(0);
+    var secondDigit = value.charAt(1);
+
+    if(firstDigit != 7 && firstDigit != 1){
+        $('#contactNumberErrorMsg').html("Must Start with either 1 or 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 1 && secondDigit != 6 && secondDigit != 7){
+        $('#contactNumberErrorMsg').html("Second Digit Must Start with either 6 or 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 7 && secondDigit == 6){
+        $('#contactNumberErrorMsg').html("Second Digit Cannot be 6.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 7 && secondDigit != 7){
+        $('#contactNumberErrorMsg').html("Second Digit Must Start with 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }
+
+}
 </script>
 {% endblock %}

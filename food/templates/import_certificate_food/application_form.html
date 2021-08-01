@@ -41,17 +41,17 @@
                             </div>
                             <div class="col-sm-4 justify-content-center">
                                 <label class="custom-control custom-radio">
-                                    <input type="radio" name="Import_Type" class="custom-control-input" value="Individual">
+                                    <input type="radio" name="Import_Type" class="custom-control-input" value="Individual" onclick="checkForm(this.value)">
                                     <span class="custom-control-indicator"></span>
                                     <span class="custom-control-description">Individual</span>
                                 </label>
                                 <label class="custom-control custom-radio">
-                                    <input type="radio" name="Import_Type" class="custom-control-input" value="Commercial">
+                                    <input type="radio" name="Import_Type" class="custom-control-input" value="Commercial" onclick="checkForm(this.value)">
                                     <span class="custom-control-indicator"></span>
                                     <span class="custom-control-description">Commercial</span>
                                 </label>
                                 <label class="custom-control custom-radio">
-                                    <input type="radio" name="Import_Type" class="custom-control-input" value="Institution">
+                                    <input type="radio" name="Import_Type" class="custom-control-input" value="Institution" onclick="checkForm(this.value)">
                                     <span class="custom-control-indicator"></span>
                                     <span class="custom-control-description">Institution</span>
                                 </label>
@@ -694,6 +694,25 @@ function checkTransit(value)
     else
     {
         $('#transit_country').hide();
+    }
+}
+
+function checkForm(value)
+{
+    if(value == "Individual")
+    {
+        $("#cid").removeAttr("disabled");
+        $("#license_no").attr("disabled", "disabled");
+    }
+    else
+    {
+        $('#cid').val("");
+        $("#cid").attr("disabled", "disabled");
+        $("#license_no").removeAttr("disabled");
+        $('#name').val("");
+        $('#dzongkhag').val("");
+        $('#village').val("");
+        $('#gewog').val("");
     }
 }
 

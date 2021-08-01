@@ -116,8 +116,9 @@ def save_meat_shop_registration(request):
     )
     field_id = t_location_field_office_mapping.objects.filter(pk=location)
     for field_office in field_id:
-        field_office_id = field_office.Field_Office_Id_id
-    t_workflow_details.objects.create(Application_No=new_meat_shop_application,
+        field_office_id = field_office.Field_Office_Id
+        print(field_office_id)
+        t_workflow_details.objects.create(Application_No=new_meat_shop_application,
                                       Applicant_Id=request.session['email'],
                                       Assigned_To=None, Field_Office_Id=field_office_id, Section='Livestock',
                                       Assigned_Role_Id='2', Action_Date=None, Application_Status='P',

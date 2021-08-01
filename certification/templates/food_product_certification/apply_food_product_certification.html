@@ -128,7 +128,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Contact Number <font color="red">*</font></label>
-                                <input type="number" class="form-control" id="Factory_Contact_No" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="Factory_Contact_No" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                                <input type="number" class="form-control" id="Factory_Contact_No" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="Factory_Contact_No" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkFactoryContact(this.value)">
                             </div>
                             <div class="alert alert-danger" id="Factory_Contact_NoErrorMsg" style="display:none"></div>
                         </div>
@@ -137,7 +137,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Email <font color="red">*</font></label>
-                                <input type="email" class="form-control" id="Factory_Email" name="Factory_Email" onchange="validateemailId(this.value)">
+                                <input type="email" class="form-control" id="Factory_Email" name="Factory_Email" onchange="validateFactory_emailId(this.value)">
                             </div>
                             <div class="alert alert-danger" id="Factory_EmailErrorMsg" style="display:none"></div>
                         </div>
@@ -548,204 +548,254 @@ function save_food_product_form()
     var C_Export = $("#P_Export").val();
     var C_Export_Unit = $("#P_Export_Unit").val();
     var C_Export_Value = $("#P_Export_Value").val();
+    var firm_number_count = $('#Firm_Contact_No').val().length;
+    var factory_number_count = $('#Factory_Contact_No').val().length;
 
     if(Firm_Name == "")
     {
         $('#Firm_NameErrorMsg').html("Enter Firm Name.");
         $('#Firm_NameErrorMsg').show();
         $('#Firm_NameErrorMsg').delay(2000).fadeOut('slow');
+        $('#Firm_Name').focus();
     }
     else if(Firm_Address == "")
     {
-        $('#cidErrorMsg').html("Enter CID Number.");
-        $('#cidErrorMsg').show();
-        $('#cidErrorMsg').delay(2000).fadeOut('slow');
+        $('#Firm_AddressErrorMsg').html("Enter Firm Address.");
+        $('#Firm_AddressErrorMsg').show();
+        $('#Firm_AddressErrorMsg').delay(2000).fadeOut('slow');
+        $('#Firm_Address').focus();
+
     }
     else if(dzongkhag == "")
     {
         $('#dzongkhagErrorMsg').html("Select Dzongkhag.");
         $('#dzongkhagErrorMsg').show();
         $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
+        $('#dzongkhag').focus();
     }
     else if(gewog == "")
     {
         $('#gewogErrorMsg').html("Select Gewog.");
         $('#gewogErrorMsg').show();
         $('#gewogErrorMsg').delay(2000).fadeOut('slow');
+        $('#gewog').focus();
     }
     else if(village == "")
     {
         $('#villageErrorMsg').html("Select Village.");
         $('#villageErrorMsg').show();
         $('#villageErrorMsg').delay(2000).fadeOut('slow');
+        $('#village').focus();
     }
     else if(email == "")
     {
         $('#emailErrorMsg').html("Enter Email.");
         $('#emailErrorMsg').show();
         $('#emailErrorMsg').delay(2000).fadeOut('slow');
+        $('#email').focus();
     }
     else if(Firm_Contact_No == "")
     {
         $('#Firm_Contact_NoErrorMsg').html("Enter Contact Number.");
         $('#Firm_Contact_NoErrorMsg').show();
         $('#Firm_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
+        $('#Firm_Contact_No').focus();
+    }
+    else if(firm_number_count < 8)
+    {
+        $('#Firm_Contact_NoErrorMsg').html("Cannot Be Less Than Eight.");
+        $('#Firm_Contact_NoErrorMsg').show();
+        $('#Firm_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
+        $("#Firm_Contact_No").focus();
     }
     else if(Factory_Name == "")
     {
         $('#Factory_NameErrorMsg').html("Enter Factory Name.");
         $('#Factory_NameErrorMsg').show();
         $('#Factory_NameErrorMsg').delay(2000).fadeOut('slow');
+        $('#Factory_Name').focus();
     }
     else if(Factory_Address == "")
     {
         $('#Factory_AddressErrorMsg').html("Enter Factory Address.");
         $('#Factory_AddressErrorMsg').show();
         $('#Factory_AddressErrorMsg').delay(2000).fadeOut('slow');
+        $('#Factory_Address').focus();
     }
     else if(Factory_Contact_No == "")
     {
         $('#Factory_Contact_NoErrorMsg').html("Enter Factory Contact No.");
         $('#Factory_Contact_NoErrorMsg').show();
         $('#Factory_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
+        $('#Factory_Contact_No').focus();
+    }
+    else if(factory_number_count < 8)
+    {
+        $('#Factory_Contact_NoErrorMsg').html("Cannot Be Less Than Eight.");
+        $('#Factory_Contact_NoErrorMsg').show();
+        $('#Factory_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
+        $("#Factory_Contact_No").focus();
     }
     else if(Factory_Email == "")
     {
         $('#Factory_EmailErrorMsg').html("Enter Factory Email.");
         $('#Factory_EmailErrorMsg').show();
         $('#Factory_EmailErrorMsg').delay(2000).fadeOut('slow');
+        $('#Factory_Email').focus();
     }
     else if(Product_Description == "")
     {
         $('#Product_DescriptionErrorMsg').html("Enter Product Description.");
         $('#Product_DescriptionErrorMsg').show();
         $('#Product_DescriptionErrorMsg').delay(2000).fadeOut('slow');
+        $('#Product_Description').focus();
     }
     else if(Product_Trade_Mark == "")
     {
         $('#Product_Trade_MarkErrorMsg').html("Enter Product Trade Mark.");
         $('#Factory_EmailErrorMsg').show();
         $('#Factory_EmailErrorMsg').delay(2000).fadeOut('slow');
+        $('#Product_Trade_Mark').focus();
     }
     else if(P_From_Date == "")
     {
         $('#P_From_DateErrorMsg').html("Enter From Date.");
         $('#P_From_DateErrorMsg').show();
         $('#P_From_DateErrorMsg').delay(2000).fadeOut('slow');
+        $('#P_From_Date').focus();
     }
     else if(P_To_Date == "")
     {
         $('#P_To_DateErrorMsg').html("Enter To Date.");
         $('#P_To_DateErrorMsg').show();
         $('#P_To_DateErrorMsg').delay(2000).fadeOut('slow');
+        $('#P_To_Date').focus();
     }
     else if(P_Production == "")
     {
         $('#P_ProductionErrorMsg').html("Enter Production Quantity.");
         $('#P_ProductionErrorMsg').show();
         $('#P_ProductionErrorMsg').delay(2000).fadeOut('slow');
+        $('#P_Production').focus();
     }
     else if(P_Production_Unit == "")
     {
         $('#P_Production_UnitErrorMsg').html("Select Unit.");
         $('#P_Production_UnitErrorMsg').show();
         $('#P_Production_UnitErrorMsg').delay(2000).fadeOut('slow');
+        $('#P_Production_Unit').focus();
     }
     else if(P_Production_Value = "")
     {
         $('#P_Production_ValueErrorMsg').html("Enter Value.");
         $('#P_Production_ValueErrorMsg').show();
         $('#P_Production_ValueErrorMsg').delay(2000).fadeOut('slow');
+        $('#P_Production_Value').focus();
     }
     else if(C_From_Date == "")
     {
         $('#C_From_DateErrorMsg').html("Enter From Date.");
         $('#C_From_DateErrorMsg').show();
         $('#C_From_DateErrorMsg').delay(2000).fadeOut('slow');
+        $('#C_From_Date').focus();
     }
     else if(C_To_Date == "")
     {
         $('#C_To_DateErrorMsg').html("Enter To Date.");
         $('#C_To_DateErrorMsg').show();
         $('#C_To_DateErrorMsg').delay(2000).fadeOut('slow');
+        $('#C_To_Date').focus();
     }
     else if(C_Production == "")
     {
         $('#P_ProductionErrorMsg').html("Enter Production Quantity.");
         $('#P_ProductionErrorMsg').show();
         $('#P_ProductionErrorMsg').delay(2000).fadeOut('slow');
+        $('#C_Production').focus();
     }
     else if(C_Production_Unit == "")
     {
         $('#C_Production_UnitErrorMsg').html("Select Unit.");
         $('#C_Production_UnitErrorMsg').show();
         $('#C_Production_UnitErrorMsg').delay(2000).fadeOut('slow');
+        $('#C_Production_Unit').focus();
     }
     else if(C_Production_Value = "")
     {
         $('#C_Production_ValueErrorMsg').html("Enter Value.");
         $('#C_Production_ValueErrorMsg').show();
         $('#C_Production_ValueErrorMsg').delay(2000).fadeOut('slow');
+        $('#C_Production_Value').focus();
     }
     else if(P_Export_From_Date == "")
     {
         $('#P_Export_From_DateErrorMsg').html("Enter From Date.");
         $('#P_Export_From_DateErrorMsg').show();
         $('#P_Export_From_DateErrorMsg').delay(2000).fadeOut('slow');
+        $('#P_Export_From_Date').focus();
     }
     else if(P_Export_To_Date == "")
     {
         $('#P_Export_To_DateErrorMsg').html("Enter To Date.");
         $('#P_Export_To_DateErrorMsg').show();
         $('#P_Export_To_DateErrorMsg').delay(2000).fadeOut('slow');
+        $('#P_Export_To_Date').focus();
     }
     else if(P_Export == "")
     {
         $('#P_ExportErrorMsg').html("Enter Export Quantity.");
         $('#P_ExportErrorMsg').show();
         $('#P_ExportErrorMsg').delay(2000).fadeOut('slow');
+        $('#P_Export').focus();
     }
     else if(P_Export_Unit == "")
     {
         $('#P_Export_UnitErrorMsg').html("Select Export Unit.");
         $('#P_Export_UnitErrorMsg').show();
         $('#P_Export_UnitErrorMsg').delay(2000).fadeOut('slow');
+        $('#P_Export_Unit').focus();
     }
     else if(P_Export_Value = "")
     {
         $('#P_Export_ValueErrorMsg').html("Enter Export Value.");
         $('#P_Export_ValueErrorMsg').show();
         $('#P_Export_ValueErrorMsg').delay(2000).fadeOut('slow');
+        $('#P_Export_Value').focus();
     }
     else if(C_Export_From_Date == "")
     {
         $('#C_Export_From_DateErrorMsg').html("Enter From Date.");
         $('#C_Export_From_DateErrorMsg').show();
         $('#C_Export_From_DateErrorMsg').delay(2000).fadeOut('slow');
+        $('#C_Export_From_Date').focus();
     }
     else if(C_Export_To_Date == "")
     {
         $('#C_Export_To_DateErrorMsg').html("Enter To Date.");
         $('#C_Export_To_DateErrorMsg').show();
         $('#C_Export_To_DateErrorMsg').delay(2000).fadeOut('slow');
+        $('#C_Export_To_Date').focus();
     }
     else if(C_Export == "")
     {
         $('#C_ExportErrorMsg').html("Enter Export Quantity.");
         $('#C_ExportErrorMsg').show();
         $('#C_ExportErrorMsg').delay(2000).fadeOut('slow');
+        $('#C_Export').focus();
     }
     else if(C_Export_Unit == "")
     {
         $('#C_Export_UnitErrorMsg').html("Select Export Unit.");
         $('#C_Export_UnitErrorMsg').show();
         $('#C_Export_UnitErrorMsg').delay(2000).fadeOut('slow');
+        $('#C_Export_Unit').focus();
     }
     else if(C_Export_Value = "")
     {
         $('#C_Export_ValueErrorMsg').html("Enter Export Value.");
         $('#C_Export_ValueErrorMsg').show();
         $('#C_Export_ValueErrorMsg').delay(2000).fadeOut('slow');
+        $('#C_Export_Value').focus();
     }
     else
     {
@@ -886,15 +936,34 @@ function validateemailId(emailId)
 
     if(no==null)
     {
-        $('#emailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
-        $('#email').val("");
-        $('#emailErrorMsg').show();
-        $('#emailErrorMsg').delay(2000).fadeOut('slow');
+        $('#Firm_EmailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
+        $('#Firm_Email').val("");
+        $('#Firm_EmailErrorMsg').show();
+        $('#Firm_EmailErrorMsg').delay(2000).fadeOut('slow');
     }else{
-     $('#emailErrorMsg').hide();
+     $('#Firm_EmailErrorMsg').hide();
     }
 
 }
+
+function validateFactory_emailId(emailId)
+{
+    var pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+    var no=emailId.match(pattern);
+
+    if(no==null)
+    {
+        $('#Factory_EmailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
+        $('#Factory_Email').val("");
+        $('#Factory_EmailErrorMsg').show();
+        $('#Factory_EmailErrorMsg').delay(2000).fadeOut('slow');
+    }else{
+     $('#Factory_EmailErrorMsg').hide();
+    }
+
+}
+
+
 
 function checkContact(value)
 {
@@ -902,28 +971,59 @@ function checkContact(value)
     var secondDigit = value.charAt(1);
 
     if(firstDigit != 7 && firstDigit != 1){
-        $('#contactNumberErrorMsg').html("Must Start with either 1 or 7.");
-        $('#contactNumberErrorMsg').show();
-        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
-        $('#contactNumber').val("");
+        $('#Firm_Contact_NoErrorMsg').html("Must Start with either 1 or 7.");
+        $('#Firm_Contact_NoErrorMsg').show();
+        $('#Firm_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
+        $('#Firm_Contact_No').val("");
     }else if(firstDigit == 1 && secondDigit != 6 && secondDigit != 7){
-        $('#contactNumberErrorMsg').html("Second Digit Must Start with either 6 or 7.");
-        $('#contactNumberErrorMsg').show();
-        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
-        $('#contactNumber').val("");
+        $('#Firm_Contact_NoErrorMsg').html("Second Digit Must Start with either 6 or 7.");
+        $('#Firm_Contact_NoErrorMsg').show();
+        $('#Firm_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
+        $('#Firm_Contact_No').val("");
     }else if(firstDigit == 7 && secondDigit == 6){
-        $('#contactNumberErrorMsg').html("Second Digit Cannot be 6.");
-        $('#contactNumberErrorMsg').show();
-        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
-        $('#contactNumber').val("");
+        $('#Firm_Contact_NoErrorMsg').html("Second Digit Cannot be 6.");
+        $('#Firm_Contact_NoErrorMsg').show();
+        $('#Firm_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
+        $('#Firm_Contact_No').val("");
     }else if(firstDigit == 7 && secondDigit != 7){
-        $('#contactNumberErrorMsg').html("Second Digit Must Start with 7.");
-        $('#contactNumberErrorMsg').show();
-        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
-        $('#contactNumber').val("");
+        $('#Firm_Contact_NoErrorMsg').html("Second Digit Must Start with 7.");
+        $('#Firm_Contact_NoErrorMsg').show();
+        $('#Firm_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
+        $('#Firm_Contact_No').val("");
     }
 
 }
+
+function checkFactoryContact(value)
+{
+    var firstDigit = value.charAt(0);
+    var secondDigit = value.charAt(1);
+
+    if(firstDigit != 7 && firstDigit != 1){
+        $('#Factory_Contact_NoErrorMsg').html("Must Start with either 1 or 7.");
+        $('#Factory_Contact_NoErrorMsg').show();
+        $('#Factory_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
+        $('#Factory_Contact_No').val("");
+    }else if(firstDigit == 1 && secondDigit != 6 && secondDigit != 7){
+        $('#Factory_Contact_NoErrorMsg').html("Second Digit Must Start with either 6 or 7.");
+        $('#Factory_Contact_NoErrorMsg').show();
+        $('#Factory_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
+        $('#Factory_Contact_No').val("");
+    }else if(firstDigit == 7 && secondDigit == 6){
+        $('#Factory_Contact_NoErrorMsg').html("Second Digit Cannot be 6.");
+        $('#Factory_Contact_NoErrorMsg').show();
+        $('#Factory_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
+        $('#Factory_Contact_No').val("");
+    }else if(firstDigit == 7 && secondDigit != 7){
+        $('#Factory_Contact_NoErrorMsg').html("Second Digit Must Start with 7.");
+        $('#Factory_Contact_NoErrorMsg').show();
+        $('#Factory_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
+        $('#Factory_Contact_No').val("");
+    }
+
+}
+
+
 
 function  submit_organic_certificate()
 {

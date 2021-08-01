@@ -97,7 +97,7 @@
                             <div class="col-md-4 bhutanese_div">
                                 <div class="form-group">
                                     <label class="form-label">Applicant CID <font color="red">*</font></label>
-                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCitizenDetails(this.value);">
                                 </div>
                                 <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
                             </div>
@@ -365,6 +365,7 @@ function permit_save_details()
 {
 
     var cid = $('#cid').val();
+    var passport = $('#passport').val();
     var name = $('#name').val();
     var present_address = $('#present_address').val();
     var dzongkhag = $('#dzongkhag').val();
@@ -384,126 +385,135 @@ function permit_save_details()
     var Application_Type = $("input[name=Application_Type]:checked").length;
     var Import_Type = $("input[name=Import_Type]:checked").length;
     var nationality = $("input[name=nationality]:checked").length;
+    var app_type = $('input[name="Import_Type"]:checked').val();
+    var nationality_type = $('input[name="nationality"]:checked').val();
+    var cidCount = $('#cid').val().length;
+    var number_count = $('#contactNumber').val().length;
 
     if(Application_Type < 1)
     {
         $('#applicationTypeErrorMsg').html("Please Check One Application Type.");
         $('#applicationTypeErrorMsg').show();
         $('#applicationTypeErrorMsg').delay(2000).fadeOut('slow');
+        $("input[name=Application_Type]").focus();
     }
     else if(Import_Type < 1)
     {
         $('#importTypeErrorMsg').html("Please Check One Import Type.");
         $('#importTypeErrorMsg').show();
         $('#importTypeErrorMsg').delay(2000).fadeOut('slow');
+        $("input[name=Import_Type]").focus();
     }
-    else if(nationality < 1)
+    else if(app_type == "Individual" && nationality < 1)
     {
         $('#nationalityErrorMsg').html("Please Check One Nationality.");
         $('#nationalityErrorMsg').show();
         $('#nationalityErrorMsg').delay(2000).fadeOut('slow');
+        $("input[name=nationality]").focus();
     }
-    else if(cid == "")
+    else if(app_type == "Individual" && nationality_type == "Bhutanese" && cid == "")
     {
         $('#cidErrorMsg').html("Enter CID Number.");
         $('#cidErrorMsg').show();
         $('#cidErrorMsg').delay(2000).fadeOut('slow');
     }
-    else if(name == "")
+    else if(app_type == "Individual" && nationality_type == "Bhutanese" && cidCount < 11)
     {
-        $('#nameErrorMsg').html("Enter Name .");
+        $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits.");
+        $('#cidErrorMsg').show();
+        $('#cidErrorMsg').delay(2000).fadeOut('slow');
+        $('#cid').focus();
+    }
+    else if(app_type == "Individual" && nationality_type == "Non-Bhutanese" && passport == "")
+    {
+        $('#passportErrorMsg').html("Enter Passport No.");
+        $('#passportErrorMsg').show();
+        $('#passportErrorMsg').delay(2000).fadeOut('slow');
+        $('#passport').focus();
+    }
+    else if(app_type == "Individual" && nationality_type == "Non-Bhutanese" && name == "")
+    {
+        $('#nameErrorMsg').html("Enter Name.");
         $('#nameErrorMsg').show();
         $('#nameErrorMsg').delay(2000).fadeOut('slow');
+        $('#name').focus();
     }
     else if(present_address == "")
     {
-        $('#presentAddressErrorMsg').html("Enter Name .");
+        $('#presentAddressErrorMsg').html("Enter Present Address .");
         $('#presentAddressErrorMsg').show();
         $('#presentAddressErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(dzongkhag == "")
-    {
-        $('#dzongkhagErrorMsg').html("Select Dzongkhag.");
-        $('#dzongkhagErrorMsg').show();
-        $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(gewog == "")
-    {
-        $('#gewogErrorMsg').html("Select Gewog.");
-        $('#gewogErrorMsg').show();
-        $('#gewogErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(village == "")
-    {
-        $('#villageErrorMsg').html("Select Village.");
-        $('#villageErrorMsg').show();
-        $('#villageErrorMsg').delay(2000).fadeOut('slow');
+        $('#present_address').focus();
     }
     else if(contactNumber == "")
     {
         $('#contactNumberErrorMsg').html("Enter Contact Number.");
         $('#contactNumberErrorMsg').show();
         $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').focus();
+    }
+    else if(number_count < 8)
+    {
+        $('#contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').focus();
     }
     else if(email == "")
     {
         $('#emailErrorMsg').html("Enter Contact Number.");
         $('#emailErrorMsg').show();
         $('#emailErrorMsg').delay(2000).fadeOut('slow');
+        $('#email').focus();
     }
-    else if(license_no == "")
+    else if(app_type == "Commercial" || app_type == "Institution" && license_no == "")
     {
         $('#license_noErrorMsg').html("Enter License No.");
         $('#license_noErrorMsg').show();
         $('#license_noErrorMsg').delay(2000).fadeOut('slow');
+        $('#license_no').focus();
     }
-    else if (business_name == "")
+    else if(app_type == "Commercial" || app_type == "Institution" && business_name == "")
     {
         $('#business_nameErrorMsg').html("Enter Business Name.");
         $('#business_nameErrorMsg').show();
         $('#business_nameErrorMsg').delay(2000).fadeOut('slow');
+        $('#business_name').focus();
     }
     else if (Origin_Source_Products == "")
     {
         $('#Origin_Source_ProductsErrorMsg').html("Enter Origin of Source of Products.");
         $('#Origin_Source_ProductsErrorMsg').show();
         $('#Origin_Source_ProductsErrorMsg').delay(2000).fadeOut('slow');
+        $('#Origin_Source_Products').focus();
     }
     else if(Exporter_Address == "")
     {
         $('#Importer_Name_AddressErrorMsg').html("Enter Exporter's Name and address.");
         $('#Importer_Name_AddressErrorMsg').show();
         $('#Importer_Name_AddressErrorMsg').delay(2000).fadeOut('slow');
+        $('#Exporter_Address').focus();
     }
     else if(Place_of_Exit == "")
     {
         $('#Place_of_ExitErrorMsg').html("Select Place of Entry.");
         $('#Place_of_ExitErrorMsg').show();
         $('#Place_of_ExitErrorMsg').delay(2000).fadeOut('slow');
+        $('#Place_of_Exit').focus();
     }
     else if(Final_Destination == "")
     {
         $('#Place_of_ExitErrorMsg').html("Enter Final Destination.");
         $('#Place_of_ExitErrorMsg').show();
         $('#Place_of_ExitErrorMsg').delay(2000).fadeOut('slow');
+        $('#Final_Destination').focus();
     }
     else if(Expected_Arrival_Date == "")
     {
         $('#Expected_Arrival_DateErrorMsg').html("Enter Final Destination.");
         $('#Expected_Arrival_DateErrorMsg').show();
         $('#Expected_Arrival_DateErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(cidCount < 11)
-    {
-        $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits.");
-        $('#cidErrorMsg').show();
-        setTimeout('hideStatus("cidErrorMsg")',2000);
-    }
-    else if(number_count < 8)
-    {
-        $('#contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
-        $('#contactNumberErrorMsg').show();
-        setTimeout('hideStatus("contactNumberErrorMsg")',2000);
+        $('#Expected_Arrival_Date').focus();
     }
     else
     {
@@ -754,6 +764,68 @@ function enableForms(value)
         $("#Bhutanese").prop("checked", false);
         $("#Non-Bhutanese").prop("checked", false);
     }
+}
+
+function getCitizenDetails(cidNo)
+{
+
+    $.ajax({
+        type : "GET",
+        url : "{% url 'get_citizen_details' %}",
+        data :{'cidNo':cidNo},
+        success : function(data)
+        {
+            $('#name').val(data.Name);
+            $('#dzongkhag').val(data.dzongkhagName);
+            $('#gewog').val(data.gewogName);
+            $('#village').val(data.villageName);
+        }
+    });
+}
+function validateemailId(emailId)
+{
+    var pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+    var no=emailId.match(pattern);
+
+    if(no==null)
+    {
+        $('#emailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
+        $('#email').val("");
+        $('#emailErrorMsg').show();
+        $('#emailErrorMsg').delay(2000).fadeOut('slow');
+    }else{
+     $('#emailErrorMsg').hide();
+    }
+
+}
+
+function checkContact(value)
+{
+    var firstDigit = value.charAt(0);
+    var secondDigit = value.charAt(1);
+
+    if(firstDigit != 7 && firstDigit != 1){
+        $('#contactNumberErrorMsg').html("Must Start with either 1 or 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 1 && secondDigit != 6 && secondDigit != 7){
+        $('#contactNumberErrorMsg').html("Second Digit Must Start with either 6 or 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 7 && secondDigit == 6){
+        $('#contactNumberErrorMsg').html("Second Digit Cannot be 6.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 7 && secondDigit != 7){
+        $('#contactNumberErrorMsg').html("Second Digit Must Start with 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }
+
 }
 </script>
 {% endblock %}

@@ -127,70 +127,32 @@
                                 </div>
                             </div>
                         </div>
-                        <br><br>
-                        {% if application_details.PermitType == A %}
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Species</th>
-                                    <th scope="col">Breed</th>
-                                    <th scope="col">Age</th>
-                                    <th scope="col">Sex</th>
-                                    <th scope="col">Description</th>
-                                    <th scope="col">Quantity</th>
-                                    <th scope="col">Unit</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for import in import %}
-                                    <tr>
-                                        <td>{{ forloop.counter }}</td>
-                                        <td>{{import.Import_Category}}</td>
-                                        <td>{{import.Pesticide_Id}}</td>
-                                        <td>{{import.Description}}</td>
-                                        <td>{{import.Unit}}</td>
-                                        <td>{{import.Quantity}}</td>
-                                    </tr>
-                                    {% empty %}
-                                    <tr>
-                                      <td colspan="8" class="text-center">No Data</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                        {% else %}
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Particulars</th>
-                                    <th scope="col">Company_Name</th>
-                                    <th scope="col">Description</th>
-                                    <th scope="col">Quantity</th>
-                                    <th scope="col">Unit</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for import in import %}
-                                    <tr>
-                                        <td>{{ forloop.counter }}</td>
-                                        <td>{{import.Import_Category}}</td>
-                                        <td>{{import.Pesticide_Id}}</td>
-                                        <td>{{import.Description}}</td>
-                                        <td>{{import.Unit}}</td>
-                                        <td>{{import.Quantity}}</td>
-                                    </tr>
-                                    {% empty %}
-                                    <tr>
-                                      <td colspan="6" class="text-center">No Data</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                        {% endif%}
                     {% endfor %}
                 </div>
+            </div>
+        </div>
+        <div id="meatItems" class="collapse" role="tabpanel" aria-labelledby="headingItems" data-parent="#accordion" style="">
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">File</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                       {% for Meat_Item in details %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{file_attach.Meat_Item}}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                              <td colspan="3" class="text-center">No Data</td>
+                            </tr>
+                       {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
         <div class="card">
