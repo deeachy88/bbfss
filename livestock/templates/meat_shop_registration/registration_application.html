@@ -573,5 +573,28 @@ function show_details_modal()
 {
     $('#add_fh_details').modal('show');
 }
+
+$.ajax({
+    type : "GET",
+    url : "{% url 'get_citizen_details' %}",
+    data :{'cidNo':cidNo},
+    success : function(data)
+    {
+        const myObj =data.response;
+        var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+        var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+        var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+        if (middleName == null) {
+                middleName = "";
+            }
+        var CitizenName = firstName + " " + middleName + " " + lastName;
+        var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
+        var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
+        var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
+        $('#name').val(CitizenName);
+
+    }
+});
+}
 </script>
 {% endblock %}

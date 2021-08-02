@@ -505,10 +505,21 @@ function getCitizenDetails(cidNo)
         data :{'cidNo':cidNo},
         success : function(data)
         {
-            $('#name').val(data.Name);
-            $('#dzongkhag').val(data.dzongkhagName);
-            $('#gewog').val(data.gewogName);
-            $('#village').val(data.villageName);
+            const myObj =data.response;
+            var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+            var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+            var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+            if (middleName == null) {
+                    middleName = "";
+                }
+            var CitizenName = firstName + " " + middleName + " " + lastName;
+            var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
+            var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
+            var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
+            $('#Name').val(CitizenName);
+            $('#dzongkhag').val(dzongkhagName);
+            $('#gewog').val(gewogName);
+            $('#village').val(villageName);
         }
     });
 }

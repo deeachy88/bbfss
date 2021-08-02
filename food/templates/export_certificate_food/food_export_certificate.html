@@ -39,7 +39,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Applicant CID <font color="red">*</font></label>
-                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)">
+                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCitizenDetails(this.value)">
                                 </div>
                                 <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
                             </div>
@@ -680,17 +680,27 @@ function food_export_attachment_modal()
 
 function getCitizenDetails(cidNo)
 {
-
     $.ajax({
         type : "GET",
         url : "{% url 'get_citizen_details' %}",
         data :{'cidNo':cidNo},
         success : function(data)
         {
-            $('#name').val(data.Name);
-            $('#dzongkhag').val(data.dzongkhagName);
-            $('#gewog').val(data.gewogName);
-            $('#village').val(data.villageName);
+            const myObj =data.response;
+            var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+            var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+            var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+            if (middleName == null) {
+                    middleName = "";
+                }
+            var CitizenName = firstName + " " + middleName + " " + lastName;
+            var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
+            var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
+            var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
+            $('#name').val(CitizenName);
+            $('#dzongkhag').val(dzongkhagName);
+            $('#gewog').val(gewogName);
+            $('#village').val(villageName);
         }
     });
 }

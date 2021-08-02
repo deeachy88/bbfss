@@ -4902,8 +4902,6 @@ def get_citizen_details(request):
     url = 'https://staging-datahub-apim.dit.gov.bt/dcrc_citizen_details_api/1.0.0/citizendetails/' + cid
     # params = {'cid': cid}
     response = requests.get(url, headers=header, verify=False)
-    data['dzongkhagName'] = response.dzongkhagName
-    data['gewogName'] = response.gewogName
-    data['villageName'] = response.villageName
-    data['Name'] = response.firstName + "" + response.middleName + "" + response.lastName
+    print(response.json())
+    data['response'] = response.json()
     return JsonResponse(data)

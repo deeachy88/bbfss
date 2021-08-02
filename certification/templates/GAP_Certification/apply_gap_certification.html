@@ -93,7 +93,7 @@
                         <div class="col-md-4 individual_details">
                             <div class="form-group">
                                 <label class="form-label">Dzongkhag <font color="red">*</font></label>
-                                <input type="text" class="form-control" name="dzongkhag" disabled>
+                                <input type="text" class="form-control" name="dzongkhag" id="dzongkhag_code" disabled>
                             </div>
                         </div>
                         <div class="col-md-4 farmer_group_details" style="display:none">
@@ -113,7 +113,7 @@
                         <div class="col-md-4 individual_details">
                             <div class="form-group">
                                 <label class="form-label">Gewog <font color="red">*</font></label>
-                                <input type="text" class="form-control" name="gewog" disabled>
+                                <input type="text" class="form-control" name="gewog" id="gewog_code" disabled>
                             </div>
                         </div>
                         <div class="col-md-4 farmer_group_details" style="display:none">
@@ -131,7 +131,7 @@
                         <div class="col-md-4 individual_details">
                             <div class="form-group">
                                 <label class="form-label">Village <font color="red">*</font></label>
-                                <input type="text" class="form-control" name="village" disabled>
+                                <input type="text" class="form-control" name="village" id="village_code" disabled>
                             </div>
                         </div>
                         <div class="col-md-4 farmer_group_details" style="display:none">
@@ -1116,17 +1116,27 @@ function checkStandards(value)
 
 function getCitizenDetails(cidNo)
 {
-
     $.ajax({
         type : "GET",
         url : "{% url 'get_citizen_details' %}",
         data :{'cidNo':cidNo},
         success : function(data)
         {
-            $('#name').val(data.Name);
-            $('#dzongkhag').val(data.dzongkhagName);
-            $('#gewog').val(data.gewogName);
-            $('#village').val(data.villageName);
+            const myObj =data.response;
+            var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+            var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+            var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+            if (middleName == null) {
+                    middleName = "";
+                }
+            var CitizenName = firstName + " " + middleName + " " + lastName;
+            var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
+            var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
+            var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
+            $('#name').val(CitizenName);
+            $('#dzongkhag_code').val(dzongkhagName);
+            $('#gewog_code').val(gewogName);
+            $('#village_code').val(villageName);
         }
     });
 }
