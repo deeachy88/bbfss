@@ -30,6 +30,50 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
+                                            <label class="form-label">Email <font color="red">*</font></label>
+                                            <input type="email" class="form-control" value="{{application_details.Email}}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Contact Number <font color="red">*</font></label>
+                                            <input type="number" class="form-control" value="{{application_details.Contact_No}}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Meat Shop Representative <font color="red">*</font></label>
+                                            <input type="text" class="form-control" value="{{application_details.Representative}}">
+                                        </div>
+                                        <div class="alert alert-danger" id="name_managerErrorMsg" style="display:none"></div>
+                                    </div>
+                                     <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Licensing Criteria <font color="red">*</font></label>
+                                            <select class="form-control">
+                                                {% if application_details.License_Criteria == 'BAFRA GHP' %}
+                                                <option selected>BAFRA GHP</option>
+                                                <option>BAFRA GMP</option>
+                                                {% else %}
+                                                <option>BAFRA GHP</option>
+                                                <option selected>BAFRA GMP</option>
+                                                {% endif %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Meat Shop Address <font color="red">*</font></label>
+                                            <textarea class="form-control">{{application_details.Address}}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
                                             <label class="form-label">Dzongkhag</label>
                                             <select class="form-control" disabled>
                                                 {% for dzongkhag in dzongkhag %}
@@ -64,47 +108,44 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Meat Shop Representative <font color="red">*</font></label>
-                                            <input type="text" class="form-control" value="{{application_details.Representative}}">
-                                        </div>
-                                        <div class="alert alert-danger" id="name_managerErrorMsg" style="display:none"></div>
-                                    </div>
-                                     <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label class="form-label">Licensing Criteria <font color="red">*</font></label>
-                                            <select class="form-control">
-                                                {% if application_details.License_Criteria == 'BAFRA GHP' %}
-                                                <option selected>BAFRA GHP</option>
-                                                <option>BAFRA GMP</option>
-                                                {% else %}
-                                                <option>BAFRA GHP</option>
-                                                <option selected>BAFRA GMP</option>
-                                                {% endif %}
+                                            <label class="form-label">Location</label>
+                                            <select class="form-control" disabled>
+                                                {% for location in location %}
+                                                    <option value="{{ location.Location_Code }}" {% if application_details.Location_Code == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                                {% endfor %}
                                             </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label class="form-label">Contact Number <font color="red">*</font></label>
-                                            <input type="number" class="form-control" value="{{application_details.Contact_No}}">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label class="form-label">Email <font color="red">*</font></label>
-                                            <input type="email" class="form-control" value="{{application_details.Email}}">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label class="form-label">Meat Shop Address <font color="red">*</font></label>
-                                            <textarea class="form-control">{{application_details.Address}}</textarea>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        {% endfor %}
+                        <br>
+                        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">Meat</span>
+                                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Items</span>
+                            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                        </div>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Meat_Item</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               {% for Meat_Item in details %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{file_attach.Meat_Item}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="3" class="text-center">No Data</td>
+                                    </tr>
+                               {% endfor %}
+                            </tbody>
+                        </table>
                         <br>
                         <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
                             <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
@@ -152,10 +193,11 @@
                             Application Approved
                         </div>
                         <div class="modal-footer justify-content-center">
-                            <button type="button" class="btn btn-primary" onclick="fbr_submit('{{ application_details.Application_No }}')"> Approve </button>
+                            {% for application_details in application_details %}
+                                <button type="button" class="btn btn-primary" onclick="fbr_submit('{{ application_details.Application_No }}')"> Approve </button>
+                            {% endfor %}
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         </div>
-                    {% endfor %}
                 </div>
             </div>
         </div>

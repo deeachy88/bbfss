@@ -163,9 +163,9 @@ def save_movement_permit(request):
         Applicant_Name=Applicant_Name,
         Contact_No=Contact_No,
         Email=Email,
-        dzongkhag=Dzongkhag_Code,
-        gewog=Gewog_Code,
-        village=Village_Code,
+        Dzongkhag=Dzongkhag_Code,
+        Gewog=Gewog_Code,
+        Village=Village_Code,
         From_Dzongkhag_Code=From_Dzongkhag_Code,
         From_Gewog_Code=From_Gewog_Code,
         From_Location=From_Location,
@@ -350,7 +350,7 @@ def forward_application(request):
 def view_application_details(request):
     application_id = request.GET.get('application_id')
     service_code = request.GET.get('service_code')
-
+    print(application_id)
     if service_code == 'MPP':
         application_details = t_plant_movement_permit_t1.objects.filter(Application_No=application_id)
         dzongkhag = t_dzongkhag_master.objects.all()
@@ -377,7 +377,7 @@ def view_application_details(request):
         for application in workflow_details:
             Field_Office = application.Field_Office_Id
         user_role_list = t_user_master.objects.filter(Role_Id='5', Field_Office_Id_id=Field_Office)
-        import_permit = t_plant_movement_permit_t3.objects.filter(Application_No=application_id)
+        import_permit = t_plant_import_permit_t3.objects.filter(Application_No=application_id)
         return render(request, 'import_permit/inspector_import_permit.html',
                       {'application_details': application_details,
                        'location': location, 'import': details_list, 'inspector_list': user_role_list,
@@ -1063,7 +1063,6 @@ def save_import_permit(request):
             B_movementPurpose = request.POST.get('B_movementPurpose')
             B_finalDestination = request.POST.get('B_finalDestination')
             Date_expected = request.POST.get('date_expected')
-            print(Date_expected)
             B_expectedDate = datetime.strptime(Date_expected, '%d-%m-%Y').date()
 
             t_plant_import_permit_t1.objects.create(
@@ -1232,9 +1231,7 @@ def save_import_agro(request):
 
 def fo_app_details(request):
     Application_No = request.GET.get('application_id')
-    print(Application_No)
     service_code = request.GET.get('service_code')
-    print(service_code)
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
@@ -1244,7 +1241,7 @@ def fo_app_details(request):
         details = t_plant_import_permit_t2.objects.filter(Application_No=Application_No)
         file = t_file_attachment.objects.filter(Application_No=Application_No)
         return render(request, 'import_permit/fo_import_permit.html',
-                      {'new_import_app': new_import_app, 'details': details, 'file': file, 'dzongkhag': dzongkhag,
+                      {'application_details': new_import_app, 'details': details, 'file': file, 'dzongkhag': dzongkhag,
                        'village': village, 'location': location})
     elif service_code == 'IAF':
         application_details = t_livestock_import_permit_animal_t1.objects.filter(Application_No=Application_No)
@@ -3383,7 +3380,7 @@ def save_nursery_reg(request):
     dzongkhag = request.POST.get('dzongkhag')
     gewog = request.POST.get('gewog')
     village = request.POST.get('village')
-    location_code = request.POST.get('location_code')
+    location_code = request.POST.get('location')
     Nursery_Type = request.POST.get('Nursery_Type')
     Applicant_Id = request.session['email']
 
@@ -3399,9 +3396,9 @@ def save_nursery_reg(request):
         email=email,
         Unit_Area=Unit_Area,
         Area=Area,
-        dzongkhag=dzongkhag,
-        gewog=gewog,
-        village=village,
+        Dzongkhag=dzongkhag,
+        Gewog=gewog,
+        Village=village,
         location_code=location_code,
         Nursery_Type=Nursery_Type,
         Inspection_Date=None,
@@ -3770,7 +3767,7 @@ def save_seed_cert(request):
     gewog = request.POST.get('gewog')
     village = request.POST.get('village')
     Applicant_Id = request.session['email']
-
+    location = request.POST.get('location')
     t_plant_seed_certification_t1.objects.create(
         Application_No=application_No,
         Nursery_Category=Nursery_Category,
@@ -3781,15 +3778,16 @@ def save_seed_cert(request):
         Owner_Name=Owner_Name,
         Contact_No=contactNo,
         Email=email,
-        dzongkhag=dzongkhag,
-        gewog=gewog,
-        village=village,
+        Dzongkhag=dzongkhag,
+        Gewog=gewog,
+        Village=village,
         Inspection_Date=None,
         Inspection_Leader=None,
         Inspection_Team=None,
         Seed_Certificate=None,
         Application_Date=date.today(),
-        Applicant_Id=Applicant_Id
+        Applicant_Id=Applicant_Id,
+        Location_Code=location
     )
     field_id = t_location_field_office_mapping.objects.filter(Dzongkhag_Code=dzongkhag)
     for field_office in field_id:
@@ -4591,7 +4589,8 @@ def call_for_inspection(request):
 
 def application_status(request):
     login_id = request.session['email']
-    application_details = t_workflow_details.objects.filter(Applicant_Id=login_id)
+    application_details = t_workflow_details.objects.filter(Applicant_Id=login_id,
+                                                            Action_Date__isnull=False)
     service_details = t_service_master.objects.all()
 
     return render(request, 'application_status.html', {'application_details': application_details,
@@ -4624,9 +4623,13 @@ def call_for_inspection_details(request):
         return render(request, 'import_permit/inspection_call_details.html', {'application_no': application_no,
                                                                               'location': location_details})
     elif service_id == 'RNS':
+        application_details = t_plant_clearence_nursery_seed_grower_t1.objects.filter(Application_No=application_no)
+        details = t_plant_clearence_nursery_seed_grower_t2.objects.filter(Application_No=application_no)
+        file = t_file_attachment.objects.filter(Application_No=application_no)
         location_details = t_field_office_master.objects.filter(Is_Entry_Point='Y')
-        return render(request, 'nursery_registration/inspection_call_details.html', {'application_no': application_no,
-                                                                                     'location': location_details})
+        return render(request, 'nursery_registration/inspection_call_details.html',
+                      {'application_details': application_details, 'seed_details': details, 'file': file,
+                       'application_no': application_no, 'location': location_details})
     elif service_id == 'ILP':
         application_details = t_livestock_import_permit_product_t1.objects.filter(Application_No=application_no)
         details = t_livestock_import_permit_product_t2.objects.filter(Application_No=application_no)
@@ -4899,8 +4902,6 @@ def get_citizen_details(request):
     url = 'https://staging-datahub-apim.dit.gov.bt/dcrc_citizen_details_api/1.0.0/citizendetails/' + cid
     # params = {'cid': cid}
     response = requests.get(url, headers=header, verify=False)
-    data['dzongkhagName'] = response.dzongkhagName
-    data['gewogName'] = response.gewogName
-    data['villageName'] = response.villageName
-    data['Name'] = response.firstName + "" + response.middleName + "" + response.lastName
+    print(response.json())
+    data['response'] = response.json()
     return JsonResponse(data)

@@ -27,19 +27,25 @@ option {
         <form method="post" id="permitForm">
         {% csrf_token %}
             <input type="hidden" id="applicationNo" name="applicationNo">
-            <div class="row justify-content-left">
-                <div class="form-check text-center">
-                    <label class="form-label">Certificate Type <font color="red">*</font></label><br>
-                    <label class="form-radio-label">
-                        <input class="form-radio-input" type="radio" name="certificateType" id="phytoRadio" value="P" checked onchange="changeExportType(this.value)">
-                        <span class="form-radio-sign">Phytosanitary Certificate</span>
+            <div class="row">
+                <div class="col-sm-3">
+                    <label class="form-label">Certificate Type <font color="red">*</font></label>
+                </div>
+                <div class="col-sm-8 justify-content-center">
+                    <label class="custom-control custom-radio">
+                        <input type="radio" class="custom-control-input" name="Import_Type" id="phytoRadio" value="P" checked onchange="changeExportType(this.value)">
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">Phytosanitary Certificate</span>
                     </label>
-                    <label class="form-radio-label ml-3">
-                        <input class="form-radio-input" type="radio" name="certificateType" id="cordycepRadio" value="C" onchange="changeExportType(this.value)">
-                        <span class="form-radio-sign">Export Certificate</span>
+                    <label class="custom-control custom-radio">
+                        <input type="radio" class="custom-control-input" name="Import_Type" id="cordycepRadio" value="C" onchange="changeExportType(this.value)">
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">Export Certificate</span>
                     </label>
                 </div>
+                <div class="alert alert-danger" id="Certificate_TypeErrorMsg" style="display:none"></div>
             </div>
+            <br>
             <div id='Phytosanitary'>
                 <div class="row justify-content-left">
                     <ul class="nav nav-pills nav-secondary" id="pills-tab-phyto" role="tablist">
@@ -429,7 +435,7 @@ option {
                     </div>
                 </div>
             </div>
-            <div id="Cordyceps">
+            <div id="Cordyceps" style="display:none;">
                 <div class="row justify-content-left">
                     <ul class="nav nav-pills nav-secondary" id="pills-tab-cordyceps" role="tablist">
                         <li class="nav-item">
@@ -443,24 +449,31 @@ option {
                 <div class="tab-content mt-2 mb-3" id="pills-tab-cordyceps-tabContent">
                     <div class="tab-pane fade show active" id="cordyceps-home" role="tabpanel" aria-labelledby="pills-phyto-tab">
                         <div id="cordyceps-details">
-                        <div class="row justify-content-left">
-                            <div class="form-check text-center">
-                                <label class="form-label">Applicant Type <font color="red">*</font></label><br>
-                                <label class="form-radio-label">
-                                    <input class="form-radio-input" type="radio" name="ApplicantType" id="bothRadio" value="bothRadio" onclick="changeRadio(this.value)"  checked>
-                                    <span class="form-radio-sign">Both Export and Retail </span>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <label class="form-label">Applicant Type <font color="red">*</font></label>
+                            </div>
+                            <div class="col-sm-8 justify-content-center">
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" name="ApplicantType" id="bothRadio" value="bothRadio" checked onclick="changeRadio(this.value)">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Both Export and Retail</span>
                                 </label>
-                                <label class="form-radio-label ml-3">
-                                    <input class="form-radio-input" type="radio" name="ApplicantType" id="directRadio" value="directRadio" onclick="changeRadio(this.value)">
-                                    <span class="form-radio-sign">Direct Export Only</span>
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" name="ApplicantType" id="directRadio" value="directRadio" onclick="changeRadio(this.value)">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Direct Export Only</span>
                                 </label>
-                                <label class="form-radio-label ml-3">
-                                    <input class="form-radio-input" type="radio" name="ApplicantType" id="retailRadio" value="retailRadio" onclick="changeRadio(this.value)">
-                                    <span class="form-radio-sign">Retail Outlets Only</span>
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" name="ApplicantType" id="retailRadio" value="retailRadio" onclick="changeRadio(this.value)">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Retail Outlets Only</span>
                                 </label>
                             </div>
+                            <div class="alert alert-danger" id="Applicant_TypeErrorMsg" style="display:none"></div>
                         </div>
                         <br>
+
                         <div class="row">
                             <div class="col-sm-4">
                                 <div class="form-group">
@@ -537,7 +550,7 @@ option {
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label class="form-label">Place Of Inspection Requested <font color="red">*</font></label>
-                                        <input type="text" class="form-control" id="c_requested_place" name="requested_place">
+                                        <input type="text" class="form-control" id="c_requested_place" name="Desired_Inspection_Place">
                                     </div>
                                 </div>
                             </div>
@@ -878,18 +891,18 @@ option {
             var p_Unit_Net = $("input[name=p_Unit_Net]:checked").length;
             var p_Country_Code = $('#p_Country_Code').val();
             var p_Entry_Point = $('#p_Entry_Point').val();
+            var p_Package_number = $('#p_Package_number').val();
+            var p_Package_description = $('#p_Package_description').val();
+            var p_Distinguish_Marks = $('#p_Distinguish_Marks').val();
+            var p_purpose = $("input[name=p_purpose]:checked").length;
+            var p_conveyanceMeans = $('#p_conveyanceMeans').val();
+            var p_Conveyance_Name = $('#p_Conveyance_Name').val();
 
             if(p_License_No == "")
             {
                 $('#p_License_NoErrorMsg').html("Enter License No.");
                 $('#p_License_NoErrorMsg').show();
                 $('#p_License_NoErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(p_cid == "")
-            {
-                $('#p_cidErrorMsg').html("Enter CID.");
-                $('#p_cidErrorMsg').show();
-                $('#p_cidErrorMsg').delay(2000).fadeOut('slow');
             }
             else if(p_cid == "")
             {
@@ -981,9 +994,27 @@ option {
                 $('#p_Entry_PointErrorMsg').show();
                 $('#p_Entry_PointErrorMsg').delay(2000).fadeOut('slow');
             }
+            else if(p_Package_number == "")
+            {
+                $('#p_Package_numberErrorMsg').html("Enter Number Of Packages.");
+                $('#p_Package_numberErrorMsg').show();
+                $('#p_Package_numberErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(p_Package_description == "")
+            {
+                $('#p_Package_descriptionErrorMsg').html("Enter Description.");
+                $('#p_Package_descriptionErrorMsg').show();
+                $('#p_Package_descriptionErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(p_Distinguish_Marks == "")
+            {
+                $('#p_Distinguish_MarksErrorMsg').html("Enter Distingushing Marks.");
+                $('#p_Distinguish_MarksErrorMsg').show();
+                $('#p_Distinguish_MarksErrorMsg').delay(2000).fadeOut('slow');
+            }
             else if(p_purpose < 1)
             {
-                $('#p_purposeErrorMsg').html("Select One Purpose/End Use.");
+                $('#p_purposeErrorMsg').html("Select One Purpose End Use.");
                 $('#p_purposeErrorMsg').show();
                 $('#p_purposeErrorMsg').delay(2000).fadeOut('slow');
             }
@@ -1346,5 +1377,31 @@ function getCitizenDetails(cidNo)
             }
         });
     }
+function getCitizenDetails(cidNo)
+{
+$.ajax({
+    type : "GET",
+    url : "{% url 'get_citizen_details' %}",
+    data :{'cidNo':cidNo},
+    success : function(data)
+    {
+        const myObj =data.response;
+        var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+        var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+        var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+        if (middleName == null) {
+                middleName = "";
+            }
+        var CitizenName = firstName + " " + middleName + " " + lastName;
+        var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
+        var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
+        var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
+        $('#c_Exporter_Name').val(CitizenName);
+        $('#dzongkhag').val(dzongkhagName);
+        $('#gewog').val(gewogName);
+        $('#village').val(villageName);
+    }
+});
+}
 </script>
 {% endblock %}

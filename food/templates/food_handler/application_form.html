@@ -52,7 +52,7 @@
                             <div class="form-group col-md-4">
                                 <label class="form-label" id="cid_label">CID <font color="red">*</font></label>
                                 <label class="form-label" id="permit_label" style="display:none;">Work Permit No <font color="red">*</font></label>
-                                <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)">
+                                <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCitizenDetails(this.value);">
                                 <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
                             </div>
                             <div class="form-group col-md-4">
@@ -107,7 +107,7 @@
                             <div class="col-md-4" id="f_email_div">
                                 <div class="form-group">
                                     <label class="form-label">Email <font color="red">*</font></label>
-                                    <input type="email" class="form-control" id="f_email" name="f_email" onchange="validateemailId(this.value)">
+                                    <input type="email" class="form-control" id="f_email" name="f_email" onchange="validateForeignemailId(this.value)">
                                 </div>
                                 <div class="alert alert-danger" id="f_emailErrorMsg" style="display:none"></div>
                             </div>
@@ -257,63 +257,75 @@ function save_application_form()
         var village = $('#village').val();
         var email = $('#email').val();
         var contactNumber = $('#contactNumber').val();
+        var training_type = $("input[name=Training_Type]:checked").length;
+        var preferred_place = $('#preferred_place').val();
+        var preferred_Date = $('#preferred_Date').val();
+        var associated_establishment = $('#associated_establishment').val();
         var cidCount = $('#cid').val().length;
         var number_count = $('#contactNumber').val().length;
-        var training_type = $("input[name=Training_Type]:checked").length;
 
         if(cid == "")
         {
             $('#cidErrorMsg').html("Enter CID Number.");
             $('#cidErrorMsg').show();
             $('#cidErrorMsg').delay(2000).fadeOut('slow');
+            $('#cid').focus();
         }
-        else if(name == "")
+        else if(cidCount < 11)
         {
-            $('#nameErrorMsg').html("Enter Name .");
-            $('#nameErrorMsg').show();
-            $('#nameErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(dzongkhag == "")
-        {
-            $('#dzongkhagErrorMsg').html("Select Dzongkhag.");
-            $('#dzongkhagErrorMsg').show();
-            $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(gewog == "")
-        {
-            $('#gewogErrorMsg').html("Select Gewog.");
-            $('#gewogErrorMsg').show();
-            $('#gewogErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(village == "")
-        {
-            $('#villageErrorMsg').html("Select Village.");
-            $('#villageErrorMsg').show();
-            $('#villageErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(contactNumber == "")
-        {
-            $('#contactNumberErrorMsg').html("Enter Contact Number.");
-            $('#contactNumberErrorMsg').show();
-            $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+            $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits.");
+            $('#cidErrorMsg').show();
+            setTimeout('hideStatus("cidErrorMsg")',2000);
+            $('#cid').focus();
         }
         else if(email == "")
         {
             $('#emailErrorMsg').html("Enter Contact Number.");
             $('#emailErrorMsg').show();
             $('#emailErrorMsg').delay(2000).fadeOut('slow');
+            $('#email').focus();
+        }
+        else if(contactNumber == "")
+        {
+            $('#contactNumberErrorMsg').html("Enter Contact Number.");
+            $('#contactNumberErrorMsg').show();
+            $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+            $('#contactNumber').focus();
+        }
+        else if(number_count < 8)
+        {
+            $('#contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
+            $('#contactNumberErrorMsg').show();
+            setTimeout('hideStatus("contactNumberErrorMsg")',2000);
+            $('#contactNumber').focus();
         }
         else if(training_type < 1)
         {
             $('#training_typeErrorMsg').html("Please Check One Training Type.");
             $('#training_typeErrorMsg').show();
             $('#training_typeErrorMsg').delay(2000).fadeOut('slow');
+            $("input[name=Training_Type]").focus();
+        }
+        else if(preferred_place == "")
+        {
+            $('#preferred_placeErrorMsg').html("Select Preferred Place.");
+            $('#preferred_placeErrorMsg').show();
+            $('#preferred_placeErrorMsg').delay(2000).fadeOut('slow');
+            $('#preferred_place').focus();
         }
         else if(preferred_Date == "")
         {
             $('#preferred_DateErrorMsg').html("Enter Trade License No.");
             $('#preferred_DateErrorMsg').show();
             $('#preferred_DateErrorMsg').delay(2000).fadeOut('slow');
+            $('#preferred_Date').focus();
+        }
+        else if(associated_establishment == "")
+        {
+            $('#associated_establishmentErrorMsg').html("Enter Associated Establishment.");
+            $('#associated_establishmentErrorMsg').show();
+            $('#associated_establishmentErrorMsg').delay(2000).fadeOut('slow');
+            $('#associated_establishment').focus();
         }
         else
         {
@@ -342,56 +354,76 @@ function save_application_form()
         var cid = $('#cid').val();
         var name = $('#name').val();
         var country = $('#dzongkhag').val();
-        var gewog = $('#gewog').val();
-        var village = $('#village').val();
         var email = $('#email').val();
         var contactNumber = $('#contactNumber').val();
-        var cidCount = $('#cid').val().length;
         var number_count = $('#contactNumber').val().length;
         var training_type = $("input[name=Training_Type]:checked").length;
-
+        var preferred_place = $('#preferred_place').val();
+        var preferred_Date = $('#preferred_Date').val();
+        var associated_establishment = $('#associated_establishment').val();
 
         if(cid == "")
         {
             $('#cidErrorMsg').html("Enter Permit Number.");
             $('#cidErrorMsg').show();
             $('#cidErrorMsg').delay(2000).fadeOut('slow');
+            $('#cid').focus();
         }
         else if(name == "")
         {
             $('#nameErrorMsg').html("Enter Name .");
             $('#nameErrorMsg').show();
             $('#nameErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(dzongkhag == "")
-        {
-            $('#countryErrorMsg').html("Select Country.");
-            $('#countryErrorMsg').show();
-            $('#countryErrorMsg').delay(2000).fadeOut('slow');
+            $('#name').focus();
         }
         else if(contactNumber == "")
         {
             $('#contactNumberErrorMsg').html("Enter Contact Number.");
             $('#contactNumberErrorMsg').show();
             $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+            $('#contactNumber').focus();
+        }
+        else if(number_count < 8)
+        {
+            $('#contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
+            $('#contactNumberErrorMsg').show();
+            $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+            $('#contactNumber').focus();
         }
         else if(email == "")
         {
             $('#emailErrorMsg').html("Enter Contact Number.");
             $('#emailErrorMsg').show();
             $('#emailErrorMsg').delay(2000).fadeOut('slow');
+            $('#email').focus();
         }
         else if(training_type < 1)
         {
             $('#training_typeErrorMsg').html("Please Check One Training Type.");
             $('#training_typeErrorMsg').show();
             $('#training_typeErrorMsg').delay(2000).fadeOut('slow');
+            $("input[name=Training_Type]").focus();
+        }
+        else if(preferred_place == "")
+        {
+            $('#preferred_placeErrorMsg').html("Select Preferred Place.");
+            $('#preferred_placeErrorMsg').show();
+            $('#preferred_placeErrorMsg').delay(2000).fadeOut('slow');
+            $('#preferred_place').focus();
         }
         else if(preferred_Date == "")
         {
             $('#preferred_DateErrorMsg').html("Enter Trade License No.");
             $('#preferred_DateErrorMsg').show();
             $('#preferred_DateErrorMsg').delay(2000).fadeOut('slow');
+            $('#preferred_Date').focus();
+        }
+        else if(associated_establishment == "")
+        {
+            $('#associated_establishmentErrorMsg').html("Enter Associated Establishment.");
+            $('#associated_establishmentErrorMsg').show();
+            $('#associated_establishmentErrorMsg').delay(2000).fadeOut('slow');
+            $('#associated_establishment').focus();
         }
         else
         {
@@ -536,6 +568,23 @@ function validateemailId(emailId)
 
 }
 
+function validateForeignemailId(emailId)
+{
+    var pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+    var no=emailId.match(pattern);
+
+    if(no==null)
+    {
+        $('#f_emailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
+        $('#f_email').val("");
+        $('#f_emailErrorMsg').show();
+        $('#f_emailErrorMsg').delay(2000).fadeOut('slow');
+    }else{
+     $('#f_emailErrorMsg').hide();
+    }
+
+}
+
 function checkContact(value)
 {
     var firstDigit = value.charAt(0);
@@ -583,6 +632,7 @@ function checkValue(value)
         $('#email_div').hide();
         $('#f_email_div').show();
         $('#country_div').show();
+        $("#name").removeAttr("disabled");
     }
     else
     {
@@ -594,6 +644,7 @@ function checkValue(value)
         $('#email_div').show();
         $('#f_email_div').hide();
         $('#country_div').hide();
+        $("#name").attr("disabled", "disabled");
     }
 }
 
@@ -607,6 +658,33 @@ function check_condition()
     {
         $('.card-action').hide();
     }
+}
+
+function getCitizenDetails(cidNo)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'get_citizen_details' %}",
+        data :{'cidNo':cidNo},
+        success : function(data)
+        {
+            const myObj =data.response;
+            var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+            var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+            var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+            if (middleName == null) {
+                    middleName = "";
+                }
+            var CitizenName = firstName + " " + middleName + " " + lastName;
+            var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
+            var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
+            var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
+            $('#name').val(CitizenName);
+            $('#dzongkhag').val(dzongkhagName);
+            $('#gewog').val(gewogName);
+            $('#village').val(villageName);
+        }
+    });
 }
 </script>
 {% endblock %}

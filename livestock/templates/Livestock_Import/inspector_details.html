@@ -100,115 +100,112 @@
                                 </div>
                             {% endif %}
                         </div>
-                        <div class="row">
-                            <div class="col-sm-2">
-                                <label class="form-label">Nationality</label>
-                            </div>
-                            {% if application_details.Nationality == 'Bhutanese' %}
-                                <div class="col-sm-4 justify-content-center">
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" class="custom-control-input" checked>
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Bhutanese</span>
-                                    </label>
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" class="custom-control-input" disabled>
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Non-Bhutanese</span>
-                                    </label>
-                                </div>
-                            {% else %}
-                                <div class="col-sm-4 justify-content-center">
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" class="custom-control-input" disabled>
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Bhutanese</span>
-                                    </label>
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" class="custom-control-input" checked>
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Non-Bhutanese</span>
-                                    </label>
-                                </div>
-                            {% endif %}
-                        </div>
-                        <div id="plant_details">
+                        {% if application_details.Import_Type == 'Individual' %}
                             <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="regNo">License Number</label>
-                                        <input type="text" class="form-control" id="regNo" name="regNo" value="{{application_details.License_No}}" disabled>
-                                    </div>
+                                <div class="col-sm-2">
+                                    <label class="form-label">Nationality</label>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="business_name">Business Name</label>
-                                        <input type="text" class="form-control" id="business_name" name="companyName" value="{{application_details.Business_Name }}" disabled>
+                                {% if application_details.Nationality == 'Bhutanese' %}
+                                    <div class="col-sm-4 justify-content-center">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" class="custom-control-input" checked>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Bhutanese</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" class="custom-control-input" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Non-Bhutanese</span>
+                                        </label>
                                     </div>
-                                </div>
+                                {% else %}
+                                    <div class="col-sm-4 justify-content-center">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" class="custom-control-input" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Bhutanese</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" class="custom-control-input" checked>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Non-Bhutanese</span>
+                                        </label>
+                                    </div>
+                                {% endif %}
                             </div>
+                        {% endif %}
+                            {% if application_details.Import_Type == 'Individual' and if application_details.Nationality == 'Bhutanese'%}
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="cid">Applicant CID</label>
                                         <input type="number"  class="form-control" id="cid" name="cid_number" value="{{ application_details.CID  }}" disabled>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="name">Applicant Name</label>
                                         <input type="text" class="form-control" id="name" name="Name" value="{{ application_details.Applicant_Name }}" disabled>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="presentAddress">Present Address</label>
-                                        <textarea class="form-control" rows="5" id="presentAddress" name="presentAddress" disabled>{{ application_details.Present_Address }}</textarea>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="contactNumber">Contact Number</label>
-                                        <input type="number" class="form-control" id="contactNumber"  name="contactNo" value="{{ application_details.Contact_No }}" disabled>
+                                        <textarea class="form-control" rows="3" id="presentAddress" name="presentAddress" disabled>{{ application_details.Present_Address }}</textarea>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="email">Email</label>
-                                        <input type="email" class="form-control" id="email" name="email" value="{{ application_details.Email }}" disabled>
+                                        <label class="form-label">Dzongkhag &nbsp;<font color='red'>*</font></label>
+                                        <input type="text" class="form-control" value="{{ application_details.Dzongkhag_Code }}" disabled>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="supplier">Name And Address Supplier</label>
-                                        <textarea class="form-control" rows="5" id="supplier" name="supplier" disabled>{{ application_details.Name_And_Address_Supplier }}</textarea>
+                                        <label class="form-label">Gewog &nbsp;<font color='red'>*</font></label>
+                                        <input type="text" class="form-control" value="{{ application_details.Gewog_Code }}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Village &nbsp;<font color='red'>*</font></label>
+                                        <input type="text" class="form-control" value="{{ application_details.Village_Code }}" disabled>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="conveyanceMeans">Means of Conveyance </label>
-                                        <select class="form-control form-control" id="conveyanceMeans" name="conveyanceMeans" disabled>
-                                            <option value="">-SELECT-</option>
-                                            {% if application_details.Conveyance_Means == "Air" %}
-                                            <option value="Air" selected>Air</option>
-                                             <option value="Vehicular">Vehicular</option>
-                                            {% else %}
-                                             <option value="Air">Air</option>
-                                            <option value="Vehicular" selected>Vehicular</option>
-                                            {% endif%}
-                                        </select>
+                                        <label class="form-label">Contact Number</label>
+                                        <input type="number" class="form-control" value="{{ application_details.Contact_No }}" disabled>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="entryPlace">Place Of Entry</label>
-                                         <select class="form-control" name="entry_point"  id="entryPlace">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" class="form-control"  value="{{ application_details.Email }}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Origin Of Source Of Products</label>
+                                        <input type="text" class="form-control" value="{{application_details.Origin_Source_Products}}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Exporter’s name and address</label>
+                                        <textarea class="form-control" disabled>{{application_details.Name_And_Address_Supplier }}</textarea>
+                                    </div>
+                                </div>
+                                 <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Place Of Entry</label>
+                                        <select class="form-control" disabled>
                                             <option value="">--SELECT--</option>
                                             {% for location in location %}
                                                     <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
@@ -216,31 +213,200 @@
                                          </select>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="movementPurpose">Purpose</label>
-                                        <textarea class="form-control" rows="5" id="movementPurpose" name="movementPurpose">{{ application_details.Purpose  }}</textarea>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="finalDestination">Final Destination</label>
-                                        <input type="text" class="form-control" id="finalDestination" name="final_Destination" value="{{ application_details.Final_Destination  }}">
+                                        <label class="form-label">Place of Entry</label>
+                                        <select class="form-control"disabled>
+                                            {% for location in location %}
+                                                <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                            {% endfor %}
+                                         </select>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Final Destination</label>
+                                         <input type="text" class="form-control" value="{{application_details.Final_Destination }}">
+                                    </div>
+                                </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="expectedDate">Expected Arrival Date</label>
-                                        <input type="text" class="form-control date-picker flatpickr-input active" id="expectedDate" name="expected_Date"  value="{{ application_details.Expected_Arrival_Date}}">
+                                        <label class="form-label">Expected Date for Arrival</label>
+                                         <input type="text" class="form-control" value="{{application_details.Expected_Arrival_Date }}" disabled>
                                     </div>
-                                    <div class="alert alert-danger" id="dateErrorMsg" style="display:none"></div>
                                 </div>
                             </div>
-                        </div>
+                        {% elif application_details.Import_Type == 'Individual' and if application_details.Nationality == 'Non-Bhutanese' %}
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="cid">Passport No</label>
+                                        <input type="number" class="form-control" value="{{ application_details.Passport_No }}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="name">Name</label>
+                                        <input type="text" class="form-control" value="{{ application_details.Applicant_Name }}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="presentAddress">Present Address</label>
+                                        <textarea class="form-control" rows="3" disabled>{{ application_details.Present_Address }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Contact Number</label>
+                                        <input type="number" class="form-control" value="{{ application_details.Contact_No }}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" class="form-control"  value="{{ application_details.Email }}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Origin Of Source Of Products</label>
+                                        <input type="text" class="form-control" value="{{application_details.Origin_Source_Products}}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Exporter’s name and address</label>
+                                        <textarea class="form-control" disabled>{{application_details.Name_And_Address_Supplier }}</textarea>
+                                    </div>
+                                </div>
+                                 <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Place Of Entry</label>
+                                        <select class="form-control" disabled>
+                                            <option value="">--SELECT--</option>
+                                            {% for location in location %}
+                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
+                                            {% endfor %}
+                                         </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Place of Entry</label>
+                                        <select class="form-control"disabled>
+                                            {% for location in location %}
+                                                <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                            {% endfor %}
+                                         </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Final Destination</label>
+                                         <input type="text" class="form-control" value="{{application_details.Final_Destination }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Expected Date for Arrival</label>
+                                         <input type="text" class="form-control" value="{{application_details.Expected_Arrival_Date }}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="presentAddress">Present Address</label>
+                                        <textarea class="form-control" rows="3" disabled>{{ application_details.Present_Address }}</textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Contact Number</label>
+                                        <input type="number" class="form-control" value="{{ application_details.Contact_No }}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" class="form-control"  value="{{ application_details.Email }}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="regNo">License Number</label>
+                                        <input type="text" class="form-control" id="regNo" name="regNo" value="{{application_details.License_No}}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="business_name">Business Name</label>
+                                        <input type="text" class="form-control" id="business_name" name="companyName" value="{{application_details.Business_Name }}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Origin Of Source Of Products</label>
+                                        <input type="text" class="form-control" value="{{application_details.Origin_Source_Products}}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Exporter’s name and address</label>
+                                        <textarea class="form-control" disabled>{{application_details.Name_And_Address_Supplier }}</textarea>
+                                    </div>
+                                </div>
+                                 <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Place Of Entry</label>
+                                        <select class="form-control" disabled>
+                                            <option value="">--SELECT--</option>
+                                            {% for location in location %}
+                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
+                                            {% endfor %}
+                                         </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Place of Entry</label>
+                                        <select class="form-control"disabled>
+                                            {% for location in location %}
+                                                <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                            {% endfor %}
+                                         </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Final Destination</label>
+                                         <input type="text" class="form-control" value="{{application_details.Final_Destination }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Expected Date for Arrival</label>
+                                         <input type="text" class="form-control" value="{{application_details.Expected_Arrival_Date }}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
                     {% endfor %}
                 </div>
             </div>

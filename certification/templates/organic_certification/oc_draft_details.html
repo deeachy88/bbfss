@@ -81,7 +81,7 @@
                         <div class="col-md-4 individual_details">
                             <div class="form-group">
                                 <label class="form-label">Applicant CID <font color="red">*</font></label>
-                                <input type="number" value="{{application_details.CID}}" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)">
+                                <input type="number" value="{{application_details.CID}}" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCitizenDetails(this.value);">
                             </div>
                             <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
                         </div>
@@ -106,13 +106,21 @@
                             </div>
                             <div class="alert alert-danger" id="farmers_group_numberErrorMsg" style="display:none"></div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-4 individual_details">
+                            <div class="form-group">
+                                <label class="form-label">Dzongkhag <font color="red">*</font></label>
+                                <input type="text" class="form-control" name="dzongkhag" id="dzongkhag_code" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-4 farmer_group_details" style="display:none">
                             <div class="form-group">
                                 <label class="form-label">Dzongkhag <font color="red">*</font></label>
                                 <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
                                     <option value="">--SELECT DZONGKHAG--</option>
                                     {% for dzongkhag in dzongkhag %}
-                                            <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                        <option value="{{dzongkhag.Dzongkhag_Code}}"{% if application_details.Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>
+                                            {{ dzongkhag.Dzongkhag_Name }}
+                                        </option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -120,25 +128,37 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-4 individual_details">
+                            <div class="form-group">
+                                <label class="form-label">Gewog <font color="red">*</font></label>
+                                <input type="text" class="form-control" name="gewog" id="gewog_code" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-4 farmer_group_details" style="display:none" >
                             <div class="form-group">
                                 <label class="form-label">Gewog <font color="red">*</font></label>
                                 <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
                                     <option value="">--SELECT GEWOG--</option>
                                     {% for gewog in gewog %}
-                                            <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
+                                        <option value="{{ gewog.Gewog_Code }}"{% if application_details.Gewog_Code == gewog.Gewog_Code %}selected{% endif %}>{{ gewog.Gewog_Name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                             <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-4 individual_details">
+                            <div class="form-group">
+                                <label class="form-label">Village <font color="red">*</font></label>
+                                <input type="text" class="form-control" name="village" id="village_code" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-4 farmer_group_details" style="display:none">
                             <div class="form-group">
                                 <label class="form-label">Village <font color="red">*</font></label>
                                  <select class="form-control" name="village" id="village">
                                     <option value="">--SELECT VILLAGE--</option>
                                     {% for village in village %}
-                                            <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
+                                        <option value="{{ village.Village_Code }}" {% if application_details.Village_Code == village.Village_Code %}selected{% endif %}>{{ village.Village_Name }}</option>
                                     {% endfor %}
                                  </select>
                             </div>
@@ -1427,13 +1447,13 @@ function update_organic_certificate()
         {
             $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits.");
             $('#cidErrorMsg').show();
-            setTimeout('hideStatus("cidErrorMsg")',2000);
+            $('#cidErrorMsg').delay(2000).fadeOut('slow');
         }
         else if(number_count < 8)
         {
             $('#contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
             $('#contactNumberErrorMsg').show();
-            setTimeout('hideStatus("contactNumberErrorMsg")',2000);
+            $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
         }
         else
         {
@@ -1794,6 +1814,33 @@ function checkStandards(value)
     {
         $("#other_standard").attr("disabled", "disabled");
     }
+}
+
+function getCitizenDetails(cidNo)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'get_citizen_details' %}",
+        data :{'cidNo':cidNo},
+        success : function(data)
+        {
+            const myObj =data.response;
+            var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+            var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+            var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+            if (middleName == null) {
+                    middleName = "";
+                }
+            var CitizenName = firstName + " " + middleName + " " + lastName;
+            var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
+            var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
+            var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
+            $('#name').val(CitizenName);
+            $('#dzongkhag_code').val(dzongkhagName);
+            $('#gewog_code').val(gewogName);
+            $('#village_code').val(villageName);
+        }
+    });
 }
 </script>
 {% endblock %}

@@ -133,7 +133,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">CID</label>
-                                <input type="number" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="checkCID(this.value)">
+                                <input type="number" value="{{application_details.CID}}" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCitizenDetails(this.value);">
                             </div>
                             <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
                         </div>
@@ -142,7 +142,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Name Of Owner</label>
-                                <input type="text" class="form-control" id="owner_name" name="owner_name">
+                                <input type="text" class="form-control" id="owner_name" name="owner_name" disabled>
                             </div>
                             <div class="alert alert-danger" id="owner_nameErrorMsg" style="display:none"></div>
                         </div>
@@ -601,6 +601,12 @@ function save_inspection_details()
     else if(cid == "")
     {
         $('#cidErrorMsg').html("Enter CID Number.");
+        $('#cidErrorMsg').show();
+        $('#cidErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(cidCount < 11)
+    {
+        $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits.");
         $('#cidErrorMsg').show();
         $('#cidErrorMsg').delay(2000).fadeOut('slow');
     }
@@ -1160,5 +1166,28 @@ function load_attachment_details()
     });
 }
 
+function getCitizenDetails(cidNo)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'get_citizen_details' %}",
+        data :{'cidNo':cidNo},
+        success : function(data)
+        {
+            const myObj =data.response;
+            var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+            var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+            var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+            if (middleName == null) {
+                    middleName = "";
+                }
+            var CitizenName = firstName + " " + middleName + " " + lastName;
+            var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
+            var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
+            var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
+            $('#owner_name').val(CitizenName);
+        }
+    });
+}
 </script>
 {% endblock %}

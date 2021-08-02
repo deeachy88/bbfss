@@ -39,7 +39,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Applicant CID <font color="red">*</font></label>
-                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)">
+                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCitizenDetails(this.value)">
                                 </div>
                                 <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
                             </div>
@@ -348,156 +348,154 @@ function save_food_export()
         $('#license_noErrorMsg').html("Enter Trade License No.");
         $('#license_noErrorMsg').show();
         $('#license_noErrorMsg').delay(2000).fadeOut('slow');
+        $('#license_no').focus();
     }
     else if(cid == "")
     {
         $('#cidErrorMsg').html("Enter CID Number.");
         $('#cidErrorMsg').show();
         $('#cidErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(name == "")
-    {
-        $('#nameErrorMsg').html("Enter Name .");
-        $('#nameErrorMsg').show();
-        $('#nameErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(dzongkhag == "")
-    {
-        $('#dzongkhagErrorMsg').html("Select Dzongkhag.");
-        $('#dzongkhagErrorMsg').show();
-        $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(gewog == "")
-    {
-        $('#gewogErrorMsg').html("Select Gewog.");
-        $('#gewogErrorMsg').show();
-        $('#gewogErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(village == "")
-    {
-        $('#villageErrorMsg').html("Select Village.");
-        $('#villageErrorMsg').show();
-        $('#villageErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(exporters_address == "")
-    {
-        $('#exporters_addressErrorMsg').html("Enter Exporter's Address .");
-        $('#exporters_addressErrorMsg').show();
-        $('#exporters_addressErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(contactNumber == "")
-    {
-        $('#contactNumberErrorMsg').html("Enter Contact Number.");
-        $('#contactNumberErrorMsg').show();
-        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(email == "")
-    {
-        $('#emailErrorMsg').html("Enter Contact Number.");
-        $('#emailErrorMsg').show();
-        $('#emailErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(importers_name == "")
-    {
-        $('#importers_nameErrorMsg').html("Enter Importer's Name.");
-        $('#importers_nameErrorMsg').show();
-        $('#importers_nameErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(Importers_Address == "")
-    {
-        $('#Importers_AddressErrorMsg').html("Enter Importer's Address.");
-        $('#Importers_AddressErrorMsg').show();
-        $('#Importers_AddressErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(importing_country == "")
-    {
-        $('#importing_countryErrorMsg').html("Select Importing Country.");
-        $('#importing_countryErrorMsg').show();
-        $('#importing_countryErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if (Product_name == "")
-    {
-        $('#Product_nameErrorMsg').html("Enter Name Of Product.");
-        $('#Product_nameErrorMsg').show();
-        $('#Product_nameErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if (no_of_packages == "")
-    {
-        $('#no_of_packagesErrorMsg').html("Enter No of Product.");
-        $('#no_of_packagesErrorMsg').show();
-        $('#no_of_packagesErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if (description_of_packages == "")
-    {
-        $('#description_of_packagesErrorMsg').html("Enter Description of Product.");
-        $('#description_of_packagesErrorMsg').show();
-        $('#description_of_packagesErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if (quantity == "")
-    {
-        $('#quantityErrorMsg').html("Enter Quantity.");
-        $('#quantityErrorMsg').show();
-        $('#quantityErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if (unit == "")
-    {
-        $('#unitErrorMsg').html("Enter Unit.");
-        $('#unitErrorMsg').show();
-        $('#unitErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if (Place_of_Exit == "")
-    {
-        $('#Place_of_ExitErrorMsg').html("Select Point Of Exit.");
-        $('#Place_of_ExitErrorMsg').show();
-        $('#Place_of_ExitErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if (Export_Expected_Date == "")
-    {
-        $('#Export_Expected_DateErrorMsg').html("Select Expected Date for Export.");
-        $('#Export_Expected_DateErrorMsg').show();
-        $('#Export_Expected_DateErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if (inspectionDate == "")
-    {
-        $('#inspectionDateErrorMsg').html("Select Proposed Inspection Date.");
-        $('#inspectionDateErrorMsg').show();
-        $('#inspectionDateErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if (export_purpose == "")
-    {
-        $('#export_purposeErrorMsg').html("Enter Purpose Of Expoer.");
-        $('#export_purposeErrorMsg').show();
-        $('#export_purposeErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(consignment_location_dzongkhag == "")
-    {
-        $('#consignment_location_dzongkhagErrorMsg').html("Select Consignment Location Dzongkhag.");
-        $('#consignment_location_dzongkhagErrorMsg').show();
-        $('#consignment_location_dzongkhagErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(consignment_location_gewog == "")
-    {
-        $('#consignment_location_gewogErrorMsg').html("Select Consignment Location Gewog.");
-        $('#consignment_location_gewogErrorMsg').show();
-        $('#consignment_location_gewogErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(consignment_location == "")
-    {
-        $('#consignment_locationErrorMsg').html("Enter Consignment Location.");
-        $('#consignment_locationErrorMsg').show();
-        $('#consignment_locationErrorMsg').delay(2000).fadeOut('slow');
+        $('#cid').focus();
     }
     else if(cidCount < 11)
     {
         $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits.");
         $('#cidErrorMsg').show();
         setTimeout('hideStatus("cidErrorMsg")',2000);
+        $('#cid').focus();
+    }
+    else if(exporters_address == "")
+    {
+        $('#exporters_addressErrorMsg').html("Enter Exporter's Address .");
+        $('#exporters_addressErrorMsg').show();
+        $('#exporters_addressErrorMsg').delay(2000).fadeOut('slow');
+        $('#exporters_address').focus();
+    }
+    else if(contactNumber == "")
+    {
+        $('#contactNumberErrorMsg').html("Enter Contact Number.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').focus();
     }
     else if(number_count < 8)
     {
         $('#contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
         $('#contactNumberErrorMsg').show();
         setTimeout('hideStatus("contactNumberErrorMsg")',2000);
+        $('#contactNumber').focus();
+    }
+    else if(email == "")
+    {
+        $('#emailErrorMsg').html("Enter Contact Number.");
+        $('#emailErrorMsg').show();
+        $('#emailErrorMsg').delay(2000).fadeOut('slow');
+        $('#email').focus();
+    }
+    else if(importers_name == "")
+    {
+        $('#importers_nameErrorMsg').html("Enter Importer's Name.");
+        $('#importers_nameErrorMsg').show();
+        $('#importers_nameErrorMsg').delay(2000).fadeOut('slow');
+        $('#importers_name').focus();
+    }
+    else if(Importers_Address == "")
+    {
+        $('#Importers_AddressErrorMsg').html("Enter Importer's Address.");
+        $('#Importers_AddressErrorMsg').show();
+        $('#Importers_AddressErrorMsg').delay(2000).fadeOut('slow');
+        $('#Importers_Address').focus();
+    }
+    else if(importing_country == "")
+    {
+        $('#importing_countryErrorMsg').html("Select Importing Country.");
+        $('#importing_countryErrorMsg').show();
+        $('#importing_countryErrorMsg').delay(2000).fadeOut('slow');
+        $('#importing_country').focus();
+    }
+    else if (Product_name == "")
+    {
+        $('#Product_nameErrorMsg').html("Enter Name Of Product.");
+        $('#Product_nameErrorMsg').show();
+        $('#Product_nameErrorMsg').delay(2000).fadeOut('slow');
+        $('#Product_name').focus();
+    }
+    else if (no_of_packages == "")
+    {
+        $('#no_of_packagesErrorMsg').html("Enter No of Product.");
+        $('#no_of_packagesErrorMsg').show();
+        $('#no_of_packagesErrorMsg').delay(2000).fadeOut('slow');
+        $('#no_of_packages').focus();
+    }
+    else if (description_of_packages == "")
+    {
+        $('#description_of_packagesErrorMsg').html("Enter Description of Product.");
+        $('#description_of_packagesErrorMsg').show();
+        $('#description_of_packagesErrorMsg').delay(2000).fadeOut('slow');
+        $('#description_of_packages').focus();
+    }
+    else if (quantity == "")
+    {
+        $('#quantityErrorMsg').html("Enter Quantity.");
+        $('#quantityErrorMsg').show();
+        $('#quantityErrorMsg').delay(2000).fadeOut('slow');
+        $('#quantity').focus();
+    }
+    else if (unit == "")
+    {
+        $('#unitErrorMsg').html("Enter Unit.");
+        $('#unitErrorMsg').show();
+        $('#unitErrorMsg').delay(2000).fadeOut('slow');
+        $('#unit').focus();
+    }
+    else if (Place_of_Exit == "")
+    {
+        $('#Place_of_ExitErrorMsg').html("Select Point Of Exit.");
+        $('#Place_of_ExitErrorMsg').show();
+        $('#Place_of_ExitErrorMsg').delay(2000).fadeOut('slow');
+        $('#Place_of_Exit').focus();
+    }
+    else if (Export_Expected_Date == "")
+    {
+        $('#Export_Expected_DateErrorMsg').html("Select Expected Date for Export.");
+        $('#Export_Expected_DateErrorMsg').show();
+        $('#Export_Expected_DateErrorMsg').delay(2000).fadeOut('slow');
+        $('#Export_Expected_Date').focus();
+    }
+    else if (inspectionDate == "")
+    {
+        $('#inspectionDateErrorMsg').html("Select Proposed Inspection Date.");
+        $('#inspectionDateErrorMsg').show();
+        $('#inspectionDateErrorMsg').delay(2000).fadeOut('slow');
+        $('#inspectionDate').focus();
+    }
+    else if (export_purpose == "")
+    {
+        $('#export_purposeErrorMsg').html("Enter Purpose Of Expoer.");
+        $('#export_purposeErrorMsg').show();
+        $('#export_purposeErrorMsg').delay(2000).fadeOut('slow');
+        $('#export_purpose').focus();
+    }
+    else if(consignment_location_dzongkhag == "")
+    {
+        $('#consignment_location_dzongkhagErrorMsg').html("Select Consignment Location Dzongkhag.");
+        $('#consignment_location_dzongkhagErrorMsg').show();
+        $('#consignment_location_dzongkhagErrorMsg').delay(2000).fadeOut('slow');
+        $('#consignment_location_dzongkhag').focus();
+    }
+    else if(consignment_location_gewog == "")
+    {
+        $('#consignment_location_gewogErrorMsg').html("Select Consignment Location Gewog.");
+        $('#consignment_location_gewogErrorMsg').show();
+        $('#consignment_location_gewogErrorMsg').delay(2000).fadeOut('slow');
+        $('#consignment_location_gewog').focus();
+    }
+    else if(consignment_location == "")
+    {
+        $('#consignment_locationErrorMsg').html("Enter Consignment Location.");
+        $('#consignment_locationErrorMsg').show();
+        $('#consignment_locationErrorMsg').delay(2000).fadeOut('slow');
+        $('#consignment_location').focus();
     }
     else
     {
@@ -682,17 +680,27 @@ function food_export_attachment_modal()
 
 function getCitizenDetails(cidNo)
 {
-
     $.ajax({
         type : "GET",
         url : "{% url 'get_citizen_details' %}",
         data :{'cidNo':cidNo},
         success : function(data)
         {
-            $('#name').val(data.Name);
-            $('#dzongkhag').val(data.dzongkhagName);
-            $('#gewog').val(data.gewogName);
-            $('#village').val(data.villageName);
+            const myObj =data.response;
+            var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+            var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+            var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+            if (middleName == null) {
+                    middleName = "";
+                }
+            var CitizenName = firstName + " " + middleName + " " + lastName;
+            var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
+            var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
+            var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
+            $('#name').val(CitizenName);
+            $('#dzongkhag').val(dzongkhagName);
+            $('#gewog').val(gewogName);
+            $('#village').val(villageName);
         }
     });
 }

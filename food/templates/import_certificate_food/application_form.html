@@ -41,17 +41,17 @@
                             </div>
                             <div class="col-sm-4 justify-content-center">
                                 <label class="custom-control custom-radio">
-                                    <input type="radio" name="Import_Type" class="custom-control-input" value="Individual">
+                                    <input type="radio" name="Import_Type" class="custom-control-input" value="Individual" onclick="checkForm(this.value)">
                                     <span class="custom-control-indicator"></span>
                                     <span class="custom-control-description">Individual</span>
                                 </label>
                                 <label class="custom-control custom-radio">
-                                    <input type="radio" name="Import_Type" class="custom-control-input" value="Commercial">
+                                    <input type="radio" name="Import_Type" class="custom-control-input" value="Commercial" onclick="checkForm(this.value)">
                                     <span class="custom-control-indicator"></span>
                                     <span class="custom-control-description">Commercial</span>
                                 </label>
                                 <label class="custom-control custom-radio">
-                                    <input type="radio" name="Import_Type" class="custom-control-input" value="Institution">
+                                    <input type="radio" name="Import_Type" class="custom-control-input" value="Institution" onclick="checkForm(this.value)">
                                     <span class="custom-control-indicator"></span>
                                     <span class="custom-control-description">Institution</span>
                                 </label>
@@ -695,6 +695,52 @@ function checkTransit(value)
     {
         $('#transit_country').hide();
     }
+}
+
+function checkForm(value)
+{
+    if(value == "Individual")
+    {
+        $("#cid").removeAttr("disabled");
+        $("#license_no").attr("disabled", "disabled");
+    }
+    else
+    {
+        $('#cid').val("");
+        $("#cid").attr("disabled", "disabled");
+        $("#license_no").removeAttr("disabled");
+        $('#name').val("");
+        $('#dzongkhag').val("");
+        $('#village').val("");
+        $('#gewog').val("");
+    }
+}
+
+function getCitizenDetails(cidNo)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'get_citizen_details' %}",
+        data :{'cidNo':cidNo},
+        success : function(data)
+        {
+            const myObj =data.response;
+            var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+            var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+            var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+            if (middleName == null) {
+                    middleName = "";
+                }
+            var CitizenName = firstName + " " + middleName + " " + lastName;
+            var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
+            var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
+            var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
+            $('#name').val(CitizenName);
+            $('#dzongkhag').val(dzongkhagName);
+            $('#gewog').val(gewogName);
+            $('#village').val(villageName);
+        }
+    });
 }
 
 </script>

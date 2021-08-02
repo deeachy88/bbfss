@@ -40,19 +40,19 @@
                                     <div class="col-sm-4">
                                         <div class="form-group">
                                             <label>License No</label>
-                                            <input type="text" class="form-control" id="p_License_No" name="p_License_No">
+                                            <input type="text" class="form-control" value="{{application_details.License_No}}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
                                             <label>CID</label>
-                                            <input type="text" class="form-control" id="p_cid" name="p_cid">
+                                            <input type="text" class="form-control" value="{{application_details.CID}}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
                                             <label>Exporter Name</label>
-                                            <input type="text" class="form-control" id="p_Exporter_Name" name="p_Exporter_Name">
+                                            <input type="text" class="form-control" value="{{application_details.Exporter_Name}}" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -60,19 +60,19 @@
                                     <div class="col-sm-4">
                                         <div class="form-group">
                                             <label>Exporter Address</label>
-                                            <textarea class="form-control" id="p_Exporter_Address" name="p_Exporter_Address" rows="3"></textarea>
+                                            <textarea class="form-control" disabled rows="3">{{application_details.Exporter_Name}}</textarea>
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
                                             <label>Contact Number</label>
-                                            <input type="number" class="form-control" id="p_Contact_No" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="p_Contact_No" maxlength="8" onkeypress="return isNumberKey(event)">
+                                            <input type="text" class="form-control" value="{{application_details.Contact_No}}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
                                             <label>Email</label>
-                                            <input type="email" class="form-control" id="p_Email" name="p_Email">
+                                            <input type="email" class="form-control" value="{{application_details.Email}}">
                                         </div>
                                     </div>
                                 </div>
@@ -80,10 +80,11 @@
                                     <div class="col-sm-4">
                                         <div class="form-group">
                                             <label>Dzongkhag</label>
-                                            <select class="form-control" name="p_Dzongkhag_Code"  id="p_Dzongkhag_Code" onchange="getLocation(this.value),getLocation(this.value)">
-                                                <option value="">--SELECT DZONGKHAG--</option>
+                                            <select class="form-control" disabled>
                                                 {% for dzongkhag in dzongkhag %}
-                                                        <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                                    <option value="{{dzongkhag.Dzongkhag_Code}}"{% if application_details.Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>
+                                                        {{ dzongkhag.Dzongkhag_Name }}
+                                                    </option>
                                                 {% endfor %}
                                             </select>
                                         </div>
@@ -91,10 +92,9 @@
                                     <div class="col-sm-4">
                                         <div class="form-group">
                                             <label>Location</label>
-                                            <select class="form-control" name="p_Location_Code"  id="p_Location_Code">
-                                                <option value="">--SELECT LOCATION--</option>
+                                            <select class="form-control" disabled>
                                                 {% for location in location %}
-                                                    <option value="{{ location.Location_Code }}">{{ location.Location_Name }}</option>
+                                                    <option value="{{ location.Location_Code }}" {% if application_details.To_Gewog_Code == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
                                                 {% endfor %}
                                             </select>
                                         </div>
@@ -102,7 +102,7 @@
                                     <div class="col-sm-4">
                                         <div class="form-group">
                                             <label>Name & Address of Consignee</label>
-                                            <textarea class="form-control" id="p_Name_Address" name="p_Name_Address" rows="3"></textarea>
+                                            <textarea class="form-control" disabled rows="3">{{application_details.Consingee_Name_Address}}</textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -110,13 +110,13 @@
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label>Botanical name of the commodity</label>
-                                            <input type="text" class="form-control" id="p_Botanical_Name" name="p_Botanical_Name">
+                                            <input type="text" class="form-control" value="{{application_details.Botanical_Name}}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label>Description of the Commodity</label>
-                                            <textarea class="form-control" id="p_Description" name="p_Description" rows="3"></textarea>
+                                            <textarea class="form-control" disabled rows="3">{{application_details.Description}}</textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -125,28 +125,33 @@
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label>Quantity (Gross Weight)</label>
-                                            <input type="text" class="form-control" id="p_Qty_Gross" name="p_Qty_Gross">
+                                            <input type="text" class="form-control" value="{{application_details.Qty_Gross}}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="clearfix mb-4" style="margin-bottom: 2.5rem!important;"></div>
                                         <div class="form-check text-center">
+                                            {% if application_details.Unit_Gross == 'MT(s)' %}
                                             <label class="form-radio-label">
-                                                <input class="form-radio-input" type="radio" name="p_Unit_Gross"  value="MT(s)" >
+                                                <input class="form-radio-input" type="radio" checked>
                                                 <span class="form-radio-sign">MT(s)</span>
                                             </label>
+                                            {% elif application_details.Unit_Gross == 'Kg(s)' %}
                                             <label class="form-radio-label ml-3">
-                                                <input class="form-radio-input" type="radio" name="p_Unit_Gross" value="Kg(s)">
+                                                <input class="form-radio-input" type="radio" checked>
                                                 <span class="form-radio-sign">Kg(s)</span>
                                             </label>
+                                            {% elif application_details.Unit_Gross == 'Gram(s)' %}
                                             <label class="form-radio-label ml-3">
-                                                <input class="form-radio-input" type="radio" name="p_Unit_Gross" value="Gram(s)">
+                                                <input class="form-radio-input" type="radio" checked>
                                                 <span class="form-radio-sign">Gram(s)</span>
                                             </label>
+                                            {% else %}
                                             <label class="form-radio-label ml-3">
-                                                <input class="form-radio-input" type="radio" name="p_Unit_Gross" value="Unit(s)">
+                                                <input class="form-radio-input" type="radio" checked>
                                                 <span class="form-radio-sign">Unit(s)</span>
                                             </label>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </div>
@@ -154,38 +159,44 @@
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label>Quantity (Net Weight)</label>
-                                            <input type="text" class="form-control" id="p_Qty_Net" name="p_Qty_Net">
+                                            <input type="text" class="form-control" value="{{application_details.Qty_Net}}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="clearfix mb-4" style="margin-bottom: 2.5rem!important;"></div>
                                         <div class="form-check text-center">
+                                            {% if application_details.Unit_Net == 'MT(s)' %}
                                             <label class="form-radio-label">
-                                                <input class="form-radio-input" type="radio" name="p_Unit_Net"  value="MT(s)" >
+                                                <input class="form-radio-input" type="radio" checked>
                                                 <span class="form-radio-sign">MT(s)</span>
                                             </label>
+                                            {% elif application_details.Unit_Net == 'Kg(s)' %}
                                             <label class="form-radio-label ml-3">
-                                                <input class="form-radio-input" type="radio" name="p_Unit_Net" value="Kg(s)">
+                                                <input class="form-radio-input" type="radio" checked>
                                                 <span class="form-radio-sign">Kg(s)</span>
                                             </label>
+                                            {% elif application_details.Unit_Net == 'Gram(s)' %}
                                             <label class="form-radio-label ml-3">
-                                                <input class="form-radio-input" type="radio" name="p_Unit_Net" value="Gram(s)">
+                                                <input class="form-radio-input" type="radio" checked>
                                                 <span class="form-radio-sign">Gram(s)</span>
                                             </label>
+                                            {% else %}
                                             <label class="form-radio-label ml-3">
-                                                <input class="form-radio-input" type="radio" name="p_Unit_Net" value="Unit(s)">
+                                                <input class="form-radio-input" type="radio" checked>
                                                 <span class="form-radio-sign">Unit(s)</span>
                                             </label>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <label>Country</label>
-                                        <select class="form-control" name="p_Country_Code"  id="p_Country_Code">
-                                            <option value="">--SELECT COUNTRY--</option>
-                                            {% for country in country %}
-                                                <option value="{{ country.Country_Code }}">{{ country.Country_Name }}</option>
+                                        <select class="form-control" disabled>
+                                            {% for Country in Country %}
+                                                <option value="{{Country.Country_Code}}"{% if application_details.Importing_Country == Country.Country_Code %}selected{% endif %}>
+                                                    {{ Country.Country }}
+                                                </option>
                                             {% endfor %}
                                         </select>
                                     </div>
@@ -195,7 +206,9 @@
                                             <select class="form-control" name="p_Entry_Point"  id="p_Entry_Point">
                                                 <option value="">--SELECT--</option>
                                                 {% for entry_point in entry_point %}
-                                                <option value="{{ entry_point.Field_Office_Id }}">{{ entry_point.Field_Office }}</option>
+                                                    <option value="{{ entry_point.Field_Office_Id }}"{% if application_details.Entry_Point == dzongkhag.Field_Office_Id %}selected{% endif %}>
+                                                        {{ entry_point.Field_Office }}
+                                                    </option>
                                                 {% endfor %}
                                             </select>
                                         </div>
@@ -205,19 +218,19 @@
                                     <div class="col-sm-4">
                                         <div class="form-group">
                                             <label>Number of Packages</label>
-                                            <textarea class="form-control" id="p_Package_number" name="p_Package_number" rows="3"></textarea>
+                                            <textarea class="form-control" disabled rows="3">{{application_details.Packages_No}}</textarea>
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
                                             <label>Description of Packages</label>
-                                            <textarea class="form-control" id="p_Package_description" name="p_Package_description" rows="3"></textarea>
+                                            <textarea class="form-control" disabled rows="3">{{application_details.Packages_Description}}</textarea>
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
                                             <label>Distinguishing Marks</label>
-                                            <input type="text" class="form-control" id="p_Distinguish_Marks" name="p_Distinguish_Marks">
+                                            <input type="text" class="form-control" value="{{application_details.Distinguishing_Marks}}">
                                         </div>
                                     </div>
                                 </div>
@@ -227,30 +240,37 @@
                                     </div>
                                     <div class="col-sm-10 justify-content-center">
                                         <div class="form-check text-center">
+                                            {% if application_details.Purpose_End_Use == 'Propagation' %}
                                             <label class="form-radio-label">
-                                                <input class="form-radio-input" type="radio" name="p_purpose"  value="Propagation">
+                                                <input class="form-radio-input" type="radio" checked>
                                                 <span class="form-radio-sign">Propagation</span>
                                             </label>
+                                            {% elif application_details.Purpose_End_Use == 'Wood' %}
                                             <label class="form-radio-label ml-3">
-                                                <input class="form-radio-input" type="radio" name="p_purpose" value="Wood">
+                                                <input class="form-radio-input" type="radio" checked>
                                                 <span class="form-radio-sign">Wood</span>
                                             </label>
+                                            {% elif application_details.Purpose_End_Use == 'Industrial Products' %}
                                             <label class="form-radio-label ml-3">
-                                                <input class="form-radio-input" type="radio" name="p_purpose" value="Industrial Products">
+                                                <input class="form-radio-input" type="radio" checked>
                                                 <span class="form-radio-sign">Industrial Products</span>
                                             </label>
+                                            {% elif application_details.Purpose_End_Use == 'Consumption' %}
                                             <label class="form-radio-label ml-3">
-                                                <input class="form-radio-input" type="radio" name="p_purpose" value="Consumption">
+                                                <input class="form-radio-input" type="radio" checked>
                                                 <span class="form-radio-sign">Consumption</span>
                                             </label>
+                                            {% elif application_details.Purpose_End_Use == 'Dunnage' %}
                                             <label class="form-radio-label ml-3">
-                                                <input class="form-radio-input" type="radio" name="p_purpose" value="Dunnage">
+                                                <input class="form-radio-input" type="radio" checked>
                                                 <span class="form-radio-sign">Dunnage(Wooden packing material)</span>
                                             </label>
+                                            {% else %}
                                             <label class="form-radio-label ml-3">
-                                                <input class="form-radio-input" type="radio" name="p_purpose" value="laboratory">
+                                                <input class="form-radio-input" type="radio" checked>
                                                 <span class="form-radio-sign">Laboratory specimens, Micro organisms, Micro biological, Biocontrolagents</span>
                                             </label>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </div>
@@ -259,144 +279,33 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Mode of conveyance </label>
-                                            <select class="form-control form-control" id="p_conveyanceMeans" name="p_conveyanceMeans">
-                                                <option value="">-SELECT-</option>
-                                                <option value="Sea">Sea</option>
-                                                <option value="Air">Air</option>
-                                                <option value="Road">Road</option>
-                                                <option value="Rail">Rail</option>
-                                                <option value="Passenger">Passenger</option>
+                                            <select class="form-control form-control" disabled>
+                                               {% if application_details.Mode_Of_Conveyance == 'Propagation' %}
+                                                <option value="Sea" selected>Sea</option>
+                                                {% elif application_details.Mode_Of_Conveyance == 'Propagation' %}
+                                                <option value="Air" selected>Air</option>
+                                                {% elif application_details.Mode_Of_Conveyance == 'Propagation' %}
+                                                <option value="Road" selected>Road</option>
+                                                {% elif application_details.Mode_Of_Conveyance == 'Propagation' %}
+                                                <option value="Rail" selected>Rail</option>
+                                                {% else %}
+                                                <option value="Passenger" selected>Passenger</option>
+                                                {% endif %}
                                             </select>
                                         </div>
-                                        <div class="alert alert-danger" id="conveyanceMeansErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Conveyance Name</label>
-                                            <input type="text" class="form-control" id="p_Conveyance_Name" name="p_Conveyance_Name">
+                                            <input type="text" class="form-control" value="{{application_details.Name_Of_Conveyance}}" disabled>
                                         </div>
                                         <div class="alert alert-danger" id="p_Conveyance_NameErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Additional Declaration (required by importing country)</label>
-                                            <textarea class="form-control" id="p_additional_declaration" name="p_additional_declaration" rows="4"></textarea>
+                                            <textarea class="form-control" disabled rows="3">{{application_details.Additional_Declaring}}</textarea>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
-                                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
-                                        <span class="px-2 small text-muted font-weight-bold text-muted" style="margin-right: -11px;">Pre-</span>
-                                        <span class="px-2 small text-muted font-weight-bold text-muted">Application</span>
-                                        <span class="px-1 small text-muted font-weight-bold text-muted">Treatment</span>
-                                    <span class="px-1 small text-muted font-weight-bold text-muted"> Details</span>
-                                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
-                                </div>
-                                <div class="row justify-content-center">
-                                    <div class="form-check text-center">
-                                        <label class="form-radio-label">
-                                            <input class="form-radio-input" type="radio" name="treatmentType"  value="Chemical" onclick="showOthers('Chemical')">
-                                            <span class="form-radio-sign">Chemical</span>
-                                        </label>
-                                        <label class="form-radio-label ml-3">
-                                            <input class="form-radio-input" type="radio" name="treatmentType" value="Irradiation" onclick="showOthers('Irradiation')">
-                                            <span class="form-radio-sign">Irradiation</span>
-                                        </label>
-                                        <label class="form-radio-label ml-3">
-                                            <input class="form-radio-input" type="radio" name="treatmentType" value="Hot Water" onclick="showOthers('Hot Water')">
-                                            <span class="form-radio-sign">Hot Water</span>
-                                        </label>
-                                        <label class="form-radio-label ml-3">
-                                            <input class="form-radio-input" type="radio" name="treatmentType" value="Vapour Heat" onclick="showOthers('Vapour Heat')">
-                                            <span class="form-radio-sign">Vapour Heat</span>
-                                        </label>
-                                        <label class="form-radio-label ml-3">
-                                            <input class="form-radio-input" type="radio" name="treatmentType" value="Cold Treatment" onclick="showOthers('Cold Treatment')">
-                                            <span class="form-radio-sign">Cold Treatment</span>
-                                        </label>
-                                        <label class="form-radio-label ml-3">
-                                            <input class="form-radio-input" type="radio" name="treatmentType" value="Others" onclick="showOthers('Others')">
-                                            <span class="form-radio-sign">Others</span>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="row" id="others_pre" style="display:none">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Others</label>
-                                            <input type="text" class="form-control" id="p_others_pre" name="p_others_treatment">
-                                        </div>
-                                        <div class="alert alert-danger" id="p_others_preErrorMsg" style="display:none"></div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Chemical Name</label>
-                                            <input type="text" class="form-control" id="p_chemcial_name" name="p_chemcial_name">
-                                        </div>
-                                        <div class="alert alert-danger" id="p_chemcial_nameErrorMsg" style="display:none"></div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Treatment </label>
-                                            <select class="form-control form-control" id="p_treatment" name="p_treatment" onchange="showValue(this.value)">
-                                                <option value="">-SELECT-</option>
-                                                <option value="Fumigation">Fumigation</option>
-                                                <option value="Vehicular">Spray</option>
-                                                <option value="Seed treatment">Seed Treatment</option>
-                                                <option value="others">Others(Specify)</option>
-                                            </select>
-                                        </div>
-                                        <div class="alert alert-danger" id="p_treatmentErrorMsg" style="display:none"></div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Concentration</label>
-                                            <input type="text" class="form-control" id="p_Concentration" name="p_Concentration">
-                                        </div>
-                                        <div class="alert alert-danger" id="p_ConcentrationErrorMsg" style="display:none"></div>
-                                    </div>
-                                </div>
-                                <div class="row" id="others" style="display:none">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Others</label>
-                                            <input type="text" class="form-control" id="p_others" name="p_others">
-                                        </div>
-                                        <div class="alert alert-danger" id="p_othersErrorMsg" style="display:none"></div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Duration & Temperature</label>
-                                            <input type="text" class="form-control" id="p_Duration_Temperature" name="p_Duration_Temperature">
-                                        </div>
-                                        <div class="alert alert-danger" id="p_Duration_TemperatureErrorMsg" style="display:none"></div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Treated By</label>
-                                            <input type="text" class="form-control" id="p_treated_by" name="p_treated_by">
-                                        </div>
-                                        <div class="alert alert-danger" id="p_treated_byErrorMsg" style="display:none"></div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Treatment Supervised By</label>
-                                            <input type="text" class="form-control" id="p_treatment_supervised" name="p_treatment_supervised">
-                                        </div>
-                                        <div class="alert alert-danger" id="p_treatment_supervisedErrorMsg" style="display:none"></div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Additional Information</label>
-                                            <textarea id="p_additional_Info" name="p_additional_Info" rows="4" cols="50"></textarea>
-                                        </div>
-                                        <div class="alert alert-danger" id="p_additional_Info_ErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                             {% else %}
@@ -459,19 +368,19 @@
                                     <div class="col-sm-4">
                                         <div class="form-group">
                                             <label>CID</label>
-                                            <input type="text" class="form-control" id="c_cid" name="p_cid">
+                                            <input type="text" class="form-control" value="{{application_details.CID}}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
                                             <label>Name</label>
-                                            <input type="text" class="form-control" id="c_Name" name="c_Exporter_Name">
+                                            <input type="text" class="form-control" value="{{application_details.Exporter_Name}}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
                                             <label>Email</label>
-                                            <input type="email" class="form-control" id="c_Email" name="c_Email">
+                                            <input type="email" class="form-control" value="{{application_details.Email}}" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -479,16 +388,17 @@
                                     <div class="col-sm-4">
                                         <div class="form-group">
                                             <label>Contact Number</label>
-                                            <input type="number" class="form-control" id="c_Contact_No" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="c_Contact_No" maxlength="8" onkeypress="return isNumberKey(event)">
+                                            <input type="text" class="form-control" value="{{application_details.Contact_No}}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
                                             <label>Dzongkhag</label>
-                                            <select class="form-control" name="c_Dzongkhag_Code"  id="c_Dzongkhag_Code" onchange="getLocation(this.value),getLocation(this.value)">
-                                                <option value="">--SELECT DZONGKHAG--</option>
+                                            <select class="form-control" disabled>
                                                 {% for dzongkhag in dzongkhag %}
-                                                        <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                                    <option value="{{dzongkhag.Dzongkhag_Code}}"{% if application_details.Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>
+                                                        {{ dzongkhag.Dzongkhag_Name }}
+                                                    </option>
                                                 {% endfor %}
                                             </select>
                                         </div>
@@ -496,10 +406,9 @@
                                     <div class="col-sm-4">
                                         <div class="form-group">
                                             <label>Location</label>
-                                            <select class="form-control" name="c_Location_Code"  id="c_Location_Code">
-                                                <option value="">--SELECT LOCATION--</option>
+                                             <select class="form-control" disabled>
                                                 {% for location in location %}
-                                                    <option value="{{ location.Location_Code }}">{{ location.Location_Name }}</option>
+                                                    <option value="{{ location.Location_Code }}" {% if application_details.To_Gewog_Code == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
                                                 {% endfor %}
                                             </select>
                                         </div>
@@ -510,13 +419,13 @@
                                         <div class="col-sm-6">
                                             <div class="form-group">
                                                 <label>Current Address</label>
-                                                <textarea class="form-control" id="c_current_address" name="c_current_address" rows="4"></textarea>
+                                                <textarea class="form-control" disabled rows="4">{{application_details.Exporter_Address}}</textarea>
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
                                             <div class="form-group">
                                                 <label>Permanent Address(if different from the current address)</label>
-                                                <textarea class="form-control" id="c_permanent_address" name="c_permanent_address" rows="4"></textarea>
+                                                <textarea class="form-control" disabled rows="4">{{application_details.Permanent_Address}}</textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -524,13 +433,13 @@
                                         <div class="col-sm-6">
                                             <div class="form-group">
                                                 <label>Date Of Inspection Requested</label>
-                                                <input type="text" class="form-control date-picker flatpickr-input active" id="date" name="date_for_Inspection"  placeholder="Pick a date" readonly="readonly">
+                                                <input type="text" class="form-control" value="{{application_details.Desired_Inspection_Date}}" readonly="readonly">
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
                                             <div class="form-group">
                                                 <label>Place Of Inspection Requested</label>
-                                                <input type="text" class="form-control" id="c_requested_place" name="p_cid">
+                                                <input type="text" class="form-control" value="{{application_details.Desired_Inspection_Place}}" readonly="readonly">
                                             </div>
                                         </div>
                                     </div>
@@ -539,7 +448,7 @@
                                         <div class="col-sm-6">
                                             <div class="form-group">
                                                 <label>Trade License No. (For Licensed Cordyceps Exporters only)</label>
-                                                <input type="text" class="form-control" id="c_License_No" name="c_License_No">
+                                                <input type="text" class="form-control" value="{{application_details.License_No}}" readonly="readonly">
                                             </div>
                                         </div>
                                     </div>
@@ -548,7 +457,7 @@
                                         <div class="col-sm-4">
                                             <div class="input-group">
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control" id="gross_weight_gms" name="gross_weight_gms">
+                                                    <input type="text" class="form-control" value="{{application_details.Qty_Gross}}" readonly="readonly">
                                                     <i class="form-group__bar"></i>
                                                 </div>
                                                 <span class="input-group-addon">Gm(s)</span>
@@ -557,7 +466,7 @@
                                         <div class="col-sm-4">
                                             <div class="input-group">
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control" id="gross_weight_pieces" name="gross_weight_pieces">
+                                                    <input type="text" class="form-control" value="{{application_details.Pieces_Gross}}" readonly="readonly">
                                                     <i class="form-group__bar"></i>
                                                 </div>
                                                 <span class="input-group-addon">Pieces</span>
@@ -569,7 +478,7 @@
                                         <div class="col-sm-4">
                                             <div class="input-group">
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control" id="net_weight_gms" name="net_weight_gms">
+                                                    <input type="text" class="form-control" value="{{application_details.Qty_Net}}" readonly="readonly">
                                                     <i class="form-group__bar"></i>
                                                 </div>
                                                 <span class="input-group-addon">Gm(s)</span>
@@ -578,7 +487,7 @@
                                         <div class="col-sm-4">
                                             <div class="input-group">
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control" id="net_weight_pieces" name="net_weight_pieces">
+                                                    <input type="text" class="form-control" value="{{application_details.Pieces_Net}}" readonly="readonly">
                                                     <i class="form-group__bar"></i>
                                                 </div>
                                                 <span class="input-group-addon">Pieces</span>
@@ -589,19 +498,25 @@
                                         <div class="col-sm-4">
                                             <div class="form-group">
                                                 <label>No Of Packages</label>
-                                                <input type="text" class="form-control" id="c_package" name="c_package">
+                                                <input type="text" class="form-control" value="{{application_details.Packages_No}}" readonly="readonly">
                                             </div>
                                         </div>
                                         <div class="col-sm-4">
                                             <div class="form-group">
                                                 <label>Importing Country</label>
-                                                <input type="text" class="form-control" id="c_country" name="c_country">
+                                                <select class="form-control" disabled>
+                                                    {% for Country in Country %}
+                                                        <option value="{{Country.Country_Code}}"{% if application_details.Importing_Country == Country.Country_Code %}selected{% endif %}>
+                                                            {{ Country.Country }}
+                                                        </option>
+                                                    {% endfor %}
+                                                </select>
                                             </div>
                                         </div>
                                         <div class="col-sm-4">
                                             <div class="form-group">
                                                 <label>Name & Address of Consignee</label>
-                                                <textarea class="form-control" id="c_Name_Address" name="c_Name_Address" rows="3"></textarea>
+                                                <textarea class="form-control" disabled rows="3">{{application_details.Consingee_Name_Address}}</textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -609,16 +524,20 @@
                                         <div class="col-sm-4">
                                             <div class="form-group">
                                                 <label>Mode of conveyance </label>
-                                                <select class="form-control form-control" id="c_conveyanceMeans" name="c_conveyanceMeans">
-                                                    <option value="">-SELECT-</option>
-                                                    <option value="Sea">Sea</option>
-                                                    <option value="Air">Air</option>
-                                                    <option value="Road">Road</option>
-                                                    <option value="Rail">Rail</option>
-                                                    <option value="Passenger">Passenger</option>
+                                                <select class="form-control form-control" disabled>
+                                                   {% if application_details.Mode_Of_Conveyance == 'Propagation' %}
+                                                    <option value="Sea" selected>Sea</option>
+                                                    {% elif application_details.Mode_Of_Conveyance == 'Propagation' %}
+                                                    <option value="Air" selected>Air</option>
+                                                    {% elif application_details.Mode_Of_Conveyance == 'Propagation' %}
+                                                    <option value="Road" selected>Road</option>
+                                                    {% elif application_details.Mode_Of_Conveyance == 'Propagation' %}
+                                                    <option value="Rail" selected>Rail</option>
+                                                    {% else %}
+                                                    <option value="Passenger" selected>Passenger</option>
+                                                    {% endif %}
                                                 </select>
                                             </div>
-                                            <div class="alert alert-danger" id="c_conveyanceMeansErrorMsg" style="display:none"></div>
                                         </div>
                                     </div>
                                 {% else %}
@@ -627,7 +546,7 @@
                                         <div class="col-sm-4">
                                             <div class="input-group">
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control" id="retail_gross_weight_gms" name="retail_gross_weight_gms">
+                                                    <input type="text" class="form-control" value="{{application_details.Qty_Gross}}" readonly="readonly">
                                                     <i class="form-group__bar"></i>
                                                 </div>
                                                 <span class="input-group-addon">Gm(s)</span>
@@ -636,7 +555,7 @@
                                         <div class="col-sm-4">
                                             <div class="input-group">
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control" id="retail_gross_weight_pieces" name="retail_gross_weight_pieces">
+                                                    <input type="text" class="form-control" value="{{application_details.Pieces_Gross}}" readonly="readonly">
                                                     <i class="form-group__bar"></i>
                                                 </div>
                                                 <span class="input-group-addon">Pieces</span>
@@ -648,7 +567,7 @@
                                         <div class="col-sm-4">
                                             <div class="input-group">
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control" id="retail_net_weight_gms" name="retail_net_weight_gms">
+                                                    <input type="text" class="form-control" value="{{application_details.Qty_Net}}" readonly="readonly">
                                                     <i class="form-group__bar"></i>
                                                 </div>
                                                 <span class="input-group-addon">Gm(s)</span>
@@ -657,7 +576,7 @@
                                         <div class="col-sm-4">
                                             <div class="input-group">
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control" id="retail_net_weight_pieces" name="net_weight_pieces">
+                                                    <input type="text" class="form-control" value="{{application_details.Pieces_Net}}" readonly="readonly">
                                                     <i class="form-group__bar"></i>
                                                 </div>
                                                 <span class="input-group-addon">Pieces</span>
@@ -668,19 +587,19 @@
                                         <div class="col-sm-4">
                                             <div class="form-group">
                                                 <label>Total No Of Packages</label>
-                                                <input type="text" class="form-control" id="c_retail_package" name="c_retail_package">
+                                                <input type="text" class="form-control"  value="{{application_details.Packages_No}}" readonly="readonly">
                                             </div>
                                         </div>
                                         <div class="col-sm-4">
                                             <div class="form-group">
                                                 <label>Name Of The Outlet</label>
-                                                <input type="text" class="form-control" id="c_outlet_name" name="c_outlet_name">
+                                                <input type="text" class="form-control"  value="{{application_details.Outlet_name}}" readonly="readonly">
                                             </div>
                                         </div>
                                         <div class="col-sm-4">
                                             <div class="form-group">
                                                 <label>Contact No of the outlet owner</label>
-                                                <input type="text" class="form-control" id="c_phoneNumber" name="c_phoneNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="8" onkeypress="return isNumberKey(event)">
+                                                <input type="text" class="form-control" value="{{application_details.Outlet_Contact_No}}" readonly="readonly">
                                             </div>
                                         </div>
                                     </div>
@@ -688,9 +607,8 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Address of the outlet</label>
-                                                <textarea class="form-control" rows="5" id="c_address" name="c_address"></textarea>
+                                                <textarea class="form-control" rows="3" disabled>{{application_details.Outlet_Address}}</textarea>
                                             </div>
-                                            <div class="alert alert-danger" id="c_addressErrorMsg" style="display:none"></div>
                                         </div>
                                     </div>
                                 {% endif %}

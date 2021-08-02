@@ -69,7 +69,7 @@ def save_food_business_registration(request):
     regulatory_proceedings = request.POST.get('regulatory_proceedings')
     dzongkhag = request.POST.get('dzongkhag')
     gewog = request.POST.get('gewog')
-
+    village = request.POST.get('village')
     t_food_business_registration_licensing_t1.objects.create(
         Application_No=new_food_business_registration_application,
         Application_Date=date.today(),
@@ -112,16 +112,17 @@ def save_food_business_registration(request):
         FR_Inspection_Leader=None,
         FR_Inspection_Team=None,
         Dzongkhag_Code=dzongkhag,
-        Gewog_Code=gewog
+        Gewog_Code=gewog,
+        Village_Code=village
 
     )
 
-    # field = t_location_field_office_mapping.objects.filter(Location_Code=Consignment_Location_Gewog)
-    # for field_office in field:
-    #  field_office_id = field_office.Field_Office_Id_id
+    field = t_location_field_office_mapping.objects.filter(Location_Code=gewog)
+    for field_office in field:
+        field_office_id = field_office.Field_Office_Id_id
     t_workflow_details.objects.create(Application_No=new_food_business_registration_application,
                                       Applicant_Id=request.session['email'],
-                                      Assigned_To=None, Field_Office_Id=None, Section='Food',
+                                      Assigned_To=None, Field_Office_Id=field_office_id, Section='Food',
                                       Assigned_Role_Id='2', Action_Date=None, Application_Status='P',
                                       Service_Code=service_code)
     data['applNo'] = new_food_business_registration_application

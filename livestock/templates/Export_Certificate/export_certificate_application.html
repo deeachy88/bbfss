@@ -76,12 +76,12 @@
                             </div>
                             <div class="col-sm-4 justify-content-center">
                                 <label class="custom-control custom-radio">
-                                    <input type="radio" name="Nationality" class="custom-control-input" value="Bhutanese" onchange="checkNationality(this.value)">
+                                    <input type="radio" name="Nationality" class="custom-control-input" value="Bhutanese" id="bhutanese_radio" onchange="checkNationality(this.value)">
                                     <span class="custom-control-indicator"></span>
                                     <span class="custom-control-description">Bhutanese</span>
                                 </label>
                                 <label class="custom-control custom-radio">
-                                    <input type="radio" name="Nationality" class="custom-control-input" value="Non-Bhutanese" onchange="checkNationality(this.value)">
+                                    <input type="radio" name="Nationality" class="custom-control-input" value="Non-Bhutanese" id="non_bhutanese_radio" onchange="checkNationality(this.value)">
                                     <span class="custom-control-indicator"></span>
                                     <span class="custom-control-description">Non-Bhutanese</span>
                                 </label>
@@ -93,7 +93,7 @@
                             <div class="col-md-4 bhutanese_div">
                                 <div class="form-group">
                                     <label class="form-label">Applicant CID <font color="red">*</font></label>
-                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCitizenDetails(this.value);">
                                 </div>
                                 <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
                             </div>
@@ -459,6 +459,9 @@ function saveExportForm()
     var Application_Type = $("input[name=Application_Type]:checked").length;
     var Exporter_Type = $("input[name=Exporter_Type]:checked").length;
     var Nationality = $("input[name=Nationality]:checked").length;
+    var app_type = $('input[name="Exporter_Type"]:checked').val();
+    var nationality_type = $('input[name="Nationality"]:checked').val();
+
     var cid = $('#cid').val();
     var name = $('#name').val();
     var present_address = $('#present_address').val();
@@ -475,6 +478,7 @@ function saveExportForm()
     var Place_of_Exit = $('#Place_of_Exit').val();
     var Export_Expected_Date = $('#Export_Expected_Date').val();
     var inspectionDate = $('#inspectionDate').val();
+    var passport = $('#passport').val();
     var cidCount = $('#cid').val().length;
     var number_count = $('#contactNumber').val().length;
 
@@ -483,136 +487,144 @@ function saveExportForm()
         $('#applicationTypeErrorMsg').html("Please Check One Application Type.");
         $('#applicationTypeErrorMsg').show();
         $('#applicationTypeErrorMsg').delay(2000).fadeOut('slow');
+        $("input[name=Application_Type]").focus();
     }
     else if(Exporter_Type < 1)
     {
         $('#exporterTypeErrorMsg').html("Please Check One Exporter Type.");
         $('#exporterTypeErrorMsg').show();
         $('#exporterTypeErrorMsg').delay(2000).fadeOut('slow');
+        $("input[name=Exporter_Type]").focus();
     }
-    else if(Nationality < 1)
+    else if(app_type == "Individual" && Nationality < 1)
     {
         $('#nationalityErrorMsg').html("Please Check One Nationality.");
         $('#nationalityErrorMsg').show();
         $('#nationalityErrorMsg').delay(2000).fadeOut('slow');
+        $("input[name=Nationality]").focus();
     }
-    else if(cid == "")
+    else if(app_type == "Individual" && nationality_type == "Bhutanese" && cid == "")
     {
         $('#cidErrorMsg').html("Enter CID Number.");
         $('#cidErrorMsg').show();
         $('#cidErrorMsg').delay(2000).fadeOut('slow');
+        $('#cid').focus();
     }
-    else if(name == "")
+    else if(app_type == "Individual" && nationality_type == "Bhutanese" && cidCount < 11)
     {
-        $('#nameErrorMsg').html("Enter Name .");
+        $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits.");
+        $('#cidErrorMsg').show();
+        $('#cidErrorMsg').delay(2000).fadeOut('slow');
+        $('#cid').focus();
+    }
+    else if(app_type == "Individual" && nationality_type == "Non-Bhutanese" && passport == "")
+    {
+        $('#passportErrorMsg').html("Enter Passport No.");
+        $('#passportErrorMsg').show();
+        $('#passportErrorMsg').delay(2000).fadeOut('slow');
+        $('#passport').focus();
+    }
+    else if(app_type == "Individual" && nationality_type == "Non-Bhutanese" && name == "")
+    {
+        $('#nameErrorMsg').html("Enter Name.");
         $('#nameErrorMsg').show();
         $('#nameErrorMsg').delay(2000).fadeOut('slow');
+        $('#name').focus();
     }
     else if(present_address == "")
     {
         $('#presentAddressErrorMsg').html("Enter Present Address .");
         $('#presentAddressErrorMsg').show();
         $('#presentAddressErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(dzongkhag == "")
-    {
-        $('#dzongkhagErrorMsg').html("Select Dzongkhag.");
-        $('#dzongkhagErrorMsg').show();
-        $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(gewog == "")
-    {
-        $('#gewogErrorMsg').html("Select Gewog.");
-        $('#gewogErrorMsg').show();
-        $('#gewogErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(village == "")
-    {
-        $('#villageErrorMsg').html("Select Village.");
-        $('#villageErrorMsg').show();
-        $('#villageErrorMsg').delay(2000).fadeOut('slow');
+        $('#present_address').focus();
     }
     else if(contactNumber == "")
     {
         $('#contactNumberErrorMsg').html("Enter Contact Number.");
         $('#contactNumberErrorMsg').show();
         $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').focus();
+    }
+    else if(number_count < 8)
+    {
+        $('#contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').focus();
     }
     else if(email == "")
     {
         $('#emailErrorMsg').html("Enter Contact Number.");
         $('#emailErrorMsg').show();
         $('#emailErrorMsg').delay(2000).fadeOut('slow');
+        $('#email').focus();
     }
-    else if(license_no == "")
+    else if(app_type == "Commercial" || app_type == "Institution" && license_no == "")
     {
         $('#license_noErrorMsg').html("Enter License No.");
         $('#license_noErrorMsg').show();
         $('#license_noErrorMsg').delay(2000).fadeOut('slow');
+        $('#license_no').focus();
     }
-    else if(business_name == "")
+    else if(app_type == "Commercial" || app_type == "Institution" && business_name == "")
     {
         $('#business_nameErrorMsg').html("Enter Business Name.");
         $('#business_nameErrorMsg').show();
         $('#business_nameErrorMsg').delay(2000).fadeOut('slow');
+        $('#business_name').focus();
     }
     else if(Purpose == "")
     {
         $('#PurposeErrorMsg').html("Enter Purpose.");
         $('#PurposeErrorMsg').show();
         $('#PurposeErrorMsg').delay(2000).fadeOut('slow');
+        $('#Purpose').focus();
     }
     else if (Origin_Source_Products == "")
     {
         $('#Origin_Source_ProductsErrorMsg').html("Enter Origin of Source of Products.");
         $('#Origin_Source_ProductsErrorMsg').show();
         $('#Origin_Source_ProductsErrorMsg').delay(2000).fadeOut('slow');
+        $('#Origin_Source_Products').focus();
     }
     else if (Importer_Name_Address == "")
     {
         $('#Importer_Name_AddressErrorMsg').html("Enter Origin of Source of Products.");
         $('#Importer_Name_AddressErrorMsg').show();
         $('#Importer_Name_AddressErrorMsg').delay(2000).fadeOut('slow');
+        $('#Importer_Name_Address').focus();
     }
     else if (Final_Destination == "")
     {
         $('#Final_DestinationErrorMsg').html("Enter Final Destination.");
         $('#Final_DestinationErrorMsg').show();
         $('#Final_DestinationErrorMsg').delay(2000).fadeOut('slow');
+        $('#Final_Destination').focus();
     }
     else if (Place_of_Exit == "")
     {
         $('#Place_of_ExitErrorMsg').html("Enter Origin of Source of Products.");
         $('#Place_of_ExitErrorMsg').show();
         $('#Place_of_ExitErrorMsg').delay(2000).fadeOut('slow');
+        $('#Place_of_Exit').focus();
     }
     else if (Export_Expected_Date == "")
     {
         $('#Export_Expected_DateErrorMsg').html("Select Expected Date for Export.");
         $('#Export_Expected_DateErrorMsg').show();
         $('#Export_Expected_DateErrorMsg').delay(2000).fadeOut('slow');
+        $('#Export_Expected_Date').focus();
     }
     else if (inspectionDate == "")
     {
         $('#inspectionDateErrorMsg').html("Select Proposed Inspection Date.");
         $('#inspectionDateErrorMsg').show();
         $('#inspectionDateErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(cidCount < 11)
-    {
-        $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits.");
-        $('#cidErrorMsg').show();
-        setTimeout('hideStatus("cidErrorMsg")',2000);
-    }
-    else if(number_count < 8)
-    {
-        $('#contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
-        $('#contactNumberErrorMsg').show();
-        setTimeout('hideStatus("contactNumberErrorMsg")',2000);
+        $('#inspectionDate').focus();
     }
     else
     {
-    $.ajax({
+        $.ajax({
         type : "POST",
         url : "{% url 'save_livestock_export' %}",
         data : $('#exportCertificateForm').serialize(),
@@ -937,11 +949,13 @@ function checkNationality(value)
     {
         $('.bhutanese_div').show();
         $('.non_bhutanese_div').hide();
+        $("#name").attr("disabled", "disabled");
     }
     else
     {
         $('.bhutanese_div').hide();
         $('.non_bhutanese_div').show();
+        $("#name").removeAttr("disabled");
     }
 }
 
@@ -953,6 +967,8 @@ function enableForms(value)
         $("#business_name").attr("disabled", "disabled");
         $("#cid").removeAttr("disabled");
         $(".showNationality").show();
+        $('.bhutanese_div').show();
+        $('.non_bhutanese_div').hide();
     }
     else if(value == "Commercial")
     {
@@ -962,7 +978,12 @@ function enableForms(value)
         $("#village").attr("disabled", "disabled");
         $("#license_no").removeAttr("disabled");
         $("#business_name").removeAttr("disabled");
-         $(".showNationality").hide();
+        $(".showNationality").hide();
+        $("#bhutanese_radio").prop("checked", false);
+        $("#non_bhutanese_radio").prop("checked", false);
+        $('.bhutanese_div').show();
+        $('.non_bhutanese_div').hide();
+        $("#name").removeAttr("disabled");
     }
     else
     {
@@ -973,8 +994,40 @@ function enableForms(value)
         $("#license_no").removeAttr("disabled");
         $("#business_name").removeAttr("disabled");
         $(".showNationality").hide();
+        $("#bhutanese_radio").prop("checked", false);
+        $("#non_bhutanese_radio").prop("checked", false);
+        $('.bhutanese_div').show();
+        $('.non_bhutanese_div').hide();
+        $("#name").removeAttr("disabled");
     }
 }
+
+$.ajax({
+    type : "GET",
+    url : "{% url 'get_citizen_details' %}",
+    data :{'cidNo':cidNo},
+    success : function(data)
+    {
+        const myObj =data.response;
+        var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+        var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+        var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+        if (middleName == null) {
+                middleName = "";
+            }
+        var CitizenName = firstName + " " + middleName + " " + lastName;
+        var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
+        var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
+        var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
+        $('#c_Exporter_Name').val(CitizenName);
+        $('#dzongkhag').val(dzongkhagName);
+        $('#gewog').val(gewogName);
+        $('#village').val(villageName);
+    }
+});
+}
+
+
 
 </script>
 {% endblock %}

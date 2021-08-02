@@ -11,19 +11,19 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Name of the Meat Shop <font color="red">*</font></label>
-                                            <input type="text" class="form-control" value="{{application_details.Meat_Shop_Name}}">
+                                            <input type="text" class="form-control" value="{{application_details.Meat_Shop_Name}}" disabled>
                                         </div>
                                     </div>
                                      <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">CID of the Owner <font color="red">*</font></label>
-                                            <input type="number"  class="form-control" value="{{application_details.CID}}">
+                                            <input type="number"  class="form-control" value="{{application_details.CID}}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Name of the applicant/Owner <font color="red">*</font></label>
-                                            <input type="text" class="form-control" value="{{application_details.Name_Owner}}">
+                                            <input type="text" class="form-control" value="{{application_details.Name_Owner}}" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -65,19 +65,17 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Meat Shop Representative <font color="red">*</font></label>
-                                            <input type="text" class="form-control" value="{{application_details.Representative}}">
+                                            <input type="text" class="form-control" value="{{application_details.Representative}}" disabled>
                                         </div>
                                         <div class="alert alert-danger" id="name_managerErrorMsg" style="display:none"></div>
                                     </div>
                                      <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Licensing Criteria <font color="red">*</font></label>
-                                            <select class="form-control">
+                                            <select class="form-control" disabled>
                                                 {% if application_details.License_Criteria == 'BAFRA GHP' %}
                                                 <option selected>BAFRA GHP</option>
-                                                <option>BAFRA GMP</option>
                                                 {% else %}
-                                                <option>BAFRA GHP</option>
                                                 <option selected>BAFRA GMP</option>
                                                 {% endif %}
                                             </select>
@@ -86,7 +84,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Contact Number <font color="red">*</font></label>
-                                            <input type="number" class="form-control" value="{{application_details.Contact_No}}">
+                                            <input type="number" class="form-control" value="{{application_details.Contact_No}}" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -94,17 +92,44 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Email <font color="red">*</font></label>
-                                            <input type="email" class="form-control" value="{{application_details.Email}}">
+                                            <input type="email" class="form-control" value="{{application_details.Email}}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Meat Shop Address <font color="red">*</font></label>
-                                            <textarea class="form-control">{{application_details.Address}}</textarea>
+                                            <textarea class="form-control" disabled>{{application_details.Address}}</textarea>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        <br>
+                        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">Meat</span>
+                                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Items</span>
+                            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                        </div>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Meat_Item</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               {% for Meat_Item in details %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{file_attach.Meat_Item}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="3" class="text-center">No Data</td>
+                                    </tr>
+                               {% endfor %}
+                            </tbody>
+                        </table>
                         <br>
                         <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
                             <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
