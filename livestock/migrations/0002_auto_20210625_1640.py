@@ -15,18 +15,8 @@ class Migration(migrations.Migration):
             old_name='BP_Outsourced_To',
             new_name='Meat_Item',
         ),
-        migrations.RemoveField(
-            model_name='t_livestock_clearance_meat_shop_t2',
-            name='Address',
-        ),
-        migrations.RemoveField(
-            model_name='t_livestock_clearance_meat_shop_t2',
-            name='BAFRA_License_No',
-        ),
-        migrations.RemoveField(
-            model_name='t_livestock_clearance_meat_shop_t2',
-            name='Contact_No',
-        ),
+
+
         migrations.AddField(
             model_name='t_livestock_movement_permit_t1',
             name='Application_Type',
