@@ -300,6 +300,8 @@ class t_plant_clearence_nursery_seed_grower_t1(models.Model):
     Approved_Date = models.DateField(default=None, blank=True, null=True)
     Validity_Period = models.CharField(default=None, max_length=10, blank=True, null=True)
     Validity = models.DateField(default=None, blank=True, null=True)
+    Current_Observation = models.CharField(default=None, max_length=250, blank=True, null=True)
+    Decision_Conformity = models.CharField(default=None, max_length=250, blank=True, null=True)
 
 
 class t_plant_clearence_nursery_seed_grower_t2(models.Model):

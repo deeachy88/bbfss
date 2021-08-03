@@ -96,7 +96,7 @@
                      </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <input type="text" class="form-control form-control-md" name="Name" id="Name" placeholder="Name" disabled>
+                            <input type="text" class="form-control form-control-md" name="Name" id="Name" placeholder="Name" readonly="readonly">
                         </div>
                         <span class="badge"><font color='red'><font color='red'>*</font></font></span>
                         <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
@@ -119,14 +119,14 @@
                      </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                             <input type="text" class="form-control" name="dzongkhag"  id="dzongkhag" placeholder="Dzongkhag" disabled>
+                             <input type="text" class="form-control" name="dzongkhag"  id="dzongkhag" placeholder="Dzongkhag" readonly="readonly">
                         </div>
                         <span class="badge"><font color='red'><font color='red'>*</font></font></span>
                         <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <input type="text" class="form-control" name="gewog"  id="gewog" placeholder="Gewog" disabled>
+                            <input type="text" class="form-control" name="gewog"  id="gewog" placeholder="Gewog" readonly="readonly">
                         </div>
                         <span class="badge"><font color='red'><font color='red'>*</font></font></span>
                         <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
@@ -135,7 +135,7 @@
                 <div class="form-row">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <input type="text" class="form-control" name="village"  id="village" placeholder="Village" disabled>
+                            <input type="text" class="form-control" name="village"  id="village" placeholder="Village" readonly="readonly">
                         </div>
                         <span class="badge"><font color='red'><font color='red'>*</font></font></span>
                         <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
@@ -190,7 +190,7 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <select class="form-control" name="org_dzongkhag"  id="org_dzongkhag" onchange="getGewog(this.value),getLocation(this.value)">
+                            <select class="form-control" name="org_dzongkhag"  id="org_dzongkhag" onchange="getGewog(this.value)">
                                 <option value="">--SELECT ORGANIZATION DZONGKHAG--</option>
                                 {% for dzongkhag in dzongkhag %}
                                         <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
@@ -322,7 +322,6 @@
                     data : $('#registration_form').serialize(),
                     success : function(data)
                     {
-                        alert(data.count);
                         if(data.count == "1")
                         {
                             $('#email').val("");
@@ -415,16 +414,16 @@
             {
                 $.ajax({
                     type : "POST",
-                    url : "{% url 'check_email_id' %}",
+                    url : "{% url 'check_email_id_org' %}",
                     data : $('#registration_form').serialize(),
                     success : function(data)
                     {
                         if(data.count == "1")
                         {
-                            $('#email').val("");
-                            $('#emailErrorMsg').html("Email Already Exists.Try With Another Email");
-                            $('#emailErrorMsg').show();
-                            $('#emailErrorMsg').delay(2000).fadeOut('slow');
+                            $('#emailId').val("");
+                            $('#emailIdErrorMsg').html("Email Already Exists.Try With Another Email");
+                            $('#emailIdErrorMsg').show();
+                            $('#emailIdErrorMsg').delay(2000).fadeOut('slow');
                         }
                         else
                         {
@@ -520,6 +519,32 @@ function getCitizenDetails(cidNo)
             $('#dzongkhag').val(dzongkhagName);
             $('#gewog').val(gewogName);
             $('#village').val(villageName);
+        }
+    });
+}
+
+function getGewog(dzongkhag_id)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_gewog' %}",
+        data :{'dzongkhag_id':dzongkhag_id},
+        success : function(data)
+        {
+            $('#org_gewog').html(data);
+        }
+    });
+}
+
+function getVillage(gewog_id)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_village' %}",
+        data :{'gewog_id':gewog_id},
+        success : function(data)
+        {
+            $('#org_village').html(data);
         }
     });
 }

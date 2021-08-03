@@ -108,6 +108,7 @@ urlpatterns = [
     path('load_details', views.load_details, name='load_details'),
     path('load_file_details', views.load_file_details, name='load_file_details'),
     path('load_location_nursery', views.load_location_nursery, name='load_location_nursery'),
+    path('nursery_client_resubmit', views.nursery_client_resubmit, name='nursery_client_resubmit'),
 
     # Seed Certification
     path('seed_certificate_application', views.seed_certificate_application, name='seed_certificate_application'),
@@ -124,6 +125,7 @@ urlpatterns = [
     path('update_certificate_details', views.update_certificate_details, name='update_certificate_details'),
     path('certificate_details', views.certificate_details, name='certificate_details'),
     path('certificate_file_details', views.certificate_file_details, name='certificate_file_details'),
+    path('load_seed_variety', views.load_seed_variety, name='load_seed_variety'),
 
     # Common Details
     path('application_status', views.application_status, name='application_status'),

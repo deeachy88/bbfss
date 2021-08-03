@@ -178,8 +178,8 @@ def user(request):
                                              Password_Salt=None, CID=None, Agency=None, License_No=None,
                                              Address=None, Is_Active="Y", Logical_Delete="N",
                                              Last_Login_Date=None, Created_By=None, Created_On=None,
-                                             Updated_By=None, Updated_On=None, Dzongkhag_Code_id=None,
-                                             Gewog_Code_id=None, Section_Id_id=section, Village_Code_id=None,
+                                             Updated_By=None, Updated_On=None, Dzongkhag_Code=None,
+                                             Gewog_Code=None, Section_Id_id=section, Village_Code=None,
                                              Accept_Reject=None, Division_Id_id=division, Field_Office_Id_id=None,
                                              Role_Id_id=role)
                 user_details = t_user_master.objects.filter(Email_Id__iexact=email)
@@ -190,8 +190,8 @@ def user(request):
                                              Password_Salt=None, CID=None, Agency=None, License_No=None,
                                              Address=None, Is_Active="Y", Logical_Delete="N",
                                              Last_Login_Date=None, Created_By=None, Created_On=None,
-                                             Updated_By=None, Updated_On=None, Dzongkhag_Code_id=None,
-                                             Gewog_Code_id=None, Section_Id_id=None, Village_Code_id=None,
+                                             Updated_By=None, Updated_On=None, Dzongkhag_Code=None,
+                                             Gewog_Code=None, Section_Id_id=None, Village_Code=None,
                                              Accept_Reject=None, Division_Id_id=division, Field_Office_Id_id=None,
                                              Role_Id_id=role)
                 user_details = t_user_master.objects.filter(Email_Id__iexact=email)
@@ -202,8 +202,8 @@ def user(request):
                                              Password_Salt=None, CID=None, Agency=None, License_No=None,
                                              Address=None, Is_Active="Y", Logical_Delete="N",
                                              Last_Login_Date=None, Created_By=None, Created_On=None,
-                                             Updated_By=None, Updated_On=None, Dzongkhag_Code_id=None,
-                                             Gewog_Code_id=None, Section_Id_id=None, Village_Code_id=None,
+                                             Updated_By=None, Updated_On=None, Dzongkhag_Code=None,
+                                             Gewog_Code=None, Section_Id_id=None, Village_Code=None,
                                              Accept_Reject=None, Division_Id_id=None, Field_Office_Id_id=field,
                                              Role_Id_id=role)
                 user_details = t_user_master.objects.filter(Email_Id__iexact=email)
@@ -214,8 +214,8 @@ def user(request):
                                              Password_Salt=None, CID=None, Agency=None, License_No=None,
                                              Address=None, Is_Active="Y", Logical_Delete="N",
                                              Last_Login_Date=None, Created_By=None, Created_On=None,
-                                             Updated_By=None, Updated_On=None, Dzongkhag_Code_id=None,
-                                             Gewog_Code_id=None, Section_Id_id=None, Village_Code_id=None,
+                                             Updated_By=None, Updated_On=None, Dzongkhag_Code=None,
+                                             Gewog_Code=None, Section_Id_id=None, Village_Code=None,
                                              Accept_Reject=None, Division_Id_id=None, Field_Office_Id_id=field,
                                              Role_Id_id=role)
                 user_details = t_user_master.objects.filter(Email_Id__iexact=email)
@@ -226,8 +226,8 @@ def user(request):
                                              Password_Salt=None, CID=None, Agency=None, License_No=None,
                                              Address=None, Is_Active="Y", Logical_Delete="N",
                                              Last_Login_Date=None, Created_By=None, Created_On=None,
-                                             Updated_By=None, Updated_On=None, Dzongkhag_Code_id=None,
-                                             Gewog_Code_id=None, Section_Id_id=None, Village_Code_id=None,
+                                             Updated_By=None, Updated_On=None, Dzongkhag_Code=None,
+                                             Gewog_Code=None, Section_Id_id=None, Village_Code=None,
                                              Accept_Reject=None, Division_Id_id=None, Field_Office_Id_id=None,
                                              Role_Id_id=role)
                 user_details = t_user_master.objects.filter(Email_Id__iexact=email)
@@ -1209,9 +1209,10 @@ def register(request):
         contactPerson = request.POST['Contact_Person']
         emailId = request.POST['emailId']
         mobile_number = request.POST['mobile_number']
-        org_dzongkhag = request.POST['dzongkhag']
-        org_gewog = request.POST['gewog']
-        org_village = request.POST['village']
+        org_dzongkhag = request.POST['org_dzongkhag']
+        org_gewog = request.POST['org_gewog']
+        org_village = request.POST['org_village']
+        print()
         org_address = request.POST['org_address']
         if client == "Individual":
             t_user_master.objects.create(Login_Type="C", Client_Type="I", Name=name, Employee_Id=None, Gender=None,
@@ -1219,8 +1220,8 @@ def register(request):
                                          Password_Salt=None, CID=cid, Agency=None, License_No=None,
                                          Address=address, Is_Active="N", Logical_Delete="N",
                                          Last_Login_Date=None, Created_By=None, Created_On=None,
-                                         Updated_By=None, Updated_On=None, Dzongkhag_Code_id=dzongkhag,
-                                         Gewog_Code_id=gewog, Section_Id_id=None, Village_Code_id=village,
+                                         Updated_By=None, Updated_On=None, Dzongkhag_Code=dzongkhag,
+                                         Gewog_Code=gewog, Section_Id_id=None, Village_Code=village,
                                          Accept_Reject=None, Division_Id_id=None, Field_Office_Id_id=None)
         else:
             t_user_master.objects.create(Login_Type="C", Client_Type="O", Name=contactPerson, Employee_Id=None,
@@ -1228,8 +1229,8 @@ def register(request):
                                          Password_Salt=None, CID=None, Agency=org_name, License_No=org_license,
                                          Address=org_address, Is_Active="N", Logical_Delete="N",
                                          Last_Login_Date=None, Created_By=None, Created_On=None,
-                                         Updated_By=None, Updated_On=None, Dzongkhag_Code_id=org_dzongkhag,
-                                         Gewog_Code_id=org_gewog, Section_Id_id=None, Village_Code_id=org_village,
+                                         Updated_By=None, Updated_On=None, Dzongkhag_Code=org_dzongkhag,
+                                         Gewog_Code=org_gewog, Section_Id_id=None, Village_Code=org_village,
                                          Accept_Reject=None, Division_Id_id=None, Field_Office_Id_id=None)
         return render(request, 'client_register.html')
     else:

@@ -70,13 +70,13 @@ option {
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="form-label">CID <font color="red">*</font></label>
-                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="p_cid" name="p_cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCitizenDetails(this.value);">
+                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="p_cid" name="p_cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getPhytoCitizenDetails(this.value);">
                                 </div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="form-label">Exporter Name <font color="red">*</font></label>
-                                    <input type="text" class="form-control" id="p_Exporter_Name" name="p_Exporter_Name" disabled>
+                                    <input type="text" class="form-control" id="p_Exporter_Name" name="p_Exporter_Name" readonly="readonly">
                                 </div>
                             </div>
                         </div>
@@ -478,13 +478,13 @@ option {
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="form-label">CID <font color="red">*</font></label>
-                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="c_cid" name="c_cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCidDetails(this.value);">
+                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="c_cid" name="c_cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCitizenDetails(this.value);">
                                 </div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="form-label">Name <font color="red">*</font></label>
-                                    <input type="text" class="form-control" id="c_Exporter_Name" name="c_Exporter_Name" disabled>
+                                    <input type="text" class="form-control" id="c_Exporter_Name" name="c_Exporter_Name" readonly="readonly">
                                 </div>
                             </div>
                             <div class="col-sm-4">
@@ -1350,33 +1350,31 @@ option {
         });
     }
 
-function getCitizenDetails(cidNo)
-	{
 
-	    $.ajax({
-            type : "GET",
-            url : "{% url 'get_citizen_details' %}",
-            data :{'cidNo':cidNo},
-            success : function(data)
-            {
-                $('#p_Exporter_Name').val(data.Name);
+function getPhytoCitizenDetails(cidNo)
+{
+$.ajax({
+    type : "GET",
+    url : "{% url 'get_citizen_details' %}",
+    data :{'cidNo':cidNo},
+    success : function(data)
+    {
+        const myObj =data.response;
+        var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+        var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+        var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+        if (middleName == null) {
+                middleName = "";
             }
-        });
+        var CitizenName = firstName + " " + middleName + " " + lastName;
+        var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
+        var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
+        var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
+        $('#p_Exporter_Name').val(CitizenName);
     }
+});
+}
 
-    function getCidDetails(cidNo)
-	{
-
-	    $.ajax({
-            type : "GET",
-            url : "{% url 'get_citizen_details' %}",
-            data :{'cidNo':cidNo},
-            success : function(data)
-            {
-                $('#c_Exporter_Name').val(data.Name);
-            }
-        });
-    }
 function getCitizenDetails(cidNo)
 {
 $.ajax({
@@ -1397,9 +1395,6 @@ $.ajax({
         var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
         var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
         $('#c_Exporter_Name').val(CitizenName);
-        $('#dzongkhag').val(dzongkhagName);
-        $('#gewog').val(gewogName);
-        $('#village').val(villageName);
     }
 });
 }

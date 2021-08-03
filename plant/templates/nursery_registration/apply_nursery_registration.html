@@ -1,7 +1,12 @@
 {% extends 'common_dashboard.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-
+<style>
+    option
+    {
+        background-color: black !important;
+    }
+</style>
 <div class="card">
     <div class="card-header">
         <h4 class="card-title">Registration of Nursery/ Seed Growers</h4>
@@ -61,7 +66,7 @@
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="form-label">Owner Name <font color="red">*</font></label>
-                                    <input type="text" class="form-control" id="Owner_Name" name="Owner_Name" disabled>
+                                    <input type="text" class="form-control" id="Owner_Name" name="Owner_Name" readonly="readonly">
                                 </div>
                                 <div class="alert alert-danger" id="Owner_NameErrorMsg" style="display:none"></div>
                             </div>
@@ -522,8 +527,8 @@ function save_nursery_form()
             url : "{% url 'save_nursery_reg' %}",
             data : $('#seedForm').serialize(),
             success : function(data) {
-                $('#applicationNo').val(data.applNo);
-                $('#plant_applicationNo').val(data.applNo);
+                $('#applicationNo').val(data.applicationNo);
+                $('#plant_applicationNo').val(data.applicationNo);
                 $('#pills-nursery-seed-details').tab('show');
             }
         });
@@ -701,9 +706,7 @@ function getCitizenDetails(cidNo)
             var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
             var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
             $('#Owner_Name').val(CitizenName);
-            $('#dzongkhag').val(dzongkhagName);
-            $('#gewog').val(gewogName);
-            $('#village').val(villageName);
+
         }
     });
 }
