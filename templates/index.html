@@ -77,7 +77,9 @@ body {
             <form action="{% url 'login' %}" id="loginForm" method="post">
               {% csrf_token %}
               <h1>Login Form</h1>
-              <h2 class="form-signin-heading">{{ message }}</h2>
+              {% if message %}
+                <div class="alert alert-danger" id="login_error">{{ message }}</div>
+              {% endif %}
               <div>
                 <input type="text" name="username" class="form-control" placeholder="Username" required/>
               </div>
@@ -114,6 +116,7 @@ body {
 <script>
  $(document).ready(function() {
         $("#organizationDiv").hide();
+        $("#login_error").delay(3000).fadeOut('slow');
     });
 
 function isNumberKey(evt)

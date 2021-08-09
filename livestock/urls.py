@@ -40,7 +40,7 @@ urlpatterns = [
          name='reject_meat_shop_factory_inspection'),
     path('resubmit_meat_shop_factory_inspection', views.resubmit_meat_shop_factory_inspection,
          name='resubmit_meat_shop_factory_inspection'),
-    path('edit_meat_shop_feasibility_details/<int:Record_Id>', views.edit_meat_shop_feasibility_details,
+    path('edit_meat_shop_feasibility_details', views.edit_meat_shop_feasibility_details,
          name='edit_meat_shop_feasibility_details'),
     path('forward_meat_shop_application', views.forward_meat_shop_application, name='forward_meat_shop_application'),
     path('view_meat_shop_factory_inspection_application', views.view_meat_shop_factory_inspection_application,

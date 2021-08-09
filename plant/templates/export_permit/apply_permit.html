@@ -66,18 +66,21 @@ option {
                                     <label class="form-label">License No <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="p_License_No" name="p_License_No">
                                 </div>
+                                <div class="alert alert-danger" id="p_License_NoErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="form-label">CID <font color="red">*</font></label>
                                     <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="p_cid" name="p_cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getPhytoCitizenDetails(this.value);">
                                 </div>
+                                <div class="alert alert-danger" id="p_cidErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="form-label">Exporter Name <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="p_Exporter_Name" name="p_Exporter_Name" readonly="readonly">
                                 </div>
+                                <div class="alert alert-danger" id="p_Exporter_NameErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                         <div class="row">
@@ -86,18 +89,21 @@ option {
                                     <label class="form-label">Exporter Address <font color="red">*</font></label>
                                     <textarea class="form-control" id="p_Exporter_Address" name="p_Exporter_Address" rows="3"></textarea>
                                 </div>
+                                <div class="alert alert-danger" id="p_Exporter_AddressErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="form-label">Contact Number <font color="red">*</font></label>
-                                    <input type="number" class="form-control" id="p_Contact_No" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="p_Contact_No" maxlength="8" onkeypress="return isNumberKey(event)">
+                                    <input type="number" class="form-control" id="p_Contact_No" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="p_Contact_No" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
                                 </div>
+                                <div class="alert alert-danger" id="p_Contact_NoErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="form-label">Email <font color="red">*</font></label>
-                                    <input type="email" class="form-control" id="p_Email" name="p_Email">
+                                    <input type="email" class="form-control" id="p_Email" name="p_Email" onchange="validateemailId(this.value)">
                                 </div>
+                                <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                         <div class="row">
@@ -111,6 +117,7 @@ option {
                                         {% endfor %}
                                     </select>
                                 </div>
+                                <div class="alert alert-danger" id="p_Dzongkhag_CodeErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
@@ -122,12 +129,14 @@ option {
                                         {% endfor %}
                                     </select>
                                 </div>
+                                <div class="alert alert-danger" id="p_Location_CodeErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="form-label">Name & Address of Consignee <font color="red">*</font></label>
                                     <textarea class="form-control" id="p_Name_Address" name="p_Name_Address" rows="3"></textarea>
                                 </div>
+                                <div class="alert alert-danger" id="p_Name_AddressErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                         <div class="row">
@@ -136,12 +145,14 @@ option {
                                     <label class="form-label">Botanical name of the commodity <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="p_Botanical_Name" name="p_Botanical_Name">
                                 </div>
+                                <div class="alert alert-danger" id="p_Botanical_NameErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label class="form-label">Description of the Commodity <font color="red">*</font></label>
                                     <textarea class="form-control" id="p_Description" name="p_Description" rows="3"></textarea>
                                 </div>
+                                <div class="alert alert-danger" id="p_DescriptionErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                         <hr>
@@ -151,6 +162,7 @@ option {
                                     <label class="form-label">Quantity (Gross Weight) <font color="red">*</font></label>
                                     <input type="number" class="form-control" id="p_Qty_Gross" name="p_Qty_Gross">
                                 </div>
+                                <div class="alert alert-danger" id="p_Qty_GrossErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="clearfix mb-4" style="margin-bottom: 2.5rem!important;"></div>
@@ -172,6 +184,7 @@ option {
                                         <span class="form-radio-sign">Unit(s)</span>
                                     </label>
                                 </div>
+                                <div class="alert alert-danger" id="p_Unit_GrossErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                         <div class="row">
@@ -180,6 +193,7 @@ option {
                                     <label class="form-label">Quantity (Net Weight) <font color="red">*</font></label>
                                     <input type="number" class="form-control" id="p_Qty_Net" name="p_Qty_Net">
                                 </div>
+                                <div class="alert alert-danger" id="p_Qty_NetErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="clearfix mb-4" style="margin-bottom: 2.5rem!important;"></div>
@@ -201,17 +215,21 @@ option {
                                         <span class="form-radio-sign">Unit(s)</span>
                                     </label>
                                 </div>
+                                <div class="alert alert-danger" id="p_Unit_NetErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-6">
-                                <label class="form-label">Importing Country <font color="red">*</font></label>
-                                <select class="form-control" name="p_Country_Code"  id="p_Country_Code">
-                                    <option value="">--SELECT COUNTRY--</option>
-                                    {% for country in country %}
-                                        <option value="{{ country.Country_Code }}">{{ country.Country_Name }}</option>
-                                    {% endfor %}
-                                </select>
+                                <div class="form-group">
+                                    <label class="form-label">Importing Country <font color="red">*</font></label>
+                                    <select class="form-control" name="p_Country_Code"  id="p_Country_Code">
+                                        <option value="">--SELECT COUNTRY--</option>
+                                        {% for country in country %}
+                                            <option value="{{ country.Country_Code }}">{{ country.Country_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="p_Country_CodeErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
@@ -223,6 +241,7 @@ option {
                                         {% endfor %}
                                     </select>
                                 </div>
+                                <div class="alert alert-danger" id="p_Entry_PointErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                         <div class="row">
@@ -231,18 +250,21 @@ option {
                                     <label class="form-label">Number of Packages <font color="red">*</font></label>
                                     <textarea class="form-control" id="p_Package_number" name="p_Package_number" rows="3"></textarea>
                                 </div>
+                                <div class="alert alert-danger" id="p_Package_numberErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="form-label">Description of Packages <font color="red">*</font></label>
                                     <textarea class="form-control" id="p_Package_description" name="p_Package_description" rows="3"></textarea>
                                 </div>
+                                <div class="alert alert-danger" id="p_Package_descriptionErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="form-label">Distinguishing Marks <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="p_Distinguish_Marks" name="p_Distinguish_Marks">
                                 </div>
+                                <div class="alert alert-danger" id="p_Distinguish_MarksErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                         <div class="row">
@@ -276,6 +298,7 @@ option {
                                         <span class="form-radio-sign">Laboratory specimens, Micro organisms, Micro biological, Biocontrolagents</span>
                                     </label>
                                 </div>
+                                <div class="alert alert-danger" id="p_purposeErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                         <br>
@@ -292,7 +315,7 @@ option {
                                         <option value="Passenger">Passenger</option>
                                     </select>
                                 </div>
-                                <div class="alert alert-danger" id="conveyanceMeansErrorMsg" style="display:none"></div>
+                                <div class="alert alert-danger" id="p_conveyanceMeansErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
@@ -480,26 +503,30 @@ option {
                                     <label class="form-label">CID <font color="red">*</font></label>
                                     <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="c_cid" name="c_cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCitizenDetails(this.value);">
                                 </div>
+                                <div class="alert alert-danger" id="c_cidErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="form-label">Name <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="c_Exporter_Name" name="c_Exporter_Name" readonly="readonly">
                                 </div>
+                                <div class="alert alert-danger" id="c_Exporter_NameErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="form-label">Email <font color="red">*</font></label>
-                                    <input type="email" class="form-control" id="c_Email" name="c_Email">
+                                    <input type="email" class="form-control" id="c_Email" name="c_Email" onchange="validateExportemailId(this.value)">
                                 </div>
+                                <div class="alert alert-danger" id="c_EmailErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="form-label">Contact Number <font color="red">*</font></label>
-                                    <input type="number" class="form-control" id="c_Contact_No" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="c_Contact_No" maxlength="8" onkeypress="return isNumberKey(event)">
+                                    <input type="number" class="form-control" id="c_Contact_No" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="c_Contact_No" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkExportContact(this.value)">
                                 </div>
+                                <div class="alert alert-danger" id="c_Contact_NoErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
@@ -511,6 +538,7 @@ option {
                                         {% endfor %}
                                     </select>
                                 </div>
+                                <div class="alert alert-danger" id="c_Dzongkhag_CodeErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
@@ -522,6 +550,7 @@ option {
                                         {% endfor %}
                                     </select>
                                 </div>
+                                <div class="alert alert-danger" id="c_Location_CodeErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                         <hr>
@@ -532,6 +561,7 @@ option {
                                         <label class="form-label">Current Address <font color="red">*</font></label>
                                         <textarea class="form-control" id="c_current_address" name="c_current_address" rows="4"></textarea>
                                     </div>
+                                    <div class="alert alert-danger" id="c_current_addressErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="form-group">
@@ -546,12 +576,14 @@ option {
                                         <label class="form-label">Date Of Inspection Requested <font color="red">*</font></label>
                                         <input type="text" class="form-control date-picker flatpickr-input active" id="date" name="date_for_Inspection"  placeholder="Pick a date" readonly="readonly">
                                     </div>
+                                    <div class="alert alert-danger" id="date_for_InspectionErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label class="form-label">Place Of Inspection Requested <font color="red">*</font></label>
                                         <input type="text" class="form-control" id="c_requested_place" name="Desired_Inspection_Place">
                                     </div>
+                                    <div class="alert alert-danger" id="c_requested_placeErrorMsg" style="display:none"></div>
                                 </div>
                             </div>
                         </div>
@@ -1036,10 +1068,9 @@ option {
                         type : "POST",
                         url : "{% url 'submit_export' %}",
                         data : $('#permitForm').serialize(),
-                        cache : false,
-                        dataType : "html",
                         success : function(data)
                         {
+                            alert(data.applicationNo);
                             $('#applicationNo').val(data.applicationNo);
                             $('#phyto_attachment_applicationNo').val(data.applicationNo);
                             $('#pills-tab-phyto a:last').tab('show');
@@ -1182,8 +1213,6 @@ option {
                         type : "POST",
                         url : "{% url 'submit_export' %}",
                         data : $('#permitForm').serialize(),
-                        cache : false,
-                        dataType : "html",
                         success : function(data)
                         {
                             $('#applicationNo').val(data.applicationNo);
@@ -1397,6 +1426,95 @@ $.ajax({
         $('#c_Exporter_Name').val(CitizenName);
     }
 });
+}
+
+function checkContact(value)
+{
+    var firstDigit = value.charAt(0);
+    var secondDigit = value.charAt(1);
+
+    if(firstDigit != 7 && firstDigit != 1){
+        $('#p_Contact_NoErrorMsg').html("Must Start with either 1 or 7.");
+        $('#p_Contact_NoErrorMsg').show();
+        $('#p_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
+        $('#p_Contact_No').val("");
+    }else if(firstDigit == 1 && secondDigit != 6 && secondDigit != 7){
+        $('#p_Contact_NoErrorMsg').html("Second Digit Must Start with either 6 or 7.");
+        $('#p_Contact_NoErrorMsg').show();
+        $('#p_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
+        $('#p_Contact_No').val("");
+    }else if(firstDigit == 7 && secondDigit == 6){
+        $('#p_Contact_NoErrorMsg').html("Second Digit Cannot be 6.");
+        $('#p_Contact_NoErrorMsg').show();
+        $('#p_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
+        $('#p_Contact_No').val("");
+    }else if(firstDigit == 7 && secondDigit != 7){
+        $('#p_Contact_NoErrorMsg').html("Second Digit Must Start with 7.");
+        $('#p_Contact_NoErrorMsg').show();
+        $('#p_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
+        $('#p_Contact_No').val("");
+    }
+
+}
+
+function checkExportContact(value)
+{
+    var firstDigit = value.charAt(0);
+    var secondDigit = value.charAt(1);
+
+    if(firstDigit != 7 && firstDigit != 1){
+        $('#c_Contact_NoNumberErrorMsg').html("Must Start with either 1 or 7.");
+        $('#c_Contact_NoNumberErrorMsg').show();
+        $('#c_Contact_NoNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#c_Contact_No').val("");
+    }else if(firstDigit == 1 && secondDigit != 6 && secondDigit != 7){
+        $('#c_Contact_NoNumberErrorMsg').html("Second Digit Must Start with either 6 or 7.");
+        $('#c_Contact_NoNumberErrorMsg').show();
+        $('#c_Contact_NoNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#c_Contact_No').val("");
+    }else if(firstDigit == 7 && secondDigit == 6){
+        $('#c_Contact_NoNumberErrorMsg').html("Second Digit Cannot be 6.");
+        $('#c_Contact_NoNumberErrorMsg').show();
+        $('#c_Contact_NoNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#c_Contact_No').val("");
+    }else if(firstDigit == 7 && secondDigit != 7){
+        $('#c_Contact_NoNumberErrorMsg').html("Second Digit Must Start with 7.");
+        $('#c_Contact_NoNumberErrorMsg').show();
+        $('#c_Contact_NoNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#c_Contact_No').val("");
+    }
+}
+
+function validateemailId(emailId)
+{
+    var pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+    var no=emailId.match(pattern);
+
+    if(no==null)
+    {
+        $('#emailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
+        $('#email').val("");
+        $('#emailErrorMsg').show();
+        $('#emailErrorMsg').delay(2000).fadeOut('slow');
+    }else{
+     $('#emailErrorMsg').hide();
+    }
+}
+
+function validateExportemailId(emailId)
+{
+    var pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+    var no=emailId.match(pattern);
+
+    if(no==null)
+    {
+        $('#c_EmailNumberErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
+        $('#c_Email').val("");
+        $('#c_EmailNumberErrorMsg').show();
+        $('#c_EmailNumberErrorMsg').delay(2000).fadeOut('slow');
+    }else{
+     $('#c_EmailNumberErrorMsg').hide();
+    }
 }
 </script>
 {% endblock %}

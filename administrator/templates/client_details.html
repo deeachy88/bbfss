@@ -1,10 +1,25 @@
 {% extends 'common_dashboard.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+{% load static %}
+<style>
+    #pageloader img
+    {
+      left: 50%;
+      margin-left: -32px;
+      margin-top: -32px;
+      position: absolute;
+      top: 50%;
+    }
+</style>
 <div class="animated fadeIn">
     <div class="row">
         <div class="col-md-12">
             <div class="card">
+                <div class="alert alert-success" id="successMsg" style="display:none"></div>
+                <div id="pageloader" style="display:none">
+                   <img src="{% static 'assets/img/ajax-loader.gif' %}" alt="processing..." />
+                </div>
                 <div class="card-header">
                     <strong class="card-title">Registered Clients</strong>
                 </div>
@@ -41,19 +56,12 @@
                                     <td>{{clients.License_No}}</td>
                                     <td>
                                         <div class="form-button-action">
-                                            <form action="{% url 'deactivate_client' clients.Email_Id clients.Name %}" method="post">
-                                               {% csrf_token %}
-                                                <button type="submit" data-toggle="tooltip" title="Deactivate" class="btn btn-link btn-primary btn-xs">
-                                                    <i class="fa fa-lock fa-fw"></i>
-                                                </button>
-                                            </form>
-                                            <form action="{% url 'reset_client_password' clients.Email_Id clients.Name %}" method="post">
-                                               {% csrf_token %}
-                                                <button type="submit" data-toggle="tooltip" title="Reset Password" class="btn btn-link btn-primary btn-xs">
-                                                    <i class="fa fa-key fa-fw"></i>
-                                                </button>
-                                            </form>
-
+                                            <button type="submit" data-toggle="tooltip" onclick="deactivate_client('{{ clients.Email_Id }}','{{ clients.Name }}')" title="Deactivate" class="btn btn-link btn-primary btn-xs">
+                                                <i class="fa fa-lock fa-fw"></i>
+                                            </button>
+                                            <button type="submit" data-toggle="tooltip" onclick="reset_client_password('{{ clients.Email_Id }}','{{ clients.Name }}')" title="Reset Password" class="btn btn-link btn-primary btn-xs">
+                                                <i class="fa fa-key fa-fw"></i>
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -70,4 +78,43 @@
         </div>
     </div>
 </div>
+<script>
+    function deactivate_client(email, name)
+    {
+        $("#pageloader").show();
+        $.ajax({
+            type : "GET",
+            url : "{% url 'deactivate_client' %}",
+            data :{'Email_Id':email,'Name':name},
+            success : function(data)
+            {
+                $("#pageloader").hide();
+                $('#successMsg').html("Client Deactivated.");
+                $('#successMsg').show();
+                $('#successMsg').delay(2000).fadeOut('slow');
+                setTimeout(function()
+                {
+                    location.reload();
+                }, 3000);
+            }
+        });
+    }
+
+    function reset_client_password(email, name)
+    {
+        $("#pageloader").show();
+        $.ajax({
+            type : "GET",
+            url : "{% url 'reset_client_password' %}",
+            data :{'Email_Id':email,'Name':name},
+            success : function(data)
+            {
+                $("#pageloader").hide();
+                $('#successMsg').html("Client Password Successfully Reset.");
+                $('#successMsg').show();
+                $('#successMsg').delay(2000).fadeOut('slow');
+            }
+        });
+    }
+</script>
 {% endblock %}

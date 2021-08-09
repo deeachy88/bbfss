@@ -1,0 +1,233 @@
+<div class="card">
+    <div class="card-body">
+        {% for application_details in application_details %}
+            <form method="post" id="nursery_inspector_form">
+                <input type="hidden" name="application_id" value="{{ application_details.Application_No }}">
+                <div class="accordion" role="tablist">
+                    <div class="card">
+                        <div class="card-header" role="tab" id="headingOne">
+                            <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed">
+                                Application Details
+                            </a>
+                        </div>
+
+                        <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion" style="">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label class="form-label">License No</label>
+                                            <input type="text" class="form-control" value="{{application_details.License_No}}" disabled>
+                                        </div>
+                                        <div class="alert alert-danger" id="License_NoErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Company Name</label>
+                                            <input type="text" class="form-control" value="{{application_details.Company_Name}}" disabled>
+                                        </div>
+                                        <div class="alert alert-danger" id="Company_NameErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Company_Address</label>
+                                            <textarea disabled class="form-control" disabled rows="4">{{application_details.Company_Address}}</textarea>
+                                        </div>
+                                        <div class="alert alert-danger" id="Company_AddressErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label class="form-label">CID</label>
+                                            <input type="number" class="form-control"  value="{{application_details.CID}}" disabled>
+                                        </div>
+                                        <div class="alert alert-danger" id="CIDErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Owner Name</label>
+                                            <input type="text" class="form-control" value="{{application_details.Owner_Name}}" disabled>
+                                        </div>
+                                        <div class="alert alert-danger" id="Owner_NameErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Contact Number</label>
+                                            <input type="number" class="form-control" value="{{application_details.Contact_No}}" disabled>
+                                        </div>
+                                        <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Email</label>
+                                            <input type="email" class="form-control" value="{{application_details.Email}}" disabled>
+                                        </div>
+                                        <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Nursery Category</label>
+                                            <select class="form-control form-control" disabled>
+                                                {% if application_details.Nursery_Category == "Agro-Forestry" %}
+                                                <option value="Agro-Forestry" selected>Agro-Forestry</option>
+                                                {% elif application_details.Nursery_Category == "Ornamental" %}
+                                                <option value="Ornamental" selected>Ornamental</option>
+                                                {% elif application_details.Nursery_Category == "Fruits and Nuts" %}
+                                                <option value="Fruits and Nuts" selected>Fruits and Nuts</option>
+                                                {% elif application_details.Nursery_Category == "Fodder" %}
+                                                <option value="Fodder" selected>Fodder</option>
+                                                {% endif %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Dzongkhag</label>
+                                            <select class="form-control" disabled>
+                                                {% for dzongkhag in dzongkhag %}
+                                                    <option value="{{dzongkhag.Dzongkhag_Code}}"{% if application_details.Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>
+                                                        {{ dzongkhag.Dzongkhag_Name }}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Location</label>
+                                             <select class="form-control" disabled>
+                                                {% for location in location %}
+                                                        <option value="{{ location.Location_Code }}" {% if application_details.Location_Code == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                                {% endfor %}
+                                             </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" role="tab" id="headingTwo">
+                            <a class="collapsed" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                Details
+                            </a>
+                        </div>
+                        <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion">
+                            <div class="card-body">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Crop</th>
+                                            <th scope="col">Crop Variety</th>
+                                            <th scope="col">Seed Source</th>
+                                            <th scope="col">Quantity</th>
+                                            <th scope="col">Purpose</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for certification_details in details_list %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td>{{certification_details.Crop}}</td>
+                                                <td>{{certification_details.Variety}}</td>
+                                                <td>{{certification_details.Seed_Source}}</td>
+                                                <td>{{certification_details.Quantity}}</td>
+                                                <td>{{certification_details.Purpose}}</td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                                <td colspan="6" class="text-center">No Data</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" role="tab" id="headingThree">
+                            <a class="collapsed" data-toggle="collapse" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                Attachments
+                            </a>
+                        </div>
+                        <div id="collapseThree" class="collapse" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion">
+                            <div class="card-body">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">File</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                       {% for file_attach in file %}
+                                                <tr>
+                                                    <td>{{ forloop.counter }}</td>
+                                                    <td>{{file_attach.Attachment}}</td>
+                                                </tr>
+                                                {% empty %}
+                                                <tr>
+                                                  <td colspan="3" class="text-center">No Data</td>
+                                                </tr>
+                                       {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" role="tab" id="headingFour">
+                            <a class="collapsed" data-toggle="collapse" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                Resubmit Application Details
+                            </a>
+                        </div>
+                        <div id="collapseFour" class="collapse" role="tabpanel" aria-labelledby="headingFour" data-parent="#accordion">
+                            <div class="card-body">
+                                <div class="row">
+                                     <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="from-label">Remarks</label>
+                                            <textarea class="form-control" rows="3"  disabled>{{ application_details.Inspector_Remarks }}</textarea>
+                                        </div>
+                                    </div>
+                                     <div class="col-md-6">
+                                        <div class="from-label">
+                                            <label class="from-label">Resubmit Remarks</label>
+                                            <textarea class="form-control" rows="3" id="Resubmit_Remarks" name="Resubmit_Remarks"></textarea>
+                                        </div>
+                                    </div>
+                                 </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" onclick="nursery_client_resubmit('{{ application_details.Application_No }}')">Submit</button>
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        {% endfor %}
+    </div>
+</div>
+<script>
+    function nursery_client_resubmit(application_id)
+    {
+        var Resubmit_Remarks = $('#Resubmit_Remarks').val();
+       $.ajax({
+            type : "GET",
+            url : "{% url 'seed_certification_client_resubmit' %}",
+            data :{'application_id':application_id, 'Resubmit_Remarks':Resubmit_Remarks},
+            success : function(data) {
+                location.reload();
+            }
+        });
+    }
+</script>
+

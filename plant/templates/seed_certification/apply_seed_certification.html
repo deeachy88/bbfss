@@ -204,15 +204,25 @@
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Quantity</label>
-                                        <input type="text" name="qty" class="form-control" id="qty" required>
+                                        <input type="number" name="qty" class="form-control" id="qty" required>
                                         <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
+                                        <label class="form-label">Unit</label>
+                                        <select name="Unit" class="form-control" id="Unit">
+                                            <option value="">--SELECT--</option>
+                                            {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="alert alert-danger" id="UnitErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
                                         <label class="form-label">Purpose</label>
                                         <textarea class="form-control" id="purpose" name="purpose" rows="3"></textarea>
-                                        <div class="alert alert-danger" id="remarksMeansErrorMsg" style="display:none"></div>
+                                        <div class="alert alert-danger" id="purposeErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                             </div>
@@ -467,17 +477,69 @@ function save_certificate_details()
 
 function save_certificate()
 {
-    $.ajax({
-        type : "POST",
-        url : "{% url 'add_certificate_details' %}",
-        data : $('#save_certificate_form').serialize(),
-        success : function(responseText) {
-           $('#add_details').modal('hide');
-           $('#certification-details').html(responseText);
-           $('#pills-seed-certification-details').tab('show');
-           $('.modal-backdrop').remove();
-        }
-    });
+    var Crop = $('#crop_id').val();
+    var Variety = $('#crop_variety').val();
+    var Source =  $('#Source').val();
+    var Quantity = $('#qty').val();
+    var Unit = $('#Unit').val();
+    var Purpose = $('#purpose').val();
+
+    if(Crop == "")
+    {
+        $('#crop_idErrorMsg').html("Enter License Number.");
+        $('#crop_idErrorMsg').show();
+        $('#crop_idErrorMsg').delay(2000).fadeOut('slow');
+        $('#crop_id').focus();
+    }
+    else if(Variety == "")
+    {
+        $('#crop_varietyErrorMsg').html("Enter Company Name.");
+        $('#crop_varietyErrorMsg').show();
+        $('#crop_varietyErrorMsg').delay(2000).fadeOut('slow');
+        $('#crop_variety').focus();
+    }
+    else if(Source == "")
+    {
+        $('#SourceErrorMsg').html("Enter Source.");
+        $('#SourceErrorMsg').show();
+        $('#SourceErrorMsg').delay(2000).fadeOut('slow');
+        $('#Source').focus();
+    }
+    else if(Quantity == "")
+    {
+        $('#qtyErrorMsg').html("Enter Quantity.");
+        $('#qtyErrorMsg').show();
+        $('#qtyErrorMsg').delay(2000).fadeOut('slow');
+        $('#qty').focus();
+    }
+    else if(Unit == "")
+    {
+        $('#UnitErrorMsg').html("Select Unit.");
+        $('#UnitErrorMsg').show();
+        $('#UnitErrorMsg').delay(2000).fadeOut('slow');
+        $('#Unit').focus();
+    }
+    else if(Purpose == "")
+    {
+        $('#purposeErrorMsg').html("Enter Purpose.");
+        $('#purposeErrorMsg').show();
+        $('#purposeErrorMsg').delay(2000).fadeOut('slow');
+        $('#purpose').focus();
+    }
+    else
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'add_certificate_details' %}",
+            data : $('#save_certificate_form').serialize(),
+            success : function(responseText) {
+               $('#add_details').modal('hide');
+               $('#certification-details').html(responseText);
+               $('#pills-seed-certification-details').tab('show');
+               $('.modal-backdrop').remove();
+            }
+        });
+    }
 }
 
 function save_details_form_certificate()
@@ -610,6 +672,18 @@ function checkContact(value)
         $('#contactNumber').val("");
     }
 
+}
+
+function getVariety(crop_id)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_seed_variety' %}",
+        data :{'crop_id':crop_id},
+        success : function(data) {
+            $('#crop_variety').html(data);
+        }
+    });
 }
 </script>
 {% endblock %}

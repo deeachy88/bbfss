@@ -61,10 +61,10 @@ urlpatterns = [
     path('delete_location_field/<int:Location_Code>', views.delete_location_mapping, name='delete_location_field'),
     path('reg_clients', views.new_registration, name='new_registration'),
     path('registered_clients', views.registered_clients, name='registered_clients'),
-    path('accept_registration/<str:Email_Id>/<str:Name>/', views.accept_registration, name='accept_registration'),
-    path('reject_registration/<str:Email_Id>/<str:Name>/', views.reject_registration, name='reject_registration'),
-    path('reset_client_password/<str:Email_Id>/<str:Name>/', views.reset_client_password, name='reset_client_password'),
-    path('deactivate_client/<str:Email_Id>/<str:Name>/', views.deactivate_client, name='deactivate_client'),
+    path('accept_registration', views.accept_registration, name='accept_registration'),
+    path('reject_registration', views.reject_registration, name='reject_registration'),
+    path('reset_client_password', views.reset_client_password, name='reset_client_password'),
+    path('deactivate_client', views.deactivate_client, name='deactivate_client'),
     path('load_gewog', views.load_gewog, name='load_gewog'),
     path('load_village', views.load_village, name='load_village'),
     path('load_section', views.load_section, name='load_section'),
@@ -93,5 +93,10 @@ urlpatterns = [
     path('check_user_password', views.check_user_password, name='check_user_password'),
     path('change_mobile_number', views.change_mobile_number, name='change_mobile_number'),
     path('update_password', views.update_password, name='update_password'),
-    path('get_security_answer', views.get_security_answer, name='get_security_answer')
+    path('get_security_answer', views.get_security_answer, name='get_security_answer'),
+    path('assign_revoke_officiating',views.assign_revoke_officiating, name='assign_revoke_officiating'),
+    path('assign_officiating', views.assign_officiating, name='assign_officiating'),
+    path('revoke_officiating', views.revoke_officiating, name='revoke_officiating'),
+    path('check_already_assigned_officiating', views.check_already_assigned_officiating,
+         name='check_already_assigned_officiating')
 ]

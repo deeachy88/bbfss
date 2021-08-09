@@ -8,7 +8,8 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.core.mail import send_mail
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
-
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import cache_control
 # Create your views here.
 from django.template.loader import render_to_string
 
@@ -36,6 +37,7 @@ def dashboard(request):
     return render(request, 'dashboard.html')
 
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def login(request):
     _message = 'Please sign in'
     if request.method == 'POST':
@@ -112,6 +114,7 @@ def login(request):
                                         request.session['field_office_id'] = user.Field_Office_Id_id
                                         request.session['Login_Id'] = user.Login_Id
                                         request.session['email'] = user.Email_Id
+                                        request.session['is_officiating'] = user.Is_Officiating
                                     elif Chief == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
                                         request.session['role'] = Chief
@@ -1253,9 +1256,11 @@ def registered_clients(request):
     return render(request, 'client_details.html', {'reg_clients': clients})
 
 
-def accept_registration(request, Email_Id, Name):
+def accept_registration(request):
     password = get_random_password_string(8)
     password_value = make_password(password)
+    Email_Id = request.GET.get('Email_Id')
+    Name = request.GET.get('Name')
     reg_clients = t_user_master.objects.filter(Email_Id=Email_Id)
     reg_clients.update(Accept_Reject="A")
     reg_clients.update(Is_Active="Y")
@@ -1265,7 +1270,9 @@ def accept_registration(request, Email_Id, Name):
     return render(request, 'registered_clients.html', {'reg_clients': clients})
 
 
-def reject_registration(request, Login_Id, Email_Id, Name):
+def reject_registration(request):
+    Email_Id = request.GET.get('Email_Id')
+    Name = request.GET.get('Name')
     reg_clients = t_user_master.objects.filter(Email_Id=Email_Id)
     reg_clients.update(Accept_Reject="R")
     clients = reg_clients.filter(Accept_Reject=None)
@@ -1303,7 +1310,9 @@ def deactivate_user(request, Login_Id, Email_Id, Name):
     return render(request, 'user.html', {'details': details})
 
 
-def reset_client_password(request, Login_Id, Email_Id, Name):
+def reset_client_password(request):
+    Email_Id = request.GET.get('Email_Id')
+    Name = request.GET.get('Name')
     salt = os.urandom(32)
     password = get_random_password_string(8)
     key = hashlib.pbkdf2_hmac(
@@ -1317,14 +1326,16 @@ def reset_client_password(request, Login_Id, Email_Id, Name):
     reg_users.update(Password=key)
     reg_users.update(Password_Salt=salt)
     details = t_user_master.objects.filter(Login_Type="C")
-    return render(request, 'registered_clients.html', {'details': details})
+    send_reset_pass_mail(Name, Email_Id, password)
+    return redirect(registered_clients)
 
 
-def deactivate_client(request, Login_Id, Email_Id, Name):
+def deactivate_client(request):
+    Email_Id = request.GET.get('Email_Id')
     reg_users = t_user_master.objects.filter(Email_Id=Email_Id)
     reg_users.update(Is_Active='N')
     details = t_user_master.objects.filter(Login_Type="I")
-    return render(request, 'registered_clients.html', {'details': details})
+    return redirect(registered_clients)
 
 
 def load_gewog(request):
@@ -1645,3 +1656,35 @@ def send_reset_pass_mail(name, email, password):
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [email]
     send_mail(subject, message, email_from, recipient_list)
+
+
+def assign_revoke_officiating(request):
+    Field_Office_Id = request.session['field_office_id']
+    inspector_list = t_user_master.objects.filter(Field_Office_Id=Field_Office_Id, Role_Id='5')
+    assigned_inspector_list = t_user_master.objects.filter(Field_Office_Id=Field_Office_Id, Role_Id='5',
+                                                           Is_Officiating='Yes')
+    return render(request, 'assign_officiating.html', {'inspector_list': inspector_list,
+                                                       'assigned_inspector_list': assigned_inspector_list})
+
+
+def assign_officiating(request):
+    Email_Id = request.GET.get('Email_Id')
+    user_list = t_user_master.objects.filter(Email_Id=Email_Id)
+    user_list.update(Is_Officiating='Yes')
+    return redirect(assign_revoke_officiating)
+
+
+def revoke_officiating(request):
+    Email_Id = request.GET.get('Email_Id')
+    user_list = t_user_master.objects.filter(Email_Id=Email_Id)
+    user_list.update(Is_Officiating='No')
+    return redirect(assign_revoke_officiating)
+
+
+def check_already_assigned_officiating(request):
+    data = dict()
+    Field_Office_Id = request.session['field_office_id']
+    officiating_count = t_user_master.objects.filter(Field_Office_Id=Field_Office_Id, Role_Id='5',
+                                                     Is_Officiating='Yes').count()
+    data['officiating_count'] = officiating_count
+    return JsonResponse(data)

@@ -3,7 +3,7 @@
     <div class="card-body">
         <h4 class="card-title">Inspector Details</h4>
         {% for application_details in application_details %}
-            <form method="post" id="nursery_inspector_form">
+            <form method="post" id="certificate_inspector_form">
                 <input type="hidden" name="application_id" value="{{ application_details.Application_No }}">
                 <div class="accordion" role="tablist">
                     <div class="card">
@@ -19,21 +19,21 @@
                                     <div class="col-sm-4">
                                         <div class="form-group">
                                             <label class="form-label">License No</label>
-                                            <input type="text" class="form-control" value="{{application_details}}" disabled>
+                                            <input type="text" class="form-control" value="{{application_details.License_No}}" disabled>
                                         </div>
                                         <div class="alert alert-danger" id="License_NoErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
                                             <label class="form-label">Company Name</label>
-                                            <input type="text" class="form-control" value="{{application_details}}" disabled>
+                                            <input type="text" class="form-control" value="{{application_details.Company_Name}}" disabled>
                                         </div>
                                         <div class="alert alert-danger" id="Company_NameErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
                                             <label class="form-label">Company_Address</label>
-                                            <textarea disabled class="form-control" id="Company_Address" name="Company_Address" rows="4">{{application_details}}</textarea>
+                                            <textarea disabled class="form-control" disabled rows="4">{{application_details.Company_Address}}</textarea>
                                         </div>
                                         <div class="alert alert-danger" id="Company_AddressErrorMsg" style="display:none"></div>
                                     </div>
@@ -42,21 +42,21 @@
                                     <div class="col-sm-4">
                                         <div class="form-group">
                                             <label class="form-label">CID</label>
-                                            <input type="number" class="form-control"  value="{{application_details}}" disabled>
+                                            <input type="number" class="form-control"  value="{{application_details.CID}}" disabled>
                                         </div>
                                         <div class="alert alert-danger" id="CIDErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
                                             <label class="form-label">Owner Name</label>
-                                            <input type="text" class="form-control" value="{{application_details}}" disabled>
+                                            <input type="text" class="form-control" value="{{application_details.Owner_Name}}" disabled>
                                         </div>
                                         <div class="alert alert-danger" id="Owner_NameErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
                                             <label class="form-label">Contact Number</label>
-                                            <input type="number" class="form-control" value="{{application_details}}" disabled>
+                                            <input type="number" class="form-control" value="{{application_details.Contact_No}}" disabled>
                                         </div>
                                         <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
                                     </div>
@@ -65,7 +65,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Email</label>
-                                            <input type="email" class="form-control" value="{{application_details}}" disabled>
+                                            <input type="email" class="form-control" value="{{application_details.Email}}" disabled>
                                         </div>
                                         <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
                                     </div>
@@ -75,7 +75,7 @@
                                     <div class="col-sm-4">
                                         <div class="form-group">
                                             <label class="form-label">Nursery Category</label>
-                                            <select class="form-control form-control" id="Nursery_Category" name="Nursery_Category">
+                                            <select class="form-control form-control" disabled>
                                                 {% if application_details.Nursery_Category == "Agro-Forestry" %}
                                                 <option value="Agro-Forestry" selected>Agro-Forestry</option>
                                                 {% elif application_details.Nursery_Category == "Ornamental" %}
@@ -87,7 +87,6 @@
                                                 {% endif %}
                                             </select>
                                         </div>
-                                        <div class="alert alert-danger" id="Nursery_CategoryErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
@@ -242,7 +241,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="form-label">Inspection Team </label>
-                                            <textarea class="form-control" id="insTeam" rows="2"></textarea>
+                                            <textarea class="form-control" id="insTeam" name="Inspection_Team" rows="2"></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -253,15 +252,12 @@
                                             <input type="text" class="form-control date-picker flatpickr-input active" id="dateOfInspection" name="date"  placeholder="Pick a date" readonly="readonly">
                                         </div>
                                     </div>
-                                </div>
-                                <br>
-                                <div class="card-tools">
-                                    <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="open_recommendationModal()">
-                                        <span class="btn-label">
-                                            <i class="fa fa-print"></i>
-                                        </span>
-                                        Add
-                                    </a>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Remarks </label>
+                                            <textarea class="form-control" id="inspector_remarks" name="inspector_remarks" rows="2"></textarea>
+                                        </div>
+                                    </div>
                                 </div>
                                 <br>
                                 <div id="recommendation_details">
@@ -276,51 +272,60 @@
                                                 <th scope="col">Unit</th>
                                                 <th scope="col">Purpose</th>
                                                 <th scope="col">Quantity Certified</th>
-                                                <th scope="col">Value_Certified</th>
+                                                <th scope="col">Unit_Certified</th>
+                                                <th scope="col">Value Certified</th>
                                                 <th scope="col">Quantity Rejected</th>
                                                 <th scope="col">Unit Rejected</th>
                                                 <th scope="col">Value Rejected</th>
                                                 <th scope="col">Remarks</th>
+                                                <th scope="col"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                           {% for recommendation in recommendation %}
-                                                    <tr>
-                                                        <td>{{ forloop.counter }}</td>
-                                                        <td>{{recommendation.Crop}}</td>
-                                                        <td>{{recommendation.Variety}}</td>
-                                                        <td>{{recommendation.Seed_Source}}</td>
-                                                        <td>{{recommendation.Quantity}}</td>
-                                                        <td>{{recommendation.Unit}}</td>
-                                                        <td>{{recommendation.Purpose}}/td>
-                                                        <td>{{recommendation.Qty_Certified}}</td>
-                                                        <td>{{recommendation.Value_Certified}}</td>
-                                                        <td>{{recommendation.Qty_Rejected}}</td>
-                                                        <td>{{recommendation.Unit_Rejected}}</td>
-                                                        <td>{{recommendation.Value_Rejected}}</td>
-                                                        <td>{{recommendation.Remarks}}</td>
-                                                    </tr>
-                                                    {% empty %}
-                                                    <tr>
-                                                      <td colspan="13" class="text-center">No Data</td>
-                                                    </tr>
+                                           {% for recommendation in details_list %}
+                                                <tr>
+                                                    <td>{{ forloop.counter }}</td>
+                                                    <td>{{recommendation.Crop}}</td>
+                                                    <td>{{recommendation.Variety}}</td>
+                                                    <td>{{recommendation.Seed_Source}}</td>
+                                                    <td>{{recommendation.Quantity}}</td>
+                                                    <td>{{recommendation.Unit}}</td>
+                                                    <td>{{recommendation.Purpose}}</td>
+                                                    <td>{{recommendation.Qty_Certified}}</td>
+                                                    <td>{{recommendation.Unit_Certified}}</td>
+                                                    <td>{{recommendation.Value_Certified}}</td>
+                                                    <td>{{recommendation.Qty_Rejected}}</td>
+                                                    <td>{{recommendation.Unit_Rejected}}</td>
+                                                    <td>{{recommendation.Value_Rejected}}</td>
+                                                    <td>{{recommendation.Remarks}}</td>
+                                                    <td>
+                                                        <button type="button" class="btn btn-sm btn-flat btn-warning" onclick="populateEditForm('{{recommendation.Record_Id}}','{{recommendation.Crop}}','{{recommendation.Variety}}',
+                                                        '{{recommendation.Seed_Source}}', '{{recommendation.Quantity}}','{{recommendation.Unit}}','{{recommendation.Purpose}}')">
+                                                            <i class="ace-icon zmdi zmdi-edit"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                {% empty %}
+                                                <tr>
+                                                  <td colspan="15" class="text-center">No Data</td>
+                                                </tr>
                                            {% endfor %}
                                         </tbody>
                                     </table>
                                 </div>
                                 <div class="modal-footer">
-                                        <button type="button" class="btn btn-flat btn-primary" onclick="approve_application()">
-                                            <i class="ace-icon fa fa-times"></i>
-                                            &nbsp;&nbsp;Approve
-                                        </button>
-                                        <button type="button" class="btn btn-flat btn-primary" onclick="resubmit_application()">
-                                            <i class="ace-icon fa fa-times"></i>
-                                            &nbsp;&nbsp;Resubmit
-                                        </button>
-                                        <button type="button" class="btn btn-flat btn-primary" onclick="reject_application()">
-                                            <i class="ace-icon fa fa-times"></i>
-                                            &nbsp;&nbsp;Reject
-                                        </button>
+                                    <button type="button" class="btn btn-flat btn-primary" onclick="approve_application()">
+                                        <i class="ace-icon fa fa-check"></i>
+                                        &nbsp;&nbsp;Approve
+                                    </button>
+                                    <button type="button" class="btn btn-flat btn-primary" onclick="resubmit_application()">
+                                        <i class="ace-icon fa fa-reply-all"></i>
+                                        &nbsp;&nbsp;Resubmit
+                                    </button>
+                                    <button type="button" class="btn btn-flat btn-primary" onclick="reject_application()">
+                                        <i class="ace-icon fa fa-times"></i>
+                                        &nbsp;&nbsp;Reject
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -343,35 +348,27 @@
 
                 </div>
                 <div class="modal-body">
+                    <input type="text" class="form-control" id="record_id" name="record_id">
+                    {% for application_details in application_details %}
+                        <input type="text" class="form-control" valeu="{{application_details.Application_No}}" name="application_no" style="display:none">
+                    {% endfor %}
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Planting Material</label>
-                                <select class="form-control" name="crop_id"  id="crop" onchange="getVariety(this.value)">
-                                    <option value="">--SELECT--</option>
-                                    {% for crop in crop %}
-                                            <option value="{{ crop.Crop_Common_Name }}">{{ crop.Crop_Common_Name }}</option>
-                                    {% endfor %}
-                                </select>
+                                <input type="text" class="form-control" id="crop" disabled>
                             </div>
-                            <div class="alert alert-danger" id="cropErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Crop Variety</label>
-                                <select class="form-control" name="crop_variety_id"  id="crop_variety">
-                                    <option value="">--SELECT--</option>
-                                    {% for variety in variety %}
-                                            <option value="{{ variety.Crop_Variety_Name }}">{{ variety.Crop_Variety_Name }}</option>
-                                    {% endfor %}
-                                </select>
+                                <input type="text" class="form-control" id="crop_variety" disabled>
                             </div>
-                            <div class="alert alert-danger" id="crop_varietyErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Seed Source</label>
-                                <input type="text" class="form-control" id="seed_source" name="seed_source">
+                                <input type="text" class="form-control" id="seed_source" name="seed_source" disabled>
                             </div>
                         </div>
                     </div>
@@ -379,19 +376,19 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Quantity</label>
-                                <input type="number" class="form-control" id="quantity" name="quantity">
+                                <input type="number" class="form-control" id="quantity" name="quantity" disabled>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Unit</label>
-                                <input type="number" class="form-control" id="unit" name="unit">
+                                <input type="text" class="form-control" id="unit" name="unit" disabled>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Purpose</label>
-                                <input type="text" class="form-control" id="purpose" name="purpose">
+                                <input type="text" class="form-control" id="purpose" name="purpose" disabled>
                             </div>
                         </div>
                     </div>
@@ -399,34 +396,56 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Quantity Certified</label>
-                                <input type="text" class="form-control" id="quantitiy_certified" name="quantitiy_certified">
+                                <input type="number" class="form-control" id="quantity_certified" name="quantity_certified" onchange="getRejectedQuantity(this.value)">
                             </div>
+                            <div class="alert alert-danger" id="quantity_certifiedErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Unit Certified</label>
+                                <select class="form-control" id="unit_certified" name="unit_certified">
+                                    <option value="">--SELECT--</option>
+                                    {% for unit in unit %}
+                                            <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="alert alert-danger" id="unit_certifiedErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Value Certified</label>
-                                <input type="text" class="form-control" id="value_certified" name="value_certified">
+                                <input type="number" class="form-control" id="value_certified" name="value_certified">
                             </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">Quantity Rejected</label>
-                                <input type="number" class="form-control" id="quantitiy_rejected" name="quantitiy_rejected">
-                            </div>
+                            <div class="alert alert-danger" id="value_certifiedErrorMsg" style="display:none"></div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="form-label">Unit Rejected</label>
-                                <input type="number" class="form-control" id="unit_rejected" name="unit_rejected">
+                                <label class="form-label">Quantity Rejected</label>
+                                <input type="number" class="form-control" id="quantity_rejected" name="quantity_rejected" readonly="readonly">
                             </div>
+                            <div class="alert alert-danger" id="quantity_rejectedErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Unit Rejected</label>
+                                <select class="form-control" id="unit_rejected" name="unit_rejected">
+                                    <option value="">--SELECT--</option>
+                                    {% for unit in unit %}
+                                            <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="alert alert-danger" id="unit_rejectedErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Value Rejected</label>
-                                <input type="text" class="form-control" id="value_rejected" name="value_rejected">
+                                <input type="number" class="form-control" id="value_rejected" name="value_rejected">
                             </div>
+                            <div class="alert alert-danger" id="value_rejectedErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
@@ -438,6 +457,7 @@
                                     <option value="Self Use">Self Use</option>
                                 </select>
                             </div>
+                            <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
                         </div>
                         {% for application_details in application_details %}
                             <input type="hidden" name="reccomend_app_no" value="{{ application_details.Application_No }}">
@@ -512,7 +532,7 @@ function add_details_ins(application_id)
     });
 }
 
-function approve_application(application_id)
+function approve_application()
 {
 
    $.ajax({
@@ -525,7 +545,7 @@ function approve_application(application_id)
     });
 }
 
-function reject_application(application_id)
+function reject_application()
 {
    $.ajax({
         type : "GET",
@@ -537,20 +557,91 @@ function reject_application(application_id)
     });
 }
 
+function resubmit_application()
+{
+   $.ajax({
+        type : "GET",
+        url : "{% url 'resubmit_seed_application' %}",
+        data :$('#certificate_inspector_form').serialize(),
+        success : function(data) {
+            location.reload();
+        }
+    });
+}
+
 
 function add_recommend_details()
 {
+    var quantity_certified = $('#quantity_certified').val();
+    var unit_certified = $('#unit_certified').val();
+    var value_certified = $('#value_certified').val();
+    var quantity_rejected = $('#quantity_rejected').val();
+    var unit_rejected = $('#unit_rejected').val();
+    var value_rejected = $('#value_rejected').val();
+    var remarks = $('#remarks').val();
 
-   $.ajax({
-        type : "GET",
-        url : "{% url 'add_recommendation_details' %}",
-        data :$('#seed_recommendation_form').serialize(),
-        success : function(data) {
-            $('#recommendModal').modal('hide');
-            $('#recommendation_details').html(data);
-            $('#recommendation_details').show();
-        }
-    });
+    if(quantity_certified == "")
+    {
+        $('#quantity_certifiedErrorMsg').html("Enter Quantity Certified.");
+        $('#quantity_certifiedErrorMsg').show();
+        $('#quantity_certifiedErrorMsg').delay(2000).fadeOut('slow');
+        $('#quantity_certified').focus();
+    }
+    else if(unit_certified == "")
+    {
+        $('#unit_certifiedErrorMsg').html("Select Unit Certified.");
+        $('#unit_certifiedErrorMsg').show();
+        $('#unit_certifiedErrorMsg').delay(2000).fadeOut('slow');
+        $('#unit_certified').focus();
+    }
+    else if(value_certified == "")
+    {
+        $('#value_certifiedErrorMsg').html("Enter Value Certified.");
+        $('#value_certifiedErrorMsg').show();
+        $('#value_certifiedErrorMsg').delay(2000).fadeOut('slow');
+        $('#value_certified').focus();
+    }
+    else if(quantity_rejected = "" )
+    {
+        $('#quantity_rejectedErrorMsg').html("Enter Quantity Rejected.");
+        $('#quantity_rejectedErrorMsg').show();
+        $('#quantity_rejectedErrorMsg').delay(2000).fadeOut('slow');
+        $('#quantity_rejected').focus();
+    }
+    else if(unit_rejected == "")
+    {
+        $('#unit_rejectedErrorMsg').html("Select Unit Rejected.");
+        $('#unit_rejectedErrorMsg').show();
+        $('#unit_rejectedErrorMsg').delay(2000).fadeOut('slow');
+        $('#unit_rejected').focus();
+    }
+    else if(value_rejected == "")
+    {
+        $('#value_rejectedErrorMsg').html("Enter Value Rejected.");
+        $('#value_rejectedErrorMsg').show();
+        $('#value_rejectedErrorMsg').delay(2000).fadeOut('slow');
+        $('#value_rejected').focus();
+    }
+    else if(remarks == "")
+    {
+        $('#remarksErrorMsg').html("Select Remarks.");
+        $('#remarksErrorMsg').show();
+        $('#remarksErrorMsg').delay(2000).fadeOut('slow');
+        $('#remarks').focus();
+    }
+    else
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'add_recommendation_details' %}",
+            data :$('#seed_recommendation_form').serialize(),
+            success : function(data) {
+                $('#recommendModal').modal('hide');
+                $('#recommendation_details').html(data);
+                $('#recommendation_details').show();
+            }
+        });
+    }
 }
 
 function openDecisionModal()
@@ -573,5 +664,36 @@ function getVariety(crop_id)
             $('#crop_variety').html(data);
         }
     });
+}
+
+function populateEditForm(recordId, crop,crop_variety, seed_source, quantity, unit, purpose)
+    {
+        $('#record_id').val(recordId);;
+        $('#crop').val(crop);
+        $('#crop_variety').val(crop_variety);
+        $('#seed_source').val(seed_source);
+        $('#quantity').val(quantity);
+        $('#unit').val(unit);
+        $('#purpose').val(purpose);
+
+        $('#recommendModal').modal('show');
+    }
+
+function getRejectedQuantity(value)
+{
+    var quantity = $('#quantity').val();
+    if(value > quantity)
+    {
+        $('#quantity_certifiedErrorMsg').html("Cannot Be More Than Quantity.");
+        $('#quantity_certifiedErrorMsg').show();
+        $('#quantity_certifiedErrorMsg').delay(2000).fadeOut('slow');
+        $('#quantity_certified').val("");
+        $('#quantity_certified').focus();
+    }
+    else
+    {
+        rejected_quantity = quantity - value;
+        $('#quantity_rejected').val(rejected_quantity);
+    }
 }
 </script>

@@ -10,6 +10,7 @@ option {
 </style>
 <form method="post" id="inspectorExportForm">
     {% csrf_token %}
+
     <div class="card">
         <div class="card-body">
             <h4 class="card-title">Export Permit Application Details</h4>
@@ -23,10 +24,11 @@ option {
                     <div id="collapseOne" class="collapse" data-parent="#accordionExample" style="">
                         <div class="card-body">
                             {% for application_details in application_details %}
-                                {% if application_details.Import_Type == 'P' %}
+                                <input type="text" name="appNo" value="{{application_details.Application_No}}">
+                                {% if application_details.Certificate_Type == 'P' %}
                                     <div class="row justify-content-center">
                                         <div class="form-check text-center">
-                                            <label>Certificate Type <font color="red">*</font></label><br>
+                                            <label class="form-label">Certificate Type <font color="red">*</font></label><br>
                                             <label class="form-radio-label">
                                                 <input class="form-radio-input" type="radio" checked>
                                                 <span class="form-radio-sign">Phytosanitary</span>
@@ -40,7 +42,7 @@ option {
                                 {% else %}
                                     <div class="row justify-content-center">
                                         <div class="form-check text-center">
-                                            <label>Certificate Type <font color="red">*</font></label><br>
+                                            <label class="form-label">Certificate Type <font color="red">*</font></label><br>
                                             <label class="form-radio-label">
                                                 <input class="form-radio-input" type="radio">
                                                 <span class="form-radio-sign">Phytosanitary</span>
@@ -52,23 +54,23 @@ option {
                                         </div>
                                     </div>
                                 {% endif %}
-                                {% if application_details.Import_Type == 'P' %}
+                                {% if application_details.Certificate_Type == 'P' %}
                                     <div class="row">
                                         <div class="col-sm-4">
                                             <div class="form-group">
-                                                <label>License No</label>
+                                                <label class="form-label">License No</label>
                                                 <input type="text" class="form-control" value="{{application_details.License_No}}" disabled>
                                             </div>
                                         </div>
                                         <div class="col-sm-4">
                                             <div class="form-group">
-                                                <label>CID</label>
+                                                <label class="form-label">CID</label>
                                                 <input type="text" class="form-control" value="{{application_details.CID}}" disabled>
                                             </div>
                                         </div>
                                         <div class="col-sm-4">
                                             <div class="form-group">
-                                                <label>Exporter Name</label>
+                                                <label class="form-label">Exporter Name</label>
                                                 <input type="text" class="form-control" value="{{application_details.Exporter_Name}}" disabled>
                                             </div>
                                         </div>
@@ -76,27 +78,27 @@ option {
                                     <div class="row">
                                         <div class="col-sm-4">
                                             <div class="form-group">
-                                                <label>Exporter Address</label>
+                                                <label class="form-label">Exporter Address</label>
                                                 <textarea class="form-control" disabled rows="3">{{application_details.Exporter_Name}}</textarea>
                                             </div>
                                         </div>
                                         <div class="col-sm-4">
                                             <div class="form-group">
-                                                <label>Contact Number</label>
+                                                <label class="form-label">Contact Number</label>
                                                 <input type="text" class="form-control" value="{{application_details.Contact_No}}" disabled>
                                             </div>
                                         </div>
                                         <div class="col-sm-4">
                                             <div class="form-group">
-                                                <label>Email</label>
-                                                <input type="email" class="form-control" value="{{application_details.Email}}">
+                                                <label class="form-label">Email</label>
+                                                <input type="email" class="form-control" value="{{application_details.Email}}" disabled>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-4">
                                             <div class="form-group">
-                                                <label>Dzongkhag</label>
+                                                <label class="form-label">Dzongkhag</label>
                                                 <select class="form-control" disabled>
                                                     {% for dzongkhag in dzongkhag %}
                                                         <option value="{{dzongkhag.Dzongkhag_Code}}"{% if application_details.Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>
@@ -108,17 +110,17 @@ option {
                                         </div>
                                         <div class="col-sm-4">
                                             <div class="form-group">
-                                                <label>Location</label>
+                                                <label class="form-label">Location</label>
                                                 <select class="form-control" disabled>
                                                     {% for location in location %}
-                                                        <option value="{{ location.Location_Code }}" {% if application_details.To_Gewog_Code == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                                        <option value="{{ location.Location_Code }}" {% if application_details.Locatipn_Code == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
                                                     {% endfor %}
                                                 </select>
                                             </div>
                                         </div>
                                         <div class="col-sm-4">
                                             <div class="form-group">
-                                                <label>Name & Address of Consignee</label>
+                                                <label class="form-label">Name & Address of Consignee</label>
                                                 <textarea class="form-control" disabled rows="3">{{application_details.Consingee_Name_Address}}</textarea>
                                             </div>
                                         </div>
@@ -126,13 +128,13 @@ option {
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <div class="form-group">
-                                                <label>Botanical name of the commodity</label>
+                                                <label class="form-label">Botanical name of the commodity</label>
                                                 <input type="text" class="form-control" value="{{application_details.Botanical_Name}}" disabled>
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
                                             <div class="form-group">
-                                                <label>Description of the Commodity</label>
+                                                <label class="form-label">Description of the Commodity</label>
                                                 <textarea class="form-control" disabled rows="3">{{application_details.Description}}</textarea>
                                             </div>
                                         </div>
@@ -141,7 +143,7 @@ option {
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <div class="form-group">
-                                                <label>Quantity (Gross Weight)</label>
+                                                <label class="form-label">Quantity (Gross Weight)</label>
                                                 <input type="text" class="form-control" value="{{application_details.Qty_Gross}}" disabled>
                                             </div>
                                         </div>
@@ -153,17 +155,65 @@ option {
                                                     <input class="form-radio-input" type="radio" checked>
                                                     <span class="form-radio-sign">MT(s)</span>
                                                 </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Kg(s)</span>
+                                                </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Gram(s)</span>
+                                                </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Unit(s)</span>
+                                                </label>
                                                 {% elif application_details.Unit_Gross == 'Kg(s)' %}
+                                                <label class="form-radio-label">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">MT(s)</span>
+                                                </label>
                                                 <label class="form-radio-label ml-3">
                                                     <input class="form-radio-input" type="radio" checked>
                                                     <span class="form-radio-sign">Kg(s)</span>
                                                 </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Gram(s)</span>
+                                                </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Unit(s)</span>
+                                                </label>
                                                 {% elif application_details.Unit_Gross == 'Gram(s)' %}
+                                                <label class="form-radio-label">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">MT(s)</span>
+                                                </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Kg(s)</span>
+                                                </label>
                                                 <label class="form-radio-label ml-3">
                                                     <input class="form-radio-input" type="radio" checked>
                                                     <span class="form-radio-sign">Gram(s)</span>
                                                 </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Unit(s)</span>
+                                                </label>
                                                 {% else %}
+                                                <label class="form-radio-label">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">MT(s)</span>
+                                                </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Kg(s)</span>
+                                                </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Gram(s)</span>
+                                                </label>
                                                 <label class="form-radio-label ml-3">
                                                     <input class="form-radio-input" type="radio" checked>
                                                     <span class="form-radio-sign">Unit(s)</span>
@@ -175,7 +225,7 @@ option {
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <div class="form-group">
-                                                <label>Quantity (Net Weight)</label>
+                                                <label class="form-label">Quantity (Net Weight)</label>
                                                 <input type="text" class="form-control" value="{{application_details.Qty_Net}}" disabled>
                                             </div>
                                         </div>
@@ -187,17 +237,65 @@ option {
                                                     <input class="form-radio-input" type="radio" checked>
                                                     <span class="form-radio-sign">MT(s)</span>
                                                 </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Kg(s)</span>
+                                                </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Gram(s)</span>
+                                                </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Unit(s)</span>
+                                                </label>
                                                 {% elif application_details.Unit_Net == 'Kg(s)' %}
+                                                <label class="form-radio-label">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">MT(s)</span>
+                                                </label>
                                                 <label class="form-radio-label ml-3">
                                                     <input class="form-radio-input" type="radio" checked>
                                                     <span class="form-radio-sign">Kg(s)</span>
                                                 </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Gram(s)</span>
+                                                </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Unit(s)</span>
+                                                </label>
                                                 {% elif application_details.Unit_Net == 'Gram(s)' %}
+                                                <label class="form-radio-label">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">MT(s)</span>
+                                                </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Kg(s)</span>
+                                                </label>
                                                 <label class="form-radio-label ml-3">
                                                     <input class="form-radio-input" type="radio" checked>
                                                     <span class="form-radio-sign">Gram(s)</span>
                                                 </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Unit(s)</span>
+                                                </label>
                                                 {% else %}
+                                                <label class="form-radio-label">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">MT(s)</span>
+                                                </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Kg(s)</span>
+                                                </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Gram(s)</span>
+                                                </label>
                                                 <label class="form-radio-label ml-3">
                                                     <input class="form-radio-input" type="radio" checked>
                                                     <span class="form-radio-sign">Unit(s)</span>
@@ -208,7 +306,7 @@ option {
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-6">
-                                            <label>Country</label>
+                                            <label class="form-label">Country</label>
                                             <select class="form-control" disabled>
                                                 {% for Country in Country %}
                                                     <option value="{{Country.Country_Code}}"{% if application_details.Importing_Country == Country.Country_Code %}selected{% endif %}>
@@ -219,7 +317,7 @@ option {
                                         </div>
                                         <div class="col-sm-6">
                                             <div class="form-group">
-                                                <label>Declared point of Entry</label>
+                                                <label class="form-label">Declared point of Entry</label>
                                                 <select class="form-control" name="p_Entry_Point"  id="p_Entry_Point">
                                                     <option value="">--SELECT--</option>
                                                     {% for entry_point in entry_point %}
@@ -234,26 +332,26 @@ option {
                                     <div class="row">
                                         <div class="col-sm-4">
                                             <div class="form-group">
-                                                <label>Number of Packages</label>
+                                                <label class="form-label">Number of Packages</label>
                                                 <textarea class="form-control" disabled rows="3">{{application_details.Packages_No}}</textarea>
                                             </div>
                                         </div>
                                         <div class="col-sm-4">
                                             <div class="form-group">
-                                                <label>Description of Packages</label>
+                                                <label class="form-label">Description of Packages</label>
                                                 <textarea class="form-control" disabled rows="3">{{application_details.Packages_Description}}</textarea>
                                             </div>
                                         </div>
                                         <div class="col-sm-4">
                                             <div class="form-group">
-                                                <label>Distinguishing Marks</label>
-                                                <input type="text" class="form-control" value="{{application_details.Distinguishing_Marks}}">
+                                                <label class="form-label">Distinguishing Marks</label>
+                                                <input type="text" class="form-control" disabled value="{{application_details.Distinguishing_Marks}}">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-2">
-                                            <label>Purpose/End Use</label>
+                                            <label class="form-label">Purpose/End Use</label>
                                         </div>
                                         <div class="col-sm-10 justify-content-center">
                                             <div class="form-check text-center">
@@ -262,27 +360,147 @@ option {
                                                     <input class="form-radio-input" type="radio" checked>
                                                     <span class="form-radio-sign">Propagation</span>
                                                 </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Wood</span>
+                                                </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Industrial Products</span>
+                                                </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Consumption</span>
+                                                </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Dunnage(Wooden packing material)</span>
+                                                </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Laboratory specimens, Micro organisms, Micro biological, Biocontrolagents</span>
+                                                </label>
                                                 {% elif application_details.Purpose_End_Use == 'Wood' %}
+                                                <label class="form-radio-label">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Propagation</span>
+                                                </label>
                                                 <label class="form-radio-label ml-3">
                                                     <input class="form-radio-input" type="radio" checked>
                                                     <span class="form-radio-sign">Wood</span>
                                                 </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Industrial Products</span>
+                                                </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Consumption</span>
+                                                </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Dunnage(Wooden packing material)</span>
+                                                </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Laboratory specimens, Micro organisms, Micro biological, Biocontrolagents</span>
+                                                </label>
                                                 {% elif application_details.Purpose_End_Use == 'Industrial Products' %}
+                                                <label class="form-radio-label">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Propagation</span>
+                                                </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Wood</span>
+                                                </label>
                                                 <label class="form-radio-label ml-3">
                                                     <input class="form-radio-input" type="radio" checked>
                                                     <span class="form-radio-sign">Industrial Products</span>
                                                 </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Consumption</span>
+                                                </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Dunnage(Wooden packing material)</span>
+                                                </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Laboratory specimens, Micro organisms, Micro biological, Biocontrolagents</span>
+                                                </label>
                                                 {% elif application_details.Purpose_End_Use == 'Consumption' %}
+                                                <label class="form-radio-label">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Propagation</span>
+                                                </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Wood</span>
+                                                </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Industrial Products</span>
+                                                </label>
                                                 <label class="form-radio-label ml-3">
                                                     <input class="form-radio-input" type="radio" checked>
                                                     <span class="form-radio-sign">Consumption</span>
                                                 </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Dunnage(Wooden packing material)</span>
+                                                </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Laboratory specimens, Micro organisms, Micro biological, Biocontrolagents</span>
+                                                </label>
                                                 {% elif application_details.Purpose_End_Use == 'Dunnage' %}
+                                                <label class="form-radio-label">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Propagation</span>
+                                                </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Wood</span>
+                                                </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Industrial Products</span>
+                                                </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Consumption</span>
+                                                </label>
                                                 <label class="form-radio-label ml-3">
                                                     <input class="form-radio-input" type="radio" checked>
                                                     <span class="form-radio-sign">Dunnage(Wooden packing material)</span>
                                                 </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Laboratory specimens, Micro organisms, Micro biological, Biocontrolagents</span>
+                                                </label>
                                                 {% else %}
+                                                <label class="form-radio-label">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Propagation</span>
+                                                </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Wood</span>
+                                                </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Industrial Products</span>
+                                                </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Consumption</span>
+                                                </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" disabled>
+                                                    <span class="form-radio-sign">Dunnage(Wooden packing material)</span>
+                                                </label>
                                                 <label class="form-radio-label ml-3">
                                                     <input class="form-radio-input" type="radio" checked>
                                                     <span class="form-radio-sign">Laboratory specimens, Micro organisms, Micro biological, Biocontrolagents</span>
@@ -295,7 +513,7 @@ option {
                                     <div class="row">
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label>Mode of conveyance </label>
+                                                <label class="form-label">Mode of conveyance </label>
                                                 <select class="form-control form-control" disabled>
                                                    {% if application_details.Mode_Of_Conveyance == 'Propagation' %}
                                                     <option value="Sea" selected>Sea</option>
@@ -313,14 +531,14 @@ option {
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label>Conveyance Name</label>
+                                                <label class="form-label">Conveyance Name</label>
                                                 <input type="text" class="form-control" value="{{application_details.Name_Of_Conveyance}}" disabled>
                                             </div>
                                             <div class="alert alert-danger" id="p_Conveyance_NameErrorMsg" style="display:none"></div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>Additional Declaration (required by importing country)</label>
+                                                <label class="form-label">Additional Declaration (required by importing country)</label>
                                                 <textarea class="form-control" disabled rows="3">{{application_details.Additional_Declaring}}</textarea>
                                             </div>
                                         </div>
@@ -329,7 +547,7 @@ option {
                                     {% if application_details.Applicant_Type == 'bothRadio' %}
                                         <div class="row justify-content-center">
                                             <div class="form-check text-center">
-                                                <label>Applicant Type <font color="red">*</font></label><br>
+                                                <label class="form-label">Applicant Type <font color="red">*</font></label><br>
                                                 <label class="form-radio-label">
                                                     <input class="form-radio-input" type="radio" checked>
                                                     <span class="form-radio-sign">Both Export and Retail </span>
@@ -347,7 +565,7 @@ option {
                                     {% elif application_details.Applicant_Type == 'directRadio' %}
                                         <div class="row justify-content-center">
                                             <div class="form-check text-center">
-                                                <label>Applicant Type <font color="red">*</font></label><br>
+                                                <label class="form-label">Applicant Type <font color="red">*</font></label><br>
                                                 <label class="form-radio-label">
                                                     <input class="form-radio-input" type="radio">
                                                     <span class="form-radio-sign">Both Export and Retail </span>
@@ -365,7 +583,7 @@ option {
                                     {% else %}
                                         <div class="row justify-content-center">
                                             <div class="form-check text-center">
-                                                <label>Applicant Type <font color="red">*</font></label><br>
+                                                <label class="form-label">Applicant Type <font color="red">*</font></label><br>
                                                 <label class="form-radio-label">
                                                     <input class="form-radio-input" type="radio">
                                                     <span class="form-radio-sign">Both Export and Retail </span>
@@ -384,19 +602,19 @@ option {
                                     <div class="row">
                                         <div class="col-sm-4">
                                             <div class="form-group">
-                                                <label>CID</label>
+                                                <label class="form-label">CID</label>
                                                 <input type="text" class="form-control" value="{{application_details.CID}}" disabled>
                                             </div>
                                         </div>
                                         <div class="col-sm-4">
                                             <div class="form-group">
-                                                <label>Name</label>
+                                                <label class="form-label">Name</label>
                                                 <input type="text" class="form-control" value="{{application_details.Exporter_Name}}" disabled>
                                             </div>
                                         </div>
                                         <div class="col-sm-4">
                                             <div class="form-group">
-                                                <label>Email</label>
+                                                <label class="form-label">Email</label>
                                                 <input type="email" class="form-control" value="{{application_details.Email}}" disabled>
                                             </div>
                                         </div>
@@ -404,13 +622,13 @@ option {
                                     <div class="row">
                                         <div class="col-sm-4">
                                             <div class="form-group">
-                                                <label>Contact Number</label>
+                                                <label class="form-label">Contact Number</label>
                                                 <input type="text" class="form-control" value="{{application_details.Contact_No}}" disabled>
                                             </div>
                                         </div>
                                         <div class="col-sm-4">
                                             <div class="form-group">
-                                                <label>Dzongkhag</label>
+                                                <label class="form-label">Dzongkhag</label>
                                                 <select class="form-control" disabled>
                                                     {% for dzongkhag in dzongkhag %}
                                                         <option value="{{dzongkhag.Dzongkhag_Code}}"{% if application_details.Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>
@@ -422,10 +640,10 @@ option {
                                         </div>
                                         <div class="col-sm-4">
                                             <div class="form-group">
-                                                <label>Location</label>
+                                                <label class="form-label">Location</label>
                                                  <select class="form-control" disabled>
                                                     {% for location in location %}
-                                                        <option value="{{ location.Location_Code }}" {% if application_details.To_Gewog_Code == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                                        <option value="{{ location.Location_Code }}" {% if application_details.Locatipn_Code == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
                                                     {% endfor %}
                                                 </select>
                                             </div>
@@ -435,13 +653,13 @@ option {
                                         <div class="row">
                                             <div class="col-sm-6">
                                                 <div class="form-group">
-                                                    <label>Current Address</label>
+                                                    <label class="form-label">Current Address</label>
                                                     <textarea class="form-control" disabled rows="4">{{application_details.Exporter_Address}}</textarea>
                                                 </div>
                                             </div>
                                             <div class="col-sm-6">
                                                 <div class="form-group">
-                                                    <label>Permanent Address(if different from the current address)</label>
+                                                    <label class="form-label">Permanent Address(if different from the current address)</label>
                                                     <textarea class="form-control" disabled rows="4">{{application_details.Permanent_Address}}</textarea>
                                                 </div>
                                             </div>
@@ -449,13 +667,13 @@ option {
                                         <div class="row">
                                             <div class="col-sm-6">
                                                 <div class="form-group">
-                                                    <label>Date Of Inspection Requested</label>
+                                                    <label class="form-label">Date Of Inspection Requested</label>
                                                     <input type="text" class="form-control" value="{{application_details.Desired_Inspection_Date}}" readonly="readonly">
                                                 </div>
                                             </div>
                                             <div class="col-sm-6">
                                                 <div class="form-group">
-                                                    <label>Place Of Inspection Requested</label>
+                                                    <label class="form-label">Place Of Inspection Requested</label>
                                                     <input type="text" class="form-control" value="{{application_details.Desired_Inspection_Place}}" readonly="readonly">
                                                 </div>
                                             </div>
@@ -464,7 +682,7 @@ option {
                                         <div class="row">
                                             <div class="col-sm-6">
                                                 <div class="form-group">
-                                                    <label>Trade License No. (For Licensed Cordyceps Exporters only)</label>
+                                                    <label class="form-label">Trade License No. (For Licensed Cordyceps Exporters only)</label>
                                                     <input type="text" class="form-control" value="{{application_details.License_No}}" readonly="readonly">
                                                 </div>
                                             </div>
@@ -514,13 +732,13 @@ option {
                                         <div class="row">
                                             <div class="col-sm-4">
                                                 <div class="form-group">
-                                                    <label>No Of Packages</label>
+                                                    <label class="form-label">No Of Packages</label>
                                                     <input type="text" class="form-control" value="{{application_details.Packages_No}}" readonly="readonly">
                                                 </div>
                                             </div>
                                             <div class="col-sm-4">
                                                 <div class="form-group">
-                                                    <label>Importing Country</label>
+                                                    <label class="form-label">Importing Country</label>
                                                     <select class="form-control" disabled>
                                                         {% for Country in Country %}
                                                             <option value="{{Country.Country_Code}}"{% if application_details.Importing_Country == Country.Country_Code %}selected{% endif %}>
@@ -532,7 +750,7 @@ option {
                                             </div>
                                             <div class="col-sm-4">
                                                 <div class="form-group">
-                                                    <label>Name & Address of Consignee</label>
+                                                    <label class="form-label">Name & Address of Consignee</label>
                                                     <textarea class="form-control" disabled rows="3">{{application_details.Consingee_Name_Address}}</textarea>
                                                 </div>
                                             </div>
@@ -540,7 +758,7 @@ option {
                                         <div class="row">
                                             <div class="col-sm-4">
                                                 <div class="form-group">
-                                                    <label>Mode of conveyance </label>
+                                                    <label class="form-label">Mode of conveyance </label>
                                                     <select class="form-control form-control" disabled>
                                                        {% if application_details.Mode_Of_Conveyance == 'Propagation' %}
                                                         <option value="Sea" selected>Sea</option>
@@ -603,19 +821,19 @@ option {
                                         <div class="row">
                                             <div class="col-sm-4">
                                                 <div class="form-group">
-                                                    <label>Total No Of Packages</label>
+                                                    <label class="form-label">Total No Of Packages</label>
                                                     <input type="text" class="form-control"  value="{{application_details.Packages_No}}" readonly="readonly">
                                                 </div>
                                             </div>
                                             <div class="col-sm-4">
                                                 <div class="form-group">
-                                                    <label>Name Of The Outlet</label>
+                                                    <label class="form-label">Name Of The Outlet</label>
                                                     <input type="text" class="form-control"  value="{{application_details.Outlet_name}}" readonly="readonly">
                                                 </div>
                                             </div>
                                             <div class="col-sm-4">
                                                 <div class="form-group">
-                                                    <label>Contact No of the outlet owner</label>
+                                                    <label class="form-label">Contact No of the outlet owner</label>
                                                     <input type="text" class="form-control" value="{{application_details.Outlet_Contact_No}}" readonly="readonly">
                                                 </div>
                                             </div>
@@ -623,7 +841,7 @@ option {
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label>Address of the outlet</label>
+                                                    <label class="form-label">Address of the outlet</label>
                                                     <textarea class="form-control" rows="3" disabled>{{application_details.Outlet_Address}}</textarea>
                                                 </div>
                                             </div>
@@ -670,40 +888,45 @@ option {
                     </div>
                     <div id="collapseThree" class="collapse" data-parent="#accordionExample">
                         {% for application_details in application_details %}
+                        <input type="hidden" id="certificate_type" value="{{ application_details.Certificate_Type }}">
                         {% if application_details.Certificate_Type == 'P' %}
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-sm-4">
                                         <div class="form-group">
-                                            <label>Date Of Inspection</label>
+                                            <label class="form-label">Date Of Inspection <font color="red">*</font></label>
                                             <input type="text" class="form-control date-picker flatpickr-input active" id="dateOfInspection" name="date"  placeholder="Pick a date" readonly="readonly">
                                         </div>
+                                        <div class="alert alert-danger" id="date_of_inspectionErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
-                                            <label>No Of Sample Drawn</label>
+                                            <label class="form-label">No Of Sample Drawn <font color="red">*</font></label>
                                             <input type="number" class="form-control" id="no_of_sample_drawn" name="no_of_sample_drawn">
                                         </div>
+                                        <div class="alert alert-danger" id="no_of_sample_drawnErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
-                                            <label>Total Sample Size</label>
+                                            <label class="form-label">Total Sample Size <font color="red">*</font></label>
                                             <input type="number" class="form-control" id="total_sample_size" name="total_sample_size">
                                         </div>
+                                        <div class="alert alert-danger" id="total_sample_sizeErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-4">
                                         <div class="form-group">
-                                            <label>Sample Drawn By</label>
+                                            <label class="form-label">Sample Drawn By <font color="red">*</font></label>
                                             <input type="text" class="form-control" id="sample_drawn_by" name="sample_drawn_by">
                                         </div>
+                                        <div class="alert alert-danger" id="sample_drawn_byErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-sm-2">
-                                        <label>Method of Inspection & Testing</label>
+                                        <label class="form-label">Method of Inspection & Testing <font color="red">*</font></label>
                                     </div>
                                     <div class="col-sm-7 justify-content-center">
                                         <label class="custom-control custom-checkbox">
@@ -771,18 +994,20 @@ option {
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Other (Specify)</span>
                                         </label>
+                                        <div class="alert alert-danger" id="inspection_methodErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label>Scientific Name Of Pest</label>
+                                            <label class="form-label" >Scientific Name Of Pest <font color="red">*</font></label>
                                             <textarea class="form-control" id="Scientific_Name" name="Scientific_Name" rows="3"></textarea>
                                         </div>
+                                        <div class="alert alert-danger" id="Scientific_NameErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <hr>
                                 <div class="row justify-content-center">
                                     <div class="form-check text-center">
-                                        <label>Pest Detected <font color="red">*</font>&nbsp;</label><br>
+                                        <label class="form-label">Pest Detected <font color="red">*</font>&nbsp;</label><br>
                                         <label class="custom-control custom-radio">
                                             <input type="radio"  class="custom-control-input" value="Yes" id="pest_detected_yes" name="pest_detected" onclick="pest_detection(this.value)">
                                             <span class="custom-control-indicator"></span>
@@ -794,339 +1019,353 @@ option {
                                             <span class="custom-control-description">No</span>
                                         </label>
                                     </div>
+                                    <div class="alert alert-danger" id="pest_detectedErrorMsg" style="display:none"></div>
                                 </div>
                                 <br>
                                 <div id="if_yes" style="display:none;">
-                                <div class="row">
-                                    <div class="col-sm-2">
-                                        <label>Pest category</label>
-                                    </div>
-                                    <div class="col-sm-10 justify-content-center">
-                                        <div class="form-check text-center">
-                                            <label class="custom-control custom-radio">
-                                                <input type="radio"  class="custom-control-input" value="Insect" id="Insect" name="pest_category">
-                                                <span class="custom-control-indicator"></span>
-                                                <span class="custom-control-description">Insect</span>
-                                            </label>
-                                            <label class="custom-control custom-radio">
-                                                <input type="radio"  class="custom-control-input" value="Mite" id="Mite" name="pest_category">
-                                                <span class="custom-control-indicator"></span>
-                                                <span class="custom-control-description">Mite</span>
-                                            </label>
-                                            <label class="custom-control custom-radio">
-                                                <input type="radio"  class="custom-control-input" value="Fungi" id="Fungi" name="pest_category">
-                                                <span class="custom-control-indicator"></span>
-                                                <span class="custom-control-description">Fungi</span>
-                                            </label>
-                                            <label class="custom-control custom-radio">
-                                                <input type="radio"  class="custom-control-input" value="Bacteria" id="Bacteria" name="pest_category">
-                                                <span class="custom-control-indicator"></span>
-                                                <span class="custom-control-description">Bacteria</span>
-                                            </label>
-                                            <label class="custom-control custom-radio">
-                                                <input type="radio"  class="custom-control-input" value="Virus" id="Virus" name="pest_category">
-                                                <span class="custom-control-indicator"></span>
-                                                <span class="custom-control-description">Virus</span>
-                                            </label>
-                                            <label class="custom-control custom-radio">
-                                                <input type="radio"  class="custom-control-input" value="Nematode" id="Nematode" name="pest_category">
-                                                <span class="custom-control-indicator"></span>
-                                                <span class="custom-control-description">Nematode</span>
-                                            </label>
-                                            <label class="custom-control custom-radio">
-                                                <input type="radio"  class="custom-control-input" value="Weed" id="Weed" name="pest_category">
-                                                <span class="custom-control-indicator"></span>
-                                                <span class="custom-control-description">Weed</span>
-                                            </label>
+                                    <div class="row">
+                                        <div class="col-sm-2">
+                                            <label class="form-label">Pest category <font color="red">*</font></label>
+                                        </div>
+                                        <div class="col-sm-10 justify-content-center">
+                                            <div class="form-check text-center">
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio"  class="custom-control-input" value="Insect" id="Insect" name="pest_category">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Insect</span>
+                                                </label>
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio"  class="custom-control-input" value="Mite" id="Mite" name="pest_category">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Mite</span>
+                                                </label>
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio"  class="custom-control-input" value="Fungi" id="Fungi" name="pest_category">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Fungi</span>
+                                                </label>
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio"  class="custom-control-input" value="Bacteria" id="Bacteria" name="pest_category">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Bacteria</span>
+                                                </label>
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio"  class="custom-control-input" value="Virus" id="Virus" name="pest_category">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Virus</span>
+                                                </label>
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio"  class="custom-control-input" value="Nematode" id="Nematode" name="pest_category">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Nematode</span>
+                                                </label>
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio"  class="custom-control-input" value="Weed" id="Weed" name="pest_category">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Weed</span>
+                                                </label>
+                                            </div>
+                                            <div class="alert alert-danger" id="pest_categoryErrorMsg" style="display:none"></div>
                                         </div>
                                     </div>
-                                </div>
-                                <br>
-                                <div class="row">
-                                    <div class="col-sm-2">
-                                        <label>Level Of Infestation</label>
-                                    </div>
-                                    <div class="col-sm-10 justify-content-center">
-                                        <div class="form-check text-center">
-                                            <label class="custom-control custom-radio">
-                                                <input type="radio"  class="custom-control-input" value="High" id="High" name="infestation_level">
-                                                <span class="custom-control-indicator"></span>
-                                                <span class="custom-control-description">High</span>
-                                            </label>
-                                            <label class="custom-control custom-radio">
-                                                <input type="radio"  class="custom-control-input" value="Medium" id="Medium" name="infestation_level">
-                                                <span class="custom-control-indicator"></span>
-                                                <span class="custom-control-description">Medium</span>
-                                            </label>
-                                            <label class="custom-control custom-radio">
-                                                <input type="radio"  class="custom-control-input" value="Low" id="Low" name="infestation_level">
-                                                <span class="custom-control-indicator"></span>
-                                                <span class="custom-control-description">Low</span>
-                                            </label>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-sm-2">
+                                            <label class="form-label">Level Of Infestation <font color="red">*</font></label>
+                                        </div>
+                                        <div class="col-sm-10 justify-content-center">
+                                            <div class="form-check text-center">
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio"  class="custom-control-input" value="High" id="High" name="infestation_level">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">High</span>
+                                                </label>
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio"  class="custom-control-input" value="Medium" id="Medium" name="infestation_level">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Medium</span>
+                                                </label>
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio"  class="custom-control-input" value="Low" id="Low" name="infestation_level">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Low</span>
+                                                </label>
+                                            </div>
+                                            <div class="alert alert-danger" id="infestation_levelErrorMsg" style="display:none"></div>
                                         </div>
                                     </div>
-                                </div>
-                                <br>
-                                <div class="row">
-                                    <div class="col-sm-2">
-                                        <label>Live/Dead</label>
-                                    </div>
-                                    <div class="col-sm-10 justify-content-center">
-                                        <div class="form-check text-center">
-                                            <label class="custom-control custom-radio">
-                                                <input type="radio"  class="custom-control-input" value="Dead" id="Dead" name="live_dead">
-                                                <span class="custom-control-indicator"></span>
-                                                <span class="custom-control-description">Dead</span>
-                                            </label>
-                                            <label class="custom-control custom-radio">
-                                                <input type="radio"  class="custom-control-input" value="Alive" id="Alive" name="live_dead">
-                                                <span class="custom-control-indicator"></span>
-                                                <span class="custom-control-description">Alive</span>
-                                            </label>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-sm-2">
+                                            <label class="form-label">Live/Dead <font color="red">*</font></label>
+                                        </div>
+                                        <div class="col-sm-10 justify-content-center">
+                                            <div class="form-check text-center">
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio"  class="custom-control-input" value="Dead" id="Dead" name="live_dead">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Dead</span>
+                                                </label>
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio"  class="custom-control-input" value="Alive" id="Alive" name="live_dead">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Alive</span>
+                                                </label>
+                                            </div>
+                                            <div class="alert alert-danger" id="live_deadErrorMsg" style="display:none"></div>
                                         </div>
                                     </div>
-                                </div>
-                                <br>
-                                <div class="row">
-                                    <div class="col-sm-2">
-                                        <label>Risk category</label>
-                                    </div>
-                                    <div class="col-sm-10 justify-content-center">
-                                        <div class="form-check text-center">
-                                            <label class="custom-control custom-radio">
-                                                <input type="radio"  class="custom-control-input" value="QP" id="QP" name="risk_category">
-                                                <span class="custom-control-indicator"></span>
-                                                <span class="custom-control-description">Quarantine Pest (QP)</span>
-                                            </label>
-                                            <label class="custom-control custom-radio">
-                                                <input type="radio"  class="custom-control-input" value="RNQP" id="RNQP" name="risk_category">
-                                                <span class="custom-control-indicator"></span>
-                                                <span class="custom-control-description">Regulated Non-Quarantine Pest(RNQP)</span>
-                                            </label>
-                                            <label class="custom-control custom-radio">
-                                                <input type="radio"  class="custom-control-input" value="NQP" id="NQP" name="risk_category">
-                                                <span class="custom-control-indicator"></span>
-                                                <span class="custom-control-description">Non Quarantine Pest(NQP)</span>
-                                            </label>
-                                            <label class="custom-control custom-radio">
-                                                <input type="radio"  class="custom-control-input" value="Unknown" id="Unknown" name="risk_category">
-                                                <span class="custom-control-indicator"></span>
-                                                <span class="custom-control-description">Unknown</span>
-                                            </label>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-sm-2">
+                                            <label class="form-label">Risk category <font color="red">*</font></label>
+                                        </div>
+                                        <div class="col-sm-10 justify-content-center">
+                                            <div class="form-check text-center">
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio"  class="custom-control-input" value="QP" id="QP" name="risk_category">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Quarantine Pest (QP)</span>
+                                                </label>
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio"  class="custom-control-input" value="RNQP" id="RNQP" name="risk_category">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Regulated Non-Quarantine Pest(RNQP)</span>
+                                                </label>
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio"  class="custom-control-input" value="NQP" id="NQP" name="risk_category">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Non Quarantine Pest(NQP)</span>
+                                                </label>
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio"  class="custom-control-input" value="Unknown" id="Unknown" name="risk_category">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Unknown</span>
+                                                </label>
+                                            </div>
+                                            <div class="alert alert-danger" id="risk_categoryErrorMsg" style="display:none"></div>
                                         </div>
                                     </div>
-                                </div>
-                                <br>
-                                <div class="row">
-                                    <div class="col-sm-2">
-                                        <label>Quarantine/Regulated Non Quarantine</label>
-                                    </div>
-                                    <div class="col-sm-5 justify-content-center">
-                                        <div class="form-check text-center">
-                                            <label class="custom-control custom-radio">
-                                                <input type="radio"  class="custom-control-input" value="Yes" id="QR_Yes" name="Pest_QR_Detected">
-                                                <span class="custom-control-indicator"></span>
-                                                <span class="custom-control-description">Yes</span>
-                                            </label>
-                                            <label class="custom-control custom-radio">
-                                                <input type="radio"  class="custom-control-input" value="No" id="QR_No" name="Pest_QR_Detected">
-                                                <span class="custom-control-indicator"></span>
-                                                <span class="custom-control-description">No</span>
-                                            </label>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-sm-2">
+                                            <label class="form-label">Quarantine/Regulated Non Quarantine <font color="red">*</font></label>
+                                        </div>
+                                        <div class="col-sm-5 justify-content-center">
+                                            <div class="form-check text-center">
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio"  class="custom-control-input" value="Yes" id="QR_Yes" name="Pest_QR_Detected" onclick="checkPestDetected(this.value)">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Yes</span>
+                                                </label>
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio"  class="custom-control-input" value="No" id="QR_No" name="Pest_QR_Detected" onclick="checkPestDetected(this.value)">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">No</span>
+                                                </label>
+                                            </div>
+                                            <div class="alert alert-danger" id="Pest_QR_DetectedErrorMsg" style="display:none"></div>
+                                        </div>
+                                        <div class="col-sm-5">
+                                            <div class="form-group">
+                                                <label class="form-label">Comments</label>
+                                                <textarea class="form-control" id="Pest_QR_Detected_Comments" name="Pest_QR_Detected_Comments" rows="3" disabled></textarea>
+                                            </div>
+                                            <div class="alert alert-danger" id="Pest_QR_Detected_CommentsErrorMsg" style="display:none"></div>
                                         </div>
                                     </div>
-                                    <div class="col-sm-5">
-                                        <div class="form-group">
-                                            <label>Comments</label>
-                                            <textarea class="form-control" id="Pest_QR_Detected_Comments" name="Pest_QR_Detected_Comments" rows="3"></textarea>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-sm-2">
+                                            <label class="form-label">Treatment Possible <font color="red">*</font></label>
+                                        </div>
+                                        <div class="col-sm-5 justify-content-center">
+                                            <div class="form-check text-center">
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio"  class="custom-control-input" value="Yes" id="treatment_possible_Yes" name="treatment_possible" onclick="check_treatment_possible(this.value)">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Yes</span>
+                                                </label>
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio"  class="custom-control-input" value="No" id="treatment_possible_No" name="treatment_possible" onclick="check_treatment_possible(this.value)">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">No</span>
+                                                </label>
+                                            </div>
+                                            <div class="alert alert-danger" id="treatment_possibleErrorMsg" style="display:none"></div>
+                                        </div>
+                                        <div class="col-sm-5" id="comment">
+                                            <div class="form-group">
+                                                <label>Comments</label>
+                                                <textarea class="form-control" id="Treatment_Comment" name="Treatment_Comment" rows="3" disabled></textarea>
+                                            </div>
+                                            <div class="alert alert-danger" id="Treatment_CommentErrorMsg" style="display:none"></div>
                                         </div>
                                     </div>
-                                </div>
-                                <br>
-                                <div class="row">
-                                    <div class="col-sm-2">
-                                        <label>Treatment Possible</label>
-                                    </div>
-                                    <div class="col-sm-5 justify-content-center">
-                                        <div class="form-check text-center">
-                                            <label class="custom-control custom-radio">
-                                                <input type="radio"  class="custom-control-input" value="Yes" id="treatment_possible_Yes" name="treatment_possible">
-                                                <span class="custom-control-indicator"></span>
-                                                <span class="custom-control-description">Yes</span>
-                                            </label>
-                                            <label class="custom-control custom-radio">
-                                                <input type="radio"  class="custom-control-input" value="No" id="treatment_possible_No" name="treatment_possible">
-                                                <span class="custom-control-indicator"></span>
-                                                <span class="custom-control-description">No</span>
-                                            </label>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-sm-2">
+                                            <label class="form-label">Laboratory analysis required <font color="red">*</font></label>
+                                        </div>
+                                        <div class="col-sm-5 justify-content-center">
+                                            <div class="form-check text-center">
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio"  class="custom-control-input" value="Yes" id="lab_Yes" name="Laboratory_Analysis_Required" onclick="check_Laboratory_Analysis(this.value)">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Yes</span>
+                                                </label>
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio"  class="custom-control-input" value="No" id="lab_No" name="Laboratory_Analysis_Required" onclick="check_Laboratory_Analysis(this.value)">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">No</span>
+                                                </label>
+                                            </div>
+                                            <div class="alert alert-danger" id="Laboratory_Analysis_RequiredErrorMsg" style="display:none"></div>
+                                        </div>
+                                        <div class="col-sm-5">
+                                            <div class="form-group">
+                                                <label class="form-label">Comments</label>
+                                                <textarea class="form-control" id="analysis_Comment" name="analysis_Comment" rows="3" disabled></textarea>
+                                            </div>
+                                            <div class="alert alert-danger" id="analysis_CommentErrorMsg" style="display:none"></div>
                                         </div>
                                     </div>
-                                    <div class="col-sm-5" id="comment">
-                                        <div class="form-group">
-                                            <label>Comments</label>
-                                            <textarea class="form-control" id="Treatment_Comment" name="Treatment_Comment" rows="3"></textarea>
+                                    <div class="row">
+                                        <div class="col-sm-2">
+                                            <label class="form-label">Phytosanitary Measures <font color="red">*</font></label>
+                                        </div>
+                                        <div class="col-sm-5 justify-content-center">
+                                            <div class="form-check text-center">
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio"  class="custom-control-input" value="Yes" id="phyto_measure_Yes" name="Phytosanitary_Measures" onclick="Check_Phytosanitary_Measures(this.value)">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Yes</span>
+                                                </label>
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio"  class="custom-control-input" value="No" id="phyto_measure_No" name="Phytosanitary_Measures" onclick="Check_Phytosanitary_Measures(this.value)">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">No</span>
+                                                </label>
+                                            </div>
+                                            <div class="alert alert-danger" id="Phytosanitary_MeasuresErrorMsg" style="display:none"></div>
+                                        </div>
+                                        <div class="col-sm-5">
+                                            <div class="form-group">
+                                                <label class="form-label">Comments</label>
+                                                <textarea class="form-control" id="phytosanitary_Comment" name="phytosanitary_Comment" rows="3" disabled></textarea>
+                                            </div>
+                                            <div class="alert alert-danger" id="phytosanitary_CommentErrorMsg" style="display:none"></div>
                                         </div>
                                     </div>
-                                </div>
-                                <br>
-
-                                <div class="row">
-                                    <div class="col-sm-2">
-                                        <label>Laboratory analysis required</label>
-                                    </div>
-                                    <div class="col-sm-5 justify-content-center">
-                                        <div class="form-check text-center">
-                                            <label class="custom-control custom-radio">
-                                                <input type="radio"  class="custom-control-input" value="Yes" id="lab_Yes" name="Laboratory_Analysis_Required">
-                                                <span class="custom-control-indicator"></span>
-                                                <span class="custom-control-description">Yes</span>
-                                            </label>
-                                            <label class="custom-control custom-radio">
-                                                <input type="radio"  class="custom-control-input" value="No" id="lab_No" name="Laboratory_Analysis_Required">
-                                                <span class="custom-control-indicator"></span>
-                                                <span class="custom-control-description">No</span>
-                                            </label>
+                                    <div class="row">
+                                        <div class="col-sm-2">
+                                            <label class="form-label">Treatment Type <font color="red">*</font></label>
+                                        </div>
+                                        <div class="col-sm-10 justify-content-center">
+                                            <div class="form-check text-center">
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio"  class="custom-control-input" value="Chemical" id="Chemical" name="treatmentType" onclick="showDiv('Chemical')">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Chemical</span>
+                                                </label>
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio"  class="custom-control-input" value="Irradiation" id="Irradiation" name="treatmentType" onclick="showDiv('Irradiation')">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Irradiation</span>
+                                                </label>
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio"  class="custom-control-input" value="Hot Water" id="Hot_Water" name="treatmentType" onclick="showDiv('Hot Water')">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Hot Water</span>
+                                                </label>
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio"  class="custom-control-input" value="Vapour Heat" id="Vapour_Heat" name="treatmentType" onclick="showDiv('Vapour Heat')">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Vapour Heat</span>
+                                                </label>
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio"  class="custom-control-input" value="Cold Treatment" id="Cold_Treatment" name="treatmentType" onclick="showDiv('Cold Treatment')">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Cold Treatment</span>
+                                                </label>
+                                            </div>
+                                            <div class="alert alert-danger" id="treatmentTypeErrorMsg" style="display:none"></div>
                                         </div>
                                     </div>
-                                    <div class="col-sm-5">
-                                        <div class="form-group">
-                                            <label>Comments</label>
-                                            <textarea class="form-control" id="analysis_Comment" name="analysis_Comment" rows="3"></textarea>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Chemical Name <font color="red">*</font></label>
+                                                <input type="text" class="form-control" id="chemical_name" name="chemical_name">
+                                            </div>
+                                            <div class="alert alert-danger" id="chemical_nameErrorMsg" style="display:none"></div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Treatment <font color="red">*</font></label>
+                                                <select class="form-control form-control" id="treatment" name="treatment" onchange="showValue(this.value)">
+                                                    <option value="">-SELECT-</option>
+                                                    <option value="Fumigation">Fumigation</option>
+                                                    <option value="Spray">Spray</option>
+                                                    <option value="Seed treatment">Seed Treatment</option>
+                                                    <option value="others">Others(Specify)</option>
+                                                </select>
+                                            </div>
+                                            <div class="alert alert-danger" id="treatmentErrorMsg" style="display:none"></div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Concentration <font color="red">*</font></label>
+                                                <input type="text" class="form-control" id="Concentration" name="Concentration">
+                                            </div>
+                                            <div class="alert alert-danger" id="ConcentrationErrorMsg" style="display:none"></div>
                                         </div>
                                     </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-sm-2">
-                                        <label>Phytosanitary Measures</label>
-                                    </div>
-                                    <div class="col-sm-5 justify-content-center">
-                                        <div class="form-check text-center">
-                                            <label class="custom-control custom-radio">
-                                                <input type="radio"  class="custom-control-input" value="Yes" id="phyto_measure_Yes" name="physosanitary_measures">
-                                                <span class="custom-control-indicator"></span>
-                                                <span class="custom-control-description">Yes</span>
-                                            </label>
-                                            <label class="custom-control custom-radio">
-                                                <input type="radio"  class="custom-control-input" value="No" id="phyto_measure_No" name="physosanitary_measures">
-                                                <span class="custom-control-indicator"></span>
-                                                <span class="custom-control-description">No</span>
-                                            </label>
+                                    <div class="row" id="others_div" style="display:none">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Others</label>
+                                                <input type="text" class="form-control" id="other_treatment" name="other_treatment">
+                                            </div>
+                                            <div class="alert alert-danger" id="other_treatmentErrorMsg" style="display:none"></div>
                                         </div>
                                     </div>
-                                    <div class="col-sm-5">
-                                        <div class="form-group">
-                                            <label>Comments</label>
-                                            <textarea class="form-control" id="phytosanitary_Comment" name="phytosanitary_Comment" rows="3"></textarea>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Duration & Temperature <font color="red">*</font></label>
+                                                <input type="text" class="form-control" id="Duration_Temperature" name="Duration_Temperature">
+                                            </div>
+                                            <div class="alert alert-danger" id="Duration_TemperatureErrorMsg" style="display:none"></div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Treated By <font color="red">*</font></label>
+                                                <input type="text" class="form-control" id="treated_by" name="treated_by">
+                                            </div>
+                                            <div class="alert alert-danger" id="treated_byErrorMsg" style="display:none"></div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Treatment Supervised By <font color="red">*</font></label>
+                                                <input type="text" class="form-control" id="treatment_supervised" name="treatment_supervised">
+                                            </div>
+                                            <div class="alert alert-danger" id="treatment_supervisedErrorMsg" style="display:none"></div>
                                         </div>
                                     </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-sm-2">
-                                        <label>Treatment</label>
-                                    </div>
-                                    <div class="col-sm-10 justify-content-center">
-                                        <div class="form-check text-center">
-                                            <label class="custom-control custom-radio">
-                                                <input type="radio"  class="custom-control-input" value="Chemical" id="Chemical" name="treatmentType" onclick="showDiv('Chemical')">
-                                                <span class="custom-control-indicator"></span>
-                                                <span class="custom-control-description">Chemical</span>
-                                            </label>
-                                            <label class="custom-control custom-radio">
-                                                <input type="radio"  class="custom-control-input" value="Irradiation" id="Irradiation" name="treatmentType" onclick="showDiv('Irradiation')">
-                                                <span class="custom-control-indicator"></span>
-                                                <span class="custom-control-description">Irradiation</span>
-                                            </label>
-                                            <label class="custom-control custom-radio">
-                                                <input type="radio"  class="custom-control-input" value="Hot Water" id="Hot_Water" name="treatmentType" onclick="showDiv('Hot Water')">
-                                                <span class="custom-control-indicator"></span>
-                                                <span class="custom-control-description">Hot Water</span>
-                                            </label>
-                                            <label class="custom-control custom-radio">
-                                                <input type="radio"  class="custom-control-input" value="Vapour Heat" id="Vapour_Heat" name="treatmentType" onclick="showDiv('Vapour Heat')">
-                                                <span class="custom-control-indicator"></span>
-                                                <span class="custom-control-description">Vapour Heat</span>
-                                            </label>
-                                            <label class="custom-control custom-radio">
-                                                <input type="radio"  class="custom-control-input" value="Cold Treatment" id="Cold_Treatment" name="treatmentType" onclick="showDiv('Cold Treatment')">
-                                                <span class="custom-control-indicator"></span>
-                                                <span class="custom-control-description">Cold Treatment</span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Chemical Name</label>
-                                            <input type="text" class="form-control" id="chemcial_name" name="chemcial_name" value="application_details.Chemical_Name_Pre">
-                                        </div>
-                                        <div class="alert alert-danger" id="p_chemcial_nameErrorMsg" style="display:none"></div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Treatment </label>
-                                            <select class="form-control form-control" id="treatment" name="treatment" onchange="showValue(this.value)">
-                                                <option value="">-SELECT-</option>
-                                                <option value="Fumigation" selected>Fumigation</option>
-                                                <option value="Spray">Spray</option>
-                                                <option value="Seed treatment">Seed Treatment</option>
-                                                <option value="others">Others(Specify)</option>
-                                            </select>
-                                        </div>
-                                        <div class="alert alert-danger" id="p_treatmentErrorMsg" style="display:none"></div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Concentration</label>
-                                            <input type="text" class="form-control" id="Concentration" name="Concentration" value="application_details.Concentration_Pre">
-                                        </div>
-                                        <div class="alert alert-danger" id="p_ConcentrationErrorMsg" style="display:none"></div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Others</label>
-                                        <input type="text" class="form-control" id="other_treatment" name="other_treatment" value="application_details.Other_Treatment">
-                                    </div>
-                                    <div class="alert alert-danger" id="p_othersErrorMsg" style="display:none"></div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Duration & Temperature</label>
-                                            <input type="text" class="form-control" id="Duration_Temperature" name="Duration_Temperature" value="application_details.Duration_Temperature_Pre">
-                                        </div>
-                                        <div class="alert alert-danger" id="p_Duration_TemperatureErrorMsg" style="display:none"></div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Treated By</label>
-                                            <input type="text" class="form-control" id="treated_by" name="treated_by" value="application_details.Treated_By_Pre">
-                                        </div>
-                                        <div class="alert alert-danger" id="p_treated_byErrorMsg" style="display:none"></div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Treatment Supervised By</label>
-                                            <input type="text" class="form-control" id="treatment_supervised" name="treatment_supervised" value="application_details.Treated_Supervised_By_Pre">
-                                        </div>
-                                        <div class="alert alert-danger" id="p_treatment_supervisedErrorMsg" style="display:none"></div>
-                                    </div>
-                                </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>Additional Information</label>
-                                            <textarea id="p_additional_Info" name="additional_Info" rows="4" cols="50">application_details.Additional_Information_Pre</textarea>
+                                            <label class="form-label">Additional Information</label>
+                                            <textarea class="form-control" id="p_additional_Info" name="additional_Info" rows="3"></textarea>
                                         </div>
                                         <div class="alert alert-danger" id="p_additional_Info_ErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>Remarks</label>
+                                            <label class="form-label">Remarks</label>
                                             <textarea class="form-control" id="remarks" name="remarks" rows="3"></textarea>
                                         </div>
                                     </div>
@@ -1135,25 +1374,26 @@ option {
                                     <button type="button" class="btn btn-primary" onclick="export_complete()">Complete</button>
                                 </div>
                             </div>
-                        {% else %}
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label>Date Of Inspection</label>
-                                            <input type="text" class="form-control date-picker flatpickr-input active" id="c_dateOfInspection" name="date"  placeholder="Pick a date" readonly="readonly">
+                            {% else %}
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label class="form-label">Date Of Inspection <font color="red">*</font></label>
+                                                <input type="text" class="form-control date-picker flatpickr-input active" id="c_dateOfInspection" name="c_dateOfInspection"  placeholder="Pick a date" readonly="readonly">
+                                            </div>
+                                             <div class="alert alert-danger" id="c_dateOfInspectionErrorMsg" style="display:none"></div>
                                         </div>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label>Remarks</label>
-                                            <textarea class="form-control" id="c_remarks" name="remarks" rows="3"></textarea>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label class="form-label">Remarks</label>
+                                                <textarea class="form-control" id="c_remarks" name="c_remarks" rows="3"></textarea>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <button type="button" class="btn btn-success" onclick="export_complete()"><i class="ace-icon fas fa-arrow-right"></i>&nbsp;&nbsp;Complete</button>
-                        {% endif %}
+                                <button type="button" class="btn btn-success" onclick="export_complete()"><i class="ace-icon fas fa-arrow-right"></i>&nbsp;&nbsp;Complete</button>
+                            {% endif %}
                         {% endfor%}
                     </div>
                 </div>
@@ -1177,17 +1417,263 @@ option {
 
     function export_complete()
     {
-        $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'export_complete' %}",
-                data : $('#inspectorExportForm').serialize(),
-                success : function(responseText)
-                {
-                    $location.reload();
-                }
-            });
+        var certificate_type = $("#certificate_type").val();
+        var date_of_inspection = $("#dateOfInspection").val();
+        var no_of_sample_drawn = $("#no_of_sample_drawn").val();
+        var total_sample_size = $("#total_sample_size").val();
+        var sample_drawn_by = $("#sample_drawn_by").val();
+        var atLeastOneIsChecked = $('input[name="inspection_method"]:checked').length;
+        var Scientific_Name = $("#Scientific_Name").val();
+        var pest_detected = $('input[name="pest_detected"]:checked').length;
+        var pest_detected_value = $('input[name="pest_detected"]:checked').val();
+        var pest_category = $('input[name="pest_category"]:checked').length;
+        var infestation_level = $('input[name="infestation_level"]:checked').length;
+        var live_dead = $('input[name="live_dead"]:checked').length;
+        var risk_category = $('input[name="risk_category"]:checked').length;
+        var Pest_QR_Detected = $('input[name="Pest_QR_Detected"]:checked').length;
+        var Pest_QR_Detected_value = $('input[name="Pest_QR_Detected"]:checked').val();
+        var Pest_QR_Detected_Comments = $("#Pest_QR_Detected_Comments").val();
+        var treatment_possible = $('input[name="treatment_possible"]:checked').length;
+        var treatment_possible_value = $('input[name="treatment_possible"]:checked').val();
+        var Treatment_Comment = $("#Treatment_Comment").val();
+        var Laboratory_Analysis_Required = $('input[name="Laboratory_Analysis_Required"]:checked').length;
+        var Laboratory_Analysis_Required_Value = $('input[name="Laboratory_Analysis_Required"]:checked').val();
+        var Phytosanitary_Measures = $('input[name="Phytosanitary_Measures"]:checked').length;
+        var Phytosanitary_Measures_Value = $('input[name="Laboratory_Analysis_Required"]:checked').val();
+        var phytosanitary_Comment = $("#phytosanitary_Comment").val();
+        var treatmentType = $('input[name="treatmentType"]:checked').length;
+        var chemical_name = $("#chemical_name").val();
+        var treatment = $("#treatment").val();
+        var Concentration = $("#Concentration").val();
+        var other_treatment = $("#other_treatment").val();
+        var Duration_Temperature = $("#Duration_Temperature").val();
+        var treated_by = $("#treated_by").val();
+        var treatment_supervised = $("#treatment_supervised").val();
+
+        if(certificate_type == 'P')
+        {
+            if(date_of_inspection == "")
+            {
+                $('#date_of_inspectionErrorMsg').html("Enter Date Of Inspection.");
+                $('#date_of_inspectionErrorMsg').show();
+                $('#date_of_inspectionErrorMsg').delay(2000).fadeOut('slow');
+                $("#dateOfInspection").focus();
+            }
+            else if(no_of_sample_drawn == "")
+            {
+                $('#no_of_sample_drawnErrorMsg').html("Enter No Of Sample Drawn.");
+                $('#no_of_sample_drawnErrorMsg').show();
+                $('#no_of_sample_drawnErrorMsg').delay(2000).fadeOut('slow');
+                $('#no_of_sample_drawn').focus();
+            }
+            else if(total_sample_size == "")
+            {
+                $('#total_sample_sizeErrorMsg').html("Enter Total Sample Size.");
+                $('#total_sample_sizeErrorMsg').show();
+                $('#total_sample_sizeErrorMsg').delay(2000).fadeOut('slow');
+                $('#total_sample_size').focus();
+            }
+            else if(atLeastOneIsChecked < 1)
+            {
+                $('#inspection_methodErrorMsg').html("Please Check One Method.");
+                $('#inspection_methodErrorMsg').show();
+                $('#inspection_methodErrorMsg').delay(2000).fadeOut('slow');
+                $("input[name=inspection_method]").focus();
+            }
+            else if(Scientific_Name == "")
+            {
+                $('#Scientific_NameErrorMsg').html("Enter Scientific Name.");
+                $('#Scientific_NameErrorMsg').show();
+                $('#Scientific_NameErrorMsg').delay(2000).fadeOut('slow');
+                $('#Scientific_Name').focus();
+            }
+            else if(pest_detected < 1)
+            {
+                $('#pest_detectedErrorMsg').html("Select One Pest Detected.");
+                $('#pest_detectedErrorMsg').show();
+                $('#pest_detectedErrorMsg').delay(2000).fadeOut('slow');
+                $('#pest_detected').focus();
+            }
+            else if(pest_detected_value == "Yes" && pest_category < 1)
+            {
+                $('#pest_categoryErrorMsg').html("Select One Pest Category.");
+                $('#pest_categoryErrorMsg').show();
+                $('#pest_categoryErrorMsg').delay(2000).fadeOut('slow');
+                $('input[name="pest_category"]').focus();
+            }
+            else if(pest_detected_value == "Yes" && infestation_level < 1)
+            {
+                $('#infestation_levelErrorMsg').html("Select One Infestation Level.");
+                $('#infestation_levelErrorMsg').show();
+                $('#infestation_levelErrorMsg').delay(2000).fadeOut('slow');
+                $('input[name="infestation_level"]').focus();
+            }
+            else if(pest_detected_value == "Yes" && live_dead < 1)
+            {
+                $('#live_deadErrorMsg').html("Select One Live/Dead.");
+                $('#live_deadErrorMsg').show();
+                $('#live_deadErrorMsg').delay(2000).fadeOut('slow');
+                $('input[name="live_dead"]').focus();
+            }
+            else if(pest_detected_value == "Yes" && risk_category < 1)
+            {
+                $('#risk_categoryErrorMsg').html("Select One Risk Category.");
+                $('#risk_categoryErrorMsg').show();
+                $('#risk_categoryErrorMsg').delay(2000).fadeOut('slow');
+                $('input[name="risk_category"]').focus();
+            }
+            else if(pest_detected_value == "Yes" && Pest_QR_Detected < 1)
+            {
+                $('#Pest_QR_DetectedErrorMsg').html("Select One Quarantine/Regulated Non Quarantine.");
+                $('#Pest_QR_DetectedErrorMsg').show();
+                $('#Pest_QR_DetectedErrorMsg').delay(2000).fadeOut('slow');
+                $('input[name="Pest_QR_Detected"]').focus();
+            }
+            else if(Pest_QR_Detected_value == "Yes" && Pest_QR_Detected_Comments == "")
+            {
+                $('#Pest_QR_Detected_CommentsErrorMsg').html("Enter Comment.");
+                $('#Pest_QR_Detected_CommentsErrorMsg').show();
+                $('#Pest_QR_Detected_CommentsErrorMsg').delay(2000).fadeOut('slow');
+                $('#Pest_QR_Detected_Comments').focus();
+            }
+            else if(pest_detected_value == "Yes" && treatment_possible < 1)
+            {
+                $('#treatment_possibleErrorMsg').html("Select One Treatment Possible.");
+                $('#treatment_possibleErrorMsg').show();
+                $('#treatment_possibleErrorMsg').delay(2000).fadeOut('slow');
+                $('input[name="treatment_possible"]').focus();
+            }
+            else if(treatment_possible_value == "Yes" && Treatment_Comment == "")
+            {
+                $('#Treatment_CommentErrorMsg').html("Enter Comment.");
+                $('#Treatment_CommentErrorMsg').show();
+                $('#Treatment_CommentErrorMsg').delay(2000).fadeOut('slow');
+                $('#Treatment_Comment').focus();
+            }
+            else if(pest_detected_value == "Yes" && Laboratory_Analysis_Required < 1)
+            {
+                $('#Laboratory_Analysis_RequiredErrorMsg').html("Select One Laboratory Analysis Required.");
+                $('#Laboratory_Analysis_RequiredErrorMsg').show();
+                $('#Laboratory_Analysis_RequiredErrorMsg').delay(2000).fadeOut('slow');
+                $('input[name="Laboratory_Analysis_Required"]').focus();
+            }
+            else if(treatment_possible_value == "Yes" && analysis_Comment == "")
+            {
+                $('#analysis_CommentErrorMsg').html("Enter Comment.");
+                $('#analysis_CommentErrorMsg').show();
+                $('#analysis_CommentErrorMsg').delay(2000).fadeOut('slow');
+                $('#analysis_Comment').focus();
+            }
+            else if(pest_detected_value == "Yes" &&  Phytosanitary_Measures < 1)
+            {
+                $('#Phytosanitary_MeasuresErrorMsg').html("Select One Phytosanitary Measures.");
+                $('#Phytosanitary_MeasuresErrorMsg').show();
+                $('#Phytosanitary_MeasuresErrorMsg').delay(2000).fadeOut('slow');
+                $('input[name="Phytosanitary_Measures"]').focus();
+            }
+            else if(treatment_possible_value == "Yes" && phytosanitary_Comment == "")
+            {
+                $('#phytosanitary_CommentErrorMsg').html("Enter Comment.");
+                $('#phytosanitary_CommentErrorMsg').show();
+                $('#phytosanitary_CommentErrorMsg').delay(2000).fadeOut('slow');
+                $('#phytosanitary_Comment').focus();
+            }
+            else if(pest_detected_value == "Yes" && treatmentType < 1)
+            {
+                $('#treatmentTypeErrorMsg').html("Select One Treatment Type.");
+                $('#treatmentTypeErrorMsg').show();
+                $('#treatmentTypeErrorMsg').delay(2000).fadeOut('slow');
+                $('input[name="treatmentType"]').focus();
+            }
+            else if(pest_detected_value == "Yes" && chemical_name == "")
+            {
+                $('#chemical_nameErrorMsg').html("Enter Chemical Name.");
+                $('#chemical_nameErrorMsg').show();
+                $('#chemical_nameErrorMsg').delay(2000).fadeOut('slow');
+                $('#chemical_name').focus();
+            }
+            else if(pest_detected_value == "Yes" && treatment == "")
+            {
+                $('#treatmentErrorMsg').html("Enter Chemical Name.");
+                $('#treatmentErrorMsg').show();
+                $('#treatmentErrorMsg').delay(2000).fadeOut('slow');
+                $('#treatment').focus();
+            }
+            else if(pest_detected_value == "Yes" && Concentration == "")
+            {
+                $('#ConcentrationErrorMsg').html("Enter Chemical Name.");
+                $('#ConcentrationErrorMsg').show();
+                $('#ConcentrationErrorMsg').delay(2000).fadeOut('slow');
+                $('#Concentration').focus();
+            }
+            else if(treatment == "Yes" && other_treatment == "")
+            {
+                $('#other_treatmentErrorMsg').html("Enter Comment.");
+                $('#other_treatmentErrorMsg').show();
+                $('#other_treatmentErrorMsg').delay(2000).fadeOut('slow');
+                $('#other_treatment').focus();
+            }
+            else if(pest_detected_value == "Yes" && Duration_Temperature == "")
+            {
+                $('#Duration_TemperatureErrorMsg').html("Enter Duration & Temperature.");
+                $('#Duration_TemperatureErrorMsg').show();
+                $('#Duration_TemperatureErrorMsg').delay(2000).fadeOut('slow');
+                $('#Duration_Temperature').focus();
+            }
+            else if(pest_detected_value == "Yes" && treated_by == "")
+            {
+                $('#treated_byErrorMsg').html("Enter Treated By.");
+                $('#treated_byErrorMsg').show();
+                $('#treated_byErrorMsg').delay(2000).fadeOut('slow');
+                $('#treated_by').focus();
+            }
+            else if(pest_detected_value == "Yes" && treatment_supervised == "")
+            {
+                $('#treatment_supervisedErrorMsg').html("Enter Treatment Supervised By.");
+                $('#treatment_supervisedErrorMsg').show();
+                $('#treatment_supervisedErrorMsg').delay(2000).fadeOut('slow');
+                $('#treatment_supervised').focus();
+            }
+            else
+            {
+                $.ajax
+                ({
+                    type : "POST",
+                    url : "{% url 'export_complete' %}",
+                    data : $('#inspectorExportForm').serialize(),
+                    success : function(responseText)
+                    {
+                        location.reload();
+                    }
+                });
+            }
+        }
+        else
+        {
+            var c_dateOfInspection = $('#c_dateOfInspection').val()
+            if(c_dateOfInspection == "")
+            {
+                $('#c_dateOfInspectionErrorMsg').html("Enter Treatment Supervised By.");
+                $('#c_dateOfInspectionErrorMsg').show();
+                $('#c_dateOfInspectionErrorMsg').delay(2000).fadeOut('slow');
+                $('#c_dateOfInspection').focus();
+            }
+            else
+            {
+                $.ajax
+                ({
+                    type : "POST",
+                    url : "{% url 'export_complete' %}",
+                    data : $('#inspectorExportForm').serialize(),
+                    success : function(responseText)
+                    {
+                        location.reload();
+                    }
+                });
+            }
+        }
     }
+
     function showDiv(value)
     {
         if(value == "Chemical")
@@ -1209,6 +1695,66 @@ option {
         else
         {
             $("#if_yes").hide();
+        }
+    }
+
+    function showValue(value)
+    {
+        if(value == "others")
+        {
+            $("#others_div").show();
+        }
+        else
+        {
+            $("#others_div").hide();
+        }
+    }
+
+    function checkPestDetected(value)
+    {
+        if(value == "Yes")
+        {
+            $("#Pest_QR_Detected_Comments").removeAttr("disabled");
+        }
+        else
+        {
+            $("#Pest_QR_Detected_Comments").attr("disabled", "disabled");
+        }
+    }
+
+    function check_treatment_possible(value)
+    {
+        if(value == "Yes")
+        {
+            $("#Treatment_Comment").removeAttr("disabled");
+        }
+        else
+        {
+            $("#Treatment_Comment").attr("disabled", "disabled");
+        }
+    }
+
+    function check_Laboratory_Analysis(value)
+    {
+        if(value == "Yes")
+        {
+            $("#analysis_Comment").removeAttr("disabled");
+        }
+        else
+        {
+            $("#analysis_Comment").attr("disabled", "disabled");
+        }
+    }
+
+    function Check_Phytosanitary_Measures(value)
+    {
+        if(value == "Yes")
+        {
+            $("#phytosanitary_Comment").removeAttr("disabled");
+        }
+        else
+        {
+            $("#phytosanitary_Comment").attr("disabled", "disabled");
         }
     }
 </script>

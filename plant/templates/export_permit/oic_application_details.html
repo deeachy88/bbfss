@@ -6,10 +6,10 @@
                 <div class="card">
                     <div class="card-body">
                         {% for application_details in application_details %}
-                            {% if application_details.Import_Type == 'P' %}
+                            {% if application_details.Certificate_Type == 'P' %}
                                 <div class="row justify-content-center">
                                     <div class="form-check text-center">
-                                        <label>Certificate Type <font color="red">*</font></label><br>
+                                        <label class="form-label">Certificate Type <font color="red">*</font></label><br>
                                         <label class="form-radio-label">
                                             <input class="form-radio-input" type="radio" checked>
                                             <span class="form-radio-sign">Phytosanitary</span>
@@ -23,7 +23,7 @@
                             {% else %}
                                 <div class="row justify-content-center">
                                     <div class="form-check text-center">
-                                        <label>Certificate Type <font color="red">*</font></label><br>
+                                        <label class="form-label">Certificate Type <font color="red">*</font></label><br>
                                         <label class="form-radio-label">
                                             <input class="form-radio-input" type="radio">
                                             <span class="form-radio-sign">Phytosanitary</span>
@@ -35,23 +35,23 @@
                                     </div>
                                 </div>
                             {% endif %}
-                            {% if application_details.Import_Type == 'P' %}
+                            {% if application_details.Certificate_Type == 'P' %}
                                 <div class="row">
                                     <div class="col-sm-4">
                                         <div class="form-group">
-                                            <label>License No</label>
+                                            <label class="form-label">License No</label>
                                             <input type="text" class="form-control" value="{{application_details.License_No}}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
-                                            <label>CID</label>
+                                            <label class="form-label">CID</label>
                                             <input type="text" class="form-control" value="{{application_details.CID}}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
-                                            <label>Exporter Name</label>
+                                            <label class="form-label">Exporter Name</label>
                                             <input type="text" class="form-control" value="{{application_details.Exporter_Name}}" disabled>
                                         </div>
                                     </div>
@@ -59,27 +59,27 @@
                                 <div class="row">
                                     <div class="col-sm-4">
                                         <div class="form-group">
-                                            <label>Exporter Address</label>
+                                            <label class="form-label">Exporter Address</label>
                                             <textarea class="form-control" disabled rows="3">{{application_details.Exporter_Name}}</textarea>
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
-                                            <label>Contact Number</label>
+                                            <label class="form-label">Contact Number</label>
                                             <input type="text" class="form-control" value="{{application_details.Contact_No}}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
-                                            <label>Email</label>
-                                            <input type="email" class="form-control" value="{{application_details.Email}}">
+                                            <label class="form-label">Email</label>
+                                            <input type="email" class="form-control" value="{{application_details.Email}}" disabled>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-4">
                                         <div class="form-group">
-                                            <label>Dzongkhag</label>
+                                            <label class="form-label">Dzongkhag</label>
                                             <select class="form-control" disabled>
                                                 {% for dzongkhag in dzongkhag %}
                                                     <option value="{{dzongkhag.Dzongkhag_Code}}"{% if application_details.Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>
@@ -91,17 +91,17 @@
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
-                                            <label>Location</label>
+                                            <label class="form-label">Location</label>
                                             <select class="form-control" disabled>
                                                 {% for location in location %}
-                                                    <option value="{{ location.Location_Code }}" {% if application_details.To_Gewog_Code == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                                    <option value="{{ location.Location_Code }}" {% if application_details.Locatipn_Code == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
                                                 {% endfor %}
                                             </select>
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
-                                            <label>Name & Address of Consignee</label>
+                                            <label class="form-label">Name & Address of Consignee</label>
                                             <textarea class="form-control" disabled rows="3">{{application_details.Consingee_Name_Address}}</textarea>
                                         </div>
                                     </div>
@@ -109,13 +109,13 @@
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label>Botanical name of the commodity</label>
+                                            <label class="form-label">Botanical name of the commodity</label>
                                             <input type="text" class="form-control" value="{{application_details.Botanical_Name}}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label>Description of the Commodity</label>
+                                            <label class="form-label">Description of the Commodity</label>
                                             <textarea class="form-control" disabled rows="3">{{application_details.Description}}</textarea>
                                         </div>
                                     </div>
@@ -124,7 +124,7 @@
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label>Quantity (Gross Weight)</label>
+                                            <label class="form-label">Quantity (Gross Weight)</label>
                                             <input type="text" class="form-control" value="{{application_details.Qty_Gross}}" disabled>
                                         </div>
                                     </div>
@@ -136,17 +136,65 @@
                                                 <input class="form-radio-input" type="radio" checked>
                                                 <span class="form-radio-sign">MT(s)</span>
                                             </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Kg(s)</span>
+                                            </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Gram(s)</span>
+                                            </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Unit(s)</span>
+                                            </label>
                                             {% elif application_details.Unit_Gross == 'Kg(s)' %}
+                                            <label class="form-radio-label">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">MT(s)</span>
+                                            </label>
                                             <label class="form-radio-label ml-3">
                                                 <input class="form-radio-input" type="radio" checked>
                                                 <span class="form-radio-sign">Kg(s)</span>
                                             </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Gram(s)</span>
+                                            </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Unit(s)</span>
+                                            </label>
                                             {% elif application_details.Unit_Gross == 'Gram(s)' %}
+                                            <label class="form-radio-label">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">MT(s)</span>
+                                            </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Kg(s)</span>
+                                            </label>
                                             <label class="form-radio-label ml-3">
                                                 <input class="form-radio-input" type="radio" checked>
                                                 <span class="form-radio-sign">Gram(s)</span>
                                             </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Unit(s)</span>
+                                            </label>
                                             {% else %}
+                                            <label class="form-radio-label">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">MT(s)</span>
+                                            </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Kg(s)</span>
+                                            </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Gram(s)</span>
+                                            </label>
                                             <label class="form-radio-label ml-3">
                                                 <input class="form-radio-input" type="radio" checked>
                                                 <span class="form-radio-sign">Unit(s)</span>
@@ -158,7 +206,7 @@
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label>Quantity (Net Weight)</label>
+                                            <label class="form-label">Quantity (Net Weight)</label>
                                             <input type="text" class="form-control" value="{{application_details.Qty_Net}}" disabled>
                                         </div>
                                     </div>
@@ -170,17 +218,65 @@
                                                 <input class="form-radio-input" type="radio" checked>
                                                 <span class="form-radio-sign">MT(s)</span>
                                             </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Kg(s)</span>
+                                            </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Gram(s)</span>
+                                            </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Unit(s)</span>
+                                            </label>
                                             {% elif application_details.Unit_Net == 'Kg(s)' %}
+                                            <label class="form-radio-label">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">MT(s)</span>
+                                            </label>
                                             <label class="form-radio-label ml-3">
                                                 <input class="form-radio-input" type="radio" checked>
                                                 <span class="form-radio-sign">Kg(s)</span>
                                             </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Gram(s)</span>
+                                            </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Unit(s)</span>
+                                            </label>
                                             {% elif application_details.Unit_Net == 'Gram(s)' %}
+                                            <label class="form-radio-label">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">MT(s)</span>
+                                            </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Kg(s)</span>
+                                            </label>
                                             <label class="form-radio-label ml-3">
                                                 <input class="form-radio-input" type="radio" checked>
                                                 <span class="form-radio-sign">Gram(s)</span>
                                             </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Unit(s)</span>
+                                            </label>
                                             {% else %}
+                                            <label class="form-radio-label">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">MT(s)</span>
+                                            </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Kg(s)</span>
+                                            </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Gram(s)</span>
+                                            </label>
                                             <label class="form-radio-label ml-3">
                                                 <input class="form-radio-input" type="radio" checked>
                                                 <span class="form-radio-sign">Unit(s)</span>
@@ -191,7 +287,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-6">
-                                        <label>Country</label>
+                                        <label class="form-label">Country</label>
                                         <select class="form-control" disabled>
                                             {% for Country in Country %}
                                                 <option value="{{Country.Country_Code}}"{% if application_details.Importing_Country == Country.Country_Code %}selected{% endif %}>
@@ -202,7 +298,7 @@
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label>Declared point of Entry</label>
+                                            <label class="form-label">Declared point of Entry</label>
                                             <select class="form-control" name="p_Entry_Point"  id="p_Entry_Point">
                                                 <option value="">--SELECT--</option>
                                                 {% for entry_point in entry_point %}
@@ -217,26 +313,26 @@
                                 <div class="row">
                                     <div class="col-sm-4">
                                         <div class="form-group">
-                                            <label>Number of Packages</label>
+                                            <label class="form-label">Number of Packages</label>
                                             <textarea class="form-control" disabled rows="3">{{application_details.Packages_No}}</textarea>
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
-                                            <label>Description of Packages</label>
+                                            <label class="form-label">Description of Packages</label>
                                             <textarea class="form-control" disabled rows="3">{{application_details.Packages_Description}}</textarea>
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
-                                            <label>Distinguishing Marks</label>
-                                            <input type="text" class="form-control" value="{{application_details.Distinguishing_Marks}}">
+                                            <label class="form-label">Distinguishing Marks</label>
+                                            <input type="text" class="form-control" disabled value="{{application_details.Distinguishing_Marks}}">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-2">
-                                        <label>Purpose/End Use</label>
+                                        <label class="form-label">Purpose/End Use</label>
                                     </div>
                                     <div class="col-sm-10 justify-content-center">
                                         <div class="form-check text-center">
@@ -245,27 +341,147 @@
                                                 <input class="form-radio-input" type="radio" checked>
                                                 <span class="form-radio-sign">Propagation</span>
                                             </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Wood</span>
+                                            </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Industrial Products</span>
+                                            </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Consumption</span>
+                                            </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Dunnage(Wooden packing material)</span>
+                                            </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Laboratory specimens, Micro organisms, Micro biological, Biocontrolagents</span>
+                                            </label>
                                             {% elif application_details.Purpose_End_Use == 'Wood' %}
+                                            <label class="form-radio-label">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Propagation</span>
+                                            </label>
                                             <label class="form-radio-label ml-3">
                                                 <input class="form-radio-input" type="radio" checked>
                                                 <span class="form-radio-sign">Wood</span>
                                             </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Industrial Products</span>
+                                            </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Consumption</span>
+                                            </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Dunnage(Wooden packing material)</span>
+                                            </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Laboratory specimens, Micro organisms, Micro biological, Biocontrolagents</span>
+                                            </label>
                                             {% elif application_details.Purpose_End_Use == 'Industrial Products' %}
+                                            <label class="form-radio-label">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Propagation</span>
+                                            </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Wood</span>
+                                            </label>
                                             <label class="form-radio-label ml-3">
                                                 <input class="form-radio-input" type="radio" checked>
                                                 <span class="form-radio-sign">Industrial Products</span>
                                             </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Consumption</span>
+                                            </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Dunnage(Wooden packing material)</span>
+                                            </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Laboratory specimens, Micro organisms, Micro biological, Biocontrolagents</span>
+                                            </label>
                                             {% elif application_details.Purpose_End_Use == 'Consumption' %}
+                                            <label class="form-radio-label">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Propagation</span>
+                                            </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Wood</span>
+                                            </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Industrial Products</span>
+                                            </label>
                                             <label class="form-radio-label ml-3">
                                                 <input class="form-radio-input" type="radio" checked>
                                                 <span class="form-radio-sign">Consumption</span>
                                             </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Dunnage(Wooden packing material)</span>
+                                            </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Laboratory specimens, Micro organisms, Micro biological, Biocontrolagents</span>
+                                            </label>
                                             {% elif application_details.Purpose_End_Use == 'Dunnage' %}
+                                            <label class="form-radio-label">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Propagation</span>
+                                            </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Wood</span>
+                                            </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Industrial Products</span>
+                                            </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Consumption</span>
+                                            </label>
                                             <label class="form-radio-label ml-3">
                                                 <input class="form-radio-input" type="radio" checked>
                                                 <span class="form-radio-sign">Dunnage(Wooden packing material)</span>
                                             </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Laboratory specimens, Micro organisms, Micro biological, Biocontrolagents</span>
+                                            </label>
                                             {% else %}
+                                            <label class="form-radio-label">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Propagation</span>
+                                            </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Wood</span>
+                                            </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Industrial Products</span>
+                                            </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Consumption</span>
+                                            </label>
+                                            <label class="form-radio-label ml-3">
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Dunnage(Wooden packing material)</span>
+                                            </label>
                                             <label class="form-radio-label ml-3">
                                                 <input class="form-radio-input" type="radio" checked>
                                                 <span class="form-radio-sign">Laboratory specimens, Micro organisms, Micro biological, Biocontrolagents</span>
@@ -278,7 +494,7 @@
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            <label>Mode of conveyance </label>
+                                            <label class="form-label">Mode of conveyance </label>
                                             <select class="form-control form-control" disabled>
                                                {% if application_details.Mode_Of_Conveyance == 'Propagation' %}
                                                 <option value="Sea" selected>Sea</option>
@@ -296,14 +512,14 @@
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            <label>Conveyance Name</label>
+                                            <label class="form-label">Conveyance Name</label>
                                             <input type="text" class="form-control" value="{{application_details.Name_Of_Conveyance}}" disabled>
                                         </div>
                                         <div class="alert alert-danger" id="p_Conveyance_NameErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>Additional Declaration (required by importing country)</label>
+                                            <label class="form-label">Additional Declaration (required by importing country)</label>
                                             <textarea class="form-control" disabled rows="3">{{application_details.Additional_Declaring}}</textarea>
                                         </div>
                                     </div>
@@ -312,7 +528,7 @@
                                 {% if application_details.Applicant_Type == 'bothRadio' %}
                                     <div class="row justify-content-center">
                                         <div class="form-check text-center">
-                                            <label>Applicant Type <font color="red">*</font></label><br>
+                                            <label class="form-label">Applicant Type <font color="red">*</font></label><br>
                                             <label class="form-radio-label">
                                                 <input class="form-radio-input" type="radio" checked>
                                                 <span class="form-radio-sign">Both Export and Retail </span>
@@ -330,7 +546,7 @@
                                 {% elif application_details.Applicant_Type == 'directRadio' %}
                                     <div class="row justify-content-center">
                                         <div class="form-check text-center">
-                                            <label>Applicant Type <font color="red">*</font></label><br>
+                                            <label class="form-label">Applicant Type <font color="red">*</font></label><br>
                                             <label class="form-radio-label">
                                                 <input class="form-radio-input" type="radio">
                                                 <span class="form-radio-sign">Both Export and Retail </span>
@@ -348,7 +564,7 @@
                                 {% else %}
                                     <div class="row justify-content-center">
                                         <div class="form-check text-center">
-                                            <label>Applicant Type <font color="red">*</font></label><br>
+                                            <label class="form-label">Applicant Type <font color="red">*</font></label><br>
                                             <label class="form-radio-label">
                                                 <input class="form-radio-input" type="radio">
                                                 <span class="form-radio-sign">Both Export and Retail </span>
@@ -367,19 +583,19 @@
                                 <div class="row">
                                     <div class="col-sm-4">
                                         <div class="form-group">
-                                            <label>CID</label>
+                                            <label class="form-label">CID</label>
                                             <input type="text" class="form-control" value="{{application_details.CID}}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
-                                            <label>Name</label>
+                                            <label class="form-label">Name</label>
                                             <input type="text" class="form-control" value="{{application_details.Exporter_Name}}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
-                                            <label>Email</label>
+                                            <label class="form-label">Email</label>
                                             <input type="email" class="form-control" value="{{application_details.Email}}" disabled>
                                         </div>
                                     </div>
@@ -387,13 +603,13 @@
                                 <div class="row">
                                     <div class="col-sm-4">
                                         <div class="form-group">
-                                            <label>Contact Number</label>
+                                            <label class="form-label">Contact Number</label>
                                             <input type="text" class="form-control" value="{{application_details.Contact_No}}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
-                                            <label>Dzongkhag</label>
+                                            <label class="form-label">Dzongkhag</label>
                                             <select class="form-control" disabled>
                                                 {% for dzongkhag in dzongkhag %}
                                                     <option value="{{dzongkhag.Dzongkhag_Code}}"{% if application_details.Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>
@@ -405,10 +621,10 @@
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
-                                            <label>Location</label>
+                                            <label class="form-label">Location</label>
                                              <select class="form-control" disabled>
                                                 {% for location in location %}
-                                                    <option value="{{ location.Location_Code }}" {% if application_details.To_Gewog_Code == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                                    <option value="{{ location.Location_Code }}" {% if application_details.Locatipn_Code == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
                                                 {% endfor %}
                                             </select>
                                         </div>
@@ -418,13 +634,13 @@
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <div class="form-group">
-                                                <label>Current Address</label>
+                                                <label class="form-label">Current Address</label>
                                                 <textarea class="form-control" disabled rows="4">{{application_details.Exporter_Address}}</textarea>
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
                                             <div class="form-group">
-                                                <label>Permanent Address(if different from the current address)</label>
+                                                <label class="form-label">Permanent Address(if different from the current address)</label>
                                                 <textarea class="form-control" disabled rows="4">{{application_details.Permanent_Address}}</textarea>
                                             </div>
                                         </div>
@@ -432,13 +648,13 @@
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <div class="form-group">
-                                                <label>Date Of Inspection Requested</label>
+                                                <label class="form-label">Date Of Inspection Requested</label>
                                                 <input type="text" class="form-control" value="{{application_details.Desired_Inspection_Date}}" readonly="readonly">
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
                                             <div class="form-group">
-                                                <label>Place Of Inspection Requested</label>
+                                                <label class="form-label">Place Of Inspection Requested</label>
                                                 <input type="text" class="form-control" value="{{application_details.Desired_Inspection_Place}}" readonly="readonly">
                                             </div>
                                         </div>
@@ -447,7 +663,7 @@
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <div class="form-group">
-                                                <label>Trade License No. (For Licensed Cordyceps Exporters only)</label>
+                                                <label class="form-label">Trade License No. (For Licensed Cordyceps Exporters only)</label>
                                                 <input type="text" class="form-control" value="{{application_details.License_No}}" readonly="readonly">
                                             </div>
                                         </div>
@@ -497,13 +713,13 @@
                                     <div class="row">
                                         <div class="col-sm-4">
                                             <div class="form-group">
-                                                <label>No Of Packages</label>
+                                                <label class="form-label">No Of Packages</label>
                                                 <input type="text" class="form-control" value="{{application_details.Packages_No}}" readonly="readonly">
                                             </div>
                                         </div>
                                         <div class="col-sm-4">
                                             <div class="form-group">
-                                                <label>Importing Country</label>
+                                                <label class="form-label">Importing Country</label>
                                                 <select class="form-control" disabled>
                                                     {% for Country in Country %}
                                                         <option value="{{Country.Country_Code}}"{% if application_details.Importing_Country == Country.Country_Code %}selected{% endif %}>
@@ -515,7 +731,7 @@
                                         </div>
                                         <div class="col-sm-4">
                                             <div class="form-group">
-                                                <label>Name & Address of Consignee</label>
+                                                <label class="form-label">Name & Address of Consignee</label>
                                                 <textarea class="form-control" disabled rows="3">{{application_details.Consingee_Name_Address}}</textarea>
                                             </div>
                                         </div>
@@ -523,7 +739,7 @@
                                     <div class="row">
                                         <div class="col-sm-4">
                                             <div class="form-group">
-                                                <label>Mode of conveyance </label>
+                                                <label class="form-label">Mode of conveyance </label>
                                                 <select class="form-control form-control" disabled>
                                                    {% if application_details.Mode_Of_Conveyance == 'Propagation' %}
                                                     <option value="Sea" selected>Sea</option>
@@ -586,19 +802,19 @@
                                     <div class="row">
                                         <div class="col-sm-4">
                                             <div class="form-group">
-                                                <label>Total No Of Packages</label>
+                                                <label class="form-label">Total No Of Packages</label>
                                                 <input type="text" class="form-control"  value="{{application_details.Packages_No}}" readonly="readonly">
                                             </div>
                                         </div>
                                         <div class="col-sm-4">
                                             <div class="form-group">
-                                                <label>Name Of The Outlet</label>
+                                                <label class="form-label">Name Of The Outlet</label>
                                                 <input type="text" class="form-control"  value="{{application_details.Outlet_name}}" readonly="readonly">
                                             </div>
                                         </div>
                                         <div class="col-sm-4">
                                             <div class="form-group">
-                                                <label>Contact No of the outlet owner</label>
+                                                <label class="form-label">Contact No of the outlet owner</label>
                                                 <input type="text" class="form-control" value="{{application_details.Outlet_Contact_No}}" readonly="readonly">
                                             </div>
                                         </div>
@@ -606,13 +822,14 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>Address of the outlet</label>
+                                                <label class="form-label">Address of the outlet</label>
                                                 <textarea class="form-control" rows="3" disabled>{{application_details.Outlet_Address}}</textarea>
                                             </div>
                                         </div>
                                     </div>
                                 {% endif %}
                             {% endif %}
+                        <br>
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
