@@ -157,6 +157,7 @@
                             </div>
                         </div>
                     </div>
+                {% endfor %}
                     <div class="card">
                         <div class="card-header" role="tab" id="headingTwo">
                             <a class="collapsed" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
@@ -217,7 +218,7 @@
                                        {% for file_attach in file %}
                                                 <tr>
                                                     <td>{{ forloop.counter }}</td>
-                                                    <td>{{file_attach.Attachment}}</td>
+                                                    <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
                                                 </tr>
                                                 {% empty %}
                                                 <tr>
@@ -236,20 +237,33 @@
                             </a>
                         </div>
                         <div id="collapseFour" class="collapse" role="tabpanel" aria-labelledby="headingFour" data-parent="#accordion">
+                            {% for application_details in application_details %}
                             <div class="card-body">
+                                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                        <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Inspector </span>&nbsp;&nbsp;&nbsp;
+                                        <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Details</span>
+                                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="from-label">Remarks From Inspector</label>
+                                            <textarea class="form-control" rows="3" disabled>{{ application_details.Remarks }}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                        <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Client </span>&nbsp;&nbsp;&nbsp;
+                                        <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Details</span>
+                                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                                </div>
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <label class="from-label">Date For Inspection</label>
                                         <input type="date" name="date" id="inspection_date" class="form-control date-picker flatpickr-input active">
                                     </div>
-                                     <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label class="from-label">Remarks</label>
-                                            <textarea class="form-control" rows="5" value="{{ application_details.Remarks }}" disabled></textarea>
-                                        </div>
-                                    </div>
-                                 </div>
-                                <div class="row">
                                      <div class="col-md-6">
                                         <div class="from-label">
                                             <label class="from-label">Resubmit Remarks</label>
@@ -262,20 +276,23 @@
                                 <button type="button" class="btn btn-primary" onclick="nursery_client_resubmit('{{ application_details.Application_No }}')">Submit</button>
                                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                             </div>
+                         {% endfor %}
                         </div>
                     </div>
                 </div>
             </form>
-        {% endfor %}
+
     </div>
 </div>
 <script>
     function nursery_client_resubmit(application_id)
     {
+        var inspection_date = $('#inspection_date').val();
+        var Resubmit_Remarks = $('#Resubmit_Remarks').val();
        $.ajax({
             type : "GET",
             url : "{% url 'nursery_client_resubmit' %}",
-            data :{'application_id':application_id},
+            data :{'application_id':application_id,'inspection_date':inspection_date, 'Resubmit_Remarks':Resubmit_Remarks},
             success : function(data) {
                 location.reload();
             }

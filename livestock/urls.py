@@ -42,6 +42,8 @@ urlpatterns = [
          name='resubmit_meat_shop_factory_inspection'),
     path('edit_meat_shop_feasibility_details', views.edit_meat_shop_feasibility_details,
          name='edit_meat_shop_feasibility_details'),
+    path('edit_meat_shop_factory_details', views.edit_meat_shop_factory_details,
+         name='edit_meat_shop_factory_details'),
     path('forward_meat_shop_application', views.forward_meat_shop_application, name='forward_meat_shop_application'),
     path('view_meat_shop_factory_inspection_application', views.view_meat_shop_factory_inspection_application,
          name='view_meat_shop_factory_inspection_application'),

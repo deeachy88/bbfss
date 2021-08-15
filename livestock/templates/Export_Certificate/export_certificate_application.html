@@ -107,7 +107,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Name <font color="red">*</font></label>
-                                    <input type="text" class="form-control" id="name" name="Name" readonly="readonly">
+                                    <input type="text" class="form-control" id="name" name="name" readonly="readonly">
                                 </div>
                                 <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
                             </div>
@@ -300,27 +300,26 @@
                     <div class="col-lg-12">
                         <div class="box box-primary">
                             <div class="box-body">
-
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label for="Particulars">Particulars</label>
+                                        <label class="form-label">Particulars</label>
                                         <input type="text" name="Particulars" class="form-control" id="Particulars" required>
                                         <div class="alert alert-danger" id="ParticularsErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label for="Company_Name">Company/Producer</label>
+                                        <label class="form-label">Company/Producer</label>
                                         <input type="text" name="Company_Name" class="form-control" id="Company_Name" required>
                                         <div class="alert alert-danger" id="Company_NameErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label for="qty">Quantity</label>
+                                        <label class="form-label">Quantity</label>
                                         <input type="number" name="qty" class="form-control" id="qty" required>
                                         <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label >Unit</label>
+                                        <label class="form-label">Unit</label>
                                         <select class="form-control" name="unit"  id="unit">
                                             <option value="">--SELECT UNIT--</option>
                                             {% for unit in unit %}
@@ -332,7 +331,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label for="remarks">Remarks</label>
+                                        <label class="form-label">Remarks</label>
                                         <textarea name="remarks" class="form-control" id="remarks" rows="3"></textarea>
                                         <div class="alert alert-danger" id="remarksMeansErrorMsg" style="display:none"></div>
                                     </div>
@@ -364,43 +363,53 @@
                                 <input type="hidden" id="permit_type" name="permit_type">
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label for="Particulars">Species</label>
-                                        <input type="text" name="Species" class="form-control" id="Species" required>
+                                        <label class="form-label">Species</label>
+                                        <select class="form-control" name="Species" id="Species">
+                                            <option value="">--SELECT--</option>
+                                            {% for species in species %}
+                                                <option value="{{ species.Species_Name }}">{{ species.Species_Name }}</option>
+                                            {% endfor %}
+                                         </select>
                                         <div class="alert alert-danger" id="SpeciesErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label for="Company_Name">Breed</label>
-                                        <input type="text" name="Breed" class="form-control" id="Breed" required>
+                                        <label class="form-label">Breed</label>
+                                        <select class="form-control" name="Breed" id="Breed">
+                                            <option value="">--SELECT--</option>
+                                            {% for breed in breed %}
+                                                <option value="{{ breed.Species_Breed_Name }}">{{ breed.Species_Breed_Name }}</option>
+                                            {% endfor %}
+                                         </select>
                                         <div class="alert alert-danger" id="BreedErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label for="Particulars">Age</label>
+                                        <label class="form-label">Age</label>
                                         <input type="text" name="Age" class="form-control" id="Age" required>
                                         <div class="alert alert-danger" id="AgeErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label>Sex</label>
+                                        <label class="form-label">Sex</label>
                                         <input type="text" name="Sex" class="form-control" id="Sex" required>
                                         <div class="alert alert-danger" id="SexErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label >Description/Identification No</label>
+                                        <label class="form-label">Description/Identification No</label>
                                         <textarea name="animal_Description" class="form-control" id="animal_Description" rows="3"></textarea>
                                         <div class="alert alert-danger" id="animal_DescriptionErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label for="qty">No Of Animals</label>
+                                        <label class="form-label">No Of Animals</label>
                                         <input type="number" name="no" class="form-control" id="no" required>
                                         <div class="alert alert-danger" id="noErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label for="remarks">Remarks</label>
+                                        <label class="form-label">Remarks</label>
                                         <textarea name="AP_Remarks" class="form-control" id="AP_Remarks" rows="3"></textarea>
                                         <div class="alert alert-danger" id="product_remarks_ErrorMsg" style="display:none"></div>
                                     </div>

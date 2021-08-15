@@ -11,7 +11,7 @@ urlpatterns = [
     path('register', views.register, name='register'),
     path('user', views.user, name='user'),
     path('forgot_password', views.forgot_password, name='forgot_password'),
-    path('edit_user/<int:Login_Id>', views.edit_user, name='edit_user'),
+    path('edit_user', views.edit_user, name='edit_user'),
     path('role', views.role_manage, name='role_page'),
     path('edit_role/<int:Role_Id>', views.edit_role, name='edit_role'),
     path('section', views.section_manage, name='section_page'),
@@ -98,5 +98,6 @@ urlpatterns = [
     path('assign_officiating', views.assign_officiating, name='assign_officiating'),
     path('revoke_officiating', views.revoke_officiating, name='revoke_officiating'),
     path('check_already_assigned_officiating', views.check_already_assigned_officiating,
-         name='check_already_assigned_officiating')
+         name='check_already_assigned_officiating'),
+    path('manage_user', views.manage_user, name='manage_user')
 ]

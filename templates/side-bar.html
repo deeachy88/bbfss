@@ -1,3 +1,20 @@
+<style>
+.badge {
+    display: block;
+    position: absolute;
+    top: 4px;
+    right: 3px;
+    line-height: 16px;
+    height: 16px;
+    padding: 0 5px;
+    color: white;
+    text-shadow: 0 1px rgb(0 0 0 / 25%);
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 10px;
+    border-color: #555;
+}
+</style>
 <div class="scrollbar-inner">
     <!--<div class="user">
         <div class="user__info" data-toggle="dropdown">
@@ -68,7 +85,9 @@
         <ul class="navigation">
             <li class="navigation__active"><a href="{% url 'dashboard' %}"><i class="zmdi zmdi-home"></i> Home</a></li>
 
-            <li class="@@datatableactive"><a href="{% url 'focal_officer_application' %}"><i class="zmdi zmdi-collection-text"></i> Pending Applications</a></li>
+            <li class="@@datatableactive"><a href="{% url 'focal_officer_application' %}"><i class="zmdi zmdi-collection-text"></i> Pending Applications
+            <span class="badge badge-danger">{{ request.session.count }}</span>
+            </a></li>
             <li class="@@datatableactive"><a href="{% url 'payment_details' %}"><i class="zmdi zmdi-collection-text"></i>Payment Details</a></li>
             <li class="navigation__sub @@formactive">
                 <a href="#"><font color="white"><i class="zmdi zmdi-collection-text" ></i>&nbsp; &nbsp;Inspection-Establishment</font></a>
@@ -105,7 +124,8 @@
             <li class="navigation__active"><a href="{% url 'dashboard' %}"><i class="zmdi zmdi-home"></i> Home</a></li>
 
             <li class="@@datatableactive">
-                <a href="{% url 'oic_application' %}"><i class="zmdi zmdi-collection-text" ></i> Pending Applications</a>
+                <a href="{% url 'oic_application' %}"><i class="zmdi zmdi-collection-text" ></i> Pending Applications
+                <span class="badge badge-danger">{{ request.session.count }}</span></a>
             </li>
             <li class="@@datatableactive"><a href="{% url 'payment_details' %}"><i class="zmdi zmdi-collection-text"></i>Payment Details</a></li>
             <li class="@@datatableactive"><a href="{% url 'investigation_complaint_list' %}"><i class="zmdi zmdi-collection-text"></i>Complaint List</a></li>
@@ -137,13 +157,17 @@
 					<h5 class="text-section"> <font color="#e88015">OIC Menu</font></h5>
 				</li>
                 <li class="@@datatableactive">
-                    <a href="{% url 'oic_application' %}"><i class="zmdi zmdi-collection-text" ></i>Pending Applications</a>
+                    <a href="{% url 'oic_application' %}"><i class="zmdi zmdi-collection-text" ></i>Pending Applications
+                        <span class="badge badge-danger">{{ request.session.count }}</span>
+                    </a>
                 </li>
                 <li class="nav-section">
                     <h5 class="text-section"><font color="#e88015">Inspectors Menu</font></h5>
 				</li>
             {% endif %}
-            <li class="@@datatableactive"><a href="{% url 'inspector_application' %}"><i class="zmdi zmdi-collection-text"></i>Pending Applications</a></li>
+            <li class="@@datatableactive"><a href="{% url 'inspector_application' %}"><i class="zmdi zmdi-collection-text"></i>Pending Applications
+            <span class="badge badge-danger">{{ request.session.count }}</span>
+            </a></li>
             <li class="navigation__sub @@formactive">
                 <a href="#"><font color="white"><i class="zmdi zmdi-collection-text" ></i>&nbsp; &nbsp;Food Handler</font></a>
                 <ul>

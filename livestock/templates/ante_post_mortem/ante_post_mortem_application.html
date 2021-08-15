@@ -213,16 +213,12 @@
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Species</label>
-                                        <select class="form-control form-control" id="Species" name="Species">
-                                            <option value="">-SELECT-</option>
-                                            <option value="Bovine">Bovine</option>
-                                            <option value="Caprine">Caprine</option>
-                                            <option value="Swine">Swine</option>
-                                            <option value="fish">(fish)</option>
-                                            <option value="Yak">Yak</option>
-                                            <option value="Ovine">Ovine</option>
-                                            <option value="Avian">Avian</option>
-                                        </select>
+                                        <select class="form-control" name="Species" id="Species">
+                                            <option value="">--SELECT--</option>
+                                            {% for species in species %}
+                                                <option value="{{ species.Species_Name }}">{{ species.Species_Name }}</option>
+                                            {% endfor %}
+                                         </select>
                                         <div class="alert alert-danger" id="SpeciesErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">

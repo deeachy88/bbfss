@@ -103,7 +103,7 @@ class t_plant_crop_variety_master(models.Model):
     Crop_Id = models.ForeignKey(t_plant_crop_master, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
-        return self.Crop_Common_Name
+        return self.Crop_Variety_Name
 
 
 class t_plant_chemical_master(models.Model):
@@ -319,3 +319,11 @@ class t_food_category_master(models.Model):
 
     def __str__(self):
         return self.Category_Name
+
+
+class t_meat_item_master(models.Model):
+    Item_Code = models.AutoField(primary_key=True)
+    Meat_Item = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.Meat_Item

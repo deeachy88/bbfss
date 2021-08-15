@@ -26,7 +26,7 @@ from administrator.models import t_user_master, t_security_question_master, t_ro
     t_livestock_species_breed_master, t_livestock_product_master, t_unit_master
 
 from bbfss import settings
-from plant.models import t_payment_details
+from plant.models import t_payment_details, t_workflow_details
 
 
 def home(request):
@@ -96,6 +96,13 @@ def login(request):
                                         request.session['section'] = user.Section_Id_id
                                         request.session['Login_Id'] = user.Login_Id
                                         request.session['email'] = user.Email_Id
+                                        section_details = t_section_master.objects.filter(Section_Id=user.Section_Id_id)
+                                        for id_section in section_details:
+                                            section_name = id_section.Section_Name
+                                            message_count = t_workflow_details.objects.filter(
+                                                Assigned_Role_Id=mainroles.Role_Id, Section=section_name,
+                                                Action_Date__isnull=False).exclude(Application_Status='A').count()
+                                            request.session['count'] = message_count
                                     elif complaint_officer == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
                                         request.session['role'] = complaint_officer
@@ -108,6 +115,11 @@ def login(request):
                                         request.session['field_office_id'] = user.Field_Office_Id_id
                                         request.session['Login_Id'] = user.Login_Id
                                         request.session['email'] = user.Email_Id
+                                        message_count = t_workflow_details.objects.filter(
+                                            Assigned_Role_Id=mainroles.Role_Id,
+                                            Field_Office_Id=user.Field_Office_Id_id,
+                                            Action_Date__isnull=False).count()
+                                        request.session['count'] = message_count
                                     elif Inspector == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
                                         request.session['role'] = Inspector
@@ -115,6 +127,13 @@ def login(request):
                                         request.session['Login_Id'] = user.Login_Id
                                         request.session['email'] = user.Email_Id
                                         request.session['is_officiating'] = user.Is_Officiating
+                                        print(user.Login_Id)
+                                        print(user.Field_Office_Id_id)
+                                        message_count = t_workflow_details.objects.filter(
+                                            Assigned_To=user.Login_Id,
+                                            Field_Office_Id=user.Field_Office_Id_id,
+                                            Action_Date__isnull=False).count()
+                                        request.session['count'] = message_count
                                     elif Chief == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
                                         request.session['role'] = Chief
@@ -151,13 +170,14 @@ def accept_mail(request, Name, Email_Id, password):
 
 
 def reject_mail(request, Name, Email_Id):
-    subject = 'USER CREATED'
+    subject = 'USER REJECTED'
     message = "Dear " + Name + " Your Registration for Bhutan Bio-Food Security System Is Rejected ."
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email_Id]
     send_mail(subject, message, email_from, recipient_list)
 
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def user(request):
     if request.method == 'POST':
         name = request.POST['name']
@@ -173,6 +193,10 @@ def user(request):
         password = get_random_password_string(8)
         password_value = make_password(password)
         form = UserForm(request.POST)
+        roles = t_role_master.objects.all()
+        section = t_section_master.objects.all()
+        division = t_division_master.objects.all()
+        field_office = t_field_office_master.objects.all()
         if form.is_valid():
             if role == "2":
                 t_user_master.objects.create(Login_Type="I", Client_Type=None, Name=name, Employee_Id=eid,
@@ -236,7 +260,8 @@ def user(request):
                 user_details = t_user_master.objects.filter(Email_Id__iexact=email)
         details = t_user_master.objects.filter(Login_Type="I")
         sendmail(request, name, email, password)
-        return render(request, 'user.html', {'form': form, 'details': details})
+        return render(request, 'user.html', {'form': form, 'details': details, 'role': roles, 'section': section,
+                                             'division': division, 'field_office': field_office})
     else:
         details = t_user_master.objects.filter(Login_Type="I")
         form = UserForm()
@@ -253,35 +278,21 @@ def forgot_password(request):
     return render(request, 'forgot_password.html', {'security': security})
 
 
-def edit_user(request, Login_Id):
-    details = get_object_or_404(t_user_master, Login_Id=Login_Id)
-    if request.method == 'POST':
-        form = UserForm(request.POST, instance=details)
-    else:
-        form = UserForm(instance=details)
-    return save_user_form(request, form, Login_Id, 'edit_users.html')
-
-
-def save_user_form(request, form, Login_Id, template_name):
-    data = dict()
-    if request.method == 'POST':
-        data['form_is_valid'] = True
-        username = request.POST.get('name')
-        email = request.POST.get('email')
-        contact_number = request.POST.get('contact_number')
-        address = request.POST.get('address')
-        role = request.POST.get('role_id')
-        t_user_master.objects.filter(Login_Id=Login_Id).update(name=username, email=email,
-                                                               contact_number=contact_number,
-                                                               address=address,
-                                                               role_id_id=role)
-        books = t_user_master.objects.all()
-        data['html_user_list'] = render_to_string('user.html', {
-            'books': books
-        })
-    context = {'form': form}
-    data['html_form'] = render_to_string(template_name, context, request=request)
-    return JsonResponse(data)
+def edit_user(request):
+    Login_Id = request.POST.get('editLoginId')
+    username = request.POST.get('edit_name')
+    gender = request.POST.get('edit_gender')
+    emp_id = request.POST.get('edit_emp_id')
+    contact_number = request.POST.get('edit_mobile')
+    role = request.POST.get('edit_role')
+    division = request.POST.get('edit_division')
+    section = request.POST.get('edit_section')
+    field_office = request.POST.get('edit_field_Office')
+    t_user_master.objects.filter(Login_Id=Login_Id).update(Name=username, Gender=gender, Employee_Id=emp_id,
+                                                           Mobile_Number=contact_number, Role_Id=role,
+                                                           Division_Id=division, Section_Id=section,
+                                                           Field_Office_Id=field_office)
+    return redirect(user)
 
 
 def logout(request):
@@ -1332,9 +1343,12 @@ def reset_client_password(request):
 
 def deactivate_client(request):
     Email_Id = request.GET.get('Email_Id')
+    identifier = request.GET.get('identifier')
     reg_users = t_user_master.objects.filter(Email_Id=Email_Id)
-    reg_users.update(Is_Active='N')
-    details = t_user_master.objects.filter(Login_Type="I")
+    if identifier == 'Deactivate':
+        reg_users.update(Is_Active='N')
+    else:
+        reg_users.update(Is_Active='Y')
     return redirect(registered_clients)
 
 
@@ -1688,3 +1702,35 @@ def check_already_assigned_officiating(request):
                                                      Is_Officiating='Yes').count()
     data['officiating_count'] = officiating_count
     return JsonResponse(data)
+
+
+def manage_user(request):
+    data = dict()
+    login_id = request.GET.get('login_id')
+    email_id = request.GET.get('Email_Id')
+    name = request.GET.get('Name')
+    identifier = request.GET.get('identifier')
+
+    user_list = t_user_master.objects.filter(Login_Id=login_id)
+
+    if identifier == "Activate":
+        user_list.update(Is_Active="Y")
+    elif identifier == "Deactivate":
+        user_list.update(Is_Active="N")
+    else:
+        password = get_random_password_string(8)
+        password_value = make_password(password)
+        user_list.update(Password=password_value)
+        user_list.update(Last_Login_Date=None)
+        user_password_reset_mail(name, email_id, password)
+    data['identifier'] = identifier
+    return JsonResponse(data)
+
+
+def user_password_reset_mail(Name, Email_Id, password):
+    subject = 'PASSWORD RESET'
+    message = "Dear " + Name + " Your Password Has Been Reset for Bhutan Bio-Food Security System. Your Login Id is " \
+              + Email_Id + " And Password is " + password + ""
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = [Email_Id]
+    send_mail(subject, message, email_from, recipient_list)

@@ -225,7 +225,7 @@ class t_food_business_registration_licensing_t1(models.Model):
     Inspection_Type = models.CharField(max_length=100, blank=True, null=True)
     Desired_FI_Inspection_Date = models.DateField(blank=True, null=True)
     Desired_FR_Inspection_Date = models.DateField(blank=True, null=True)
-    FB_License_No = models.CharField(max_length=100, blank=True, null=True)
+    FB_License_No = models.CharField(max_length=100, blank=True, null=True) # System Generated FB License No
     FI_Inspection_Date = models.DateField(blank=True, null=True)
     FI_Inspection_Leader = models.CharField(max_length=100, blank=True, null=True)
     FI_Response = models.TextField(blank=True, null=True)
@@ -247,7 +247,7 @@ class t_food_business_registration_licensing_t1(models.Model):
     Dzongkhag_Code = models.IntegerField(default=None, blank=True, null=True)
     Gewog_Code = models.IntegerField(default=None, blank=True, null=True)
     Village_Code = models.IntegerField(default=None, blank=True, null=True)
-
+    FO_Remarks = models.TextField(blank=True, null=True)
 
 class t_food_business_registration_licensing_t2(models.Model):
     Record_Id = models.AutoField(primary_key=True)
@@ -284,7 +284,7 @@ class t_food_business_registration_licensing_t5(models.Model):
     Clause_No = models.CharField(max_length=100, default=None, blank=True, null=True)
     Concern = models.CharField(max_length=10, default=None, blank=True, null=True)
     Date = models.DateField(default=None, blank=True, null=True)
-    FBO_Response = models.TextField()
+    FBO_Response = models.TextField(default=None, blank=True, null=True)
 
 
 class t_food_business_registration_licensing_t6(models.Model):

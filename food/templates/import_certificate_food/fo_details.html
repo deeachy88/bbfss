@@ -66,6 +66,7 @@
                                 </div>
                             {% endif %}
                         </div>
+                        <br>
                         <div id="applicant_details">
                             <div class="row">
                                 <div class="col-md-4">
@@ -123,27 +124,32 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Operation</label>
-                                        <select class="form-control" name="Operation" id="Operation">
-                                            <option value="">--SELECT--</option>
-                                            <option value="Import Only">Import Only</option>
-                                             <option value="Further Processing">Import for further Processing</option>
+                                        <select class="form-control" disabled>
+                                            {% if application_details.Operation_Type == "Import Only"%}
+                                                <option value="Import Only" selected>Import Only</option>
+                                                <option value="Further Processing">Import for further Processing</option>
+                                            {% else %}
+                                                <option value="Import Only">Import Only</option>
+                                                <option value="Further Processing" selected>Import for further Processing</option>
+                                            {% endif %}
                                          </select>
                                     </div>
                                     <div class="alert alert-danger" id="OperationErrorMsg" style="display:none"></div>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">License Number</label>
-                                        <input type="text" class="form-control" value="{{application_details.License_No}}" readonly="readonly">
+                                {% if application_details.License_No %}
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">License Number</label>
+                                            <input type="text" class="form-control" value="{{application_details.License_No}}" readonly="readonly">
+                                        </div>
                                     </div>
-                                </div>
+                                {% endif %}
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Country of origin of food</label>
-                                        <select class="form-control" name="Country_Of_Origin" id="Country_Of_Origin">
-                                            <option value="">--SELECT--</option>
+                                        <select class="form-control" disabled>
                                             {% for country in country %}
                                                 <option value="{{ country.Country_Code }}" {% if application_details.Origin_Country_Food == village.Country_Code %}selected{% endif %}>{{ country.Country_Name }}</option>
                                             {% endfor %}
@@ -155,35 +161,49 @@
                                     <label class="form-label" style="margin-bottom: 4px;padding-right: 60px;">Country of Transit</label>
                                     <div class="form-group">
                                         <div class="form-check">
-                                            <label class="custom-control custom-radio">
-                                                <input type="radio" name="country_of_transit" class="custom-control-input" value="yes" onclick="checkTransit(this.value)">
-                                                <span class="custom-control-indicator"></span>
-                                                <span class="custom-control-description">Yes</span>
-                                            </label>&nbsp;
-                                            <label class="custom-control custom-radio">
-                                                <input type="radio" name="country_of_transit" class="custom-control-input" value="no" onclick="checkTransit(this.value)">
-                                                <span class="custom-control-indicator"></span>
-                                                <span class="custom-control-description">No</span>
-                                            </label>
+                                            {% if application_details.Transit_Country == "Yes" %}
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio" name="country_of_transit" class="custom-control-input" checked>
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Yes</span>
+                                                </label>&nbsp;
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio" name="country_of_transit" class="custom-control-input" disabled>
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">No</span>
+                                                </label>
+                                            {% else %}
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio" name="country_of_transit" class="custom-control-input" disabled>
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Yes</span>
+                                                </label>&nbsp;
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio" name="country_of_transit" class="custom-control-input" checked>
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">No</span>
+                                                </label>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-4" id="transit_country" style="display:none">
-                                    <div class="form-group">
-                                        <label class="form-label">Name Of Country</label>
-                                        <select class="form-control" name="Country_Name" id="Country_Name">
-                                            <option value="">--SELECT--</option>
-                                            {% for country in country %}
-                                                <option value="{{ country.Country_Code }}" {% if application_details.Transit_Country == village.Country_Code %}selected{% endif %}>{{ country.Country_Name }}</option>
-                                            {% endfor %}
-                                        </select>
+                                {% if application_details.Transit_Country == "Yes" %}
+                                    <div class="col-md-4" id="transit_country">
+                                        <div class="form-group">
+                                            <label class="form-label">Name Of Country</label>
+                                            <select class="form-control" name="Country_Name" id="Country_Name">
+                                                {% for country in country %}
+                                                    <option value="{{ country.Country_Code }}" {% if application_details.Transit_Country == village.Country_Code %}selected{% endif %}>{{ country.Country_Name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
+                                {% endif %}
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="conveyanceMeans">Means of Conveyance </label>
+                                        <label class="form-label">Means of Conveyance </label>
                                         <select class="form-control form-control" id="conveyanceMeans" name="conveyanceMeans" disabled>
                                             <option value="">-SELECT-</option>
                                             {% if application_details.Conveyance_Means == "Air" %}
@@ -199,8 +219,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Place of Entry</label>
-                                        <select class="form-control" name="Place_of_Exit" id="Place_of_Exit">
-                                            <option value="">--SELECT--</option>
+                                        <select class="form-control" disabled>
                                             {% for location in location %}
                                                     <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
                                             {% endfor %}
@@ -211,7 +230,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Final Destination</label>
-                                        <input type="text" class="form-control" id="finalDestination" name="final_Destination" value="{{ application_details.Final_Destination  }}">
+                                        <input type="text" class="form-control" disabled value="{{ application_details.Final_Destination  }}">
                                     </div>
                                     <div class="alert alert-danger" id="Final_DestinationErrorMsg" style="display:none"></div>
                                 </div>
@@ -219,14 +238,118 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="expectedDate">Expected Arrival Date</label>
-                                        <input type="text" class="form-control date-picker flatpickr-input active" id="expectedDate" name="expected_Date"  value="{{ application_details.Expected_Arrival_Date}}">
+                                        <label class="form-label">Expected Arrival Date</label>
+                                        <input type="text" class="form-control date-picker flatpickr-input active" disabled  value="{{ application_details.Expected_Arrival_Date}}">
                                     </div>
                                     <div class="alert alert-danger" id="dateErrorMsg" style="display:none"></div>
                                 </div>
                             </div>
                         </div>
                     {% endfor %}
+                        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">Product</span>
+                                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Details</span>
+                            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                        </div>
+                        <br>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Common Name</th>
+                                    <th scope="col">Product Category</th>
+                                    <th scope="col">Product Characteristics</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Unit</th>
+                                    <th scope="col">Exporter Type</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for import in details %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{import.Common_Name}}</td>
+                                        <td>{{import.Product_Category}}</td>
+                                        <td>{{import.Product_Characteristics}}</td>
+                                        <td>{{import.Quantity}}</td>
+                                        <td>{{import.Unit}}</td>
+                                        <td>{{import.Exporter_Type}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="7" class="text-center">No Data</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <br>
+                        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">File</span>
+                                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Attachments</span>
+                            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                        </div>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">File</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               {% for file_attach in file %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td><a href='{{file_attach.File_Path}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="3" class="text-center">No Data</td>
+                                    </tr>
+                               {% endfor %}
+                            </tbody>
+                        </table>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Validity Period (If Approve Please Fill The Validity Period)</label>
+                                    <input type="number" class="form-control" name="validity" id="validity">
+                                </div>
+                                <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Remarks(If Reject Please Fill THe Remarks)</label>
+                                    <textarea class="form-control" rows="3" id="remarks" name="remarks"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-label">Special Terms And Conditions</label>
+                                    <textarea class="form-control" rows="3" id="terms" name="terms"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="termsErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+
+                        <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+                            Application Approved
+                        </div>
+                        <div id="rejectMsg" class="alert alert-info" role="alert" style="display:none;">
+                            Application Rejected
+                        </div>
+                        {% for application_details in application_details %}
+                            <div class="text-center">
+                                <button type="button" class="btn btn-primary" onclick="fo_fip_import_approve('{{ application_details.Application_No }}')"> Approve </button>
+                                <button type="button" class="btn btn-danger" onclick="fo_fip_import_reject('{{ application_details.Application_No }}')"> Reject </button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        {% endfor %}
                     </div>
                 </div>
                 </div>
@@ -242,7 +365,7 @@
             terms = $('#terms').val();
             if(validity == "")
             {
-                $('#validityErrorMsg').html("Remarks Cannot Be Empty.");
+                $('#validityErrorMsg').html("Enter Validity.");
                 $('#validityErrorMsg').show();
                 $('#validityErrorMsg').delay(2000).fadeOut('slow');
             }
@@ -253,12 +376,15 @@
                     url : "{% url 'approve_fo_fip_import' %}",
                     data :{'application_id':application_id ,'remarks':remarks,'validity':validity,'terms':terms, csrfmiddlewaretoken: '{{ csrf_token }}'},
                     success : function(data) {
-                        $('#import_detailsModal').modal('hide');
                         $('#submitMsg').show();
                         setTimeout(function()
                         {
                             $("#submitMsg").hide('blind', {}, 500)
                         }, 2000);
+                        setTimeout(function()
+                        {
+                            $('#import_detailsModal').modal('hide');
+                        }, 3000);
                         setTimeout(function()
                         {
                              location.reload();
@@ -283,12 +409,15 @@
                 url : "{% url 'reject_fo_fip_import' %}",
                 data :{'application_id':application_id ,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(data) {
-                    $('#import_detailsModal').modal('hide');
                     $('#rejectMsg').show();
                     setTimeout(function()
                     {
                         $("#rejectMsg").hide('blind', {}, 500)
                     }, 2000);
+                    setTimeout(function()
+                    {
+                        $('#import_detailsModal').modal('hide');
+                    }, 3000);
                     setTimeout(function()
                     {
                          location.reload();

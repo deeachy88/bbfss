@@ -138,7 +138,7 @@
                    {% for Meat_Item in details %}
                         <tr>
                             <td>{{ forloop.counter }}</td>
-                            <td>{{file_attach.Meat_Item}}</td>
+                            <td>{{Meat_Item.Meat_Item}}</td>
                         </tr>
                         {% empty %}
                         <tr>
@@ -169,7 +169,7 @@
                    {% for file_attach in file %}
                         <tr>
                             <td>{{ forloop.counter }}</td>
-                            <td>{{file_attach.Attachment}}</td>
+                            <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
                         </tr>
                         {% empty %}
                         <tr>
@@ -286,12 +286,6 @@
                 Application Forwarded
             </div>
             <div class="modal-footer justify-content-center">
-                <select class="form-control col-md-6" name="forwardTo"  id="forwardTo">
-                    <option value="">--SELECT OIC--</option>
-                    {% for oic_list in oic_list %}
-                            <option value="{{ oic_list.Field_Office_Id }}">{{ oic_list.Field_Office }}</option>
-                    {% endfor %}
-                </select>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 {% for application_details in application_details %}
                     <button type="button" class="btn btn-primary" onclick="forward_factory_application('{{ application_details.Application_No }}')"> Forward </button>
@@ -305,12 +299,11 @@
     function forward_factory_application(application_id)
         {
             date = $('#date').val();
-            forwardTo = $('#forwardTo').val();
 
             $.ajax({
                 type : "POST",
-                url : "{% url 'forward_factory_application' %}",
-                data :{'application_id':application_id ,'forwardTo':forwardTo,'date':date, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                url : "{% url 'forward_meat_shop_factory_application' %}",
+                data :{'application_id':application_id , 'date':date, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(data) {
                     $('#submitMsg').show();
                     setTimeout(function()

@@ -94,6 +94,7 @@ class t_file_attachment(models.Model):
     Role_Id = models.IntegerField(blank=True, null=True)
     File_Path = models.CharField(max_length=250)
     Attachment = models.FileField(storage=fs)
+    Attachment_Type = models.CharField(max_length=100, blank=True, null=True)
 
 
 class t_plant_import_permit_t1(models.Model):

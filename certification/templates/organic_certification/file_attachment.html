@@ -21,7 +21,7 @@
                    {% for file_attach in file_attach %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-                                <td>{{file_attach.Attachment}}</td>
+                                <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
                                 <td>
                                     <button type="button"
 									    class="btn btn-danger btn-sm" onclick="DeleteAttachment('{{ file_attach.File_Id }}')">
@@ -41,6 +41,7 @@
 <script>
 function DeleteAttachment(id)
 {
+    var applicationNo = $('#applicationNo').val();
     var appNo = $('#appNo').val();
     $.ajax({
         type : "GET",
@@ -48,7 +49,14 @@ function DeleteAttachment(id)
         data :{'appNo':appNo , 'file_id': id},
         success : function(responseText)
         {
-            $('#fileAttach').html(responseText);
+            swal("Application Submitted Successfully. Your Application No :" + applicationNo, {
+                buttons: false,
+                timer: 4000,
+            });
+            setTimeout(function()
+            {
+                location.reload();
+            }, 4000);
         }
     });
 }

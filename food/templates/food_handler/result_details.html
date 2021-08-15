@@ -1,4 +1,4 @@
-<table class="table table-bordered" id="food-table">
+<table class="table table-bordered">
     <thead>
         <tr>
             <th scope="col">#</th>
@@ -7,7 +7,7 @@
             <th scope="col">Application No</th>
             <th scope="col">Application Date</th>
             <th scope="col">Minimum Qualifying Marks</th>
-            <th scope="col">Photo</th>
+            <th scope="col">Photos</th>
             <th scope="col">Update Details</th>
         </tr>
     </thead>
@@ -23,7 +23,11 @@
                 {% for details in file_attach %}
                     {% if application_details.Application_No == details.Application_No %}
                         <td><img src="{{ details.File_Path}}" alt="connect" style="max-height:70px"></td>
+                    {% elif application_details.Application_No != details.Application_No %}
+                        <td>No Image</td>
                     {% endif %}
+                {% empty %}
+                <td>No Image</td>
                 {% endfor %}
                 <td><button type="button" class="btn btn-warning btn-sm js-edit-food_handler" onclick="edit_details('{{application_details.Application_No}}')">Edit</button></td>
                 <input type="hidden" value="{{application_details.Application_No}}" id="appNo_{{ forloop.counter }}">
@@ -35,7 +39,12 @@
         {% endfor %}
     </tbody>
 </table>
-
+<div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+    Details Saved
+</div>
+<div class="card-action">
+    <button type="button" class="btn btn-primary" value="Submit" onclick="update_food_handler_status()">Update</button>
+</div>
 <script>
 function show_details_modal(application_no,Training_Batch_No)
 {

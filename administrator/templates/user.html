@@ -1,6 +1,17 @@
 {% extends 'common_dashboard.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+{% load static %}
+<style>
+    #loader img
+    {
+      left: 50%;
+      margin-left: -32px;
+      margin-top: -32px;
+      position: absolute;
+      top: 50%;
+    }
+</style>
 <div class="animated fadeIn">
     <div class="row">
         <div class="col-md-12">
@@ -12,6 +23,10 @@
                     </button>
                 </div>
                 <div class="card-body">
+                    <div id="loader" style="display:none">
+                        <img src="{% static 'assets/img/ajax-loader.gif' %}" alt="processing..." />
+                    </div>
+                    <div id="userMsg" class="alert alert-success" role="alert" style="display: none;"></div>
                     <div class="table-responsive">
                         <a class="dt-button buttons-print" id="export" tabindex="0" aria-controls="add-user" href="#" title="Word" style="float:left;font-size: 18px;" ><span><i class="far fa-file-word" aria-hidden="true"></i></span></a>
                         <table id="user-table" class="table table-striped table-bordered">
@@ -19,8 +34,8 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Name</th>
-                                    <!--<th>EmpId</th>
-                                    <th>Gender</th>-->
+                                    <th>EmpId</th>
+                                    <th>Gender</th>
                                     <th>Email</th>
                                     <th>Mobile No</th>
                                     <th>Role</th>
@@ -35,12 +50,12 @@
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
                                     <td>{{user.Name}}</td>
-                                    <!--<td>{{user.Employee_Id}}</td>
+                                    <td>{{user.Employee_Id}}</td>
                                     {% if user.Gender == "M" %}
                                     <td>Male</td>
                                     {% else %}
                                      <td>Female</td>
-                                    {% endif %}-->
+                                    {% endif %}
                                     <td>{{user.Email_Id}}</td>
                                     <td>{{user.Mobile_Number}}</td>
                                     <td>{{user.Role_Id}}</td>
@@ -50,12 +65,15 @@
                                     <td>
                                         <div class="btn-group btn-group-sm">
                                             {% if user.Is_Active == "Y" %}
-                                            <button  type="button" class="btn btn-info btn-sm" data-toggle="tooltip" title="Deactivate" ><i class="zmdi zmdi-lock"></i></button>
+                                            <button  type="button" class="btn btn-info btn-sm" data-toggle="tooltip" title="Deactivate" onclick="manage_user('{{ user.Login_Id }}','{{user.Email_Id}}','{{user.Name}}','Deactivate')"><i class="fa fa-lock fa-fw"></i></button>
                                             {% else %}
-                                            <button  type="button" class="btn btn-info btn-sm" data-toggle="tooltip" title="Activate" ><i class="zmdi zmdi-unlock"></i></button>
+                                            <button  type="button" class="btn btn-info btn-sm" data-toggle="tooltip" title="Activate" onclick="manage_user('{{ user.Login_Id }}','{{user.Email_Id}}','{{user.Name}}','Activate')"><i class="fa fa-unlock fa-fw"></i></button>
                                             {% endif %}
-                                            <button  type="button" class="btn btn-info btn-sm js-edit-user" data-url="{% url 'edit_user' user.Login_Id %}" data-toggle="tooltip" title="Edit" ><i class="zmdi zmdi-edit"></i> </button>
-                                            <button  type="button" class="btn btn-info btn-sm" data-toggle="tooltip" title="Reset Password" ><i class="zmdi zmdi-key"></i></button>
+                                            <button  type="button" class="btn btn-info btn-sm" data-toggle="tooltip" title="Edit"
+                                                     onclick="populateEditForm('{{user.Login_Id}}', '{{user.Name}}', '{{user.Employee_Id}}', '{{user.Gender}}', '{{user.Email_Id}}',
+                                                       '{{user.Mobile_Number}}', '{{user.Role_Id_id}}', '{{user.Division_Id_id}}', '{{user.Section_Id_id}}',
+                                                       '{{user.Field_Office_Id}}')"><i class="fa fa-edit"></i> </button>
+                                            <button  type="button" class="btn btn-info btn-sm" data-toggle="tooltip" title="Reset Password" onclick="manage_user('{{ user.Login_Id }}','{{user.Email_Id}}','{{user.Name}}','Reset')"><i class="fa fa-key fa-fw"></i></button>
                                         </div>
                                     </td>
                                 </tr>
@@ -102,7 +120,7 @@
     </div>
 </div>
 
-<form method="post" id="my_form" class="form-horizontal form-label-left">
+<form id="add_user_form" class="form-horizontal form-label-left" method="post">
     <div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -119,10 +137,12 @@
                     <div class="form-group col-md-6">
                         <label for="name">Name</label>
                         <input type="text" name="name" class="form-control" id="name" required>
+                        <div id="nameErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="empId">Employee_Id</label>
+                        <label for="empId">Employee Id</label>
                         <input type="text" name="Employee_Id" class="form-control" id="empId" required>
+                        <div id="empIdErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
                     </div>
                 </div>
                 <div class="row">
@@ -130,7 +150,7 @@
                         <div class="form-check">
                             <label>Gender</label><br>
                             <label class="form-radio-label">
-                                <input class="form-radio-input" type="radio" name="gender" value="M" checked="">
+                                <input class="form-radio-input" type="radio" name="gender" value="M">
                                 <span class="form-radio-sign">Male</span>
                             </label>
                             <label class="form-radio-label ml-3">
@@ -138,23 +158,23 @@
                                 <span class="form-radio-sign">Female</span>
                             </label>
                         </div>
+                        <div id="genderErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
                     </div>
                     <div class="form-group col-md-6">
                         <label for="email" class=" requiredField">
                             Email<span class="asteriskField">*</span>
                         </label>
                         <div class="">
-                            <input type="email" name="email" maxlength="254" class="emailinput form-control" id="email" required>
+                            <input type="email" name="email" maxlength="254" class="emailinput form-control" id="email" required onchange="validateemailId(this.value)">
                         </div>
-                        <div id="errorEmailId" class="alert alert-danger" role="alert" style="display: none;">
-                            A user with this email already exists.
-                        </div>
+                        <div id="emailErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="form-group col-md-6">
                         <label for="mobile">Mobile Number</label>
-                        <input type="text" name="mobile" maxlength="8" minlength="8" class="form-control" id="mobile" required>
+                        <input type="number" class="form-control" id="mobile" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="mobile" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                        <div class="alert alert-danger" id="mobileErrorMsg" style="display:none"></div>
                     </div>
                     <div class="form-group col-md-6">
                          <label for="role">Role</label>
@@ -164,6 +184,7 @@
                                     <option value="{{ role.Role_Id }}">{{ role.Role_Name }}</option>
                             {% endfor %}
                          </select>
+                        <div id="roleErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
                     </div>
                 </div>
                 <div class="row">
@@ -175,6 +196,7 @@
                                     <option value="{{ division.Division_Id }}">{{ division.Division_Name }}</option>
                             {% endfor %}
                          </select>
+                        <div id="divisionErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
                     </div>
                     <div class="form-group col-md-6" id="sectionDiv">
                          <label for="section">Section</label>
@@ -195,26 +217,174 @@
                                     <option value="{{ field_office.Field_Office_Id }}">{{ field_office.Field_Office }}</option>
                             {% endfor %}
                          </select>
+                        <div id="fieldOfficeErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
                     </div>
                 </div>
               </div>
           </div>
+            <div id="pageloader" style="display:none">
+               <img src="{% static 'assets/img/ring-loader.gif' %}" style="height:50px; width:50px;margin-left: 400px;" alt="processing..." />
+            </div>
+          <div id="successMsg" class="alert alert-success" role="alert" style="display: none;"></div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Add</button>
+            <button type="button" class="btn btn-primary" onclick="save_users()">Add</button>
           </div>
         </div>
       </div>
     </div>
 </form>
 
-<div class="modal fade" id="modal-user">
-    <div class="modal-dialog">
-      <div class="modal-content edit">
-
-      </div>
+<form id="edit_user_form" class="form-horizontal form-label-left" method="post">
+    {% csrf_token %}
+    <div id="edit-user-modal" class="modal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="blue bigger">Edit User Details</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12">
+                            <input type="hidden" class="form-control" name="editLoginId" id="editLoginId">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Name:</label>
+                                        <span class="pull-right">
+                                            <input type="text" class="form-control" name="edit_name" id="edit_name">
+                                        </span>
+                                    </div>
+                                    <div id="edit_nameErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Employee ID:</label>
+                                        <span class="pull-right">
+                                            <input type="text" class="form-control" name="edit_emp_id" id="edit_emp_id">
+                                        </span>
+                                    </div>
+                                    <div id="edit_emp_idErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Gender:</label>
+                                        <span class="pull-right">
+                                            <div class="form-check">
+                                                <label class="form-radio-label">
+                                                    <input class="form-radio-input" type="radio" name="edit_gender" value="M" id="male_radio">
+                                                    <span class="form-radio-sign">Male</span>
+                                                </label>
+                                                <label class="form-radio-label ml-3">
+                                                    <input class="form-radio-input" type="radio" name="edit_gender" value="F" id="female_radio">
+                                                    <span class="form-radio-sign">Female</span>
+                                                </label>
+                                            </div>
+                                        </span>
+                                    </div>
+                                    <div id="edit_genderErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Email ID:</label>
+                                        <span class="pull-right">
+                                            <input type="text" class="form-control" name="edit_email" id="edit_email" disabled>
+                                        </span>
+                                    </div>
+                                    <div id="edit_emailErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Mobile Number:</label>
+                                        <span class="pull-right">
+                                            <input type="number" class="form-control" id="edit_mobile" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="edit_mobile" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                                        </span>
+                                    </div>
+                                    <div id="edit_mobileErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Role:</label>
+                                        <span class="pull-right">
+                                            <select class="form-control" id="edit_role" name="edit_role" onchange="edit_roleChange(this.value)">
+                                                <option value="">--SELECT ROLE--</option>
+                                                {% for role in role %}
+                                                    <option value="{{ role.Role_Id }}">{{ role.Role_Name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </span>
+                                    </div>
+                                    <div id="edit_roleErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 division_div">
+                                    <div class="form-group">
+                                        <label>Division:</label>
+                                        <span class="pull-right">
+                                            <select class="form-control" id="edit_division" name="edit_division" onchange="getSection(this.value)">
+                                                <option value="">--SELECT DIVISION--</option>
+                                                {% for division in division %}
+                                                        <option value="{{ division.Division_Id }}">{{ division.Division_Name }}</option>
+                                                {% endfor %}
+                                             </select>
+                                        </span>
+                                    </div>
+                                    <div id="edit_divisionErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                                </div>
+                                <div class="col-md-6 section_div">
+                                    <div class="form-group">
+                                         <label for="section">Section</label>
+                                         <select class="form-control" id="edit_section" name="edit_section">
+                                            <option value="">--SELECT SECTION--</option>
+                                            {% for section in section %}
+                                                <option value="{{ section.Section_Id }}">{{ section.Section_Name }}</option>
+                                            {% endfor %}
+                                         </select>
+                                    </div>
+                                    <div id="edit_sectionErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                                </div>
+                                <div class="col-md-6 field_div">
+                                    <div class="form-group">
+                                        <label>Field Office:</label>
+                                        <span class="pull-right">
+                                            <select class="form-control" id="edit_field_Office" name="edit_field_Office">
+                                                <option value="">--SELECT Field Office--</option>
+                                                {% for field_office in field_office %}
+                                                        <option value="{{ field_office.Field_Office_Id }}">{{ field_office.Field_Office }}</option>
+                                                {% endfor %}
+                                             </select>
+                                        </span>
+                                    </div>
+                                    <div id="edit_field_OfficeErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="edit_page_loader" style="display:none">
+                    <img src="{% static 'assets/img/ring-loader.gif' %}" style="height:50px; width:50px;margin-left: 400px;" alt="processing..." />
+                </div>
+                <div id="edit_successMsg" class="alert alert-success" role="alert" style="display: none;"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-primary" onclick="editUserDetails()">
+                        <i class="ace-icon fa fa-check"></i>
+                        Update
+                    </button>
+                    <button class="btn btn-sm" data-dismiss="modal">
+                        <i class="ace-icon fa fa-times"></i>
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+</form>
 
 <script>
 	function roleChange(roleId)
@@ -240,14 +410,436 @@
 			$("#fieldDiv").hide();
 		}
 	}
-function getSection(division_id)
+
+	function edit_roleChange(roleId)
+	{
+		if(roleId == "2"){
+			$('.division_div').show();
+			$('.section_div').show();
+			$('.field_div').hide();
+		}
+		else if(roleId == "6"){
+			$(".division_div").show();
+			$(".field_div").hide();
+		}
+		else if(roleId == "4" || roleId == "5"){
+			$(".division_div").show();
+			$(".field_div").show();
+		}
+		else{
+			$(".division_div").hide();
+			$(".field_div").hide();
+		}
+	}
+
+    function getSection(division_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_section' %}",
+            data :{'division_id':division_id},
+            success : function(data) {
+                $('#section').html(data);
+            }
+        });
+    }
+
+
+function validateemailId(emailId)
 {
+    var pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+    var no=emailId.match(pattern);
+
+    if(no==null)
+    {
+        $('#emailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
+        $('#email').val("");
+        $('#emailErrorMsg').show();
+        $('#emailErrorMsg').delay(3000).fadeOut('slow');
+    }
+    else
+    {
+         $.ajax({
+            type : "POST",
+            url : "{% url 'check_email_id' %}",
+            data : $('#add_user_form').serialize(),
+            success : function(data)
+            {
+                if(data.count == "1")
+                {
+                    $('#email').val("");
+                    $('#emailErrorMsg').html("Email Already Exists.Try With Another Email");
+                    $('#emailErrorMsg').show();
+                    $('#emailErrorMsg').delay(3000).fadeOut('slow');
+                }
+                else
+                {
+                    $('#emailErrorMsg').hide();
+                }
+            }
+        });
+    }
+
+}
+
+function save_users()
+{
+    var name = $("#name").val();
+    var empId = $("#empId").val();
+    var gender = $("input[name=gender]:checked").length;
+    var email = $("#email").val();
+    var mobile = $("#mobile").val();
+    var role = $("#role").val();
+    var division = $("#division").val();
+    var field_office = $("#fieldOffice").val();
+    var number_count = $('#mobile').val().length;
+
+    if(name == "")
+    {
+        $('#nameErrorMsg').html("Enter Name.");
+        $('#nameErrorMsg').show();
+        $('#nameErrorMsg').delay(2000).fadeOut('slow');
+        $("#name").focus();
+    }
+    else if(empId == "")
+    {
+        $('#empIdErrorMsg').html("Enter Employee Id.");
+        $('#empIdErrorMsg').show();
+        $('#empIdErrorMsg').delay(2000).fadeOut('slow');
+        $("#empId").focus();
+    }
+    else if(gender < 1)
+    {
+        $('#genderErrorMsg').html("Please Check One Gender.");
+        $('#genderErrorMsg').show();
+        $('#genderErrorMsg').delay(2000).fadeOut('slow');
+        $("input[name=gender]").focus();
+    }
+    else if(email == "")
+    {
+        $('#emailErrorMsg').html("Enter Email.");
+        $('#emailErrorMsg').show();
+        $('#emailErrorMsg').delay(2000).fadeOut('slow');
+        $("#email").focus();
+    }
+    else if(mobile == "")
+    {
+        $('#mobileErrorMsg').html("Enter Mobile Number.");
+        $('#mobileErrorMsg').show();
+        $('#mobileErrorMsg').delay(2000).fadeOut('slow');
+        $("#mobile").focus();
+    }
+    else if(number_count < 8)
+    {
+        $('#mobileErrorMsg').html("Cannot Be Less Than Eight.");
+        $('#mobileErrorMsg').show();
+        $('#mobileErrorMsg').delay(2000).fadeOut('slow');
+        $("#mobile").focus();
+    }
+    else if(role == "")
+    {
+        $('#roleErrorMsg').html("Select Role.");
+        $('#roleErrorMsg').show();
+        $('#roleErrorMsg').delay(2000).fadeOut('slow');
+        $("#role").focus();
+    }
+    else if(role == "2" || role == "6" && division == "")
+    {
+        $('#divisioneErrorMsg').html("Select Division.");
+        $('#divisioneErrorMsg').show();
+        $('#divisioneErrorMsg').delay(2000).fadeOut('slow');
+        $("#division").focus();
+    }
+    else if(role == "4" || role == "5" && field_office == "")
+    {
+        $('#divisioneErrorMsg').html("Select Division.");
+        $('#divisioneErrorMsg').show();
+        $('#divisioneErrorMsg').delay(2000).fadeOut('slow');
+        $("#division").focus();
+    }
+    else
+    {
+        $("#pageloader").show();
+        $.ajax({
+            type : "POST",
+            url : "{% url 'user' %}",
+            data : $('#add_user_form').serialize(),
+            success : function()
+            {
+                $("#pageloader").hide();
+                $('#successMsg').html("User Successfully Added.");
+                $('#successMsg').show();
+                setTimeout(function() {
+                    $('#successMsg').delay(2000).fadeOut('slow');
+                }, 2000);
+                setTimeout(function() {
+                    $('#userModal').modal('hide');
+                }, 2000);
+                setTimeout(function() {
+                    location.reload();
+                }, 3000);
+            }
+        });
+    }
+
+}
+
+function checkContact(value)
+{
+    var firstDigit = value.charAt(0);
+    var secondDigit = value.charAt(1);
+
+    if(firstDigit != 7 && firstDigit != 1){
+        $('#mobileErrorMsg').html("Must Start with either 1 or 7.");
+        $('#mobileErrorMsg').show();
+        $('#mobileErrorMsg').delay(2000).fadeOut('slow');
+        $('#mobile').val("");
+    }else if(firstDigit == 1 && secondDigit != 6 && secondDigit != 7){
+        $('#mobileErrorMsg').html("Second Digit Must Start with either 6 or 7.");
+        $('#mobileErrorMsg').show();
+        $('#mobileErrorMsg').delay(2000).fadeOut('slow');
+        $('#mobile').val("");
+    }else if(firstDigit == 7 && secondDigit == 6){
+        $('#mobileErrorMsg').html("Second Digit Cannot be 6.");
+        $('#mobileErrorMsg').show();
+        $('#mobileErrorMsg').delay(2000).fadeOut('slow');
+        $('#mobile').val("");
+    }else if(firstDigit == 7 && secondDigit != 7){
+        $('#mobileErrorMsg').html("Second Digit Must Start with 7.");
+        $('#mobileErrorMsg').show();
+        $('#mobileErrorMsg').delay(2000).fadeOut('slow');
+        $('#mobile').val("");
+    }
+
+}
+
+function populateEditForm(loginId, name, empId, gender, emailId, mobileNumber, roleId, divisionId, sectionId, fieldId)
+{
+    $('#editLoginId').val(loginId);
+    $('#edit_name').val(name);
+	$('#edit_emp_id').val(empId);
+    $('#edit_email').val(emailId);
+    $('#edit_mobile').val(mobileNumber);
+    $('#edit_role').val(roleId);
+    $('#edit-user-modal').modal('show');
+
+    if(gender == "M")
+    {
+        $('#male_radio').attr('checked',true);
+    }
+    else
+    {
+        $('#female_radio').attr('checked',true);
+    }
+
+    if(roleId == "1")
+    {
+        $('.division_div').hide();
+        $('.section_div').hide();
+	    $('.field_div').hide();
+    }
+    else if(roleId == "2")
+    {
+        $('#edit_division').val(divisionId);
+        $('#edit_section').val(sectionId);
+        $('.field_div').hide();
+    }
+    else if(roleId == "3")
+    {
+        $('.division_div').hide();
+        $('.section_div').hide();
+	    $('.field_div').hide();
+    }
+    else if(roleId == "4")
+    {
+        $('.division_div').hide();
+        $('.section_div').hide();
+	    $('#edit_field_Office').val(fieldId);
+    }
+    else if(roleId == "5")
+    {
+        $('.division_div').hide();
+        $('.section_div').hide();
+	    $('#edit_field_Office').val(fieldId);
+    }
+    else if(roleId == "6")
+    {
+        $('.field_div').hide();
+        $('.section_div').hide();
+	    $('#edit_division').val(fieldId);
+    }
+    else
+    {
+
+        $('.division_div').hide();
+        $('.section_div').hide();
+	    $('.field_div').hide();
+    }
+}
+
+function editUserDetails()
+{
+    var name = $("#edit_name").val();
+    var empId = $("#edit_emp_id").val();
+    var gender = $("input[name=edit_gender]:checked").length;
+    var email = $("#edit_email").val();
+    var mobile = $("#edit_mobile").val();
+    var role = $("#edit_role").val();
+    var division = $("#edit_division").val();
+    var section = $("#edit_section").val();
+    var field_office = $("#edit_field_Office").val();
+    var number_count = $('#edit_mobile').val().length;
+
+    if(name == "")
+    {
+        $('#edit_nameErrorMsg').html("Enter Name.");
+        $('#edit_nameErrorMsg').show();
+        $('#edit_nameErrorMsg').delay(2000).fadeOut('slow');
+        $("#edit_name").focus();
+    }
+    else if(empId == "")
+    {
+        $('#edit_emp_idErrorMsg').html("Enter Employee Id.");
+        $('#edit_emp_idErrorMsg').show();
+        $('#edit_emp_idErrorMsg').delay(2000).fadeOut('slow');
+        $("#edit_emp_id").focus();
+    }
+    else if(gender < 1)
+    {
+        $('#edit_genderErrorMsg').html("Please Check One Gender.");
+        $('#genderErrorMsg').show();
+        $('#genderErrorMsg').delay(2000).fadeOut('slow');
+        $("input[name=edit_gender]").focus();
+    }
+    else if(email == "")
+    {
+        $('#edit_emailErrorMsg').html("Enter Email.");
+        $('#edit_emailErrorMsg').show();
+        $('#edit_emailErrorMsg').delay(2000).fadeOut('slow');
+        $("#edit_email").focus();
+    }
+    else if(mobile == "")
+    {
+        $('#edit_mobileErrorMsg').html("Enter Mobile Number.");
+        $('#edit_mobileErrorMsg').show();
+        $('#edit_mobileErrorMsg').delay(2000).fadeOut('slow');
+        $("#edit_mobile").focus();
+    }
+    else if(number_count < 8)
+    {
+        $('#edit_mobileErrorMsg').html("Cannot Be Less Than Eight.");
+        $('#edit_mobileErrorMsg').show();
+        $('#edit_mobileErrorMsg').delay(2000).fadeOut('slow');
+        $("#edit_mobile").focus();
+    }
+    else if(role == "")
+    {
+        $('#edit_roleErrorMsg').html("Select Role.");
+        $('#edit_roleErrorMsg').show();
+        $('#edit_roleErrorMsg').delay(2000).fadeOut('slow');
+        $("#edit_role").focus();
+    }
+    else if(role == "2" && division == "")
+    {
+        $('#edit_divisionErrorMsg').html("Select Division.");
+        $('#edit_divisionErrorMsg').show();
+        $('#edit_divisionErrorMsg').delay(2000).fadeOut('slow');
+        $("#edit_division").focus();
+    }
+    else if(role == "6" && division == "")
+    {
+        $('#edit_divisionErrorMsg').html("Select Division.");
+        $('#edit_divisionErrorMsg').show();
+        $('#edit_divisionErrorMsg').delay(2000).fadeOut('slow');
+        $("#edit_division").focus();
+    }
+    else if(role == "2" && section == "")
+    {
+        $('#edit_sectionErrorMsg').html("Select Section.");
+        $('#edit_sectionErrorMsg').show();
+        $('#edit_sectionErrorMsg').delay(2000).fadeOut('slow');
+        $("#edit_section").focus();
+    }
+    else if(role == "6" && section == "")
+    {
+        $('#edit_sectionErrorMsg').html("Select Section.");
+        $('#edit_sectionErrorMsg').show();
+        $('#edit_sectionErrorMsg').delay(2000).fadeOut('slow');
+        $("#edit_section").focus();
+    }
+    else if(role == "4" && field_office == "")
+    {
+        $('#edit_field_OfficeErrorMsg').html("Select Field Office.");
+        $('#edit_field_OfficeErrorMsg').show();
+        $('#edit_field_OfficeErrorMsg').delay(2000).fadeOut('slow');
+        $("#edit_field_office").focus();
+    }
+    else if(role == "5" && field_office == "")
+    {
+        $('#edit_field_OfficeErrorMsg').html("Select Field Office.");
+        $('#edit_field_OfficeErrorMsg').show();
+        $('#edit_field_OfficeErrorMsg').delay(2000).fadeOut('slow');
+        $("#edit_field_office").focus();
+    }
+    else
+    {
+        $("#edit_page_loader").show();
+        $.ajax({
+            type : "POST",
+            url : "{% url 'edit_user' %}",
+            data : $('#edit_user_form').serialize(),
+            success : function()
+            {
+                $("#edit_page_loader").hide();
+                $('#edit_successMsg').html("User Update Success.");
+                $('#edit_successMsg').show();
+                setTimeout(function() {
+                    $('#edit_successMsg').delay(2000).fadeOut('slow');
+                }, 2000);
+                setTimeout(function() {
+                    $('#edit-user-modal').modal('hide');
+                }, 2000);
+                setTimeout(function() {
+                    location.reload();
+                }, 3000);
+            }
+        });
+    }
+}
+
+function manage_user(login_id,email,name,identifier)
+{
+    if(identifier == "Reset")
+    {
+        $("#loader").show();
+    }
     $.ajax({
         type : "GET",
-        url : "{% url 'load_section' %}",
-        data :{'division_id':division_id},
-        success : function(data) {
-            $('#section').html(data);
+        url : "{% url 'manage_user' %}",
+        data :{'login_id':login_id,'Email_Id':email,'Name':name,'identifier':identifier},
+        success : function(data)
+        {
+
+            if(data.identifier == "Activate")
+            {
+                $('#userMsg').html("User Activated Successfully.");
+            }
+            else if(data.identifier == "Deactivate")
+            {
+                $('#userMsg').html("User Deactivated Successfully.");
+            }
+            else
+            {
+                $("#loader").hide();
+                $('#userMsg').html("Password Reset Success.");
+            }
+            $('#userMsg').show();
+            setTimeout(function() {
+                $('#userMsg').delay(2000).fadeOut('slow');
+            }, 2000);
+            setTimeout(function() {
+                location.reload();
+            }, 3000);
         }
     });
 }

@@ -10,17 +10,17 @@
                                 <div class="col-sm-2">
                                     <label class="form-label">Application Type</label>
                                 </div>
-                                {% if application_details.Import_Type == 'Livestock Product' %}
+                                {% if application_details.Application_Type == 'A' %}
                                     <div class="col-sm-4 justify-content-center">
                                         <label class="custom-control custom-radio">
                                             <input type="radio" class="custom-control-input" checked>
                                             <span class="custom-control-indicator"></span>
-                                            <span class="custom-control-description">Livestock Product</span>
+                                            <span class="custom-control-description">Animal</span>
                                         </label>
                                         <label class="custom-control custom-radio">
                                             <input type="radio" class="custom-control-input" disabled>
                                             <span class="custom-control-indicator"></span>
-                                            <span class="custom-control-description">Animal Feed</span>
+                                            <span class="custom-control-description">Animal Product/Feeds</span>
                                         </label>
                                     </div>
                                 {% else %}
@@ -28,19 +28,19 @@
                                         <label class="custom-control custom-radio">
                                             <input type="radio" class="custom-control-input" disabled>
                                             <span class="custom-control-indicator"></span>
-                                            <span class="custom-control-description">Livestock Product</span>
+                                            <span class="custom-control-description">Animal</span>
                                         </label>
                                         <label class="custom-control custom-radio">
                                             <input type="radio" class="custom-control-input" checked>
                                             <span class="custom-control-indicator"></span>
-                                            <span class="custom-control-description">Animal Feed</span>
+                                            <span class="custom-control-description">Animal Product/Feeds</span>
                                         </label>
                                     </div>
                                 {% endif %}
                                 <div class="col-sm-2">
                                     <label class="form-label">Import Type</label>
                                 </div>
-                                {% if application_details.Import_Type == 'Individual' %}
+                                {% if application_details.Exporter_Type == 'Individual' %}
                                     <div class="col-sm-4 justify-content-center">
                                         <label class="custom-control custom-radio">
                                             <input type="radio" class="custom-control-input" checked>
@@ -58,7 +58,7 @@
                                             <span class="custom-control-description">Institution</span>
                                         </label>
                                     </div>
-                                {% elif application_details.Import_Type == 'Commercial' %}
+                                {% elif application_details.Exporter_Type == 'Commercial' %}
                                     <div class="col-sm-4 justify-content-center">
                                         <label class="custom-control custom-radio">
                                             <input type="radio" class="custom-control-input" disabled>
@@ -96,6 +96,7 @@
                                     </div>
                                 {% endif %}
                             </div>
+                            <br>
                             <div class="row">
                                 <div class="col-sm-2">
                                     <label class="form-label">Nationality</label>
@@ -128,23 +129,24 @@
                                     </div>
                                 {% endif %}
                             </div>
-                            {% if application_details.Import_Type == 'Individual' and if application_details.Nationality == 'Bhutanese'%}
+                            <br>
+                            {% if application_details.Exporter_Type == 'Individual' and application_details.Nationality == 'Bhutanese'%}
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="cid">Applicant CID</label>
+                                            <label class="form-label">Applicant CID</label>
                                             <input type="number"  class="form-control" id="cid" name="cid_number" value="{{ application_details.CID  }}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="name">Applicant Name</label>
+                                            <label class="form-label">Applicant Name</label>
                                             <input type="text" class="form-control" id="name" name="Name" value="{{ application_details.Applicant_Name }}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="presentAddress">Present Address</label>
+                                            <label class="form-label">Present Address</label>
                                             <textarea class="form-control" rows="3" id="presentAddress" name="presentAddress" disabled>{{ application_details.Present_Address }}</textarea>
                                         </div>
                                     </div>
@@ -215,25 +217,25 @@
                                             <label class="form-label">Place of Exit</label>
                                             <select class="form-control"disabled>
                                                 {% for location in location %}
-                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_of_Exit == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                                    <option value="{{ location.Field_Office_Id }}" {% if application_details.Place_of_Exit == location.Field_Office_Id %}selected{% endif %}>{{ location.Location_Name }}</option>
                                                 {% endfor %}
                                              </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Expected Date for Export</label>
                                              <input type="text" class="form-control" value="{{application_details.Export_Expected_Date }}" disabled>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Propose Date for Inspection</label>
-                                             <input type="text" class="form-control" value="{{application_details.Final_Destination }}">
+                                             <input type="text" class="form-control" value="{{application_details.Proposed_Inspection_Date }}" disabled>
                                         </div>
                                     </div>
                                 </div>
-                            {% elif application_details.Import_Type == 'Individual' and if application_details.Nationality == 'Non-Bhutanese' %}
+                            {% elif application_details.Exporter_Type == 'Individual' and application_details.Nationality == 'Non-Bhutanese' %}
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
@@ -458,7 +460,7 @@
                                            {% for file_attach in file %}
                                                     <tr>
                                                         <td>{{ forloop.counter }}</td>
-                                                        <td>{{file_attach.Attachment}}</td>
+                                                        <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
                                                     </tr>
                                                     {% empty %}
                                                     <tr>

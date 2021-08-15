@@ -131,14 +131,14 @@
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">File</th>
+                                <th scope="col">Meat Items</th>
                             </tr>
                         </thead>
                         <tbody>
                            {% for Meat_Item in details %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td>{{file_attach.Meat_Item}}</td>
+                                    <td>{{Meat_Item.Meat_Item}}</td>
                                 </tr>
                                 {% empty %}
                                 <tr>
@@ -169,7 +169,7 @@
                            {% for file_attach in file %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td>{{file_attach.Attachment}}</td>
+                                    <td><a href='..{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
                                 </tr>
                                 {% empty %}
                                 <tr>
@@ -315,7 +315,7 @@
                                         <td id="my_cell">{{import.Concern}}</td>
                                         <td>{{import.Date|date:"d-m-Y"}}</td>
                                         <td>{{import.Observation}}</td>
-                                        <th scope="col">{{import.FBO_Response}}</th>
+                                        <td>{{import.FBO_Response}}</td>
                                         <td>
                                             <button type="button" class="btn btn-primary btn--icon btn-sm" onclick="populateForm('{{import.Record_Id}}','{{import.Requirement}}',
                                             '{{import.Clause_No}}','{{import.Concern}}', '{{import.Observation}}', '{{import.FBO_Response}}', '{{import.Application_No}}')">
@@ -333,7 +333,7 @@
                     </div>
                     <br>
                      {% for application_details in application_details %}
-                        {% if application_details.FR_Response %}
+                        {% if not application_details.FR_Response %}
                         <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
                             <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
                                 <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Client </span>&nbsp;&nbsp;&nbsp;
@@ -868,7 +868,7 @@ function update_concern()
 {
     $.ajax({
         type : "GET",
-        url : "{% url 'edit_meat_shop_feasibility_details' %}",
+        url : "{% url 'edit_meat_shop_factory_details' %}",
         data : $('#edit_concern_form').serialize(),
         success : function(data) {
             $('#details').html(data);

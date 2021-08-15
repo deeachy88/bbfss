@@ -33,7 +33,7 @@ table, th, td {
                 <div class="row float-right">
                     <p>Reference No&nbsp;:&nbsp;<b>{{certificate_details.Export_Permit_No}}</b></p>
                 </div>
-                <div class="row float-right">
+                <div class="row float-left">
                     <p>Date of Issue :&nbsp;<b>{{certificate_details.Approved_Date}}</b></p>
                 </div>
                 <div>
@@ -60,7 +60,9 @@ table, th, td {
                             </td>
                             <td style="width:50%">
                                 <label>Declared point of entry: </label>
-                                <b>{{certificate_details.Declared_Point_of_Exit}}</b>
+                                {% for entry_point in entry_point %}
+                                    <b>{{entry_point.Field_Office}}</b>
+                                {% endfor %}
                             </td>
                         </tr>
                         <tr>
@@ -102,12 +104,17 @@ table, th, td {
                              <div class="col-md-3">
                                 <div class="form-group">
                                     <label>Place of Issue: </label>
+                                    {% for entry_point in entry_point %}
+                                        <b>{{entry_point.Field_Office}}</b>
+                                    {% endfor %}
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Name and signature of Authorized Officer: </label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Name and signature of Authorized Officer: </label>
+                                </div>
                             </div>
                         </div>
                     </div>

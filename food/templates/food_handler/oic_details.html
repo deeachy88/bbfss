@@ -173,7 +173,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Preferred Date</label>
-                                             <input type="text" class="form-control" value="{{ application_details.Proposed_Inspection_Date|date:'d-m-Y'}}">
+                                             <input type="text" class="form-control" value="{{ application_details.Proposed_Inspection_Date|date:'d-m-Y'}}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -196,6 +196,33 @@
                             </div>
                         {% endfor %}
                     </div>
+                    <br>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">File</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           {% for file_attach in file %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                  <td colspan="3" class="text-center">No Data</td>
+                                </tr>
+                           {% endfor %}
+                        </tbody>
+                    </table>
+                    <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+                        Application Forwarded Successfully
+                    </div>
+                    <div id="rejectMsg" class="alert alert-info" role="alert" style="display:none;">
+                        Application Rejected Successfully
+                    </div>
                         <div class="modal-footer justify-content-center">
                             <select class="form-control col-md-6" name="forwardTo"  id="forwardTo">
                                 <option value="">--SELECT INSPECTOR--</option>
@@ -203,6 +230,7 @@
                                         <option value="{{ inspector_list.Login_Id }}">{{ inspector_list.Name }}</option>
                                 {% endfor %}
                             </select>
+                            <div class="alert alert-danger" id="forwardToErrorMsg" style="display:none"></div>
                             {% for application_details in application_details %}
                                 <button type="button" class="btn btn-success" onclick="forwardApplicationFood('{{ application_details.Application_No }}')"><i class="ace-icon fas fa-arrow-right"></i>&nbsp;&nbsp;Forward</button>
                                 <button type="button" class="btn btn-info" onclick="rejectApplication('{{ application_details.Application_No }}')"><i class="ace-icon fas fa-arrow-right"></i>&nbsp;&nbsp;Reject</button>
@@ -212,9 +240,7 @@
                                 &nbsp;&nbsp;Cancel
                             </button>
                         </div>
-                        <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
-                            Application Forwarded Successfully
-                        </div>
+
                 </div>
             </div>
         </div>
@@ -224,51 +250,76 @@
     function rejectApplication(application_id)
     {
         Remarks = $('#remarks').val();
-        $.ajax({
-            type : "POST",
-            url : "{% url 'reject_food_handler_application' %}",
-            data :{'application_id':application_id , 'remarks':Remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
-            success : function(data) {
-                $('#application-details-modal').modal('hide');
-                $('#submitMsg').show();
-                setTimeout(function() {
-                    $("#submitMsg").hide('blind', {}, 500)
-                }, 2000);
-                setTimeout(function() {
-                    $('#application-details-modal').modal('hide');
-                }, 3000);
-                setTimeout(function()
-                {
-                    location.reload();
-                }, 3000);
+        if(Remarks == "")
+        {
+            $('#remarksErrorMsg').html("Enter Remarks.");
+            $('#remarksErrorMsg').show();
+            $('#remarksErrorMsg').delay(2000).fadeOut('slow');
+            $('#remarks').focus();
+        }
+        else
+        {
+            $.ajax({
+                type : "POST",
+                url : "{% url 'reject_food_handler_application' %}",
+                data :{'application_id':application_id , 'remarks':Remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(data) {
 
-            }
-        });
+                    $('#rejectMsg').show();
+                    setTimeout(function() {
+                        $("#rejectMsg").hide('blind', {}, 500)
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#application-details-modal').modal('hide');
+                    }, 3000);
+                    setTimeout(function() {
+                         $('#application-details-modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function()
+                    {
+                        location.reload();
+                    }, 3000);
+
+                }
+            });
+        }
     }
 
     function forwardApplicationFood(application_id)
     {
         forwardTo = $('#forwardTo').val();
         Remarks = $('#remarks').val();
-        $.ajax({
-            type : "POST",
-            url : "{% url 'food_handler_forward_application' %}",
-            data :{'application_id':application_id ,'remarks':Remarks,'forwardTo':forwardTo, csrfmiddlewaretoken: '{{ csrf_token }}'},
-            success : function(data) {
-                $('#application-details-modal').modal('hide');
-                $('#submitMsg').show();
-                setTimeout(function() {
-                    $("#submitMsg").hide('blind', {}, 500)
-                }, 2000);
-                setTimeout(function() {
-                    $('#application-details-modal').modal('hide');
-                }, 3000);
-                setTimeout(function()
-                {
-                    location.reload();
-                }, 3000);
+        if(forwardTo == "")
+        {
+            $('#forwardToErrorMsg').html("Select Inspector.");
+            $('#forwardToErrorMsg').show();
+            $('#forwardToErrorMsg').delay(2000).fadeOut('slow');
+            $('#forwardTo').focus();
+        }
+        else
+        {
+            $.ajax({
+                type : "POST",
+                url : "{% url 'food_handler_forward_application' %}",
+                data :{'application_id':application_id ,'remarks':Remarks,'forwardTo':forwardTo, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(data) {
+                    $('#submitMsg').show();
+                    setTimeout(function() {
+                        $("#submitMsg").hide('blind', {}, 500)
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#application-details-modal').modal('hide');
+                    }, 3000);
+                    setTimeout(function() {
+                         $('#application-details-modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function()
+                    {
+                        location.reload();
+                    }, 3000);
 
-            }
-        });
+                }
+            });
+        }
     }
 </script>

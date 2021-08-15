@@ -16,7 +16,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <div class="alert alert-success" id="successMsg" style="display:none"></div>
+
                 <div id="pageloader" style="display:none">
                    <img src="{% static 'assets/img/ajax-loader.gif' %}" alt="processing..." />
                 </div>
@@ -24,6 +24,7 @@
                     <strong class="card-title">Registered Clients</strong>
                 </div>
                 <div class="card-body">
+                    <div class="alert alert-success" id="successMsg" style="display:none"></div>
                     <div class="table-responsive data-table">
                         <table id="client-table" class="table table-striped table-bordered">
                             <thead>
@@ -56,9 +57,15 @@
                                     <td>{{clients.License_No}}</td>
                                     <td>
                                         <div class="form-button-action">
-                                            <button type="submit" data-toggle="tooltip" onclick="deactivate_client('{{ clients.Email_Id }}','{{ clients.Name }}')" title="Deactivate" class="btn btn-link btn-primary btn-xs">
+                                            {% if clients.Is_Active == "Y" %}
+                                            <button type="submit" data-toggle="tooltip" onclick="deactivate_client('{{ clients.Email_Id }}','{{ clients.Name }}','Deactivate')" title="Deactivate" class="btn btn-link btn-primary btn-xs">
                                                 <i class="fa fa-lock fa-fw"></i>
                                             </button>
+                                            {% else %}
+                                            <button type="submit" data-toggle="tooltip" onclick="deactivate_client('{{ clients.Email_Id }}','{{ clients.Name }}','Activate')" title="Activate" class="btn btn-link btn-primary btn-xs">
+                                                <i class="fa fa-unlock fa-fw"></i>
+                                            </button>
+                                            {% endif %}
                                             <button type="submit" data-toggle="tooltip" onclick="reset_client_password('{{ clients.Email_Id }}','{{ clients.Name }}')" title="Reset Password" class="btn btn-link btn-primary btn-xs">
                                                 <i class="fa fa-key fa-fw"></i>
                                             </button>
@@ -79,17 +86,24 @@
     </div>
 </div>
 <script>
-    function deactivate_client(email, name)
+    function deactivate_client(email, name, identifier)
     {
         $("#pageloader").show();
         $.ajax({
             type : "GET",
             url : "{% url 'deactivate_client' %}",
-            data :{'Email_Id':email,'Name':name},
+            data :{'Email_Id':email,'Name':name,'identifier':identifier},
             success : function(data)
             {
                 $("#pageloader").hide();
-                $('#successMsg').html("Client Deactivated.");
+                if(identifier == "Deactivate")
+                {
+                    $('#successMsg').html("Client Deactivated.");
+                }
+                else
+                {
+                    $('#successMsg').html("Client Activated.");
+                }
                 $('#successMsg').show();
                 $('#successMsg').delay(2000).fadeOut('slow');
                 setTimeout(function()

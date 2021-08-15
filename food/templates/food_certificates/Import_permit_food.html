@@ -41,23 +41,23 @@ table, th, td {
                             </td>
                         </tr>
                         <tr>
-                            <td style="width:50%">
+                            <td colspan="2">
                                 <label>Name and Address of the Importer: </label>
                                 <b>{{certificate_details.Applicant_Name}}&nbsp;&nbsp;{{certificate_details.Present_Address}}</b>
-                            </td>
-                            <td style="width:50%">
-                                <label>Name and Address of the Exporter: </label>
-                                <b>{{certificate_details.Name_And_Address_Supplier}}</b>
                             </td>
                         </tr>
                         <tr>
                             <td style="width:50%">
                                 <label>Entry Point: </label>
-                                <b>{{certificate_details.Point_Of_Entry}}</b>
+                                {% for entry_point in entry_point %}
+                                    <b>{{entry_point.Field_Office}}</b>
+                                {% endfor %}
                             </td>
                             <td style="width:50%">
                                 <label>Country of Origin: </label>
-                                <b>{{certificate_details.Origin_Country_Food}}</b>
+                                {% for country_list in country_list %}
+                                    <b>{{country_list.Country_Name}}</b>
+                                {% endfor %}
                             </td>
                         </tr>
                         <tr>
@@ -85,7 +85,7 @@ table, th, td {
                                         {% for import in import %}
                                             <tr>
                                                 <td>{{ forloop.counter }}</td>
-                                                <td>{{import.Product_Name_Description}}</td>
+                                                <td>{{import.Common_Name}}, {{ import.Product_Category }}</td>
                                                 <td>{{import.Unit}}</td>
                                                 <td>{{import.Quantity}}</td>
                                             </tr>
@@ -125,27 +125,32 @@ table, th, td {
                         <div class="row">
                              <div class="col-md-3">
                                 <div class="form-group">
-                                    <label>Date of Issue</label>
+                                    <label>Date of Issue:</label>
+                                    <b>{{certificate_details.Approve_Date}}</b>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                              <div class="col-md-3">
                                 <div class="form-group">
-                                    <label>Validity</label>
+                                    <label>Validity:</label>
+                                    <b>{{certificate_details.Validity}}</b>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                              <div class="col-md-3">
                                 <div class="form-group">
-                                    <label>Place of Issue</label>
+                                    <label>Place of Issue:</label>
+                                    <b>BAFRA, Thimphu</b>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Name and signature of Authorized Officer</label>
+                        <div class="row">
+                             <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Name and signature of Authorized Officer</label>
+                                </div>
                             </div>
                         </div>
                     </div>

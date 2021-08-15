@@ -208,8 +208,13 @@
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Meat Item</label>
-                                        <input type="text" name="meat_name" class="form-control" id="meat_name" required>
-                                        <div class="alert alert-danger" id="fh_nameErrorMsg" style="display:none"></div>
+                                        <select class="form-control" name="meat_name"  id="meat_name" onchange="getGewog(this.value)">
+                                            <option value="">--SELECT MEAT ITEM--</option>
+                                            {% for meat_item in meat_item %}
+                                                    <option value="{{ meat_item.Meat_Item }}">{{ meat_item.Meat_Item }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="alert alert-danger" id="meat_nameErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                             </div>

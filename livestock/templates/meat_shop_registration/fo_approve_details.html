@@ -138,7 +138,7 @@
                            {% for Meat_Item in details %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td>{{file_attach.Meat_Item}}</td>
+                                    <td>{{Meat_Item.Meat_Item}}</td>
                                 </tr>
                                 {% empty %}
                                 <tr>
@@ -169,7 +169,7 @@
                            {% for file_attach in file %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td>{{file_attach.Attachment}}</td>
+                                    <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
                                 </tr>
                                 {% empty %}
                                 <tr>
@@ -565,7 +565,7 @@
         remarks = $('#remarks').val();
         if(validity == "")
         {
-            $('#validityErrorMsg').html("Enter Inspection Team.");
+            $('#validityErrorMsg').html("Enter Validity.");
             $('#validityErrorMsg').show();
             $('#validityErrorMsg').delay(2000).fadeOut('slow');
             $('#validity').focus();

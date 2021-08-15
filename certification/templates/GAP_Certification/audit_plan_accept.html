@@ -424,7 +424,7 @@
                            {% for file_attach in file %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td>{{file_attach.Attachment}}</td>
+                                    <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
                                 </tr>
                                 {% empty %}
                                 <tr>
@@ -436,64 +436,6 @@
                 </div>
             </div>
         </div>
-        <!--<div class="card">
-            <div class="card-header" role="tab" id="headingThree">
-                <a class="collapsed" data-toggle="collapse" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                    Confirmatory  Details
-                </a>
-            </div>
-            <div id="collapseThree" class="active" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion" style="">
-                <div class="card-body">
-                    <div class="card-tools">
-                        <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="openDecisionModal()">
-                            <span class="btn-label">
-                                <i class="fa fa-print"></i>
-                            </span>
-                            Add
-                        </a>
-                    </div>
-                    <br>
-                    <div id="details">
-                        <table id="inspection-details-table" class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Clause Number</th>
-                                    <th scope="col">Non Conformity</th>
-                                    <th scope="col">Non Conformity Category</th>
-                                    <th scope="col">Description of nonconformity</th>
-                                    {% if inspection_details %}
-                                        <th scope="col">Action</th>
-                                    {% endif %}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for import in inspection_details %}
-                                    <tr>
-                                        <td>{{ forloop.counter }}</td>
-                                        <td>{{import.Clause_Number}}</td>
-                                        <td>{{import.Non_Conformity}}</td>
-                                        <td>{{import.Non_Conformity_Category}}</td>
-                                        <td>{{import.Non_Conformity_Description}}</td>
-                                        <td>
-                                            <button type="button"
-                                            class="btn btn-primary btn&#45;&#45;icon btn-sm js-edit-details"
-                                            data-url="{% url 'edit_feasibility_inspection' import.Record_Id %}">
-                                            <i class="zmdi zmdi-edit"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    {% empty %}
-                                    <tr>
-                                      <td colspan="6" class="text-center">No Data</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>-->
         <div class="card">
             <div class="card-header" role="tab" id="headingFour">
                 <a class="collapsed" data-toggle="collapse" href="#collapseFour" aria-expanded="false" aria-controls="collapseTwo">
@@ -519,23 +461,6 @@
                             </div>
                         </div>
                     </div>
-                    <!--<div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
-                        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
-                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Team</span>
-                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Leader</span>
-                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Remarks</span>
-                        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label class="form-label">Remarks</label>
-                                {% for application_details in application_details %}
-                                <textarea class="form-control" disabled>{{application_details.FO_Remarks}}</textarea>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>-->
                     <form method="post" id="audit_plan_form">
                     {% csrf_token %}
                         <div class="row">
@@ -579,7 +504,7 @@
                                 Succesfull
                             </div>
                             {% for application_details in application_details %}
-                            <input type="hidden" value="{{ application_details.Application_No }}" name="application_id">
+                                <input type="hidden" value="{{ application_details.Application_No }}" name="application_id">
                                 <button type="button" class="btn btn-flat btn-primary" onclick="audit_team_accept()">
                                     <i class="ace-icon fa fa-times"></i>
                                     &nbsp;&nbsp;Send For Acceptance

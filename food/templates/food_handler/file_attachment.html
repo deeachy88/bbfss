@@ -24,7 +24,7 @@
                    {% for file_attach in file_attach %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-                                <td>{{file_attach.Attachment}}</td>
+                                <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
                                 <td>
                                     <button type="button"
 									    class="btn btn-danger btn-sm" onclick="DeleteAttachment('{{ file_attach.File_Id }}')">
@@ -47,6 +47,7 @@
 <script>
 function save_details()
 {
+    var applicationNo = $('#applicationNo').val();
 	$.ajax({
 			type : "POST",
 			url : "{% url 'submit_food_handler_application' %}",
@@ -55,7 +56,14 @@ function save_details()
 			dataType : "html",
 			success : function(responseText)
 			{
-                location.reload();
+                swal("Application Submitted Successfully. Your Application No :" + applicationNo, {
+                    buttons: false,
+                    timer: 4000,
+                });
+                setTimeout(function()
+                {
+                    location.reload();
+                }, 4000);
 			}
 	});
 }
