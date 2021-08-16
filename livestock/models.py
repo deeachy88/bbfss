@@ -76,7 +76,7 @@ class t_livestock_clearance_meat_shop_t5(models.Model):
     Clause_No = models.CharField(max_length=100, default=None, blank=True, null=True)
     Concern = models.CharField(max_length=10, default=None, blank=True, null=True)
     Date = models.DateField(default=None, blank=True, null=True)
-    FBO_Response = models.TextField()
+    FBO_Response = models.TextField(default=None, blank=True, null=True)
 
 
 class t_livestock_clearance_meat_shop_t6(models.Model):
@@ -336,6 +336,7 @@ class t_livestock_export_certificate_t1(models.Model):
     Applicant_Id = models.CharField(max_length=100, null=True, default=None)
     Passport_No = models.CharField(max_length=100, blank=True, null=True, default=None)
 
+
 class t_livestock_export_certificate_t2(models.Model):
     Record_Id = models.AutoField(primary_key=True)
     Application_No = models.CharField(max_length=20)
@@ -343,7 +344,7 @@ class t_livestock_export_certificate_t2(models.Model):
     Breed = models.CharField(max_length=100, blank=True, null=True)
     Age = models.IntegerField(blank=True, null=True)
     Sex = models.CharField(max_length=10, blank=True, null=True)
-    Particulars = models.IntegerField(blank=True, null=True)
+    Particulars = models.CharField(max_length=10, blank=True, null=True)
     Company_Name = models.IntegerField(blank=True, null=True)
     Description = models.TextField(blank=True, null=True)
     Quantity = models.IntegerField(blank=True, null=True)
@@ -371,7 +372,7 @@ class t_livestock_movement_permit_t1(models.Model):
     Village_Code = models.CharField(max_length=100, default=None, blank=True, null=True)
     Contact_No = models.IntegerField()
     Email = models.EmailField()
-    License_No = models.CharField(max_length=100)
+    License_No = models.CharField(max_length=100, default=None, blank=True, null=True)
     Business_Name = models.CharField(max_length=100, default=None, blank=True, null=True)
     From_Dzongkhag_Code = models.IntegerField(default=None, blank=True, null=True)
     From_Gewog_Code = models.IntegerField(default=None, blank=True, null=True)

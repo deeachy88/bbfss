@@ -94,6 +94,7 @@ class t_file_attachment(models.Model):
     Role_Id = models.IntegerField(blank=True, null=True)
     File_Path = models.CharField(max_length=250)
     Attachment = models.FileField(storage=fs)
+    Attachment_Type = models.CharField(max_length=100, blank=True, null=True)
 
 
 class t_plant_import_permit_t1(models.Model):
@@ -300,6 +301,8 @@ class t_plant_clearence_nursery_seed_grower_t1(models.Model):
     Approved_Date = models.DateField(default=None, blank=True, null=True)
     Validity_Period = models.CharField(default=None, max_length=10, blank=True, null=True)
     Validity = models.DateField(default=None, blank=True, null=True)
+    Current_Observation = models.CharField(default=None, max_length=250, blank=True, null=True)
+    Decision_Conformity = models.CharField(default=None, max_length=250, blank=True, null=True)
 
 
 class t_plant_clearence_nursery_seed_grower_t2(models.Model):
@@ -336,10 +339,13 @@ class t_plant_seed_certification_t1(models.Model):
     Approved_Date = models.DateField(default=None, blank=True, null=True)
     Validity_Period = models.CharField(default=None, max_length=10, blank=True, null=True)
     Validity = models.DateField(default=None, blank=True, null=True)
+    Inspector_Remarks = models.CharField(max_length=250, default=None, blank=True, null=True)
+    Client_Remarks = models.CharField(max_length=250, default=None, blank=True, null=True)
 
 
 class t_plant_seed_certification_t2(models.Model):
-    Application_No = models.CharField(max_length=30, primary_key=True)
+    Record_Id = models.AutoField(primary_key=True, default=None)
+    Application_No = models.CharField(max_length=30, default=None, blank=True, null=True)
     Crop = models.CharField(max_length=40, blank=True, null=True)
     Variety = models.CharField(max_length=40, blank=True, null=True)
     Seed_Source = models.CharField(max_length=250, default=None, blank=True, null=True)
@@ -347,6 +353,7 @@ class t_plant_seed_certification_t2(models.Model):
     Unit = models.CharField(max_length=20, default=None, blank=True, null=True)
     Purpose = models.CharField(max_length=20, default=None, blank=True, null=True)
     Qty_Certified = models.IntegerField(default=None, blank=True, null=True)
+    Unit_Certified = models.CharField(max_length=30, blank=True, null=True)
     Value_Certified = models.CharField(max_length=30, blank=True, null=True)
     Qty_Rejected = models.IntegerField(default=None, blank=True, null=True)
     Unit_Rejected = models.CharField(max_length=30, blank=True, null=True)

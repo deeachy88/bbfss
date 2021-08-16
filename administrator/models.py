@@ -104,7 +104,7 @@ class t_plant_crop_variety_master(models.Model):
     Crop_Id = models.ForeignKey(t_plant_crop_master, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
-        return self.Crop_Common_Name
+        return self.Crop_Variety_Name
 
 
 class t_plant_chemical_master(models.Model):
@@ -246,9 +246,9 @@ class t_user_master(models.Model):
     Password = models.TextField(default=None, blank=True, null=True)
     Password_Salt = models.CharField(max_length=250, default=None, blank=True, null=True)
     CID = models.BigIntegerField(default=None, blank=True, null=True)
-    Dzongkhag_Code = models.ForeignKey(t_dzongkhag_master, on_delete=models.CASCADE, null=True, blank=True)
-    Gewog_Code = models.ForeignKey(t_gewog_master, on_delete=models.CASCADE, null=True, blank=True)
-    Village_Code = models.ForeignKey(t_village_master, on_delete=models.CASCADE, null=True, blank=True)
+    Dzongkhag_Code = models.CharField(max_length=250, default=None, blank=True, null=True)
+    Gewog_Code = models.CharField(max_length=250, default=None, blank=True, null=True)
+    Village_Code = models.CharField(max_length=250, default=None, blank=True, null=True)
     Agency = models.CharField(max_length=50, default=None, blank=True, null=True)
     License_No = models.CharField(max_length=50, default=None, blank=True, null=True)
     Address = models.TextField(max_length=250, default=None, blank=True, null=True)
@@ -320,3 +320,11 @@ class t_food_category_master(models.Model):
 
     def __str__(self):
         return self.Category_Name
+
+
+class t_meat_item_master(models.Model):
+    Item_Code = models.AutoField(primary_key=True)
+    Meat_Item = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.Meat_Item

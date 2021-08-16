@@ -3,6 +3,7 @@ $(function () {
   /* Functions */
 
   var loadForm = function () {
+
     var btn = $(this);
     $.ajax({
       url: btn.attr("data-url"),
@@ -13,12 +14,14 @@ $(function () {
         $("#modal-user").modal("show");
       },
       success: function (data) {
+
         $("#modal-user .modal-content").html(data.html_form);
       }
     });
   };
 
   var saveForm = function () {
+    $("#pageloader").show();
     var form = $(this);
     $.ajax({
       url: form.attr("action"),
@@ -26,6 +29,7 @@ $(function () {
       type: form.attr("method"),
       dataType: 'json',
       success: function (data) {
+        $("#pageloader").hide();
         if (data.form_is_valid) {
           $("#modal-user").modal("hide");
           location.reload();
@@ -113,7 +117,7 @@ var loadRoleForm = function () {
 
   // Update user
   $("#user-table").on("click", ".js-edit-user", loadForm);
-  $("#modal-user").on("submit", ".js-book-update-form", saveForm);
+  $("#modal-user").on("submit", ".js-user-edit-form", saveForm);
 
   // Update role
   $("#role-table").on("click", ".js-edit-role", loadRoleForm);

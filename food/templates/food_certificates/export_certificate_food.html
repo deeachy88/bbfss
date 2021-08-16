@@ -15,7 +15,7 @@ table, th, td {
             <div >
                 <div class="card-head-row float-right">
                     <div class="card-tools">
-                        <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Test Report';printClientTable()">
+                        <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Export Permit';printTable()">
                             <span class="btn-label">
                                 <i class="zmdi zmdi-print"></i>
                             </span>
@@ -33,7 +33,7 @@ table, th, td {
                 <div class="row float-right">
                     <p>Reference No&nbsp;:&nbsp;<b>{{certificate_details.Export_Permit_No}}</b></p>
                 </div>
-                <div class="row float-right">
+                <div class="row float-left">
                     <p>Date of Issue :&nbsp;<b>{{certificate_details.Approved_Date}}</b></p>
                 </div>
                 <div>
@@ -60,7 +60,9 @@ table, th, td {
                             </td>
                             <td style="width:50%">
                                 <label>Declared point of entry: </label>
-                                <b>{{certificate_details.Declared_Point_of_Exit}}</b>
+                                {% for entry_point in entry_point %}
+                                    <b>{{entry_point.Field_Office}}</b>
+                                {% endfor %}
                             </td>
                         </tr>
                         <tr>
@@ -102,12 +104,116 @@ table, th, td {
                              <div class="col-md-3">
                                 <div class="form-group">
                                     <label>Place of Issue: </label>
+                                    {% for entry_point in entry_point %}
+                                        <b>{{entry_point.Field_Office}}</b>
+                                    {% endfor %}
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Name and signature of Authorized Officer: </label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Name and signature of Authorized Officer: </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-12" style="display:none;" id="print">
+            <div>
+                <div class="card-title text-center">
+                    <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
+                </div>
+                <h4 class="text-center"><font color='black'><b>FIT FOR HUMAN CONSUMPTION / EXPORT CERTIFICATE</b></font></h4>
+                {% for certificate_details in certificate_details %}
+                <div class="row float-right">
+                    <p>Reference No&nbsp;:&nbsp;<b>{{certificate_details.Export_Permit_No}}</b></p>
+                </div>
+                <div class="row float-left">
+                    <p>Date of Issue :&nbsp;<b>{{certificate_details.Approved_Date}}</b></p>
+                </div>
+                <div>
+                    <table style="width:100%">
+                        <tr>
+                            <td colspan="2">
+                                <h5 class="text-center"><font color='black'><b>Description of Consignment</b></font></h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:50%">
+                                <label>Name and Address of the Exporter: </label>
+                                <b>{{certificate_details.Exporters_Name}}&nbsp;&nbsp;{{certificate_details.Exporters_Address}}</b>
+                            </td>
+                            <td style="width:50%">
+                                <label>Name and Address of the Importer: </label>
+                                <b>{{certificate_details.Importer_Name}}&nbsp;&nbsp;{{certificate_details.Importer_Address}}</b>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:50%">
+                                <label>Number and description of packages: </label>
+                                <b>{{certificate_details.No_Of_Packages}}&nbsp;&nbsp;{{certificate_details.Description_Of_Packages}}</b>
+                            </td>
+                            <td style="width:50%">
+                                <label>Declared point of entry: </label>
+                                {% for entry_point in entry_point %}
+                                    <b>{{entry_point.Field_Office}}</b>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:50%">
+                                <label>Name of the product and quantity declared: </label>
+                                <b>{{certificate_details.Product_Name}}&nbsp;&nbsp;{{certificate_details.Quantity}}&nbsp;&nbsp;{{certificate_details.Unit}}</b>
+                            </td>
+                            <td style="width:50%">
+                                <label>Date of export: </label>
+                                <b>{{certificate_details.Expected_Arrival_Date}}</b>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <h5 class="text-center"><font color='black'><b>This is to certify that the food and agricultural consignments described herein have been inspected and/ortested and are considered as ‘Fit for human consumption’.</b></font></h5>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="card-body">
+                    <div class="col-md-12">
+                        <div class="row">
+                             <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Date of Inspection:</label>
+                                    <b>{{certificate_details.Inspection_Date}}</b>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                             <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Validity:</label>
+                                    <b>{{certificate_details.Validity}}</b>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                             <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Place of Issue: </label>
+                                    {% for entry_point in entry_point %}
+                                        <b>{{entry_point.Field_Office}}</b>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Name and signature of Authorized Officer: </label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -118,3 +224,12 @@ table, th, td {
     </font>
     </div>
 </div>
+<script>
+    function printTable()
+    {
+        $("#print").show();
+	    jQuery('#print').print();
+	    $("#print").hide();
+    }
+
+</script>

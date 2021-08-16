@@ -53,7 +53,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Name of the applicant/Owner <font color="red">*</font></label>
-                                    <input type="text" class="form-control" id="name" name="Name" disabled>
+                                    <input type="text" class="form-control" id="name" name="Name" readonly="readonly">
                                 </div>
                                 <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
                             </div>
@@ -106,7 +106,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Dzongkhag &nbsp;<font color='red'>*</font></label>
-                                    <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value),getLocation(this.value)">
+                                    <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
                                         <option value="">--SELECT DZONGKHAG--</option>
                                         {% for dzongkhag in dzongkhag %}
                                                 <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
@@ -139,18 +139,18 @@
                                 </div>
                                 <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
                             </div>
-                            <div class="col-md-4">
+                            <!--<div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Location &nbsp;<font color='red'>*</font></label>
                                     <select class="form-control" name="location_code"  id="location">
-                                        <option value="">--SELECT LOCATION--</option>
+                                        <option value="">&#45;&#45;SELECT LOCATION&#45;&#45;</option>
                                         {% for location in location %}
                                                 <option value="{{ location.Location_Code }}">{{ location.Location_Name }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
                                 <div class="alert alert-danger" id="location_codeErrorMsg" style="display:none"></div>
-                            </div>
+                            </div>-->
                         </div>
                     </div>
                     <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
@@ -208,8 +208,13 @@
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Meat Item</label>
-                                        <input type="text" name="meat_name" class="form-control" id="meat_name" required>
-                                        <div class="alert alert-danger" id="fh_nameErrorMsg" style="display:none"></div>
+                                        <select class="form-control" name="meat_name"  id="meat_name" onchange="getGewog(this.value)">
+                                            <option value="">--SELECT MEAT ITEM--</option>
+                                            {% for meat_item in meat_item %}
+                                                    <option value="{{ meat_item.Meat_Item }}">{{ meat_item.Meat_Item }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="alert alert-danger" id="meat_nameErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                             </div>
@@ -574,27 +579,28 @@ function show_details_modal()
     $('#add_fh_details').modal('show');
 }
 
-$.ajax({
-    type : "GET",
-    url : "{% url 'get_citizen_details' %}",
-    data :{'cidNo':cidNo},
-    success : function(data)
-    {
-        const myObj =data.response;
-        var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
-        var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
-        var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
-        if (middleName == null) {
-                middleName = "";
-            }
-        var CitizenName = firstName + " " + middleName + " " + lastName;
-        var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
-        var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
-        var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
-        $('#name').val(CitizenName);
-
-    }
-});
+function getCitizenDetails(cidNo)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'get_citizen_details' %}",
+        data :{'cidNo':cidNo},
+        success : function(data)
+        {
+            const myObj =data.response;
+            var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+            var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+            var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+            if (middleName == null) {
+                    middleName = "";
+                }
+            var CitizenName = firstName + " " + middleName + " " + lastName;
+            var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
+            var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
+            var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
+            $('#name').val(CitizenName);
+        }
+    });
 }
 </script>
 {% endblock %}

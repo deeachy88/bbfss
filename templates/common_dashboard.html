@@ -80,15 +80,8 @@
                                 <a href="#" class="dropdown-item">Clear Local Storage</a>
                             </div>
                         </li>
-                    </ul>
 
-                    <div class="clock hidden-md-down">
-                        <div class="time">
-                            <span class="hours"></span>
-                            <span class="min"></span>
-                            <span class="sec"></span>
-                        </div>
-                    </div>
+                    </ul>
                 </header>
 
                 <aside class="sidebar sidebar--hidden">
@@ -160,6 +153,7 @@
         <script src="{% static 'assets/bower_components/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
         <script src="{% static 'assets/bower_components/jszip/dist/jszip.min.js' %}"></script>
         <script src="{% static 'assets/bower_components/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+        <script src="{% static 'assets/js/sweetalert.min.js' %}"></script>
         <script src="{% static 'assets/js/app.min.js' %}"></script>
         <script src="{% static 'assets/js/user.js' %}"></script>
 	    <script src="{% static 'assets/js/division.js' %}"></script>
@@ -182,6 +176,7 @@
         <script src="{% static 'assets/js/jQuery.print.js' %}"></script>
         <script src="{% static 'assets/js/pdfmake.min.js' %}"></script>
         <script src="{% static 'assets/js/vfs_fonts.js' %}"></script>
+        <script type="text/javascript" src="{% static 'assets/js/printThis.js' %}"></script>
         <script>
             function isNumberKey(evt)
             {
@@ -323,7 +318,8 @@
                     $("#pills-lp-file").prop('disabled', true);
 
                     $("#seed_details").prop('disabled', true);
-                    $("#seed_details").prop('disabled', true);
+                    $("#pills-nursery-seed-details").prop('disabled', true);
+                    $("#pills-nursery-seed-file").prop('disabled', true);
                 }
                 if($("#referenceNo").val() == "")
                 {
@@ -337,7 +333,11 @@
                     $("#pills-profile-file").prop('disabled', false);
                     $('#pills-details').prop('disabled', false);
                 }
-
+                if($("#nursery_applicationNo").val() == "")
+                {
+                    $("#pills-profile-tab").prop('disabled', true);
+                    $("#pills-profile-file").prop('disabled', true);
+                }
             });
 
             function save_form()

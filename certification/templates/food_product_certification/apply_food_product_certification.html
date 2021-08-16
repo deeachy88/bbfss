@@ -1054,12 +1054,20 @@ function next_file_attach()
 }
 function submit_fpc_certificate()
 {
+    var applicationNo = $('#applicationNo').val();
     $.ajax({
         type : "POST",
         url : "{% url 'submit_food_product_certificate' %}",
         data : $('#food_product_form').serialize(),
         success : function(responseText) {
-           location.reload();
+            swal("Application Submitted Successfully. Your Application No :" + applicationNo, {
+                buttons: false,
+                timer: 4000,
+            });
+            setTimeout(function()
+            {
+                location.reload();
+            }, 4000);
         }
     });
 }

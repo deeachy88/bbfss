@@ -20,19 +20,19 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Name of the Meat Shop <font color="red">*</font></label>
-                                        <input type="text" class="form-control" value="{{application_details.Meat_Shop_Name}}">
+                                        <input type="text" class="form-control" value="{{application_details.Meat_Shop_Name}}" disabled>
                                     </div>
                                 </div>
                                  <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">CID of the Owner <font color="red">*</font></label>
-                                        <input type="number"  class="form-control" value="{{application_details.CID}}">
+                                        <input type="number"  class="form-control" value="{{application_details.CID}}" disabled>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Name of the applicant/Owner <font color="red">*</font></label>
-                                        <input type="text" class="form-control" value="{{application_details.Name_Owner}}">
+                                        <input type="text" class="form-control" value="{{application_details.Name_Owner}}" disabled>
                                     </div>
                                 </div>
                             </div>
@@ -40,13 +40,13 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Email <font color="red">*</font></label>
-                                        <input type="email" class="form-control" value="{{application_details.Email}}">
+                                        <input type="email" class="form-control" value="{{application_details.Email}}" disabled>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Contact Number <font color="red">*</font></label>
-                                        <input type="number" class="form-control" value="{{application_details.Contact_No}}">
+                                        <input type="number" class="form-control" value="{{application_details.Contact_No}}" disabled>
                                     </div>
                                 </div>
                             </div>
@@ -55,14 +55,14 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Meat Shop Representative <font color="red">*</font></label>
-                                        <input type="text" class="form-control" value="{{application_details.Representative}}">
+                                        <input type="text" class="form-control" value="{{application_details.Representative}}" disabled>
                                     </div>
                                     <div class="alert alert-danger" id="name_managerErrorMsg" style="display:none"></div>
                                 </div>
                                  <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Licensing Criteria <font color="red">*</font></label>
-                                        <select class="form-control">
+                                        <select class="form-control" disabled>
                                             {% if application_details.License_Criteria == 'BAFRA GHP' %}
                                             <option selected>BAFRA GHP</option>
                                             <option>BAFRA GMP</option>
@@ -76,7 +76,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Meat Shop Address <font color="red">*</font></label>
-                                        <textarea class="form-control">{{application_details.Address}}</textarea>
+                                        <textarea class="form-control" disabled>{{application_details.Address}}</textarea>
                                     </div>
                                 </div>
                             </div>
@@ -114,18 +114,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Location</label>
-                                        <select class="form-control" disabled>
-                                            {% for location in location %}
-                                                <option value="{{ location.Location_Code }}" {% if application_details.Location_Code == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     {% endfor %}
                 </div>
@@ -143,14 +131,14 @@
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">File</th>
+                                <th scope="col">Meat Item</th>
                             </tr>
                         </thead>
                         <tbody>
                            {% for Meat_Item in details %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td>{{file_attach.Meat_Item}}</td>
+                                    <td>{{Meat_Item.Meat_Item}}</td>
                                 </tr>
                                 {% empty %}
                                 <tr>
@@ -181,7 +169,7 @@
                            {% for file_attach in file %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td>{{file_attach.Attachment}}</td>
+                                    <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
                                 </tr>
                                 {% empty %}
                                 <tr>
@@ -288,7 +276,7 @@
         <div class="card">
             <div class="card-header" role="tab" id="headingThree">
                 <a class="collapsed" data-toggle="collapse" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                    Inspector Details
+                    Details
                 </a>
             </div>
             <div id="collapseThree" class="active" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion" style="">
@@ -312,6 +300,7 @@
                                     <th scope="col">Concern</th>
                                     <th scope="col">Date</th>
                                     <th scope="col">Observations/ Findings</th>
+                                    <th scope="col">Response/Actions Proposed By FBO</th>
                                     {% if inspection_details %}
                                         <th scope="col">Action</th>
                                     {% endif %}
@@ -326,27 +315,58 @@
                                         <td id="my_cell">{{import.Concern}}</td>
                                         <td>{{import.Date|date:"d-m-Y"}}</td>
                                         <td>{{import.Observation}}</td>
+                                        <th scope="col">{{import.FBO_Response}}</th>
                                         <td>
-                                            <button type="button"
-                                            class="btn btn-primary btn--icon btn-sm js-edit-details"
-                                            data-url="{% url 'edit_meat_shop_feasibility_details' import.Record_Id %}">
+                                            <button type="button" class="btn btn-primary btn--icon btn-sm" onclick="populateForm('{{import.Record_Id}}','{{import.Requirement}}',
+                                            '{{import.Clause_No}}','{{import.Concern}}', '{{import.Observation}}', '{{import.FBO_Response}}', '{{import.Application_No}}')">
                                             <i class="zmdi zmdi-edit"></i>
                                             </button>
                                         </td>
                                     </tr>
                                     {% empty %}
                                     <tr>
-                                      <td colspan="6" class="text-center">No Data</td>
+                                      <td colspan="7" class="text-center">No Data</td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
                     </div>
                     <br>
+                     {% for application_details in application_details %}
+                        {% if not application_details.FR_Response %}
+                        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Client </span>&nbsp;&nbsp;&nbsp;
+                                <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Details</span>
+                            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Desired Inspection Date</label>
+                                    <input type="text" class="form-control" value="{{ application_details.FR_Inspection_Date }}" readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Response From Client</label>
+                                    <input type="text" class="form-control" value="{{ application_details.FR_Response }}" readonly="readonly">
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                     {% endfor %}
+                    <br>
+                    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Inspector </span>&nbsp;&nbsp;&nbsp;
+                            <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Details</span>
+                        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                    </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Inspection Team Leader</label>
+                                <label class="form-label">Inspection Team Leader</label>
                                 <select class="form-control" name="teamLeader"  id="teamLeader">
                                     <option value="">--SELECT TEAM LEADER--</option>
                                     {% for inspector_list in inspector_list %}
@@ -354,32 +374,27 @@
                                     {% endfor %}
                                 </select>
                             </div>
+                            <div class="alert alert-danger" id="teamLeaderErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="insTeam">Inspection Team </label>
+                                <label class="form-label">Inspection Team </label>
                                 <textarea class="form-control" id="insTeam" rows="2"></textarea>
                             </div>
+                            <div class="alert alert-danger" id="insTeamErrorMsg" style="display:none"></div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Date Of Inspection</label>
+                                <label class="form-label">Date Of Inspection</label>
                                 <input type="text" class="form-control date-picker flatpickr-input active" id="dateOfInspection" name="date"  placeholder="Pick a date" readonly="readonly">
                             </div>
+                            <div class="alert alert-danger" id="dateOfInspectionErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Validity Of Permit</label>
-                                <input type="number" class="form-control" id="validity" name="validity">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Recommendation</label>
+                                <label class="form-label">Recommendation</label>
                                 <textarea class="form-control" id="remarks" rows="2"></textarea>
                             </div>
                         </div>
@@ -394,12 +409,12 @@
                     {% for application_details in application_details %}
                         <div class="card-action text-center">
                             <button type="button" id="approve_button" class="btn btn-flat btn-primary" onclick="approve_feasibility_inspection('{{application_details.Application_No}}')">
-                                <i class="ace-icon fa fa-times"></i>
+                                <i class="ace-icon fa fa-check"></i>
                                 &nbsp;&nbsp;Approve
                             </button>
-                            <button type="button" class="btn btn-flat btn-primary" onclick="reject_feasibility_inspection('{{application_details.Application_No}}')">
-                                <i class="ace-icon fa fa-times"></i>
-                                &nbsp;&nbsp;Reject
+                            <button type="button" id="resubmit-btn" class="btn btn-flat btn-primary" onclick="reject_feasibility_inspection('{{application_details.Application_No}}')">
+                                <i class="ace-icon fa fa-reply-all"></i>
+                                &nbsp;&nbsp;Resubmit
                             </button>
                             <button type="button" class="btn btn-flat btn-danger">
                                 <i class="ace-icon fa fa-times"></i>
@@ -415,7 +430,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title"></h5>
-                        <button type="button" class="close" onclick="closeModal()">
+                        <button type="button" class="close" data-dismiss="modal">
                             <span aria-hidden="true">&times;</span>
                         </button>
 
@@ -438,16 +453,15 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-
                                     <div class="form-group col-md-6">
                                         <div class="form-check">
                                            <label class="form-label">Concern</label><br>
                                             <label class="form-radio-label">
-                                                <input class="form-radio-input" type="radio" name="Concern" value="Yes">
+                                                <input class="form-radio-input" type="radio" name="Concern" value="Yes" onclick="checkConcern(this.value)">
                                                 <span class="form-radio-sign">Yes</span>
                                             </label>
                                             <label class="form-radio-label ml-3">
-                                                <input class="form-radio-input" type="radio" name="Concern" value="No">
+                                                <input class="form-radio-input" type="radio" name="Concern" value="No" onclick="checkConcern(this.value)">
                                                 <span class="form-radio-sign">No</span>
                                             </label>
                                         </div>
@@ -456,17 +470,16 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Response or Actions proposed by FBO</label>
-                                    <input type="text" class="form-control date-picker flatpickr-input active" name="Date" id="Date" readonly>
+                                    <label class="form-label">Observations/Finding</label>
+                                    <textarea class="form-control" id="Observations" rows="2"></textarea>
                                 </div>
                             </div>
-
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Observations/Finding</label>
-                                    <textarea class="form-control" id="Observations" rows="2"></textarea>
+                                    <label class="form-label">Response or Actions proposed by FBO</label>
+                                    <textarea class="form-control" id="response_fbo" rows="2"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -579,16 +592,71 @@
                   </div>
             </div>
         </div>
-<div class="modal fade" id="modal-book">
+<form method="post" id="edit_concern_form">
+<div class="modal fade" id="edit_concern_model">
     <div class="modal-dialog modal-lg">
-      <div class="modal-content edit">
+      <div class="modal-content">
+        <div class="modal-body">
+            <div class="row">
+                <input type="hidden" class="form-control" id="record_id" name="record_id">
+                <input type="hidden" class="form-control" id="app_no" name="app_no">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Requirement</label>
+                        <input type="text" class="form-control" id="edit_Requirement" disabled>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Clause No</label>
+                        <input type="text" class="form-control" id="edit_Clause_No" disabled>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
 
+                        <div class="form-group col-md-6">
+                            <div class="form-check">
+                               <label class="form-label">Concern</label><br>
+                                <label class="form-radio-label">
+                                    <input class="form-radio-input" type="radio" name="edit_Concern" value="Yes" id="concern_yes" onclick="checkEditConcern(this.value)">
+                                    <span class="form-radio-sign">Yes</span>
+                                </label>
+                                <label class="form-radio-label ml-3">
+                                    <input class="form-radio-input" type="radio" name="edit_Concern" value="No" id="concern_no" onclick="checkEditConcern(this.value)">
+                                    <span class="form-radio-sign">No</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Observations/Finding</label>
+                        <textarea class="form-control" id="edit_Observations" rows="2" disabled></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Response or Actions proposed by FBO</label>
+                        <textarea class="form-control" id="edit_response_fbo" name="edit_response_fbo" rows="2" disabled></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" onclick="update_concern()">Update</button>
+        </div>
       </div>
     </div>
 </div>
-
+</form>
 <script src="{% static 'assets/js/app.min.js' %}"></script>
-<script src="{% static 'assets/js/feasibility.js' %}"></script>
 <script>
 function openDecisionModal()
 {
@@ -626,14 +694,14 @@ function add_details_ins(application_id)
     Requirement = $('#Requirement').val();
     Clause_No = $('#Clause_No').val();
     Concern = $('input[name="Concern"]:checked').val();
-    Date = $('#Date').val();
+    response_fbo = $('#response_fbo').val();
     Observations = $('#Observations').val();
     meeting_type = "Feasibility"
 
     $.ajax({
         type : "GET",
         url : "{% url 'meat_shop_concern_details_feasibility_ins' %}",
-        data :{'application_id':application_id,'Requirement':Requirement,'Observations':Observations,'Clause_No':Clause_No,'Date':Date,'Concern':Concern, 'meeting_type':meeting_type},
+        data :{'application_id':application_id,'Requirement':Requirement,'Observations':Observations,'Clause_No':Clause_No,'response_fbo':response_fbo,'Concern':Concern, 'meeting_type':meeting_type},
         success : function(data) {
             $('#details').html(data);
             $('#details').show();
@@ -664,7 +732,7 @@ function add_inspection_team_details(application_id)
 {
     name = $('#ins_name').val();
     designation = $('#ins_designation').val();
-    meeting_type = "Feasibility"
+    meeting_type = "Feasibility Inspection"
     $.ajax({
         type : "GET",
         url : "{% url 'meat_shop_inspection_team_details' %}",
@@ -684,22 +752,46 @@ function approve_feasibility_inspection(application_id)
     remarks = $('#remarks').val();
     dateOfInspection = $('#dateOfInspection').val();
     validity = $('#validity').val();
-
-   $.ajax({
-        type : "GET",
-        url : "{% url 'approve_meat_shop_feasibility_inspection' %}",
-        data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks ,
-        'dateOfInspection':dateOfInspection, 'validity':validity},
-        success : function(data) {
-            $('#messageDiv').show();
-            setTimeout(function() {
-                $("#messageDiv").hide('blind', {}, 500)
-            }, 2000);
-            setTimeout(function() {
-                location.reload();
-            }, 3000);
-        }
-    });
+    if(Inspection_Leader == "")
+    {
+        $('#teamLeaderErrorMsg').html("Select Team Leader.");
+        $('#teamLeaderErrorMsg').show();
+        $('#teamLeaderErrorMsg').delay(2000).fadeOut('slow');
+        $('#teamLeader').focus();
+    }
+    else if(Inspection_Team == "")
+    {
+        $('#insTeamErrorMsg').html("Enter Inspection Team.");
+        $('#insTeamErrorMsg').show();
+        $('#insTeamErrorMsg').delay(2000).fadeOut('slow');
+        $('#insTeam').focus();
+    }
+    else if(dateOfInspection == "")
+    {
+        $('#dateOfInspectionErrorMsg').html("Select Date of Inspection.");
+        $('#dateOfInspectionErrorMsg').show();
+        $('#dateOfInspectionErrorMsg').delay(2000).fadeOut('slow');
+        $('#dateOfInspection').focus();
+    }
+    else
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'approve_meat_shop_feasibility_inspection' %}",
+            data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks ,
+            'dateOfInspection':dateOfInspection},
+            success : function(data)
+            {
+                $('#messageDiv').show();
+                setTimeout(function() {
+                    $("#messageDiv").hide('blind', {}, 500)
+                }, 2000);
+                setTimeout(function() {
+                    location.reload();
+                }, 3000);
+            }
+        });
+    }
 }
 
 function reject_feasibility_inspection(application_id)
@@ -710,22 +802,116 @@ function reject_feasibility_inspection(application_id)
     remarks = $('#remarks').val();
     dateOfInspection = $('#dateOfInspection').val();
 
-   $.ajax({
+    if(Inspection_Leader == "")
+    {
+        $('#teamLeaderErrorMsg').html("Select Team Leader.");
+        $('#teamLeaderErrorMsg').show();
+        $('#teamLeaderErrorMsg').delay(2000).fadeOut('slow');
+        $('#teamLeader').focus();
+    }
+    else if(Inspection_Team == "")
+    {
+        $('#insTeamErrorMsg').html("Enter Inspection Team.");
+        $('#insTeamErrorMsg').show();
+        $('#insTeamErrorMsg').delay(2000).fadeOut('slow');
+        $('#insTeam').focus();
+    }
+    else if(dateOfInspection == "")
+    {
+        $('#dateOfInspectionErrorMsg').html("Select Date of Inspection.");
+        $('#dateOfInspectionErrorMsg').show();
+        $('#dateOfInspectionErrorMsg').delay(2000).fadeOut('slow');
+        $('#dateOfInspection').focus();
+    }
+    else if(remarks == "")
+    {
+        $('#remarksErrorMsg').html("Please Enter Remarks.");
+        $('#remarksErrorMsg').show();
+        $('#remarksErrorMsg').delay(2000).fadeOut('slow');
+        $('#remarks').focus();
+    }
+    else
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'reject_meat_shop_feasibility_inspection' %}",
+            data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks ,
+            'dateOfInspection':dateOfInspection},
+            success : function(data) {
+                $('#messageDiv').show();
+                setTimeout(function() {
+                    $("#reject_messageDiv").hide('blind', {}, 500)
+                }, 2000);
+                 setTimeout(function() {
+                    location.reload();
+                }, 3000);
+            }
+        });
+    }
+}
+
+function populateForm(Record_id, Requirement, clause_no, concern, observation, response, Application_No)
+{
+    $('#record_id').val(Record_id);
+    $('#edit_Requirement').val(Requirement);
+    $('#edit_Clause_No').val(clause_no);
+    $('#edit_Observations').val(observation);
+
+    $('#app_no').val(Application_No);
+    if(concern == "Yes")
+    {
+        $('#concern_yes').attr('checked', true);
+        $('#edit_response_fbo').val(response);
+        $('#edit_response_fbo').removeAttr("disabled");
+    }
+    else
+    {
+        $('#concern_no').attr('checked', true);
+        $('#edit_response_fbo').val("");
+        $('#edit_response_fbo').attr("disabled", "disabled");
+    }
+    $('#edit_concern_model').modal('show');
+}
+
+function update_concern()
+{
+    $.ajax({
         type : "GET",
-        url : "{% url 'reject_meat_shop_feasibility_inspection' %}",
-        data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks ,
-        'dateOfInspection':dateOfInspection},
+        url : "{% url 'edit_meat_shop_feasibility_details' %}",
+        data : $('#edit_concern_form').serialize(),
         success : function(data) {
-            $('#messageDiv').show();
-            setTimeout(function() {
-                $("#reject_messageDiv").hide('blind', {}, 500)
-            }, 2000);
-             setTimeout(function() {
-                location.reload();
-            }, 3000);
+            $('#details').html(data);
+            $('#details').show();
+            $('#edit_concern_model').modal('hide');
         }
     });
 }
 
+function checkConcern(value)
+{
+    if(value == "Yes")
+    {
+        $('#response_fbo').removeAttr("disabled");
+
+    }
+    else
+    {
+        $('#response_fbo').attr("disabled", "disabled");
+        $('#response_fbo').val("");
+    }
+}
+
+function checkEditConcern(value)
+{
+    if(value == "Yes")
+    {
+        $('#edit_response_fbo').removeAttr("disabled");
+    }
+    else
+    {
+        $('#edit_response_fbo').attr("disabled", "disabled");
+        $('#edit_response_fbo').val("");
+    }
+}
 
 </script>

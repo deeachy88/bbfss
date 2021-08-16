@@ -1,35 +1,27 @@
  <form method="post" id="seed_oic_form">
         {% csrf_token %}
-    <div class="container">
     {% for application_details in application_details %}
-      <div class="accordion" id="exampleAccordion">
         <div class="card">
-          <div class="card-header" id="exItem1Header">
-            <h5 class="mb-0">
-              <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#exItem1" aria-expanded="false" aria-controls="exItem1">Application Details</button>
-            </h5>
-          </div>
-          <div id="exItem1" class="collapse" aria-labelledby="exItem1Header" data-parent="#exampleAccordion">
             <div class="card-body">
                 <div class="row">
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label class="form-label">License No</label>
-                            <input type="text" class="form-control" value="{{application_details}}" disabled>
+                            <input type="text" class="form-control" value="{{application_details.License_No}}" disabled>
                         </div>
                         <div class="alert alert-danger" id="License_NoErrorMsg" style="display:none"></div>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label class="form-label">Company Name</label>
-                            <input type="text" class="form-control" value="{{application_details}}" disabled>
+                            <input type="text" class="form-control" value="{{application_details.Company_Name}}" disabled>
                         </div>
                         <div class="alert alert-danger" id="Company_NameErrorMsg" style="display:none"></div>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label class="form-label">Company_Address</label>
-                            <textarea disabled class="form-control" id="Company_Address" name="Company_Address" rows="4">{{application_details}}</textarea>
+                            <textarea disabled class="form-control" disabled rows="4">{{application_details.Company_Address}}</textarea>
                         </div>
                         <div class="alert alert-danger" id="Company_AddressErrorMsg" style="display:none"></div>
                     </div>
@@ -38,21 +30,21 @@
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label class="form-label">CID</label>
-                            <input type="number" class="form-control"  value="{{application_details}}" disabled>
+                            <input type="number" class="form-control"  value="{{application_details.CID}}" disabled>
                         </div>
                         <div class="alert alert-danger" id="CIDErrorMsg" style="display:none"></div>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label class="form-label">Owner Name</label>
-                            <input type="text" class="form-control" value="{{application_details}}" disabled>
+                            <input type="text" class="form-control" value="{{application_details.Owner_Name}}" disabled>
                         </div>
                         <div class="alert alert-danger" id="Owner_NameErrorMsg" style="display:none"></div>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label class="form-label">Contact Number</label>
-                            <input type="number" class="form-control" value="{{application_details}}" disabled>
+                            <input type="number" class="form-control" value="{{application_details.Contact_No}}" disabled>
                         </div>
                         <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
                     </div>
@@ -61,7 +53,7 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="form-label">Email</label>
-                            <input type="email" class="form-control" value="{{application_details}}" disabled>
+                            <input type="email" class="form-control" value="{{application_details.Email}}" disabled>
                         </div>
                         <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
                     </div>
@@ -71,7 +63,7 @@
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label class="form-label">Nursery Category</label>
-                            <select class="form-control form-control" id="Nursery_Category" name="Nursery_Category">
+                            <select class="form-control form-control" disabled>
                                 {% if application_details.Nursery_Category == "Agro-Forestry" %}
                                 <option value="Agro-Forestry" selected>Agro-Forestry</option>
                                 {% elif application_details.Nursery_Category == "Ornamental" %}
@@ -83,7 +75,6 @@
                                 {% endif %}
                             </select>
                         </div>
-                        <div class="alert alert-danger" id="Nursery_CategoryErrorMsg" style="display:none"></div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
@@ -109,6 +100,48 @@
                     </div>
                 </div>
                 <br>
+                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Details</span>
+                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                </div>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Crop</th>
+                            <th scope="col">Crop Variety</th>
+                            <th scope="col">Seed Source</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Unit</th>
+                            <th scope="col">Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for certification_details in details_list %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{certification_details.Crop}}</td>
+                                <td>{{certification_details.Variety}}</td>
+                                <td>{{certification_details.Seed_Source}}</td>
+                                <td>{{certification_details.Quantity}}</td>
+                                <td>{{certification_details.Unit}}</td>
+                                <td>{{certification_details.Purpose}}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center">No Data</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <br>
+                <br>
+                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Attachments</span>
+                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                </div>
                 <table class="table table-bordered">
                     <thead>
                         <tr>
@@ -120,7 +153,7 @@
                        {% for file_attach in file %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td>{{file_attach.Attachment}}</td>
+                                    <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
                                 </tr>
                                 {% empty %}
                                 <tr>
@@ -130,6 +163,24 @@
                     </tbody>
                 </table>
                 <br>
+                <br>
+                {% if not application_details.Resubmit_Remarks %}
+                    <br>
+                    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Client </span>&nbsp;&nbsp;&nbsp;
+                            <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Details</span>
+                        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                    </div>
+                    <div class="row">
+                         <div class="col-md-6">
+                            <div class="from-label">
+                                <label class="from-label">Resubmit Remarks</label>
+                                <textarea class="form-control" rows="3" id="Resubmit_Remarks" value="{{application_details.Resubmit_Remarks}}"></textarea>
+                            </div>
+                        </div>
+                     </div>
+                {% endif %}
                 <div class="modal-footer">
                     <select class="form-control" name="forwardTo"  id="forwardTo">
                         <option value="">--SELECT INSPECTOR--</option>
@@ -144,9 +195,6 @@
                     </button>
                 </div>
             </div>
-          </div>
-        </div>
-      </div>
     {% endfor %}
     </div>
  </form>

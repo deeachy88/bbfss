@@ -1,7 +1,12 @@
 {% extends 'common_dashboard.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-
+<style>
+    option
+    {
+        background-color: black !important;
+    }
+</style>
 <div class="card">
     <div class="card-header">
         <h4 class="card-title">Registration of Nursery/ Seed Growers</h4>
@@ -13,13 +18,13 @@
             <div class="row align-left">
                 <ul class="nav nav-pills nav-secondary" id="pills-tab-seed" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="pills-seed-tab" data-toggle="pill" href="#seed-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadPageDetails()">Home</a>
+                        <a class="nav-link active" id="pills-seed-tab" data-toggle="pill" href="#seed-home" role="tab" aria-controls="pills-home" aria-selected="true">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-nursery-seed-details" data-toggle="pill" href="#seed-reg-details" role="tab" aria-controls="pills-nursery-seed-details" aria-selected="false" onclick="load_details()">Details</a>
+                        <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#seed-reg-details" role="tab" aria-controls="pills-profile-tab" aria-selected="false">Details</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-nursery-seed-file" data-toggle="pill" href="#seed-file-attachment" role="tab" aria-controls="pills-nursery-seed-file" aria-selected="false" onclick="load_attachment()">Attach File</a>
+                        <a class="nav-link" id="pills-profile-file" data-toggle="pill" href="#seed-file-attachment" role="tab" aria-controls="pills-profile-file" aria-selected="false">Attach File</a>
                     </li>
                 </ul>
             </div>
@@ -61,7 +66,7 @@
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="form-label">Owner Name <font color="red">*</font></label>
-                                    <input type="text" class="form-control" id="Owner_Name" name="Owner_Name" disabled>
+                                    <input type="text" class="form-control" id="Owner_Name" name="Owner_Name" readonly="readonly">
                                 </div>
                                 <div class="alert alert-danger" id="Owner_NameErrorMsg" style="display:none"></div>
                             </div>
@@ -101,14 +106,18 @@
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="form-label">Area <font color="red">*</font></label>
-                                    <input type="text" class="form-control" id="Area" name="Area">
+                                    <input type="number" class="form-control" id="Area" name="Area">
                                 </div>
                                 <div class="alert alert-danger" id="AreaErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="form-label">Unit Area <font color="red">*</font></label>
-                                    <input type="text" class="form-control" id="Unit_Area" name="Unit_Area">
+                                    <select class="form-control" id="Unit_Area" name="Unit_Area">
+                                        <option value="">--SELECT--</option>
+                                        <option value="Decimal">Decimal</option>
+                                        <option value="Acre">Acre</option>
+                                    </select>
                                 </div>
                                 <div class="alert alert-danger" id="Unit_AreaErrorMsg" style="display:none"></div>
                             </div>
@@ -182,7 +191,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="seed-reg-details" role="tabpanel" aria-labelledby="pills-nursery-seed-details">
+                <div class="tab-pane fade" id="seed-reg-details" role="tabpanel" aria-labelledby="pills-profile-tab">
                     <div class="card">
                         <div class="card-header">
                             <div class="card-head-row">
@@ -201,7 +210,7 @@
                         <button type="button" class="btn btn-success" onclick="save_seed_form()">Save</button>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="seed-file-attachment" role="tabpanel" aria-labelledby="pills-nursery-seed-file">
+                <div class="tab-pane fade" id="seed-file-attachment" role="tabpanel" aria-labelledby="pills-profile-file">
                     <div id="seedAttach">
                         {% include 'nursery_registration/file_attachment_page.html' %}
                     </div>
@@ -236,7 +245,7 @@
                                                     <option value="{{ crop_category.Crop_Category_Name }}">{{ crop_category.Crop_Category_Name }}</option>
                                             {% endfor %}
                                          </select>
-                                        <div class="alert alert-danger" id="commodityErrorMsg" style="display:none"></div>
+                                        <div class="alert alert-danger" id="crop_category_idErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
@@ -522,9 +531,9 @@ function save_nursery_form()
             url : "{% url 'save_nursery_reg' %}",
             data : $('#seedForm').serialize(),
             success : function(data) {
-                $('#applicationNo').val(data.applNo);
-                $('#plant_applicationNo').val(data.applNo);
-                $('#pills-nursery-seed-details').tab('show');
+                $('#applicationNo').val(data.applicationNo);
+                $('#plant_applicationNo').val(data.applicationNo);
+                $('#pills-profile-tab').tab('show');
             }
         });
     }
@@ -587,7 +596,7 @@ function save_nursery_details()
         success : function(responseText) {
            $('#add_details').modal('hide');
            $('#seed-details').html(responseText);
-           $('#pills-nursery-seed-details').tab('show');
+           $('#pills-profile-tab').tab('show');
            $('.modal-backdrop').remove();
         }
     });
@@ -608,8 +617,8 @@ function loadPageDetails()
         success : function(response)
         {
             $('#seed_app_details').html(response);
-            $("#pills-nursery-seed-details").prop('disabled', false);
-            $("#pills-nursery-seed-file").prop('disabled', false);
+            $("#pills-profile-tab").prop('disabled', false);
+            $("#pills-profile-file").prop('disabled', false);
         }
     });
 }
@@ -650,7 +659,7 @@ function update_nursery_details()
         data : $('#seedForm').serialize(),
         success : function(data)
         {
-            $('#pills-nursery-seed-details').tab('show');
+            $('#pills-profile-tab').tab('show');
         }
     });
 }
@@ -701,9 +710,7 @@ function getCitizenDetails(cidNo)
             var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
             var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
             $('#Owner_Name').val(CitizenName);
-            $('#dzongkhag').val(dzongkhagName);
-            $('#gewog').val(gewogName);
-            $('#village').val(villageName);
+
         }
     });
 }

@@ -1,0 +1,209 @@
+{% extends 'common_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% load static %}
+<style>
+.form-label {
+    padding-left: 0.0rem;
+    margin-bottom: 10px;
+    font-size: 15px;
+    color: #ebe9a9;
+    font-weight: 800;
+}
+.selectgroup-input:checked+.selectgroup-button {
+    border-color: #e88015;
+    z-index: 1;
+    color: #e88015;
+    background: rgba(21,114,232,.15);
+}
+.selectgroup-item:not(:last-child) .selectgroup-button {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.selectgroup-button {
+    display: block;
+    border: 2px solid rgb(255 254 254 / 12%);
+    text-align: center;
+    padding: .375rem 1rem;
+    position: relative;
+    cursor: pointer;
+    border-radius: 3px;
+    color: #ebe9a9;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    font-size: 14px;
+    line-height: 1.5rem;
+    min-width: 2.375rem;
+}
+input[type=checkbox], input[type=radio] {
+    box-sizing: border-box;
+    padding: 0;
+}
+.selectgroup-input {
+    opacity: 0;
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+}
+</style>
+<div class="animated fadeIn">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <strong class="card-title">Assign/Revoke Officiating</strong>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center justify-content-center">
+                        <div class="form-group col-md-3">
+                            <label class="form-label">Assign/Revoke&nbsp;(Choose One)</label><p id="first" style="display:none">x 1</p><p id="second" style="display:none">x 2</p>
+                            <br>
+                            <div class="selectgroup w-100">
+                                <label class="selectgroup-item">
+                                    <input type="radio" name="Assign_Revoke" value="Assign" class="selectgroup-input" onclick="show_display(this.value)">
+                                    <span class="selectgroup-button">Assign</span>
+                                </label>
+                                <label class="selectgroup-item">
+                                    <input type="radio" name="Assign_Revoke" value="Revoke" class="selectgroup-input" onclick="show_display(this.value)">
+                                    <span class="selectgroup-button">Revoke</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alert alert-danger text-center" id="errorMsg" style="display:none"></div>
+                    <div class="row text-center justify-content-center" id="assign_div" style="display:none;">
+                        <div class="form-group col-md-6">
+                            <div class="input-group">
+                                <select class="form-control" id="email">
+                                    <option value="">--SELECT--</option>
+                                    {% for inspector_list in inspector_list %}
+                                        <option value="{{ inspector_list.Email_Id }}">{{ inspector_list.Name }}</option>
+                                    {% endfor %}
+                                 </select>&nbsp;
+                                <div class="input-group-append">
+                                    <button class="btn btn-default btn-border" type="button" onclick="assign_officiating()" data-toggle="tooltip" data-placement="top" title="" data-original-title="Assign"><i class="ace-icon fa fa-check"></i></button>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="alert alert-success" id="successMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <div class="row text-center justify-content-center" id="revoke_div" style="display:none;">
+                        <div class="form-group col-md-6">
+                            <div class="input-group">
+                                <select class="form-control" name="email" id="revoke_email" disabled>
+                                    {% for inspector_list in inspector_list %}
+                                        {% for assigned_inspector_list in assigned_inspector_list %}
+                                            <option value="{{ assigned_inspector_list.Email_Id }}"{% if inspector_list.Email_Id == assigned_inspector_list.Email_Id %}selected{% endif %}>{{ assigned_inspector_list.Name }}</option>
+                                        {% endfor %}
+                                    {% endfor %}
+                                 </select>&nbsp;
+                                <div class="input-group-append">
+                                    <button class="btn btn-default btn-border" type="button" onclick="revoke_officiating()" data-toggle="tooltip" data-placement="top" title="" data-original-title="Revoke"><i class="ace-icon fa fa-times"></i></button>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="alert alert-success" id="revoke_successMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function assign_officiating()
+    {
+        var email = $('#email').val();
+        $.ajax({
+            type : "GET",
+            url : "{% url 'assign_officiating' %}",
+            success : function(data)
+            {
+                if(data.officiating_count > 0)
+                {
+                    $('#errorMsg').html("Officiating OIC Already Assigned.Please Revoke First To Assign");
+                    $('#errorMsg').show();
+                    $('#errorMsg').delay(2000).fadeOut('slow');
+                }
+                else
+                {
+                    $.ajax({
+                        type : "GET",
+                        url : "{% url 'assign_officiating' %}",
+                        data :{'Email_Id':email},
+                        success : function(data)
+                        {
+                            $('#successMsg').html("Officiating OIC Assigned.");
+                            $('#successMsg').show();
+                            setTimeout(function() {
+                                $('#successMsg').delay(2000).fadeOut('slow');
+                            }, 2000);
+                             setTimeout(function() {
+                                location.reload();
+                            }, 3000);
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    function revoke_officiating()
+    {
+        var email = $('#revoke_email').val();
+        $.ajax({
+            type : "GET",
+            url : "{% url 'revoke_officiating' %}",
+            data :{'Email_Id':email},
+            success : function(data)
+            {
+                $('#revoke_successMsg').html("Officiating OIC Revoked.");
+                $('#revoke_successMsg').show();
+                setTimeout(function() {
+                    $('#revoke_successMsg').delay(2000).fadeOut('slow');
+                }, 2000);
+                 setTimeout(function() {
+                    location.reload();
+                }, 3000);
+            }
+        });
+    }
+
+    function show_display(value)
+    {
+        if(value == "Assign")
+        {
+            $('#assign_div').show();
+            $('#revoke_div').hide();
+        }
+        else
+        {
+            $.ajax({
+                type : "GET",
+                url : "{% url 'check_already_assigned_officiating' %}",
+                success : function(data)
+                {
+                    if(data.officiating_count > 0)
+                    {
+                        $('#assign_div').hide();
+                        $('#revoke_div').show();
+                    }
+                    else
+                    {
+                        $('#assign_div').hide();
+                        $('#revoke_div').hide();
+                        $('#errorMsg').html("No Officiating OIC Assigned.Please Assign First");
+                        $('#errorMsg').show();
+                        $('#errorMsg').delay(2000).fadeOut('slow');
+                    }
+                }
+            });
+
+        }
+    }
+</script>
+{% endblock %}

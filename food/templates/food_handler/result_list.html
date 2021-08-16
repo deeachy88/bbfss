@@ -13,6 +13,7 @@
         </tr>
     </thead>
     <tbody>
+    {% if file_attach|length > 1 %}
         {% for application_details in application_details %}
         <input type="hidden" value="{{ application_details.Training_Batch_No }}" id="batch">
             <tr>
@@ -23,21 +24,78 @@
                 <td>{{application_details.Minimum_Score}}</td>
                 <td>{{application_details.Assessment_Score}}</td>
                 <td>{{application_details.Attendance}}</td>
-                    {% for details in file_attach %}
-                        {% if application_details.Application_No == details.Application_No %}
-                            <td><img src="{{ details.File_Path}}" alt="connect" style="max-height:70px"></td>
-                        {% endif %}
-                    {% empty %}
-                        <td>No Image</td>
-                    {% endfor %}
+                {% for details in file_attach %}
+                    {% if application_details.Application_No == details.Application_No %}
+                        <td><img src="{{ details.File_Path}}" alt="connect" style="max-height:70px"></td>
+                    {% endif %}
+                {% empty %}
+                <td>asas</td>
+                {% endfor %}
                 <td><button type="button" class="btn btn-warning btn-sm" onclick="show_details_modal('{{application_details.Application_No}}')"><i class="zmdi zmdi-upload zmdi-hc-fw"></i></button></td>
                 <input type="hidden" value="{{application_details.Application_No}}" id="appNo_{{ forloop.counter }}">
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="8" class="text-center">No Data</td>
+            </tr>
+        {% endfor %}
+    {% elif file_attach|length == 1 %}
+        {% for application_details in application_details %}
+        <input type="hidden" value="{{ application_details.Training_Batch_No }}" id="batchs">
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{application_details.Applicant_Name}}</td>
+                <td>{{application_details.Contact_No}}</td>
+                <td><button type="button" class="btn btn-primary btn-link" onclick="view_Details('{{application_details.Application_No}}')">{{application_details.Application_No}}</button></td>
+                <td>{{application_details.Minimum_Score}}</td>
+                <td>{{application_details.Assessment_Score}}</td>
+                <td>{{application_details.Attendance}}</td>
+                {% for details in file_attach %}
+                    {% if application_details.Application_No == details.Application_No %}
+                        <td><img src="{{ details.File_Path}}" alt="connect" style="max-height:70px"></td>
+                    {% elif application_details.Application_No != details.Application_No %}
+                        <td>No Image</td>
+                    {% endif %}
+                {% empty %}
+                <td>asas</td>
+                {% endfor %}
+                <td><button type="button" class="btn btn-warning btn-sm" onclick="show_details_modal('{{application_details.Application_No}}')"><i class="zmdi zmdi-upload zmdi-hc-fw"></i></button></td>
+                <input type="hidden" value="{{application_details.Application_No}}" id="appsNo_{{ forloop.counter }}">
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="8" class="text-center">No Data</td>
+            </tr>
+        {% endfor %}
+    {% else %}
+    {% for application_details in application_details %}
+        <input type="hidden" value="{{ application_details.Training_Batch_No }}" id="batchno">
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{application_details.Applicant_Name}}</td>
+                <td>{{application_details.Contact_No}}</td>
+                <td><button type="button" class="btn btn-primary btn-link" onclick="view_Details('{{application_details.Application_No}}')">{{application_details.Application_No}}</button></td>
+                <td>{{application_details.Minimum_Score}}</td>
+                <td>{{application_details.Assessment_Score}}</td>
+                <td>{{application_details.Attendance}}</td>
+                {% for details in file_attach %}
+                    {% if application_details.Application_No == details.Application_No %}
+                        <td><img src="{{ details.File_Path}}" alt="connect" style="max-height:70px"></td>
+                    {% elif application_details.Application_No != details.Application_No %}
+                        <td>No Image</td>
+                    {% endif %}
+                {% empty %}
+                <td>No Image</td>
+                {% endfor %}
+                <td><button type="button" class="btn btn-warning btn-sm" onclick="show_details_modal('{{application_details.Application_No}}')"><i class="zmdi zmdi-upload zmdi-hc-fw"></i></button></td>
+                <input type="hidden" value="{{application_details.Application_No}}" id="applNo_{{ forloop.counter }}">
             </tr>
         {% empty %}
             <tr>
               <td colspan="8" class="text-center">No Data</td>
             </tr>
         {% endfor %}
+    {% endif %}
     </tbody>
 </table>
 <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">

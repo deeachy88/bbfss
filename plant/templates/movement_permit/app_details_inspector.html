@@ -251,7 +251,6 @@
                         {% endfor %}
                             <br><br>
                             <div class="row">
-                                <div class="col-md-12">
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
@@ -278,35 +277,37 @@
                                            {% endfor %}
                                         </tbody>
                                     </table>
-                                </div>
                             </div>
                         <br>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Inspection Team Leader</label>
-                                        <select class="form-control" name="teamLeader"  id="teamLeader">
-                                            <option value="">--SELECT TEAM LEADER--</option>
-                                            {% for inspector_list in inspector_list %}
-                                                    <option value="{{ inspector_list.Login_Id }}">{{ inspector_list.Name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="insTeam">Inspection Team </label>
-                                        <textarea class="form-control" id="insTeam" rows="2"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                            <br><br>
+                        <div class="row">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">File</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                   {% for file_attach in file %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                              <td colspan="3" class="text-center">No Data</td>
+                                            </tr>
+                                   {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <br><br>
                             <div class="row">
                                 <div class="card col-md-12">
                                     <div class="card-header">
                                         <div class="card-head-row">
                                             <div class="card-tools">
-                                                <a data-toggle="modal" href="#addModal" class="btn btn-primary">Launch modal</a>
+                                                <a data-toggle="modal" href="#addModal" class="btn btn-primary">Add</a>
                                             </div>
                                         </div>
                                     </div>
@@ -336,6 +337,27 @@
                                     </div>
                                 </div>
                             </div>
+                        <br>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Inspection Team Leader</label>
+                                        <select class="form-control" name="teamLeader"  id="teamLeader">
+                                            <option value="">--SELECT TEAM LEADER--</option>
+                                            {% for inspector_list in inspector_list %}
+                                                    <option value="{{ inspector_list.Login_Id }}">{{ inspector_list.Name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="insTeam">Inspection Team </label>
+                                        <textarea class="form-control" id="insTeam" rows="2"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -416,7 +438,7 @@ function add_details_ins(application_id)
 
     $.ajax({
         type : "GET",
-        url : "{% url 'add_details_ins_import' %}",
+        url : "{% url 'add_details_ins' %}",
         data :{'application_id':application_id,'currentObservation':currentObservation,'decisionConform':decisionConform},
         success : function(data) {
             $('#details').html(data);

@@ -15,488 +15,425 @@
             <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion" style="">
                 <div class="card-body">
                     {% for application_details in application_details %}
-                        <div id="applicant_details">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Name of the Food Business</label>
-                                        <input type="text" class="form-control" value="{{application_details.Business_Name}}" disabled>
-                                    </div>
-                                </div>
-                                 <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">CID of the Owner</label>
-                                        <input type="text" class="form-control" value="{{application_details.CID}}" disabled>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Name of the applicant/Owner</label>
-                                        <input type="text" class="form-control" value="{{application_details.Name_Owner}}" disabled>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Contact Number</label>
-                                        <input type="number" class="form-control" value="{{application_details.Contact_No}}" disabled>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Email</label>
-                                        <input type="email" class="form-control" value="{{application_details.Email}}" disabled>
-                                    </div>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Name of the FB Representative</label>
-                                        <input type="text" class="form-control" value="{{application_details.Name_Manager}}" disabled>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Licensing Criteria </label>
-                                        <input type="text" class="form-control" value="{{application_details.License_Criteria}}" disabled>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Dzongkhag</label>
-                                        <select class="form-control" disabled>
-                                            {% for dzongkhag in dzongkhag %}
-                                                <option value="{{dzongkhag.Dzongkhag_Code}}"{% if application_details.Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>
-                                                    {{ dzongkhag.Dzongkhag_Name }}
-                                                </option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Gewog</label>
-                                        <select class="form-control" disabled>
-                                            {% for gewog in gewog %}
-                                                <option value="{{ gewog.Gewog_Code }}"{% if application_details.Gewog_Code == gewog.Gewog_Code %}selected{% endif %}>{{ gewog.Gewog_Name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Village</label>
-                                         <select class="form-control" disabled>
-                                            {% for village in village %}
-                                                    <option value="{{ village.Village_Code }}" {% if application_details.Village_Code == village.Village_Code %}selected{% endif %}>{{ village.Village_Name }}</option>
-                                            {% endfor %}
-                                         </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Food Business Address</label>
-                                        <textarea class="form-control" disabled>{{application_details.Address}}</textarea>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Current status of functioning</label>
-                                        <select class="form-control" disabled>
-                                            {% if application_details.Current_Status == "Project stage" %}
-                                                <option value="Project stage" selected>Project stage</option>
-                                                <option value="Commissioned">Commissioned but regular production yet to start</option>
-                                                <option value="Regular">Regular production in progress</option>
-                                            {% elif application_details.Current_Status == "Commissioned" %}
-                                                <option value="Project stage">Project stage</option>
-                                                <option value="Commissioned" selected>Commissioned but regular production yet to start</option>
-                                                <option value="Regular">Regular production in progress</option>
-                                            {% else %}
-                                                <option value="Project stage">Project stage</option>
-                                                <option value="Commissioned">Commissioned but regular production yet to start</option>
-                                                <option value="Regular" selected>Regular production in progress</option>
-                                            {% endif%}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Product Category</label>
-                                        <select class="form-control" disabled>
-                                            {% if application_details.Product_Category == "Proposed" %}
-                                                <option value="Proposed" selected>Proposed</option>
-                                                <option value="Being Manufactured">Being Manufactured</option>
-                                            {% else %}
-                                                <option value="Proposed">Proposed</option>
-                                                <option value="Being Manufactured" selected>Being Manufactured</option>
-                                            {% endif%}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Products proposed/being manufactured</label>
-                                        <textarea class="form-control" disabled>{{application_details.Product}}</textarea>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Identified water source</label>
-                                        <input type="text" class="form-control" value="{{application_details.Water_Source}}" disabled>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Number of years in production</label>
-                                        <input type="text" class="form-control" value="{{application_details.Years_In_Production}}" disabled>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Production Volume(Last Calender Year)</label>
-                                        <input type="number" class="form-control" value="{{application_details.Volume_Last_Year}}" disabled>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="form-group col-md-4">
-                                    <label class="form-label">Volume Unit</label>
-                                    <input type="text" class="form-control" value="{{application_details.Volume_Unit}}" disabled>
-                                </div>
-                                <div class="form-group col-md-4">
-                                    <label class="form-label">Site History Details</label>
-                                    <select class="form-control" disabled>
-                                        {% if application_details.Site_History == "Fresh land" %}
-                                        <option value="Fresh land" selected>Fresh land</option>
-                                        {% else %}
-                                        <option value="Converted structure" selected>Converted structure</option>
-                                        {% endif %}
-                                    </select>
-                                </div>
-                                <div class="col-md-4" id="previous_business_div" style="display:none">
-                                    <div class="form-group">
-                                        <label class="form-label">What was the previous business conducted there?</label>
-                                        <textarea class="form-control" disabled rows="2">{{application_details.Previous_Business}}</textarea>
-                                    </div>
-                                </div>
-                                <div class="form-group col-md-4">
-                                    <div class="form-check">
-                                        <label class="form-label">Any processes outsourced by the FB?</label><br>
-                                        <br><div class="form-group text-center">
-                                            <div class="form-check">
-                                                {% if application_details.Process_Outsource == "Yes" %}
-                                                    <label class="custom-control custom-radio">
-                                                        <input type="radio" name="outsourced_process" class="custom-control-input" checked>
-                                                        <span class="custom-control-indicator"></span>
-                                                        <span class="custom-control-description">Yes</span>
-                                                    </label>
-                                                    <label class="custom-control custom-radio">
-                                                        <input type="radio" name="outsourced_process" class="custom-control-input" disabled>
-                                                        <span class="custom-control-indicator"></span>
-                                                        <span class="custom-control-description">No</span>
-                                                    </label>&nbsp;
-                                                {% else %}
-                                                    <label class="custom-control custom-radio">
-                                                        <input type="radio" name="outsourced_process" class="custom-control-input" disabled>
-                                                        <span class="custom-control-indicator"></span>
-                                                        <span class="custom-control-description">Yes</span>
-                                                    </label>
-                                                    <label class="custom-control custom-radio">
-                                                        <input type="radio" name="outsourced_process" class="custom-control-input" checked>
-                                                        <span class="custom-control-indicator"></span>
-                                                        <span class="custom-control-description">No</span>
-                                                    </label>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="form-group col-md-4">
-                                    <label class="form-label">Legal Entity Status</label>
-                                    <select class="form-control" name="legal_status"  id="legal_status">
-                                         {% if application_details.Legal_Entity == "Private Ltd" %}
-                                            <option value="Private Ltd" selected>Private Ltd</option>
-                                         {% if application_details.Legal_Entity == "Public Ltd" %}
-                                            <option value="Public Ltd" selected>Public Ltd</option>
-                                         {% else %}
-                                            <option value="Government undertaking" selected>Government undertaking (Pull from master table)</option>
-                                         {% endif %}
-                                    </select>
-                                    <div class="alert alert-danger" id="legal_statusErrorMsg" style="display:none"></div>
-                                </div>
-                                <div class="form-group col-md-4">
-                                    <div class="form-check">
-                                        <label class="form-label">Are you a part of a larger Corporation?</label><br>
-                                        <br><div class="form-group">
-                                            <div class="form-check">
-                                                {% if application_details.Large_Corporation == "Yes" %}
-                                                    <label class="custom-control custom-radio">
-                                                        <input type="radio" name="larger_corporation" class="custom-control-input" checked>
-                                                        <span class="custom-control-indicator"></span>
-                                                        <span class="custom-control-description">Yes</span>
-                                                    </label>
-                                                    <label class="custom-control custom-radio">
-                                                        <input type="radio" name="larger_corporation" class="custom-control-input" disabled>
-                                                        <span class="custom-control-indicator"></span>
-                                                        <span class="custom-control-description">No</span>
-                                                    </label>
-                                                {% else %}
-                                                    <label class="custom-control custom-radio">
-                                                        <input type="radio" name="larger_corporation" class="custom-control-input" disabled>
-                                                        <span class="custom-control-indicator"></span>
-                                                        <span class="custom-control-description">Yes</span>
-                                                    </label>&nbsp;
-                                                    <label class="custom-control custom-radio">
-                                                        <input type="radio" name="larger_corporation" class="custom-control-input" checked>
-                                                        <span class="custom-control-indicator"></span>
-                                                        <span class="custom-control-description">No</span>
-                                                    </label>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group col-md-4">
-                                    <div class="form-check">
-                                        <label class="form-label">Relationship</label><br>
-                                        <input type="text" class="form-control" value="{{application_details.Large_Corporation_Relation}}">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="form-group col-md-4">
-                                    <div class="form-check">
-                                        <label class="form-label">Has the FBO been licensed before?</label><br><br>
+                            <div id="applicant_details">
+                                <div class="row">
+                                    <div class="col-md-4">
                                         <div class="form-group">
-                                            <div class="form-check">
-                                                {% if application_details.FBO_License_Status == "Yes" %}
-                                                    <label class="custom-control custom-radio">
-                                                        <input type="radio" name="licensed_before" class="custom-control-input" checked>
-                                                        <span class="custom-control-indicator"></span>
-                                                        <span class="custom-control-description">Yes</span>
-                                                    </label>&nbsp;
-                                                    <label class="custom-control custom-radio">
-                                                        <input type="radio" name="licensed_before" class="custom-control-input" disabled>
-                                                        <span class="custom-control-indicator"></span>
-                                                        <span class="custom-control-description">No</span>
-                                                    </label>
+                                            <label class="form-label">Name of the Food Business</label>
+                                            <input type="text" class="form-control" value="{{application_details.Business_Name}}" disabled>
+                                        </div>
+                                    </div>
+                                     <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">CID of the Owner</label>
+                                            <input type="text" class="form-control" value="{{application_details.CID}}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Name of the applicant/Owner</label>
+                                            <input type="text" class="form-control" value="{{application_details.Name_Owner}}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Contact Number</label>
+                                            <input type="number" class="form-control" value="{{application_details.Contact_No}}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Email</label>
+                                            <input type="email" class="form-control" value="{{application_details.Email}}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Name of the FB Representative</label>
+                                            <input type="text" class="form-control" value="{{application_details.Name_Manager}}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Licensing Criteria </label>
+                                            <input type="text" class="form-control" value="{{application_details.License_Criteria}}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Dzongkhag</label>
+                                            <select class="form-control" disabled>
+                                                {% for dzongkhag in dzongkhag %}
+                                                    <option value="{{dzongkhag.Dzongkhag_Code}}"{% if application_details.Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>
+                                                        {{ dzongkhag.Dzongkhag_Name }}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Gewog</label>
+                                            <select class="form-control" disabled>
+                                                {% for gewog in gewog %}
+                                                    <option value="{{ gewog.Gewog_Code }}"{% if application_details.Gewog_Code == gewog.Gewog_Code %}selected{% endif %}>{{ gewog.Gewog_Name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Village</label>
+                                             <select class="form-control" disabled>
+                                                {% for village in village %}
+                                                        <option value="{{ village.Village_Code }}" {% if application_details.Village_Code == village.Village_Code %}selected{% endif %}>{{ village.Village_Name }}</option>
+                                                {% endfor %}
+                                             </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Food Business Address</label>
+                                            <textarea class="form-control" disabled>{{application_details.Address}}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Current status of functioning</label>
+                                            <select class="form-control" disabled>
+                                                {% if application_details.Current_Status == "Project stage" %}
+                                                    <option value="Project stage" selected>Project stage</option>
+                                                    <option value="Commissioned">Commissioned but regular production yet to start</option>
+                                                    <option value="Regular">Regular production in progress</option>
+                                                {% elif application_details.Current_Status == "Commissioned" %}
+                                                    <option value="Project stage">Project stage</option>
+                                                    <option value="Commissioned" selected>Commissioned but regular production yet to start</option>
+                                                    <option value="Regular">Regular production in progress</option>
                                                 {% else %}
-                                                    <label class="custom-control custom-radio">
-                                                        <input type="radio" name="licensed_before" class="custom-control-input" disabled>
-                                                        <span class="custom-control-indicator"></span>
-                                                        <span class="custom-control-description">Yes</span>
-                                                    </label>&nbsp;
-                                                    <label class="custom-control custom-radio">
-                                                        <input type="radio" name="licensed_before" class="custom-control-input" checked>
-                                                        <span class="custom-control-indicator"></span>
-                                                        <span class="custom-control-description">No</span>
-                                                    </label>
-                                                {% endif %}
+                                                    <option value="Project stage">Project stage</option>
+                                                    <option value="Commissioned">Commissioned but regular production yet to start</option>
+                                                    <option value="Regular" selected>Regular production in progress</option>
+                                                {% endif%}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Product Category</label>
+                                            <select class="form-control" disabled>
+                                                {% if application_details.Product_Category == "Proposed" %}
+                                                    <option value="Proposed" selected>Proposed</option>
+                                                    <option value="Being Manufactured">Being Manufactured</option>
+                                                {% else %}
+                                                    <option value="Proposed">Proposed</option>
+                                                    <option value="Being Manufactured" selected>Being Manufactured</option>
+                                                {% endif%}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Products proposed/being manufactured</label>
+                                            <textarea class="form-control" disabled>{{application_details.Product}}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Identified water source</label>
+                                            <input type="text" class="form-control" value="{{application_details.Water_Source}}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Number of years in production</label>
+                                            <input type="text" class="form-control" value="{{application_details.Years_In_Production}}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Production Volume(Last Calender Year)</label>
+                                            <input type="text" class="form-control" value="{{application_details.Volume_Last_Year}}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Volume Unit</label>
+                                        <input type="text" class="form-control" value="{{application_details.Volume_Unit}}" disabled>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Site History Details</label>
+                                        <select class="form-control" disabled>
+                                            {% if application_details.Site_History == "Fresh land" %}
+                                            <option value="Fresh land" selected>Fresh land</option>
+                                            {% else %}
+                                            <option value="Converted structure" selected>Converted structure</option>
+                                            {% endif %}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4" id="previous_business_div" style="display:none">
+                                        <div class="form-group">
+                                            <label class="form-label">What was the previous business conducted there?</label>
+                                            <textarea class="form-control" disabled rows="2">{{application_details.Previous_Business}}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label class="form-label">Any processes outsourced by the FB?</label><br>
+                                            <br><div class="form-group text-center">
+                                                <div class="form-check">
+                                                    {% if application_details.Process_Outsource == "Yes" %}
+                                                        <label class="custom-control custom-radio">
+                                                            <input type="radio" name="outsourced_process" class="custom-control-input" checked>
+                                                            <span class="custom-control-indicator"></span>
+                                                            <span class="custom-control-description">Yes</span>
+                                                        </label>
+                                                        <label class="custom-control custom-radio">
+                                                            <input type="radio" name="outsourced_process" class="custom-control-input" disabled>
+                                                            <span class="custom-control-indicator"></span>
+                                                            <span class="custom-control-description">No</span>
+                                                        </label>&nbsp;
+                                                    {% else %}
+                                                        <label class="custom-control custom-radio">
+                                                            <input type="radio" name="outsourced_process" class="custom-control-input" disabled>
+                                                            <span class="custom-control-indicator"></span>
+                                                            <span class="custom-control-description">Yes</span>
+                                                        </label>
+                                                        <label class="custom-control custom-radio">
+                                                            <input type="radio" name="outsourced_process" class="custom-control-input" checked>
+                                                            <span class="custom-control-indicator"></span>
+                                                            <span class="custom-control-description">No</span>
+                                                        </label>
+                                                    {% endif %}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group col-md-4">
-                                    <div class="form-check">
-                                        <label class="form-label">If Yes, provide details of License number</label><br>
-                                        <input type="text" class="form-control" value="{{application_details.FBO_License_No}}" disabled>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Legal Entity Status</label>
+                                        <select class="form-control" disabled>
+                                             {% if application_details.Legal_Entity == "Private Ltd" %}
+                                                <option value="Private Ltd" selected>Private Ltd</option>
+                                             {% elif application_details.Legal_Entity == "Public Ltd" %}
+                                                <option value="Public Ltd" selected>Public Ltd</option>
+                                             {% else %}
+                                                <option value="Government undertaking" selected>Government undertaking (Pull from master table)</option>
+                                             {% endif %}
+                                        </select>
+                                        <div class="alert alert-danger" id="legal_statusErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label class="form-label">Are you a part of a larger Corporation?</label><br>
+                                            <br><div class="form-group">
+                                                <div class="form-check">
+                                                    {% if application_details.Large_Corporation == "Yes" %}
+                                                        <label class="custom-control custom-radio">
+                                                            <input type="radio" name="larger_corporation" class="custom-control-input" checked>
+                                                            <span class="custom-control-indicator"></span>
+                                                            <span class="custom-control-description">Yes</span>
+                                                        </label>
+                                                        <label class="custom-control custom-radio">
+                                                            <input type="radio" name="larger_corporation" class="custom-control-input" disabled>
+                                                            <span class="custom-control-indicator"></span>
+                                                            <span class="custom-control-description">No</span>
+                                                        </label>
+                                                    {% else %}
+                                                        <label class="custom-control custom-radio">
+                                                            <input type="radio" name="larger_corporation" class="custom-control-input" disabled>
+                                                            <span class="custom-control-indicator"></span>
+                                                            <span class="custom-control-description">Yes</span>
+                                                        </label>&nbsp;
+                                                        <label class="custom-control custom-radio">
+                                                            <input type="radio" name="larger_corporation" class="custom-control-input" checked>
+                                                            <span class="custom-control-indicator"></span>
+                                                            <span class="custom-control-description">No</span>
+                                                        </label>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label class="form-label">Relationship</label><br>
+                                            <input type="text" class="form-control" value="{{application_details.Large_Corporation_Relation}}" disabled>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="form-group col-md-4">
-                                    <div class="form-check">
-                                        <label class="form-label">Reasons why the License is no longer valid</label><br>
-                                        <textarea class="form-control" disabled rows="2">{{application_details.Invalid_Reason}}</textarea>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label class="form-label">Has the FBO been licensed before?</label><br><br>
+                                            <div class="form-group">
+                                                <div class="form-check">
+                                                    {% if application_details.FBO_License_Status == "Yes" %}
+                                                        <label class="custom-control custom-radio">
+                                                            <input type="radio" name="licensed_before" class="custom-control-input" checked>
+                                                            <span class="custom-control-indicator"></span>
+                                                            <span class="custom-control-description">Yes</span>
+                                                        </label>&nbsp;
+                                                        <label class="custom-control custom-radio">
+                                                            <input type="radio" name="licensed_before" class="custom-control-input" disabled>
+                                                            <span class="custom-control-indicator"></span>
+                                                            <span class="custom-control-description">No</span>
+                                                        </label>
+                                                    {% else %}
+                                                        <label class="custom-control custom-radio">
+                                                            <input type="radio" name="licensed_before" class="custom-control-input" disabled>
+                                                            <span class="custom-control-indicator"></span>
+                                                            <span class="custom-control-description">Yes</span>
+                                                        </label>&nbsp;
+                                                        <label class="custom-control custom-radio">
+                                                            <input type="radio" name="licensed_before" class="custom-control-input" checked>
+                                                            <span class="custom-control-indicator"></span>
+                                                            <span class="custom-control-description">No</span>
+                                                        </label>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label class="form-label">If Yes, provide details of License number</label><br>
+                                            <input type="text" class="form-control" value="{{application_details.FBO_License_No}}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label class="form-label">Reasons why the License is no longer valid</label><br>
+                                            <textarea class="form-control" disabled rows="2">{{application_details.Invalid_Reason}}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label class="form-label">Any judicial proceedings relating to the FBOs operations/product?</label><br>
+                                            <br><div class="form-group">
+                                                <div class="form-check">
+                                                    {% if application_details.FBO_Judicial_Proceedings == "Yes" %}
+                                                        <label class="custom-control custom-radio">
+                                                            <input type="radio" name="judicial_proceedings" class="custom-control-input" checked>
+                                                            <span class="custom-control-indicator"></span>
+                                                            <span class="custom-control-description">Yes</span>
+                                                        </label>&nbsp;
+                                                        <label class="custom-control custom-radio">
+                                                            <input type="radio" name="judicial_proceedings" class="custom-control-input" disabled>
+                                                            <span class="custom-control-indicator"></span>
+                                                            <span class="custom-control-description">No</span>
+                                                        </label>
+                                                    {% else %}
+                                                        <label class="custom-control custom-radio">
+                                                            <input type="radio" name="judicial_proceedings" class="custom-control-input" disabled>
+                                                            <span class="custom-control-indicator"></span>
+                                                            <span class="custom-control-description">Yes</span>
+                                                        </label>&nbsp;
+                                                        <label class="custom-control custom-radio">
+                                                            <input type="radio" name="judicial_proceedings" class="custom-control-input" checked>
+                                                            <span class="custom-control-indicator"></span>
+                                                            <span class="custom-control-description">No</span>
+                                                        </label>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label class="form-label">Please provide details</label><br>
+                                            <textarea class="form-control" rows="2" disabled>{{application_details.Judicial_Proceedings_Details}}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label class="form-label">Any proceedings by any Regulatory body or suspension /cancellation /withdrawal of any relevant licensing/approvals under any Regulations </label><br>
+                                            <br><div class="form-group">
+                                                <div class="form-check">
+                                                    {% if application_details.Regulatory_Proceedings_Details == "Yes" %}
+                                                        <label class="custom-control custom-radio">
+                                                            <input type="radio" name="regulatory_proceedings" class="custom-control-input" checked>
+                                                            <span class="custom-control-indicator"></span>
+                                                            <span class="custom-control-description">Yes</span>
+                                                        </label>&nbsp;
+                                                        <label class="custom-control custom-radio">
+                                                            <input type="radio" name="regulatory_proceedings" class="custom-control-input" disabled>
+                                                            <span class="custom-control-indicator"></span>
+                                                            <span class="custom-control-description">No</span>
+                                                        </label>
+                                                    {% else %}
+                                                        <label class="custom-control custom-radio">
+                                                            <input type="radio" name="regulatory_proceedings" class="custom-control-input" disabled>
+                                                            <span class="custom-control-indicator"></span>
+                                                            <span class="custom-control-description">Yes</span>
+                                                        </label>&nbsp;
+                                                        <label class="custom-control custom-radio">
+                                                            <input type="radio" name="regulatory_proceedings" class="custom-control-input" checked>
+                                                            <span class="custom-control-indicator"></span>
+                                                            <span class="custom-control-description">No</span>
+                                                        </label>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label class="form-label">Please provide details</label><br>
+                                            <textarea class="form-control" disabled rows="2">{{application_details.Regulatory_Proceedings_Details}}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label class="form-label">Has a Project Proposal been prepared  </label><br>
+                                            <br><div class="form-group">
+                                                <div class="form-check">
+                                                    {% if application_details.Regulatory_Proceedings_Details == "Yes" %}
+                                                        <label class="custom-control custom-radio">
+                                                            <input type="radio" name="project_proposal" class="custom-control-input" checked>
+                                                            <span class="custom-control-indicator"></span>
+                                                            <span class="custom-control-description">Yes</span>
+                                                        </label>&nbsp;
+                                                        <label class="custom-control custom-radio">
+                                                            <input type="radio" name="project_proposal" class="custom-control-input" disabled>
+                                                            <span class="custom-control-indicator"></span>
+                                                            <span class="custom-control-description">No</span>
+                                                        </label>
+                                                    {% else %}
+                                                        <label class="custom-control custom-radio">
+                                                            <input type="radio" name="project_proposal" class="custom-control-input" disabled>
+                                                            <span class="custom-control-indicator"></span>
+                                                            <span class="custom-control-description">Yes</span>
+                                                        </label>&nbsp;
+                                                        <label class="custom-control custom-radio">
+                                                            <input type="radio" name="project_proposal" class="custom-control-input" checked>
+                                                            <span class="custom-control-indicator"></span>
+                                                            <span class="custom-control-description">No</span>
+                                                        </label>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="form-group col-md-4">
-                                    <div class="form-check">
-                                        <label class="form-label">Any judicial proceedings relating to the FBOs operations/product?</label><br>
-                                        <br><div class="form-group">
-                                            <div class="form-check">
-                                                {% if application_details.FBO_Judicial_Proceedings == "Yes" %}
-                                                    <label class="custom-control custom-radio">
-                                                        <input type="radio" name="judicial_proceedings" class="custom-control-input" checked>
-                                                        <span class="custom-control-indicator"></span>
-                                                        <span class="custom-control-description">Yes</span>
-                                                    </label>&nbsp;
-                                                    <label class="custom-control custom-radio">
-                                                        <input type="radio" name="judicial_proceedings" class="custom-control-input" disabled>
-                                                        <span class="custom-control-indicator"></span>
-                                                        <span class="custom-control-description">No</span>
-                                                    </label>
-                                                {% else %}
-                                                    <label class="custom-control custom-radio">
-                                                        <input type="radio" name="judicial_proceedings" class="custom-control-input" disabled>
-                                                        <span class="custom-control-indicator"></span>
-                                                        <span class="custom-control-description">Yes</span>
-                                                    </label>&nbsp;
-                                                    <label class="custom-control custom-radio">
-                                                        <input type="radio" name="judicial_proceedings" class="custom-control-input" checked>
-                                                        <span class="custom-control-indicator"></span>
-                                                        <span class="custom-control-description">No</span>
-                                                    </label>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group col-md-4">
-                                    <div class="form-check">
-                                        <label class="form-label">Please provide details</label><br>
-                                        <textarea class="form-control" rows="2" disabled>{{application_details.Judicial_Proceedings_Details}}</textarea>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="form-group col-md-4">
-                                    <div class="form-check">
-                                        <label class="form-label">Any proceedings by any Regulatory body or suspension /cancellation /withdrawal of any relevant licensing/approvals under any Regulations </label><br>
-                                        <br><div class="form-group">
-                                            <div class="form-check">
-                                                {% if application_details.Regulatory_Proceedings_Details == "Yes" %}
-                                                    <label class="custom-control custom-radio">
-                                                        <input type="radio" name="regulatory_proceedings" class="custom-control-input" checked>
-                                                        <span class="custom-control-indicator"></span>
-                                                        <span class="custom-control-description">Yes</span>
-                                                    </label>&nbsp;
-                                                    <label class="custom-control custom-radio">
-                                                        <input type="radio" name="regulatory_proceedings" class="custom-control-input" disabled>
-                                                        <span class="custom-control-indicator"></span>
-                                                        <span class="custom-control-description">No</span>
-                                                    </label>
-                                                {% else %}
-                                                    <label class="custom-control custom-radio">
-                                                        <input type="radio" name="regulatory_proceedings" class="custom-control-input" disabled>
-                                                        <span class="custom-control-indicator"></span>
-                                                        <span class="custom-control-description">Yes</span>
-                                                    </label>&nbsp;
-                                                    <label class="custom-control custom-radio">
-                                                        <input type="radio" name="regulatory_proceedings" class="custom-control-input" checked>
-                                                        <span class="custom-control-indicator"></span>
-                                                        <span class="custom-control-description">No</span>
-                                                    </label>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group col-md-4">
-                                    <div class="form-check">
-                                        <label class="form-label">Please provide details</label><br>
-                                        <textarea class="form-control" disabled rows="2">{{application_details.Regulatory_Proceedings_Details}}</textarea>
-                                    </div>
-                                </div>
-                                <div class="form-group col-md-4">
-                                    <div class="form-check">
-                                        <label class="form-label">Has a Project Proposal been prepared  </label><br>
-                                        <br><div class="form-group">
-                                            <div class="form-check">
-                                                {% if application_details.Regulatory_Proceedings_Details == "Yes" %}
-                                                    <label class="custom-control custom-radio">
-                                                        <input type="radio" name="project_proposal" class="custom-control-input" checked>
-                                                        <span class="custom-control-indicator"></span>
-                                                        <span class="custom-control-description">Yes</span>
-                                                    </label>&nbsp;
-                                                    <label class="custom-control custom-radio">
-                                                        <input type="radio" name="project_proposal" class="custom-control-input" disabled>
-                                                        <span class="custom-control-indicator"></span>
-                                                        <span class="custom-control-description">No</span>
-                                                    </label>
-                                                {% else %}
-                                                    <label class="custom-control custom-radio">
-                                                        <input type="radio" name="project_proposal" class="custom-control-input" disabled>
-                                                        <span class="custom-control-indicator"></span>
-                                                        <span class="custom-control-description">Yes</span>
-                                                    </label>&nbsp;
-                                                    <label class="custom-control custom-radio">
-                                                        <input type="radio" name="project_proposal" class="custom-control-input" checked>
-                                                        <span class="custom-control-indicator"></span>
-                                                        <span class="custom-control-description">No</span>
-                                                    </label>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                     <br><br>
-                    {% if application_details.PermitType == A %}
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Species</th>
-                                    <th scope="col">Breed</th>
-                                    <th scope="col">Age</th>
-                                    <th scope="col">Sex</th>
-                                    <th scope="col">Description</th>
-                                    <th scope="col">Quantity</th>
-                                    <th scope="col">Unit</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for import in import %}
-                                    <tr>
-                                        <td>{{ forloop.counter }}</td>
-                                        <td>{{import.Import_Category}}</td>
-                                        <td>{{import.Pesticide_Id}}</td>
-                                        <td>{{import.Description}}</td>
-                                        <td>{{import.Unit}}</td>
-                                        <td>{{import.Quantity}}</td>
-                                    </tr>
-                                    {% empty %}
-                                    <tr>
-                                      <td colspan="8" class="text-center">No Data</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                        {% else %}
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Particulars</th>
-                                    <th scope="col">Company_Name</th>
-                                    <th scope="col">Description</th>
-                                    <th scope="col">Quantity</th>
-                                    <th scope="col">Unit</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for import in import %}
-                                    <tr>
-                                        <td>{{ forloop.counter }}</td>
-                                        <td>{{import.Import_Category}}</td>
-                                        <td>{{import.Pesticide_Id}}</td>
-                                        <td>{{import.Description}}</td>
-                                        <td>{{import.Unit}}</td>
-                                        <td>{{import.Quantity}}</td>
-                                    </tr>
-                                    {% empty %}
-                                    <tr>
-                                      <td colspan="6" class="text-center">No Data</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                        {% endif%}
-                    {% endfor %}
+                        {% endfor %}
                 </div>
             </div>
         </div>
@@ -519,7 +456,7 @@
                            {% for file_attach in file %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td>{{file_attach.Attachment}}</td>
+                                    <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
                                 </tr>
                                 {% empty %}
                                 <tr>
@@ -649,18 +586,57 @@
                         </table>
                     </div>
                     <br>
+                    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Inspector </span>&nbsp;&nbsp;&nbsp;
+                            <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Details</span>
+                        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                    </div>
+                    {% for application_details in application_details %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Inspection Team Leader</label>
+                                    <input type="text" class="form-control" value="{{ application_details.FI_Inspection_Leader }}" readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Inspection Team</label>
+                                    <input type="text" class="form-control" value="{{ application_details.FI_Inspection_Team }}" readonly="readonly">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Desired Inspection Date</label>
+                                    <input type="text" class="form-control" value="{{ application_details.FI_Inspection_Date }}" readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Recommendation From Inspector</label>
+                                    <input type="text" class="form-control" value="{{ application_details.FI_Recommendation }}" readonly="readonly">
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <br>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Desired Inspection Date</label>
+                                <label class="form-label">Desired Inspection Date</label>
                                 <input type="text" class="form-control date-picker flatpickr-input active" id="dateOfInspection" name="date"  placeholder="Pick a date" readonly="readonly">
                             </div>
+                            <div class="alert alert-danger" id="dateOfInspectionErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Response</label>
+                                <label class="form-label">Response</label>
                                 <textarea class="form-control" id="remarks" rows="2"></textarea>
                             </div>
+                            <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
                         </div>
                     </div>
                     <div class="alert alert-info" id="messageDiv" style="display:none">
@@ -670,7 +646,7 @@
                     {% for application_details in application_details %}
                         <div class="card-action text-center">
                             <button type="button" id="approve_button" class="btn btn-flat btn-primary" onclick="resubmit_feasibility_inspection('{{application_details.Application_No}}')">
-                                <i class="ace-icon fa fa-times"></i>
+                                <i class="ace-icon fa fa-reply-all"></i>
                                 &nbsp;&nbsp;Response
                             </button>
                             <button type="button" onclick="close_app_model()" class="btn btn-flat btn-danger">
@@ -712,20 +688,37 @@ function resubmit_feasibility_inspection(application_id)
     remarks = $('#remarks').val();
     dateOfInspection = $('#dateOfInspection').val();
 
-   $.ajax({
-        type : "GET",
-        url : "{% url 'resubmit_feasibility_inspection' %}",
-        data :{'application_id':application_id , 'remarks':remarks ,'dateOfInspection':dateOfInspection},
-        success : function(data) {
-            $('#messageDiv').show();
-            setTimeout(function() {
-                $("#messageDiv").hide('blind', {}, 500)
-            }, 2000);
-            setTimeout(function() {
-                location.reload();
-            }, 3000);
-        }
-    });
+    if(dateOfInspection == "")
+    {
+        $('#dateOfInspectionErrorMsg').html("Select Date.");
+        $('#dateOfInspectionErrorMsg').show();
+        $('#dateOfInspectionErrorMsg').delay(2000).fadeOut('slow');
+        $('#dateOfInspection').focus();
+    }
+    else if(remarks == "")
+    {
+        $('#remarksErrorMsg').html("Enter Response.");
+        $('#remarksErrorMsg').show();
+        $('#remarksErrorMsg').delay(2000).fadeOut('slow');
+        $('#remarks').focus();
+    }
+    else
+    {
+       $.ajax({
+            type : "GET",
+            url : "{% url 'resubmit_feasibility_inspection' %}",
+            data :{'application_id':application_id , 'remarks':remarks ,'dateOfInspection':dateOfInspection},
+            success : function(data) {
+                $('#messageDiv').show();
+                setTimeout(function() {
+                    $("#messageDiv").hide('blind', {}, 500)
+                }, 2000);
+                setTimeout(function() {
+                    location.reload();
+                }, 3000);
+            }
+        });
+    }
 }
 
 

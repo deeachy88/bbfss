@@ -3,7 +3,6 @@
 {% block content %}
 <form method="post" id="food_handler_ins_form">
     {% csrf_token %}
-<div id="AppDetails">
     <div class="animated fadeIn">
         <div class="row">
             <div class="col-md-12">
@@ -30,10 +29,10 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% if application_details %}
-                                        <input type="hidden" value="{{ application_details|length }}" id="counter">
-                                    {% endif %}
                                     {% for application_details in application_details %}
+                                        {% if application_details %}
+                                            <input type="hidden" value="{{ details|length }}" id="counter">
+                                        {% endif %}
                                         <tr>
                                             <td>{{ forloop.counter }}</td>
                                             <td class="center">
@@ -43,16 +42,17 @@
                                                     <input type="hidden" id="checkedVals" name="checkedVals"/>
                                                 </label>
                                             </td>
-                                            <td><button class="btn btn-primary btn-link" onclick="viewApplicationDetails('{{application_details.Application_No}}')">{{application_details.Application_No}}</button></td>
+                                            <td><button type="button" class="btn btn-primary btn-link" onclick="viewApplicationDetails('{{application_details.Application_No}}')">{{application_details.Application_No}}</button></td>
                                             {% for details in details %}
                                                 {% if application_details.Application_No == details.Application_No %}
                                                     <td>{{details.Application_Date|date:"d-m-Y"}}</td>
                                                     <td>{{details.Applicant_Name}}</td>
                                                     <td>{{details.Contact_No}}</td>
-                                                    <input type="hidden" value="{{details.Email}}" id="cost_{{ forloop.counter }}">
-                                                    <input type="hidden" value="{{details.Application_No}}" id="applicationNo_{{ forloop.counter }}">
                                                 {% endif %}
                                             {% endfor %}
+
+                                            <input type="hidden" value="{{application_details.Email}}" id="email_{{ forloop.counter }}">
+                                            <input type="hidden" value="{{application_details.Application_No}}" id="applicationNo_{{ forloop.counter }}">
                                         </tr>
                                     {% empty %}
                                         <tr>
@@ -61,94 +61,122 @@
                                     {% endfor %}
                                 </tbody>
                             </table>
-                            <br>
-                            <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
-                                <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
-                                    <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Training </span>&nbsp;&nbsp;&nbsp;
-                                    <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Details</span>
-                                <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Training Batch</label>
-                                        <select class="form-control form-control" id="Training_Batch" name="Training_Batch">
-                                            <option value="">-SELECT-</option>
-                                            <option value="Meat Shop">Meat Shop</option>
-                                            <option value="Food & Beverage Services">Food & Beverage Services</option>
-                                            <option value="Food Processing Units">Food Processing Units</option>
-                                        </select>
-                                    </div>
-                                    <div class="alert alert-danger" id="Training_BatchErrorMsg" style="display:none"></div>
+                            {% if details %}
+                                <br>
+                                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                        <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Training </span>&nbsp;&nbsp;&nbsp;
+                                        <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Details</span>
+                                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Batch No</label>
-                                        <input type="text" name="batch_no" id="batch_no" class="form-control">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Training Batch <font color="red">*</font></label>
+                                            <select class="form-control form-control" id="Training_Batch" name="Training_Batch">
+                                                <option value="">-SELECT-</option>
+                                                <option value="Meat Shop">Meat Shop</option>
+                                                <option value="Food & Beverage Services">Food & Beverage Services</option>
+                                                <option value="Food Processing Units">Food Processing Units</option>
+                                            </select>
+                                        </div>
+                                        <div class="alert alert-danger" id="Training_BatchErrorMsg" style="display:none"></div>
                                     </div>
-                                    <div class="alert alert-danger" id="batch_noErrorMsg" style="display:none"></div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">From Training Date</label>
-                                         <input type="date" name="from_training_Date" id="from_training_Date" class="form-control date-picker flatpickr-input active">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Batch No <font color="red">*</font></label>
+                                            <input type="text" name="batch_no" id="batch_no" class="form-control">
+                                        </div>
+                                        <div class="alert alert-danger" id="batch_noErrorMsg" style="display:none"></div>
                                     </div>
-                                    <div class="alert alert-danger" id="from_training_DateErrorMsg" style="display:none"></div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">To Training Date</label>
-                                         <input type="date" name="to_training_Date" id="to_training_Date" class="form-control date-picker flatpickr-input active">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">From Training Date <font color="red">*</font></label>
+                                             <input type="date" name="from_training_Date" id="from_training_Date" class="form-control date-picker flatpickr-input active">
+                                        </div>
+                                        <div class="alert alert-danger" id="from_training_DateErrorMsg" style="display:none"></div>
                                     </div>
-                                    <div class="alert alert-danger" id="to_training_DateErrorMsg" style="display:none"></div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Minimum Qualifying Marks</label>
-                                        <input type="number" name="min_mark" id="min_mark" class="form-control">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">To Training Date <font color="red">*</font></label>
+                                             <input type="date" name="to_training_Date" id="to_training_Date" class="form-control date-picker flatpickr-input active">
+                                        </div>
+                                        <div class="alert alert-danger" id="to_training_DateErrorMsg" style="display:none"></div>
                                     </div>
-                                    <div class="alert alert-danger" id="min_markErrorMsg" style="display:none"></div>
-                                </div>
-                                 <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Training Venue</label>
-                                        <input type="text" name="Training_Venue" id="Training_Venue" class="form-control">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Minimum Qualifying Marks <font color="red">*</font></label>
+                                            <input type="number" name="min_mark" id="min_mark" class="form-control">
+                                        </div>
+                                        <div class="alert alert-danger" id="min_markErrorMsg" style="display:none"></div>
                                     </div>
-                                    <div class="alert alert-danger" id="Training_VenueErrorMsg" style="display:none"></div>
-                                </div>
+                                     <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Training Venue <font color="red">*</font></label>
+                                            <input type="text" name="Training_Venue" id="Training_Venue" class="form-control">
+                                        </div>
+                                        <div class="alert alert-danger" id="Training_VenueErrorMsg" style="display:none"></div>
+                                    </div>
 
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Remarks</label>
-                                        <textarea class="form-control" name="Remarks" id="Remarks" rows="3"></textarea>
-                                    </div>
-                                    <div class="alert alert-danger" id="associated_establishmentErrorMsg" style="display:none"></div>
                                 </div>
-                            </div>
-                            <br>
-                            <div class="card-action">
-                                <button type="button" class="btn btn-primary btn-md pull-right" onclick="update_details()"> Save </button>
-                            </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Remarks</label>
+                                            <textarea class="form-control" name="Remarks" id="Remarks" rows="3"></textarea>
+                                        </div>
+                                        <div class="alert alert-danger" id="associated_establishmentErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+                                    Application Forwarded Successfully
+                                </div>
+                                <div class="card-action">
+                                    <button type="button" class="btn btn-primary btn-md pull-right" onclick="update_details()"> Save </button>
+                                </div>
+                            {% endif %}
                         </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </form>
+<div class="modal fade" id="application_details_modal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+             <div class="modal-header">
+                <h5 class="modal-title" id="agro_attachmentModalLabel">Application Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="col-lg-12">
+                    <div class="box box-primary">
+                        <div class="box-body">
+                            <div id="AppDetails">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     function viewApplicationDetails(appId,service_code)
     {
         $.ajax({
             type : "GET",
-            url : "{% url 'view_application_details' %}",
+            url : "{% url 'food_handler_application_details' %}",
             data :{'application_id':appId, 'service_code':service_code},
             success : function(data)
             {
+                $('#application_details_modal').modal('show');
                 $('#AppDetails').html(data);
             }
         });
@@ -160,11 +188,11 @@
         counterId = $('#counter').val();
         for (var i=1;i<=counterId;i++)
         {
-           var idnCode ="";
+           var email ="";
            var appNo ="";
            if($("#check_"+i).is(':checked'))
            {
-                idnCode = $('#cost_'+i).val();
+                idnCode = $('#email_'+i).val();
                 appNo = $('#applicationNo_'+i).val();
            }
            if(parseInt(countFlag) > 0){
@@ -178,17 +206,76 @@
 
     function update_details()
     {
-       check_condition_details();
-        $.ajax
-        ({
-            type : "POST",
-            url : "{% url 'update_batch_no' %}",
-            data : $('#food_handler_ins_form').serialize(),
-            success : function(data)
-            {
+        check_condition_details();
+        var Training_Batch = $('#Training_Batch').val();
+        var batch_no = $('#batch_no').val();
+        var from_training_Date = $('#from_training_Date').val();
+        var to_training_Date = $('#to_training_Date').val();
+        var min_mark = $('#min_mark').val();
+        var Training_Venue = $('#Training_Venue').val();
 
-            }
-        });
+        if(Training_Batch == "")
+        {
+            $('#Training_BatchErrorMsg').html("Select Training Batch.");
+            $('#Training_BatchErrorMsg').show();
+            $('#Training_BatchErrorMsg').delay(2000).fadeOut('slow');
+            $('#Training_Batch').focus();
+        }
+        else if(batch_no == "")
+        {
+            $('#batch_noErrorMsg').html("Enter Batch No.");
+            $('#batch_noErrorMsg').show();
+            $('#batch_noErrorMsg').delay(2000).fadeOut('slow');
+            $('#batch_no').focus();
+        }
+        else if(from_training_Date == "")
+        {
+            $('#from_training_DateErrorMsg').html("Select From Training Date.");
+            $('#from_training_DateErrorMsg').show();
+            $('#from_training_DateErrorMsg').delay(2000).fadeOut('slow');
+            $('#from_training_Date').focus();
+        }
+        else if(to_training_Date == "")
+        {
+            $('#to_training_DateErrorMsg').html("Select To Training Date.");
+            $('#from_training_DateErrorMsg').show();
+            $('#from_training_DateErrorMsg').delay(2000).fadeOut('slow');
+            $('#from_training_Date').focus();
+        }
+        else if(min_mark == "")
+        {
+            $('#min_markErrorMsg').html("Enter Minimum Qualifying Marks.");
+            $('#min_markErrorMsg').show();
+            $('#min_markErrorMsg').delay(2000).fadeOut('slow');
+            $('#min_mark').focus();
+        }
+        else if(Training_Venue == "")
+        {
+            $('#Training_VenueErrorMsg').html("Enter Training Venue.");
+            $('#Training_VenueErrorMsg').show();
+            $('#Training_VenueErrorMsg').delay(2000).fadeOut('slow');
+            $('#Training_Venue').focus();
+        }
+        else
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'update_batch_no' %}",
+                data : $('#food_handler_ins_form').serialize(),
+                success : function(data)
+                {
+                    $('#submitMsg').show();
+                    setTimeout(function() {
+                        $("#submitMsg").hide('blind', {}, 500)
+                    }, 2000);
+                    setTimeout(function()
+                    {
+                        location.reload();
+                    }, 3000);
+                }
+            });
+        }
     }
 
     function checkAll()

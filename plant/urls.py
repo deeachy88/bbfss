@@ -16,6 +16,7 @@ urlpatterns = [
     path('load_gewog', views.load_gewog, name='load_gewog'),
     path('load_village', views.load_village, name='load_village'),
     path('load_location', views.load_location, name='load_location'),
+    path('to_gewog_list', views.to_gewog_list, name='to_gewog_list'),
     path('movement_permit_app', views.movement_permit_app, name='movement_permit_app'),
     path('load_details_page', views.load_details_page, name='load_details_page'),
     path('agro_details_page', views.agro_details_page, name='agro_details_page'),
@@ -91,6 +92,7 @@ urlpatterns = [
     path('update_nursery_details', views.update_nursery_details, name='update_nursery_details'),
     path('plant_file_details', views.plant_file_details, name='plant_file_details'),
     path('cordyceps_file_details', views.cordyceps_file_details, name='cordyceps_file_details'),
+    path('save_export_permit', views.save_export_permit, name='save_export_permit'),
 
     # Registration Of Nursery/Seed Growers
     path('registration_application', views.registration_application, name='registration_application'),
@@ -108,6 +110,7 @@ urlpatterns = [
     path('load_details', views.load_details, name='load_details'),
     path('load_file_details', views.load_file_details, name='load_file_details'),
     path('load_location_nursery', views.load_location_nursery, name='load_location_nursery'),
+    path('nursery_client_resubmit', views.nursery_client_resubmit, name='nursery_client_resubmit'),
 
     # Seed Certification
     path('seed_certificate_application', views.seed_certificate_application, name='seed_certificate_application'),
@@ -118,12 +121,16 @@ urlpatterns = [
     path('submit_certificate_details', views.submit_certificate_details, name='submit_certificate_details'),
     path('approve_certificate_app', views.approve_certificate_application, name='approve_certificate_app'),
     path('reject_certificate_app', views.reject_certificate_application, name='reject_certificate_app'),
+    path('resubmit_seed_application', views.resubmit_seed_application, name='resubmit_seed_application'),
     path('add_details_ins_certificate', views.add_details_ins_certificate, name='add_details_ins_certificate'),
     path('add_recommendation_details', views.add_recommendation_details, name='add_recommendation_details'),
     path('load_certificate_details', views.load_certificate_details, name='load_certificate_details'),
     path('update_certificate_details', views.update_certificate_details, name='update_certificate_details'),
     path('certificate_details', views.certificate_details, name='certificate_details'),
     path('certificate_file_details', views.certificate_file_details, name='certificate_file_details'),
+    path('load_seed_variety', views.load_seed_variety, name='load_seed_variety'),
+    path('seed_certification_client_resubmit', views.seed_certification_client_resubmit,
+         name='seed_certification_client_resubmit'),
 
     # Common Details
     path('application_status', views.application_status, name='application_status'),

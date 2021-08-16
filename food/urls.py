@@ -27,6 +27,7 @@ urlpatterns = [
     path('reject_feasibility_inspection', views.reject_feasibility_inspection, name='reject_feasibility_inspection'),
     path('resubmit_feasibility_inspection', views.resubmit_feasibility_inspection,
          name='resubmit_feasibility_inspection'),
+    path('fbr_factory_team_details', views.fbr_factory_team_details, name='fbr_factory_team_details'),
     path('team_details_factory_ins', views.team_details_factory_ins, name='team_details_factory_ins'),
     path('concern_details_factory_ins', views.concern_details_factory_ins,
          name='concern_details_factory_ins'),
@@ -34,8 +35,10 @@ urlpatterns = [
     path('reject_factory_inspection', views.reject_factory_inspection, name='reject_factory_inspection'),
     path('resubmit_factory_inspection', views.resubmit_factory_inspection,
          name='resubmit_factory_inspection'),
-    path('edit_feasibility_inspection/<int:Record_Id>', views.edit_feasibility_details,
-         name='edit_feasibility_inspection'),
+    path('edit_fbr_feasibility_details', views.edit_fbr_feasibility_details,
+         name='edit_fbr_feasibility_details'),
+    path('edit_fbr_factory_details', views.edit_fbr_factory_details,
+         name='edit_fbr_factory_details'),
     path('forward_fbr_application', views.forward_fbr_application, name='forward_fbr_application'),
     path('view_factory_inspection_application', views.view_factory_inspection_application,
          name='view_factory_inspection_application'),
@@ -99,7 +102,7 @@ urlpatterns = [
     path('get_food_handler_details', views.get_food_handler_details, name='get_food_handler_details'),
     path('delete_food_handler_photo', views.delete_food_handler_photo, name='delete_food_handler_photo'),
     path('food_handler', views.food_handler, name='food_handler'),
-    path('update_food_handler_status', views.update_food_handler_status, name='update_food_handler_status')
+    path('update_food_handler_status', views.update_food_handler_status, name='update_food_handler_status'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

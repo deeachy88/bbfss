@@ -154,7 +154,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Production Volume(Last Calender Year)</label>
-                                            <input type="number" class="form-control" value="{{application_details.Volume_Last_Year}}" disabled>
+                                            <input type="text" class="form-control" value="{{application_details.Volume_Last_Year}}" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -215,10 +215,10 @@
                                 <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Legal Entity Status</label>
-                                        <select class="form-control" name="legal_status"  id="legal_status">
+                                        <select class="form-control" disabled>
                                              {% if application_details.Legal_Entity == "Private Ltd" %}
                                                 <option value="Private Ltd" selected>Private Ltd</option>
-                                             {% if application_details.Legal_Entity == "Public Ltd" %}
+                                             {% elif application_details.Legal_Entity == "Public Ltd" %}
                                                 <option value="Public Ltd" selected>Public Ltd</option>
                                              {% else %}
                                                 <option value="Government undertaking" selected>Government undertaking (Pull from master table)</option>
@@ -261,7 +261,7 @@
                                     <div class="form-group col-md-4">
                                         <div class="form-check">
                                             <label class="form-label">Relationship</label><br>
-                                            <input type="text" class="form-control" value="{{application_details.Large_Corporation_Relation}}">
+                                            <input type="text" class="form-control" value="{{application_details.Large_Corporation_Relation}}" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -424,43 +424,106 @@
                                     </div>
                                 </div>
                             </div>
+                            {% if application_details.Process_Outsource == 'Yes' %}
+                                <br>
+                                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">Outsourced </span>
+                                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Process</span>
+                                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                                </div>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Address Details</th>
+                                            <th scope="col">Contact</th>
+                                            <th scope="col">BAFRA License Number</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for import in details %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td>{{import.BP_Outsourced_To}}</td>
+                                                <td>{{import.Address}}</td>
+                                                <td>{{import.Contact_No}}</td>
+                                                <td>{{import.BAFRA_License_No}}</td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                              <td colspan="5" class="text-center">No Data</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                <br>
+                            {% endif %}
                         {% endfor %}
                         <br>
                         <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
                             <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
-                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">File</span>
-                                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Attachments</span>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">Food </span>
+                                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Handlers</span>
                             <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
                         </div>
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">File</th>
+                                    <th scope="col">Food Handlers Name </th>
+                                    <th scope="col">License Number</th>
                                 </tr>
                             </thead>
                             <tbody>
-                               {% for file_attach in file %}
+                                {% for import in food_handler %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td>{{file_attach.Attachment}}</td>
+                                        <td>{{import.FH_Name}}</td>
+                                        <td>{{import.FH_License_No}}</td>
                                     </tr>
                                     {% empty %}
                                     <tr>
-                                      <td colspan="3" class="text-center">No Data</td>
+                                      <td colspan="5" class="text-center">No Data</td>
                                     </tr>
-                               {% endfor %}
+                                {% endfor %}
                             </tbody>
                         </table>
+                        <br>
+                            <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                                <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                    <span class="px-2 small text-muted font-weight-bold text-muted form-label">File</span>
+                                    <span class="px-1 small text-muted font-weight-bold text-muted form-label">Attachments</span>
+                                <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                            </div>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">File</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                   {% for file_attach in file %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                          <td colspan="3" class="text-center">No Data</td>
+                                        </tr>
+                                   {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
                         <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label class="form-label">Remarks(If Reject Please Fill THe Remarks)</label>
-                                    <textarea class="form-control" rows="3" id="remarks" name="remarks"></textarea>
-                                </div>
-                                <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
+                            <div class="form-group col-md-12">
+                                <label class="form-label">Remarks(If Reject Please Fill THe Remarks)</label>
+                                <textarea class="form-control" rows="3" id="remarks" name="remarks"></textarea>
                             </div>
+                            <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
                         </div>
                         <br>
                         <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
@@ -476,9 +539,12 @@
                                         <option value="{{ oic_list.Field_Office_Id }}">{{ oic_list.Field_Office }}</option>
                                 {% endfor %}
                             </select>
+                            <div class="alert alert-danger" id="forwardToErrorMsg" style="display:none"></div>
+                            {% for application_details in application_details %}
+                                <button type="button" class="btn btn-primary" onclick="fbr_fo_approve('{{ application_details.Application_No }}')"> Approve </button>
+                                <button type="button" class="btn btn-danger" onclick="fbr_fo_reject('{{ application_details.Application_No }}')"> Reject </button>
+                            {% endfor %}
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" onclick="fbr_fo_approve('{{ application_details.Application_No }}')"> Approve </button>
-                            <button type="button" class="btn btn-danger" onclick="fbr_fo_reject('{{ application_details.Application_No }}')"> Reject </button>
                         </div>
                 </div>
             </div>
@@ -490,7 +556,15 @@
         {
             remarks = $('#remarks').val();
             forwardTo = $('#forwardTo').val();
-            $.ajax({
+            if(forwardTo == "")
+            {
+                $('#forwardToErrorMsg').html("Select OIC.");
+                $('#forwardToErrorMsg').show();
+                $('#forwardToErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else
+            {
+                $.ajax({
                 type : "POST",
                 url : "{% url 'fbr_fo_approve' %}",
                 data :{'application_id':application_id ,'forwardTo':forwardTo,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
@@ -509,9 +583,9 @@
                          location.reload();
                     }, 3000);
 
-                }
-            });
-
+                    }
+                });
+            }
         }
     function fbr_fo_reject(application_id)
         {
@@ -523,7 +597,9 @@
                 $('#remarksErrorMsg').show();
                 $('#remarksErrorMsg').delay(2000).fadeOut('slow');
             }
-            $.ajax({
+            else
+            {
+                $.ajax({
                 type : "POST",
                 url : "{% url 'fbr_fo_reject' %}",
                 data :{'application_id':application_id ,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
@@ -539,6 +615,7 @@
                          location.reload();
                     }, 3000);
                 }
-            });
+                });
+            }
         }
 </script>

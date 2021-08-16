@@ -18,7 +18,7 @@ option {
 
             <div id="plant">
                 <div class="row align-left">
-                    <ul class="nav nav-pills nav-s econdary" id="pills-tab" role="tablist">
+                    <ul class="nav nav-pills nav-secondary" id="pills-tab" role="tablist">
                         <li class="nav-item">
                             <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadPageDetails()">Home</a>
                         </li>
@@ -83,7 +83,7 @@ option {
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Name &nbsp;<font color='red'>*</font></label>
-                                        <input type="text" class="form-control" id="name" name="Name" disabled>
+                                        <input type="text" class="form-control" id="name" name="Name" readonly="readonly">
                                     </div>
                                     <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
                                 </div>
@@ -106,21 +106,21 @@ option {
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Dzongkhag &nbsp;<font color='red'>*</font></label>
-                                        <input type="text" class="form-control" name="dzongkhag"  id="dzongkhag" disabled>
+                                        <input type="text" class="form-control" name="dzongkhag"  id="dzongkhag" readonly="readonly">
                                     </div>
                                     <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Gewog &nbsp;<font color='red'>*</font></label>
-                                        <input type="text" class="form-control" name="gewog" id="gewog" disabled>
+                                        <input type="text" class="form-control" name="gewog" id="gewog" readonly="readonly">
                                     </div>
                                     <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Village &nbsp;<font color='red'>*</font></label>
-                                        <input type="text" class="form-control" name="village" id="village" disabled>
+                                        <input type="text" class="form-control" name="village" id="village" readonly="readonly">
                                     </div>
                                     <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
                                 </div>
@@ -289,19 +289,19 @@ option {
                             <div class="box-body">
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label for="commodity">Species</label>
+                                        <label class="form-label">Commodity</label>
                                         <input type="text" name="commodity" class="form-control" id="commodity" required>
                                         <div class="alert alert-danger" id="commodityErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label for="qty">Quantity</label>
+                                        <label class="form-label">Quantity</label>
                                         <input type="number" name="qty" class="form-control" id="qty" required>
                                         <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label >Unit</label>
+                                        <label class="form-label">Unit</label>
                                         <select class="form-control" name="unit"  id="unit">
                                             {% for unit in unit %}
                                                 <option value="unit.Unit">{{unit.Unit}}</option>
@@ -310,7 +310,7 @@ option {
                                         <div class="alert alert-danger" id="unitErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label for="remarks">Remarks</label>
+                                        <label class="form-label">Remarks</label>
                                         <input type="text" name="remarks" class="form-control" id="remarks" required>
                                         <div class="alert alert-danger" id="remarksMeansErrorMsg" style="display:none"></div>
                                     </div>
@@ -584,7 +584,7 @@ function getFromGewog(dzongkhag_id)
 {
     $.ajax({
         type : "GET",
-        url : "{% url 'load_location' %}",
+        url : "{% url 'to_gewog_list' %}",
         data :{'dzongkhag_id':dzongkhag_id},
         success : function(data)
         {

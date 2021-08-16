@@ -84,7 +84,7 @@
                         <div class="col-md-4 individual_details">
                             <div class="form-group">
                                 <label class="form-label">Name <font color="red">*</font></label>
-                                <input type="text" class="form-control" id="name" name="Name" disabled>
+                                <input type="text" class="form-control" id="name" name="Name" readonly="readonly">
                             </div>
                             <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
                         </div>
@@ -105,7 +105,7 @@
                         <div class="col-md-4 individual_details">
                             <div class="form-group">
                                 <label class="form-label">Dzongkhag <font color="red">*</font></label>
-                                <input type="text" class="form-control" name="dzongkhag" id="dzongkhag_code" disabled>
+                                <input type="text" class="form-control" name="dzongkhag" id="dzongkhag_code" readonly="readonly">
                             </div>
                         </div>
                         <div class="col-md-4 farmer_group_details" style="display:none">
@@ -125,7 +125,7 @@
                         <div class="col-md-4 individual_details">
                             <div class="form-group">
                                 <label class="form-label">Gewog <font color="red">*</font></label>
-                                <input type="text" class="form-control" name="gewog" id="gewog_code" disabled>
+                                <input type="text" class="form-control" name="gewog" id="gewog_code" readonly="readonly">
                             </div>
                         </div>
                         <div class="col-md-4 farmer_group_details" style="display:none">
@@ -143,7 +143,7 @@
                         <div class="col-md-4 individual_details">
                             <div class="form-group">
                                 <label class="form-label">Village <font color="red">*</font></label>
-                                <input type="text" class="form-control" name="village" id="village_code" disabled>
+                                <input type="text" class="form-control" name="village" id="village_code" readonly="readonly">
                             </div>
                         </div>
                         <div class="col-md-4 farmer_group_details" style="display:none">
@@ -1548,12 +1548,20 @@ function attachment_modal()
 
 function  submit_organic_certificate()
 {
+    var applicationNo = $('#applicationNo').val();
     $.ajax({
                 type : "POST",
                 url : "{% url 'submit_organic_certificate' %}",
                 data : $('#organic_certificate_form').serialize(),
                 success : function(responseText) {
-                   location.reload();
+                    swal("Application Submitted Successfully. Your Application No :" + applicationNo, {
+                        buttons: false,
+                        timer: 4000,
+                    });
+                    setTimeout(function()
+                    {
+                        location.reload();
+                    }, 4000);
                 }
             });
 }

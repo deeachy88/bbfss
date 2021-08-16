@@ -1,25 +1,302 @@
-<div class="animated fadeIn">
-    <input type="hidden" name="appNo" value="{{ application_no }}">
-    <div class="row">
-        <div class="col-sm-4">
-            <label>Date picker</label>
-            <input type="date" name="date" id="inspection_date" class="form-control date-picker flatpickr-input active">
-        </div>
+<div class="card">
+    <div class="card-body">
+        {% for application_details in application_details %}
+            <form method="post" id="nursery_inspector_form">
+                <input type="hidden" name="application_id" value="{{ application_details.Application_No }}">
+                <div class="accordion" role="tablist">
+                    <div class="card">
+                        <div class="card-header" role="tab" id="headingOne">
+                            <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed">
+                                Application Details
+                            </a>
+                        </div>
+
+                        <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion" style="">
+                            <div class="card-body">
+                                <div class="row">
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label class="form-label">License No</label>
+                                                <input type="text" class="form-control" value="{{application_details.License_No}}" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Company Name</label>
+                                                <input type="text" class="form-control" value="{{application_details.Company_Name}}" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Company_Address</label>
+                                                <textarea class="form-control" disabled rows="2">{{application_details.Company_Address}}</textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label class="form-label">CID</label>
+                                                <input type="text" class="form-control" value="{{application_details.CID}}" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Owner Name</label>
+                                                <input type="text" class="form-control" value="{{application_details.Owner_Name}}" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Contact Number</label>
+                                                <input type="number" class="form-control" value="{{application_details.contactNo}}" disabled>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Email</label>
+                                                <input type="email" class="form-control" value="{{application_details.email}}" disabled>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </hr>
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Nursery Category</label>
+                                                <select class="form-control form-control" id="Nursery_Category" name="Nursery_Category">
+                                                    {% if application_details.Nursery_Category == "Agro-Forestry" %}
+                                                    <option value="Agro-Forestry" selected>Agro-Forestry</option>
+                                                    {% elif application_details.Nursery_Category == "Ornamental" %}
+                                                    <option value="Ornamental" selected>Ornamental</option>
+                                                    {% elif application_details.Nursery_Category == "Fruits and Nuts" %}
+                                                    <option value="Fruits and Nuts" selected>Fruits and Nuts</option>
+                                                    {% elif application_details.Nursery_Category == "Fodder" %}
+                                                    <option value="Fodder" selected>Fodder</option>
+                                                    {% endif %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Area</label>
+                                                <input type="text" class="form-control" id="Area" name="Area" value="{{application_details.Area}}" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Unit Area</label>
+                                                <input type="text" class="form-control" value="{{application_details.Unit_Area}}" disabled>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Nursery Type</label>
+                                                <select class="form-control form-control" id="Nursery_Type" name="Nursery_Type">
+                                                    {% if application_details.Nursery_Type == "Bi-annual" %}
+                                                    <option value="Bi-annual" selected>Bi-annual</option>
+                                                    {% elif application_details.Nursery_Category == "Annual" %}
+                                                    <option value="Annual"selected>Annual</option>
+                                                    {% elif application_details.Nursery_Category == "Perennial" %}
+                                                    <option value="Perennial"selected>Perennial</option>
+                                                    {% endif %}
+                                                </select>
+                                            </div>
+                                            <div class="alert alert-danger" id="Nursery_TypeErrorMsg" style="display:none"></div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Dzongkhag</label>
+                                                <select class="form-control" disabled>
+                                                    {% for dzongkhag in dzongkhag %}
+                                                        <option value="{{dzongkhag.Dzongkhag_Code}}"{% if application_details.Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>
+                                                            {{ dzongkhag.Dzongkhag_Name }}
+                                                        </option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Gewog</label>
+                                                <select class="form-control" disabled>
+                                                    {% for gewog in gewog %}
+                                                        <option value="{{ gewog.Gewog_Code }}"{% if application_details.Gewog_Code == gewog.Gewog_Code %}selected{% endif %}>{{ gewog.Gewog_Name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Village</label>
+                                            <select class="form-control" disabled>
+                                                {% for village in village %}
+                                                    <option value="{{ village.Village_Code }}" {% if application_details.Village_Code == village.Village_Code %}selected{% endif %}>{{ village.Village_Name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Location</label>
+                                             <select class="form-control" disabled>
+                                                {% for location in location %}
+                                                        <option value="{{ location.Location_Code }}" {% if application_details.Location_Code == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                                {% endfor %}
+                                             </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                    <div class="card">
+                        <div class="card-header" role="tab" id="headingTwo">
+                            <a class="collapsed" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                Details
+                            </a>
+                        </div>
+                        <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion">
+                            <div class="card-body">
+                                <table id="details-table" class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Crop Category</th>
+                                            <th scope="col">Crop</th>
+                                            <th scope="col">Crop Variety</th>
+                                            <th scope="col">Source</th>
+                                            <th scope="col">Quantity</th>
+                                            <th scope="col">Remarks</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for seed_details in seed_details %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td>{{seed_details.Crop_Category}}</td>
+                                                <td>{{seed_details.Crop}}</td>
+                                                <td>{{seed_details.Variety}}</td>
+                                                <td>{{seed_details.Source}}</td>
+                                                <td>{{seed_details.Qty}}</td>
+                                                <td>{{seed_details.Remarks}}</td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                                <td colspan="7" class="text-center">No Data</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" role="tab" id="headingThree">
+                            <a class="collapsed" data-toggle="collapse" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                Attachments
+                            </a>
+                        </div>
+                        <div id="collapseThree" class="collapse" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion">
+                            <div class="card-body">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">File</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                       {% for file_attach in file %}
+                                                <tr>
+                                                    <td>{{ forloop.counter }}</td>
+                                                    <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                                                </tr>
+                                                {% empty %}
+                                                <tr>
+                                                  <td colspan="3" class="text-center">No Data</td>
+                                                </tr>
+                                       {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" role="tab" id="headingFour">
+                            <a class="collapsed" data-toggle="collapse" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                Resubmit Application Details
+                            </a>
+                        </div>
+                        <div id="collapseFour" class="collapse" role="tabpanel" aria-labelledby="headingFour" data-parent="#accordion">
+                            {% for application_details in application_details %}
+                            <div class="card-body">
+                                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                        <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Inspector </span>&nbsp;&nbsp;&nbsp;
+                                        <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Details</span>
+                                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="from-label">Remarks From Inspector</label>
+                                            <textarea class="form-control" rows="3" disabled>{{ application_details.Remarks }}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                        <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Client </span>&nbsp;&nbsp;&nbsp;
+                                        <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Details</span>
+                                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <label class="from-label">Date For Inspection</label>
+                                        <input type="date" name="date" id="inspection_date" class="form-control date-picker flatpickr-input active">
+                                    </div>
+                                     <div class="col-md-6">
+                                        <div class="from-label">
+                                            <label class="from-label">Resubmit Remarks</label>
+                                            <textarea class="form-control" rows="5" id="Resubmit_Remarks" name="Resubmit_Remarks"></textarea>
+                                        </div>
+                                    </div>
+                                 </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" onclick="nursery_client_resubmit('{{ application_details.Application_No }}')">Submit</button>
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            </div>
+                         {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </form>
+
     </div>
-     <div class="row">
-         <div class="col-md-6">
-            <div class="form-group">
-                <label for="remarks">Remarks</label>
-                <textarea class="form-control" rows="5" id="remarks" name="remarks" disabled></textarea>
-            </div>
-        </div>
-     </div>
-    <div class="row">
-         <div class="col-md-6">
-            <div class="form-group">
-                <label for="remarks">Resubmit Remarks</label>
-                <textarea class="form-control" rows="5" id="Resubmit_Remarks" name="Resubmit_Remarks"></textarea>
-            </div>
-        </div>
-     </div>
 </div>
+<script>
+    function nursery_client_resubmit(application_id)
+    {
+        var inspection_date = $('#inspection_date').val();
+        var Resubmit_Remarks = $('#Resubmit_Remarks').val();
+       $.ajax({
+            type : "GET",
+            url : "{% url 'nursery_client_resubmit' %}",
+            data :{'application_id':application_id,'inspection_date':inspection_date, 'Resubmit_Remarks':Resubmit_Remarks},
+            success : function(data) {
+                location.reload();
+            }
+        });
+    }
+</script>
+

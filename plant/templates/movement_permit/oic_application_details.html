@@ -247,7 +247,6 @@
                         {% endfor %}
                             <br><br>
                             <div class="row">
-                                <div class="col-md-12">
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
@@ -274,7 +273,29 @@
                                            {% endfor %}
                                         </tbody>
                                     </table>
-                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">File</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                       {% for file_attach in file %}
+                                                <tr>
+                                                    <td>{{ forloop.counter }}</td>
+                                                    <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                                                </tr>
+                                                {% empty %}
+                                                <tr>
+                                                  <td colspan="3" class="text-center">No Data</td>
+                                                </tr>
+                                       {% endfor %}
+                                    </tbody>
+                                </table>
                             </div>
                     </div>
 

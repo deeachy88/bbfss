@@ -1,219 +1,309 @@
 {% load static %}
-<form method="post" id="applicationForm">
-    {% csrf_token %}
-    <div class="animated fadeIn">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-body">
-                        {% for application_details in application_details %}
-                        <div id="applicant_details">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Name of the Meat Shop <font color="red">*</font></label>
-                                        <input type="text" class="form-control" value="{{application_details.Meat_Shop_Name}}">
-                                    </div>
-                                </div>
-                                 <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">CID of the Owner <font color="red">*</font></label>
-                                        <input type="number"  class="form-control" value="{{application_details.CID}}">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Name of the applicant/Owner <font color="red">*</font></label>
-                                        <input type="text" class="form-control" value="{{application_details.Name_Owner}}">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Email <font color="red">*</font></label>
-                                        <input type="email" class="form-control" value="{{application_details.Email}}">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Contact Number <font color="red">*</font></label>
-                                        <input type="number" class="form-control" value="{{application_details.Contact_No}}">
-                                    </div>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Meat Shop Representative <font color="red">*</font></label>
-                                        <input type="text" class="form-control" value="{{application_details.Representative}}">
-                                    </div>
-                                    <div class="alert alert-danger" id="name_managerErrorMsg" style="display:none"></div>
-                                </div>
-                                 <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Licensing Criteria <font color="red">*</font></label>
-                                        <select class="form-control">
-                                            {% if application_details.License_Criteria == 'BAFRA GHP' %}
-                                            <option selected>BAFRA GHP</option>
-                                            <option>BAFRA GMP</option>
-                                            {% else %}
-                                            <option>BAFRA GHP</option>
-                                            <option selected>BAFRA GMP</option>
-                                            {% endif %}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Meat Shop Address <font color="red">*</font></label>
-                                        <textarea class="form-control">{{application_details.Address}}</textarea>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Dzongkhag</label>
-                                        <select class="form-control" disabled>
-                                            {% for dzongkhag in dzongkhag %}
-                                                <option value="{{dzongkhag.Dzongkhag_Code}}"{% if application_details.Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>
-                                                    {{ dzongkhag.Dzongkhag_Name }}
-                                                </option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Gewog</label>
-                                        <select class="form-control" disabled>
-                                            {% for gewog in gewog %}
-                                                <option value="{{ gewog.Gewog_Code }}"{% if application_details.Gewog_Code == gewog.Gewog_Code %}selected{% endif %}>{{ gewog.Gewog_Name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Village</label>
-                                         <select class="form-control" disabled>
-                                            {% for village in village %}
-                                                <option value="{{ village.Village_Code }}" {% if application_details.Village_Code == village.Village_Code %}selected{% endif %}>{{ village.Village_Name }}</option>
-                                            {% endfor %}
-                                         </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Location</label>
-                                        <select class="form-control" disabled>
-                                            {% for location in location %}
-                                                <option value="{{ location.Location_Code }}" {% if application_details.Location_Code == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
+<style>
+    .card {
+    margin-bottom: 0rem;
+    box-shadow: 0 1px 5px rgb(0 0 0 / 10%);
+}
+</style>
+<div class="card">
+    <div class="card-header" role="tab" id="headingOne">
+        <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed">
+            Application Details
+        </a>
+    </div>
+
+    <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion" style="">
+        <div class="card-body">
+            {% for application_details in application_details %}
+                <div id="applicant_details">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Name of the Meat Shop <font color="red">*</font></label>
+                                <input type="text" class="form-control" value="{{application_details.Meat_Shop_Name}}" disabled>
                             </div>
                         </div>
-                        <br>
-                        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
-                            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
-                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">Meat</span>
-                                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Items</span>
-                            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
-                        </div>
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Meat_Item</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                               {% for Meat_Item in details %}
-                                    <tr>
-                                        <td>{{ forloop.counter }}</td>
-                                        <td>{{file_attach.Meat_Item}}</td>
-                                    </tr>
-                                    {% empty %}
-                                    <tr>
-                                      <td colspan="3" class="text-center">No Data</td>
-                                    </tr>
-                               {% endfor %}
-                            </tbody>
-                        </table>
-                        <br>
-                        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
-                            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
-                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">File</span>
-                                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Attachments</span>
-                            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
-                        </div>
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">File</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                               {% for file_attach in file %}
-                                    <tr>
-                                        <td>{{ forloop.counter }}</td>
-                                        <td>{{file_attach.Attachment}}</td>
-                                    </tr>
-                                    {% empty %}
-                                    <tr>
-                                      <td colspan="3" class="text-center">No Data</td>
-                                    </tr>
-                               {% endfor %}
-                            </tbody>
-                        </table>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label"> Proposed Factory Inspection Date</label>
-                                    <input type="text" class="form-control date-picker flatpickr-input active" id="date" name="date"  placeholder="Pick a date" readonly="readonly">
-                                </div>
-                                <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
+                         <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">CID of the Owner <font color="red">*</font></label>
+                                <input type="number"  class="form-control" value="{{application_details.CID}}" disabled>
                             </div>
                         </div>
-                        <br>
-                        <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
-                            Application Forwarded
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Name of the applicant/Owner <font color="red">*</font></label>
+                                <input type="text" class="form-control" value="{{application_details.Name_Owner}}" disabled>
+                            </div>
                         </div>
-                        <div class="modal-footer justify-content-center">
-                            <select class="form-control col-md-6" name="forwardTo"  id="forwardTo">
-                                <option value="">--SELECT OIC--</option>
-                                {% for oic_list in oic_list %}
-                                        <option value="{{ oic_list.Field_Office_Id }}">{{ oic_list.Field_Office }}</option>
-                                {% endfor %}
-                            </select>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" onclick="forward_factory_application('{{ application_details.Application_No }}')"> Forward </button>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Email <font color="red">*</font></label>
+                                <input type="email" class="form-control" value="{{application_details.Email}}" disabled>
+                            </div>
                         </div>
-                    {% endfor %}
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Contact Number <font color="red">*</font></label>
+                                <input type="number" class="form-control" value="{{application_details.Contact_No}}" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Meat Shop Representative <font color="red">*</font></label>
+                                <input type="text" class="form-control" value="{{application_details.Representative}}" disabled>
+                            </div>
+                            <div class="alert alert-danger" id="name_managerErrorMsg" style="display:none"></div>
+                        </div>
+                         <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Licensing Criteria <font color="red">*</font></label>
+                                <select class="form-control" disabled>
+                                    {% if application_details.License_Criteria == 'BAFRA GHP' %}
+                                    <option selected>BAFRA GHP</option>
+                                    <option>BAFRA GMP</option>
+                                    {% else %}
+                                    <option>BAFRA GHP</option>
+                                    <option selected>BAFRA GMP</option>
+                                    {% endif %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Meat Shop Address <font color="red">*</font></label>
+                                <textarea class="form-control" disabled>{{application_details.Address}}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Dzongkhag</label>
+                                <select class="form-control" disabled>
+                                    {% for dzongkhag in dzongkhag %}
+                                        <option value="{{dzongkhag.Dzongkhag_Code}}"{% if application_details.Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>
+                                            {{ dzongkhag.Dzongkhag_Name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Gewog</label>
+                                <select class="form-control" disabled>
+                                    {% for gewog in gewog %}
+                                        <option value="{{ gewog.Gewog_Code }}"{% if application_details.Gewog_Code == gewog.Gewog_Code %}selected{% endif %}>{{ gewog.Gewog_Name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Village</label>
+                                 <select class="form-control" disabled>
+                                    {% for village in village %}
+                                        <option value="{{ village.Village_Code }}" {% if application_details.Village_Code == village.Village_Code %}selected{% endif %}>{{ village.Village_Name }}</option>
+                                    {% endfor %}
+                                 </select>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-header" role="tab" id="headingItems">
+        <a class="collapsed" data-toggle="collapse" href="#meatItems" aria-expanded="false" aria-controls="collapseTwo">
+            Meat Items
+        </a>
+    </div>
+    <div id="meatItems" class="collapse" role="tabpanel" aria-labelledby="headingItems" data-parent="#accordion" style="">
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Meat Item</th>
+                    </tr>
+                </thead>
+                <tbody>
+                   {% for Meat_Item in details %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{Meat_Item.Meat_Item}}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                          <td colspan="3" class="text-center">No Data</td>
+                        </tr>
+                   {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-header" role="tab" id="headingTwo">
+        <a class="collapsed" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+            Attachments
+        </a>
+    </div>
+    <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">File</th>
+                    </tr>
+                </thead>
+                <tbody>
+                   {% for file_attach in file %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                          <td colspan="3" class="text-center">No Data</td>
+                        </tr>
+                   {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-header" role="tab" id="headingFive">
+        <a class="collapsed" data-toggle="collapse" href="#collapseFive" aria-expanded="false" aria-controls="collapseTwo">
+            Inspection Team Details
+        </a>
+    </div>
+    <div id="collapseFive" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+        <div class="card-body">
+            <div class="card-tools">
+                <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="openInspectionTeamModal()">
+                    <span class="btn-label">
+                        <i class="fa fa-print"></i>
+                    </span>
+                    Add
+                </a>
+            </div>
+            <br>
+            <div id="inspection_team_details">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Designation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for import in inspection_team_details %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{import.Name}}</td>
+                                <td>{{import.Designation}}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                              <td colspan="3" class="text-center">No Data</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-</form>
+</div>
+<div class="card">
+    <div class="card-header" role="tab" id="headingFour">
+        <a class="collapsed" data-toggle="collapse" href="#collapseFour" aria-expanded="false" aria-controls="collapseTwo">
+            Team Formation
+        </a>
+    </div>
+    <div id="collapseFour" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+        <div class="card-body">
+            <div id="team_details">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Name Of Key Personal</th>
+                            <th scope="col">Designation of Key Personal</th>
+                            <th scope="col">Opening Meeting (Date)</th>
+                            <th scope="col">Closing Meeting (Date)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for import in team_details %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{import.Name}}</td>
+                                <td>{{import.Designation}}</td>
+                                <td>{{import.Open_Meeting_Date|date:"d-m-Y"}}</td>
+                                <td>{{import.Closing_Meeting_Date|date:"d-m-Y"}}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                              <td colspan="5" class="text-center">No Data</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-header" role="tab" id="headingThree">
+        <a class="collapsed" data-toggle="collapse" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+            Inspector Details
+        </a>
+    </div>
+    <div id="collapseThree" class="active" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion" style="">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label"> Proposed Factory Inspection Date</label>
+                        <input type="text" class="form-control date-picker flatpickr-input active" id="date" name="date"  placeholder="Pick a date" readonly="readonly">
+                    </div>
+                    <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
+                </div>
+            </div>
+            <br>
+            <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+                Application Forwarded
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                {% for application_details in application_details %}
+                    <button type="button" class="btn btn-primary" onclick="forward_factory_application('{{ application_details.Application_No }}')"> Forward </button>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
 <script src="{% static 'assets/js/app.min.js' %}"></script>
 <script>
     function forward_factory_application(application_id)
         {
             date = $('#date').val();
-            forwardTo = $('#forwardTo').val();
 
             $.ajax({
                 type : "POST",
-                url : "{% url 'forward_factory_application' %}",
-                data :{'application_id':application_id ,'forwardTo':forwardTo,'date':date, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                url : "{% url 'forward_meat_shop_factory_application' %}",
+                data :{'application_id':application_id , 'date':date, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(data) {
                     $('#submitMsg').show();
                     setTimeout(function()

@@ -3,11 +3,35 @@
     .header-card {
     background-color: white;
 }
-
-table, th, td {
-  border: 1px solid black;
+.card-header {
+    padding: 3.2rem 2.2rem;
 }
 
+.profile-row {
+  display: flex;
+}
+.profile-row .dp {
+  flex-basis: 33.3%;
+  position: relative;
+  margin: 24px;
+  align-self: center;
+}
+.profile-row .desc {
+  flex-basis: 66.6%;
+}
+.profile-row .dp img {
+    max-width: 60%;
+    display: block;
+    margin-left: 285px;
+}
+.profile-row .desc {
+    padding: 2em;
+    margin-left: -118px;
+}
+.id-card {page-break-after: always;}
+table, th, td {
+    border: none;
+}
 </style>
 <div class="animated fadeIn">
     <div class="card-header header-card"><font color='black'>
@@ -15,7 +39,7 @@ table, th, td {
             <div >
                 <div class="card-head-row float-right">
                     <div class="card-tools">
-                        <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Test Report';printClientTable()">
+                        <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Food Handlers License';printTable()">
                             <span class="btn-label">
                                 <i class="zmdi zmdi-print"></i>
                             </span>
@@ -30,27 +54,132 @@ table, th, td {
                 </div>
 
                 <h4 class="text-center"><font color='black'><b>FOOD HANDLER LICENCE</b></font></h4>
-                {% for food_handler_details in food_handler_details %}
-                <div class="row float-left">
-                    <p>LICENCE No.&nbsp;:&nbsp;<b>{{food_handler_details.FH_License_No}}</b></p>
-                </div>
-                <div class="row float-right">
-                    <p>Date of issue&nbsp;:&nbsp;<b>{{food_handler_details.Approved_Date}}</b></p>
-                </div>
-                <div class="card-body">
-                    <div class="col-md-12">
-                        <div class="row">
-                            <p>Food Handler license is issued to Mr/Ms: <b>{{food_handler_details.Applicant_Name}}</b>
-                            <p>This License is issued in accordance with the Food Act of Bhutan 2005 and its
-                                Regulation 2017.</p>
+                <h4 class="text-center"><font color='black'><b>Bhutan Agriculture And Regulatory Authority(BAFRA)</b></font></h4>
+
+                <div class="id-card-wrapper text-center">
+                <div class="id-card">
+                    <div class="profile-row">
+                        <div class="dp">
+                            <div class="dp-arc-inner"></div>
+                                {% for details in file_attach %}
+                                    <img src="{{ details.File_Path }}">
+                                {% endfor %}
+                            </div>
+                            {% for food_handler_details in food_handler_details %}
+                                <div class="desc">
+                                    <p><b>LICENCE NO &nbsp;:&nbsp;{{food_handler_details.FH_License_No}}</b></p>
+                                    <p><b>Name &nbsp;:&nbsp;{{food_handler_details.FH_License_No}}</b></p>
+                                    <p><b>CID No &nbsp;:&nbsp;{{food_handler_details.CID}}</b></p>
+                                </div>
+                            {% endfor %}
+
+                        </div>
+                        <div class="profile-row" style="margin-left: 290px;margin-bottom: -30px;">
+                            <div class="form-group col-md-4">
+                                <label><b>Date of Issue:</b></label>
+                                <b>13/09/2021</b>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Director General</label>
+                            </div>
+                        </div>
+                        <div class="profile-row" style="margin-left: 290px;">
+                            <div class="form-group col-md-4">
+                                <label><b>Validity:</b></label>
+                                <b>13/09/2026</b>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Issuing Authority</label>
+                            </div>
                         </div>
                     </div>
-                    <h4 class="text-center"><font color='black'><b>DIRECTOR GENERAL</b></font></h4>
-
                 </div>
-                {% endfor %}
+                <div class="row">
+                    <div class="profile-row" style="margin-left: 290px;margin-bottom: -30px;">
+                        <div class="row">
+                            <label><b>This License is issued in accordance with Section 55 and 56 of the Food Act of Bhutan 2005</b></label>
+                            <label><b>This License is only for the purpose of Foos handling and does not substitute Business License or any other License/Permit</b></label>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </font>
     </div>
 </div>
+<div id="print">
+    <div class="card-header header-card"><font color='black'>
+        <div class="col-md-12 text-center">
+            <div>
+                <br>
+                <div class="card-title text-center">
+                    <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
+                </div>
+                <h4 class="text-center"><font color='black'><b>FOOD HANDLER LICENCE</b></font></h4>
+                <h4 class="text-center"><font color='black'><b>Bhutan Agriculture And Regulatory Authority(BAFRA)</b></font></h4>
+                <div class="id-card-wrapper text-center">
+                <div class="id-card">
+                    <div class="profile-row">
+                        <table class="table table-borderless">
+                            <thead>
+                              <tr>
+                                  {% for details in file_attach %}
+                                <th class="tg-0lax" rowspan="3"><img src="{{ details.File_Path }}"  style="max-width: 50%;display: block;margin-left: 100px;"></th>
+                                  {% endfor %}
+                                  {% for food_handler_details in food_handler_details %}
+                                <th class="align-left">LICENCE NO </th>
+                                <th class="tg-0lax">{{food_handler_details.FH_License_No}}</th>
+                              </tr>
+                              <tr>
+                                <td class="tg-0lax">Name</td>
+                                <td class="tg-0lax">{{food_handler_details.FH_License_No}}</td>
+                              </tr>
+                              <tr>
+                                <td class="tg-0lax">CID No</td>
+                                <td class="tg-0lax">{{food_handler_details.CID}}</td>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td class="tg-0lax">Date of Issue</td>
+                                <td class="tg-0lax" colspan="2">13/09/2021</td>
+                              </tr>
+                              <tr>
+                                <td class="tg-0lax">Validity</td>
+                                <td class="tg-0lax" colspan="2">13/09/2026</td>
+                              </tr>
+                            {% endfor %}
+                            </tbody>
+                            </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="profile-row" style="margin-left: 290px;margin-bottom: -30px;">
+                        <table class="table table-borderless">
+                            <tbody>
+                            <tr>
+                                <td>This License is issued in accordance with Section 55 and 56 of the Food Act of Bhutan 2005</td>
+                            </tr>
+                            <tr>
+                                <td>This License is only for the purpose of Foos handling and does not substitute Business License or any other License/Permit</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        </font>
+    </div>
+</div>
+
+<script>
+    function printTable()
+    {
+        $("#print").show();
+	    jQuery('#print').print();
+	    $("#print").hide();
+    }
+
+</script>

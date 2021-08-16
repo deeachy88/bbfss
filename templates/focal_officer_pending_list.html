@@ -37,10 +37,12 @@
                                         <td>{{application_details.Applicant_Id}}</td>
                                         <td>{{application_details.Action_Date|date:"d-m-Y"}}</td>
                                         {% if application_details.Service_Code == 'OC' or application_details.Service_Code == 'FPC' or application_details.Service_Code == 'GAP' or application_details.Service_Code == 'OC' or application_details.Service_Code == 'FBR' or application_details.Service_Code == 'CMS' and application_details.Application_Status != 'ACK' %}
-                                                <td><button type="button" class="btn btn-warning btn-sm js-edit-section" onclick="acknowledge('{{application_details.Application_No}}')">
-                                            Acknowledge
-                                            </button>
-                                                </td>
+                                            <td>
+                                                <button type="button" class="btn btn-warning btn-sm" onclick="acknowledge('{{application_details.Application_No}}')">
+                                                    <i class="zmdi zmdi-email"></i>
+                                                    &nbsp;&nbsp;Acknowledge
+                                                </button>
+                                            </td>
                                         {% endif %}
                                     </tr>
                                     {% empty %}
@@ -98,6 +100,7 @@
     }
     function acknowledge(appId)
     {
+    alert(appId);
         $.ajax({
             type : "GET",
             url : "{% url 'send_acknowledge' %}",

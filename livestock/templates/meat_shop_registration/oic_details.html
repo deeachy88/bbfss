@@ -11,19 +11,19 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Name of the Meat Shop <font color="red">*</font></label>
-                                            <input type="text" class="form-control" value="{{application_details.Meat_Shop_Name}}">
+                                            <input type="text" class="form-control" value="{{application_details.Meat_Shop_Name}}" disabled>
                                         </div>
                                     </div>
                                      <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">CID of the Owner <font color="red">*</font></label>
-                                            <input type="number"  class="form-control" value="{{application_details.CID}}">
+                                            <input type="number"  class="form-control" value="{{application_details.CID}}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Name of the applicant/Owner <font color="red">*</font></label>
-                                            <input type="text" class="form-control" value="{{application_details.Name_Owner}}">
+                                            <input type="text" class="form-control" value="{{application_details.Name_Owner}}" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -31,13 +31,13 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Email <font color="red">*</font></label>
-                                            <input type="email" class="form-control" value="{{application_details.Email}}">
+                                            <input type="email" class="form-control" value="{{application_details.Email}}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Contact Number <font color="red">*</font></label>
-                                            <input type="number" class="form-control" value="{{application_details.Contact_No}}">
+                                            <input type="number" class="form-control" value="{{application_details.Contact_No}}" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -46,14 +46,14 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Meat Shop Representative <font color="red">*</font></label>
-                                            <input type="text" class="form-control" value="{{application_details.Representative}}">
+                                            <input type="text" class="form-control" value="{{application_details.Representative}}" disabled>
                                         </div>
                                         <div class="alert alert-danger" id="name_managerErrorMsg" style="display:none"></div>
                                     </div>
                                      <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Licensing Criteria <font color="red">*</font></label>
-                                            <select class="form-control">
+                                            <select class="form-control" disabled>
                                                 {% if application_details.License_Criteria == 'BAFRA GHP' %}
                                                 <option selected>BAFRA GHP</option>
                                                 <option>BAFRA GMP</option>
@@ -67,7 +67,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Meat Shop Address <font color="red">*</font></label>
-                                            <textarea class="form-control">{{application_details.Address}}</textarea>
+                                            <textarea class="form-control" disabled>{{application_details.Address}}</textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -105,18 +105,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label class="form-label">Location</label>
-                                            <select class="form-control" disabled>
-                                                {% for location in location %}
-                                                    <option value="{{ location.Location_Code }}" {% if application_details.Location_Code == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         {% endfor %}
                         <br>
@@ -137,7 +125,7 @@
                                {% for Meat_Item in details %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td>{{file_attach.Meat_Item}}</td>
+                                        <td>{{Meat_Item.Meat_Item}}</td>
                                     </tr>
                                     {% empty %}
                                     <tr>
@@ -164,7 +152,7 @@
                                {% for file_attach in file %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td>{{file_attach.Attachment}}</td>
+                                        <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
                                     </tr>
                                     {% empty %}
                                     <tr>

@@ -8,7 +8,8 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.core.mail import send_mail
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
-
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import cache_control
 # Create your views here.
 from django.template.loader import render_to_string
 
@@ -25,7 +26,7 @@ from administrator.models import t_user_master, t_security_question_master, t_ro
     t_livestock_species_breed_master, t_livestock_product_master, t_unit_master
 
 from bbfss import settings
-from plant.models import t_payment_details
+from plant.models import t_payment_details, t_workflow_details
 
 
 def home(request):
@@ -36,6 +37,7 @@ def dashboard(request):
     return render(request, 'dashboard.html')
 
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def login(request):
     _message = 'Please sign in'
     if request.method == 'POST':
@@ -94,6 +96,13 @@ def login(request):
                                         request.session['section'] = user.Section_Id_id
                                         request.session['Login_Id'] = user.Login_Id
                                         request.session['email'] = user.Email_Id
+                                        section_details = t_section_master.objects.filter(Section_Id=user.Section_Id_id)
+                                        for id_section in section_details:
+                                            section_name = id_section.Section_Name
+                                            message_count = t_workflow_details.objects.filter(
+                                                Assigned_Role_Id=mainroles.Role_Id, Section=section_name,
+                                                Action_Date__isnull=False).exclude(Application_Status='A').count()
+                                            request.session['count'] = message_count
                                     elif complaint_officer == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
                                         request.session['role'] = complaint_officer
@@ -106,12 +115,25 @@ def login(request):
                                         request.session['field_office_id'] = user.Field_Office_Id_id
                                         request.session['Login_Id'] = user.Login_Id
                                         request.session['email'] = user.Email_Id
+                                        message_count = t_workflow_details.objects.filter(
+                                            Assigned_Role_Id=mainroles.Role_Id,
+                                            Field_Office_Id=user.Field_Office_Id_id,
+                                            Action_Date__isnull=False).count()
+                                        request.session['count'] = message_count
                                     elif Inspector == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
                                         request.session['role'] = Inspector
                                         request.session['field_office_id'] = user.Field_Office_Id_id
                                         request.session['Login_Id'] = user.Login_Id
                                         request.session['email'] = user.Email_Id
+                                        request.session['is_officiating'] = user.Is_Officiating
+                                        print(user.Login_Id)
+                                        print(user.Field_Office_Id_id)
+                                        message_count = t_workflow_details.objects.filter(
+                                            Assigned_To=user.Login_Id,
+                                            Field_Office_Id=user.Field_Office_Id_id,
+                                            Action_Date__isnull=False).count()
+                                        request.session['count'] = message_count
                                     elif Chief == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
                                         request.session['role'] = Chief
@@ -148,13 +170,14 @@ def accept_mail(request, Name, Email_Id, password):
 
 
 def reject_mail(request, Name, Email_Id):
-    subject = 'USER CREATED'
+    subject = 'USER REJECTED'
     message = "Dear " + Name + " Your Registration for Bhutan Bio-Food Security System Is Rejected ."
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email_Id]
     send_mail(subject, message, email_from, recipient_list)
 
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def user(request):
     if request.method == 'POST':
         name = request.POST['name']
@@ -170,6 +193,10 @@ def user(request):
         password = get_random_password_string(8)
         password_value = make_password(password)
         form = UserForm(request.POST)
+        roles = t_role_master.objects.all()
+        section = t_section_master.objects.all()
+        division = t_division_master.objects.all()
+        field_office = t_field_office_master.objects.all()
         if form.is_valid():
             if role == "2":
                 t_user_master.objects.create(Login_Type="I", Client_Type=None, Name=name, Employee_Id=eid,
@@ -178,8 +205,8 @@ def user(request):
                                              Password_Salt=None, CID=None, Agency=None, License_No=None,
                                              Address=None, Is_Active="Y", Logical_Delete="N",
                                              Last_Login_Date=None, Created_By=None, Created_On=None,
-                                             Updated_By=None, Updated_On=None, Dzongkhag_Code_id=None,
-                                             Gewog_Code_id=None, Section_Id_id=section, Village_Code_id=None,
+                                             Updated_By=None, Updated_On=None, Dzongkhag_Code=None,
+                                             Gewog_Code=None, Section_Id_id=section, Village_Code=None,
                                              Accept_Reject=None, Division_Id_id=division, Field_Office_Id_id=None,
                                              Role_Id_id=role)
                 user_details = t_user_master.objects.filter(Email_Id__iexact=email)
@@ -190,8 +217,8 @@ def user(request):
                                              Password_Salt=None, CID=None, Agency=None, License_No=None,
                                              Address=None, Is_Active="Y", Logical_Delete="N",
                                              Last_Login_Date=None, Created_By=None, Created_On=None,
-                                             Updated_By=None, Updated_On=None, Dzongkhag_Code_id=None,
-                                             Gewog_Code_id=None, Section_Id_id=None, Village_Code_id=None,
+                                             Updated_By=None, Updated_On=None, Dzongkhag_Code=None,
+                                             Gewog_Code=None, Section_Id_id=None, Village_Code=None,
                                              Accept_Reject=None, Division_Id_id=division, Field_Office_Id_id=None,
                                              Role_Id_id=role)
                 user_details = t_user_master.objects.filter(Email_Id__iexact=email)
@@ -202,8 +229,8 @@ def user(request):
                                              Password_Salt=None, CID=None, Agency=None, License_No=None,
                                              Address=None, Is_Active="Y", Logical_Delete="N",
                                              Last_Login_Date=None, Created_By=None, Created_On=None,
-                                             Updated_By=None, Updated_On=None, Dzongkhag_Code_id=None,
-                                             Gewog_Code_id=None, Section_Id_id=None, Village_Code_id=None,
+                                             Updated_By=None, Updated_On=None, Dzongkhag_Code=None,
+                                             Gewog_Code=None, Section_Id_id=None, Village_Code=None,
                                              Accept_Reject=None, Division_Id_id=None, Field_Office_Id_id=field,
                                              Role_Id_id=role)
                 user_details = t_user_master.objects.filter(Email_Id__iexact=email)
@@ -214,8 +241,8 @@ def user(request):
                                              Password_Salt=None, CID=None, Agency=None, License_No=None,
                                              Address=None, Is_Active="Y", Logical_Delete="N",
                                              Last_Login_Date=None, Created_By=None, Created_On=None,
-                                             Updated_By=None, Updated_On=None, Dzongkhag_Code_id=None,
-                                             Gewog_Code_id=None, Section_Id_id=None, Village_Code_id=None,
+                                             Updated_By=None, Updated_On=None, Dzongkhag_Code=None,
+                                             Gewog_Code=None, Section_Id_id=None, Village_Code=None,
                                              Accept_Reject=None, Division_Id_id=None, Field_Office_Id_id=field,
                                              Role_Id_id=role)
                 user_details = t_user_master.objects.filter(Email_Id__iexact=email)
@@ -226,14 +253,15 @@ def user(request):
                                              Password_Salt=None, CID=None, Agency=None, License_No=None,
                                              Address=None, Is_Active="Y", Logical_Delete="N",
                                              Last_Login_Date=None, Created_By=None, Created_On=None,
-                                             Updated_By=None, Updated_On=None, Dzongkhag_Code_id=None,
-                                             Gewog_Code_id=None, Section_Id_id=None, Village_Code_id=None,
+                                             Updated_By=None, Updated_On=None, Dzongkhag_Code=None,
+                                             Gewog_Code=None, Section_Id_id=None, Village_Code=None,
                                              Accept_Reject=None, Division_Id_id=None, Field_Office_Id_id=None,
                                              Role_Id_id=role)
                 user_details = t_user_master.objects.filter(Email_Id__iexact=email)
         details = t_user_master.objects.filter(Login_Type="I")
         sendmail(request, name, email, password)
-        return render(request, 'user.html', {'form': form, 'details': details})
+        return render(request, 'user.html', {'form': form, 'details': details, 'role': roles, 'section': section,
+                                             'division': division, 'field_office': field_office})
     else:
         details = t_user_master.objects.filter(Login_Type="I")
         form = UserForm()
@@ -250,35 +278,21 @@ def forgot_password(request):
     return render(request, 'forgot_password.html', {'security': security})
 
 
-def edit_user(request, Login_Id):
-    details = get_object_or_404(t_user_master, Login_Id=Login_Id)
-    if request.method == 'POST':
-        form = UserForm(request.POST, instance=details)
-    else:
-        form = UserForm(instance=details)
-    return save_user_form(request, form, Login_Id, 'edit_users.html')
-
-
-def save_user_form(request, form, Login_Id, template_name):
-    data = dict()
-    if request.method == 'POST':
-        data['form_is_valid'] = True
-        username = request.POST.get('name')
-        email = request.POST.get('email')
-        contact_number = request.POST.get('contact_number')
-        address = request.POST.get('address')
-        role = request.POST.get('role_id')
-        t_user_master.objects.filter(Login_Id=Login_Id).update(name=username, email=email,
-                                                               contact_number=contact_number,
-                                                               address=address,
-                                                               role_id_id=role)
-        books = t_user_master.objects.all()
-        data['html_user_list'] = render_to_string('user.html', {
-            'books': books
-        })
-    context = {'form': form}
-    data['html_form'] = render_to_string(template_name, context, request=request)
-    return JsonResponse(data)
+def edit_user(request):
+    Login_Id = request.POST.get('editLoginId')
+    username = request.POST.get('edit_name')
+    gender = request.POST.get('edit_gender')
+    emp_id = request.POST.get('edit_emp_id')
+    contact_number = request.POST.get('edit_mobile')
+    role = request.POST.get('edit_role')
+    division = request.POST.get('edit_division')
+    section = request.POST.get('edit_section')
+    field_office = request.POST.get('edit_field_Office')
+    t_user_master.objects.filter(Login_Id=Login_Id).update(Name=username, Gender=gender, Employee_Id=emp_id,
+                                                           Mobile_Number=contact_number, Role_Id=role,
+                                                           Division_Id=division, Section_Id=section,
+                                                           Field_Office_Id=field_office)
+    return redirect(user)
 
 
 def logout(request):
@@ -1209,9 +1223,10 @@ def register(request):
         contactPerson = request.POST['Contact_Person']
         emailId = request.POST['emailId']
         mobile_number = request.POST['mobile_number']
-        org_dzongkhag = request.POST['dzongkhag']
-        org_gewog = request.POST['gewog']
-        org_village = request.POST['village']
+        org_dzongkhag = request.POST['org_dzongkhag']
+        org_gewog = request.POST['org_gewog']
+        org_village = request.POST['org_village']
+        print()
         org_address = request.POST['org_address']
         if client == "Individual":
             t_user_master.objects.create(Login_Type="C", Client_Type="I", Name=name, Employee_Id=None, Gender=None,
@@ -1219,8 +1234,8 @@ def register(request):
                                          Password_Salt=None, CID=cid, Agency=None, License_No=None,
                                          Address=address, Is_Active="N", Logical_Delete="N",
                                          Last_Login_Date=None, Created_By=None, Created_On=None,
-                                         Updated_By=None, Updated_On=None, Dzongkhag_Code_id=dzongkhag,
-                                         Gewog_Code_id=gewog, Section_Id_id=None, Village_Code_id=village,
+                                         Updated_By=None, Updated_On=None, Dzongkhag_Code=dzongkhag,
+                                         Gewog_Code=gewog, Section_Id_id=None, Village_Code=village,
                                          Accept_Reject=None, Division_Id_id=None, Field_Office_Id_id=None)
         else:
             t_user_master.objects.create(Login_Type="C", Client_Type="O", Name=contactPerson, Employee_Id=None,
@@ -1228,8 +1243,8 @@ def register(request):
                                          Password_Salt=None, CID=None, Agency=org_name, License_No=org_license,
                                          Address=org_address, Is_Active="N", Logical_Delete="N",
                                          Last_Login_Date=None, Created_By=None, Created_On=None,
-                                         Updated_By=None, Updated_On=None, Dzongkhag_Code_id=org_dzongkhag,
-                                         Gewog_Code_id=org_gewog, Section_Id_id=None, Village_Code_id=org_village,
+                                         Updated_By=None, Updated_On=None, Dzongkhag_Code=org_dzongkhag,
+                                         Gewog_Code=org_gewog, Section_Id_id=None, Village_Code=org_village,
                                          Accept_Reject=None, Division_Id_id=None, Field_Office_Id_id=None)
         return render(request, 'client_register.html')
     else:
@@ -1252,9 +1267,11 @@ def registered_clients(request):
     return render(request, 'client_details.html', {'reg_clients': clients})
 
 
-def accept_registration(request, Email_Id, Name):
+def accept_registration(request):
     password = get_random_password_string(8)
     password_value = make_password(password)
+    Email_Id = request.GET.get('Email_Id')
+    Name = request.GET.get('Name')
     reg_clients = t_user_master.objects.filter(Email_Id=Email_Id)
     reg_clients.update(Accept_Reject="A")
     reg_clients.update(Is_Active="Y")
@@ -1264,7 +1281,9 @@ def accept_registration(request, Email_Id, Name):
     return render(request, 'registered_clients.html', {'reg_clients': clients})
 
 
-def reject_registration(request, Login_Id, Email_Id, Name):
+def reject_registration(request):
+    Email_Id = request.GET.get('Email_Id')
+    Name = request.GET.get('Name')
     reg_clients = t_user_master.objects.filter(Email_Id=Email_Id)
     reg_clients.update(Accept_Reject="R")
     clients = reg_clients.filter(Accept_Reject=None)
@@ -1302,7 +1321,9 @@ def deactivate_user(request, Login_Id, Email_Id, Name):
     return render(request, 'user.html', {'details': details})
 
 
-def reset_client_password(request, Login_Id, Email_Id, Name):
+def reset_client_password(request):
+    Email_Id = request.GET.get('Email_Id')
+    Name = request.GET.get('Name')
     salt = os.urandom(32)
     password = get_random_password_string(8)
     key = hashlib.pbkdf2_hmac(
@@ -1316,14 +1337,19 @@ def reset_client_password(request, Login_Id, Email_Id, Name):
     reg_users.update(Password=key)
     reg_users.update(Password_Salt=salt)
     details = t_user_master.objects.filter(Login_Type="C")
-    return render(request, 'registered_clients.html', {'details': details})
+    send_reset_pass_mail(Name, Email_Id, password)
+    return redirect(registered_clients)
 
 
-def deactivate_client(request, Login_Id, Email_Id, Name):
+def deactivate_client(request):
+    Email_Id = request.GET.get('Email_Id')
+    identifier = request.GET.get('identifier')
     reg_users = t_user_master.objects.filter(Email_Id=Email_Id)
-    reg_users.update(Is_Active='N')
-    details = t_user_master.objects.filter(Login_Type="I")
-    return render(request, 'registered_clients.html', {'details': details})
+    if identifier == 'Deactivate':
+        reg_users.update(Is_Active='N')
+    else:
+        reg_users.update(Is_Active='Y')
+    return redirect(registered_clients)
 
 
 def load_gewog(request):
@@ -1643,4 +1669,68 @@ def send_reset_pass_mail(name, email, password):
               + email + " And Password is " + password + ""
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [email]
+    send_mail(subject, message, email_from, recipient_list)
+
+
+def assign_revoke_officiating(request):
+    Field_Office_Id = request.session['field_office_id']
+    inspector_list = t_user_master.objects.filter(Field_Office_Id=Field_Office_Id, Role_Id='5')
+    assigned_inspector_list = t_user_master.objects.filter(Field_Office_Id=Field_Office_Id, Role_Id='5',
+                                                           Is_Officiating='Yes')
+    return render(request, 'assign_officiating.html', {'inspector_list': inspector_list,
+                                                       'assigned_inspector_list': assigned_inspector_list})
+
+
+def assign_officiating(request):
+    Email_Id = request.GET.get('Email_Id')
+    user_list = t_user_master.objects.filter(Email_Id=Email_Id)
+    user_list.update(Is_Officiating='Yes')
+    return redirect(assign_revoke_officiating)
+
+
+def revoke_officiating(request):
+    Email_Id = request.GET.get('Email_Id')
+    user_list = t_user_master.objects.filter(Email_Id=Email_Id)
+    user_list.update(Is_Officiating='No')
+    return redirect(assign_revoke_officiating)
+
+
+def check_already_assigned_officiating(request):
+    data = dict()
+    Field_Office_Id = request.session['field_office_id']
+    officiating_count = t_user_master.objects.filter(Field_Office_Id=Field_Office_Id, Role_Id='5',
+                                                     Is_Officiating='Yes').count()
+    data['officiating_count'] = officiating_count
+    return JsonResponse(data)
+
+
+def manage_user(request):
+    data = dict()
+    login_id = request.GET.get('login_id')
+    email_id = request.GET.get('Email_Id')
+    name = request.GET.get('Name')
+    identifier = request.GET.get('identifier')
+
+    user_list = t_user_master.objects.filter(Login_Id=login_id)
+
+    if identifier == "Activate":
+        user_list.update(Is_Active="Y")
+    elif identifier == "Deactivate":
+        user_list.update(Is_Active="N")
+    else:
+        password = get_random_password_string(8)
+        password_value = make_password(password)
+        user_list.update(Password=password_value)
+        user_list.update(Last_Login_Date=None)
+        user_password_reset_mail(name, email_id, password)
+    data['identifier'] = identifier
+    return JsonResponse(data)
+
+
+def user_password_reset_mail(Name, Email_Id, password):
+    subject = 'PASSWORD RESET'
+    message = "Dear " + Name + " Your Password Has Been Reset for Bhutan Bio-Food Security System. Your Login Id is " \
+              + Email_Id + " And Password is " + password + ""
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = [Email_Id]
     send_mail(subject, message, email_from, recipient_list)

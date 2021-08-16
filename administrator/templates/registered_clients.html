@@ -1,10 +1,25 @@
 {% extends 'common_dashboard.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+{% load static %}
+<style>
+    #pageloader img
+    {
+      left: 50%;
+      margin-left: -32px;
+      margin-top: -32px;
+      position: absolute;
+      top: 50%;
+    }
+</style>
 <div class="animated fadeIn">
     <div class="row">
         <div class="col-md-12">
             <div class="card">
+                <div class="alert alert-success" id="successMsg" style="display:none"></div>
+                <div id="pageloader" style="display:none">
+                   <img src="{% static 'assets/img/ajax-loader.gif' %}" alt="processing..." />
+                </div>
                 <div class="card-header">
                     <strong class="card-title">New Client Registration</strong>
                 </div>
@@ -41,18 +56,12 @@
                                     <td>{{clients.License_No}}</td>
                                     <td>
                                         <div class="btn-group">
-                                            <form action="{% url 'accept_registration' clients.Email_Id clients.Name %}" method="post">
-                                               {% csrf_token %}
-                                                <button type="submit" data-toggle="tooltip" title="Approve" class="btn btn-primary btn--icon btn-sm">
-                                                    <i class="zmdi zmdi-check-square"></i>
-                                                </button>
-                                            </form>
-                                            <form action="{% url 'reject_registration' clients.Email_Id clients.Name %}" method="post">
-                                               {% csrf_token %}
-                                                <button type="submit" data-toggle="tooltip" title="Reject" class="btn btn-primary btn--icon btn-sm">
-                                                    <i class="zmdi zmdi-close zmdi-hc-fw"></i>
-                                                </button>
-                                            </form>
+                                            <button type="submit" data-toggle="tooltip" onclick="accept_registration('{{ clients.Email_Id }}','{{ clients.Name }}')"  title="Approve" class="btn btn-primary btn--icon btn-sm">
+                                                <i class="zmdi zmdi-check-square"></i>
+                                            </button>
+                                            <button type="submit" data-toggle="tooltip" onclick="reject_registration('{{ clients.Email_Id }}','{{ clients.Name }}')" title="Reject" class="btn btn-primary btn--icon btn-sm">
+                                                <i class="zmdi zmdi-close zmdi-hc-fw"></i>
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -69,4 +78,43 @@
         </div>
     </div>
 </div>
+<script>
+    function accept_registration(email, name)
+    {
+        $("#pageloader").show();
+        $.ajax({
+            type : "GET",
+            url : "{% url 'accept_registration' %}",
+            data :{'Email_Id':email,'Name':name},
+            success : function(data)
+            {
+                $("#pageloader").hide();
+                $('#successMsg').html("Client Registration Accepted.");
+                $('#successMsg').show();
+                $('#successMsg').delay(2000).fadeOut('slow');
+                setTimeout(function()
+                {
+                    location.reload();
+                }, 3000);
+            }
+        });
+    }
+
+    function reject_registration(email, name)
+    {
+        $("#pageloader").show();
+        $.ajax({
+            type : "GET",
+            url : "{% url 'reject_registration' %}",
+            data :{'Email_Id':email,'Name':name},
+            success : function(data)
+            {
+                $("#pageloader").hide();
+                $('#successMsg').html("Client Registration Rejected.");
+                $('#successMsg').show();
+                $('#successMsg').delay(2000).fadeOut('slow');
+            }
+        });
+    }
+</script>
 {% endblock %}

@@ -228,6 +228,71 @@
                         </div>
                     {% endfor %}
                     </div>
+                    <br>
+                    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Item </span>&nbsp;&nbsp;&nbsp;
+                            <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Details</span>
+                        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                    </div>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Common Name</th>
+                                <th scope="col">Product Category</th>
+                                <th scope="col">Product Characteristics</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Unit</th>
+                                <th scope="col">Exporter Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for import in import %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{import.Common_Name}}</td>
+                                    <td>{{import.Product_Category}}</td>
+                                    <td>{{import.Product_Characteristics}}</td>
+                                    <td>{{import.Quantity}}</td>
+                                    <td>{{import.Unit}}</td>
+                                    <td>{{import.Exporter_Type}}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                  <td colspan="7" class="text-center">No Data</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <br>
+                    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">File </span>&nbsp;&nbsp;&nbsp;
+                            <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Attachments</span>
+                        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                    </div>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">File</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           {% for file_attach in file %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                  <td colspan="3" class="text-center">No Data</td>
+                                </tr>
+                           {% endfor %}
+                        </tbody>
+                    </table>
+                    <br>
                     <div class="modal-footer justify-content-center">
                         <select class="form-control col-md-6" name="forwardTo"  id="forwardTo">
                             <option value="">--SELECT INSPECTOR--</option>
