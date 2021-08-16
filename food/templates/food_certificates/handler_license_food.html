@@ -6,9 +6,7 @@
 .card-header {
     padding: 3.2rem 2.2rem;
 }
-table, th, td {
-  border: 1px solid black;
-}
+
 .profile-row {
   display: flex;
 }
@@ -31,7 +29,9 @@ table, th, td {
     margin-left: -118px;
 }
 .id-card {page-break-after: always;}
-
+table, th, td {
+    border: none;
+}
 </style>
 <div class="animated fadeIn">
     <div class="card-header header-card"><font color='black'>
@@ -107,10 +107,7 @@ table, th, td {
     </font>
     </div>
 </div>
-<div style="display:none;" id="print">
-    <table>
-
-    </table>
+<div id="print">
     <div class="card-header header-card"><font color='black'>
         <div class="col-md-12 text-center">
             <div>
@@ -120,47 +117,58 @@ table, th, td {
                 </div>
                 <h4 class="text-center"><font color='black'><b>FOOD HANDLER LICENCE</b></font></h4>
                 <h4 class="text-center"><font color='black'><b>Bhutan Agriculture And Regulatory Authority(BAFRA)</b></font></h4>
-
                 <div class="id-card-wrapper text-center">
                 <div class="id-card">
                     <div class="profile-row">
-                        <table>
-                            <tbody>
+                        <table class="table table-borderless">
+                            <thead>
                               <tr>
                                   {% for details in file_attach %}
-                                <td class="tg-0lax" rowspan="3"><img src="{{ details.File_Path }}"></td>
-                                  {% endfor%}
+                                <th class="tg-0lax" rowspan="3"><img src="{{ details.File_Path }}"  style="max-width: 50%;display: block;margin-left: 100px;"></th>
+                                  {% endfor %}
                                   {% for food_handler_details in food_handler_details %}
-                                <td class="tg-0lax" colspan="2"><b>LICENCE NO &nbsp;:&nbsp;{{food_handler_details.FH_License_No}}</b></td>
+                                <th class="align-left">LICENCE NO </th>
+                                <th class="tg-0lax">{{food_handler_details.FH_License_No}}</th>
                               </tr>
                               <tr>
-                                <td class="tg-0lax" colspan="2"><b>Name &nbsp;:&nbsp;{{food_handler_details.FH_License_No}}</b></td>
+                                <td class="tg-0lax">Name</td>
+                                <td class="tg-0lax">{{food_handler_details.FH_License_No}}</td>
                               </tr>
                               <tr>
-                                <td class="tg-0lax" colspan="2"><b>CID No &nbsp;:&nbsp;{{food_handler_details.CID}}</b></td>
+                                <td class="tg-0lax">CID No</td>
+                                <td class="tg-0lax">{{food_handler_details.CID}}</td>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td class="tg-0lax">Date of Issue</td>
+                                <td class="tg-0lax" colspan="2">13/09/2021</td>
                               </tr>
                               <tr>
-                                <td class="tg-0lax">Date of Issue:</td>
-                                <td class="tg-0lax" colspan="2"><b>13/09/2021</b></td>
-                              </tr>
-                              <tr>
-                                <td class="tg-0lax">Validity:</td>
-                                <td class="tg-0lax" colspan="2"><b>13/09/2021</b></td>
+                                <td class="tg-0lax">Validity</td>
+                                <td class="tg-0lax" colspan="2">13/09/2026</td>
                               </tr>
                             {% endfor %}
                             </tbody>
-                        </table>
+                            </table>
                     </div>
                 </div>
                 <div class="row">
                     <div class="profile-row" style="margin-left: 290px;margin-bottom: -30px;">
-                        <div class="row">
-                            <label><b>This License is issued in accordance with Section 55 and 56 of the Food Act of Bhutan 2005</b></label>
-                            <label><b>This License is only for the purpose of Foos handling and does not substitute Business License or any other License/Permit</b></label>
-                        </div>
+                        <table class="table table-borderless">
+                            <tbody>
+                            <tr>
+                                <td>This License is issued in accordance with Section 55 and 56 of the Food Act of Bhutan 2005</td>
+                            </tr>
+                            <tr>
+                                <td>This License is only for the purpose of Foos handling and does not substitute Business License or any other License/Permit</td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
+        </div>
         </div>
         </font>
     </div>
