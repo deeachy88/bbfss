@@ -321,7 +321,7 @@ def concern_details_feasibility_ins(request):
                                                              Inspection_Type='Feasibility Inspection',
                                                              Requirement=Requirement, Observation=Observation,
                                                              Clause_No=Clause_No, Date=date.today(), Concern=Concern,
-                                                             FBO_Response=response_fbo)
+                                                             FBO_Response=response_fbo, NC=None, NC_Category=None)
     application_details = t_food_business_registration_licensing_t5.objects.filter(Application_No=application_id,
                                                                                    Inspection_Type='Feasibility '
                                                                                                    'Inspection')
@@ -475,18 +475,18 @@ def concern_details_factory_ins(request):
     Observation = request.GET.get('Observations')
     Clause_No = request.GET.get('Clause_No')
     Concern = request.GET.get('Concern')
-    response_fbo = request.GET.get('response_fbo')
+    NC_Category = request.GET.get('NC_Category')
     t_food_business_registration_licensing_t5.objects.create(Application_No=application_id,
                                                              Inspection_Type='Factory Inspection',
                                                              Requirement=Requirement, Observation=Observation,
-                                                             Clause_No=Clause_No, Date=date.today(), Concern=Concern,
-                                                             FBO_Response=response_fbo)
+                                                             Clause_No=Clause_No, Date=date.today(), Concern=None,
+                                                             FBO_Response=None, NC=Concern, NC_Category=NC_Category)
     application_details = t_food_business_registration_licensing_t5.objects.filter(Application_No=application_id,
                                                                                    Inspection_Type='Factory Inspection')
     message_count = t_food_business_registration_licensing_t5.objects.filter(
-        Concern='Yes', Inspection_Type='Factory Inspection').count()
-    return render(request, 'registration_licensing/concern_details.html', {'application_details': application_details,
-                                                                           'message_count': message_count})
+        NC='Yes', Inspection_Type='Factory Inspection').count()
+    return render(request, 'registration_licensing/nc_details.html', {'application_details': application_details,
+                                                                      'message_count': message_count})
 
 
 def fbr_factory_team_details(request):
@@ -673,9 +673,9 @@ def edit_fbr_factory_details(request):
     application_details = t_food_business_registration_licensing_t5.objects.filter(Application_No=application_id,
                                                                                    Inspection_Type='Factory Inspection')
     message_count = t_food_business_registration_licensing_t5.objects.filter(
-        Concern='Yes', Inspection_Type='Factory Inspection').count()
-    return render(request, 'registration_licensing/concern_details.html', {'application_details': application_details,
-                                                                           'message_count': message_count})
+        NC='Yes', Inspection_Type='Factory Inspection').count()
+    return render(request, 'registration_licensing/nc_details.html', {'application_details': application_details,
+                                                                      'message_count': message_count})
 
 
 def forward_fbr_application(request):
@@ -1425,7 +1425,7 @@ def food_import_application(request):
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
     country = t_country_master.objects.all()
-    field_office = t_field_office_master.objects.all()
+    field_office = t_field_office_master.objects.filter(Is_Entry_Point='Y')
     location = t_location_field_office_mapping.objects.all()
     unit = t_unit_master.objects.all()
     category = t_food_category_master.objects.all()
@@ -1729,6 +1729,7 @@ def submit_fip_application(request):
     update_details.update(Inspection_Team=Inspection_Team)
     update_details.update(Inspection_Date=date_format_ins)
     update_details.update(Inspection_Time=timeOfInspection)
+    update_details.update(Approve_Date=date.today())
     if remarks is not None:
         update_details.update(Inspection_Remarks=remarks)
     else:

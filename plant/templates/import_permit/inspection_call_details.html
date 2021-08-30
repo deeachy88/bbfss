@@ -1,28 +1,636 @@
-<div class="animated fadeIn">
-    <input type="hidden" name="appNo" value="{{ application_no }}">
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-group">
-                <label for="entryPlace">Point Of Entry</label>
-                <select class="form-control" name="entry_point"  id="entryPlace">
-                    <option value="">--SELECT--</option>
-                    {% for location in location %}
-                            <option value="{{ location.Field_Office_Id }}">{{ location.Field_Office }}</option>
-                    {% endfor %}
-                </select>
+<form method="post" id="inspection_call_form">
+    {% csrf_token %}
+    <div class="animated fadeIn">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        {% for application_details in application_details %}
+                            {% if application_details.Import_Type == "P" %}
+                                <div class="row justify-content-center">
+                                    <div class="form-check text-center">
+                                        <label>Import Type <font color="red">*</font></label><br>
+                                        <label class="form-radio-label">
+                                            <input class="form-radio-input" type="radio" name="importType" checked>
+                                            <span class="form-radio-sign">Plant And Plant Products</span>
+                                        </label>
+                                        <label class="form-radio-label ml-3">
+                                            <input class="form-radio-input" type="radio" name="importType" disabled>
+                                            <span class="form-radio-sign">Agrochemicals</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="row justify-content-center">
+                                    <div class="form-check text-center">
+                                        <label>Import Type <font color="red">*</font></label><br>
+                                        <label class="form-radio-label">
+                                            <input class="form-radio-input" type="radio" name="importType" disabled>
+                                            <span class="form-radio-sign">Plant And Plant Products</span>
+                                        </label>
+                                        <label class="form-radio-label ml-3">
+                                            <input class="form-radio-input" type="radio" name="importType" checked>
+                                            <span class="form-radio-sign">Agrochemicals</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if application_details.Application_Type == 'Personal' %}
+                                <br>
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <label class="form-label">Application Type <font color="red">*</font></label>
+                                    </div>
+                                    <div class="col-sm-8 justify-content-center">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" checked>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Personal</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Commercial</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <label class="form-label">Application Type <font color="red">*</font></label>
+                                    </div>
+                                    <div class="col-sm-8 justify-content-center">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Personal</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" checked>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Commercial</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if application_details.Application_Type == 'Personal' %}
+                            {% if application_details.Nationality_Type == 'Bhutanese' %}
+                                <br>
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <label class="form-label">Nationality <font color="red">*</font></label>
+                                    </div>
+                                    <div class="col-sm-8 justify-content-center">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Nationality_Type" class="custom-control-input" checked>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Bhutanese</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Nationality_Type" class="custom-control-input" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Non-Bhutanese</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Applicant CID <font color="red">*</font></label>
+                                                <input type="text" class="form-control" value="{{application_details.CID}}" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Applicant Name <font color="red">*</font></label>
+                                                <input type="text" class="form-control"  value="{{application_details.Applicant_Name}}" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Dzongkhag &nbsp;<font color='red'>*</font></label>
+                                                <input type="text" class="form-control" value="{{application_details.dzongkhag}}" disabled>
+                                            </div>
+                                            <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Gewog &nbsp;<font color='red'>*</font></label>
+                                                <input type="text" class="form-control" value="{{application_details.gewog}}" disabled>
+                                            </div>
+                                            <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Village &nbsp;<font color='red'>*</font></label>
+                                                <input type="text" class="form-control" value="{{application_details.village}}" disabled>
+                                            </div>
+                                            <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Contact Number <font color="red">*</font></label>
+                                                <input type="text" class="form-control" value="{{application_details.Contact_No}}" disabled>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Email <font color="red">*</font></label>
+                                                <input type="email" class="form-control" value="{{application_details.Email}}" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Name And Address Supplier <font color="red">*</font></label>
+                                                <textarea class="form-control" rows="2" disabled>{{application_details.Email}}</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Country Of Origin <font color="red">*</font></label>
+                                                 <select class="form-control" name="Country_Of_Origin"  id="Country_Of_Origin">
+                                                     {% for country in country %}
+                                                        <option value="{{country.Country_Code}}"{% if application_details.Country_Of_Origin == country.Country_Code %}selected{% endif %}>
+                                                            {{ country.Country_Name }}
+                                                        </option>
+                                                    {% endfor %}
+                                                 </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Means of Conveyance <font color="red">*</font></label>
+                                                <select class="form-control form-control" disabled>
+                                                    {% if application_details.Means_of_Conveyance == 'Air' %}
+                                                        <option value="Air" selected>Air</option>
+                                                    {% else %}
+                                                        <option value="Vehicular" selected>Vehicular</option>
+                                                    {% endif %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Place Of Entry <font color="red">*</font></label>
+                                                 <select class="form-control" name="entry_point"  id="entry_point">
+                                                     {% for location in location %}
+                                                        <option value="{{location.Field_Office_Id}}"{% if application_details.Actual_Point_Of_Entry == location.Field_Office_Id %}selected{% endif %}>
+                                                            {{ location.Field_Office }}
+                                                        </option>
+                                                    {% endfor %}
+                                                 </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Purpose <font color="red">*</font></label>
+                                                <textarea class="form-control" rows="2" disabled>{{application_details.Purpose}}</textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Final Destination <font color="red">*</font></label>
+                                                <input type="text" class="form-control" value="{{application_details.Final_Destination}}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Expected Arrival Date <font color="red">*</font></label>
+                                                <input type="text" class="form-control" readonly="readonly" value="{{application_details.Expected_Arrival_Date}}">
+                                            </div>
+                                            <div class="alert alert-danger" id="B_expectedDateErrorMsg" style="display:none"></div>
+                                        </div>
+                                    </div>
+                            {% else %}
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <label class="form-label">Nationality <font color="red">*</font></label>
+                                    </div>
+                                    <div class="col-sm-8 justify-content-center">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Nationality_Type" class="custom-control-input" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Bhutanese</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Nationality_Type" class="custom-control-input" checked>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Non-Bhutanese</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Passport No <font color="red">*</font></label>
+                                        <input type="text" class="form-control" value="{{application_details.passport_number}}">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Nationality <font color="red">*</font></label>
+                                        <input type="text" class="form-control" value="{{application_details.Nationality}}">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Email <font color="red">*</font></label>
+                                        <input type="email" class="form-control" value="{{application_details.Email}}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Name <font color="red">*</font></label>
+                                        <input type="text" class="form-control" value="{{application_details.Applicant_Name}}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Address <font color="red">*</font></label>
+                                        <textarea class="form-control" disabled>{{application_details.Applicant_Name}}</textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Contact Number <font color="red">*</font></label>
+                                        <input type="number" class="form-control" value="{{application_details.Contact_No}}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Name And Address Supplier <font color="red">*</font></label>
+                                        <textarea class="form-control" rows="2" disabled>{{application_details.Name_And_Address_Supplier}}</textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Country Of Origin <font color="red">*</font></label>
+                                         <select class="form-control" name="Origin" id="Origin">
+                                            <option value="">--SELECT--</option>
+                                            {% for country in country %}
+                                                <option value="{{ country.Country_Name }}">{{ country.Country_Name }}</option>
+                                            {% endfor %}
+                                         </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Means of Conveyance <font color="red">*</font></label>
+                                        <select class="form-control form-control" id="p_conveyanceMeans" name="p_conveyanceMeans">
+                                            <option value="">-SELECT-</option>
+                                            <option value="Air">Air</option>
+                                            <option value="Vehicular">Vehicular</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Place Of Entry <font color="red">*</font></label>
+                                         <select class="form-control" name="p_entry_point"  id="p_entry_point">
+                                            <option value="">--SELECT--</option>
+                                            {% for location in location %}
+                                                <option value="{{ location.Field_Office_Id }}">{{ location.Field_Office }}</option>
+                                            {% endfor %}
+                                         </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Purpose <font color="red">*</font></label>
+                                        <textarea class="form-control" rows="2" disabled>{{application_details.Purpose}}</textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Final Destination <font color="red">*</font></label>
+                                        <input type="text" class="form-control" value="{{application_details.Final_Destination}}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Expected Arrival Date <font color="red">*</font></label>
+                                        <input type="text" class="form-control" value="{{application_details.Expected_Arrival_Date}}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 justify-content-center">
+                                    <div class="form-group">
+                                        <label class="form-label">Products are derived from GMO? <font color="red">*</font></label><br>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" class="custom-control-input" name="GMO" value="Yes" onclick="GMO_Check(this.value)">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Yes</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" class="custom-control-input" name="GMO" value="No" onclick="GMO_Check(this.value)">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">No</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            {% else %}
+                            <div id="commercial_div" style="display:none;">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">License Number <font color="red">*</font></label>
+                                            <input type="text" class="form-control" value="{{application_details.License_No}}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Business Name <font color="red">*</font></label>
+                                            <input type="text" class="form-control" value="{{application_details.License_No}}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Present Address <font color="red">*</font></label>
+                                            <textarea class="form-control" rows="2" id="commercial_presentAddress" name="commercial_presentAddress">{{application_details.Present_Address}}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Contact Number <font color="red">*</font></label>
+                                            <input type="number" class="form-control" value="{{application_details.Contact_No}}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Email <font color="red">*</font></label>
+                                            <input type="email" class="form-control" value="{{application_details.Email}}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Name And Address Supplier <font color="red">*</font></label>
+                                            <textarea class="form-control" rows="2" disabled>{{application_details.Name_And_Address_Supplier}}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Country Of Origin <font color="red">*</font></label>
+                                             <select class="form-control" name="Com_Country_Of_Origin"  id="Com_Country_Of_Origin">
+                                                <option value="">--SELECT--</option>
+                                                {% for country in country %}
+                                                    <option value="{{ country.Country_Name }}">{{ country.Country_Name }}</option>
+                                                {% endfor %}
+                                             </select>
+                                            <div class="alert alert-danger" id="Com_Country_Of_OriginErrorMsg" style="display:none"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Means of Conveyance <font color="red">*</font></label>
+                                            <select class="form-control form-control" id="com_conveyanceMeans" name="com_conveyanceMeans">
+                                                <option value="">-SELECT-</option>
+                                                <option value="Air">Air</option>
+                                                <option value="Vehicular">Vehicular</option>
+                                            </select>
+                                        </div>
+                                        <div class="alert alert-danger" id="com_conveyanceMeansErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Place Of Entry <font color="red">*</font></label>
+                                             <select class="form-control" name="com_entry_point"  id="com_entry_point">
+                                                <option value="">--SELECT--</option>
+                                                {% for location in location %}
+                                                    <option value="{{ location.Field_Office_Id }}">{{ location.Field_Office }}</option>
+                                                {% endfor %}
+                                             </select>
+                                        </div>
+                                        <div class="alert alert-danger" id="com_entry_pointErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Purpose <font color="red">*</font></label>
+                                            <textarea class="form-control" rows="2" disabled>{{application_details.Purpose}}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Final Destination <font color="red">*</font></label>
+                                            <input type="text" class="form-control" value="{{application_details.Final_Destination}}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Expected Arrival Date <font color="red">*</font></label>
+                                            <input type="text" class="form-control" value="{{application_details.Expected_Arrival_Date}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                                <br>
+                                {% if application_details.Import_Type == 'P' %}
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Import Category</th>
+                                                <th scope="col">Crop Common Name</th>
+                                                <th scope="col">Crop Variety Name</th>
+                                                <th scope="col">Quantity</th>
+                                                <th scope="col">Unit</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for import in details %}
+                                                <tr>
+                                                    <td>{{ forloop.counter }}</td>
+                                                    <td>{{import.Import_Category}}</td>
+                                                    {% for crop in crop %}
+                                                        {% if import.Crop_Id == crop.Crop_Id %}
+                                                            <td>{{ crop.Crop_Common_Name }}</td>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    {% for variety in variety %}
+                                                        {% if variety.Crop_Variety_Id ==  import.Variety_Id %}
+                                                            <td>{{ variety.Crop_Variety_Name}}</td>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    <td>{{import.Quantity}}</td>
+                                                    <td>{{import.Unit}}</td>
+                                                </tr>
+                                                {% empty %}
+                                                <tr>
+                                                    <td colspan="6" class="text-center">No Data</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% else %}
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Import Category</th>
+                                                <th scope="col">Pesticide Name</th>
+                                                <th scope="col">Description</th>
+                                                <th scope="col">Unit</th>
+                                                <th scope="col">Quantity</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                           {% for import in import %}
+                                                    <tr>
+                                                        <td>{{ forloop.counter }}</td>
+                                                        <td>{{import.Import_Category}}</td>
+                                                        {% for pesticide in pesticide %}
+                                                            {% if pesticide.Pesticide_Id == import.Pesticide_Id %}
+                                                            <td>{{import.Pesticide_Name}}</td>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                        <td>{{import.Description}}</td>
+                                                        <td>{{import.Unit}}</td>
+                                                        <td>{{import.Quantity}}</td>
+                                                    </tr>
+                                                    {% empty %}
+                                                    <tr>
+                                                      <td colspan="6" class="text-center">No Data</td>
+                                                    </tr>
+                                           {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% endif %}
+                                <br>
+                                {% if application_details.Import_Type == 'P' %}
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">File</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                           {% for file_attach in file %}
+                                                    <tr>
+                                                        <td>{{ forloop.counter }}</td>
+                                                        <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                                                    </tr>
+                                                    {% empty %}
+                                                    <tr>
+                                                      <td colspan="3" class="text-center">No Data</td>
+                                                    </tr>
+                                           {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% else %}
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">File</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                           {% for file_attach in file %}
+                                                    <tr>
+                                                        <td>{{ forloop.counter }}</td>
+                                                        <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                                                    </tr>
+                                                    {% empty %}
+                                                    <tr>
+                                                      <td colspan="3" class="text-center">No Data</td>
+                                                    </tr>
+                                           {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% endif %}
+                        {% endfor %}
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="entryPlace">Actual Point Of Entry</label>
+                                        <select class="form-control" name="entry_point"  id="entryPlace">
+                                            <option value="">--SELECT--</option>
+                                            {% for location in location %}
+                                                    <option value="{{ location.Field_Office_Id }}">{{ location.Field_Office }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <label>Date picker</label>
+                                    <input type="date" name="date" id="idTourDateDetails" class="form-control date-picker flatpickr-input active">
+                                </div>
+                                 <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="remarks">Remarks(If Any)</label>
+                                        <textarea class="form-control" rows="3" id="remarks" name="remarks"></textarea>
+                                    </div>
+                                </div>
+                             </div>
+                            <div class="alert alert-info" id="messageDiv" style="display:none">
+                                Application Submitted
+                            </div>
+                            <hr>
+                        {% for application_details in application_details %}
+                            <input type="hidden" name="application_No" value="{{application_details.Application_No}}">
+                            <input type="hidden" name="service_code" value="IPP">
+                            <div class="card-action text-center">
+                                <button type="button" id="approve_button" class="btn btn-flat btn-primary" onclick="update_details()">
+                                    <i class="ace-icon fa fa-check"></i>
+                                    &nbsp;&nbsp;Submit
+                                </button>
+                                <button type="button" class="btn btn-flat btn-danger">
+                                    <i class="ace-icon fa fa-times"></i>
+                                    &nbsp;&nbsp;Cancel
+                                </button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="col-sm-4">
-            <label>Date picker</label>
-            <input type="date" name="date" id="idTourDateDetails" class="form-control date-picker flatpickr-input active">
         </div>
     </div>
-     <div class="row">
-         <div class="col-md-6">
-            <div class="form-group">
-                <label for="remarks">Remarks</label>
-                <textarea class="form-control" rows="5" id="remarks" name="remarks"></textarea>
-            </div>
-        </div>
-     </div>
-</div>
+</form>
+
+<script>
+    function update_details()
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'update_inspection_call_details' %}",
+            data : $('#inspection_call_form').serialize(),
+            success : function(response) {
+                $('#messageDiv').show();
+                setTimeout(function() {
+                    $("#messageDiv").hide('blind', {}, 500)
+                }, 2000);
+                setTimeout(function() {
+                    $('#import_detailsModal').modal('hide');
+                }, 3000);
+                setTimeout(function() {
+                    location.reload();
+                }, 3000);
+            }
+        });
+    }
+</script>

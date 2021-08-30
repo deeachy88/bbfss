@@ -1,0 +1,48 @@
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Import Category</th>
+            <th scope="col">Crop Common Name</th>
+            <th scope="col">Crop Variety Name</th>
+            <th scope="col">Unit</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Quantity Released</th>
+            <th scope="col">Quantity Rejected</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for import in import %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{import.Import_Category}}</td>
+                {% for crop in crop %}
+                    {% if import.Crop_Id == crop.Crop_Id %}
+                        <td>{{ crop.Crop_Common_Name }}</td>
+                    {% endif %}
+                {% endfor %}
+                {% for variety in variety %}
+                    {% if variety.Crop_Variety_Id ==  import.Variety_Id %}
+                        <td>{{ variety.Crop_Variety_Name}}</td>
+                    {% endif %}
+                {% endfor %}
+                <td>{{import.Quantity}}</td>
+                <td>{{import.Unit}}</td>
+                <td>{{import.Quantity_Released}}</td>
+                <td>{{import.Quantity_Rejected}}</td>
+                <td>
+                    <button type="button" class="btn btn-info"
+                    onclick="populateDetails('{{ import.Record_Id }}', '{{import.Import_Category}}', '{{import.Crop_Id}}',
+                    '{{import.Variety_Id}}', '{{import.Quantity}}', '{{import.Unit}}', '{{import.Application_No}}')">
+                    <i class="zmdi zmdi-edit"></i>
+                    </button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center">No Data</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

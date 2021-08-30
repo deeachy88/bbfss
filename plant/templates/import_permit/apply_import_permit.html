@@ -230,7 +230,7 @@ option {
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Applicant Name <font color="red">*</font></label>
-                                    <input type="text" class="form-control" id="name" name="name" disabled>
+                                    <input type="text" class="form-control" id="name" name="name" readonly="readonly">
                                 </div>
                                 <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
                             </div>
@@ -596,19 +596,24 @@ option {
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label class="form-label">Unit </label>
-                                            <input type="text" class="form-control" id="unit" name="unit">
-                                        </div>
-                                        <div class="alert alert-danger" id="unitErrorMsg" style="display:none"></div>
-                                    </div>
                                     <div class="form-group col-md-6">
                                         <div class="form-group">
                                             <label class="form-label">Quantity</label>
                                             <input type="text" class="form-control" id="qty" name="qty">
                                         </div>
                                         <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Unit </label>
+                                            <select class="form-control" name="unit"  id="unit">
+                                                <option value="">--SELECT--</option>
+                                                {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                                {% endfor %}
+                                             </select>
+                                        </div>
+                                        <div class="alert alert-danger" id="unitErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                             </div>
@@ -677,16 +682,21 @@ option {
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Unit </label>
-                                            <input type="text" class="form-control" id="agro_unit" name="agro_unit">
-                                        </div>
-                                        <div class="alert alert-danger" id="agro_unitErrorMsg" style="display:none"></div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
                                             <label class="form-label">Quantity</label>
                                             <input type="text" class="form-control" id="agro_qty" name="agro_qty">
                                         </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Unit </label>
+                                            <select class="form-control" name="agro_unit"  id="agro_unit">
+                                                <option value="">--SELECT--</option>
+                                                {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                                {% endfor %}
+                                             </select>
+                                        </div>
+                                        <div class="alert alert-danger" id="agro_unitErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                             </div>
@@ -1332,7 +1342,6 @@ option {
                 if (data.form_is_valid)
                 {
                     var appNo = $('#applicationNo').val();
-                    alert(appNo);
                     $.ajax
                     ({
                         type : "POST",

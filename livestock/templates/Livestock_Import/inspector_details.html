@@ -3,7 +3,7 @@
         <div class="card">
             <div class="card-header" role="tab" id="headingOne">
                 <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed">
-                    Collapsible Group Item #1
+                    Application Details
                 </a>
             </div>
 
@@ -450,6 +450,49 @@
             </div>
             <div id="collapseThree" class="active" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion" style="">
                 <div class="card-body">
+                    <br>
+                    <hr>
+                    <div class="card-tools">
+                        <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="openDecisionModal()">
+                            <span class="btn-label">
+                                <i class="fa fa-print"></i>
+                            </span>
+                            Add
+                        </a>
+                    </div>
+                    <br>
+                    <div id="details">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Current Observation</th>
+                                    <th scope="col">Decision Conformity Statement</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               {% for import_lp in import_lp_permit %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{import.Current_Observation}}</td>
+                                        <td>{{import.Decision_Conformity}}</td>
+                                        <!--<td>
+                                            <button type="button"
+                                            class="btn btn-primary btn&#45;&#45;icon btn-sm js-edit"
+                                            data-url="{% url 'edit_decision' import.Record_Id %}">
+                                            <i class="zmdi zmdi-edit"></i>
+                                            </button>
+                                        </td>-->
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="4" class="text-center">No Data</td>
+                                    </tr>
+                               {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                     <div id="import-details">
                         <table id="details-table" class="table table-bordered">
                             <thead>
@@ -495,49 +538,7 @@
                         </table>
                     </div>
 
-                    <br>
-                    <hr>
-                    <div class="card-tools">
-                        <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="openDecisionModal()">
-                            <span class="btn-label">
-                                <i class="fa fa-print"></i>
-                            </span>
-                            Add
-                        </a>
-                    </div>
-                    <br>
-                    <div id="details">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Current Observation</th>
-                                    <th scope="col">Decision Conformity Statement</th>
-                                    <th scope="col">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                               {% for import_lp in import_lp_permit %}
-                                    <tr>
-                                        <td>{{ forloop.counter }}</td>
-                                        <td>{{import.Current_Observation}}</td>
-                                        <td>{{import.Decision_Conformity}}</td>
-                                        <!--<td>
-                                            <button type="button"
-                                            class="btn btn-primary btn&#45;&#45;icon btn-sm js-edit"
-                                            data-url="{% url 'edit_decision' import.Record_Id %}">
-                                            <i class="zmdi zmdi-edit"></i>
-                                            </button>
-                                        </td>-->
-                                    </tr>
-                                    {% empty %}
-                                    <tr>
-                                      <td colspan="4" class="text-center">No Data</td>
-                                    </tr>
-                               {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">

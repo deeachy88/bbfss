@@ -10,7 +10,7 @@ from datetime import date, datetime, timedelta
 from administrator.models import t_dzongkhag_master, t_gewog_master, t_village_master, t_country_master, \
     t_field_office_master, t_location_field_office_mapping, t_unit_master, t_user_master, t_service_master
 from bbfss import settings
-from certification.forms import GapForm, FpcForm
+from certification.forms import GapForm, FpcForm, OCForm
 from certification.models import t_certification_food_t2, t_certification_organic_t2, t_certification_organic_t4, \
     t_certification_organic_t6, t_certification_organic_t7, t_certification_organic_t8, t_certification_organic_t5, \
     t_certification_organic_t9, t_certification_organic_t1, t_certification_gap_t5, t_certification_gap_t4, \
@@ -20,7 +20,7 @@ from certification.models import t_certification_food_t2, t_certification_organi
 from plant.models import t_file_attachment, t_workflow_details, t_payment_details
 import pandas as pd
 # Organic Certification
-from plant.views import focal_officer_application, inspector_application
+from plant.views import focal_officer_application, inspector_application, resubmit_application
 
 
 def organic_certificate(request):
@@ -61,7 +61,6 @@ def save_organic_certificate(request):
     village = request.POST.get('village')
     address = request.POST.get('address')
     farm_location = request.POST.get('farm_location')
-    inspectionDate = request.POST.get('inspectionDate')
     farm_name = request.POST.get('farm_name')
     business_license_no = request.POST.get('business_license_no')
     technical_in_charge = request.POST.get('technical_in_charge')
@@ -100,7 +99,7 @@ def save_organic_certificate(request):
         Audit_Plan_Criteria=None,
         Audit_Plan_Type=None,
         Audit_Plan_Scope=None,
-        Audit_Plan_Acceptance=None,
+        Audit_Plan_Acceptance='R',
         Audit_Plan_Acceptance_Remarks=None,
         Audit_Date=None,
         Audit_Findings_Site_History_OE=None,
@@ -524,19 +523,19 @@ def approve_application(request):
     return render(request, 'inspector_pending_list.html', {'application_details': workflow_details})
 
 
-def resubmit_application(request):
-    application_no = request.GET.get('application_no')
-    Corrective_Action_Proposed_Auditee = request.GET.get('Corrective_Action_Proposed_Auditee')
-    Corrective_Action_Taken_Auditee = request.GET.get('Corrective_Action_Taken_Auditee')
-    Corrective_Action_Date = request.GET.get('Corrective_Action_Date')
-    details = t_certification_organic_t11.objects.filter(Application_No=application_no)
-    details.update(Corrective_Action_Proposed_Auditee=Corrective_Action_Proposed_Auditee)
-    details.update(Corrective_Action_Taken_Auditee=Corrective_Action_Taken_Auditee)
-    details.update(Corrective_Action_Date=Corrective_Action_Date)
-    work_flow = t_workflow_details.objects.filter(Application_No=application_no)
-    work_flow.update(Action_Date=date.today())
-    work_flow.update(Application_Status='AP')
-    return redirect(resubmit_application)
+# def resubmit_application(request):
+#     application_no = request.GET.get('application_no')
+#     Corrective_Action_Proposed_Auditee = request.GET.get('Corrective_Action_Proposed_Auditee')
+#     Corrective_Action_Taken_Auditee = request.GET.get('Corrective_Action_Taken_Auditee')
+#     Corrective_Action_Date = request.GET.get('Corrective_Action_Date')
+#     details = t_certification_organic_t11.objects.filter(Application_No=application_no)
+#     details.update(Corrective_Action_Proposed_Auditee=Corrective_Action_Proposed_Auditee)
+#     details.update(Corrective_Action_Taken_Auditee=Corrective_Action_Taken_Auditee)
+#     details.update(Corrective_Action_Date=Corrective_Action_Date)
+#     work_flow = t_workflow_details.objects.filter(Application_No=application_no)
+#     work_flow.update(Action_Date=date.today())
+#     work_flow.update(Application_Status='AP')
+#     return redirect(resubmit_application)
 
 
 def approve_leader_application(request):
@@ -604,11 +603,11 @@ def send_audit_plan_acceptance(request):
 def send_audit_plan_resubmit(request):
     application_no = request.GET.get('audit_application_no')
 
-    Audit_Type = request.GET.get('Audit_Type')
-    Audit_Date = request.GET.get('Audit_Date')
+    Audit_Type = request.GET.get('audit_plan_type')
+    Audit_Date = request.GET.get('Audit_Plan_Date')
     app_details = t_certification_organic_t1.objects.filter(Application_No=application_no)
-    app_details.update(Audit_Type=Audit_Type)
-    app_details.update(Audit_Date=Audit_Date)
+    app_details.update(Audit_Plan_Type=Audit_Type)
+    app_details.update(Audit_Plan_Date=Audit_Date)
     workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
     workflow_details.update(Assigned_Role_Id=None)
     workflow_details.update(Application_Status='APR')
@@ -635,7 +634,7 @@ def farm_input_observation(request):
 
 
 def conform_observation(request):
-    application_no = request.GET.get('appl_nos')
+    application_no = request.GET.get('appl_no')
     Clause_Number = request.GET.get('Clause_Number')
     Non_Conformity = request.GET.get('Non_Conformity')
     Non_Conformity_Category = request.GET.get('Non_Conformity_Category')
@@ -647,13 +646,13 @@ def conform_observation(request):
         Non_Conformity_Category=Non_Conformity_Category,
         Non_Conformity_Description=Non_Conformity_Description,
         Corrective_Action_Proposed_Auditee=None,
-        Corrective_Action_Taken_Auditee=None,
-        Corrective_Action_Date=None,
         Corrective_Action_Verified_Auditor=None,
         Non_Conformity_Closure=None
     )
     conform_details = t_certification_organic_t11.objects.filter(Application_No=application_no)
-    return render(request, 'organic_certification/non_conform_details.html', {'conform_details': conform_details})
+    message_count = t_certification_organic_t11.objects.filter(Non_Conformity='Yes').count()
+    return render(request, 'organic_certification/non_conform_details.html', {'conform_details': conform_details,
+                                                                              'message_count': message_count})
 
 
 def audit_team_accept(request):
@@ -711,23 +710,17 @@ def send_oc_approve_email(Export_Permit_No, Email, validity_date):
 
 
 def oc_certificate_no(request):
-    global Field_Code
-    Field_Office_Id = request.session['field_office_id']
-    code = t_field_office_master.objects.filter(pk=Field_Office_Id)
-    for code in code:
-        Field_Code = code.Field_Office_Code
-
     last_application_no = t_certification_organic_t1.objects.aggregate(Max('Certificate_No'))
     lastAppNo = last_application_no['Certificate_No__max']
     if not lastAppNo:
         year = timezone.now().year
-        newAppNo = Field_Code + "/" + "OC" + "/" + str(year) + "/" + "0001"
+        newAppNo = "BOCL" + "/" + str(year) + "/" + "0001"
     else:
-        substring = str(lastAppNo)[14:17]
+        substring = str(lastAppNo)[11:14]
         substring = int(substring) + 1
         AppNo = str(substring).zfill(4)
         year = timezone.now().year
-        newAppNo = Field_Code + "/" + "OC" + "/" + str(year) + "/" + AppNo
+        newAppNo = "BOCL" + "/" + str(year) + "/" + AppNo
     return newAppNo
 
 
@@ -772,9 +765,9 @@ def save_oc_audit_plan_name(request):
 
         t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
                                          File_Path=file_url, Role_Id=None,
-                                         Attachment=fileName)
+                                         Attachment=fileName, Attachment_Type='Audit Plan')
 
-        file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+        file_attach = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='Audit Plan')
     return render(request, 'organic_certification/audit_plan_details.html', {'file_attach': file_attach})
 
 
@@ -807,6 +800,7 @@ def resubmit_oc_nc_details(request):
     Audit_Findings_Group_Requirement_O = request.GET.get('Audit_Findings_Group_Requirement_O')
     Audit_Findings_Others_O = request.GET.get('Audit_Findings_Others_O')
     Audit_Type = request.GET.get('Audit_Type')
+    audit_date = request.GET.get('audit_date')
     app_details = t_certification_gap_t1.objects.filter(Application_No=application_no)
     app_details.update(Audit_Findings_Site_History_OE=Audit_Findings_Site_History)
     app_details.update(Audit_Findings_Water_Source_OE=Audit_Findings_Water_Source)
@@ -836,6 +830,7 @@ def resubmit_oc_nc_details(request):
     app_details.update(Audit_Findings_Group_Requirement_Observations=Audit_Findings_Group_Requirement_O)
     app_details.update(Audit_Findings_Others_Observations=Audit_Findings_Others_O)
     app_details.update(Audit_Type=Audit_Type)
+    app_details.update(Audit_Date=audit_date)
     workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
     workflow_details.update(Assigned_Role_Id=None)
     workflow_details.update(Application_Status='NCR')
@@ -849,12 +844,12 @@ def resubmit_oc_nc_details(request):
 
 
 def edit_oc_nc_details(request, Record_Id):
-    gap = get_object_or_404(t_certification_gap_t8, pk=Record_Id)
+    gap = get_object_or_404(t_certification_organic_t11, pk=Record_Id)
     if request.method == 'POST':
-        form = GapForm(request.POST, instance=gap)
+        form = OCForm(request.POST, instance=gap)
     else:
-        form = GapForm(instance=gap)
-    return save_oc_nc_details(request, form, 'organic_certification/edit_gap_nc_details.html')
+        form = OCForm(instance=gap)
+    return save_oc_nc_details(request, form, 'organic_certification/edit_oc_nc_details.html')
 
 
 def save_oc_nc_details(request, form, template_name):
@@ -862,8 +857,8 @@ def save_oc_nc_details(request, form, template_name):
     if request.method == 'POST':
         form.save()
         data['form_is_valid'] = True
-        books = t_certification_gap_t8.objects.all()
-        message_count = t_certification_gap_t8.objects.filter(Non_Conformity='Yes').count()
+        books = t_certification_organic_t11.objects.all()
+        message_count = t_certification_organic_t11.objects.filter(Non_Conformity='Yes').count()
         data['html_book_list'] = render_to_string('organic_certification/nc_update_details.html', {
             'audit_observation': books, 'message_count': message_count
         })
@@ -878,7 +873,7 @@ def oc_nc_response(request):
     Corrective_Action_Date = request.GET.get('Corrective_Action_Date')
     Team_Leader = request.GET.get('Team_Leader')
     date_action = datetime.strptime(Corrective_Action_Date, '%d-%m-%Y').date()
-    nc_details = t_certification_gap_t8.objects.filter(Application_No=application_no)
+    nc_details = t_certification_organic_t1.objects.filter(Application_No=application_no)
     nc_details.update(Corrective_Action_Taken_Auditee=action_taken)
     nc_details.update(Corrective_Action_Date=date_action)
     details = t_workflow_details.objects.filter(Application_No=application_no)
@@ -952,13 +947,13 @@ def save_gap_certificate(request):
         Acknowledge=None,
         FO_Remarks=None,
         Audit_Team_Leader=None,
-        Audit_Team_Acceptance=None,
+        Audit_Team_Acceptance='R',
         Audit_Team_Acceptance_Remarks=None,
         Audit_Plan_Date=None,
         Audit_Plan_Criteria=None,
         Audit_Plan_Type=None,
         Audit_Plan_Scope=None,
-        Audit_Plan_Acceptance=None,
+        Audit_Plan_Acceptance='R',
         Audit_Plan_Acceptance_Remarks=None,
         Audit_Date=None,
         Audit_Findings_Site_History_OE=None,
@@ -1060,9 +1055,9 @@ def save_gap_audit_plan_name(request):
 
         t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
                                          File_Path=file_url, Role_Id=None,
-                                         Attachment=fileName)
+                                         Attachment=fileName, Attachment_Type='Audit Plan')
 
-        file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+        file_attach = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='Audit Plan')
         return render(request, 'GAP_Certification/audit_plan_details.html', {'file_attach': file_attach})
 
 
@@ -1137,7 +1132,7 @@ def get_gap_certificate_app_no(request, service_code):
 
 
 def add_pack_house_details(request):
-    application_no = request.GET.get('packhouse_application_no')
+    application_no = request.GET.get('pack_house_application_no')
     pack_house_name = request.GET.get('pack_house_name')
     pack_house_address = request.GET.get('pack_house_address')
     prev_year = request.GET.get('previous_from_date')
@@ -1160,7 +1155,7 @@ def add_pack_house_details(request):
     c_from = datetime.strptime(current_from_date, '%d-%m-%Y').date()
     c_to = datetime.strptime(current_to_date, '%d-%m-%Y').date()
 
-    t_certification_gap_t5(
+    t_certification_gap_t5.objects.create(
         Application_No=application_no,
         Pack_House_Name=pack_house_name,
         Pack_House_Address=pack_house_address,
@@ -1266,7 +1261,7 @@ def gap_audit_team_accept(request):
     workflow_details.update(Assigned_Role_Id='2')
     workflow_details.update(Application_Status='ATA')
     workflow_details.update(Action_Date=date.today())
-    return redirect(focal_officer_application)
+    return redirect(resubmit_application)
 
 
 def gap_farm_input_observation(request):
@@ -1278,7 +1273,7 @@ def gap_farm_input_observation(request):
                                           Audit_Findings_Farm_Inputs=Audit_Findings_Farm_Inputs,
                                           Audit_Findings_Farm_Supplier=Audit_Findings_Farm_Supplier,
                                           Audit_Findings_Farm_Invoice=Audit_Findings_Farm_Invoice)
-    details = t_certification_food_t4.objects.filter(Application_No=application_no)
+    details = t_certification_gap_t7.objects.filter(Application_No=application_no)
     return render(request, 'GAP_Certification/farm_input_details.html', {'farm_inputs': details})
 
 
@@ -1301,9 +1296,11 @@ def gap_audit_plan_acceptance(request):
 
 def gap_audit_plan_resubmit(request):
     application_no = request.GET.get('audit_date_application_no')
-    Audit_Date = request.GET.get('date_of_audit')
+    Audit_Date = request.GET.get('Audit_Plan_Date')
+    audit_plan_type = request.GET.get('audit_plan_type')
     app_details = t_certification_gap_t1.objects.filter(Application_No=application_no)
-    app_details.update(Audit_Date=Audit_Date)
+    app_details.update(Audit_Plan_Date=Audit_Date)
+    app_details.update(Audit_Plan_Type=audit_plan_type)
     workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
     workflow_details.update(Assigned_Role_Id=None)
     workflow_details.update(Application_Status='APR')
@@ -1345,6 +1342,7 @@ def resubmit_nc_details(request):
     Audit_Findings_Group_Requirement_O = request.GET.get('Audit_Findings_Group_Requirement_O')
     Audit_Findings_Others_O = request.GET.get('Audit_Findings_Others_O')
     Audit_Type = request.GET.get('Audit_Type')
+    audit_date = request.GET.get('audit_date')
     app_details = t_certification_gap_t1.objects.filter(Application_No=application_no)
     app_details.update(Audit_Findings_Site_History_OE=Audit_Findings_Site_History)
     app_details.update(Audit_Findings_Water_Source_OE=Audit_Findings_Water_Source)
@@ -1374,6 +1372,7 @@ def resubmit_nc_details(request):
     app_details.update(Audit_Findings_Group_Requirement_Observations=Audit_Findings_Group_Requirement_O)
     app_details.update(Audit_Findings_Others_Observations=Audit_Findings_Others_O)
     app_details.update(Audit_Type=Audit_Type)
+    app_details.update(Audit_Date=audit_date)
     workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
     workflow_details.update(Assigned_Role_Id=None)
     workflow_details.update(Application_Status='NCR')
@@ -1424,8 +1423,6 @@ def gap_conform_observation(request):
         Non_Conformity_Category=Non_Conformity_Category,
         Non_Conformity_Description=Non_Conformity_Description,
         Corrective_Action_Proposed_Auditee=Corrective_Action_Proposed_Auditee,
-        Corrective_Action_Taken_Auditee=None,
-        Corrective_Action_Date=None,
         Corrective_Action_Verified_Auditor=None,
         Non_Conformity_Closure=None
     )
@@ -1436,8 +1433,65 @@ def gap_conform_observation(request):
 
 
 def forward_application_head_office(request):
-    application_no = request.POST.get('approved_application_no')
-    print(application_no)
+    application_no = request.GET.get('det_application_no')
+    Audit_Findings_Site_History = request.GET.get('Audit_Findings_Site_History')
+    Audit_Findings_Water_Source = request.GET.get('Audit_Findings_Water_Source')
+    Audit_Findings_Product_Quality = request.GET.get('Audit_Findings_Product_Quality')
+    Audit_Findings_Harvesting = request.GET.get('Audit_Findings_Harvesting')
+    Audit_Findings_Equipment = request.GET.get('Audit_Findings_Equipment')
+    Audit_Findings_Manufacturing_Production = request.GET.get('Audit_Findings_Manufacturing_Production')
+    Audit_Findings_Sampling_Testing = request.GET.get('Audit_Findings_Sampling_Testing')
+    Audit_Findings_Packing_Marking = request.GET.get('Audit_Findings_Packing_Marking')
+    Audit_Findings_Storage_Transport = request.GET.get('Audit_Findings_Storage_Transport')
+    Audit_Findings_Traceability = request.GET.get('Audit_Findings_Traceability')
+    Audit_Findings_Worker_Health = request.GET.get('Audit_Findings_Worker_Health')
+    Audit_Findings_Group_Requirement = request.GET.get('Audit_Findings_Group_Requirement')
+    Audit_Findings_Others = request.GET.get('Audit_Findings_Others')
+    Audit_Findings_Site_History_O = request.GET.get('Audit_Findings_Site_History_O')
+    Audit_Findings_Water_Source_O = request.GET.get('Audit_Findings_Water_Source_O')
+    Audit_Findings_Product_Quality_O = request.GET.get('Audit_Findings_Product_Quality_O')
+    Audit_Findings_Harvesting_O = request.GET.get('Audit_Findings_Harvesting_O')
+    Audit_Findings_Equipment_O = request.GET.get('Audit_Findings_Equipment_O')
+    Audit_Findings_Manufacturing_Production_O = request.GET.get('Audit_Findings_Manufacturing_Production_O')
+    Audit_Findings_Sampling_Testing_O = request.GET.get('Audit_Findings_Sampling_Testing_O')
+    Audit_Findings_Packing_Marking_O = request.GET.get('Audit_Findings_Packing_Marking_O')
+    Audit_Findings_Storage_Transport_O = request.GET.get('Audit_Findings_Storage_Transport_O')
+    Audit_Findings_Traceability_O = request.GET.get('Audit_Findings_Traceability_O')
+    Audit_Findings_Worker_Health_O = request.GET.get('Audit_Findings_Worker_Health_O')
+    Audit_Findings_Group_Requirement_O = request.GET.get('Audit_Findings_Group_Requirement_O')
+    Audit_Findings_Others_O = request.GET.get('Audit_Findings_Others_O')
+    Audit_Type = request.GET.get('Audit_Type')
+    audit_date = request.GET.get('audit_date')
+    app_details = t_certification_gap_t1.objects.filter(Application_No=application_no)
+    app_details.update(Audit_Findings_Site_History_OE=Audit_Findings_Site_History)
+    app_details.update(Audit_Findings_Water_Source_OE=Audit_Findings_Water_Source)
+    app_details.update(Audit_Findings_Product_Quality_OE=Audit_Findings_Product_Quality)
+    app_details.update(Audit_Findings_Harvesting_OE=Audit_Findings_Harvesting)
+    app_details.update(Audit_Findings_Equipment_OE=Audit_Findings_Equipment)
+    app_details.update(Audit_Findings_Manufacturing_Production_OE=Audit_Findings_Manufacturing_Production)
+    app_details.update(Audit_Findings_Sampling_Testing_OE=Audit_Findings_Sampling_Testing)
+    app_details.update(Audit_Findings_Packing_Marking_OE=Audit_Findings_Packing_Marking)
+    app_details.update(Audit_Findings_Storage_Transport_OE=Audit_Findings_Storage_Transport)
+    app_details.update(Audit_Findings_Traceability_OE=Audit_Findings_Traceability)
+    app_details.update(Audit_Findings_Worker_Health_OE=Audit_Findings_Worker_Health)
+    app_details.update(Audit_Findings_Group_Requirement_OE=Audit_Findings_Group_Requirement)
+    app_details.update(Audit_Findings_Others_OE=Audit_Findings_Others)
+
+    app_details.update(Audit_Findings_Site_History_Observations=Audit_Findings_Site_History_O)
+    app_details.update(Audit_Findings_Water_Source_Observations=Audit_Findings_Water_Source_O)
+    app_details.update(Audit_Findings_Product_Quality_Observations=Audit_Findings_Product_Quality_O)
+    app_details.update(Audit_Findings_Harvesting_Observations=Audit_Findings_Harvesting_O)
+    app_details.update(Audit_Findings_Equipment_Observations=Audit_Findings_Equipment_O)
+    app_details.update(Audit_Findings_Manufacturing_Production_Observations=Audit_Findings_Manufacturing_Production_O)
+    app_details.update(Audit_Findings_Sampling_Testing_Observations=Audit_Findings_Sampling_Testing_O)
+    app_details.update(Audit_Findings_Packing_Marking_Observations=Audit_Findings_Packing_Marking_O)
+    app_details.update(Audit_Findings_Storage_Transport_Observations=Audit_Findings_Storage_Transport_O)
+    app_details.update(Audit_Findings_Traceability_Observations=Audit_Findings_Traceability_O)
+    app_details.update(Audit_Findings_Worker_Health_Observations=Audit_Findings_Worker_Health_O)
+    app_details.update(Audit_Findings_Group_Requirement_Observations=Audit_Findings_Group_Requirement_O)
+    app_details.update(Audit_Findings_Others_Observations=Audit_Findings_Others_O)
+    app_details.update(Audit_Type=Audit_Type)
+    app_details.update(Audit_Date=audit_date)
     details = t_workflow_details.objects.filter(Application_No=application_no)
     details.update(Assigned_To=None)
     details.update(Assigned_Role_Id='2')
@@ -1452,7 +1506,7 @@ def gap_nc_response(request):
     Corrective_Action_Date = request.GET.get('Corrective_Action_Date')
     Team_Leader = request.GET.get('Team_Leader')
     date_action = datetime.strptime(Corrective_Action_Date, '%d-%m-%Y').date()
-    nc_details = t_certification_gap_t8.objects.filter(Application_No=application_no)
+    nc_details = t_certification_gap_t1.objects.filter(Application_No=application_no)
     nc_details.update(Corrective_Action_Taken_Auditee=action_taken)
     nc_details.update(Corrective_Action_Date=date_action)
     details = t_workflow_details.objects.filter(Application_No=application_no)
@@ -1466,11 +1520,13 @@ def approve_gap_application(request):
     application_id = request.GET.get('application_no')
     validity = request.GET.get('validity')
     remarks = request.POST.get('remarks')
+    certificate_type = request.POST.get('Certificate_Type')
     certificate_no = gap_certificate_no(request)
     details = t_certification_gap_t1.objects.filter(Application_No=application_id)
     details.update(Certificate_No=certificate_no)
     details.update(Validity_Period=validity)
     details.update(Approve_Date=date.today())
+    details.update(Certificate_Type=certificate_type)
     if remarks is not None:
         details.update(FO_Remarks=remarks)
     else:
@@ -1502,23 +1558,17 @@ def send_gap_approve_email(Export_Permit_No, Email, validity_date):
 
 
 def gap_certificate_no(request):
-    global Field_Code
-    Field_Office_Id = request.session['field_office_id']
-    code = t_field_office_master.objects.filter(pk=Field_Office_Id)
-    for code in code:
-        Field_Code = code.Field_Office_Code
-
     last_application_no = t_certification_gap_t1.objects.aggregate(Max('Certificate_No'))
     lastAppNo = last_application_no['Certificate_No__max']
     if not lastAppNo:
         year = timezone.now().year
-        newAppNo = Field_Code + "/" + "GAP" + "/" + str(year) + "/" + "0001"
+        newAppNo = "BGCL" + "-" + str(year) + "-" + "0001"
     else:
-        substring = str(lastAppNo)[14:17]
+        substring = str(lastAppNo)[10:13]
         substring = int(substring) + 1
         AppNo = str(substring).zfill(4)
         year = timezone.now().year
-        newAppNo = Field_Code + "/" + "GAP" + "/" + str(year) + "/" + AppNo
+        newAppNo = "BGCL" + "-" + str(year) + "-" + AppNo
     return newAppNo
 
 
@@ -1553,7 +1603,7 @@ def save_food_product_certificate(request):
     Factory_Email = request.POST.get('Factory_Email')
     Product_Description = request.POST.get('Product_Description')
     Product_Trade_Mark = request.POST.get('Product_Trade_Mark')
-    P_From_Date = request.POST.get('P_From_Date')
+    P_From_Date = request.POST.get('From_Date')
     P_To_Date = request.POST.get('P_To_Date')
     P_Production = request.POST.get('P_Production')
     P_Production_Unit = request.POST.get('P_Production_Unit')
@@ -1578,10 +1628,25 @@ def save_food_product_certificate(request):
     date_to_p = datetime.strptime(P_To_Date, '%d-%m-%Y').date()
     date_from_c = datetime.strptime(C_From_Date, '%d-%m-%Y').date()
     date_to_c = datetime.strptime(C_To_Date, '%d-%m-%Y').date()
-    date_export_f = datetime.strptime(C_Export_From_Date, '%d-%m-%Y').date()
-    date_export_t = datetime.strptime(C_Export_To_Date, '%d-%m-%Y').date()
-    date_export_pf = datetime.strptime(P_Export_From_Date, '%d-%m-%Y').date()
-    date_export_pt = datetime.strptime(P_Export_To_Date, '%d-%m-%Y').date()
+    if C_Export_From_Date is not None:
+        date_export_f = datetime.strptime(C_Export_From_Date, '%d-%m-%Y').date()
+    else:
+        date_export_f = None
+    if C_Export_To_Date is not None:
+        date_export_t = datetime.strptime(C_Export_To_Date, '%d-%m-%Y').date()
+    else:
+        date_export_t = None
+    if P_Export_From_Date is not None:
+        date_export_pf = datetime.strptime(P_Export_From_Date, '%d-%m-%Y').date()
+    else:
+        date_export_pf = None
+    if P_Export_To_Date is not None:
+        date_export_pt = datetime.strptime(P_Export_To_Date, '%d-%m-%Y').date()
+    else:
+        date_export_pt = None
+    business_license_no = request.POST.get('business_license_no')
+    technical_in_charge = request.POST.get('technical_in_charge')
+    management_in_charge = request.POST.get('management_in_charge')
 
     t_certification_food_t1.objects.create(
         Application_No=food_product_certificate_app_no,
@@ -1624,7 +1689,7 @@ def save_food_product_certificate(request):
         Audit_Plan_Criteria=None,
         Audit_Plan_Type=None,
         Audit_Plan_Scope=None,
-        Audit_Plan_Acceptance=None,
+        Audit_Plan_Acceptance='R',
         Audit_Plan_Acceptance_Remarks=None,
         Audit_Date=None,
         Audit_Findings_Site_History_OE=None,
@@ -1666,7 +1731,10 @@ def save_food_product_certificate(request):
         P_Export_To_Date=date_export_pt,
         P_Export_Value=P_Export_Value,
         Others_Standards=None,
-        Terms_Standards=None
+        Terms_Standards=None,
+        License_Number=business_license_no,
+        Technical_In_Charge=technical_in_charge,
+        Manager_In_Charge=management_in_charge
     )
     t_workflow_details.objects.create(Application_No=food_product_certificate_app_no,
                                       Applicant_Id=request.session['email'],
@@ -2004,6 +2072,7 @@ def resubmit_fpc_nc_details(request):
     Audit_Findings_Group_Requirement_O = request.GET.get('Audit_Findings_Group_Requirement_O')
     Audit_Findings_Others_O = request.GET.get('Audit_Findings_Others_O')
     Audit_Type = request.GET.get('Audit_Type')
+    audit_date = request.GET.get('audit_date')
     app_details = t_certification_food_t1.objects.filter(Application_No=application_no)
     app_details.update(Audit_Findings_Site_History_OE=Audit_Findings_Site_History)
     app_details.update(Audit_Findings_Water_Source_OE=Audit_Findings_Water_Source)
@@ -2033,6 +2102,7 @@ def resubmit_fpc_nc_details(request):
     app_details.update(Audit_Findings_Group_Requirement_Observations=Audit_Findings_Group_Requirement_O)
     app_details.update(Audit_Findings_Others_Observations=Audit_Findings_Others_O)
     app_details.update(Audit_Type=Audit_Type)
+    app_details.update(Audit_Date=audit_date)
     workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
     workflow_details.update(Assigned_Role_Id=None)
     workflow_details.update(Application_Status='NCR')
@@ -2511,3 +2581,47 @@ def date_month(request):
     d2 = datetime.strptime(date2, "%d-%m-%Y").date()
     month_list = [i.strftime("%B") for i in pd.date_range(start=d1, end=d2, freq='MS')]
     return render(request, 'GAP_Certification/month_list.html', {'month_list': month_list})
+
+
+def delete_audit_team(request):
+    application_no = request.GET.get('Application_No')
+    record_id = request.GET.get('Record_Id')
+    identification_type= request.GET.get('identification_type')
+
+    if identification_type == 'GAP':
+        details = t_certification_gap_t3.objects.filter(Record_Id=record_id)
+        details.delete()
+        audit_team = t_certification_gap_t3.objects.filter(Application_No=application_no)
+        return render(request, 'GAP_Certification/audit_team_details.html', {'audit_team': audit_team})
+    elif identification_type == 'FPC':
+        details = t_certification_food_t3.objects.filter(Record_Id=record_id)
+        details.delete()
+        audit_team = t_certification_food_t3.objects.filter(Application_No=application_no)
+        return render(request, 'food_product_certification/audit_team_details.html', {'audit_team': audit_team})
+    else:
+        details = t_certification_organic_t3.objects.filter(Record_Id=record_id)
+        details.delete()
+        audit_team = t_certification_organic_t3.objects.filter(Application_No=application_no)
+        return render(request, 'organic_certification/audit_team_details.html', {'audit_team': audit_team})
+
+
+def delete_farm_details(request):
+    application_no = request.GET.get('Application_No')
+    record_id = request.GET.get('Record_Id')
+    identification_type= request.GET.get('identification_type')
+
+    if identification_type == 'GAP':
+        details = t_certification_gap_t7.objects.filter(Record_Id=record_id)
+        details.delete()
+        farm_inputs = t_certification_gap_t7.objects.filter(Application_No=application_no)
+        return render(request, 'GAP_Certification/farm_input_details.html', {'farm_inputs': farm_inputs})
+    elif identification_type == 'FPC':
+        details = t_certification_food_t3.objects.filter(Record_Id=record_id)
+        details.delete()
+        farm_inputs = t_certification_food_t3.objects.filter(Application_No=application_no)
+        return render(request, 'food_product_certification/audit_team_details.html', {'farm_inputs': farm_inputs})
+    else:
+        details = t_certification_organic_t3.objects.filter(Record_Id=record_id)
+        details.delete()
+        farm_inputs = t_certification_organic_t3.objects.filter(Application_No=application_no)
+        return render(request, 'organic_certification/audit_team_details.html', {'farm_inputs': farm_inputs})

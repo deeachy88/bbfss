@@ -60,24 +60,13 @@
                     <div class="col-lg-12">
                         <div class="box box-primary">
                             <div class="box-body">
-                                {% for application_details in application_details %}
-                                    <input type="hidden" name="application_No" value="{{application_details.Application_No}}">
-                                    <input type="hidden" name="service_code" value="{{application_details.Service_Code}}">
-                                {% endfor %}
                                 <div id="details_import">
 
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer justify-content-center">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-
-                        <button type="button" class="btn btn-primary pull-right" onclick="update_details()"> Submit </button>
-
-                    </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -122,12 +111,11 @@ function viewImportDetails(appId, service_code)
             {
                 $('#details_import').html(response);
                 $('#import_detailsModal').modal('show');
-
             }
         });
     }
 
-    function printImportDetails(serviceCode,application_id)
+function printImportDetails(serviceCode,application_id)
     {
         $.ajax({
             type : "GET",
@@ -140,7 +128,7 @@ function viewImportDetails(appId, service_code)
         });
     }
 
-    function update_details()
+function update_details()
     {
         $.ajax({
             type : "POST",

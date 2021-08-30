@@ -30,16 +30,22 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Gewog</label>
-                                    <input type="text" class="form-control" value="{{application_details.Gewog}}" readonly="readonly">
+                                    <label class="form-label">Dzongkhag</label>
+                                    <input type="text" class="form-control" value="{{application_details.Dzongkhag_Code}}" readonly="readonly">
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
+                                    <label class="form-label">Gewog</label>
+                                    <input type="text" class="form-control" value="{{application_details.Gewog_Code}}" readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
                                     <label class="form-label">Village</label>
-                                     <input type="text" class="form-control" value="{{application_details.Village}}" readonly="readonly">
+                                     <input type="text" class="form-control" value="{{application_details.Village_Code}}" readonly="readonly">
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -355,6 +361,7 @@
                                         <th scope="col">#</th>
                                         <th scope="col">Name</th>
                                         <th scope="col">Role</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -363,6 +370,11 @@
                                             <td>{{ forloop.counter }}</td>
                                             <td>{{audit.Name}}</td>
                                             <td>{{audit.Role}}</td>
+                                            <td><button type="button" class="btn btn-danger btn-sm" onclick="Delete_Audit_Team('{{audit.Record_Id}}','{{audit.Application_No}}', 'FPC')">
+                                                    <i class="zmdi zmdi-delete"></i>
+                                                    &nbsp;&nbsp;Delete
+                                                </button>
+                                            </td>
                                         </tr>
                                         {% empty %}
                                         <tr>
@@ -542,6 +554,18 @@ function forward_application(application_id)
         success : function(data) {
             $('#import_detailsModal').modal('hide');
             location.reload();
+        }
+    });
+}
+
+function Delete_Audit_Team(id,Application_No,identification_type)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'delete_audit_team' %}",
+        data :{'Record_Id':id, 'Application_No':Application_No, 'identification_type':identification_type},
+        success : function(data) {
+           $('#audit_team_details_gap').html(data);
         }
     });
 }

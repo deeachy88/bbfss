@@ -153,9 +153,10 @@
                                             <div class="form-group">
                                                 <label class="form-label">Country Of Origin <font color="red">*</font></label>
                                                  <select class="form-control" name="Country_Of_Origin"  id="Country_Of_Origin">
-                                                    <option value="">--SELECT--</option>
-                                                    {% for country in country %}
-                                                        <option value="{{ country.Country_Name }}">{{ country.Country_Name }}</option>
+                                                     {% for country in country %}
+                                                        <option value="{{country.Country_Code}}"{% if application_details.Country_Of_Origin == country.Country_Code %}selected{% endif %}>
+                                                            {{ country.Country_Name }}
+                                                        </option>
                                                     {% endfor %}
                                                  </select>
                                             </div>
@@ -178,9 +179,10 @@
                                             <div class="form-group">
                                                 <label class="form-label">Place Of Entry <font color="red">*</font></label>
                                                  <select class="form-control" name="entry_point"  id="entry_point">
-                                                    <option value="">--SELECT--</option>
-                                                    {% for location in location %}
-                                                        <option value="{{ location.Field_Office_Id }}">{{ location.Field_Office }}</option>
+                                                     {% for location in location %}
+                                                        <option value="{{location.Field_Office_Id}}"{% if application_details.Actual_Point_Of_Entry == location.Field_Office_Id %}selected{% endif %}>
+                                                            {{ location.Field_Office }}
+                                                        </option>
                                                     {% endfor %}
                                                  </select>
                                             </div>
@@ -444,7 +446,6 @@
                                 </div>
                             </div>
                             {% endif %}
-                        {% endfor %}
                                 <br>
                                 {% if application_details.Import_Type == 'P' %}
                                     <table class="table table-bordered">
@@ -454,8 +455,8 @@
                                                 <th scope="col">Import Category</th>
                                                 <th scope="col">Crop Common Name</th>
                                                 <th scope="col">Crop Variety Name</th>
-                                                <th scope="col">Unit</th>
                                                 <th scope="col">Quantity</th>
+                                                <th scope="col">Unit</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -463,10 +464,18 @@
                                                 <tr>
                                                     <td>{{ forloop.counter }}</td>
                                                     <td>{{import.Import_Category}}</td>
-                                                    <td>{{import.Crop_Id}}</td>
-                                                    <td>{{import.Variety_Id}}</td>
-                                                    <td>{{import.Unit}}</td>
+                                                    {% for crop in crop %}
+                                                        {% if import.Crop_Id == crop.Crop_Id %}
+                                                            <td>{{ crop.Crop_Common_Name }}</td>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    {% for variety in variety %}
+                                                        {% if variety.Crop_Variety_Id ==  import.Variety_Id %}
+                                                            <td>{{ variety.Crop_Variety_Name}}</td>
+                                                        {% endif %}
+                                                    {% endfor %}
                                                     <td>{{import.Quantity}}</td>
+                                                    <td>{{import.Unit}}</td>
                                                 </tr>
                                                 {% empty %}
                                                 <tr>
@@ -492,7 +501,11 @@
                                                     <tr>
                                                         <td>{{ forloop.counter }}</td>
                                                         <td>{{import.Import_Category}}</td>
-                                                        <td>{{import.Pesticide_Id}}</td>
+                                                        {% for pesticide in pesticide %}
+                                                            {% if pesticide.Pesticide_Id == import.Pesticide_Id %}
+                                                            <td>{{import.Pesticide_Name}}</td>
+                                                            {% endif %}
+                                                        {% endfor %}
                                                         <td>{{import.Description}}</td>
                                                         <td>{{import.Unit}}</td>
                                                         <td>{{import.Quantity}}</td>
@@ -549,18 +562,36 @@
                                         </tbody>
                                     </table>
                                 {% endif %}
+                        {% endfor %}
                             </div>
-                     {% for application_details in application_details %}
+
+
                             <div class="form-group">
                                 <label for="remarks">Remarks(If Reject Please Fill THe Remarks)</label>
                                 <textarea class="form-control" rows="5" id="remarks" name="remarks"></textarea>
                                 <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
                             </div>
-                            <br>
-                            <div class="float-right">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary" onclick="fo_approve('{{ application_details.Application_No }}')"> Approve </button>
-                                <button type="button" class="btn btn-danger" onclick="fo_reject('{{ application_details.Application_No }}')"> Reject </button>
+                            <div class="alert alert-info" id="messageDiv" style="display:none">
+                                Application Approved
+                            </div>
+                            <div class="alert alert-info" id="reject_messageDiv" style="display:none">
+                                Application Rejected
+                            </div>
+                            <hr>
+                        {% for application_details in application_details %}
+                            <div class="card-action text-center">
+                                <button type="button" id="approve_button" class="btn btn-flat btn-primary" onclick="fo_approve('{{application_details.Application_No}}')">
+                                    <i class="ace-icon fa fa-check"></i>
+                                    &nbsp;&nbsp;Forward
+                                </button>
+                                <button type="button" id="resubmit-btn" class="btn btn-flat btn-primary" onclick="fo_reject('{{application_details.Application_No}}')">
+                                    <i class="ace-icon fa fa-reply-all"></i>
+                                    &nbsp;&nbsp;Reject
+                                </button>
+                                <button type="button" class="btn btn-flat btn-danger">
+                                    <i class="ace-icon fa fa-times"></i>
+                                    &nbsp;&nbsp;Cancel
+                                </button>
                             </div>
                         {% endfor %}
                     </div>
@@ -580,8 +611,16 @@
                 url : "{% url 'fo_approve' %}",
                 data :{'application_id':application_id ,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(data) {
-                    $('#import_detailsModal').modal('hide');
-                    location.reload();
+                    $('#messageDiv').show();
+                    setTimeout(function() {
+                        $("#messageDiv").hide('blind', {}, 500)
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#import_detailsModal').modal('hide');
+                    }, 3000);
+                    setTimeout(function() {
+                        location.reload();
+                    }, 3000);
                 }
             });
         }
@@ -600,8 +639,16 @@
                 url : "{% url 'fo_reject' %}",
                 data :{'application_id':application_id ,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(data) {
-                    $('#import_detailsModal').modal('hide');
-                    location.reload();
+                    $('#reject_messageDiv').show();
+                    setTimeout(function() {
+                        $("#reject_messageDiv").hide('blind', {}, 500)
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#import_detailsModal').modal('hide');
+                    }, 3000);
+                    setTimeout(function() {
+                        location.reload();
+                    }, 3000);
                 }
             });
         }

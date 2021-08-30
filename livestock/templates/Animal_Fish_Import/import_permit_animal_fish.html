@@ -279,7 +279,7 @@
 
 <form method="post" id="permit_details_form">
     {% csrf_token %}
-    <input type="hidden" id="applNo" name="appNo">
+    <input type="hidden" id="applNo" name="applNo">
     <div class="modal fade" id="permit_details_model" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -565,7 +565,7 @@ function permit_save_details()
             data : $('#live_animal_fish_form').serialize(),
             success : function(data)
             {
-                $('#application_no').val(data.applNo);
+                $('#applicationNo').val(data.applNo);
                 $('#applNo').val(data.applNo);
                 $('#appNo').val(data.applNo);
                 $('#submitMsg').show();
@@ -652,7 +652,7 @@ function save_attachment()
     });
         $.ajax({
         type : "POST",
-        url : "{% url 'add_liv_permit_file' %}",
+        url : "{% url 'add_la_permit_file' %}",
         data : fd,
         dataType: 'json',
         contentType: false,
@@ -666,7 +666,7 @@ function save_attachment()
             $.ajax
             ({
                 type : "POST",
-                url : "{% url 'add_permit_file_name' %}",
+                url : "{% url 'add_la_file_name' %}",
                 data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
                 success : function(responseText)
                 {
@@ -788,7 +788,7 @@ function save_permit_details_form()
         $.ajax({
             type : "POST",
             url : "{% url 'import_permit_details' %}",
-            data : $('#animal_products_form').serialize(),
+            data : $('#permit_details_form').serialize(),
             success : function(responseText) {
                $('#permit_details_model').modal('hide');
                $('#permit_details').html(responseText);

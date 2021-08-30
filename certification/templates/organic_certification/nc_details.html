@@ -959,7 +959,6 @@
                                     <th scope="col">Non Conformity</th>
                                     <th scope="col">Non Conformity Category</th>
                                     <th scope="col">Description of nonconformity</th>
-                                    <th scope="col">Corrective Action Proposed</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -970,7 +969,6 @@
                                         <td>{{import.Non_Conformity}}</td>
                                         <td>{{import.Non_Conformity_Category}}</td>
                                         <td>{{import.Non_Conformity_Description}}</td>
-                                        <td>{{import.Corrective_Action_Proposed_Auditee}}</td>
                                     </tr>
                                     {% empty %}
                                     <tr>
@@ -991,30 +989,12 @@
             </div>
             <div id="collapseFour" class="active" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
                 <div class="card-body">
-                    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
-                        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
-                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Focal</span>
-                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Ofiicer</span>
-                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Remarks</span>
-                        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label class="form-label">Remarks</label>
-                                {% for application_details in application_details %}
-                                <textarea class="form-control" disabled>{{application_details.FO_Remarks}}</textarea>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-
                     <form method="post" id="nc_form">
                     {% csrf_token %}
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Provisional Audit Date</label>
+                                    <label class="form-label">Date Of Audit</label>
                                      {% for application_details in application_details %}
                                         <input type="hidden" class="form-control" value="{{application_details.Audit_Team_Leader}}" name="Team_Leader">
                                         <input type="text" class="form-control" value="{{application_details.Audit_Date}}" readonly="readonly">
@@ -1023,12 +1003,20 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Corrective Action Taken</label>
-                                    <textarea class="form-control" name="action_taken" id="action_taken"></textarea>
+                                    <label class="form-label">Nature Of Audit</label>
+                                    {% for application_details in application_details %}
+                                       <input type="text" class="form-control" value="{{application_details.Audit_Type}}" readonly="readonly">
+                                    {% endfor %}
                                 </div>
                             </div>
                         </div>
                         <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Corrective Action Taken</label>
+                                    <textarea class="form-control" name="action_taken" id="action_taken"></textarea>
+                                </div>
+                            </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Corrective Action Date</label>
@@ -1044,7 +1032,7 @@
                             {% for application_details in application_details %}
                             <input type="hidden" value="{{ application_details.Application_No }}" name="application_id">
                                 <button type="button" class="btn btn-flat btn-primary" onclick="nc_response_details()">
-                                    <i class="ace-icon fa fa-times"></i>
+                                    <i class="ace-icon fa fa-reply-all"></i>
                                     &nbsp;&nbsp;Respond
                                 </button>
                             {% endfor %}

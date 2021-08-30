@@ -1,6 +1,7 @@
 {% extends 'common_dashboard.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+{% load static %}
 <style>
     option
     {
@@ -43,6 +44,12 @@
             </div>
             <div class="tab-content mt-2 mb-3" id="pills-mortemContent">
                 <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                    <div class="form-group row">
+                        <label class="col-sm-3 form-label">Download (Mandatory To Fill)<font color="red">*</font></label>
+                        <div class="col-sm-8">
+                            <a href="{% static 'assets/question/INITIAL_QUESTIONNAIRE_FOR_BHUTAN_GAP_FARM_ASSESSMENT.doc'%}" target="_blank">Initial Questionnaire</a>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-sm-2">
                             <label class="form-label">Applicant Type <font color="red">*</font></label>
@@ -149,9 +156,9 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Address <font color="red">*</font></label>
-                                <textarea class="form-control" id="adddress" name="adddress"></textarea>
+                                <textarea class="form-control" id="address" name="address"></textarea>
                             </div>
-                            <div class="alert alert-danger" id="adddress_ErrorMsg" style="display:none"></div>
+                            <div class="alert alert-danger" id="address_ErrorMsg" style="display:none"></div>
                         </div>
                     </div>
                     <div class="row">
@@ -198,7 +205,7 @@
                             </div>
                         </div>
                     </div>
-                    <div>
+                    <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Name of the Management Incharge (if different from the owner)</label>
@@ -280,111 +287,111 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="certification-standards" role="tabpanel" aria-labelledby="mortem-file-attach">
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <div class="form-check">
-                                <label class="form-label">Standard(s) for which we wish to be certified</label><br><br>
-                                <div class="form-group">
-                                    <div class="form-check">
-                                        <label class="custom-control custom-radio">
-                                            <input type="radio" name="Standard" class="custom-control-input" value="BhutanGAP Standard(BTS 30:2017)" onchange="checkStandards(this.value)">
-                                            <span class="custom-control-indicator"></span>
-                                            <span class="custom-control-description">BhutanGAP Standard (BTS 30:2017)</span>
-                                        </label>&nbsp;
-                                        <label class="custom-control custom-radio">
-                                            <input type="radio" name="Standard" class="custom-control-input" value="Others" onchange="checkStandards(this.value)">
-                                            <span class="custom-control-indicator"></span>
-                                            <span class="custom-control-description">Others</span>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6" >
-                            <input type="text" class="form-control" id="other_standard" name="other_standard" disabled>
-                        </div>
-                        <div class="form-group col-md-12">
-                            <div class="form-check">
-                                <label class="form-label">With a view to ensure the similarity of the process of production of the mentioned commodities as per related standard, we shall keep regular records and maintain all required documentation to fulfill the requirements of the identified Standard (refer previous point) and any other additional documentation required by the BAFRA as the Certification Body</label><br><br>
-                                <div class="form-group">
-                                    <div class="form-check">
-                                        <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Agree">
-                                            <span class="custom-control-indicator"></span>
-                                            <span class="custom-control-description">Agree</span>
-                                        </label>&nbsp;
-                                        <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Disagree">
-                                            <span class="custom-control-indicator"></span>
-                                            <span class="custom-control-description">Disagree</span>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-12">
-                            <div class="form-check">
-                                <label class="form-label">We are willing to change our operational practices, as may be required from time to time to keep in line with our policy which may be directed by BAFRA.</label><br><br>
-                                <div class="form-group">
-                                    <div class="form-check">
-                                        <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Agree">
-                                            <span class="custom-control-indicator"></span>
-                                            <span class="custom-control-description">Agree</span>
-                                        </label>&nbsp;
-                                        <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Disagree">
-                                            <span class="custom-control-indicator"></span>
-                                            <span class="custom-control-description">Disagree</span>
-                                        </label>
-                                    </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <div class="form-check">
+                            <label class="form-label">Standard(s) for which we wish to be certified</label><br><br>
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" name="Standard" class="custom-control-input" value="BhutanGAP Standard(BTS 30:2017)" onchange="checkStandards(this.value)">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">BhutanGAP Standard (BTS 30:2017)</span>
+                                    </label>&nbsp;
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" name="Standard" class="custom-control-input" value="Others" onchange="checkStandards(this.value)">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Others</span>
+                                    </label>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="form-group col-md-12">
-                            <div class="form-check">
-                                <label class="form-label">If BAFRA desires to make a preliminary inspection or investigation then, we, agree to give all our reasonable opportunity and privileges to BAFRA and accordingly provide our cooperation as per certification requirements.</label><br><br>
-                                <div class="form-group">
-                                    <div class="form-check">
-                                        <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Abide" class="custom-control-input" value="Agree">
-                                            <span class="custom-control-indicator"></span>
-                                            <span class="custom-control-description">Agree</span>
-                                        </label>&nbsp;
-                                        <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Abide" class="custom-control-input" value="Disagree">
-                                            <span class="custom-control-indicator"></span>
-                                            <span class="custom-control-description">Disagree</span>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-12">
-                            <div class="form-check">
-                                <label class="form-label">If the certificate is awarded, we will abide by all the terms and conditions of the certification, so long as it remains valid for use and also comply with the Rules and Regulations. If the license/certificate becomes prolonged or it is cancelled, then we, shall ensure that any use of the Standard Mark on any commodity under the license will be stopped immediately and all related advertisement, materials will be taken back and other necessary action will be taken</label><br><br>
-                                <div class="form-group">
-                                    <div class="form-check">
-                                        <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Agree">
-                                            <span class="custom-control-indicator"></span>
-                                            <span class="custom-control-description">Agree</span>
-                                        </label>&nbsp;
-                                        <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Disagree">
-                                            <span class="custom-control-indicator"></span>
-                                            <span class="custom-control-description">Disagree</span>
-                                        </label>
-                                    </div>
+                    <div class="form-group col-md-6" >
+                        <input type="text" class="form-control" id="other_standard" name="other_standard" disabled>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <div class="form-check">
+                            <label class="form-label">With a view to ensure the similarity of the process of production of the mentioned commodities as per related standard, we shall keep regular records and maintain all required documentation to fulfill the requirements of the identified Standard (refer previous point) and any other additional documentation required by the BAFRA as the Certification Body</label><br><br>
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Agree">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Agree</span>
+                                    </label>&nbsp;
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Disagree">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Disagree</span>
+                                    </label>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="card-action">
-                        <button type="button" class="btn btn-primary" onclick="submit_gap_certificate_details()">Save</button>
+                    <div class="form-group col-md-12">
+                        <div class="form-check">
+                            <label class="form-label">We are willing to change our operational practices, as may be required from time to time to keep in line with our policy which may be directed by BAFRA.</label><br><br>
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Agree">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Agree</span>
+                                    </label>&nbsp;
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Disagree">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Disagree</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <div class="form-check">
+                            <label class="form-label">If BAFRA desires to make a preliminary inspection or investigation then, we, agree to give all our reasonable opportunity and privileges to BAFRA and accordingly provide our cooperation as per certification requirements.</label><br><br>
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" name="Terms_Abide" class="custom-control-input" value="Agree">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Agree</span>
+                                    </label>&nbsp;
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" name="Terms_Abide" class="custom-control-input" value="Disagree">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Disagree</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <div class="form-check">
+                            <label class="form-label">If the certificate is awarded, we will abide by all the terms and conditions of the certification, so long as it remains valid for use and also comply with the Rules and Regulations. If the license/certificate becomes prolonged or it is cancelled, then we, shall ensure that any use of the Standard Mark on any commodity under the license will be stopped immediately and all related advertisement, materials will be taken back and other necessary action will be taken</label><br><br>
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Agree">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Agree</span>
+                                    </label>&nbsp;
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Disagree">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Disagree</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-action">
+                    <button type="button" class="btn btn-primary" onclick="submit_gap_certificate_details()">Submit</button>
+                </div>
                 </div>
             </div>
         </form>
@@ -420,8 +427,12 @@
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Area Unit</label>
-                                        <input type="text" name="area_unit" class="form-control" id="area_unit" required>
-                                        <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
+                                        <select class="form-control" id="area_unit" name="area_unit">
+                                            <option value="">--SELECT--</option>
+                                            <option value="Decimal">Decimal</option>
+                                            <option value="Acre">Acre</option>
+                                        </select>
+                                        <div class="alert alert-danger" id="area_unitErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -450,7 +461,12 @@
                                 <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Yield Unit</label>
-                                        <input type="text" name="Yield_Unit" class="form-control" id="Yield_Unit" required>
+                                        <select class="form-control" name="Yield_Unit"  id="Yield_Unit">
+                                            <option value="">--SELECT UNIT--</option>
+                                            {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                            {% endfor %}
+                                        </select>
                                         <div class="alert alert-danger" id="Yield_UnitErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -509,7 +525,12 @@
                                 <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Yield Unit</label>
-                                        <input type="text" name="estimated_Yield_Unit" class="form-control" id="estimated_Yield_Unit" required>
+                                        <select class="form-control" name="estimated_Yield_Unit"  id="estimated_Yield_Unit">
+                                            <option value="">--SELECT UNIT--</option>
+                                            {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                            {% endfor %}
+                                        </select>
                                         <div class="alert alert-danger" id="estimated_Yield_UnitErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -579,7 +600,12 @@
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Production Unit</label>
-                                        <input type="text" name="production_unit" class="form-control" id="production_unit" required>
+                                        <select class="form-control" name="production_unit"  id="production_unit">
+                                            <option value="">--SELECT UNIT--</option>
+                                            {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                            {% endfor %}
+                                        </select>
                                         <div class="alert alert-danger" id="production_unitErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
@@ -591,7 +617,12 @@
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Sold Unit</label>
-                                        <input type="text" name="previous_sold_unit" class="form-control" id="previous_sold_unit" required>
+                                        <select class="form-control" name="previous_sold_unit"  id="previous_sold_unit">
+                                            <option value="">--SELECT UNIT--</option>
+                                            {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                            {% endfor %}
+                                        </select>
                                         <div class="alert alert-danger" id="previous_sold_unitErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -603,7 +634,12 @@
                                 <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Balance Stock Unit</label>
-                                        <input type="text" name="stock_balance_unit" class="form-control" id="stock_balance_unit" required>
+                                        <select class="form-control" name="stock_balance_unit"  id="stock_balance_unit">
+                                            <option value="">--SELECT UNIT--</option>
+                                            {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                            {% endfor %}
+                                        </select>
                                         <div class="alert alert-danger" id="stock_balance_unitErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -630,7 +666,12 @@
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Sold Unit</label>
-                                        <input type="text" name="current_sold_unit" class="form-control" id="current_sold_unit" required>
+                                        <select class="form-control" name="current_sold_unit"  id="current_sold_unit">
+                                            <option value="">--SELECT UNIT--</option>
+                                            {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                            {% endfor %}
+                                        </select>
                                         <div class="alert alert-danger" id="current_sold_unitErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
@@ -642,7 +683,12 @@
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Balance Stock Unit</label>
-                                        <input type="text" name="current_stock_unit" class="form-control" id="current_stock_unit" required>
+                                        <select class="form-control" name="current_sold_unit"  id="current_stock_unit">
+                                            <option value="">--SELECT UNIT--</option>
+                                            {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                            {% endfor %}
+                                        </select>
                                         <div class="alert alert-danger" id="current_stock_unitErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
@@ -733,7 +779,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_mortem_attachment()"> Submit </button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_gap_attachment()"> Submit </button>
                 </div>
             </div>
         </div>

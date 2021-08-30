@@ -72,7 +72,7 @@
                                             <button  type="button" class="btn btn-info btn-sm" data-toggle="tooltip" title="Edit"
                                                      onclick="populateEditForm('{{user.Login_Id}}', '{{user.Name}}', '{{user.Employee_Id}}', '{{user.Gender}}', '{{user.Email_Id}}',
                                                        '{{user.Mobile_Number}}', '{{user.Role_Id_id}}', '{{user.Division_Id_id}}', '{{user.Section_Id_id}}',
-                                                       '{{user.Field_Office_Id}}')"><i class="fa fa-edit"></i> </button>
+                                                       '{{user.Field_Office_Id_id}}')"><i class="fa fa-edit"></i> </button>
                                             <button  type="button" class="btn btn-info btn-sm" data-toggle="tooltip" title="Reset Password" onclick="manage_user('{{ user.Login_Id }}','{{user.Email_Id}}','{{user.Name}}','Reset')"><i class="fa fa-key fa-fw"></i></button>
                                         </div>
                                     </td>
@@ -150,11 +150,11 @@
                         <div class="form-check">
                             <label>Gender</label><br>
                             <label class="form-radio-label">
-                                <input class="form-radio-input" type="radio" name="gender" value="M">
+                                <input class="form-radio-input" type="radio" name="gender_name" value="M">
                                 <span class="form-radio-sign">Male</span>
                             </label>
                             <label class="form-radio-label ml-3">
-                                <input class="form-radio-input" type="radio" name="gender" value="F">
+                                <input class="form-radio-input" type="radio" name="gender_name" value="F">
                                 <span class="form-radio-sign">Female</span>
                             </label>
                         </div>
@@ -484,82 +484,7 @@ function validateemailId(emailId)
 
 function save_users()
 {
-    var name = $("#name").val();
-    var empId = $("#empId").val();
-    var gender = $("input[name=gender]:checked").length;
-    var email = $("#email").val();
-    var mobile = $("#mobile").val();
-    var role = $("#role").val();
-    var division = $("#division").val();
-    var field_office = $("#fieldOffice").val();
-    var number_count = $('#mobile').val().length;
-
-    if(name == "")
-    {
-        $('#nameErrorMsg').html("Enter Name.");
-        $('#nameErrorMsg').show();
-        $('#nameErrorMsg').delay(2000).fadeOut('slow');
-        $("#name").focus();
-    }
-    else if(empId == "")
-    {
-        $('#empIdErrorMsg').html("Enter Employee Id.");
-        $('#empIdErrorMsg').show();
-        $('#empIdErrorMsg').delay(2000).fadeOut('slow');
-        $("#empId").focus();
-    }
-    else if(gender < 1)
-    {
-        $('#genderErrorMsg').html("Please Check One Gender.");
-        $('#genderErrorMsg').show();
-        $('#genderErrorMsg').delay(2000).fadeOut('slow');
-        $("input[name=gender]").focus();
-    }
-    else if(email == "")
-    {
-        $('#emailErrorMsg').html("Enter Email.");
-        $('#emailErrorMsg').show();
-        $('#emailErrorMsg').delay(2000).fadeOut('slow');
-        $("#email").focus();
-    }
-    else if(mobile == "")
-    {
-        $('#mobileErrorMsg').html("Enter Mobile Number.");
-        $('#mobileErrorMsg').show();
-        $('#mobileErrorMsg').delay(2000).fadeOut('slow');
-        $("#mobile").focus();
-    }
-    else if(number_count < 8)
-    {
-        $('#mobileErrorMsg').html("Cannot Be Less Than Eight.");
-        $('#mobileErrorMsg').show();
-        $('#mobileErrorMsg').delay(2000).fadeOut('slow');
-        $("#mobile").focus();
-    }
-    else if(role == "")
-    {
-        $('#roleErrorMsg').html("Select Role.");
-        $('#roleErrorMsg').show();
-        $('#roleErrorMsg').delay(2000).fadeOut('slow');
-        $("#role").focus();
-    }
-    else if(role == "2" || role == "6" && division == "")
-    {
-        $('#divisioneErrorMsg').html("Select Division.");
-        $('#divisioneErrorMsg').show();
-        $('#divisioneErrorMsg').delay(2000).fadeOut('slow');
-        $("#division").focus();
-    }
-    else if(role == "4" || role == "5" && field_office == "")
-    {
-        $('#divisioneErrorMsg').html("Select Division.");
-        $('#divisioneErrorMsg').show();
-        $('#divisioneErrorMsg').delay(2000).fadeOut('slow');
-        $("#division").focus();
-    }
-    else
-    {
-        $("#pageloader").show();
+    $("#pageloader").show();
         $.ajax({
             type : "POST",
             url : "{% url 'user' %}",
@@ -580,7 +505,6 @@ function save_users()
                 }, 3000);
             }
         });
-    }
 
 }
 
@@ -622,7 +546,6 @@ function populateEditForm(loginId, name, empId, gender, emailId, mobileNumber, r
     $('#edit_mobile').val(mobileNumber);
     $('#edit_role').val(roleId);
     $('#edit-user-modal').modal('show');
-
     if(gender == "M")
     {
         $('#male_radio').attr('checked',true);
@@ -658,14 +581,17 @@ function populateEditForm(loginId, name, empId, gender, emailId, mobileNumber, r
     }
     else if(roleId == "5")
     {
+
         $('.division_div').hide();
         $('.section_div').hide();
+        $('.field_div').show();
 	    $('#edit_field_Office').val(fieldId);
     }
     else if(roleId == "6")
     {
         $('.field_div').hide();
         $('.section_div').hide();
+        $('.field_div').show();
 	    $('#edit_division').val(fieldId);
     }
     else

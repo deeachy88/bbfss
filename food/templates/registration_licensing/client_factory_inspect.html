@@ -633,7 +633,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="form-label"> Proposed Factory Inspection Date</label>
-                        <input type="text" class="form-control date-picker flatpickr-input active" id="date" name="date"  placeholder="Pick a date" readonly="readonly">
+                        <input type="date" class="form-control" id="date" name="date">
                     </div>
                     <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
                 </div>
@@ -653,6 +653,11 @@
 </div>
 <script src="{% static 'assets/js/app.min.js' %}"></script>
 <script>
+$(function(){
+    var today = new Date().toISOString().split('T')[0];
+    $('#date')[0].setAttribute('min', today);
+});
+
     function forward_factory_application(application_id)
     {
         date = $('#date').val();

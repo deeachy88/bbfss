@@ -437,6 +437,37 @@
             </div>
         </div>
         <div class="card">
+            <div class="card-header" role="tab" id="auditPlan">
+                <a class="collapsed" data-toggle="collapse" href="#collapseAuditPlan" aria-expanded="false" aria-controls="auditPlan">
+                    Audit Plan
+                </a>
+            </div>
+            <div id="collapseAuditPlan" class="collapse" role="tabpanel" aria-labelledby="auditPlan" data-parent="#accordion" style="">
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">File</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           {% for file_attach in file %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td><a href='{{file_attach.File_Path}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                  <td colspan="3" class="text-center">No Data</td>
+                                </tr>
+                           {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="card">
             <div class="card-header" role="tab" id="headingFour">
                 <a class="collapsed" data-toggle="collapse" href="#collapseFour" aria-expanded="false" aria-controls="collapseTwo">
                     Audit Details
@@ -446,8 +477,8 @@
                 <div class="card-body">
                     <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
                         <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
-                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Focal</span>
-                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Ofiicer</span>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Team</span>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Leader</span>
                             <span class="px-1 small text-muted font-weight-bold text-muted form-label">Remarks</span>
                         <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
                     </div>
@@ -461,6 +492,7 @@
                             </div>
                         </div>
                     </div>
+                    <hr>
                     <form method="post" id="audit_plan_form">
                     {% csrf_token %}
                         <div class="row">
@@ -469,45 +501,45 @@
                                     <label class="form-label">Provisional Audit Date</label>
                                      {% for application_details in application_details %}
                                         <input type="hidden" name="Leader" value="{{application_details.Audit_Team_Leader}}">
-                                        <input type="text" class="form-control" id="Audit_Date" name="Audit_Date" value="{{application_details.Audit_Date}}" disabled>
+                                        <input type="text" class="form-control" id="Audit_Date" name="Audit_Date" value="{{application_details.Audit_Plan_Date}}" disabled>
                                     {% endfor %}
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Audit Date Accept</label>&nbsp;
+                                    <label class="form-label">Audit Date Accept <font color="red">*</font></label>&nbsp;
                                     <div class="justify-content-center">
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="acceptance" class="custom-control-input" value="A">
+                                            <input type="radio" name="acceptance" class="custom-control-input" value="A" onclick="checkResponse(this.value)">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Accept</span>
                                         </label>
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="acceptance" class="custom-control-input" value="R">
+                                            <input type="radio" name="acceptance" class="custom-control-input" value="R" onclick="checkResponse(this.value)">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Reject</span>
                                         </label>
                                     </div>
                                 </div>
+                                <div class="alert alert-danger" id="acceptanceErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label class="form-label">Remarks</label>
+                                    <label class="form-label">Remarks <font color="red" id="response">*</font></label>
                                     <textarea class="form-control" name="remarks" id="remarks"></textarea>
                                 </div>
                             </div>
+                            <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
                         </div>
                         <div class="card-action">
-                            <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
-                                Succesfull
-                            </div>
+                            <div id="submitMsg" class="alert alert-info" style="display:none;"></div>
                             {% for application_details in application_details %}
                                 <input type="hidden" value="{{ application_details.Application_No }}" name="application_id">
-                                <button type="button" class="btn btn-flat btn-primary" onclick="audit_team_accept()">
-                                    <i class="ace-icon fa fa-times"></i>
-                                    &nbsp;&nbsp;Send For Acceptance
+                                <button type="button" class="btn btn-flat btn-primary" onclick="audit_plan_accept()">
+                                    <i class="ace-icon fa fa-check"></i>
+                                    &nbsp;&nbsp;Submit
                                 </button>
                             {% endfor %}
                             <button type="button" class="btn btn-primary" onclick="closeTeamModal()">Close Modal</button>
@@ -517,15 +549,60 @@
             </div>
         </div>
 <script>
-function audit_team_accept()
+function audit_plan_accept()
 {
-    $.ajax({
+    var acceptance = $("input[name=acceptance]:checked").length;
+    var acceptance_val = $("input[name=acceptance]:checked").val();
+    var remarks =  $('#remarks').val();
+    if(acceptance < 1)
+    {
+        $('#acceptanceErrorMsg').html("Please Check One.");
+        $('#acceptanceErrorMsg').show();
+        $('#acceptanceErrorMsg').delay(2000).fadeOut('slow');
+        $("input[name=acceptance]").focus();
+    }
+    else if(acceptance_val == 'R' && remarks == "")
+    {
+        $('#remarksErrorMsg').html("Please Check One.");
+        $('#remarksErrorMsg').show();
+        $('#remarksErrorMsg').delay(2000).fadeOut('slow');
+         $("#remarks").focus();
+    }
+    else
+    {
+        $.ajax({
         type : "GET",
         url : "{% url 'gap_audit_plan_acceptance' %}",
         data :$('#audit_plan_form').serialize(),
         success : function(data) {
-            location.reload();
-        }
-    });
+                $('#submitMsg').html("Application Submitted.");
+                $('#submitMsg').show();
+                setTimeout(function()
+                {
+                    $("#submitMsg").hide('blind', {}, 500)
+                }, 2000);
+                setTimeout(function()
+                {
+                    $('#application-details-modal').modal('hide');
+                }, 3000);
+                setTimeout(function()
+                {
+                     location.reload();
+                }, 3000);
+            }
+        });
+    }
+}
+
+function checkResponse(value)
+{
+    if(value=='A')
+    {
+        $('#response').hide();
+    }
+    else
+    {
+        $('#response').show();
+    }
 }
 </script>

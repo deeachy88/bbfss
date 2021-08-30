@@ -217,7 +217,7 @@ def meat_shop_fo_approve(request):
 
 
 def meat_shop_fo_reject(request):
-    application_no = request.GET.get('application_id')
+    application_no = request.POST.get('application_id')
     remarks = request.POST.get('remarks')
     workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
     workflow_details.update(Action_Date=date.today())
@@ -227,6 +227,8 @@ def meat_shop_fo_reject(request):
     for email_id in details:
         email = email_id.Email
         send_meat_shop_reject_email(email, remarks)
+    return redirect(focal_officer_application())
+
 
 
 def send_meat_shop_approve_email(new_import_permit, Email, validity_date):
@@ -497,7 +499,7 @@ def meat_shop_submit(request):
     remarks = request.GET.get('remarks')
     validity = request.GET.get('validity')
 
-    clearance = factory_clearance_no(request,application_id)
+    clearance = factory_clearance_no(request, application_id)
     details = t_livestock_clearance_meat_shop_t1.objects.filter(Application_No=application_id)
     if remarks is not None:
         details.update(FO_Remarks=remarks)
@@ -529,7 +531,7 @@ def meat_shop_submit(request):
     return redirect(focal_officer_application)
 
 
-def factory_clearance_no(request,application_id):
+def factory_clearance_no(request, application_id):
     global Field_Code
     details = t_workflow_details.objects.filter(Application_No=application_id)
     for details in details:
@@ -633,6 +635,7 @@ def edit_meat_shop_feasibility_details(request):
     message_count = t_livestock_clearance_meat_shop_t5.objects.filter(Concern='Yes').count()
     return render(request, 'meat_shop_registration/concern_details.html', {'application_details': application_details,
                                                                            'message_count': message_count})
+
 
 def edit_meat_shop_factory_details(request):
     record_id = request.GET.get('record_id')
@@ -831,25 +834,22 @@ def import_permit_la_details(request):
     Breed = request.POST.get('Breed')
     Age = request.POST.get('Age')
     Sex = request.POST.get('Sex')
-    No_Of_Animal = request.POST.get('No_Of_Animal')
-    Remarks = request.POST.get('Remarks')
-    Description = request.POST.get('Description')
+    No_Of_Animal = request.POST.get('no')
+    Remarks = request.POST.get('AP_Remarks')
+    Description = request.POST.get('animal_Description')
 
     t_livestock_import_permit_animal_t2.objects.create(Application_No=application_no,
                                                        Species=Species,
                                                        Breed=Breed,
                                                        Age=Age,
                                                        Sex=Sex,
-                                                       Particulars=None,
-                                                       Company_Name=None,
                                                        Description=Description,
-                                                       Quantity=None,
-                                                       Quantity_Released=None,
-                                                       Remarks=Remarks,
-                                                       No_Of_Animal=No_Of_Animal,
-                                                       Unit=None)
+                                                       Quantity=No_Of_Animal,
+                                                       Quantity_Balance=None,
+                                                       Remarks=Remarks
+                                                       )
     import_details = t_livestock_import_permit_animal_t2.objects.filter(Application_No=application_no)
-    return render(request, 'Livestock_Import/permit_details.html', {'import': import_details})
+    return render(request, 'Animal_Fish_Import/animal_details.html', {'import': import_details})
 
 
 def add_la_permit_file(request):
@@ -2031,10 +2031,11 @@ def application_form(request):
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
     location = t_location_field_office_mapping.objects.all()
+    species = t_livestock_species_master.objects.all()
 
     return render(request, 'ante_post_mortem/ante_post_mortem_application.html',
                   {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village,
-                   'location': location})
+                   'location': location, 'species': species})
 
 
 def save_application_form(request):

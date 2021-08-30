@@ -35,9 +35,6 @@
         <div class="row justify-content-center">
             <label>Mr/Ms&nbsp;:&nbsp;{{certificate_details.Applicant_Name}}</label>
         </div>
-        <div class="row justify-content-center">
-            <label>Address&nbsp;:&nbsp;{{certificate_details.Present_Address}}</label>
-        </div>
         {% endfor %}
         <div class="row">
             <table  class="table table-bordered">
@@ -46,15 +43,17 @@
                         <th scope="col">Sl.No</th>
                         <th scope="col">Product(s)</th>
                         <th scope="col">Quantity (MT/KG)</th>
-                        <th scope="col">Imported From</th>
                     </tr>
                 </thead>
                 <tbody>
                    {% for release_form in release_form %}
                         <tr>
                             <td>{{ forloop.counter }}</td>
-                            <td></td>
-                            <td>{{release_form.Crop}}</td>
+                            {% for crop in crop %}
+                                {% if release_form.Crop_Id == crop.Crop_Id %}
+                                    <td>{{ crop.Crop_Common_Name }}</td>
+                                {% endif %}
+                            {% endfor %}
                             <td>{{release_form.Quantity_Released}}</td>
                         </tr>
                         {% empty %}

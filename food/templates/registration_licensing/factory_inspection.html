@@ -438,6 +438,7 @@
                 </div>
             </div>
         </div>
+
         <div class="card">
             <div class="card-header" role="tab" id="headingTwo">
                 <a class="collapsed" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
@@ -470,9 +471,120 @@
             </div>
         </div>
         <div class="card">
+            <div class="card-header" role="tab" id="feasibility_headingFive">
+                <a class="collapsed" data-toggle="collapse" href="#feasibility_collapseFive" aria-expanded="false" aria-controls="collapseTwo">
+                    Feasibility Inspection Team Details
+                </a>
+            </div>
+            <div id="feasibility_collapseFive" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Designation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for import in feasibility_inspection_team_details %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{import.Name}}</td>
+                                    <td>{{import.Designation}}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                  <td colspan="3" class="text-center">No Data</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header" role="tab" id="feasibility_headingFour">
+                <a class="collapsed" data-toggle="collapse" href="#feasibility_collapseFour" aria-expanded="false" aria-controls="collapseTwo">
+                   Feasibility Opening And Closing Meeting
+                </a>
+            </div>
+            <div id="feasibility_collapseFour" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Name Of Key Personal</th>
+                                <th scope="col">Designation of Key Personal</th>
+                                <th scope="col">Opening Meeting (Date)</th>
+                                <th scope="col">Closing Meeting (Date)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for import in feasibility_team_details %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{import.Name}}</td>
+                                    <td>{{import.Designation}}</td>
+                                    <td>{{import.Open_Meeting_Date|date:"d-m-Y"}}</td>
+                                    <td>{{import.Closing_Meeting_Date|date:"d-m-Y"}}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                  <td colspan="5" class="text-center">No Data</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header" role="tab" id="feasibility_headingThree">
+                <a class="collapsed" data-toggle="collapse" href="#feasibility_collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                   Feasibility Concern Details
+                </a>
+            </div>
+            <div id="feasibility_collapseThree" class="collapse" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion" style="">
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Requirement</th>
+                                <th scope="col">Clause No</th>
+                                <th scope="col">Concern</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Observations/ Findings</th>
+                                <th scope="col">Response/Actions Proposed By FBO</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for import in feasibility_inspection_details %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{import.Requirement}}</td>
+                                    <td>{{import.Clause_No}}</td>
+                                    <td>{{import.Concern}}</td>
+                                    <td>{{import.Date|date:"d-m-Y"}}</td>
+                                    <td>{{import.Observation}}</td>
+                                    <th scope="col">{{import.FBO_Response}}</th>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                  <td colspan="7" class="text-center">No Data</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="card">
             <div class="card-header" role="tab" id="headingFive">
                 <a class="collapsed" data-toggle="collapse" href="#collapseFive" aria-expanded="false" aria-controls="collapseTwo">
-                    Inspection Team Details
+                    Factory Inspection Team Details
                 </a>
             </div>
             <div id="collapseFive" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
@@ -516,7 +628,7 @@
         <div class="card">
             <div class="card-header" role="tab" id="headingFour">
                 <a class="collapsed" data-toggle="collapse" href="#collapseFour" aria-expanded="false" aria-controls="collapseTwo">
-                    Team Formation
+                    Factory Opening And Closing Meeting
                 </a>
             </div>
             <div id="collapseFour" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
@@ -552,12 +664,12 @@
             </div>
         </div>
         <div class="card">
-            <div class="card-header" role="tab" id="headingThree">
-                <a class="collapsed" data-toggle="collapse" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                    Inspector Details
+            <div class="card-header" role="tab" id="non-Conformities">
+                <a class="collapsed" data-toggle="collapse" href="#Conformities_collapse" aria-expanded="false" aria-controls="collapseThree">
+                     Details of Non-Conformities
                 </a>
             </div>
-            <div id="collapseThree" class="active" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion" style="">
+            <div id="Conformities_collapse" class="collapse" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion" style="">
                 <div class="card-body">
                     <div class="card-tools">
                         <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="openDecisionModal()">
@@ -574,11 +686,11 @@
                                 <tr>
                                     <th scope="col">#</th>
                                     <th scope="col">Requirement</th>
-                                    <th scope="col">Clause No</th>
-                                    <th scope="col">Concern</th>
+                                    <th scope="col">Clause Number</th>
+                                    <th scope="col">NC</th>
+                                    <th scope="col">NC Category</th>
                                     <th scope="col">Date</th>
                                     <th scope="col">Observations/ Findings</th>
-                                    <th scope="col">Response/Actions Proposed By FBO</th>
                                     {% if inspection_details %}
                                         <th scope="col">Action</th>
                                     {% endif %}
@@ -590,10 +702,10 @@
                                         <td>{{ forloop.counter }}</td>
                                         <td>{{import.Requirement}}</td>
                                         <td>{{import.Clause_No}}</td>
-                                        <td id="my_cell">{{import.Concern}}</td>
+                                        <td>{{import.NC}}</td>
+                                        <td>{{import.NC_Category}}</td>
                                         <td>{{import.Date|date:"d-m-Y"}}</td>
                                         <td>{{import.Observation}}</td>
-                                        <td>{{import.FBO_Response}}</td>
                                         <td>
                                             <button type="button" class="btn btn-primary btn--icon btn-sm" onclick="populateForm('{{import.Record_Id}}','{{import.Requirement}}',
                                             '{{import.Clause_No}}','{{import.Concern}}', '{{import.Observation}}', '{{import.FBO_Response}}', '{{import.Application_No}}')">
@@ -609,7 +721,17 @@
                             </tbody>
                         </table>
                     </div>
-                    <br>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header" role="tab" id="headingThree">
+                <a class="collapsed" data-toggle="collapse" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                     Factory Details Of Inspection
+                </a>
+            </div>
+            <div id="collapseThree" class="active" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion" style="">
+                <div class="card-body">
                      {% for application_details in application_details %}
                         {% if application_details.FR_Response %}
                         <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
@@ -637,7 +759,50 @@
                     <br>
                     <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
                         <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
-                            <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Inspector </span>&nbsp;&nbsp;&nbsp;
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Feasibility </span>&nbsp;&nbsp;&nbsp;
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Inspection </span>&nbsp;&nbsp;&nbsp;
+                            <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Details</span>
+                        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                    </div>
+                    <br>
+                    {% for application_details in application_details %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Inspection Team Leader</label>
+                                    <select class="form-control" disabled>
+                                        {% for inspector_list in inspector_list %}
+                                                <option value="{{ inspector_list.Login_Id }}" {% if application_details.FI_Inspection_Leader == inspector_list.Login_Id %}selected{% endif %}>{{ inspector_list.Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Inspection Team </label>
+                                    <textarea class="form-control" disabled rows="2">{{ application_details.FI_Inspection_Team }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Date Of Inspection</label>
+                                    <input type="text" class="form-control" value="{{application_details.FI_Inspection_Date}}" readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Recommendation</label>
+                                    <textarea class="form-control" disabled rows="2">{{application_details.FI_Recommendation}}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Factory </span>&nbsp;&nbsp;&nbsp;
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Inspection </span>&nbsp;&nbsp;&nbsp;
                             <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Details</span>
                         <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
                     </div>
@@ -666,7 +831,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Date Of Inspection</label>
-                                <input type="text" class="form-control date-picker flatpickr-input active" id="dateOfInspection" name="date"  placeholder="Pick a date" readonly="readonly">
+                                <input type="date" class="form-control" id="dateOfInspection" name="date">
                             </div>
                             <div class="alert alert-danger" id="dateOfInspectionErrorMsg" style="display:none"></div>
                         </div>
@@ -733,7 +898,7 @@
                                 <div class="form-group">
                                     <div class="form-group col-md-6">
                                         <div class="form-check">
-                                           <label class="form-label">Concern</label><br>
+                                           <label class="form-label">NC</label><br>
                                             <label class="form-radio-label">
                                                 <input class="form-radio-input" type="radio" name="Concern" value="Yes" onclick="checkConcern(this.value)">
                                                 <span class="form-radio-sign">Yes</span>
@@ -748,16 +913,20 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Observations/Finding</label>
-                                    <textarea class="form-control" id="Observations" rows="2"></textarea>
+                                    <label class="form-label">NC Category</label>
+                                    <select class="form-control" name="nc_category" id="nc_category" disabled>
+                                        <option value="">-SELECT-</option>
+                                        <option value="Major">Major</option>
+                                        <option value="Minor">Minor</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Response or Actions proposed by FBO</label>
-                                    <textarea class="form-control" id="response_fbo" rows="2"></textarea>
+                                    <label class="form-label">Observations/Finding</label>
+                                    <textarea class="form-control" id="Observations" rows="2"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -934,6 +1103,21 @@
 </form>
 <script src="{% static 'assets/js/app.min.js' %}"></script>
 <script>
+$(function(){
+    var dtToday = new Date();
+
+    var month = dtToday.getMonth() + 1;
+    var day = dtToday.getDate();
+    var year = dtToday.getFullYear();
+
+    if(month < 10)
+        month = '0' + month.toString();
+    if(day < 10)
+        day = '0' + day.toString();
+
+    var maxDate = year + '-' + month + '-' + day;
+    $('#dateOfInspection').attr('max', maxDate);
+});
 function openDecisionModal()
 {
     $('#addModal').modal('show');
@@ -962,12 +1146,36 @@ function add_details_ins(application_id)
     Clause_No = $('#Clause_No').val();
     Concern = $('input[name="Concern"]:checked').val();
     Observations = $('#Observations').val();
-    response_fbo = $('#response_fbo').val();
+    nc_category = $('#nc_category').val();
 
+    if(Requirement == "")
+    {
+        $('#RequirementErrorMsg').html("Please Enter Requirement.");
+        $('#RequirementErrorMsg').show();
+        $('#RequirementErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Clause_No == "")
+    {
+        $('#Clause_NoErrorMsg').html("Please Enter Clause No.");
+        $('#Clause_NoErrorMsg').show();
+        $('#Clause_NoErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Concern < 1)
+    {
+        $('#ConcernErrorMsg').html("Please Select One NC.");
+        $('#ConcernErrorMsg').show();
+        $('#ConcernErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(remarks == "")
+    {
+        $('#remarksErrorMsg').html("Please Enter Remarks.");
+        $('#remarksErrorMsg').show();
+        $('#remarksErrorMsg').delay(2000).fadeOut('slow');
+    }
     $.ajax({
         type : "GET",
         url : "{% url 'concern_details_factory_ins' %}",
-        data :{'application_id':application_id,'Requirement':Requirement,'Observations':Observations,'Clause_No':Clause_No,'Concern':Concern, 'response_fbo':response_fbo},
+        data :{'application_id':application_id,'Requirement':Requirement,'Observations':Observations,'Clause_No':Clause_No,'Concern':Concern, 'NC_Category':nc_category},
         success : function(data) {
             $('#details').html(data);
             $('#details').show();
@@ -1090,13 +1298,13 @@ function checkConcern(value)
 {
     if(value == "Yes")
     {
-        $('#response_fbo').removeAttr("disabled");
+        $('#nc_category').removeAttr("disabled");
 
     }
     else
     {
-        $('#response_fbo').attr("disabled", "disabled");
-        $('#response_fbo').val("");
+        $('#nc_category').attr("disabled", "disabled");
+        $('#nc_category').val("");
     }
 }
 

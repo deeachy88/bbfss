@@ -490,6 +490,7 @@
                                         <th scope="col">#</th>
                                         <th scope="col">Name</th>
                                         <th scope="col">Role</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -498,6 +499,11 @@
                                             <td>{{ forloop.counter }}</td>
                                             <td>{{audit.Name}}</td>
                                             <td>{{audit.Role}}</td>
+                                            <td><button type="button" class="btn btn-danger btn-sm" onclick="Delete_Audit_Team('{{audit.Record_Id}}','{{audit.Application_No}}', 'GAP')">
+                                                    <i class="zmdi zmdi-delete"></i>
+                                                    &nbsp;&nbsp;Delete
+                                                </button>
+                                            </td>
                                         </tr>
                                         {% empty %}
                                         <tr>
@@ -560,17 +566,17 @@
                         {% for application_details in application_details %}
                          {% if application_details.Audit_Team_Acceptance == 'A' %}
                             <button type="button" class="btn btn-flat btn-primary" onclick="forward_application('{{ application_details.Application_No }}')">
-                                <i class="ace-icon fa fa-times"></i>
+                                <i class="ace-icon fa fa-arrow-right"></i>
                                 &nbsp;&nbsp;Forward
                             </button>
                         {% else %}
                             <button type="button" class="btn btn-flat btn-primary" onclick="send_for_acceptance('{{ application_details.Application_No }}')">
-                                <i class="ace-icon fa fa-times"></i>
+                                <i class="ace-icon fa fa-reply-all"></i>
                                 &nbsp;&nbsp;Send For Acceptance
                             </button>
                         {% endif%}
                         {% endfor %}
-                        <button type="button" class="btn btn-primary" onclick="closeTeamModal()">Close Modal</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close Modal</button>
                     </div>
                 </div>
             </div>
@@ -614,7 +620,7 @@
                     <div class="modal-footer">
                         {% for application_details in application_details %}
                         <button type="button" class="btn btn-flat btn-primary" onclick="audit_team_details('{{ application_details.Application_No }}')">
-                            <i class="ace-icon fa fa-times"></i>
+                            <i class="ace-icon fa fa-check"></i>
                             &nbsp;&nbsp;Add
                         </button>
                         {% endfor %}
@@ -677,4 +683,15 @@ function forward_application(application_id)
     });
 }
 
+function Delete_Audit_Team(id,Application_No,identification_type)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'delete_audit_team' %}",
+        data :{'Record_Id':id, 'Application_No':Application_No, 'identification_type':identification_type},
+        success : function(data) {
+           $('#audit_team_details_gap').html(data);
+        }
+    });
+}
 </script>
