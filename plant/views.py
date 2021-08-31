@@ -30,9 +30,10 @@ from livestock.models import t_livestock_clearance_meat_shop_t1, t_livestock_ant
 from plant.forms import ImportFormThree, ImportFormTwo
 from plant.models import t_workflow_details, t_plant_movement_permit_t2, t_plant_movement_permit_t1, \
     t_plant_movement_permit_t3, t_file_attachment, t_plant_import_permit_t1, t_plant_import_permit_t2, \
-    t_plant_import_permit_t3, t_plant_export_certificate_plant_plant_products_t1, \
+    t_plant_export_certificate_plant_plant_products_t1, \
     t_plant_clearence_nursery_seed_grower_t1, t_plant_clearence_nursery_seed_grower_t2, t_plant_seed_certification_t1, \
-    t_plant_seed_certification_t2, t_plant_seed_certification_t3, t_payment_details
+    t_plant_seed_certification_t2, t_plant_seed_certification_t3, t_payment_details, \
+    t_plant_import_permit_inspection_t3, t_plant_import_permit_inspection_t1, t_plant_import_permit_inspection_t2
 from certification.models import t_certification_gap_t1, t_certification_gap_t2, t_certification_gap_t3, \
     t_certification_gap_t4, t_certification_gap_t5, t_certification_gap_t6, t_certification_gap_t7, \
     t_certification_gap_t8, t_certification_food_t1, t_certification_food_t2, t_certification_food_t3, \
@@ -377,22 +378,21 @@ def view_application_details(request):
                        'village': village, 'location': location, 'details_list': details_list,
                        'inspector_list': user_role_list, 'movement_permit': movement_permit})
     elif service_code == 'IPP':
-        application_details = t_plant_import_permit_t1.objects.filter(Application_No=application_id)
+        application_details = t_plant_import_permit_inspection_t1.objects.filter(Application_No=application_id)
         location = t_field_office_master.objects.all()
-        details_list = t_plant_import_permit_t2.objects.filter(Application_No=application_id)
+        details_list = t_plant_import_permit_inspection_t2.objects.filter(Application_No=application_id)
         file = t_file_attachment.objects.filter(Application_No=application_id)
         workflow_details = t_workflow_details.objects.filter(Application_No=application_id)
         for application in workflow_details:
             Field_Office = application.Field_Office_Id
         user_role_list = t_user_master.objects.filter(Role_Id='5', Field_Office_Id_id=Field_Office)
-        import_permit = t_plant_import_permit_t3.objects.filter(Application_No=application_id)
         crop = t_plant_crop_master.objects.all()
         pesticide = t_plant_pesticide_master.objects.all()
         variety = t_plant_crop_variety_master.objects.all()
         return render(request, 'import_permit/inspector_import_permit.html',
                       {'application_details': application_details,
                        'location': location, 'import': details_list, 'inspector_list': user_role_list,
-                       'file': file, 'import_permit': import_permit, 'crop': crop, 'pesticide': pesticide,
+                       'file': file, 'crop': crop, 'pesticide': pesticide,
                        'variety': variety})
     elif service_code == 'EPP':
         application_details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(
@@ -1288,7 +1288,7 @@ def save_import_plant(request):
         t_plant_import_permit_t2.objects.create(Application_No=appNo, Import_Category=Import_Category,
                                                 Crop_Id=crop_id, Pesticide_Id=None, Description=None,
                                                 Variety_Id=crop_variety_id, Unit=unit, Quantity=qty,
-                                                Quantity_Released=None, Remarks=None)
+                                                Quantity_Released=None, Remarks=None, Quantity_Balance=qty)
         imports_plant = t_plant_import_permit_t2.objects.filter(Application_No=appNo)
         return render(request, 'import_permit/import_page_plant.html', {'import': imports_plant, 'title': appNo})
 
@@ -1305,7 +1305,7 @@ def save_import_agro(request):
                                                 Crop_Id=None, Pesticide_Id=pesticide_id,
                                                 Description=description,
                                                 Variety_Id=None, Unit=unit, Quantity=qty,
-                                                Quantity_Released=None, Remarks=None)
+                                                Quantity_Released=None, Remarks=None, Quantity_Balance=qty)
         imports_plant = t_plant_import_permit_t2.objects.filter(Application_No=appNo)
     return render(request, 'import_permit/import_page_agro.html', {'import': imports_plant, 'title': appNo})
 
@@ -1673,8 +1673,8 @@ def view_oic_details(request):
 
     elif service_code == 'IPP':
         application_no = request.GET.get('application_id')
-        new_import_app = t_plant_import_permit_t1.objects.filter(Application_No=application_no)
-        details = t_plant_import_permit_t2.objects.filter(Application_No=application_no)
+        new_import_app = t_plant_import_permit_inspection_t1.objects.filter(Application_No=application_no)
+        details = t_plant_import_permit_inspection_t2.objects.filter(Application_No=application_no)
         file = t_file_attachment.objects.filter(Application_No=application_no)
         location_mapping = t_field_office_master.objects.filter(Is_Entry_Point="Y")
         country = t_country_master.objects.all()
@@ -1980,10 +1980,10 @@ def add_import_details_ins(request):
     application_id = request.GET.get('application_id')
     currentObservation = request.GET.get('currentObservation')
     decisionConform = request.GET.get('decisionConform')
-    t_plant_import_permit_t3.objects.create(Application_No=application_id,
+    t_plant_import_permit_inspection_t3.objects.create(Application_No=application_id,
                                             Current_Observation=currentObservation,
                                             Decision_Conformity=decisionConform)
-    import_permit = t_plant_import_permit_t3.objects.filter(Application_No=application_id)
+    import_permit = t_plant_import_permit_inspection_t3.objects.filter(Application_No=application_id)
     return render(request, 'import_permit/add_import_details.html', {'import_permit': import_permit})
 
 
@@ -2039,17 +2039,80 @@ def update_inspection_call_details(request):
     remarks = request.POST.get('remarks')
     if service_code == 'IPP':
         details = t_plant_import_permit_t1.objects.filter(Application_No=appNo)
-        details.update(Actual_Point_Of_Entry=entry_point)
-        details.update(Proposed_Inspection_Date=date_requested)
-        if remarks is not None:
-            details.update(Inspection_Request_Remarks=remarks)
-        else:
-            details.update(Inspection_Request_Remarks=None)
-        workflow_details = t_workflow_details.objects.filter(Application_No=appNo)
-        workflow_details.update(Assigned_Role_Id='4')
-        workflow_details.update(Action_Date=date.today())
-        workflow_details.update(Field_Office_Id=entry_point)
-        workflow_details.update(Assigned_To=None)
+        import_app = t_plant_import_permit_t2.objects.filter(Application_No=appNo)
+        new_import_application_no = new_plant_import_application_no(service_code)
+
+        for details in details:
+            t_plant_import_permit_inspection_t1.objects.create(
+                Application_No=new_import_application_no,
+                Import_Type=details.Import_Type,
+                License_No=details.License_No,
+                Business_Name=details.Business_Name,
+                CID=details.CID,
+                Applicant_Name=details.Applicant_Name,
+                Present_Address=details.Present_Address,
+                Contact_No=details.Contact_No,
+                Email=details.Email,
+                Name_And_Address_Supplier=details.Name_And_Address_Supplier,
+                Means_of_Conveyance=details.Means_of_Conveyance,
+                Place_Of_Entry=details.Place_Of_Entry,
+                Purpose=details.Purpose,
+                Final_Destination=details.Final_Destination,
+                Import_Inspection_Submit_Date=date.today(),
+                Proposed_Inspection_Date=date_requested,
+                Actual_Point_Of_Entry=entry_point,
+                Inspection_Request_Remarks=remarks,
+                Import_Permit_No=details.Import_Permit_No,
+                Inspection_Date=None,
+                Inspection_Type=None,
+                Inspection_Time=None,
+                Inspection_Leader=None,
+                Inspection_Team=None,
+                Clearance_Ref_No=None,
+                Expected_Arrival_Date=details.Expected_Arrival_Date,
+                FO_Remarks=details.FO_Remarks,
+                Inspection_Remarks=None,
+                Country_Of_Origin=details.Country_Of_Origin,
+                Application_Date=details.Application_Date,
+                Applicant_Id=details.Applicant_Id,
+                Approved_Date=details.Approved_Date,
+                Validity_Period=details.Validity_Period,
+                Validity=details.Validity,
+                Application_Type=details.Application_Type,
+                Nationality=details.Nationality,
+                dzongkhag=details.dzongkhag,
+                gewog=details.gewog,
+                Nationality_Type=details.Nationality_Type,
+                village=details.village,
+                passport_number=details.passport_number
+            )
+            for import_details in import_app:
+                t_plant_import_permit_inspection_t2.objects.create(
+                    Application_No=new_import_application_no,
+                    Import_Category=import_details.Import_Category,
+                    Crop_Id=import_details.Crop_Id,
+                    Pesticide_Id=import_details.Pesticide_Id,
+                    Description=import_details.Description,
+                    Variety_Id=import_details.Variety_Id,
+                    Unit=import_details.Unit,
+                    Quantity=import_details.Quantity,
+                    Quantity_Released=0,
+                    Quantity_Rejected=0,
+                    Remarks=import_details.Remarks,
+                    Quantity_Balance=import_details.Quantity_Balance,
+                    Product_Record_Id=import_details.pk
+                )
+        field = t_location_field_office_mapping.objects.filter(Location_Code=entry_point)
+        for field_office in field:
+            field_office_id = field_office.Field_Office_Id_id
+        t_workflow_details.objects.create(Application_No=new_import_application_no,
+                                          Applicant_Id=request.session['email'],
+                                          Assigned_To=None, Field_Office_Id=field_office_id, Section='Plant',
+                                          Assigned_Role_Id='4', Action_Date=date.today(), Application_Status='P',
+                                          Service_Code=service_code)
+        login_id = request.session['Login_Id']
+        application_details = t_workflow_details.objects.filter(Assigned_To=login_id)
+        return render(request, 'inspection_call.html', {'application_details': application_details})
     elif service_code == 'IAF':
         detail = t_livestock_import_permit_animal_t1.objects.filter(Application_No=appNo)
         import_app = t_livestock_import_permit_animal_t2.objects.filter(Application_No=appNo)
@@ -2116,7 +2179,7 @@ def update_inspection_call_details(request):
         t_workflow_details.objects.create(Application_No=new_import_application_no,
                                           Applicant_Id=request.session['email'],
                                           Assigned_To=None, Field_Office_Id=field_office_id, Section='Livestock',
-                                          Assigned_Role_Id='4', Action_Date=None, Application_Status='P',
+                                          Assigned_Role_Id='4', Action_Date=date.today(), Application_Status='P',
                                           Service_Code=service_code)
         login_id = request.session['Login_Id']
         application_details = t_workflow_details.objects.filter(Assigned_To=login_id)
@@ -2186,7 +2249,7 @@ def update_inspection_call_details(request):
         t_workflow_details.objects.create(Application_No=new_import_application_no,
                                           Applicant_Id=request.session['email'],
                                           Assigned_To=None, Field_Office_Id=field_office_id, Section='Livestock',
-                                          Assigned_Role_Id='4', Action_Date=None, Application_Status='P',
+                                          Assigned_Role_Id='4', Action_Date=date.today(), Application_Status='P',
                                           Service_Code=service_code)
         login_id = request.session['Login_Id']
         application_details = t_workflow_details.objects.filter(Assigned_To=login_id)
@@ -2272,7 +2335,22 @@ def new_animal_fish_import_application_no(service_code):
         year = timezone.now().year
         newAppNo = service_code + "/I/" + str(year) + "/" + "0001"
     else:
-        substring = str(lastAppNo)[9:15]
+        substring = str(lastAppNo)[12:15]
+        substring = int(substring) + 1
+        AppNo = str(substring).zfill(4)
+        year = timezone.now().year
+        newAppNo = service_code + "/I/" + str(year) + "/" + AppNo
+    return newAppNo
+
+
+def new_plant_import_application_no(service_code):
+    last_application_no = t_plant_import_permit_inspection_t1.objects.aggregate(Max('Application_No'))
+    lastAppNo = last_application_no['Application_No__max']
+    if not lastAppNo:
+        year = timezone.now().year
+        newAppNo = service_code + "/I/" + str(year) + "/" + "0001"
+    else:
+        substring = str(lastAppNo)[12:15]
         substring = int(substring) + 1
         AppNo = str(substring).zfill(4)
         year = timezone.now().year
@@ -2287,7 +2365,7 @@ def new_livestock_product_import_application_no(service_code):
         year = timezone.now().year
         newAppNo = service_code + "/I/" + str(year) + "/" + "0001"
     else:
-        substring = str(lastAppNo)[9:15]
+        substring = str(lastAppNo)[12:15]
         substring = int(substring) + 1
         AppNo = str(substring).zfill(4)
         year = timezone.now().year
@@ -2302,7 +2380,7 @@ def new_food_import_application_no(service_code):
         year = timezone.now().year
         newAppNo = service_code + "/I/" + str(year) + "/" + "0001"
     else:
-        substring = str(lastAppNo)[11:15]
+        substring = str(lastAppNo)[12:15]
         substring = int(substring) + 1
         AppNo = str(substring).zfill(4)
         year = timezone.now().year
@@ -2558,15 +2636,15 @@ def add_details_ins_import(request):
     application_id = request.GET.get('application_id')
     currentObservation = request.GET.get('currentObservation')
     decisionConform = request.GET.get('decisionConform')
-    t_plant_import_permit_t3.objects.create(Application_No=application_id,
+    t_plant_import_permit_inspection_t3.objects.create(Application_No=application_id,
                                             Current_Observation=currentObservation,
                                             Decision_Conformity=decisionConform)
-    import_permit = t_plant_import_permit_t3.objects.filter(Application_No=application_id)
+    import_permit = t_plant_import_permit_inspection_t3.objects.filter(Application_No=application_id)
     return render(request, 'import_permit/add_import_details.html', {'import_permit': import_permit})
 
 
 def edit_decision(request, Record_Id):
-    decision = get_object_or_404(t_plant_import_permit_t3, pk=Record_Id)
+    decision = get_object_or_404(t_plant_import_permit_inspection_t3, pk=Record_Id)
     if request.method == 'POST':
         form = ImportFormThree(request.POST, instance=decision)
     else:
@@ -2580,7 +2658,7 @@ def save_decision_form(request, form, template_name):
         if form.is_valid():
             form.save()
             data['form_is_valid'] = True
-            decision = t_plant_import_permit_t3.objects.all()
+            decision = t_plant_import_permit_inspection_t3.objects.all()
             data['html_form'] = render_to_string('import_permit/add_import_details.html', {
                 'import_permit': decision
             })
@@ -2789,13 +2867,17 @@ def update_details_plant(request):
     application_no = request.POST.get('plant_applicationNo')
     record_id = request.POST.get('record_id')
     approved_quantity = request.POST.get('qty_approved')
-    rejected_quantity = request.POST.get('qty_rejected')
+    qty_balance = request.POST.get('qty_balance')
 
-    app_details = t_plant_import_permit_t2.objects.filter(Record_Id=record_id)
-    app_details.update(Quantity_Released=approved_quantity)
-    app_details.update(Quantity_Rejected=rejected_quantity)
-
-    application_details = t_plant_import_permit_t2.objects.filter(Application_No=application_no)
+    import_det = t_plant_import_permit_inspection_t2.objects.filter(pk=record_id)
+    import_det.update(Quantity_Released=approved_quantity)
+    import_det.update(Quantity_Balance=qty_balance)
+    for import_IPP in import_det:
+        Product_Record_Id = import_IPP.Product_Record_Id
+        balance = int(import_IPP.Quantity_Balance) - int(import_IPP.Quantity_Released)
+        product_details = t_plant_import_permit_t2.objects.filter(pk=Product_Record_Id)
+        product_details.update(Quantity_Balance=balance)
+    application_details = t_plant_import_permit_inspection_t2.objects.filter(Application_No=application_no)
     crop = t_plant_crop_master.objects.all()
     variety = t_plant_crop_variety_master.objects.all()
     return render(request, 'import_permit/plant_details.html', {'import': application_details,
@@ -2806,11 +2888,16 @@ def update_details_agro(request):
     application_no = request.POST.get('agro_applicationNo')
     record_id = request.POST.get('agro_record_id')
     approved_quantity = request.POST.get('agro_qty_approved')
-    rejected_quantity = request.POST.get('agro_qty_rejected')
+    agro_qty_balance = request.POST.get('agro_qty_balance')
 
-    app_details = t_plant_import_permit_t2.objects.filter(Record_Id=record_id)
-    app_details.update(Quantity_Released=approved_quantity)
-    app_details.update(Quantity_Rejected=rejected_quantity)
+    import_det = t_plant_import_permit_inspection_t2.objects.filter(pk=record_id)
+    import_det.update(Quantity_Released=approved_quantity)
+    import_det.update(Quantity_Balance=agro_qty_balance)
+    for import_IPP in import_det:
+        Product_Record_Id = import_IPP.Product_Record_Id
+        balance = int(import_IPP.Quantity_Balance) - int(import_IPP.Quantity_Released)
+        product_details = t_plant_import_permit_t2.objects.filter(pk=Product_Record_Id)
+        product_details.update(Quantity_Balance=balance)
 
     application_details = t_plant_import_permit_t2.objects.filter(Application_No=application_no)
     pesticide = t_plant_pesticide_master.objects.all()

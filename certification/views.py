@@ -199,11 +199,11 @@ def organic_certificate_file_name(request):
 
 
 def save_farmers_group_details(request):
-    application_no = request.POST.get('farmers_group_application_no')
-    cid = request.POST.get('farmers_group_cid')
-    name = request.POST.get('farmers_group_fullname')
+    application_no = request.GET.get('farmers_group_application_no')
+    cid = request.GET.get('farmers_group_cid')
+    name = request.GET.get('farmers_group_fullname')
     farmers_group_details = t_certification_organic_t2.objects.filter(Application_No=application_no, CID=cid, Name=name)
-    return render(request, 'organic_certification/farmers_group_details.html',
+    return render(request, 'organic_certification/farmer_group_details.html',
                   {'farmers_group_details': farmers_group_details})
 
 
@@ -1062,12 +1062,12 @@ def save_gap_audit_plan_name(request):
 
 
 def gap_farmers_group_details(request):
-    application_no = request.POST.get('farmers_group_application_no')
-    cid = request.POST.get('farmers_group_cid')
-    name = request.POST.get('farmers_group_fullname')
+    application_no = request.GET.get('farmers_group_application_no')
+    cid = request.GET.get('farmers_group_cid')
+    name = request.GET.get('farmers_group_fullname')
     t_certification_gap_t2.objects.create(Application_No=application_no, CID=cid, Name=name)
     farmers_group_details = t_certification_gap_t2.objects.filter(Application_No=application_no)
-    return render(request, 'GAP_Certification/farmers_group_details.html',
+    return render(request, 'GAP_Certification/farmer_group_details.html',
                   {'farmers_group_details': farmers_group_details})
 
 
@@ -1628,22 +1628,26 @@ def save_food_product_certificate(request):
     date_to_p = datetime.strptime(P_To_Date, '%d-%m-%Y').date()
     date_from_c = datetime.strptime(C_From_Date, '%d-%m-%Y').date()
     date_to_c = datetime.strptime(C_To_Date, '%d-%m-%Y').date()
-    if C_Export_From_Date is not None:
+    if C_Export_From_Date:
         date_export_f = datetime.strptime(C_Export_From_Date, '%d-%m-%Y').date()
     else:
         date_export_f = None
-    if C_Export_To_Date is not None:
+    if C_Export_To_Date:
         date_export_t = datetime.strptime(C_Export_To_Date, '%d-%m-%Y').date()
     else:
         date_export_t = None
-    if P_Export_From_Date is not None:
+    if P_Export_From_Date:
         date_export_pf = datetime.strptime(P_Export_From_Date, '%d-%m-%Y').date()
     else:
         date_export_pf = None
-    if P_Export_To_Date is not None:
+    if P_Export_To_Date:
         date_export_pt = datetime.strptime(P_Export_To_Date, '%d-%m-%Y').date()
     else:
         date_export_pt = None
+    if Factory_Contact_No:
+        contact_no = Factory_Contact_No
+    else:
+        contact_no = None
     business_license_no = request.POST.get('business_license_no')
     technical_in_charge = request.POST.get('technical_in_charge')
     management_in_charge = request.POST.get('management_in_charge')
@@ -1657,7 +1661,7 @@ def save_food_product_certificate(request):
         Firm_Email=Firm_Email,
         Factory_Name=Factory_Name,
         Factory_Address=Factory_Address,
-        Factory_Contact_No=Factory_Contact_No,
+        Factory_Contact_No=contact_no,
         Factory_Email=Factory_Email,
         Product_Description=Product_Description,
         Product_Trade_Mark=Product_Trade_Mark,
@@ -1953,7 +1957,6 @@ def fpc_conform_observation(request):
 
 def approve_fpc_application(request):
     application_id = request.GET.get('application_no')
-
     validity = request.GET.get('validity')
     remarks = request.GET.get('remarks')
 
@@ -1993,23 +1996,17 @@ def send_fpc_approve_email(Export_Permit_No, Email, validity_date):
 
 
 def fpc_certificate_no(request):
-    global Field_Code
-    Field_Office_Id = request.session['field_office_id']
-    code = t_field_office_master.objects.filter(pk=Field_Office_Id)
-    for code in code:
-        Field_Code = code.Field_Office_Code
-
     last_application_no = t_certification_food_t1.objects.aggregate(Max('Certificate_No'))
     lastAppNo = last_application_no['Certificate_No__max']
     if not lastAppNo:
         year = timezone.now().year
-        newAppNo = Field_Code + "/" + "FPC" + "/" + str(year) + "/" + "0001"
+        newAppNo = "BCL" + "/" + str(year) + "/" + "0001"
     else:
         substring = str(lastAppNo)[14:17]
         substring = int(substring) + 1
         AppNo = str(substring).zfill(4)
         year = timezone.now().year
-        newAppNo = Field_Code + "/" + "FPC" + "/" + str(year) + "/" + AppNo
+        newAppNo = "BCL" + "/" + str(year) + "/" + AppNo
     return newAppNo
 
 
@@ -2608,7 +2605,7 @@ def delete_audit_team(request):
 def delete_farm_details(request):
     application_no = request.GET.get('Application_No')
     record_id = request.GET.get('Record_Id')
-    identification_type= request.GET.get('identification_type')
+    identification_type = request.GET.get('identification_type')
 
     if identification_type == 'GAP':
         details = t_certification_gap_t7.objects.filter(Record_Id=record_id)
@@ -2625,3 +2622,42 @@ def delete_farm_details(request):
         details.delete()
         farm_inputs = t_certification_organic_t3.objects.filter(Application_No=application_no)
         return render(request, 'organic_certification/audit_team_details.html', {'farm_inputs': farm_inputs})
+
+
+def update_nc_response(request):
+    application_no = request.GET.get('application_No')
+    record_id = request.GET.get('record_id')
+    identification_type = request.GET.get('identification_type')
+
+    if identification_type == 'gap_nc':
+        details = t_certification_gap_t8.objects.filter(Record_Id=record_id)
+        details.delete()
+        nc_details = t_certification_gap_t8.objects.filter(Application_No=application_no)
+        return render(request, 'GAP_Certification/edit_nc_details.html', {'nc_details': nc_details})
+    elif identification_type == 'fpc_nc':
+        details = t_certification_food_t5.objects.filter(Record_Id=record_id)
+        details.delete()
+        nc_details = t_certification_food_t5.objects.filter(Application_No=application_no)
+        return render(request, 'food_product_certification/edit_nc_details.html', {'nc_details': nc_details})
+    else:
+        details = t_certification_organic_t11.objects.filter(Record_Id=record_id)
+        details.delete()
+        nc_details = t_certification_organic_t11.objects.filter(Application_No=application_no)
+        return render(request, 'organic_certification/edit_nc_details.html', {'nc_details': nc_details})
+
+
+def delete_farmers_group(request):
+    application_no = request.GET.get('appNo')
+    record_id = request.GET.get('Record_Id')
+    identification_type = request.GET.get('identification_type')
+
+    if identification_type == 'GAP':
+        details = t_certification_gap_t2.objects.filter(Record_Id=record_id)
+        details.delete()
+        farmer_group = t_certification_gap_t2.objects.filter(Application_No=application_no)
+        return render(request, 'GAP_Certification/farmer_group_details.html', {'farmer_group': farmer_group})
+    else:
+        details = t_certification_organic_t2.objects.filter(Record_Id=record_id)
+        details.delete()
+        farmer_group = t_certification_organic_t2.objects.filter(Application_No=application_no)
+        return render(request, 'organic_certification/farmer_group_details.html', {'farmer_group': farmer_group})

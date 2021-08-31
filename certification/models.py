@@ -378,7 +378,7 @@ class t_certification_food_t1(models.Model):  # Food Product main table
     Firm_Email = models.EmailField(blank=True, null=True)
     Factory_Name = models.CharField(max_length=250, blank=True, null=True)
     Factory_Address = models.TextField(blank=True, null=True)
-    Factory_Contact_No = models.IntegerField(blank=True, null=True)
+    Factory_Contact_No = models.IntegerField(default=None, blank=True, null=True)
     Factory_Email = models.EmailField(blank=True, null=True)
     Product_Description = models.TextField(blank=True, null=True)
     Product_Trade_Mark = models.TextField(blank=True, null=True)

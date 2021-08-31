@@ -990,20 +990,40 @@
             </div>
             <div id="collapse_head" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
                 <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Validity Of Certificate</label>
-                                    <input type="number" class="form-control" id="validity" name="validity">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Validity Of Certificate(No Of Days) <font color="red">*</font></label>
+                                <input type="number" class="form-control" id="validity" name="validity">
+                            </div>
+                            <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Certificate Type <font color="red">*</font></label>
+                                <div class="justify-content-center">
+                                    <label class="custom-control custom-radio"  style="margin-top: 14px;">
+                                        <input type="radio" name="Certificate_Type" class="custom-control-input" value="Accredited">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Accredited</span>
+                                    </label>
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" name="Certificate_Type" class="custom-control-input" value="Non-Accredited">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Non-Accredited</span>
+                                    </label>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Remarks</label>
-                                    <textarea class="form-control" id="remarks" name="remarks" rows="2"></textarea>
-                                </div>
+                            <div class="alert alert-danger" id="Certificate_TypeErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Remarks</label>
+                                <textarea class="form-control" id="remarks" name="remarks" rows="2"></textarea>
                             </div>
                         </div>
+                    </div>
+                    <div id="submitMsg" class="alert alert-info" style="display:none;"></div>
                     <div class="card-action">
                     {% for application_details in application_details %}
                         <button type="button" class="btn btn-flat btn-primary" onclick="approve_oc_application('{{ application_details.Application_No }}')">
@@ -1022,18 +1042,46 @@
 function approve_oc_application(application_id)
 {
 
-    remarks = $('#remarks').val();
-    dateOfInspection = $('#dateOfInspection').val();
-    validity = $('#validity').val();
-
-   $.ajax({
-        type : "GET",
-        url : "{% url 'approve_oc_application' %}",
-        data :{'application_no':application_id , 'remarks':remarks , 'dateOfInspection':dateOfInspection, 'validity':validity},
-        success : function(data) {
-            $('#import_detailsModal').modal('hide');
-            location.reload();
-        }
-    });
+    var remarks = $('#remarks').val();
+    var validity = $('#validity').val();
+    var Certificate_Type = $("input[name=Certificate_Type]:checked").length;
+    if(validity == "")
+    {
+        $('#validityErrorMsg').html("Enter Validity.");
+        $('#validityErrorMsg').show();
+        $('#validityErrorMsg').delay(2000).fadeOut('slow');
+        $("#validity").focus();
+    }
+    else if(Certificate_Type < 1)
+    {
+        $('#Certificate_TypeErrorMsg').html("Please Check One.");
+        $('#Certificate_TypeErrorMsg').show();
+        $('#Certificate_TypeErrorMsg').delay(2000).fadeOut('slow');
+        $("input[name=Certificate_Type]").focus();
+    }
+    else
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'approve_oc_application' %}",
+            data :{'application_no':application_id , 'remarks':remarks ,'validity':validity},
+            success : function(data) {
+                $('#submitMsg').html("Application Approved.");
+                $('#submitMsg').show();
+                setTimeout(function()
+                {
+                    $("#submitMsg").hide('blind', {}, 500)
+                }, 2000);
+                setTimeout(function()
+                {
+                    $('#application-details-modal').modal('hide');
+                }, 3000);
+                setTimeout(function()
+                {
+                     location.reload();
+                }, 3000);
+            }
+        });
+    }
 }
 </script>

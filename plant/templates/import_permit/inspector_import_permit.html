@@ -522,10 +522,10 @@
                                         <th scope="col">Import Category</th>
                                         <th scope="col">Crop Common Name</th>
                                         <th scope="col">Crop Variety Name</th>
-                                        <th scope="col">Quantity</th>
+                                        <th scope="col">Approved Quantity</th>
                                         <th scope="col">Unit</th>
+                                        <th scope="col">Quantity Balance</th>
                                         <th scope="col">Quantity Released</th>
-                                        <th scope="col">Quantity Rejected</th>
                                         <th scope="col">Action</th>
 
                                     </tr>
@@ -547,12 +547,12 @@
                                             {% endfor %}
                                             <td>{{import.Quantity}}</td>
                                             <td>{{import.Unit}}</td>
+                                            <td>{{import.Quantity_Balance}}</td>
                                             <td>{{import.Quantity_Released}}</td>
-                                            <td>{{import.Quantity_Rejected}}</td>
                                             <td>
                                                 <button type="button" class="btn btn-info"
                                                 onclick="populateDetails('{{ import.Record_Id }}', '{{import.Import_Category}}', '{{import.Crop_Id}}',
-                                                '{{import.Variety_Id}}', '{{import.Quantity}}', '{{import.Unit}}', '{{import.Application_No}}')">
+                                                '{{import.Variety_Id}}', '{{import.Quantity}}', '{{import.Unit}}', '{{import.Application_No}}', '{{import.Quantity_Balance}}')">
                                                 <i class="zmdi zmdi-edit"></i>
                                                 </button>
                                             </td>
@@ -574,10 +574,10 @@
                                         <th scope="col">Import Category</th>
                                         <th scope="col">Pesticide Name</th>
                                         <th scope="col">Description</th>
-                                        <th scope="col">Quantity</th>
+                                        <th scope="col">Approved Quantity</th>
                                         <th scope="col">Unit</th>
+                                        <th scope="col">Quantity Balance</th>
                                         <th scope="col">Quantity Released</th>
-                                        <th scope="col">Quantity Rejected</th>
                                         <th scope="col">Action</th>
                                     </tr>
                                 </thead>
@@ -594,12 +594,12 @@
                                                 <td>{{import.Description}}</td>
                                                 <td>{{import.Quantity}}</td>
                                                 <td>{{import.Unit}}</td>
+                                                <td>{{import.Quantity_Balance}}</td>
                                                 <td>{{import.Quantity_Released}}</td>
-                                                <td>{{import.Quantity_Rejected}}</td>
                                                 <td>
                                                     <button type="button" class="btn btn-info"
                                                     onclick="populateAgroDetails('{{ import.Record_Id }}', '{{import.Import_Category}}', '{{import.Pesticide_Id}}',
-                                                    '{{import.Description}}', '{{import.Quantity}}', '{{import.Unit}}', '{{import.Application_No}}')">
+                                                    '{{import.Description}}', '{{import.Quantity}}', '{{import.Unit}}', '{{import.Application_No}}','{{import.Quantity_Balance}}')">
                                                     <i class="zmdi zmdi-edit"></i>
                                                     </button>
                                                 </td>
@@ -659,7 +659,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Inspection Team Leader</label>
+                                <label class="form-label">Inspection Team Leader</label>
                                 <select class="form-control" name="teamLeader"  id="teamLeader">
                                     <option value="">--SELECT TEAM LEADER--</option>
                                     {% for inspector_list in inspector_list %}
@@ -670,7 +670,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="insTeam">Inspection Team </label>
+                                <label class="form-label">Inspection Team </label>
                                 <textarea class="form-control" id="insTeam" rows="2"></textarea>
                             </div>
                         </div>
@@ -678,13 +678,13 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Date Of Inspection</label>
+                                <label class="form-label">Date Of Inspection</label>
                                 <input type="text" class="form-control date-picker flatpickr-input active" id="dateOfInspection" name="date"  placeholder="Pick a date" readonly="readonly">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Remarks</label>
+                                <label class="form-label">Remarks</label>
                                 <textarea class="form-control" id="remarks" rows="2"></textarea>
                             </div>
                         </div>
@@ -695,7 +695,7 @@
                     <hr>
                     <div class="card-action text-center">
                         <button type="button" class="btn btn-flat btn-primary" onclick="submit_details('{{application_details.Application_No}}')">
-                            <i class="ace-icon fa fa-times"></i>
+                            <i class="ace-icon fa fa-check"></i>
                             &nbsp;&nbsp;Approve
                         </button>
                         <button type="button" class="btn btn-flat btn-danger">
@@ -820,28 +820,25 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="form-label">Unit </label>
-                                            <select class="form-control" name="unit"  id="unit" disabled>
-                                                {% for unit in unit %}
-                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
-                                                {% endfor %}
-                                             </select>
+                                            <input type="text" class="form-control" name="unit"  id="unit" disabled>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="form-group col-md-6">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Quantity Balance</label>
+                                            <input type="text" class="form-control" id="qty_balance" name="qty_balance" readonly="readonly">
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Quantity Released</label>
                                             <input type="text" class="form-control" id="qty_approved" name="qty_approved" onchange="balance_plant(this.value)">
                                         </div>
+                                        <div class="alert alert-danger" id="certified_qtyErrorMsg" style="display:none"></div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label class="form-label">Unit </label>
-                                            <label class="form-label">Quantity Rejected</label>
-                                            <input type="text" class="form-control" id="qty_rejected" name="qty_rejected" readonly="readonly">
-                                        </div>
-                                    </div>
+
                                 </div>
                             </div>
                         </div>
@@ -911,26 +908,21 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Unit </label>
-                                            <select class="form-control" id="agro_unit" disabled>
-                                                {% for unit in unit %}
-                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
-                                                {% endfor %}
-                                             </select>
+                                            <input type="text" class="form-control" name="agro_unit"  id="agro_unit" disabled>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Quantity Balance</label>
+                                            <input type="text" class="form-control" id="agro_qty_balance" name="agro_qty_balance" readonly="readonly">
+                                        </div>
+                                    </div>
                                     <div class="form-group col-md-6">
                                         <div class="form-group">
                                             <label class="form-label">Quantity Released</label>
                                             <input type="text" class="form-control" id="agro_qty_approved" name="agro_qty_approved" onchange="balance_agro(this.value)">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label class="form-label">Unit </label>
-                                            <label class="form-label">Quantity Rejected</label>
-                                            <input type="text" class="form-control" id="agro_qty_rejected" name="agro_qty_rejected" readonly="readonly">
                                         </div>
                                     </div>
                                 </div>
@@ -1002,7 +994,7 @@ function submit_details(application_id)
     });
 }
 
-function populateDetails(Record_Id, Import_Category, Crop_Id, Variety_Id, Quantity, Unit, application_no)
+function populateDetails(Record_Id, Import_Category, Crop_Id, Variety_Id, Quantity, Unit, application_no, quantity_balance)
 {
     $('#record_id').val(Record_Id);
     $('#plant_import_category').val(Import_Category);
@@ -1011,10 +1003,11 @@ function populateDetails(Record_Id, Import_Category, Crop_Id, Variety_Id, Quanti
     $('#qty').val(Quantity);
     $('#unit').val(Unit);
     $('#plant_applicationNo').val(application_no);
+    $('#qty_balance').val(quantity_balance);
     $('#add_plant_details').modal('show');
 }
 
-function populateAgroDetails(Record_Id, Import_Category, Pesticide_Id, Description, Quantity, Unit, application_no)
+function populateAgroDetails(Record_Id, Import_Category, Pesticide_Id, Description, Quantity, Unit, application_no, balance_quantity)
 {
 
     $('#agro_record_id').val(Record_Id);
@@ -1024,6 +1017,7 @@ function populateAgroDetails(Record_Id, Import_Category, Pesticide_Id, Descripti
     $('#agro_qty').val(Quantity);
     $('#agro_unit').val(Unit);
     $('#agro_applicationNo').val(application_no);
+    $('#agro_qty_balance').val(balance_quantity);
     $('#add_agro_details').modal('show');
 }
 
@@ -1057,15 +1051,20 @@ function update_details_agro()
 
 function balance_plant(approved_qty)
 {
-    var qty = $('#qty').val();
-    var balance = qty - approved_qty
-    $('#qty_rejected').val(balance);
+    var qty_balance = $('#qty_balance').val();
+    if(approved_qty > qty_balance)
+    {
+        $('#certified_qtyErrorMsg').html("quantity certified cannot be more than quantity requested.");
+        $('#certified_qtyErrorMsg').show();
+        $('#certified_qtyErrorMsg').delay(2000).fadeOut('slow');
+        $('#qty_approved').val("");
+    }
 }
 
 function balance_agro(approved_qty)
 {
-    var qty = $('#agro_qty').val();
+    var qty = $('#agro_qty_balance').val();
     var balance = qty - approved_qty
-    $('#agro_qty_rejected').val(balance);
+    $('#agro_qty_balance').val(balance);
 }
 </script>

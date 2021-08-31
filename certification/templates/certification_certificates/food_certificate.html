@@ -4,8 +4,18 @@
     background-color: white;
 }
 
-table, th, td {
-  border: 1px solid black;
+.table-bordered, .table-bordered td, .table-bordered th {
+    border: 1px solid black;
+}
+.table_print
+{
+    border: 0px;
+}
+.table_print > td {
+    padding-right:50px;
+}
+#cert_table , #cert_table tr, #cert_table th{
+    border: 1px solid black;
 }
 
 </style>
@@ -14,7 +24,7 @@ table, th, td {
         <div class="col-md-12">
             <div class="card-head-row float-right">
                 <div class="card-tools">
-                    <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Test Report';printClientTable()">
+                    <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='GAP Certificate';printTable()">
                         <span class="btn-label">
                             <i class="zmdi zmdi-print"></i>
                         </span>
@@ -25,25 +35,197 @@ table, th, td {
             <br>
             <br>
             <div class="card-title text-center">
-                <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
+                <a href="#"><img class="img-responsive" src="{% static 'assets/img/certificate_top.png' %}" style="width:100%;"/></a>
             </div>
-           <h4 class="text-center"><font color='black'><b>BHUTAN FOOD CERTIFICATE</b></font></h4>
-            {% for certificate_details in certificate_details %}
-            <div class="row float-right">
-                <p>Certificate Number&nbsp;:&nbsp;<b>{{certificate_details.Import_Permit_No}}</b></p>
+        </div>
+        {% for certificate_details in certificate_details %}
+        <div class="card-body" style="margin-left: 40px;margin-right: 40px;">
+            <div class="row float-left">
+                <p>Certificate Number&nbsp;:&nbsp;<b>{{certificate_details.Certificate_No}}</b></p>
             </div>
             <div class="row">
-                <p>Certification Services, Bhutan Agriculture and Food Regulatory Authority hereby certifies that products of</p>
-                <p><h6 class="text-center"><font color='black'><b>{{certificate_details.Factory_Name}}</b></font></h6></p>
-                <p><h6 class="text-center"><font color='black'><b>{{certificate_details.Factory_Address}}</b></font></h6></p>
-                <p>are in accordance with the requirements of </p>
-                <p><h4 class="text-center"><font color='black'><b>Bhutan Food Standard 2019 (BOS 01:2019).</b></font></h4></p>
-                <p>This certificate is valid for those product (s) and area (s) specified below</p>
+                <p>
+                    <font color='black'>The Bhutan Agriculture and Food Regulatory Authority - Certification Services grants the Certification Mark License to</font>
+                </p>
+                <p><font color='black'><b>{{certificate_details.Farm_Name}}</b></font></p>
+                <p><font color='black'><b>{{certificate_details.Farm_Location}}</b></font></p>
+                <p><font color='black'>Hereinafter, called the Licensee, the right and licence to use the registered Certification Mark of the BAFRA-CS set out in the first column of the Schedule hereto upon and in respect of the products set out in the second column of the said schedule, which are produced by the Licensee in accordance with the appropriate Standards referred to in the third column of the said schedule, as from time to time amended.</font></p>
+                <p>
+                    <font color='black'>The Licence is granted subject to the Guidelines for the Use of Standard in respect of the Mark and to any undertakings into which the Licensee has been required to enter with BAFRA-CS, prior to the grant of the Licence and it shall be binding upon the Licensee duly to observe and perform all the said Regulations and Undertakings.</font>
+                </p>
+                <p><font color='black'>Signed for and on behalf of the BAFRA-CS</font></p>
             </div>
-            <div>
+            <div class="col-md-12">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Dr. Tashi Samdup</label><br>
+                        <label>Director General/Head of Certification Body</label>
+                    </div>
+                </div>
+                <div class="row">
+                     <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Issue Date:</label>
+                            <b>{{certificate_details.Approve_Date|date:"d-m-Y"}}</b>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                     <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Expiry Date:</label>
+                            <b>{{certificate_details.Validity|date:"d-m-Y"}}</b>
+                        </div>
+                    </div>
+                </div>
             </div>
             {% endfor %}
+            <div>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Name of Product</th>
+                            <th scope="col">Products in respect of which the use of Mark is granted</th>
+                            <th scope="col">Standard according to which the products are to be produced</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for gap_certificate_details in gap_certificate_details %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td><img class="img-responsive" src="{% static 'assets/img/oc_accredited.png' %}" style="height:150px;"/></td>
+                                <td>{{gap_certificate_details.Area_Cultivated}}&nbsp;&nbsp;{{gap_certificate_details.Unit}}</td>
+                                <td>{{gap_certificate_details.P_Yield}}&nbsp;&nbsp;{{gap_certificate_details.P_Yield_Unit}}</td>
+                                <td></td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center">No Data</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% for certificate_details in certificate_details %}
+                    <div class="col-md-12">
+                        <div class="row">
+                            {% if certificate_details.Certificate_Type == 'Accredited' %}
+                             <div class="col-md-3 justify-content-right">
+                                <div class="form-group">
+                                    <img class="img-responsive" src="{% static 'assets/img/gap_certificate_accredited.png' %}" style="height:150px;"/>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+         </div>
+        <div class="card-title text-center">
+            <a href="#"><img class="img-responsive" src="{% static 'assets/img/certificate_bottom.png' %}" style="width:100%;"/></a>
         </div>
+
+
+            <div class="col-md-12" style="display:none;" id="print">
+                <br>
+                <div class="card-title text-center">
+                    <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate_top.png' %}" style="width:90%;"/></a>
+                </div>
+               {% for certificate_details in certificate_details %}
+            <div class="card-body" style="margin-left: 40px;margin-right: 40px;">
+                <div class="row float-left">
+                    <p>Certificate Number&nbsp;:&nbsp;<b>{{certificate_details.Certificate_No}}</b></p>
+                </div>
+                <div class="row">
+                    <p>
+                        <font color='black'>The Bhutan Agriculture and Food Regulatory Authority - Certification Services grants the Certification Mark License to</font>
+                    </p>
+                    <p><font color='black'><b>{{certificate_details.Farm_Name}}</b></font></p>
+                    <p><font color='black'><b>{{certificate_details.Farm_Location}}</b></font></p>
+                    <p><font color='black'>Hereinafter, called the Licensee, the right and licence to use the registered Certification Mark of the BAFRA-CS set out in the first column of the Schedule hereto upon and in respect of the products set out in the second column of the said schedule, which are produced by the Licensee in accordance with the appropriate Standards referred to in the third column of the said schedule, as from time to time amended.</font></p>
+                    <p>
+                        <font color='black'>The Licence is granted subject to the Guidelines for the Use of Standard in respect of the Mark and to any undertakings into which the Licensee has been required to enter with BAFRA-CS, prior to the grant of the Licence and it shall be binding upon the Licensee duly to observe and perform all the said Regulations and Undertakings.</font>
+                    </p>
+                    <p><font color='black'>Signed for and on behalf of the BAFRA-CS</font></p>
+                </div>
+                <div class="col-md-12">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Dr. Tashi Samdup</label><br>
+                            <label>Director General/Head of Certification Body</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                         <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Issue Date:</label>
+                                <b>{{certificate_details.Approve_Date|date:"d-m-Y"}}</b>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                         <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Expiry Date:</label>
+                                <b>{{certificate_details.Validity|date:"d-m-Y"}}</b>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                <div>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Name of Product</th>
+                                <th scope="col">Products in respect of which the use of Mark is granted</th>
+                                <th scope="col">Standard according to which the products are to be produced</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for fpc_certificate_details in fpc_certificate_details %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td><img class="img-responsive" src="{% static 'assets/img/oc_accredited.png' %}" style="height:150px;"/></td>
+                                    <td>{{fpc_certificate_details.Area_Cultivated}}&nbsp;&nbsp;{{fpc_certificate_details.Unit}}</td>
+                                    <td>{{fpc_certificate_details.P_Yield}}&nbsp;&nbsp;{{fpc_certificate_details.P_Yield_Unit}}</td>
+                                    <td></td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center">No Data</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% for certificate_details in certificate_details %}
+                        <div class="col-md-12">
+                            <div class="row">
+                                {% if certificate_details.Certificate_Type == 'Accredited' %}
+                                 <div class="col-md-3 justify-content-right">
+                                    <div class="form-group">
+                                        <img class="img-responsive" src="{% static 'assets/img/gap_certificate_accredited.png' %}" style="height:150px;"/>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+             </div>
+            <div class="card-title text-center">
+                <a href="#"><img class="img-responsive" src="{% static 'assets/img/certificate_bottom.png' %}" style="width:100%;"/></a>
+            </div>
+            </div>
     </font>
     </div>
 </div>
+<script>
+function printTable()
+{
+	$("#print").show();
+	jQuery('#print').print();
+	$("#print").hide();
+}
+</script>

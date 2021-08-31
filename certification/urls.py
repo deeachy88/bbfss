@@ -104,6 +104,8 @@ urlpatterns = [
     path('date_month', views.date_month, name='date_month'),
     path('delete_audit_team', views.delete_audit_team, name='delete_audit_team'),
     path('delete_farm_details', views.delete_farm_details, name='delete_farm_details'),
+    path('update_nc_response', views.update_nc_response, name='update_nc_response'),
+    path('delete_farmers_group', views.delete_farmers_group, name='delete_farmers_group'),
 
 
 ]

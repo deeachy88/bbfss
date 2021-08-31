@@ -92,8 +92,8 @@
                         </div>
                         <div class="col-md-4 farmer_group_details" style="display:none">
                             <div class="form-group">
-                                <label class="form-label">Farmers Group Number</label>
-                                <input type="text" class="form-control" id="farmers_group_number" name="farmers_group_number">
+                                <label class="form-label">Number Of Members In Group <font color="red">*</font></label>
+                                <input type="number" class="form-control" id="farmers_group_number" name="farmers_group_number">
                             </div>
                             <div class="alert alert-danger" id="farmers_group_numberErrorMsg" style="display:none"></div>
                         </div>
@@ -231,7 +231,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div id="mortem_details">
+                        <div id="farmer_details">
                             {% include 'GAP_Certification/farmer_group_details.html' %}
                         </div>
                     </div>
@@ -316,12 +316,12 @@
                             <div class="form-group">
                                 <div class="form-check">
                                     <label class="custom-control custom-radio">
-                                        <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Agree">
+                                        <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Agree" onclick="checkStandardsRadio(this.value)">
                                         <span class="custom-control-indicator"></span>
                                         <span class="custom-control-description">Agree</span>
                                     </label>&nbsp;
                                     <label class="custom-control custom-radio">
-                                        <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Disagree">
+                                        <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio(this.value)">
                                         <span class="custom-control-indicator"></span>
                                         <span class="custom-control-description">Disagree</span>
                                     </label>
@@ -335,12 +335,12 @@
                             <div class="form-group">
                                 <div class="form-check">
                                     <label class="custom-control custom-radio">
-                                        <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Agree">
+                                        <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Agree" onclick="checkStandardsRadio(this.value)">
                                         <span class="custom-control-indicator"></span>
                                         <span class="custom-control-description">Agree</span>
                                     </label>&nbsp;
                                     <label class="custom-control custom-radio">
-                                        <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Disagree">
+                                        <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio(this.value)">
                                         <span class="custom-control-indicator"></span>
                                         <span class="custom-control-description">Disagree</span>
                                     </label>
@@ -356,12 +356,12 @@
                             <div class="form-group">
                                 <div class="form-check">
                                     <label class="custom-control custom-radio">
-                                        <input type="radio" name="Terms_Abide" class="custom-control-input" value="Agree">
+                                        <input type="radio" name="Terms_Abide" class="custom-control-input" value="Agree" onclick="checkStandardsRadio(this.value)">
                                         <span class="custom-control-indicator"></span>
                                         <span class="custom-control-description">Agree</span>
                                     </label>&nbsp;
                                     <label class="custom-control custom-radio">
-                                        <input type="radio" name="Terms_Abide" class="custom-control-input" value="Disagree">
+                                        <input type="radio" name="Terms_Abide" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio(this.value)">
                                         <span class="custom-control-indicator"></span>
                                         <span class="custom-control-description">Disagree</span>
                                     </label>
@@ -375,12 +375,12 @@
                             <div class="form-group">
                                 <div class="form-check">
                                     <label class="custom-control custom-radio">
-                                        <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Agree">
+                                        <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Agree" onclick="checkStandardsRadio(this.value)">
                                         <span class="custom-control-indicator"></span>
                                         <span class="custom-control-description">Agree</span>
                                     </label>&nbsp;
                                     <label class="custom-control custom-radio">
-                                        <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Disagree">
+                                        <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio(this.value)">
                                         <span class="custom-control-indicator"></span>
                                         <span class="custom-control-description">Disagree</span>
                                     </label>
@@ -390,7 +390,7 @@
                     </div>
                 </div>
                 <div class="card-action">
-                    <button type="button" class="btn btn-primary" onclick="submit_gap_certificate_details()">Submit</button>
+                    <button type="button" class="btn btn-primary" id="button_submit" onclick="submit_gap_certificate_details()">Submit</button>
                 </div>
                 </div>
             </div>
@@ -416,17 +416,17 @@
                             <div class="box-body">
                                 <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Name Of the crop</label>
+                                        <label class="form-label">Name Of Crop <font color="red">*</font></label>
                                         <input type="text" name="crop_name" class="form-control" id="crop_name" required>
-                                        <div class="alert alert-danger" id="NosErrorMsg" style="display:none"></div>
+                                        <div class="alert alert-danger" id="crop_nameErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Cultivated Area</label>
+                                        <label class="form-label">Cultivated Area <font color="red">*</font></label>
                                         <input type="number" name="area" class="form-control" id="area" required>
-                                        <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
+                                        <div class="alert alert-danger" id="areaErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Area Unit</label>
+                                        <label class="form-label">Area Unit <font color="red">*</font></label>
                                         <select class="form-control" id="area_unit" name="area_unit">
                                             <option value="">--SELECT--</option>
                                             <option value="Decimal">Decimal</option>
@@ -435,24 +435,32 @@
                                         <div class="alert alert-danger" id="area_unitErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
+                                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">For</span>
+                                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">The</span>
+                                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Previous</span>
+                                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Year</span>
+                                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                                </div>
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">For the previous year(From date)</label>
+                                            <label class="form-label">From date <font color="red">*</font></label>
                                              <input type="text" name="prev_year" id="prev_year" class="form-control date-picker flatpickr-input active">
                                         </div>
                                         <div class="alert alert-danger" id="prev_yearErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">For the previous year(To date)</label>
+                                            <label class="form-label">To date <font color="red">*</font></label>
                                              <input type="text" name="to_year" id="to_year" class="form-control date-picker flatpickr-input active" onchange="get_month()">
                                         </div>
                                         <div class="alert alert-danger" id="to_yearErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Yield</label>
+                                            <label class="form-label">Yield <font color="red">*</font></label>
                                              <input type="number" name="yield" id="yield" class="form-control">
                                         </div>
                                         <div class="alert alert-danger" id="yieldErrorMsg" style="display:none"></div>
@@ -460,7 +468,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Yield Unit</label>
+                                        <label class="form-label">Yield Unit <font color="red">*</font></label>
                                         <select class="form-control" name="Yield_Unit"  id="Yield_Unit">
                                             <option value="">--SELECT UNIT--</option>
                                             {% for unit in unit %}
@@ -470,14 +478,14 @@
                                         <div class="alert alert-danger" id="Yield_UnitErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Harvest Month</label>
+                                        <label class="form-label">Harvest Month <font color="red">*</font></label>
                                         <select class="form-control" name="harvest_month"  id="harvest_month">
                                             <option value="">--SELECT--</option>
                                         </select>
                                         <div class="alert alert-danger" id="harvest_monthErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Sold</label>
+                                        <label class="form-label">Sold <font color="red">*</font></label>
                                         <input type="text" name="sold" class="form-control" id="sold" required onchange="getBalance(this.value)">
                                         <div class="alert alert-danger" id="soldErrorMsg" style="display:none"></div>
                                     </div>
@@ -489,7 +497,7 @@
                                         <div class="alert alert-danger" id="sold_unitErrorMsg" style="display:none"></div>
                                     </div>-->
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Balance Stock</label>
+                                        <label class="form-label">Balance Stock <font color="red">*</font></label>
                                         <input type="text" name="balance_stock" class="form-control" id="balance_stock" disabled>
                                         <div class="alert alert-danger" id="balance_stockErrorMsg" style="display:none"></div>
                                     </div>
@@ -499,24 +507,32 @@
                                         <div class="alert alert-danger" id="balance_stock_unitErrorMsg" style="display:none"></div>
                                     </div>-->
                                 </div>
+                                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">For</span>
+                                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">The</span>
+                                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Current</span>
+                                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Year</span>
+                                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                                </div>
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">For the current year(From date)</label>
+                                            <label class="form-label">From date <font color="red">*</font></label>
                                              <input type="text" name="current_year" id="current_year" class="form-control date-picker flatpickr-input active">
                                         </div>
                                         <div class="alert alert-danger" id="current_yearErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">For the current year(To date)</label>
+                                            <label class="form-label">To date <font color="red">*</font></label>
                                              <input type="text" name="to_current_year" id="to_current_year" class="form-control date-picker flatpickr-input active" onchange="get_current_month()">
                                         </div>
                                         <div class="alert alert-danger" id="to_current_yearErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Estimated Yield</label>
+                                            <label class="form-label">Estimated Yield <font color="red">*</font></label>
                                              <input type="number" name="estimated_yield" id="estimated_yield" class="form-control">
                                         </div>
                                         <div class="alert alert-danger" id="estimated_yieldErrorMsg" style="display:none"></div>
@@ -524,7 +540,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Yield Unit</label>
+                                        <label class="form-label">Yield Unit <font color="red">*</font></label>
                                         <select class="form-control" name="estimated_Yield_Unit"  id="estimated_Yield_Unit">
                                             <option value="">--SELECT UNIT--</option>
                                             {% for unit in unit %}
@@ -534,7 +550,7 @@
                                         <div class="alert alert-danger" id="estimated_Yield_UnitErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Harvest Month</label>
+                                        <label class="form-label">Harvest Month <font color="red">*</font></label>
                                         <select class="form-control" name="estimated_harvest_month"  id="estimated_harvest_month">
                                             <option value="">--SELECT--</option>
                                         </select>
@@ -572,34 +588,44 @@
                             <div class="box-body">
                                 <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Name</label>
+                                        <label class="form-label">Name <font color="red">*</font></label>
                                         <input type="text" name="pack_house_name" class="form-control" id="pack_house_name" required>
                                         <div class="alert alert-danger" id="pack_house_nameErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Address Of Pack House</label>
+                                        <label class="form-label">Address Of Pack House <font color="red">*</font></label>
                                         <textarea name="pack_house_address" id="pack_house_address" class="form-control"></textarea>
                                         <div class="alert alert-danger" id="pack_house_addressErrorMsg" style="display:none"></div>
                                     </div>
-                                    <div class="form-group col-md-4">
-                                        <label class="form-label">For the previous year (From date)</label>
-                                        <input type="text" class="form-control date-picker flatpickr-input active" id="previous_from_date" name="previous_from_date"  placeholder="Pick a date" readonly="readonly">
-                                        <div class="alert alert-danger" id="previous_from_dateErrorMsg" style="display:none"></div>
-                                    </div>
+                                </div>
+                                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">For</span>
+                                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">The</span>
+                                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Previous</span>
+                                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Year</span>
+                                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">For the previous year (To date)</label>
+                                        <label class="form-label">From date <font color="red">*</font></label>
+                                        <input type="text" class="form-control date-picker flatpickr-input active" id="previous_from_date" name="previous_from_date"  placeholder="Pick a date" readonly="readonly">
+                                        <div class="alert alert-danger" id="previous_from_dateErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">To date <font color="red">*</font></label>
                                         <input type="text" class="form-control date-picker flatpickr-input active" id="previous_to_date" name="previous_to_date"  placeholder="Pick a date" readonly="readonly">
                                         <div class="alert alert-danger" id="previous_to_dateErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Production </label>
+                                        <label class="form-label">Production <font color="red">*</font></label>
                                         <input type="number" name="production" class="form-control" id="production" required>
                                         <div class="alert alert-danger" id="productionErrorMsg" style="display:none"></div>
                                     </div>
+                                </div>
+                                <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Production Unit</label>
+                                        <label class="form-label">Production Unit <font color="red">*</font></label>
                                         <select class="form-control" name="production_unit"  id="production_unit">
                                             <option value="">--SELECT UNIT--</option>
                                             {% for unit in unit %}
@@ -608,15 +634,13 @@
                                         </select>
                                         <div class="alert alert-danger" id="production_unitErrorMsg" style="display:none"></div>
                                     </div>
-                                </div>
-                                <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Sold</label>
+                                        <label class="form-label">Sold <font color="red">*</font></label>
                                         <input type="number" name="previous_sold" class="form-control" id="previous_sold" required onchange="getBalanceStock(this.value)">
                                         <div class="alert alert-danger" id="previous_soldErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Sold Unit</label>
+                                        <label class="form-label">Sold Unit <font color="red">*</font></label>
                                         <select class="form-control" name="previous_sold_unit"  id="previous_sold_unit">
                                             <option value="">--SELECT UNIT--</option>
                                             {% for unit in unit %}
@@ -625,15 +649,15 @@
                                         </select>
                                         <div class="alert alert-danger" id="previous_sold_unitErrorMsg" style="display:none"></div>
                                     </div>
-                                    <div class="form-group col-md-4">
-                                        <label class="form-label">Balance Stock</label>
-                                        <input type="number" name="stock_balance" class="form-control" id="stock_balance" readonly="readonly">
-                                        <div class="alert alert-danger" id="stock_balanceErrorMsg" style="display:none"></div>
-                                    </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Balance Stock Unit</label>
+                                        <label class="form-label">Balance Stock <font color="red">*</font></label>
+                                        <input type="number" name="stock_balance" class="form-control" id="stock_balance" readonly="readonly">
+                                        <div class="alert alert-danger" id="stock_balanceErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Balance Stock Unit <font color="red">*</font></label>
                                         <select class="form-control" name="stock_balance_unit"  id="stock_balance_unit">
                                             <option value="">--SELECT UNIT--</option>
                                             {% for unit in unit %}
@@ -642,30 +666,40 @@
                                         </select>
                                         <div class="alert alert-danger" id="stock_balance_unitErrorMsg" style="display:none"></div>
                                     </div>
+                                </div>
+                                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">For</span>
+                                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">The</span>
+                                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Current</span>
+                                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Year</span>
+                                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                                </div>
+                                <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">For the current  year (From date)</label>
+                                        <label class="form-label">From date <font color="red">*</font></label>
                                         <input type="text" class="form-control date-picker flatpickr-input active" id="current_from_date" name="current_from_date"  placeholder="Pick a date" readonly="readonly">
                                         <div class="alert alert-danger" id="current_from_dateErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">For the current year (To date)</label>
+                                        <label class="form-label">To date <font color="red">*</font></label>
                                         <input type="text" class="form-control date-picker flatpickr-input active" id="current_to_date" name="current_to_date"  placeholder="Pick a date" readonly="readonly">
                                         <div class="alert alert-danger" id="current_to_dateErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Production <font color="red">*</font></label>
+                                        <input type="number" name="current_Production" class="form-control" id="current_Production" required>
+                                        <div class="alert alert-danger" id="current_ProductionErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Production</label>
-                                        <input type="number" name="current_Production" class="form-control" id="current_Production" required>
-                                        <div class="alert alert-danger" id="current_ProductionErrorMsg" style="display:none"></div>
-                                    </div>
-                                    <div class="form-group col-md-4">
-                                        <label class="form-label">Sold</label>
+                                        <label class="form-label">Sold <font color="red">*</font></label>
                                         <input type="number" name="current_sold" class="form-control" id="current_sold" onchange="get_current_stock_bal(this.value)">
                                         <div class="alert alert-danger" id="current_soldErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Sold Unit</label>
+                                        <label class="form-label">Sold Unit <font color="red">*</font></label>
                                         <select class="form-control" name="current_sold_unit"  id="current_sold_unit">
                                             <option value="">--SELECT UNIT--</option>
                                             {% for unit in unit %}
@@ -674,15 +708,15 @@
                                         </select>
                                         <div class="alert alert-danger" id="current_sold_unitErrorMsg" style="display:none"></div>
                                     </div>
-                                </div>
-                                <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Balance Stock</label>
+                                        <label class="form-label">Balance Stock <font color="red">*</font></label>
                                         <input type="number" name="current_stock_balance" class="form-control" id="current_stock_balance" disabled>
                                         <div class="alert alert-danger" id="current_stock_balanceErrorMsg" style="display:none"></div>
                                     </div>
+                                </div>
+                                <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Balance Stock Unit</label>
+                                        <label class="form-label">Balance Stock Unit <font color="red">*</font></label>
                                         <select class="form-control" name="current_sold_unit"  id="current_stock_unit">
                                             <option value="">--SELECT UNIT--</option>
                                             {% for unit in unit %}
@@ -724,15 +758,15 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">CID</label>
-                                            <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="farmers_group_cid" name="farmers_group_cid" maxlength="11" onkeypress="return isNumberKey(event)">
+                                            <label class="form-label">CID <font color="red">*</font></label>
+                                            <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="farmers_group_cid" name="farmers_group_cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="get_farmers_name(this.value)">
                                         </div>
                                         <div class="alert alert-danger" id="farmers_group_cidErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Name</label>
-                                            <input type="text" class="form-control" id="farmers_group_fullname" name="farmers_group_fullname">
+                                            <label class="form-label">Name <font color="red">*</font></label>
+                                            <input type="text" class="form-control" id="farmers_group_fullname" name="farmers_group_fullname" readonly="readonly">
                                         </div>
                                         <div class="alert alert-danger" id="farmers_group_fullnameErrorMsg" style="display:none"></div>
                                     </div>
@@ -1113,32 +1147,62 @@ function  submit_gap_certificate_details()
 
 function save_farmer_group_details()
 {
-        $.ajax({
-                type : "POST",
+        var cid = $('#farmers_group_cid').val();
+        var name = $('#farmers_group_fullname').val();
+        var cidCount = $('#cid').val().length;
+        if(cid == "")
+        {
+            $('#farmers_group_cidErrorMsg').html("Enter CID.");
+            $('#farmers_group_cidErrorMsg').show();
+            $('#farmers_group_cidErrorMsg').delay(2000).fadeOut('slow');
+            $("#farmers_group_cid").focus();
+        }
+        else if(cidCount < 11)
+        {
+            $('#farmers_group_cidErrorMsg').html("Cannot be Less Than Eleven Digits.");
+            $('#farmers_group_cidErrorMsg').show();
+            $('#farmers_group_cidErrorMsg').delay(2000).fadeOut('slow');
+            $("#farmers_group_cid").focus();
+        }
+        else if(name == "")
+        {
+            $('#farmers_group_fullnameErrorMsg').html("Enter Farmers Name.");
+            $('#farmers_group_fullnameErrorMsg').show();
+            $('#farmers_group_fullnameErrorMsg').delay(2000).fadeOut('slow');
+            $("#farmers_group_fullname").focus();
+        }
+        else
+        {
+            $.ajax({
+                type : "GET",
                 url : "{% url 'gap_farmers_group_details' %}",
                 data : $('#farmers_group_form').serialize(),
-                success : function(responseText) {
-                   $('#farmer_group_model').modal('hide');
-                   $('#farmer_details').html(responseText);
-                   $('#pills-details').tab('show');
+                success : function(response) {
+                   $('#farmers_group_model').modal('hide');
+                   $('#farmer_details').html(response);
+                   $('#pills-farmers-group').tab('show');
                    $('.modal-backdrop').remove();
                 }
             });
+        }
 }
 
 function save_crop_production_details()
 {
+        var crop_name = $('#crop_name').val();
+        var area = $('#area').val();
+        var area_unit = $('#area_unit').val();
         $.ajax({
-                type : "GET",
-                url : "{% url 'gap_crop_production_details' %}",
-                data : $('#crop_production_form').serialize(),
-                success : function(response) {
-                   $('#crop_production_modal').modal('hide');
-                   $('#details_crop_production').html(response);
-                   $('#pills-crop-production').tab('show');
-                   $('.modal-backdrop').remove();
-                }
-            });
+            type : "GET",
+            url : "{% url 'gap_crop_production_details' %}",
+            data : $('#crop_production_form').serialize(),
+            success : function(response) {
+               $('#crop_production_modal').modal('hide');
+               $('#details_crop_production').html(response);
+               $('#pills-crop-production').tab('show');
+               $('.modal-backdrop').remove();
+            }
+        });
 }
 
 function save_pack_house_details()
@@ -1244,6 +1308,41 @@ function get_current_stock_bal(sold)
     var production = $('#current_Production').val();
     balance_production = production - sold
     $('#current_stock_balance').val(balance_production);
+}
+
+function get_farmers_name(cidNo)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'get_citizen_details' %}",
+        data :{'cidNo':cidNo},
+        success : function(data)
+        {
+            const myObj =data.response;
+            var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+            var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+            var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+            if (middleName == null) {
+                    middleName = "";
+                }
+            var CitizenName = firstName + " " + middleName + " " + lastName;
+
+            $('#farmers_group_fullname').val(CitizenName);
+
+        }
+    });
+}
+
+function checkStandardsRadio(value)
+{
+    if(value="Agree")
+    {
+        $('#button_submit').show();
+    }
+    else
+    {
+        $('#button_submit').hide();
+    }
 }
 </script>
 {% endblock %}

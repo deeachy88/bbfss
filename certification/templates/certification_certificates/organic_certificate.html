@@ -4,8 +4,18 @@
     background-color: white;
 }
 
-table, th, td {
-  border: 1px solid black;
+.table-bordered, .table-bordered td, .table-bordered th {
+    border: 1px solid black;
+}
+.table_print
+{
+    border: 0px;
+}
+.table_print > td {
+    padding-right:50px;
+}
+#cert_table , #cert_table tr, #cert_table th{
+    border: 1px solid black;
 }
 
 </style>
@@ -14,7 +24,7 @@ table, th, td {
         <div class="col-md-12">
             <div class="card-head-row float-right">
                 <div class="card-tools">
-                    <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Test Report';printClientTable()">
+                    <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='GAP Certificate';printTable()">
                         <span class="btn-label">
                             <i class="zmdi zmdi-print"></i>
                         </span>
@@ -25,22 +35,38 @@ table, th, td {
             <br>
             <br>
             <div class="card-title text-center">
-                <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
+                <a href="#"><img class="img-responsive" src="{% static 'assets/img/certificate_top.png' %}" style="width:100%;"/></a>
             </div>
-           <h4 class="text-center"><font color='black'><b>ORGANIC CERTIFICATE</b></font></h4>
-            {% for certificate_details in certificate_details %}
-            <div class="row float-right">
-                <p>Certificate Number&nbsp;:&nbsp;<b>{{certificate_details.Import_Permit_No}}</b></p>
+        </div>
+        {% for certificate_details in certificate_details %}
+        <div class="card-body" style="margin-left: 40px;margin-right: 40px;">
+            <div class="row float-left">
+                <p>Certificate Number&nbsp;:&nbsp;<b>{{certificate_details.Certificate_No}}</b></p>
             </div>
+            <br>
             <div class="row">
-
-                <p>Certification Services, Bhutan Agriculture and Food Regulatory Authority hereby certifies that products of</p>
-                <p><h6 class="text-center"><font color='black'><b>{{certificate_details.Farm_Name}}</b></font></h6></p>
-                <p><h6 class="text-center"><font color='black'><b>{{certificate_details.Farm_Location}}</b></font></h6></p>
-                <p>are in accordance with the requirements of </p>
-                <p><h4 class="text-center"><font color='black'><b>Bhutan Organic Standard 2019 (BOS 01:2019).</b></font></h4></p>
-                <p>This certificate is valid for those product (s) and area (s) specified below</p>
+                <h2 style="padding-left: 120px;"><font color="green"><b>ORGANIC CERTIFICATE</b></font></h2>
             </div>
+            <br><br>
+            <div class="text-center">
+                    <p>
+                        <font color='black'>Certification Services, Bhutan Agriculture and Food Regulatory Authority hereby certifies that produce of</font>
+                    </p>
+                    <p><font color='black'><b>{{certificate_details.Farm_Name}}</b></font></p>
+                    <p><font color='black'><b>{{certificate_details.Farm_Location}}</b></font></p>
+                    <p><font color='black'>are in accordance with the</font></p>
+                    <p><font color='green'><b>Bhutan Organic Standard 2019 (BOS 01:2019).</b></font></p>
+                </div>
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <img class="img-responsive" src="{% static 'assets/img/organic.png' %}" style="height:150px;"/>
+                        </div>
+                        <div class="col-md-6">
+                            <p><font color='black'>Certification Category (ies):<b> Crop Production / Animal Husbandry / Wild Collection / Aquaculture production/ Apiculture/ Handling /Processing and Grower Group</b></font></p>
+                        </div>
+                    </div>
+                </div>
             {% endfor %}
             <div>
                 <table class="table table-bordered">
@@ -48,7 +74,8 @@ table, th, td {
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Name of Product</th>
-                            <th scope="col">Organic Production Area</th>
+                            <th scope="col">Production Area</th>
+                            <th scope="col">Production Quantity</th>
                             <th scope="col">No of Producer</th>
                         </tr>
                     </thead>
@@ -58,6 +85,7 @@ table, th, td {
                                 <td>{{ forloop.counter }}</td>
                                 <td>{{orc_certificate_details.Crop_Name}}</td>
                                 <td>{{orc_certificate_details.Area_Cultivated}}&nbsp;&nbsp;{{orc_certificate_details.Unit}}</td>
+                                <td>{{orc_certificate_details.P_Yield}}&nbsp;&nbsp;{{orc_certificate_details.P_Yield_Unit}}</td>
                                 <td></td>
                             </tr>
                             {% empty %}
@@ -67,8 +95,173 @@ table, th, td {
                         {% endfor %}
                     </tbody>
                 </table>
+                {% for certificate_details in certificate_details %}
+                    <div class="col-md-12">
+                        <div class="row">
+                             <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Issue Date:</label>
+                                    <b>{{certificate_details.Approve_Date|date:"d-m-Y"}}</b>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                             <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Expiry Date:</label>
+                                    <b>{{certificate_details.Validity|date:"d-m-Y"}}</b>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-12">
+                        <div class="row">
+                             <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Dr. Tashi Samdup</label><br>
+                                    <label>Director General/Head of Certification Body</label>
+                                </div>
+                            </div>
+                             <div class="col-md-3">
+                                <div class="form-group">
+                                    <img class="img-responsive" src="{% static 'assets/img/oc_accredited.png' %}" style="height:150px;"/>
+                                </div>
+                            </div>
+                            {% if certificate_details.Certificate_Type == 'Accredited' %}
+                             <div class="col-md-3">
+                                <div class="form-group">
+                                    <img class="img-responsive" src="{% static 'assets/img/gap_certificate_accredited.png' %}" style="height:150px;"/>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
+         </div>
+        <div class="card-title text-center">
+            <a href="#"><img class="img-responsive" src="{% static 'assets/img/certificate_bottom.png' %}" style="width:100%;"/></a>
         </div>
+
+
+            <div class="col-md-12" style="display:none;" id="print">
+                <br>
+                <div class="card-title text-center">
+                    <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate_top.png' %}" style="width:90%;"/></a>
+                </div>
+               {% for certificate_details in certificate_details %}
+            <div class="card-body" style="margin-left: 40px;margin-right: 40px;">
+                <div class="row float-left">
+                    <p><font color='black'>Certificate Number&nbsp;:&nbsp;<b>{{certificate_details.Certificate_No}}</b></font></p>
+                </div>
+                <br>
+                <div class="row">
+                    <h2><font color="green"><b>ORGANIC CERTIFICATE</b></font></h2>
+                </div>
+                <br><br>
+                <div class="text-center">
+                    <p>
+                        <font color='black'>Certification Services, Bhutan Agriculture and Food Regulatory Authority hereby certifies that produce of</font>
+                    </p>
+                    <p><font color='black'><b>{{certificate_details.Farm_Name}}</b></font></p>
+                    <p><font color='black'><b>{{certificate_details.Farm_Location}}</b></font></p>
+                    <p><font color='black'>are in accordance with the</font></p>
+                    <p><font color='green'><b>Bhutan Organic Standard 2019 (BOS 01:2019).</b></font></p>
+                </div>
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <img class="img-responsive" src="{% static 'assets/img/organic.png' %}" style="height:150px;"/>
+                        </div>
+                        <div class="col-md-6">
+                            <p><font color='black'>Certification Category (ies):<b> Crop Production / Animal Husbandry / Wild Collection / Aquaculture production/ Apiculture/ Handling /Processing and Grower Group</b></font></p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                <div>
+                    <table id="cert_table" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col" ><font color='black'>Name of Product</font></th>
+                                <th scope="col"><font color='black'>Production Area</font></th>
+                                <th scope="col"><font color='black'>Production Quantity</font></th>
+                                <th scope="col"><font color='black'>No of Producer</font></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for orc_certificate_details in orc_certificate_details %}
+                                <tr>
+                                    <td><font color='black'>{{ forloop.counter }}</font></td>
+                                    <td><font color='black'>{{orc_certificate_details.Crop_Name}}</font></td>
+                                    <td><font color='black'>{{orc_certificate_details.Area_Cultivated}}&nbsp;&nbsp;{{orc_certificate_details.Unit}}</font></td>
+                                    <td><font color='black'>{{orc_certificate_details.P_Yield}}&nbsp;&nbsp;{{orc_certificate_details.P_Yield_Unit}}</font></td>
+                                    <td></td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center">No Data</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% for certificate_details in certificate_details %}
+                        <div class="col-md-12">
+                            <div class="row">
+                                 <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label><font color='black'>Issue Date:</font></label>
+                                        <b><font color='black'>{{certificate_details.Approve_Date|date:"d-m-Y"}}</font></b>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                 <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label><font color='black'>Expiry Date:</font></label>
+                                        <b><font color='black'>{{certificate_details.Validity|date:"d-m-Y"}}</font></b>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <table class="table_print">
+                                <tbody>
+                                    <tr>
+                                        <td style="padding-right: 185px;">
+                                            <label><font color='black'>Dr. Tashi Samdup</font></label><br>
+                                            <label><font color='black'>Director General/Head of Certification Body</font></label>
+                                        </td>
+                                        <td style="padding-right: 100px;">
+                                            <img class="img-responsive" src="{% static 'assets/img/oc_accredited.png' %}" style="height:150px;"/>
+                                        </td>
+                                        {% if certificate_details.Certificate_Type == 'Accredited' %}
+                                         <td>
+                                                <img class="img-responsive" src="{% static 'assets/img/gap_certificate_accredited.png' %}" style="height:150px;"/>
+                                         </td>>
+                                        {% endif %}
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endfor %}
+                </div>
+             </div>
+            <div class="card-title text-center">
+                <a href="#"><img class="img-responsive" src="{% static 'assets/img/certificate_bottom.png' %}" style="width:100%;"/></a>
+            </div>
+            </div>
     </font>
     </div>
 </div>
+<script>
+function printTable()
+{
+	$("#print").show();
+	jQuery('#print').print();
+	$("#print").hide();
+}
+</script>

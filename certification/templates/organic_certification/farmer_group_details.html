@@ -4,14 +4,21 @@
             <th scope="col">#</th>
             <th scope="col">CID</th>
             <th scope="col">Name</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
-       {% for farmer_group in farmer_group %}
+       {% for farmer_group in farmers_group_details %}
             <tr>
                 <td>{{ forloop.counter }}</td>
                 <td>{{farmer_group.CID}}</td>
                 <td>{{farmer_group.Name}}</td>
+                <td>
+                    <button type="button" class="btn btn-primary btn-sm"
+                    onclick="deleteFarmerDetails('{{farmer_group.Record_Id}}','{{farmer_group.Application_No}}')">
+                    <i class="zmdi zmdi-delete"></i>
+                    </button>
+                </td>
             </tr>
             {% empty %}
             <tr>
@@ -20,3 +27,19 @@
        {% endfor %}
     </tbody>
 </table>
+<script>
+    function deleteFarmerDetails(Record_Id, Application_No)
+    {
+        var Record_Id = $('#Record_Id').val();
+        var Application_No = $('#Application_No').val();
+        $.ajax({
+            type : "GET",
+            url : "{% url 'delete_farmers_group' %}",
+            data :{'appNo':Application_No , 'Record_Id': Record_Id, 'identification_type':"OC"},
+            success : function(responseText)
+            {
+
+            }
+        });
+    }
+</script>

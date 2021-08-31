@@ -3,7 +3,7 @@ from django.forms import formset_factory
 
 from plant.models import t_plant_movement_permit_t1, \
     t_plant_movement_permit_t2, t_plant_movement_permit_t3, t_file_attachment, t_plant_import_permit_t1, \
-    t_plant_import_permit_t2, t_plant_import_permit_t3
+    t_plant_import_permit_t2, t_plant_import_permit_inspection_t3
 
 
 class ImportFormOne(forms.ModelForm):
@@ -24,7 +24,7 @@ class ImportFormTwo(forms.ModelForm):
 
 class ImportFormThree(forms.ModelForm):
     class Meta:
-        model = t_plant_import_permit_t3
+        model = t_plant_import_permit_inspection_t3
         fields = ['Current_Observation', 'Decision_Conformity']
 
 

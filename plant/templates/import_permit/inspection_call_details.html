@@ -567,7 +567,7 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="entryPlace">Actual Point Of Entry</label>
+                                        <label class="form-label">Actual Point Of Entry</label>
                                         <select class="form-control" name="entry_point"  id="entryPlace">
                                             <option value="">--SELECT--</option>
                                             {% for location in location %}
@@ -577,12 +577,12 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
-                                    <label>Date picker</label>
-                                    <input type="date" name="date" id="idTourDateDetails" class="form-control date-picker flatpickr-input active">
+                                    <label class="form-label">Date For Inspection</label>
+                                    <input type="date" name="date" id="date" class="form-control date-picker flatpickr-input active">
                                 </div>
                                  <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="remarks">Remarks(If Any)</label>
+                                        <label class="form-label">Remarks(If Any)</label>
                                         <textarea class="form-control" rows="3" id="remarks" name="remarks"></textarea>
                                     </div>
                                 </div>
@@ -613,6 +613,10 @@
 </form>
 
 <script>
+$(function(){
+    var today = new Date().toISOString().split('T')[0];
+    $('#date')[0].setAttribute('min', today);
+});
     function update_details()
     {
         $.ajax({

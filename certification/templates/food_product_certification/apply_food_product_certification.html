@@ -425,12 +425,12 @@
                                 <div class="form-group">
                                     <div class="form-check">
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Agree">
+                                            <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Agree" onclick="checkStandardsRadio(this.value)">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Agree</span>
                                         </label>&nbsp;
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Disagree">
+                                            <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio(this.value)">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Disagree</span>
                                         </label>
@@ -444,12 +444,12 @@
                                 <div class="form-group">
                                     <div class="form-check">
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Agree">
+                                            <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Agree" onclick="checkStandardsRadio(this.value)">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Agree</span>
                                         </label>&nbsp;
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Disagree">
+                                            <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio(this.value)">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Disagree</span>
                                         </label>
@@ -465,12 +465,12 @@
                                 <div class="form-group">
                                     <div class="form-check">
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Abide" class="custom-control-input" value="Agree">
+                                            <input type="radio" name="Terms_Abide" class="custom-control-input" value="Agree" onclick="checkStandardsRadio(this.value)">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Agree</span>
                                         </label>&nbsp;
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Abide" class="custom-control-input" value="Disagree">
+                                            <input type="radio" name="Terms_Abide" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio(this.value)">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Disagree</span>
                                         </label>
@@ -484,12 +484,12 @@
                                 <div class="form-group">
                                     <div class="form-check">
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Agree">
+                                            <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Agree" onclick="checkStandardsRadio(this.value)">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Agree</span>
                                         </label>&nbsp;
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Disagree">
+                                            <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio(this.value)">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Disagree</span>
                                         </label>
@@ -499,7 +499,7 @@
                         </div>
                     </div>
                     <div class="card-action">
-                        <button type="button" class="btn btn-primary" onclick="submit_fpc_certificate()">Submit</button>
+                        <button type="button" class="btn btn-primary" id="button_submit" onclick="submit_fpc_certificate()">Submit</button>
                     </div>
                 </div>
             </div>
@@ -989,6 +989,18 @@ function submit_fpc_certificate()
             }, 4000);
         }
     });
+}
+
+function checkStandardsRadio(value)
+{
+    if(value="Agree")
+    {
+        $('#button_submit').show();
+    }
+    else
+    {
+        $('#button_submit').hide();
+    }
 }
 </script>
 {% endblock %}
