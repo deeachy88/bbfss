@@ -1,6 +1,7 @@
 {% extends 'common_dashboard.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+{% load static %}
 <style>
     option
     {
@@ -34,6 +35,12 @@
             </div>
             <div class="tab-content mt-2 mb-3" id="pills-mortemContent">
                 <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                    <div class="form-group row">
+                        <label class="col-sm-3 form-label">Download (Mandatory To Fill)<font color="red">*</font></label>
+                        <div class="col-sm-8">
+                            <a href="{% static 'assets/question/QUESTIONNAIRE_FOR_FACTORY_ASSESSMENT.doc'%}" target="_blank">Initial Questionnaire</a>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
@@ -103,31 +110,55 @@
                             </div>
                             <div class="alert alert-danger" id="Firm_Contact_NoErrorMsg" style="display:none"></div>
                         </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Business License Number (if applicable)</label>
+                                 <input type="text" name="business_license_no" id="business_license_no" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Name of the Technical Incharge(if different from the owner)</label>
+                                 <input type="text" name="technical_in_charge" id="technical_in_charge" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Name of the Management Incharge (if different from the owner)</label>
+                                 <input type="text" name="management_in_charge" id="management_in_charge" class="form-control">
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
                         <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
                             <span class="px-2 small text-muted font-weight-bold text-muted form-label">Factory</span>
-                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Details</span>
-                        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Details</span>
+                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">(If</span>
+                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Different</span>
+                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">From</span>
+                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Above)</span>
+                            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="form-label">Name Of Factory <font color="red">*</font></label>
+                                <label class="form-label">Name Of Factory</label>
                                 <input type="text" class="form-control" name="Factory_Name" id="Factory_Name">
                             </div>
                             <div class="alert alert-danger" id="Factory_NameErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="form-label">Address <font color="red">*</font></label>
+                                <label class="form-label">Address</label>
                                 <textarea class="form-control" id="Factory_Address" name="Factory_Address"></textarea>
                             </div>
                             <div class="alert alert-danger" id="Factory_AddressErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="form-label">Contact Number <font color="red">*</font></label>
+                                <label class="form-label">Contact Number</label>
                                 <input type="number" class="form-control" id="Factory_Contact_No" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="Factory_Contact_No" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkFactoryContact(this.value)">
                             </div>
                             <div class="alert alert-danger" id="Factory_Contact_NoErrorMsg" style="display:none"></div>
@@ -136,7 +167,7 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="form-label">Email <font color="red">*</font></label>
+                                <label class="form-label">Email</label>
                                 <input type="email" class="form-control" id="Factory_Email" name="Factory_Email" onchange="validateFactory_emailId(this.value)">
                             </div>
                             <div class="alert alert-danger" id="Factory_EmailErrorMsg" style="display:none"></div>
@@ -158,7 +189,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">Product Trade Mark(s) <font color="red">*</font></label>
+                                <label class="form-label">Product Trade Mark(s)</label>
                                 <textarea class="form-control" id="Product_Trade_Mark" name="Product_Trade_Mark"></textarea>
                             </div>
                             <div class="alert alert-danger" id="Product_Trade_MarkErrorMsg" style="display:none"></div>
@@ -176,7 +207,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">From date <font color="red">*</font></label>
-                                 <input type="text" name="P_From_Date" id="P_From_Date" class="form-control date-picker flatpickr-input active">
+                                 <input type="text" name="From_Date" id="P_From_Date" class="form-control date-picker flatpickr-input active">
                             </div>
                             <div class="alert alert-danger" id="P_From_DateErrorMsg" style="display:none"></div>
                         </div>
@@ -207,7 +238,7 @@
                             </div>
                         </div>
                         <div class="form-group col-md-4">
-                            <label class="form-label">Value <font color="red">*</font></label>
+                            <label class="form-label">Value(in Nu.) <font color="red">*</font></label>
                             <input type="number" name="P_Production_Value" class="form-control" id="P_Production_Value" required>
                             <div class="alert alert-danger" id="P_Production_ValueErrorMsg" style="display:none"></div>
                         </div>
@@ -254,7 +285,7 @@
                             <div class="alert alert-danger" id="C_Production_UnitErrorMsg" style="display:none"></div>
                         </div>
                         <div class="form-group col-md-4">
-                            <label class="form-label">Value <font color="red">*</font></label>
+                            <label class="form-label">Value (in Nu.)<font color="red">*</font></label>
                             <input type="number" name="C_Production_Value" class="form-control" id="C_Production_Value" required>
                             <div class="alert alert-danger" id="C_Production_ValueErrorMsg" style="display:none"></div>
                         </div>
@@ -270,27 +301,27 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="form-label">From date <font color="red">*</font></label>
+                                <label class="form-label">From date</label>
                                  <input type="text" name="P_Export_From_Date" id="P_Export_From_Date" class="form-control date-picker flatpickr-input active">
                             </div>
                             <div class="alert alert-danger" id="P_Export_From_DateErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="form-label">To date <font color="red">*</font></label>
+                                <label class="form-label">To date</label>
                                  <input type="text" name="P_Export_To_Date" id="P_Export_To_Date" class="form-control date-picker flatpickr-input active">
                             </div>
                             <div class="alert alert-danger" id="P_Export_To_DateErrorMsg" style="display:none"></div>
                         </div>
                         <div class="form-group col-md-4">
-                            <label class="form-label">Export(Quantity) <font color="red">*</font></label>
+                            <label class="form-label">Export(Quantity)</label>
                             <input type="text" name="P_Export" class="form-control" id="P_Export" required>
                             <div class="alert alert-danger" id="P_ExportErrorMsg" style="display:none"></div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group col-md-4">
-                            <label class="form-label">Export Unit <font color="red">*</font></label>
+                            <label class="form-label">Export Unit</label>
                             <select class="form-control" name="P_Export_Unit" id="P_Export_Unit">
                                 <option value="">--SELECT--</option>
                                 {% for unit in unit %}
@@ -300,7 +331,7 @@
                             <div class="alert alert-danger" id="export_unitErrorMsg" style="display:none"></div>
                         </div>
                         <div class="form-group col-md-4">
-                            <label class="form-label">Export Value <font color="red">*</font></label>
+                            <label class="form-label">Export Value (in Nu.)</label>
                             <input type="number" name="P_Export_Value" class="form-control" id="P_Export_Value" required>
                             <div class="alert alert-danger" id="P_Export_ValueErrorMsg" style="display:none"></div>
                         </div>
@@ -316,27 +347,27 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="form-label">From date <font color="red">*</font></label>
+                                <label class="form-label">From date</label>
                                  <input type="text" name="C_Export_From_Date" id="C_Export_From_Date" class="form-control date-picker flatpickr-input active">
                             </div>
                             <div class="alert alert-danger" id="C_Export_From_DateErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="form-label">To date <font color="red">*</font></label>
+                                <label class="form-label">To date</label>
                                  <input type="text" name="C_Export_To_Date" id="C_Export_To_Date" class="form-control date-picker flatpickr-input active">
                             </div>
                             <div class="alert alert-danger" id="C_Export_To_DateErrorMsg" style="display:none"></div>
                         </div>
                         <div class="form-group col-md-4">
-                            <label class="form-label">Export(Quantity) <font color="red">*</font></label>
+                            <label class="form-label">Export(Quantity)</label>
                             <input type="number" name="C_Export" class="form-control" id="C_Export" required>
                             <div class="alert alert-danger" id="export_yearErrorMsg" style="display:none"></div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group col-md-4">
-                            <label class="form-label">Unit <font color="red">*</font></label>
+                            <label class="form-label">Unit</label>
                             <select class="form-control" name="C_Export_Unit" id="C_Export_Unit">
                                 <option value="">--SELECT--</option>
                                 {% for unit in unit %}
@@ -346,7 +377,7 @@
                             <div class="alert alert-danger" id="C_Export_UnitErrorMsg" style="display:none"></div>
                         </div>
                         <div class="form-group col-md-4">
-                            <label class="form-label">Value <font color="red">*</font></label>
+                            <label class="form-label">Value (in Nu.)</label>
                             <input type="number" name="currentValue" class="form-control" id="currentValue" required>
                             <div class="alert alert-danger" id="currentValueErrorMsg" style="display:none"></div>
                         </div>
@@ -394,12 +425,12 @@
                                 <div class="form-group">
                                     <div class="form-check">
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Agree">
+                                            <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Agree" onclick="checkStandardsRadio(this.value)">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Agree</span>
                                         </label>&nbsp;
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Disagree">
+                                            <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio(this.value)">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Disagree</span>
                                         </label>
@@ -413,12 +444,12 @@
                                 <div class="form-group">
                                     <div class="form-check">
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Agree">
+                                            <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Agree" onclick="checkStandardsRadio(this.value)">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Agree</span>
                                         </label>&nbsp;
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Disagree">
+                                            <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio(this.value)">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Disagree</span>
                                         </label>
@@ -434,12 +465,12 @@
                                 <div class="form-group">
                                     <div class="form-check">
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Abide" class="custom-control-input" value="Agree">
+                                            <input type="radio" name="Terms_Abide" class="custom-control-input" value="Agree" onclick="checkStandardsRadio(this.value)">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Agree</span>
                                         </label>&nbsp;
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Abide" class="custom-control-input" value="Disagree">
+                                            <input type="radio" name="Terms_Abide" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio(this.value)">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Disagree</span>
                                         </label>
@@ -453,12 +484,12 @@
                                 <div class="form-group">
                                     <div class="form-check">
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Agree">
+                                            <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Agree" onclick="checkStandardsRadio(this.value)">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Agree</span>
                                         </label>&nbsp;
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Disagree">
+                                            <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio(this.value)">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Disagree</span>
                                         </label>
@@ -468,7 +499,7 @@
                         </div>
                     </div>
                     <div class="card-action">
-                        <button type="button" class="btn btn-primary" onclick="submit_fpc_certificate()">Save</button>
+                        <button type="button" class="btn btn-primary" id="button_submit" onclick="submit_fpc_certificate()">Submit</button>
                     </div>
                 </div>
             </div>
@@ -608,54 +639,12 @@ function save_food_product_form()
         $('#Firm_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
         $("#Firm_Contact_No").focus();
     }
-    else if(Factory_Name == "")
-    {
-        $('#Factory_NameErrorMsg').html("Enter Factory Name.");
-        $('#Factory_NameErrorMsg').show();
-        $('#Factory_NameErrorMsg').delay(2000).fadeOut('slow');
-        $('#Factory_Name').focus();
-    }
-    else if(Factory_Address == "")
-    {
-        $('#Factory_AddressErrorMsg').html("Enter Factory Address.");
-        $('#Factory_AddressErrorMsg').show();
-        $('#Factory_AddressErrorMsg').delay(2000).fadeOut('slow');
-        $('#Factory_Address').focus();
-    }
-    else if(Factory_Contact_No == "")
-    {
-        $('#Factory_Contact_NoErrorMsg').html("Enter Factory Contact No.");
-        $('#Factory_Contact_NoErrorMsg').show();
-        $('#Factory_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
-        $('#Factory_Contact_No').focus();
-    }
-    else if(factory_number_count < 8)
-    {
-        $('#Factory_Contact_NoErrorMsg').html("Cannot Be Less Than Eight.");
-        $('#Factory_Contact_NoErrorMsg').show();
-        $('#Factory_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
-        $("#Factory_Contact_No").focus();
-    }
-    else if(Factory_Email == "")
-    {
-        $('#Factory_EmailErrorMsg').html("Enter Factory Email.");
-        $('#Factory_EmailErrorMsg').show();
-        $('#Factory_EmailErrorMsg').delay(2000).fadeOut('slow');
-        $('#Factory_Email').focus();
-    }
     else if(Product_Description == "")
     {
         $('#Product_DescriptionErrorMsg').html("Enter Product Description.");
         $('#Product_DescriptionErrorMsg').show();
         $('#Product_DescriptionErrorMsg').delay(2000).fadeOut('slow');
         $('#Product_Description').focus();
-    }
-    else if(Product_Trade_Mark == "")
-    {
-        $('#Product_Trade_MarkErrorMsg').html("Enter Product Trade Mark.");
-        $('#Factory_EmailErrorMsg').show();
-        $('#Factory_EmailErrorMsg').delay(2000).fadeOut('slow');
-        $('#Product_Trade_Mark').focus();
     }
     else if(P_From_Date == "")
     {
@@ -726,76 +715,6 @@ function save_food_product_form()
         $('#C_Production_ValueErrorMsg').show();
         $('#C_Production_ValueErrorMsg').delay(2000).fadeOut('slow');
         $('#C_Production_Value').focus();
-    }
-    else if(P_Export_From_Date == "")
-    {
-        $('#P_Export_From_DateErrorMsg').html("Enter From Date.");
-        $('#P_Export_From_DateErrorMsg').show();
-        $('#P_Export_From_DateErrorMsg').delay(2000).fadeOut('slow');
-        $('#P_Export_From_Date').focus();
-    }
-    else if(P_Export_To_Date == "")
-    {
-        $('#P_Export_To_DateErrorMsg').html("Enter To Date.");
-        $('#P_Export_To_DateErrorMsg').show();
-        $('#P_Export_To_DateErrorMsg').delay(2000).fadeOut('slow');
-        $('#P_Export_To_Date').focus();
-    }
-    else if(P_Export == "")
-    {
-        $('#P_ExportErrorMsg').html("Enter Export Quantity.");
-        $('#P_ExportErrorMsg').show();
-        $('#P_ExportErrorMsg').delay(2000).fadeOut('slow');
-        $('#P_Export').focus();
-    }
-    else if(P_Export_Unit == "")
-    {
-        $('#P_Export_UnitErrorMsg').html("Select Export Unit.");
-        $('#P_Export_UnitErrorMsg').show();
-        $('#P_Export_UnitErrorMsg').delay(2000).fadeOut('slow');
-        $('#P_Export_Unit').focus();
-    }
-    else if(P_Export_Value = "")
-    {
-        $('#P_Export_ValueErrorMsg').html("Enter Export Value.");
-        $('#P_Export_ValueErrorMsg').show();
-        $('#P_Export_ValueErrorMsg').delay(2000).fadeOut('slow');
-        $('#P_Export_Value').focus();
-    }
-    else if(C_Export_From_Date == "")
-    {
-        $('#C_Export_From_DateErrorMsg').html("Enter From Date.");
-        $('#C_Export_From_DateErrorMsg').show();
-        $('#C_Export_From_DateErrorMsg').delay(2000).fadeOut('slow');
-        $('#C_Export_From_Date').focus();
-    }
-    else if(C_Export_To_Date == "")
-    {
-        $('#C_Export_To_DateErrorMsg').html("Enter To Date.");
-        $('#C_Export_To_DateErrorMsg').show();
-        $('#C_Export_To_DateErrorMsg').delay(2000).fadeOut('slow');
-        $('#C_Export_To_Date').focus();
-    }
-    else if(C_Export == "")
-    {
-        $('#C_ExportErrorMsg').html("Enter Export Quantity.");
-        $('#C_ExportErrorMsg').show();
-        $('#C_ExportErrorMsg').delay(2000).fadeOut('slow');
-        $('#C_Export').focus();
-    }
-    else if(C_Export_Unit == "")
-    {
-        $('#C_Export_UnitErrorMsg').html("Select Export Unit.");
-        $('#C_Export_UnitErrorMsg').show();
-        $('#C_Export_UnitErrorMsg').delay(2000).fadeOut('slow');
-        $('#C_Export_Unit').focus();
-    }
-    else if(C_Export_Value = "")
-    {
-        $('#C_Export_ValueErrorMsg').html("Enter Export Value.");
-        $('#C_Export_ValueErrorMsg').show();
-        $('#C_Export_ValueErrorMsg').delay(2000).fadeOut('slow');
-        $('#C_Export_Value').focus();
     }
     else
     {
@@ -1070,6 +989,18 @@ function submit_fpc_certificate()
             }, 4000);
         }
     });
+}
+
+function checkStandardsRadio(value)
+{
+    if(value="Agree")
+    {
+        $('#button_submit').show();
+    }
+    else
+    {
+        $('#button_submit').hide();
+    }
 }
 </script>
 {% endblock %}

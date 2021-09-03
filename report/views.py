@@ -19,7 +19,7 @@ from livestock.models import t_livestock_clearance_meat_shop_t1, t_livestock_ant
 
 from plant.models import t_workflow_details, t_plant_movement_permit_t2, t_plant_movement_permit_t1, \
     t_plant_movement_permit_t3, t_file_attachment, t_plant_import_permit_t1, t_plant_import_permit_t2, \
-    t_plant_import_permit_t3, t_plant_export_certificate_plant_plant_products_t1, \
+    t_plant_import_permit_inspection_t3, t_plant_export_certificate_plant_plant_products_t1, \
     t_plant_clearence_nursery_seed_grower_t1, t_plant_clearence_nursery_seed_grower_t2, t_plant_seed_certification_t1, \
     t_plant_seed_certification_t2, t_plant_seed_certification_t3, t_payment_details
 from certification.models import t_certification_gap_t1, t_certification_gap_t2, t_certification_gap_t3, \

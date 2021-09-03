@@ -960,6 +960,7 @@
                                     <th scope="col">Non Conformity Category</th>
                                     <th scope="col">Description of nonconformity</th>
                                     <th scope="col">Corrective Action Proposed</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -971,6 +972,14 @@
                                         <td>{{import.Non_Conformity_Category}}</td>
                                         <td>{{import.Non_Conformity_Description}}</td>
                                         <td>{{import.Corrective_Action_Proposed_Auditee}}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-sm"
+                                            onclick="editDetails('{{import.Record_Id}}','{{import.Clause_Number}}',
+                                            '{{import.Non_Conformity_Category}}', 'import.Non_Conformity_Description',
+                                             '{{import.Corrective_Action_Proposed_Auditee}}','{{import.Application_No}}')">
+                                            <i class="zmdi zmdi-edit"></i>&nbsp;Respond
+                                            </button>
+                                        </td>
                                     </tr>
                                     {% empty %}
                                     <tr>
@@ -991,30 +1000,12 @@
             </div>
             <div id="collapseFour" class="active" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
                 <div class="card-body">
-                    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
-                        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
-                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Focal</span>
-                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Ofiicer</span>
-                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Remarks</span>
-                        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label class="form-label">Remarks</label>
-                                {% for application_details in application_details %}
-                                <textarea class="form-control" disabled>{{application_details.FO_Remarks}}</textarea>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-
                     <form method="post" id="nc_form">
                     {% csrf_token %}
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Provisional Audit Date</label>
+                                    <label class="form-label">Date Of Audit</label>
                                      {% for application_details in application_details %}
                                         <input type="hidden" class="form-control" value="{{application_details.Audit_Team_Leader}}" name="Team_Leader">
                                         <input type="text" class="form-control" value="{{application_details.Audit_Date}}" readonly="readonly">
@@ -1023,12 +1014,20 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Corrective Action Taken</label>
-                                    <textarea class="form-control" name="action_taken" id="action_taken"></textarea>
+                                    <label class="form-label">Nature Of Audit</label>
+                                    {% for application_details in application_details %}
+                                       <input type="text" class="form-control" value="{{application_details.Audit_Type}}" readonly="readonly">
+                                    {% endfor %}
                                 </div>
                             </div>
                         </div>
                         <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Corrective Action Taken</label>
+                                    <textarea class="form-control" name="action_taken" id="action_taken"></textarea>
+                                </div>
+                            </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Corrective Action Date</label>
@@ -1044,7 +1043,7 @@
                             {% for application_details in application_details %}
                             <input type="hidden" value="{{ application_details.Application_No }}" name="application_id">
                                 <button type="button" class="btn btn-flat btn-primary" onclick="nc_response_details()">
-                                    <i class="ace-icon fa fa-times"></i>
+                                    <i class="ace-icon fa fa-reply-all"></i>
                                     &nbsp;&nbsp;Respond
                                 </button>
                             {% endfor %}
@@ -1054,6 +1053,81 @@
                 </div>
             </div>
         </div>
+
+<div id="editModal" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post" id="edit_nc_form">
+                {% csrf_token %}
+                <input type="hidden" id="record_id" name="record_id">
+                <input type="hidden" value="oc_nc" name="identification_type">
+                <input type="hidden" id="application_No" name="application_No">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label class="form-label">Clause Number</label>
+                            <input type="text" class="form-control" name="Clause_Number" id="Clause_Number">
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Non-Conformity</label>&nbsp;
+                                <div class="justify-content-center">
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" name="Non_Conformity" class="custom-control-input" value="Yes" id="nc_yes">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Open</span>
+                                    </label>
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" name="Non_Conformity" class="custom-control-input" value="No" id="nc_no">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Close</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Nonconformity Category</label>
+                            <select class="form-control" id="Non_Conformity_Category" name="Non_Conformity_Category">
+                                <option value="">-SELECT-</option>
+                                <option value="Critical">Critical</option>
+                                <option value="Major">Major</option>
+                                <option value="Minor">Minor</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label class="form-label">Description of nonconformity</label>
+                            <textarea class="form-control" id="Non_Conformity_Description" name="Non_Conformity_Description"></textarea>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Response To NC</label>
+                            <textarea class="form-control" id="Corrective_Action_Proposed_Auditee" name="Corrective_Action_Proposed_Auditee" disabled></textarea>
+                            <div class="alert alert-danger" id="responseErrorMsg" style="display:none"></div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    {% for application_details in application_details %}
+                    <input type="hidden" name="appl_no" value="{{ application_details.Application_No }}">
+                    <button type="button" class="btn btn-flat btn-primary" onclick="update_nc_details()">
+                        <i class="ace-icon fa fa-check"></i>
+                        &nbsp;&nbsp;Add
+                    </button>
+                    {% endfor %}
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close Modal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <script src="{% static 'assets/js/app.min.js' %}"></script>
 <script>
 function nc_response_details()
@@ -1066,5 +1140,47 @@ function nc_response_details()
             location.reload();
         }
     });
+}
+
+function editDetails(Record_Id, Clause_Number, Non_Conformity, Non_Conformity_Category, Non_Conformity_Description, Corrective_Action_Proposed_Auditee, application_No)
+{
+    $('#record_id').val(Record_Id);
+    $('#Clause_Number').val(Clause_Number);
+    if(Non_Conformity == "Yes")
+    {
+        $("#nc_yes").prop("checked", true);
+    }
+    else
+    {
+        $("#nc_no").prop("checked", true);
+    }
+    $('#Non_Conformity_Category').val(Non_Conformity_Category);
+    $('#Non_Conformity_Description').val(Non_Conformity_Description);
+    $('#Corrective_Action_Proposed_Auditee').val(Corrective_Action_Proposed_Auditee);
+    $('#application_No').val(application_No);
+    $('#editModal').modal('show');
+}
+
+function update_nc_details()
+{
+    val response = $('#Corrective_Action_Proposed_Auditee').val();
+    if(response == "")
+    {
+        $('#responseErrorMsg').html("Enter Response To NC");
+        $('#responseErrorMsg').show();
+        $('#responseErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'update_nc_response' %}",
+            data :$('#edit_nc_form').serialize(),
+            success : function(data) {
+                $('#details').html(data);
+                $('#editModal').modal('hide');
+            }
+        });
+    }
 }
 </script>

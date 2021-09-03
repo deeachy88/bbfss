@@ -72,7 +72,8 @@ urlpatterns = [
     path('details_agro', views.details_agro, name='details_agro'),
     path('plant_import_update', views.plant_import_update, name='plant_import_update'),
     path('agro_import_update', views.agro_import_update, name='agro_import_update'),
-
+    path('update_details_plant', views.update_details_plant, name='update_details_plant'),
+    path('update_details_agro', views.update_details_agro, name='update_details_agro'),
 
     # certificate Printing
     path('certificate_print', views.certificate_print, name='certificate_print'),

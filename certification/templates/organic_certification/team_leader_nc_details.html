@@ -572,7 +572,7 @@
         <div class="card">
             <div class="card-header" role="tab" id="audit_plan">
                 <a class="collapsed" data-toggle="collapse" href="#collapse_audit_plan" aria-expanded="false" aria-controls="collapseTwo">
-                    Audit Plan
+                    Audit Plan Details
                 </a>
             </div>
             <div id="collapse_audit_plan" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
@@ -597,6 +597,30 @@
                            {% endfor %}
                         </tbody>
                     </table>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Provisional Audit Date</label>
+                                 {% for application_details in application_details %}
+                                    <input type="text" class="form-control" value="{{application_details.Audit_Plan_Date}}" disabled>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Nature Of Audit</label>
+                                <select class="form-control" disabled>
+                                    <option value="">-SELECT-</option>
+                                    <option value="Preliminary visit">Preliminary visit</option>
+                                    <option value="Factory audit">Factory audit</option>
+                                    <option value="Surveillance audit">Surveillance audit</option>
+                                    <option value="Recertification audit">Recertification audit</option>
+                                    <option value="Others">Others</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -609,6 +633,52 @@
             <div id="audit_findings_tab" class="collapse" role="tabpanel" aria-labelledby="observations_tab" data-parent="#observations_tab" style="">
                 <div class="card-body">
                     {% for application_details in application_details %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Audit Date </label>
+                               <input type="date" class="form-control" name="audit_date" id="Audit_Date" value="{{application_details.Audit_Date|date:'Y-m-d'}}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Nature Of Audit</label>
+                               <select class="form-control" name="Audit_Type">
+                                    {% if application_details.Audit_Type == "Preliminary visit" %}
+                                    <option value="Preliminary visit" selected>Preliminary visit</option>
+                                    <option value="Factory audit">Factory audit</option>
+                                    <option value="Surveillance audit">Surveillance audit</option>
+                                    <option value="Recertification audit">Recertification audit</option>
+                                    <option value="Others">Others</option>
+                                   {% elif application_details.Audit_Type == "Factory audit" %}
+                                    <option value="Preliminary visit" selected>Preliminary visit</option>
+                                    <option value="Factory audit" selected>Factory audit</option>
+                                    <option value="Surveillance audit">Surveillance audit</option>
+                                    <option value="Recertification audit">Recertification audit</option>
+                                    <option value="Others">Others</option>
+                                   {% elif application_details.Audit_Type == "Surveillance audit" %}
+                                    <option value="Preliminary visit" selected>Preliminary visit</option>
+                                    <option value="Factory audit">Factory audit</option>
+                                    <option value="Surveillance audit" selected>Surveillance audit</option>
+                                    <option value="Recertification audit">Recertification audit</option>
+                                    <option value="Others">Others</option>
+                                   {% elif application_details.Audit_Type == "Recertification audit" %}
+                                    <option value="Preliminary visit" selected>Preliminary visit</option>
+                                    <option value="Factory audit">Factory audit</option>
+                                    <option value="Surveillance audit">Surveillance audit</option>
+                                    <option value="Recertification audit" selected>Recertification audit</option>
+                                    <option value="Others">Others</option>
+                                   {% else %}
+                                    <option value="Preliminary visit" selected>Preliminary visit</option>
+                                    <option value="Factory audit">Factory audit</option>
+                                    <option value="Surveillance audit">Surveillance audit</option>
+                                    <option value="Recertification audit">Recertification audit</option>
+                                    <option value="Others" selected>Others</option>
+                                   {% endif %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-6 justify-content-center">
                             <div class="form-group">
@@ -911,26 +981,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Audit Date </label>
-                               <input type="text" class="form-control" value="{{application_details.Audit_Date}}" disabled>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Nature Of Audit</label>
-                               <select class="form-control" name="Audit_Type" disabled>
-                                    <option value="Preliminary visit">Preliminary visit</option>
-                                    <option value="Factory audit">Factory audit</option>
-                                    <option value="Surveillance audit">Surveillance audit</option>
-                                    <option value="Recertification audit">Recertification audit</option>
-                                    <option value="Others">Others</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
+
                     {% endfor %}
                 </div>
             </div>
@@ -955,7 +1006,7 @@
                                         <th scope="col">Non Conformity</th>
                                         <th scope="col">Non Conformity Category</th>
                                         <th scope="col">Description of nonconformity</th>
-                                        <th scope="col">Corrective Action Proposed</th>
+                                        <th scope="col">Auditors Remarks</th>
                                         <th scope="col">Action</th>
                                     </tr>
                                 </thead>
@@ -967,11 +1018,11 @@
                                             <td>{{import.Non_Conformity}}</td>
                                             <td>{{import.Non_Conformity_Category}}</td>
                                             <td>{{import.Non_Conformity_Description}}</td>
-                                            <td>{{import.Corrective_Action_Proposed_Auditee}}</td>
+                                            <td>{{import.Corrective_Action_Verified_Auditor}}</td>
                                             <td>
                                                 <button type="button"
                                                 class="btn btn-primary btn-sm js-edit-details"
-                                                data-url="{% url 'edit_fpc_nc_details' import.Record_Id %}">
+                                                data-url="{% url 'edit_oc_nc_details' import.Record_Id %}">
                                                 <i class="zmdi zmdi-edit"></i>
                                                 </button>
                                             </td>
@@ -986,16 +1037,17 @@
                         </div>
                     </div>
                 </div>
+                <div id="msgDiv" class="alert alert-info" style="display:none;"></div>
                 <div class="modal-footer">
                     {% for application_details in application_details %}
                         <input type="hidden" name="approved_application_no" value="{{ application_details.Application_No }}">
                     {% endfor %}
                     <button type="button" id="approve-btn" class="btn btn-flat btn-primary" onclick="Forward_details()">
-                        <i class="ace-icon fa fa-times"></i>
+                        <i class="ace-icon fa fa-arrow-right"></i>
                         &nbsp;&nbsp;Forward To Head Office
                     </button>
                     <button type="button" id="resubmit-btn" class="btn btn-flat btn-primary" onclick="resubmit_nc_details()">
-                        <i class="ace-icon fa fa-times"></i>
+                        <i class="ace-icon fa fa-reply-all"></i>
                         &nbsp;&nbsp;Resubmit
                     </button>
                     <button type="button" class="btn btn-primary" onclick="closeTeamModal()">Close Modal</button>
@@ -1116,9 +1168,6 @@
               </div>
             </div>
         </div>
-        <script src="{% static 'assets/bower_components/jquery/dist/jquery.min.js' %}"></script>
-        <script src="{% static 'assets/bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
-        <script src="{% static 'assets/bower_components/flatpickr/dist/flatpickr.min.js' %}"></script>
         <script src="{% static 'assets/js/app.min.js' %}"></script>
         <script src="{% static 'assets/js/nc.js' %}"></script>
 <script>
@@ -1160,7 +1209,16 @@ function Forward_details()
         url : "{% url 'forward_application_head_office' %}",
         data :$('#OC_observation_form').serialize(),
         success : function(data) {
-            location.reload();
+            $('#msgDiv').html("Application Forwarded To Head Office.");
+            $('#msgDiv').show();
+            setTimeout(function()
+            {
+                $("#msgDiv").hide('blind', {}, 500)
+            }, 2000);
+            setTimeout(function()
+            {
+                 location.reload();
+            }, 3000);
         }
     });
 }

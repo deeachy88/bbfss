@@ -1,0 +1,47 @@
+<table id="X" class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Requirement</th>
+            <th scope="col">Clause No</th>
+            <th scope="col">NC</th>
+            <th scope="col">NC Category</th>
+            <th scope="col">Date</th>
+            <th scope="col">Observations/ Findings</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for import in application_details %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{import.Requirement}}</td>
+                <td>{{import.Clause_No}}</td>
+                <td>{{import.NC}}</td>
+                <td>{{import.NC_Category}}</td>
+                <td>{{import.Date|date:"d-m-Y"}}</td>
+                <td>{{import.Observation}}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="6" class="text-center">No Data</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<input type="hidden" id="count" value="{{message_count}}">
+<script>
+    $(document).ready(function()
+     {
+        var row_count = $("#count").val();
+        if(row_count > 0)
+        {
+            $("#approve_button").hide();
+            $("#resubmit-btn").show();
+        }
+        else
+        {
+            $("#approve_button").show();
+            $("#resubmit-btn").hide();
+        }
+     });
+</script>

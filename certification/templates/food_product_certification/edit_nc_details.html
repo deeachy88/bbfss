@@ -1,0 +1,37 @@
+<table id="inspection-details-table" class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Clause Number</th>
+            <th scope="col">Non Conformity</th>
+            <th scope="col">Non Conformity Category</th>
+            <th scope="col">Description of nonconformity</th>
+            <th scope="col">Corrective Action Proposed</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for import in audit_observation %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{import.Clause_Number}}</td>
+                <td>{{import.Non_Conformity}}</td>
+                <td>{{import.Non_Conformity_Category}}</td>
+                <td>{{import.Non_Conformity_Description}}</td>
+                <td>{{import.Corrective_Action_Proposed_Auditee}}</td>
+                <td>
+                    <button type="button" class="btn btn-primary btn-sm"
+                    onclick="editDetails('{{import.Record_Id}}','{{import.Clause_Number}}',
+                    '{{import.Non_Conformity_Category}}', 'import.Non_Conformity_Description',
+                     '{{import.Corrective_Action_Proposed_Auditee}}','{{import.Application_No}}')">
+                    <i class="zmdi zmdi-edit"></i>&nbsp;Respond
+                    </button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="6" class="text-center">No Data</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

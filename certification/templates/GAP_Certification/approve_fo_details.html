@@ -439,7 +439,7 @@
         <div class="card">
             <div class="card-header" role="tab" id="observations">
                 <a class="collapsed" data-toggle="collapse" href="#observations_tab" aria-expanded="false" aria-controls="collapseTwo">
-                    Audit Plan
+                    Audit Plan Details
                 </a>
             </div>
             <div id="observations_tab" class="collapse" role="tabpanel" aria-labelledby="observations_tab" data-parent="#observations_tab" style="">
@@ -452,10 +452,10 @@
                             </tr>
                         </thead>
                         <tbody>
-                           {% for file_attach in file_attach %}
+                           {% for file_attach in audit_plan %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td><a href="{{file_attach.Attachment}}"></a> {{file_attach.Attachment}}</td>
+                                    <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
                                 </tr>
                                 {% empty %}
                                 <tr>
@@ -464,10 +464,27 @@
                            {% endfor %}
                         </tbody>
                     </table>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Audit Plan Date</label>
+                                 {% for application_details in application_details %}
+                                    <input type="text" class="form-control" value="{{application_details.Audit_Plan_Date}}" disabled>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Nature Of Audit Plan</label>
+                                <input type="text" class="form-control" value="{{application_details.Audit_Plan_Type}}" disabled>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        {% for application_details in audit_findings %}
+        {% for application_details in application_details %}
         <div class="card">
             <div class="card-header" role="tab" id="audit_findings">
                 <a class="collapsed" data-toggle="collapse" href="#audit_findings_tab" aria-expanded="false" aria-controls="collapseTwo">
@@ -477,6 +494,52 @@
             <div id="audit_findings_tab" class="collapse" role="tabpanel" aria-labelledby="observations_tab" data-parent="#observations_tab" style="">
 
                 <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Audit Date </label>
+                               <input type="date" class="form-control" name="audit_date" id="Audit_Date" value="{{application_details.Audit_Date|date:'Y-m-d'}}" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Nature Of Audit</label>
+                               <select class="form-control" name="Audit_Type" disabled>
+                                    {% if application_details.Audit_Type == "Preliminary visit" %}
+                                    <option value="Preliminary visit" selected>Preliminary visit</option>
+                                    <option value="Factory audit">Factory audit</option>
+                                    <option value="Surveillance audit">Surveillance audit</option>
+                                    <option value="Recertification audit">Recertification audit</option>
+                                    <option value="Others">Others</option>
+                                   {% elif application_details.Audit_Type == "Factory audit" %}
+                                    <option value="Preliminary visit" selected>Preliminary visit</option>
+                                    <option value="Factory audit" selected>Factory audit</option>
+                                    <option value="Surveillance audit">Surveillance audit</option>
+                                    <option value="Recertification audit">Recertification audit</option>
+                                    <option value="Others">Others</option>
+                                   {% elif application_details.Audit_Type == "Surveillance audit" %}
+                                    <option value="Preliminary visit" selected>Preliminary visit</option>
+                                    <option value="Factory audit">Factory audit</option>
+                                    <option value="Surveillance audit" selected>Surveillance audit</option>
+                                    <option value="Recertification audit">Recertification audit</option>
+                                    <option value="Others">Others</option>
+                                   {% elif application_details.Audit_Type == "Recertification audit" %}
+                                    <option value="Preliminary visit" selected>Preliminary visit</option>
+                                    <option value="Factory audit">Factory audit</option>
+                                    <option value="Surveillance audit">Surveillance audit</option>
+                                    <option value="Recertification audit" selected>Recertification audit</option>
+                                    <option value="Others">Others</option>
+                                   {% else %}
+                                    <option value="Preliminary visit" selected>Preliminary visit</option>
+                                    <option value="Factory audit">Factory audit</option>
+                                    <option value="Surveillance audit">Surveillance audit</option>
+                                    <option value="Recertification audit">Recertification audit</option>
+                                    <option value="Others" selected>Others</option>
+                                   {% endif %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-6 justify-content-center">
                             <div class="form-group">
@@ -799,24 +862,61 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Remarks From Client </label>
-                                <textarea type="text" class="form-control" disabled>{{ application_details.Audit_Plan_Acceptance_Remarks }}</textarea>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Remarks From Focal Officer </label>
-                                <textarea type="text" class="form-control" disabled>{{ application_details.FO_Remarks }}</textarea>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
     {% endfor %}
+        <div class="card">
+            <div class="card-header" role="tab" id="headingFour">
+                <a class="collapsed" data-toggle="collapse" href="#collapseFour" aria-expanded="false" aria-controls="collapseTwo">
+                    Audit Team Details
+                </a>
+            </div>
+            <div id="collapseFour" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Role</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           {% for audit in audit_team %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{audit.Name}}</td>
+                                    <td>{{audit.Role}}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                  <td colspan="3" class="text-center">No Data</td>
+                                </tr>
+                           {% endfor %}
+                        </tbody>
+                    </table>
+                    <br>
+                    {% for application_details in application_details %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Audit Team Leader</label>
+                                    <input type="hidden" class="form-control" id="team_leader" name="team_leader" value="{{application_details.Audit_Team_Leader}}" disabled>
+                                    <select class="form-control" disabled>
+                                    {% for user_details in user_details %}
+                                        <option value="{{user_details.Login_Id}}"{% if application_details.Audit_Team_Leader == user_details.Login_Id %}selected{% endif %}>
+                                            {{ user_details.Name }}
+                                        </option>
+                                    {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
         <div class="card">
             <div class="card-header" role="tab">
                 <a class="collapsed" data-toggle="collapse" href="#non_conform_tab" aria-expanded="false" aria-controls="collapseTwo">
@@ -835,7 +935,7 @@
                                         <th scope="col">Non Conformity</th>
                                         <th scope="col">Non Conformity Category</th>
                                         <th scope="col">Description of nonconformity</th>
-                                        <th scope="col">Corrective Action Proposed</th>
+                                        <th scope="col">Auditors Remarks</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -846,7 +946,7 @@
                                             <td>{{import.Non_Conformity}}</td>
                                             <td>{{import.Non_Conformity_Category}}</td>
                                             <td>{{import.Non_Conformity_Description}}</td>
-                                            <td>{{import.Corrective_Action_Proposed_Auditee}}</td>
+                                            <td>{{import.Corrective_Action_Verified_Auditor}}</td>
                                         </tr>
                                         {% empty %}
                                         <tr>
@@ -856,149 +956,132 @@
                                 </tbody>
                             </table>
                         </div>
+                        <br>
+                        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">Remarks</span>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">From</span>
+                                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Client</span>
+                            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                        </div>
+
+                        {% for application_details in application_details%}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Corrective Action Date </label>
+                                        <input type="text" class="form-control" value="{{ application_details.Corrective_Action_Date }}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Corrective Action Taken </label>
+                                        <textarea type="text" class="form-control" disabled>{{ application_details.Corrective_Action_Taken_Auditee }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
         </div>
+
         <div class="card">
-            <div class="card-header" role="tab" id="headingFour">
-                <a class="collapsed" data-toggle="collapse" href="#collapseFour" aria-expanded="false" aria-controls="collapseTwo">
-                    Audit Team Details
+            <div class="card-header" role="tab" id="headingFive">
+                <a class="collapsed" data-toggle="collapse" href="#collapseFive" aria-expanded="false" aria-controls="collapseTwo">
+                    Head Office Details
                 </a>
             </div>
-            <div id="collapseFour" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
-
-                <div class="card-body">
-                {% for application_details in application_details %}
-                    {% if application_details.Audit_Team_Acceptance == 'A' %}
-                    <br>
-                    <div>
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Name</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                               {% for audit in audit_team %}
-                                    <tr>
-                                        <td>{{ forloop.counter }}</td>
-                                        <td>{{audit.Name}}</td>
-                                    </tr>
-                                    {% empty %}
-                                    <tr>
-                                      <td colspan="3" class="text-center">No Data</td>
-                                    </tr>
-                               {% endfor %}
-                            </tbody>
-                        </table>
+            <div id="collapseFive" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Validity Of Certificate(No Of Days) <font color="red">*</font></label>
+                            <input type="number" class="form-control" id="validity" name="validity">
+                        </div>
+                        <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>
                     </div>
-                    <br>
-                    {% else %}
-                        <div class="card-tools">
-                            <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="openAuditTeamModal()">
-                                <span class="btn-label">
-                                    <i class="fa fa-print"></i>
-                                </span>
-                                Add
-                            </a>
-                        </div>
-                        <br>
-                        <div id="audit_team_details">
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Name</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                   {% for audit in audit_team %}
-                                        <tr>
-                                            <td>{{ forloop.counter }}</td>
-                                            <td>{{audit.Name}}</td>
-                                        </tr>
-                                        {% empty %}
-                                        <tr>
-                                          <td colspan="3" class="text-center">No Data</td>
-                                        </tr>
-                                   {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                        <br>
-                    {% endif %}
-                {% endfor %}
-                {% for application_details in application_details %}
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Audit Team Leader</label>
-                                    <input type="hidden" class="form-control" id="team_leader" name="team_leader" value="{{application_details.Audit_Team_Leader}}" disabled>
-                                    <select class="form-control" disabled>
-                                    {% for user_details in user_details %}
-                                        <option value="{{user_details.Login_Id}}"{% if application_details.team_leader == user_details.Login_Id %}selected{% endif %}>
-                                            {{ user_details.Name }}
-                                        </option>
-                                    {% endfor %}
-                                    </select>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Certificate Type <font color="red">*</font></label>
+                            <div class="justify-content-center">
+                                <label class="custom-control custom-radio"  style="margin-top: 14px;">
+                                    <input type="radio" name="Certificate_Type" class="custom-control-input" value="Accredited">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Accredited</span>
+                                </label>
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" name="Certificate_Type" class="custom-control-input" value="Non-Accredited">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Non-Accredited</span>
+                                </label>
                             </div>
                         </div>
+                        <div class="alert alert-danger" id="Certificate_TypeErrorMsg" style="display:none"></div>
                     </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Remarks</label>
+                            <textarea class="form-control" id="remarks" name="remarks" rows="2"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div id="submitMsg" class="alert alert-info" style="display:none;"></div>
+                <div class="card-action">
+                {% for application_details in application_details %}
+                    <button type="button" class="btn btn-flat btn-primary" onclick="approve_gap_application('{{ application_details.Application_No }}')">
+                    <i class="ace-icon fa fa-check"></i>
+                    &nbsp;&nbsp;Approve
+                    </button>
                 {% endfor %}
-                    </div>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close Modal</button>
                 </div>
             </div>
-            <div class="card">
-                <div class="card-header" role="tab" id="headingFive">
-                    <a class="collapsed" data-toggle="collapse" href="#collapseFive" aria-expanded="false" aria-controls="collapseTwo">
-                        Head Office Details
-                    </a>
-                </div>
-                <div id="collapseFive" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Validity Of Certificate</label>
-                                <input type="number" class="form-control" id="validity" name="validity">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Remarks</label>
-                                <textarea class="form-control" id="remarks" name="remarks" rows="2"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-action">
-                    {% for application_details in application_details %}
-                        <button type="button" class="btn btn-flat btn-primary" onclick="approve_gap_application('{{ application_details.Application_No }}')">
-                        <i class="ace-icon fa fa-times"></i>
-                        &nbsp;&nbsp;Approve
-                        </button>
-                    {% endfor %}
-                    <button type="button" class="btn btn-primary" onclick="closeTeamModal()">Close Modal</button>
-                    </div>
-                </div>
-            </div>
+        </div>
 <script src="{% static 'assets/js/app.min.js' %}"></script>
 <script>
 function approve_gap_application(application_id)
 {
-
-    remarks = $('#remarks').val();
-    dateOfInspection = $('#dateOfInspection').val();
-    validity = $('#validity').val();
-
-   $.ajax({
-        type : "GET",
-        url : "{% url 'approve_gap_application' %}",
-        data :{'application_no':application_id , 'remarks':remarks , 'dateOfInspection':dateOfInspection,'validity':validity},
-        success : function(data) {
-            $('#import_detailsModal').modal('hide');
-            location.reload();
-        }
-    });
+    var remarks = $('#remarks').val();
+    var validity = $('#validity').val();
+    var Certificate_Type = $("input[name=Certificate_Type]:checked").length;
+    if(validity == "")
+    {
+        $('#validityErrorMsg').html("Enter Validity.");
+        $('#validityErrorMsg').show();
+        $('#validityErrorMsg').delay(2000).fadeOut('slow');
+        $("#validity").focus();
+    }
+    else if(Certificate_Type < 1)
+    {
+        $('#Certificate_TypeErrorMsg').html("Please Check One.");
+        $('#Certificate_TypeErrorMsg').show();
+        $('#Certificate_TypeErrorMsg').delay(2000).fadeOut('slow');
+        $("input[name=Certificate_Type]").focus();
+    }
+    else
+    {
+       $.ajax({
+            type : "GET",
+            url : "{% url 'approve_gap_application' %}",
+            data :{'application_no':application_id , 'remarks':remarks ,'validity':validity, 'Certificate_Type': Certificate_Type},
+            success : function(data) {
+               $('#submitMsg').html("Application Approved.");
+                $('#submitMsg').show();
+                setTimeout(function()
+                {
+                    $("#submitMsg").hide('blind', {}, 500)
+                }, 2000);
+                setTimeout(function()
+                {
+                    $('#application-details-modal').modal('hide');
+                }, 3000);
+                setTimeout(function()
+                {
+                     location.reload();
+                }, 3000);
+            }
+        });
+    }
 }
 </script>

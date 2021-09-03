@@ -343,6 +343,52 @@
                 <div class="card-body">
                     {% for application_details in application_details %}
                     <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Audit Date </label>
+                               <input type="date" class="form-control" name="audit_date" id="Audit_Date" value="{{application_details.Audit_Date|date:'Y-m-d'}}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Nature Of Audit</label>
+                               <select class="form-control" name="Audit_Type">
+                                    {% if application_details.Audit_Type == "Preliminary visit" %}
+                                    <option value="Preliminary visit" selected>Preliminary visit</option>
+                                    <option value="Factory audit">Factory audit</option>
+                                    <option value="Surveillance audit">Surveillance audit</option>
+                                    <option value="Recertification audit">Recertification audit</option>
+                                    <option value="Others">Others</option>
+                                   {% elif application_details.Audit_Type == "Factory audit" %}
+                                    <option value="Preliminary visit" selected>Preliminary visit</option>
+                                    <option value="Factory audit" selected>Factory audit</option>
+                                    <option value="Surveillance audit">Surveillance audit</option>
+                                    <option value="Recertification audit">Recertification audit</option>
+                                    <option value="Others">Others</option>
+                                   {% elif application_details.Audit_Type == "Surveillance audit" %}
+                                    <option value="Preliminary visit" selected>Preliminary visit</option>
+                                    <option value="Factory audit">Factory audit</option>
+                                    <option value="Surveillance audit" selected>Surveillance audit</option>
+                                    <option value="Recertification audit">Recertification audit</option>
+                                    <option value="Others">Others</option>
+                                   {% elif application_details.Audit_Type == "Recertification audit" %}
+                                    <option value="Preliminary visit" selected>Preliminary visit</option>
+                                    <option value="Factory audit">Factory audit</option>
+                                    <option value="Surveillance audit">Surveillance audit</option>
+                                    <option value="Recertification audit" selected>Recertification audit</option>
+                                    <option value="Others">Others</option>
+                                   {% else %}
+                                    <option value="Preliminary visit" selected>Preliminary visit</option>
+                                    <option value="Factory audit">Factory audit</option>
+                                    <option value="Surveillance audit">Surveillance audit</option>
+                                    <option value="Recertification audit">Recertification audit</option>
+                                    <option value="Others" selected>Others</option>
+                                   {% endif %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-6 justify-content-center">
                             <div class="form-group">
                                 <label class="form-label">Site History And Management </label>
@@ -644,26 +690,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Audit Date </label>
-                               <input type="text" class="form-control" value="{{application_details.Audit_Date}}" disabled>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Nature Of Audit</label>
-                               <select class="form-control" name="Audit_Type" disabled>
-                                    <option value="Preliminary visit">Preliminary visit</option>
-                                    <option value="Factory audit">Factory audit</option>
-                                    <option value="Surveillance audit">Surveillance audit</option>
-                                    <option value="Recertification audit">Recertification audit</option>
-                                    <option value="Others">Others</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
                     {% endfor %}
                 </div>
             </div>
@@ -717,21 +743,46 @@
                                 </tbody>
                             </table>
                         </div>
+                        <br>
+                        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">Remarks</span>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">From</span>
+                                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Client</span>
+                            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                        </div>
+
+                        {% for application_details in application_details%}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Corrective Action Date </label>
+                                        <input type="text" class="form-control" value="{{ application_details.Corrective_Action_Date }}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Corrective Action Taken </label>
+                                        <textarea type="text" class="form-control" disabled>{{ application_details.Corrective_Action_Taken_Auditee }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
                     </div>
                 </div>
+                <div id="msgDiv" class="alert alert-info" style="display:none;"></div>
                 <div class="modal-footer">
                     {% for application_details in application_details %}
-                        <input type="hidden" name="approved_application_no" value="{{ application_details.Application_No }}">
+                        <input type="hidden" name="det_application_no" value="{{ application_details.Application_No }}">
                     {% endfor %}
                     <button type="button" id="approve-btn" class="btn btn-flat btn-primary" onclick="Forward_details()">
-                        <i class="ace-icon fa fa-times"></i>
+                        <i class="ace-icon fa fa-arrow-right"></i>
                         &nbsp;&nbsp;Forward To Head Office
                     </button>
                     <button type="button" id="resubmit-btn" class="btn btn-flat btn-primary" onclick="resubmit_nc_details()">
-                        <i class="ace-icon fa fa-times"></i>
+                        <i class="ace-icon fa fa-reply-all"></i>
                         &nbsp;&nbsp;Resubmit
                     </button>
-                    <button type="button" class="btn btn-primary" onclick="closeTeamModal()">Close Modal</button>
                 </div>
             </div>
         </div>

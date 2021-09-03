@@ -7,30 +7,38 @@
                     <div class="card-body">
                         {% for application_details in application_details %}
                             {% if application_details.Import_Type == 'P' %}
-                                <div class="row justify-content-center">
-                                    <div class="form-check text-center">
-                                        <label>Import Type <font color="red">*</font></label><br>
-                                        <label class="form-radio-label">
-                                            <input class="form-radio-input" type="radio" name="importType" checked>
-                                            <span class="form-radio-sign">Plant And Plant Products</span>
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <label class="from-label">Import Type <font color="red">*</font></label><br>
+                                    </div>
+                                    <div class="col-sm-8 justify-content-center">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" class="custom-control-input" checked>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Plant And Plant Products</span>
                                         </label>
-                                        <label class="form-radio-label ml-3">
-                                            <input class="form-radio-input" type="radio" name="importType" disabled>
-                                            <span class="form-radio-sign">Agrochemicals</span>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" class="custom-control-input" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Agrochemicals</span>
                                         </label>
                                     </div>
                                 </div>
                             {% else %}
-                                <div class="row justify-content-center">
-                                    <div class="form-check text-center">
-                                        <label>Import Type <font color="red">*</font></label><br>
-                                        <label class="form-radio-label">
-                                            <input class="form-radio-input" type="radio" name="importType" disabled>
-                                            <span class="form-radio-sign">Plant And Plant Products</span>
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <label class="from-label">Import Type <font color="red">*</font></label><br>
+                                    </div>
+                                    <div class="col-sm-8 justify-content-center">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio"class="custom-control-input" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Plant And Plant Products</span>
                                         </label>
-                                        <label class="form-radio-label ml-3">
-                                            <input class="form-radio-input" type="radio" name="importType" checked>
-                                            <span class="form-radio-sign">Agrochemicals</span>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" class="custom-control-input" checked>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Agrochemicals</span>
                                         </label>
                                     </div>
                                 </div>
@@ -453,8 +461,8 @@
                                                 <th scope="col">Import Category</th>
                                                 <th scope="col">Crop Common Name</th>
                                                 <th scope="col">Crop Variety Name</th>
-                                                <th scope="col">Unit</th>
                                                 <th scope="col">Quantity</th>
+                                                <th scope="col">Unit</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -462,10 +470,18 @@
                                                 <tr>
                                                     <td>{{ forloop.counter }}</td>
                                                     <td>{{import.Import_Category}}</td>
-                                                    <td>{{import.Crop_Id}}</td>
-                                                    <td>{{import.Variety_Id}}</td>
-                                                    <td>{{import.Unit}}</td>
+                                                    {% for crop in crop %}
+                                                        {% if import.Crop_Id == crop.Crop_Id %}
+                                                            <td>{{ crop.Crop_Common_Name }}</td>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    {% for variety in variety %}
+                                                        {% if variety.Crop_Variety_Id ==  import.Variety_Id %}
+                                                            <td>{{ variety.Crop_Variety_Name}}</td>
+                                                        {% endif %}
+                                                    {% endfor %}
                                                     <td>{{import.Quantity}}</td>
+                                                    <td>{{import.Unit}}</td>
                                                 </tr>
                                                 {% empty %}
                                                 <tr>
@@ -491,7 +507,11 @@
                                                     <tr>
                                                         <td>{{ forloop.counter }}</td>
                                                         <td>{{import.Import_Category}}</td>
-                                                        <td>{{import.Pesticide_Id}}</td>
+                                                        {% for pesticide in pesticide %}
+                                                            {% if pesticide.Pesticide_Id == import.Pesticide_Id %}
+                                                            <td>{{import.Pesticide_Name}}</td>
+                                                            {% endif %}
+                                                        {% endfor %}
                                                         <td>{{import.Description}}</td>
                                                         <td>{{import.Unit}}</td>
                                                         <td>{{import.Quantity}}</td>

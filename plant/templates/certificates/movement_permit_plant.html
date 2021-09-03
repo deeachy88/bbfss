@@ -27,17 +27,17 @@
         <div class="row d-flex justify-content-between details">
             {% for certificate_details in certificate_details %}
 			    <h6>Serial No.&nbsp;&nbsp;{{certificate_details.Movement_Permit_No}}</h6>
+                <h6>Date&nbsp;:&nbsp;{{certificate_details.Approved_Date}}</h6>
             {% endfor %}
-			<h6>Date&nbsp;:&nbsp;{{date}}</h6>
 		</div>
         <br>
         <div class="row">
             {% for certificate_details in certificate_details %}
             <p>
                 Permission is hereby granted to Mr./Ms. {{certificate_details.Applicant_Name}} bearing
-                Citizen ID No {{certificate_details.CIS}},M/S {{certificate_details.Nursery_Name}}
-                of village: {{ Village}} under Gewog: {{ Gewog }}
-                Dzongkhag: {{ Dzongkhag }} to move following Plants and Plant Products
+                Citizen ID No {{certificate_details.CID}} of village: {{ certificate_details.Village}} under Gewog: {{ certificate_details.Gewog }}
+                Dzongkhag: {{ certificate_details.Dzongkhag }}, M/S {{certificate_details.Nursery_Name}}
+                to move following Plants and Plant Products
                 from {{ From_Dzongkhag }} Dzongkhag to {{ To_Dzongkhag }} Dzongkhag:
             </p>
             {% endfor %}
@@ -76,11 +76,6 @@
         </div>
         <div class="row">
             <p>
-                 SOURCE/ORIGIN OF PRODUCTS&nbsp;:&nbsp;{{certificate_details.Source_Of_Product}}.
-            </p>
-        </div>
-        <div class="row">
-            <p>
                   PURPOSE OF MOVEMENT&nbsp;:&nbsp;{{certificate_details.Movement_Purpose}}..
             </p>
         </div>
@@ -91,7 +86,7 @@
         </div>
         <div class="row">
             <p>
-                  HIS PERMIT IS VALID FOR A PERIOD OF ……………… DAYS FROM THE DATE OF ISSUE.
+                  HIS PERMIT IS VALID FOR A PERIOD OF {{certificate_details.Validity_Period }} DAYS FROM THE DATE OF ISSUE.
             </p>
         </div>
         <div class="row">
@@ -101,18 +96,6 @@
                    Ministry of Agriculture and Forests, Thimphu, Bhutan.
             </p>
         </div>
-
-        <div class="row">
-            Copy to:
-        </div>
-        <div class="row">
-            <p>1.The Director General , Bhutan Agriculture and Food Regulatory Authority, MoAF, Thimphu</p>
-        </div>
-        <div class="row">
-            <p>2.The Officer In charge, BAFRA, {{ Dzongkhag }} .Dzongkhag for necessary information</p>
-        </div>
-
-
         {% endfor %}
     </div>
 </div>

@@ -30,9 +30,10 @@ from livestock.models import t_livestock_clearance_meat_shop_t1, t_livestock_ant
 from plant.forms import ImportFormThree, ImportFormTwo
 from plant.models import t_workflow_details, t_plant_movement_permit_t2, t_plant_movement_permit_t1, \
     t_plant_movement_permit_t3, t_file_attachment, t_plant_import_permit_t1, t_plant_import_permit_t2, \
-    t_plant_import_permit_t3, t_plant_export_certificate_plant_plant_products_t1, \
+    t_plant_export_certificate_plant_plant_products_t1, \
     t_plant_clearence_nursery_seed_grower_t1, t_plant_clearence_nursery_seed_grower_t2, t_plant_seed_certification_t1, \
-    t_plant_seed_certification_t2, t_plant_seed_certification_t3, t_payment_details
+    t_plant_seed_certification_t2, t_plant_seed_certification_t3, t_payment_details, \
+    t_plant_import_permit_inspection_t3, t_plant_import_permit_inspection_t1, t_plant_import_permit_inspection_t2
 from certification.models import t_certification_gap_t1, t_certification_gap_t2, t_certification_gap_t3, \
     t_certification_gap_t4, t_certification_gap_t5, t_certification_gap_t6, t_certification_gap_t7, \
     t_certification_gap_t8, t_certification_food_t1, t_certification_food_t2, t_certification_food_t3, \
@@ -86,8 +87,8 @@ def oic_application(request):
 def inspector_application(request):
     Login_Id = request.session['Login_Id']
     Field_Office_Id = request.session['field_office_id']
-    new_import_app = t_workflow_details.objects.filter(Assigned_To=Login_Id, Field_Office_Id=Field_Office_Id,
-                                                       Application_Status='AP', Action_Date__isnull=False) \
+    new_import_app = t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='AP',
+                                                       Action_Date__isnull=False) \
                      | t_workflow_details.objects.filter(Assigned_To=Login_Id, Field_Office_Id=Field_Office_Id,
                                                          Application_Status='I', Action_Date__isnull=False) \
                      | t_workflow_details.objects.filter(Assigned_To=Login_Id, Field_Office_Id=Field_Office_Id,
@@ -96,10 +97,10 @@ def inspector_application(request):
                                                          Application_Status='FR', Action_Date__isnull=False) \
                      | t_workflow_details.objects.filter(Assigned_To=Login_Id, Field_Office_Id=Field_Office_Id,
                                                          Application_Status='P', Action_Date__isnull=False) \
-                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Field_Office_Id=Field_Office_Id,
-                                                         Application_Status='APA', Action_Date__isnull=False) \
-                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Field_Office_Id=Field_Office_Id,
-                                                         Application_Status='NCF', Action_Date__isnull=False)
+                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='APA',
+                                                         Action_Date__isnull=False) \
+                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='NCF',
+                                                         Action_Date__isnull=False)
     service_details = t_service_master.objects.all()
     return render(request, 'inspector_pending_list.html',
                   {'service_details': service_details, 'application_details': new_import_app})
@@ -377,19 +378,22 @@ def view_application_details(request):
                        'village': village, 'location': location, 'details_list': details_list,
                        'inspector_list': user_role_list, 'movement_permit': movement_permit})
     elif service_code == 'IPP':
-        application_details = t_plant_import_permit_t1.objects.filter(Application_No=application_id)
+        application_details = t_plant_import_permit_inspection_t1.objects.filter(Application_No=application_id)
         location = t_field_office_master.objects.all()
-        details_list = t_plant_import_permit_t2.objects.filter(Application_No=application_id)
+        details_list = t_plant_import_permit_inspection_t2.objects.filter(Application_No=application_id)
         file = t_file_attachment.objects.filter(Application_No=application_id)
         workflow_details = t_workflow_details.objects.filter(Application_No=application_id)
         for application in workflow_details:
             Field_Office = application.Field_Office_Id
         user_role_list = t_user_master.objects.filter(Role_Id='5', Field_Office_Id_id=Field_Office)
-        import_permit = t_plant_import_permit_t3.objects.filter(Application_No=application_id)
+        crop = t_plant_crop_master.objects.all()
+        pesticide = t_plant_pesticide_master.objects.all()
+        variety = t_plant_crop_variety_master.objects.all()
         return render(request, 'import_permit/inspector_import_permit.html',
                       {'application_details': application_details,
                        'location': location, 'import': details_list, 'inspector_list': user_role_list,
-                       'file': file, 'import_permit': import_permit})
+                       'file': file, 'crop': crop, 'pesticide': pesticide,
+                       'variety': variety})
     elif service_code == 'EPP':
         application_details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(
             Application_No=application_id)
@@ -638,7 +642,8 @@ def view_application_details(request):
                               {'application_details': application_details, 'details': details, 'file': file,
                                'inspector_list': inspector_list, 'unit': unit, 'inspection_details': inspection_details,
                                'team_details': team_details, 'inspection_team_details': inspection_team_details,
-                               'food_handler': food_handler,'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village})
+                               'food_handler': food_handler, 'dzongkhag': dzongkhag, 'gewog': gewog,
+                               'village': village})
             else:
                 application_details = t_food_business_registration_licensing_t1.objects.filter(
                     Application_No=application_id)
@@ -652,6 +657,13 @@ def view_application_details(request):
                     Application_No=application_id, Meeting_Type="Factory Inspection")
                 inspection_team_details = t_food_business_registration_licensing_t6.objects.filter(
                     Application_No=application_id, Meeting_Type="Factory Inspection")
+                feasibility_inspection_team_details = t_food_business_registration_licensing_t6.objects.filter(
+                    Application_No=application_id, Meeting_Type='Feasibility Inspection')
+                feasibility_team_details = t_food_business_registration_licensing_t4.objects.filter(Application_No=application_id,
+                                                                                        Meeting_Type='Feasibility Inspection')
+                feasibility_inspection_details = t_food_business_registration_licensing_t5.objects.filter(
+                    Application_No=application_id,
+                    Inspection_Type='Feasibility Inspection')
                 inspector_list = t_user_master.objects.filter(Role_Id='5')
                 dzongkhag = t_dzongkhag_master.objects.all()
                 gewog = t_gewog_master.objects.all()
@@ -660,7 +672,10 @@ def view_application_details(request):
                               {'application_details': application_details, 'details': details, 'file': file,
                                'inspector_list': inspector_list, 'unit': unit, 'inspection_details': inspection_details,
                                'team_details': team_details, 'inspection_team_details': inspection_team_details,
-                               'food_handler': food_handler, 'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village})
+                               'food_handler': food_handler, 'dzongkhag': dzongkhag, 'gewog': gewog,
+                               'village': village, 'feasibility_team_details': feasibility_team_details,
+                               'feasibility_inspection_team_details':feasibility_inspection_team_details,
+                               'feasibility_inspection_details': feasibility_inspection_details})
     elif service_code == 'OC':
         oc_work_details = t_workflow_details.objects.filter(Application_No=application_id, Application_Status='NCF')
         if oc_work_details.exists():
@@ -712,11 +727,11 @@ def view_application_details(request):
             crop_production = t_certification_gap_t4.objects.filter(Application_No=application_id)
             gap_house_details = t_certification_gap_t5.objects.filter(Application_No=application_id)
             file = t_file_attachment.objects.filter(Application_No=application_id)
-            audit_findings = t_certification_gap_t7.objects.filter(Application_No=application_id)
+            farm_inputs = t_certification_gap_t7.objects.filter(Application_No=application_id)
             audit_observation = t_certification_gap_t8.objects.filter(Application_No=application_id)
             return render(request, 'GAP_Certification/team_leader_nc_details.html',
                           {'application_details': application_details, 'farmer_group': details, 'file_attach': file,
-                           'audit_findings': audit_findings, 'audit_observation': audit_observation,
+                           'farm_inputs': farm_inputs, 'audit_observation': audit_observation,
                            'crop_production': crop_production, 'pack_house_details': gap_house_details,
                            'audit_team_details': audit_team_details})
         else:
@@ -726,11 +741,11 @@ def view_application_details(request):
             crop_production = t_certification_gap_t4.objects.filter(Application_No=application_id)
             gap_house_details = t_certification_gap_t5.objects.filter(Application_No=application_id)
             file = t_file_attachment.objects.filter(Application_No=application_id)
-            audit_findings = t_certification_gap_t7.objects.filter(Application_No=application_id)
+            farm_inputs = t_certification_gap_t7.objects.filter(Application_No=application_id)
             audit_observation = t_certification_gap_t8.objects.filter(Application_No=application_id)
             return render(request, 'GAP_Certification/team_leader_details.html',
                           {'application_details': application_details, 'farmer_group': details, 'file_attach': file,
-                           'audit_findings': audit_findings, 'audit_observation': audit_observation,
+                           'farm_inputs': farm_inputs, 'audit_observation': audit_observation,
                            'crop_production': crop_production, 'pack_house_details': gap_house_details,
                            'audit_team_details': audit_team_details})
     elif service_code == 'FPC':
@@ -761,12 +776,13 @@ def view_application_details(request):
                            })
 
 
-def approve_application(request):
+def         approve_application(request):
     application_id = request.POST.get('application_id')
     Inspection_Leader = request.POST.get('Inspection_Leader')
     Inspection_Team = request.POST.get('Inspection_Team')
     remarks = request.POST.get('remarks')
     Movement_Date = request.POST.get('dateOfInspection')
+    validity_period = request.POST.get('validity_period')
     dateOfInspection = datetime.strptime(Movement_Date, '%d-%m-%Y').date()
     permit_no = get_permit_no(request)
     details = t_plant_movement_permit_t1.objects.filter(Application_No=application_id)
@@ -778,12 +794,32 @@ def approve_application(request):
     details.update(Inspection_Team=Inspection_Team)
     details.update(Inspection_Date=dateOfInspection)
     details.update(Movement_Permit_No=permit_no)
+    details.update(Approved_Date=date.today())
+    details.update(Application_Status='A')
+    details.update(Validity_Period=validity_period)
+    d = timedelta(days=int(validity_period))
+    validity_date = date.today() + d
+    details.update(Validity=validity_date)
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='A')
-
+    update_payment_details(application_id, permit_no, 'MPP', validity_date)
+    for email_id in application_details:
+        emailId = email_id.Email
+        send_mpp_approve_email(permit_no, emailId, validity_date)
     return redirect(inspector_application)
 
+
+def send_mpp_approve_email(permit_no, Email, validity_date):
+    subject = 'APPLICATION APPROVED'
+    message = "Dear Sir," \
+              "" \
+              "Your Application for Movement Permit for Plant And Plant Products Has Been Approved. Your " \
+              "Movement Permit No is:" + permit_no + " And is Valid Till " + " " + str(validity_date) + \
+              " Please Make Payment Before Validity Expires. "
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = [Email]
+    send_mail(subject, message, email_from, recipient_list)
 
 def reject_application(request):
     application_id = request.GET.get('application_id')
@@ -1007,10 +1043,11 @@ def apply_import_permit(request):
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
+    unit = t_unit_master.objects.all()
     return render(request, 'import_permit/apply_import_permit.html',
                   {'crop': crop, 'pesticide': pesticide, 'variety': variety,
                    'location': location, 'country': country, 'dzongkhag': dzongkhag, 'gewog': gewog,
-                   'village': village})
+                   'village': village, 'unit': unit})
 
 
 def save_import_permit(request):
@@ -1251,7 +1288,7 @@ def save_import_plant(request):
         t_plant_import_permit_t2.objects.create(Application_No=appNo, Import_Category=Import_Category,
                                                 Crop_Id=crop_id, Pesticide_Id=None, Description=None,
                                                 Variety_Id=crop_variety_id, Unit=unit, Quantity=qty,
-                                                Quantity_Released=None, Remarks=None)
+                                                Quantity_Released=None, Remarks=None, Quantity_Balance=qty)
         imports_plant = t_plant_import_permit_t2.objects.filter(Application_No=appNo)
         return render(request, 'import_permit/import_page_plant.html', {'import': imports_plant, 'title': appNo})
 
@@ -1268,7 +1305,7 @@ def save_import_agro(request):
                                                 Crop_Id=None, Pesticide_Id=pesticide_id,
                                                 Description=description,
                                                 Variety_Id=None, Unit=unit, Quantity=qty,
-                                                Quantity_Released=None, Remarks=None)
+                                                Quantity_Released=None, Remarks=None, Quantity_Balance=qty)
         imports_plant = t_plant_import_permit_t2.objects.filter(Application_No=appNo)
     return render(request, 'import_permit/import_page_agro.html', {'import': imports_plant, 'title': appNo})
 
@@ -1284,9 +1321,15 @@ def fo_app_details(request):
         new_import_app = t_plant_import_permit_t1.objects.filter(Application_No=Application_No)
         details = t_plant_import_permit_t2.objects.filter(Application_No=Application_No)
         file = t_file_attachment.objects.filter(Application_No=Application_No)
+        location_mapping = t_field_office_master.objects.filter(Is_Entry_Point="Y")
+        country = t_country_master.objects.all()
+        crop = t_plant_crop_master.objects.all()
+        pesticide = t_plant_pesticide_master.objects.all()
+        variety = t_plant_crop_variety_master.objects.all()
         return render(request, 'import_permit/fo_import_permit.html',
                       {'application_details': new_import_app, 'details': details, 'file': file, 'dzongkhag': dzongkhag,
-                       'village': village, 'location': location})
+                       'village': village, 'location': location_mapping, 'country': country,
+                       'crop': crop, 'pesticide': pesticide, 'variety': variety})
     elif service_code == 'IAF':
         application_details = t_livestock_import_permit_animal_t1.objects.filter(Application_No=Application_No)
         details = t_livestock_import_permit_animal_t2.objects.filter(Application_No=Application_No)
@@ -1325,11 +1368,29 @@ def fo_app_details(request):
             unit = t_unit_master.objects.all()
             oic_list = t_field_office_master.objects.all()
             inspector_list = t_user_master.objects.filter(Role_Id='5')
+            inspection_team_details = t_food_business_registration_licensing_t6.objects.filter(
+                Application_No=Application_No, Meeting_Type='Feasibility Inspection')
+            team_details = t_food_business_registration_licensing_t4.objects.filter(Application_No=Application_No,
+                                                                                    Meeting_Type='Feasibility Inspection')
+            inspection_details = t_food_business_registration_licensing_t5.objects.filter(Application_No=Application_No,
+                                                                                          Inspection_Type='Feasibility Inspection')
+            factory_inspection_team_details = t_food_business_registration_licensing_t6.objects.filter(
+                Application_No=Application_No, Meeting_Type='Factory Inspection')
+            factory_team_details = t_food_business_registration_licensing_t4.objects.filter(
+                Application_No=Application_No,
+                Meeting_Type='Factory Inspection')
+            factory_inspection_details = t_food_business_registration_licensing_t5.objects.filter(
+                Application_No=Application_No,
+                Inspection_Type='Factory Inspection')
             return render(request, 'registration_licensing/fo_approve_details.html',
                           {'application_details': application_details, 'details': details, 'file': file,
                            'oic_list': oic_list, 'location': location, 'unit': unit, 'dzongkhag': dzongkhag,
                            'gewog': gewog, 'village': village, 'food_handler': food_handler,
-                           'inspector_list': inspector_list})
+                           'inspector_list': inspector_list, 'inspection_team_details': inspection_team_details,
+                           'team_details': team_details, 'inspection_details': inspection_details,
+                           'factory_inspection_team_details': factory_inspection_team_details,
+                           'factory_team_details': factory_team_details,
+                           'factory_inspection_details': factory_inspection_details})
         else:
             application_details = t_food_business_registration_licensing_t1.objects.filter(
                 Application_No=Application_No)
@@ -1436,19 +1497,22 @@ def fo_app_details(request):
                 audit_team_details = t_certification_gap_t3.objects.filter(Application_No=Application_No)
                 crop_production = t_certification_gap_t4.objects.filter(Application_No=Application_No)
                 gap_house_details = t_certification_gap_t5.objects.filter(Application_No=Application_No)
-                file = t_file_attachment.objects.filter(Application_No=Application_No)
-                audit_findings = t_certification_gap_t7.objects.filter(Application_No=Application_No)
+                file = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type__isnull=True)
+                audit_plan = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='Audit Plan')
+                farm_inputs = t_certification_gap_t7.objects.filter(Application_No=Application_No)
                 audit_observation = t_certification_gap_t8.objects.filter(Application_No=Application_No)
                 team_leader = t_user_master.objects.filter(Login_Type='I')
                 dzongkhag = t_dzongkhag_master.objects.all()
                 gewog = t_gewog_master.objects.all()
                 village = t_village_master.objects.all()
+                user_details = t_user_master.objects.all()
                 return render(request, 'GAP_Certification/approve_fo_details.html',
                               {'application_details': application_details, 'farmer_group': details, 'file': file,
-                               'audit_findings': audit_findings, 'audit_observation': audit_observation,
+                               'farm_inputs': farm_inputs, 'audit_observation': audit_observation,
                                'crop_production': crop_production, 'gap_house_details': gap_house_details,
                                'audit_team': audit_team_details, 'team_leader': team_leader,
-                               'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village})
+                               'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village,
+                               'user_details': user_details, 'audit_plan': audit_plan})
             else:
                 application_details = t_certification_gap_t1.objects.filter(Application_No=Application_No)
                 details = t_certification_gap_t2.objects.filter(Application_No=Application_No)
@@ -1608,23 +1672,27 @@ def view_oic_details(request):
                        'village': village, 'location': location})
 
     elif service_code == 'IPP':
-        application_id = request.GET.get('application_id')
-        application_details = t_plant_import_permit_t1.objects.filter(Application_No=application_id)
-        dzongkhag = t_dzongkhag_master.objects.all()
-        gewog = t_gewog_master.objects.all()
-        village = t_village_master.objects.all()
-        location = t_location_field_office_mapping.objects.all()
-        details_list = t_plant_import_permit_t2.objects.filter(Application_No=application_id)
+        application_no = request.GET.get('application_id')
+        new_import_app = t_plant_import_permit_inspection_t1.objects.filter(Application_No=application_no)
+        details = t_plant_import_permit_inspection_t2.objects.filter(Application_No=application_no)
+        file = t_file_attachment.objects.filter(Application_No=application_no)
+        location_mapping = t_field_office_master.objects.filter(Is_Entry_Point="Y")
+        country = t_country_master.objects.all()
+        crop = t_plant_crop_master.objects.all()
+        pesticide = t_plant_pesticide_master.objects.all()
+        variety = t_plant_crop_variety_master.objects.all()
         workflow_details = t_workflow_details.objects.filter(Application_No=application_id)
         file = t_file_attachment.objects.filter(Application_No=application_id)
         for application in workflow_details:
             Field_Office = application.Field_Office_Id
         user_role_list = t_user_master.objects.filter(Role_Id='5', Field_Office_Id_id=Field_Office)
-
+        dzongkhag = t_dzongkhag_master.objects.all()
+        gewog = t_gewog_master.objects.all()
+        village = t_village_master.objects.all()
         return render(request, 'import_permit/oic_import_application.html',
-                      {'application_details': application_details, 'dzongkhag': dzongkhag, 'gewog': gewog,
-                       'village': village, 'location': location, 'details_list': details_list,
-                       'file': file, 'inspector_list': user_role_list})
+                      {'application_details': new_import_app, 'details': details, 'file': file, 'dzongkhag': dzongkhag,
+                       'village': village, 'location': location_mapping, 'country': country,
+                       'crop': crop, 'pesticide': pesticide, 'variety': variety, 'inspector_list': user_role_list})
 
     elif service_code == 'EPP':
         application_id = request.GET.get('application_id')
@@ -1816,10 +1884,16 @@ def view_oic_details(request):
         application_details = t_food_import_permit_inspection_t1.objects.filter(
             Application_No=application_id)
         details = t_food_import_permit_inspection_t2.objects.filter(Application_No=application_id)
-        file = t_file_attachment.objects.filter(Application_No=application_id)
+        for app_details in application_details:
+            permit_no = app_details.Import_Permit_No
+            detail_of_app = t_food_import_permit_t1.objects.filter(
+                Import_Permit_No=permit_no)
+            for detail_in in detail_of_app:
+                file = t_file_attachment.objects.filter(Application_No=detail_in.Application_No)
         workflow_details = t_workflow_details.objects.filter(Application_No=application_id)
         for application in workflow_details:
             Field_Office = application.Field_Office_Id
+
         user_role_list = t_user_master.objects.filter(Role_Id='5', Field_Office_Id_id=Field_Office)
         return render(request, 'import_certificate_food/oic_details.html',
                       {'application_details': application_details, 'file': file,
@@ -1906,10 +1980,10 @@ def add_import_details_ins(request):
     application_id = request.GET.get('application_id')
     currentObservation = request.GET.get('currentObservation')
     decisionConform = request.GET.get('decisionConform')
-    t_plant_import_permit_t3.objects.create(Application_No=application_id,
+    t_plant_import_permit_inspection_t3.objects.create(Application_No=application_id,
                                             Current_Observation=currentObservation,
                                             Decision_Conformity=decisionConform)
-    import_permit = t_plant_import_permit_t3.objects.filter(Application_No=application_id)
+    import_permit = t_plant_import_permit_inspection_t3.objects.filter(Application_No=application_id)
     return render(request, 'import_permit/add_import_details.html', {'import_permit': import_permit})
 
 
@@ -1965,18 +2039,80 @@ def update_inspection_call_details(request):
     remarks = request.POST.get('remarks')
     if service_code == 'IPP':
         details = t_plant_import_permit_t1.objects.filter(Application_No=appNo)
-        details.update(Actual_Point_Of_Entry=entry_point)
-        details.update(Proposed_Inspection_Date=date_requested)
-        details.update(Inspection_Request_Remarks=remarks)
+        import_app = t_plant_import_permit_t2.objects.filter(Application_No=appNo)
+        new_import_application_no = new_plant_import_application_no(service_code)
 
-        oic_details = t_user_master.objects.filter(Field_Office_Id_id=entry_point)
-        for oic in oic_details:
-            oic_user = oic.Login_Id
-        workflow_details = t_workflow_details.objects.filter(Application_No=appNo)
-        workflow_details.update(Assigned_To=oic_user)
-        workflow_details.update(Assigned_Role_Id='4')
-        workflow_details.update(Action_Date=date.today())
-        workflow_details.update(Field_Office_Id=entry_point)
+        for details in details:
+            t_plant_import_permit_inspection_t1.objects.create(
+                Application_No=new_import_application_no,
+                Import_Type=details.Import_Type,
+                License_No=details.License_No,
+                Business_Name=details.Business_Name,
+                CID=details.CID,
+                Applicant_Name=details.Applicant_Name,
+                Present_Address=details.Present_Address,
+                Contact_No=details.Contact_No,
+                Email=details.Email,
+                Name_And_Address_Supplier=details.Name_And_Address_Supplier,
+                Means_of_Conveyance=details.Means_of_Conveyance,
+                Place_Of_Entry=details.Place_Of_Entry,
+                Purpose=details.Purpose,
+                Final_Destination=details.Final_Destination,
+                Import_Inspection_Submit_Date=date.today(),
+                Proposed_Inspection_Date=date_requested,
+                Actual_Point_Of_Entry=entry_point,
+                Inspection_Request_Remarks=remarks,
+                Import_Permit_No=details.Import_Permit_No,
+                Inspection_Date=None,
+                Inspection_Type=None,
+                Inspection_Time=None,
+                Inspection_Leader=None,
+                Inspection_Team=None,
+                Clearance_Ref_No=None,
+                Expected_Arrival_Date=details.Expected_Arrival_Date,
+                FO_Remarks=details.FO_Remarks,
+                Inspection_Remarks=None,
+                Country_Of_Origin=details.Country_Of_Origin,
+                Application_Date=details.Application_Date,
+                Applicant_Id=details.Applicant_Id,
+                Approved_Date=details.Approved_Date,
+                Validity_Period=details.Validity_Period,
+                Validity=details.Validity,
+                Application_Type=details.Application_Type,
+                Nationality=details.Nationality,
+                dzongkhag=details.dzongkhag,
+                gewog=details.gewog,
+                Nationality_Type=details.Nationality_Type,
+                village=details.village,
+                passport_number=details.passport_number
+            )
+            for import_details in import_app:
+                t_plant_import_permit_inspection_t2.objects.create(
+                    Application_No=new_import_application_no,
+                    Import_Category=import_details.Import_Category,
+                    Crop_Id=import_details.Crop_Id,
+                    Pesticide_Id=import_details.Pesticide_Id,
+                    Description=import_details.Description,
+                    Variety_Id=import_details.Variety_Id,
+                    Unit=import_details.Unit,
+                    Quantity=import_details.Quantity,
+                    Quantity_Released=0,
+                    Quantity_Rejected=0,
+                    Remarks=import_details.Remarks,
+                    Quantity_Balance=import_details.Quantity_Balance,
+                    Product_Record_Id=import_details.pk
+                )
+        field = t_location_field_office_mapping.objects.filter(Location_Code=entry_point)
+        for field_office in field:
+            field_office_id = field_office.Field_Office_Id_id
+        t_workflow_details.objects.create(Application_No=new_import_application_no,
+                                          Applicant_Id=request.session['email'],
+                                          Assigned_To=None, Field_Office_Id=field_office_id, Section='Plant',
+                                          Assigned_Role_Id='4', Action_Date=date.today(), Application_Status='P',
+                                          Service_Code=service_code)
+        login_id = request.session['Login_Id']
+        application_details = t_workflow_details.objects.filter(Assigned_To=login_id)
+        return render(request, 'inspection_call.html', {'application_details': application_details})
     elif service_code == 'IAF':
         detail = t_livestock_import_permit_animal_t1.objects.filter(Application_No=appNo)
         import_app = t_livestock_import_permit_animal_t2.objects.filter(Application_No=appNo)
@@ -2043,7 +2179,7 @@ def update_inspection_call_details(request):
         t_workflow_details.objects.create(Application_No=new_import_application_no,
                                           Applicant_Id=request.session['email'],
                                           Assigned_To=None, Field_Office_Id=field_office_id, Section='Livestock',
-                                          Assigned_Role_Id='4', Action_Date=None, Application_Status='P',
+                                          Assigned_Role_Id='4', Action_Date=date.today(), Application_Status='P',
                                           Service_Code=service_code)
         login_id = request.session['Login_Id']
         application_details = t_workflow_details.objects.filter(Assigned_To=login_id)
@@ -2113,7 +2249,7 @@ def update_inspection_call_details(request):
         t_workflow_details.objects.create(Application_No=new_import_application_no,
                                           Applicant_Id=request.session['email'],
                                           Assigned_To=None, Field_Office_Id=field_office_id, Section='Livestock',
-                                          Assigned_Role_Id='4', Action_Date=None, Application_Status='P',
+                                          Assigned_Role_Id='4', Action_Date=date.today(), Application_Status='P',
                                           Service_Code=service_code)
         login_id = request.session['Login_Id']
         application_details = t_workflow_details.objects.filter(Assigned_To=login_id)
@@ -2149,7 +2285,7 @@ def update_inspection_call_details(request):
                 Approve_Date=details.Approve_Date,
                 Validity_Period=None,
                 Validity=None,
-                Import_Permit_No=None,
+                Import_Permit_No=details.Import_Permit_No,
                 Proposed_Inspection_Date=date_format_ins,
                 Actual_Point_Of_Entry=entry_point,
                 Inspection_Request_Remarks=remarks,
@@ -2189,7 +2325,7 @@ def update_inspection_call_details(request):
                                           Service_Code=service_code)
         login_id = request.session['Login_Id']
         application_details = t_workflow_details.objects.filter(Assigned_To=login_id)
-        return render(request, 'inspection_call.html', {'application_details': application_details})
+    return redirect(call_for_inspection)
 
 
 def new_animal_fish_import_application_no(service_code):
@@ -2199,7 +2335,22 @@ def new_animal_fish_import_application_no(service_code):
         year = timezone.now().year
         newAppNo = service_code + "/I/" + str(year) + "/" + "0001"
     else:
-        substring = str(lastAppNo)[9:15]
+        substring = str(lastAppNo)[12:15]
+        substring = int(substring) + 1
+        AppNo = str(substring).zfill(4)
+        year = timezone.now().year
+        newAppNo = service_code + "/I/" + str(year) + "/" + AppNo
+    return newAppNo
+
+
+def new_plant_import_application_no(service_code):
+    last_application_no = t_plant_import_permit_inspection_t1.objects.aggregate(Max('Application_No'))
+    lastAppNo = last_application_no['Application_No__max']
+    if not lastAppNo:
+        year = timezone.now().year
+        newAppNo = service_code + "/I/" + str(year) + "/" + "0001"
+    else:
+        substring = str(lastAppNo)[12:15]
         substring = int(substring) + 1
         AppNo = str(substring).zfill(4)
         year = timezone.now().year
@@ -2214,7 +2365,7 @@ def new_livestock_product_import_application_no(service_code):
         year = timezone.now().year
         newAppNo = service_code + "/I/" + str(year) + "/" + "0001"
     else:
-        substring = str(lastAppNo)[9:15]
+        substring = str(lastAppNo)[12:15]
         substring = int(substring) + 1
         AppNo = str(substring).zfill(4)
         year = timezone.now().year
@@ -2229,7 +2380,7 @@ def new_food_import_application_no(service_code):
         year = timezone.now().year
         newAppNo = service_code + "/I/" + str(year) + "/" + "0001"
     else:
-        substring = str(lastAppNo)[11:15]
+        substring = str(lastAppNo)[12:15]
         substring = int(substring) + 1
         AppNo = str(substring).zfill(4)
         year = timezone.now().year
@@ -2383,33 +2534,29 @@ def send_import_reject_email(remarks, Email):
 
 
 def fo_approve(request):
-    service_code = request.POST.get('service_code')
-    if service_code == 'IPP':
-        new_import_permit = get_import_permit_no()
-        appId = request.POST.get('application_id')
-        remarks = request.POST.get('remarks')
-
-        details = t_plant_import_permit_t1.objects.filter(Application_No=appId)
-        for email_id in details:
-            email = email_id.Email
-        details.update(Import_Permit_No=new_import_permit)
-        if remarks is not None:
-            details.update(FO_Remarks=remarks)
-        else:
-            details.update(FO_Remarks=None)
-        application_details = t_workflow_details.objects.filter(Application_No=appId)
-        for app in application_details:
-            client_login_id = app.Applicant_Id
-        client_id = t_user_master.objects.filter(Email_Id=client_login_id)
-        for client in client_id:
-            login_id = client.Login_Id
-            application_details.update(Assigned_To=login_id)
-        application_details.update(Action_Date=date.today())
-        send_import_approve_email(new_import_permit, email)
-
-    new_import_app = t_workflow_details.objects.filter(Assigned_Role_Id='4', Section='Plant',
-                                                       Application_Status='P')
-    return render(request, 'import_permit/new_import_permit_fo.html', {'new_import_app': new_import_app})
+    new_import_permit = get_import_permit_no()
+    appId = request.POST.get('application_id')
+    remarks = request.POST.get('remarks')
+    print(appId)
+    details = t_plant_import_permit_t1.objects.filter(Application_No=appId)
+    for email_id in details:
+        email = email_id.Email
+    details.update(Import_Permit_No=new_import_permit)
+    if remarks is not None:
+        details.update(FO_Remarks=remarks)
+    else:
+        details.update(FO_Remarks=None)
+    application_details = t_workflow_details.objects.filter(Application_No=appId)
+    for app in application_details:
+        client_login_id = app.Applicant_Id
+    client_id = t_user_master.objects.filter(Email_Id=client_login_id)
+    for client in client_id:
+        login_id = client.Login_Id
+        application_details.update(Assigned_To=login_id)
+    application_details.update(Action_Date=date.today())
+    application_details.update(Assigned_Role_Id=None)
+    send_import_approve_email(new_import_permit, email)
+    return redirect(focal_officer_application)
 
 
 def send_import_approve_email(new_import_permit, Email):
@@ -2489,15 +2636,15 @@ def add_details_ins_import(request):
     application_id = request.GET.get('application_id')
     currentObservation = request.GET.get('currentObservation')
     decisionConform = request.GET.get('decisionConform')
-    t_plant_import_permit_t3.objects.create(Application_No=application_id,
+    t_plant_import_permit_inspection_t3.objects.create(Application_No=application_id,
                                             Current_Observation=currentObservation,
                                             Decision_Conformity=decisionConform)
-    import_permit = t_plant_import_permit_t3.objects.filter(Application_No=application_id)
+    import_permit = t_plant_import_permit_inspection_t3.objects.filter(Application_No=application_id)
     return render(request, 'import_permit/add_import_details.html', {'import_permit': import_permit})
 
 
 def edit_decision(request, Record_Id):
-    decision = get_object_or_404(t_plant_import_permit_t3, pk=Record_Id)
+    decision = get_object_or_404(t_plant_import_permit_inspection_t3, pk=Record_Id)
     if request.method == 'POST':
         form = ImportFormThree(request.POST, instance=decision)
     else:
@@ -2511,7 +2658,7 @@ def save_decision_form(request, form, template_name):
         if form.is_valid():
             form.save()
             data['form_is_valid'] = True
-            decision = t_plant_import_permit_t3.objects.all()
+            decision = t_plant_import_permit_inspection_t3.objects.all()
             data['html_form'] = render_to_string('import_permit/add_import_details.html', {
                 'import_permit': decision
             })
@@ -2527,7 +2674,8 @@ def submit_application(request):
     Inspection_Leader = request.GET.get('Inspection_Leader')
     Inspection_Team = request.GET.get('Inspection_Team')
     remarks = request.GET.get('remarks')
-    dateOfInspection = request.GET.get('dateOfInspection')
+    inspection_date = request.GET.get('dateOfInspection')
+    dateOfInspection = datetime.strptime(inspection_date, '%d-%m-%Y').date()
 
     clearnace_ref_no = clearance_ref_no(request)
 
@@ -2536,6 +2684,7 @@ def submit_application(request):
     update_details.update(Inspection_Leader=Inspection_Leader)
     update_details.update(Inspection_Team=Inspection_Team)
     update_details.update(Inspection_Date=dateOfInspection)
+    update_details.update(Approved_Date=date.today())
     if remarks is not None:
         update_details.update(Inspection_Remarks=remarks)
     else:
@@ -2543,10 +2692,10 @@ def submit_application(request):
     application_details = t_workflow_details.objects.filter(Application_No=application_no)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='C')
-    application_list = t_workflow_details.objects.filter(Application_Status='A')
-
-    return render(request, 'inspector_pending_list.html',
-                  {'service_name': None, 'application_details': application_list})
+    for email_id in update_details:
+        emailId = email_id.Email
+        send_imp_approve_email(clearnace_ref_no, emailId)
+    return redirect(inspector_application)
 
 
 def clearance_ref_no(request):
@@ -2568,6 +2717,17 @@ def clearance_ref_no(request):
         year = timezone.now().year
         newPermitNo = Field_Code + "/" + "IPP" + "/" + str(year) + "/" + AppNo
     return newPermitNo
+
+
+def send_imp_approve_email(new_import_permit, Email):
+    subject = 'APPLICATION APPROVED'
+    message = "Dear Sir," \
+              "" \
+              "Your Application for Import Permit for Plant And Plant Products Has Been Approved. Your " \
+              "Reference No is:" + new_import_permit + " . "
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = [Email]
+    send_mail(subject, message, email_from, recipient_list)
 
 
 def load_import_details(request):
@@ -2703,6 +2863,48 @@ def agro_import_update(request):
     return JsonResponse(data)
 
 
+def update_details_plant(request):
+    application_no = request.POST.get('plant_applicationNo')
+    record_id = request.POST.get('record_id')
+    approved_quantity = request.POST.get('qty_approved')
+    qty_balance = request.POST.get('qty_balance')
+
+    import_det = t_plant_import_permit_inspection_t2.objects.filter(pk=record_id)
+    import_det.update(Quantity_Released=approved_quantity)
+    import_det.update(Quantity_Balance=qty_balance)
+    for import_IPP in import_det:
+        Product_Record_Id = import_IPP.Product_Record_Id
+        balance = int(import_IPP.Quantity_Balance) - int(import_IPP.Quantity_Released)
+        product_details = t_plant_import_permit_t2.objects.filter(pk=Product_Record_Id)
+        product_details.update(Quantity_Balance=balance)
+    application_details = t_plant_import_permit_inspection_t2.objects.filter(Application_No=application_no)
+    crop = t_plant_crop_master.objects.all()
+    variety = t_plant_crop_variety_master.objects.all()
+    return render(request, 'import_permit/plant_details.html', {'import': application_details,
+                                                                'crop': crop, 'variety': variety})
+
+
+def update_details_agro(request):
+    application_no = request.POST.get('agro_applicationNo')
+    record_id = request.POST.get('agro_record_id')
+    approved_quantity = request.POST.get('agro_qty_approved')
+    agro_qty_balance = request.POST.get('agro_qty_balance')
+
+    import_det = t_plant_import_permit_inspection_t2.objects.filter(pk=record_id)
+    import_det.update(Quantity_Released=approved_quantity)
+    import_det.update(Quantity_Balance=agro_qty_balance)
+    for import_IPP in import_det:
+        Product_Record_Id = import_IPP.Product_Record_Id
+        balance = int(import_IPP.Quantity_Balance) - int(import_IPP.Quantity_Released)
+        product_details = t_plant_import_permit_t2.objects.filter(pk=Product_Record_Id)
+        product_details.update(Quantity_Balance=balance)
+
+    application_details = t_plant_import_permit_t2.objects.filter(Application_No=application_no)
+    pesticide = t_plant_pesticide_master.objects.all()
+    return render(request, 'import_permit/agro_details.html', {'import': application_details,
+                                                               'pesticide': pesticide})
+
+
 # Export Permit
 def apply_export_permit(request):
     dzongkhag = t_dzongkhag_master.objects.all()
@@ -2733,6 +2935,7 @@ def submit_export(request):
     Locatipn_Code = request.POST.get('p_Location_Code')
     Consingee_Name_Address = request.POST.get('p_Name_Address')
     Botanical_Name = request.POST.get('p_Botanical_Name')
+    common_name = request.POST.get('p_Common_Name')
     Description = request.POST.get('p_Description')
     Qty_Gross = request.POST.get('p_Qty_Gross')
     Unit_Gross = request.POST.get('p_Unit_Gross')
@@ -2878,7 +3081,8 @@ def submit_export(request):
             Other_Pre=Other_Pre,
             Other_Treatment=Other_Treatment,
             Application_Date=date.today(),
-            Applicant_Id=Applicant_Id
+            Applicant_Id=Applicant_Id,
+            Common_Name=common_name
         )
         field_office_id = Entry_Point
     else:
@@ -2973,7 +3177,8 @@ def submit_export(request):
                 Other_Pre=None,
                 Other_Treatment=None,
                 Application_Date=date.today(),
-                Applicant_Id=Applicant_Id
+                Applicant_Id=Applicant_Id,
+                Common_Name=None
             )
         elif Applicant_Type == 'directRadio':
             t_plant_export_certificate_plant_plant_products_t1.objects.create(
@@ -3066,7 +3271,8 @@ def submit_export(request):
                 Other_Pre=None,
                 Other_Treatment=None,
                 Application_Date=date.today(),
-                Applicant_Id=Applicant_Id
+                Applicant_Id=Applicant_Id,
+                Common_Name=None
             )
         else:
             t_plant_export_certificate_plant_plant_products_t1.objects.create(
@@ -3159,7 +3365,8 @@ def submit_export(request):
                 Other_Pre=None,
                 Other_Treatment=None,
                 Application_Date=date.today(),
-                Applicant_Id=Applicant_Id
+                Applicant_Id=Applicant_Id,
+                Common_Name=None
             )
         field_id = t_location_field_office_mapping.objects.filter(pk=C_Locatipn_Code)
         for field_office in field_id:
@@ -3260,9 +3467,9 @@ def get_export_permit_no(request):
 
 
 def export_complete(request):
-    Login_Id = request.session['Login_Id']
     export_permit = get_export_permit_no(request)
     Application_No = request.POST.get('appNo')
+    print(Application_No)
     date_of_inspection = request.POST.get('date')
     no_of_sample_drawn = request.POST.get('no_of_sample_drawn')
     total_sample_size = request.POST.get('total_sample_size')
@@ -3270,7 +3477,7 @@ def export_complete(request):
     inspection_method = request.POST.getlist('inspection_method')
     pest_detected = request.POST.get('pest_detected')
     pest_category = request.POST.get('pest_category')
-
+    certificate_type = request.POST.get('certificate_type')
     infestation_level = request.POST.get('infestation_level')
     live_dead = request.POST.get('live_dead')
     risk_category = request.POST.get('risk_category')
@@ -3297,73 +3504,103 @@ def export_complete(request):
     c_remarks = request.POST.get('c_remarks')
     Inspection_Date = datetime.strptime(date_of_inspection, '%d-%m-%Y').date()
 
-    if remarks is not None:
-        application_details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(
-            Application_No=Application_No)
-        application_details.update(Inspection_Date=Inspection_Date,
-                                   Sample_Drawn_By=sample_drawn_by,
-                                   Sample_Inspected_By=None,
-                                   Sample_Drawn=no_of_sample_drawn,
-                                   Sample_Size=total_sample_size,
-                                   Inspection_Method=inspection_method,
-                                   Inspection_Method_Other=inspection_method_other,
-                                   Pest_Detected=pest_detected,
-                                   Pest_Scientific_Name=Pest_Scientific_Name,
-                                   Infestation_Level=infestation_level,
-                                   Pest_Status=live_dead,
-                                   Pest_Risk_Category=risk_category,
-                                   Pest_QR_Detected=Pest_QR_Detected,
-                                   Pest_QR_Comment=Pest_QR_Detected_Comments,
-                                   Treatment_Possible=treatment_possible,
-                                   Treatment_Comment=Treatment_Comment,
-                                   Laboratory_Analysis_Required=Laboratory_Analysis_Required,
-                                   Laboratory_Analysis_Comment=Laboratory_Analysis_Comment,
-                                   Phytosanitary_Measures=Phytosanitary_Measures,
-                                   Phytosanitary_Measures_Comment=Phytosanitary_Measures_Comment,
-                                   Inspection_Remarks=remarks,
-                                   Export_Permit=export_permit,
-                                   )
-        if pest_category == "Insect":
-            application_details.update(Pest_Insect=pest_category)
-        elif pest_category == "Mite":
-            application_details.update(Pest_Mite=pest_category)
-        elif pest_category == "Fungi":
-            application_details.update(Pest_Fungi=pest_category)
-        elif pest_category == "Bacteria":
-            application_details.update(Pest_Bacteria=pest_category)
-        elif pest_category == "Virus":
-            application_details.update(Pest_Virus=pest_category)
-        elif pest_category == "Nematode":
-            application_details.update(Pest_Nematode=pest_category)
-        elif pest_category == "Weed":
-            application_details.update(Pest_Weed=pest_category)
+    if certificate_type == 'P':
+        if pest_detected == 'Yes':
+            application_details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(
+                Application_No=Application_No)
+            application_details.update(Inspection_Date=Inspection_Date,
+                                       Sample_Drawn_By=sample_drawn_by,
+                                       Sample_Inspected_By=None,
+                                       Sample_Drawn=no_of_sample_drawn,
+                                       Sample_Size=total_sample_size,
+                                       Inspection_Method=inspection_method,
+                                       Inspection_Method_Other=inspection_method_other,
+                                       Pest_Detected=pest_detected,
+                                       Pest_Scientific_Name=Pest_Scientific_Name,
+                                       Infestation_Level=infestation_level,
+                                       Pest_Status=live_dead,
+                                       Pest_Risk_Category=risk_category,
+                                       Pest_QR_Detected=Pest_QR_Detected,
+                                       Pest_QR_Comment=Pest_QR_Detected_Comments,
+                                       Treatment_Possible=treatment_possible,
+                                       Treatment_Comment=Treatment_Comment,
+                                       Laboratory_Analysis_Required=Laboratory_Analysis_Required,
+                                       Laboratory_Analysis_Comment=Laboratory_Analysis_Comment,
+                                       Phytosanitary_Measures=Phytosanitary_Measures,
+                                       Phytosanitary_Measures_Comment=Phytosanitary_Measures_Comment,
+                                       Inspection_Remarks=remarks,
+                                       Export_Permit=export_permit,
+                                       Approved_Date=date.today()
+                                       )
+            if pest_category == "Insect":
+                application_details.update(Pest_Insect=pest_category)
+            elif pest_category == "Mite":
+                application_details.update(Pest_Mite=pest_category)
+            elif pest_category == "Fungi":
+                application_details.update(Pest_Fungi=pest_category)
+            elif pest_category == "Bacteria":
+                application_details.update(Pest_Bacteria=pest_category)
+            elif pest_category == "Virus":
+                application_details.update(Pest_Virus=pest_category)
+            elif pest_category == "Nematode":
+                application_details.update(Pest_Nematode=pest_category)
+            elif pest_category == "Weed":
+                application_details.update(Pest_Weed=pest_category)
 
-        if treatmentType == "Chemical":
-            application_details.update(Treatment_Chemical=treatmentType)
-            application_details.update(Treatment_Chemical_Name=chemcial_name)
-            if treatment == "Fumigation":
-                application_details.update(Treatment_Chemical_Fumigation=treatment)
-            elif treatment == "Spray":
-                application_details.update(Treatment_Chemical_Fumigation=treatment)
-            elif treatment == "Seed treatment ":
-                application_details.update(Treatment_Chemical_Fumigation=treatment)
-            elif treatment == "others":
-                application_details.update(Treatment_Chemical_Fumigation=treatment)
-                application_details.update(Treatment_Chemical_Other_Specific=others_treatment)
-            application_details.update(Treatment_Chemical_Concentration=Concentration)
-            application_details.update(Treatment_Chemical_Duration=Duration_Temperature)
-            application_details.update(Treatment_Chemical_Treated_By=treated_by)
-            application_details.update(Treatment_Chemical_Additional_Info=additional_Info)
-        elif treatmentType == "Irradiation":
-            application_details.update(Treatment_Irradiation=treatmentType)
-        elif treatmentType == "Hot Water":
-            application_details.update(Treatment_Hot_Water=treatmentType)
-        elif treatmentType == "Dry Heat":
-            application_details.update(Treatment_Dry_Heat=treatmentType)
-        elif treatmentType == "Vapour Heat":
-            application_details.update(Treatment_Vapour_Heat=treatmentType)
-        elif treatmentType == "Cold Treatment":
-            application_details.update(Treatment_Cold_Treatment=treatmentType)
+            if treatmentType == "Chemical":
+                application_details.update(Treatment_Chemical=treatmentType)
+                application_details.update(Treatment_Chemical_Name=chemcial_name)
+                if treatment == "Fumigation":
+                    application_details.update(Treatment_Chemical_Fumigation=treatment)
+                elif treatment == "Spray":
+                    application_details.update(Treatment_Chemical_Fumigation=treatment)
+                elif treatment == "Seed treatment ":
+                    application_details.update(Treatment_Chemical_Fumigation=treatment)
+                elif treatment == "others":
+                    application_details.update(Treatment_Chemical_Fumigation=treatment)
+                    application_details.update(Treatment_Chemical_Other_Specific=others_treatment)
+                application_details.update(Treatment_Chemical_Concentration=Concentration)
+                application_details.update(Treatment_Chemical_Duration=Duration_Temperature)
+                application_details.update(Treatment_Chemical_Treated_By=treated_by)
+                application_details.update(Treatment_Chemical_Additional_Info=additional_Info)
+            elif treatmentType == "Irradiation":
+                application_details.update(Treatment_Irradiation=treatmentType)
+            elif treatmentType == "Hot Water":
+                application_details.update(Treatment_Hot_Water=treatmentType)
+            elif treatmentType == "Dry Heat":
+                application_details.update(Treatment_Dry_Heat=treatmentType)
+            elif treatmentType == "Vapour Heat":
+                application_details.update(Treatment_Vapour_Heat=treatmentType)
+            elif treatmentType == "Cold Treatment":
+                application_details.update(Treatment_Cold_Treatment=treatmentType)
+        else:
+            application_details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(
+                Application_No=Application_No)
+            application_details.update(Inspection_Date=Inspection_Date,
+                                       Sample_Drawn_By=sample_drawn_by,
+                                       Sample_Inspected_By=None,
+                                       Sample_Drawn=no_of_sample_drawn,
+                                       Sample_Size=total_sample_size,
+                                       Inspection_Method=inspection_method,
+                                       Inspection_Method_Other=inspection_method_other,
+                                       Pest_Detected=pest_detected,
+                                       Pest_Scientific_Name=None,
+                                       Infestation_Level=None,
+                                       Pest_Status=None,
+                                       Pest_Risk_Category=None,
+                                       Pest_QR_Detected=None,
+                                       Pest_QR_Comment=None,
+                                       Treatment_Possible=None,
+                                       Treatment_Comment=None,
+                                       Laboratory_Analysis_Required=None,
+                                       Laboratory_Analysis_Comment=None,
+                                       Phytosanitary_Measures=None,
+                                       Phytosanitary_Measures_Comment=None,
+                                       Inspection_Remarks=remarks,
+                                       Export_Permit=export_permit,
+                                       Approved_Date=date.today()
+                                       )
+
     else:
         C_Inspection_Date = datetime.strptime(c_dateOfInspection, '%d-%m-%Y').date()
         application_details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(
@@ -3371,6 +3608,7 @@ def export_complete(request):
         application_details.update(Inspection_Date=C_Inspection_Date,
                                    Inspection_Remarks=c_remarks,
                                    Export_Permit=export_permit,
+                                   Approved_Date=date.today()
                                    )
     work_details = t_workflow_details.objects.filter(Application_No=Application_No)
     work_details.update(Action_Date=date.today())
@@ -3640,7 +3878,7 @@ def approve_nursery_application(request):
     details.update(Technical_Clearance=Technical_Clearance)
     details.update(Recommendation=Recommendation)
     details.update(Clearance_Number=clearance_ref_no)
-
+    details.update(Approved_Date=date.today())
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='A')
@@ -4037,6 +4275,7 @@ def approve_certificate_application(request):
     details.update(Inspection_Team=Inspection_Team)
     details.update(Inspection_Date=dateOfInspection)
     details.update(Seed_Certificate=certificate_no)
+    details.update(Approved_Date=date.today())
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='A')
@@ -4224,8 +4463,9 @@ def view_certificate_details(request):
     if service_code == 'MPP':
         application_details = t_plant_movement_permit_t1.objects.filter(Applicant_Id=login_id,
                                                                         Movement_Permit_No__isnull=False)
+        payment_details = t_payment_details.objects.all()
         return render(request, 'certificates/movement_certificate_printing_details.html',
-                      {'application_details': application_details})
+                      {'application_details': application_details, 'payment_details': payment_details})
     elif service_code == 'IPP':
         application_details = t_plant_import_permit_t1.objects.filter(Applicant_Id=login_id,
                                                                       Import_Permit_No__isnull=False)
@@ -4419,15 +4659,6 @@ def get_certificate_details(request, t_livestock_import_permit_product_inspectio
         application_details = t_workflow_details.objects.filter(Application_No=application_No)
         if details.exists():
             for det in details:
-                dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.Dzongkhag_Code)
-                for det_dz in dzongkhag_code:
-                    dzongkhag_code_name = det_dz.Dzongkhag_Name
-                village_code = t_village_master.objects.filter(Village_Code=det.Village_Code)
-                for name_vill in village_code:
-                    village_code_name = name_vill.Village_Name
-                gewog_code = t_gewog_master.objects.filter(Gewog_Code=det.Gewog_Code)
-                for gew in gewog_code:
-                    gewog_code_name = gew.Gewog_Name
                 from_dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.From_Dzongkhag_Code)
                 for from_dz in from_dzongkhag_code:
                     from_dzongkhag = from_dz.Dzongkhag_Name
@@ -4439,7 +4670,6 @@ def get_certificate_details(request, t_livestock_import_permit_product_inspectio
                 approved_date = date_approved.Action_Date
             return render(request, 'certificates/movement_permit_plant.html',
                           {'certificate_details': details, 'date': current_date,
-                           'Dzongkhag': dzongkhag_code_name, 'Village': village_code_name, 'Gewog': gewog_code_name,
                            'From_Dzongkhag': from_dzongkhag, 'To_Dzongkhag': to_dzongkhag,
                            'details_permit': details_permit, 'approved_date': approved_date})
         else:
@@ -4488,19 +4718,28 @@ def get_certificate_details(request, t_livestock_import_permit_product_inspectio
         details = t_plant_import_permit_t1.objects.filter(Application_No=application_No, Import_Type='P')
         application_details = t_workflow_details.objects.filter(Application_No=application_No)
         details_permit = t_plant_import_permit_t2.objects.filter(Application_No=application_No)
+        location_mapping = t_field_office_master.objects.filter(Is_Entry_Point="Y")
+        country = t_country_master.objects.all()
+        crop = t_plant_crop_master.objects.all()
+        variety = t_plant_crop_variety_master.objects.all()
         if details.exists():
             for date_approved in application_details:
                 approved_date = date_approved.Action_Date
             return render(request, 'certificates/plant_import_permit.html',
                           {'certificate_details': details, 'import': details_permit,
-                           'approved_date': approved_date})
+                           'approved_date': approved_date, 'location': location_mapping, 'country': country,
+                           'variety': variety, 'crop': crop})
         else:
             details = t_plant_import_permit_t1.objects.filter(Application_No=application_No, Import_Type='A')
             for date_approved in application_details:
                 approved_date = date_approved.Action_Date
-            return render(request, 'certificates/plant_import_permit.html',
+            location_mapping = t_field_office_master.objects.filter(Is_Entry_Point="Y")
+            country = t_country_master.objects.all()
+            pesticide = t_plant_pesticide_master.objects.all()
+            return render(request, 'certificates/agro_import_permit.html',
                           {'certificate_details': details, 'import': details_permit,
-                           'approved_date': approved_date})
+                           'approved_date': approved_date,'location': location_mapping, 'country': country,
+                           'pesticide': pesticide})
     elif service_code == 'RNS':
         details = t_plant_clearence_nursery_seed_grower_t1.objects.filter(Application_No=application_No)
         application_details = t_workflow_details.objects.filter(Application_No=application_No)
@@ -4516,9 +4755,11 @@ def get_certificate_details(request, t_livestock_import_permit_product_inspectio
         details_permit = t_plant_seed_certification_t2.objects.filter(Application_No=application_No)
         for date_approved in application_details:
             approved_date = date_approved.Action_Date
+        crop = t_plant_crop_master.objects.all()
+        variety = t_plant_crop_variety_master.objects.all()
         return render(request, 'certificates/seed_certificate.html',
                       {'certificate_details': details, 'certification_details': details_permit,
-                       'approved_date': approved_date})
+                       'approved_date': approved_date, 'crop': crop, 'variety': variety})
     elif service_code == 'FFC':
         details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(Application_No=application_No,
                                                                                     Certificate_Type='P')
@@ -4544,12 +4785,13 @@ def get_certificate_details(request, t_livestock_import_permit_product_inspectio
         details = t_plant_import_permit_t1.objects.filter(Application_No=application_No)
         application_details = t_workflow_details.objects.filter(Application_No=application_No)
         details_permit = t_plant_import_permit_t2.objects.filter(Application_No=application_No)
+        country = t_country_master.objects.all()
         if details.exists():
             for date_approved in application_details:
                 approved_date = date_approved.Action_Date
-            return render(request, 'certification_certificates/release_form.html',
+            return render(request, 'certificates/release_form.html',
                           {'certificate_details': details, 'release_form': details_permit,
-                           'approved_date': approved_date})
+                           'approved_date': approved_date, 'country': country})
     elif service_code == 'APM':
         details = t_livestock_ante_post_mortem_t1.objects.filter(Application_No=application_No)
         application_details = t_workflow_details.objects.filter(Application_No=application_No)
@@ -4779,9 +5021,18 @@ def call_for_inspection_details(request):
     village = t_village_master.objects.all()
     location = t_location_field_office_mapping.objects.all()
     if service_id == 'IPP':
-        location_details = t_field_office_master.objects.filter(Is_Entry_Point='Y')
-        return render(request, 'import_permit/inspection_call_details.html', {'application_no': application_no,
-                                                                              'location': location_details})
+        new_import_app = t_plant_import_permit_t1.objects.filter(Application_No=application_no)
+        details = t_plant_import_permit_t2.objects.filter(Application_No=application_no)
+        file = t_file_attachment.objects.filter(Application_No=application_no)
+        location_mapping = t_field_office_master.objects.filter(Is_Entry_Point="Y")
+        country = t_country_master.objects.all()
+        crop = t_plant_crop_master.objects.all()
+        pesticide = t_plant_pesticide_master.objects.all()
+        variety = t_plant_crop_variety_master.objects.all()
+        return render(request, 'import_permit/inspection_call_details.html',
+                      {'application_details': new_import_app, 'details': details, 'file': file, 'dzongkhag': dzongkhag,
+                       'village': village, 'location': location_mapping, 'country': country,
+                       'crop': crop, 'pesticide': pesticide, 'variety': variety})
     elif service_id == 'RNS':
         application_details = t_plant_clearence_nursery_seed_grower_t1.objects.filter(Application_No=application_no)
         details = t_plant_clearence_nursery_seed_grower_t2.objects.filter(Application_No=application_no)
@@ -5118,3 +5369,18 @@ def get_citizen_details(request):
     response = requests.get(url, headers=header, verify=False)
     data['response'] = response.json()
     return JsonResponse(data)
+
+
+def update_payment_details(application_no, permit_no, service_code, validity_date):
+    t_payment_details.objects.create(Application_No=application_no,
+                                     Application_Date=date.today(),
+                                     Permit_No=permit_no,
+                                     Service_Id=service_code,
+                                     Validity=validity_date,
+                                     Payment_Type=None,
+                                     Instrument_No=None,
+                                     Amount=None,
+                                     Receipt_No=None,
+                                     Receipt_Date=None,
+                                     Updated_By=None,
+                                     Updated_On=None)

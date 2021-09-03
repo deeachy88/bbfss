@@ -55,7 +55,6 @@ urlpatterns = [
     path('send_audit_plan_acceptance', views.send_audit_plan_acceptance, name='send_audit_plan_acceptance'),
     path('send_audit_plan_resubmit', views.send_audit_plan_resubmit, name='send_audit_plan_resubmit'),
     path('approve_application', views.approve_application, name='approve_application'),
-    path('resubmit_application', views.resubmit_application, name='resubmit_application'),
     path('farm_input_observation', views.farm_input_observation, name='farm_input_observation'),
     path('conform_observation', views.conform_observation, name='conform_observation'),
     path('audit_team_accept', views.audit_team_accept, name='audit_team_accept'),
@@ -102,7 +101,12 @@ urlpatterns = [
     path('update_food_product_form', views.update_food_product_form, name='update_food_product_form'),
     path('update_oc_form', views.update_oc_form, name='update_oc_form'),
     path('update_gap_form', views.update_gap_form, name='update_gap_form'),
-    path('date_month', views.date_month, name='date_month')
+    path('date_month', views.date_month, name='date_month'),
+    path('delete_audit_team', views.delete_audit_team, name='delete_audit_team'),
+    path('delete_farm_details', views.delete_farm_details, name='delete_farm_details'),
+    path('update_nc_response', views.update_nc_response, name='update_nc_response'),
+    path('delete_farmers_group', views.delete_farmers_group, name='delete_farmers_group'),
+
 
 ]
 if settings.DEBUG:

@@ -573,22 +573,10 @@
         <div class="card">
             <div class="card-header" role="tab" id="observations">
                 <a class="collapsed" data-toggle="collapse" href="#observations_tab" aria-expanded="false" aria-controls="collapseTwo">
-                    Audit Plan Upload
+                    Audit Plan Details
                 </a>
             </div>
             <div id="observations_tab" class="collapse" role="tabpanel" aria-labelledby="observations_tab" data-parent="#observations_tab" style="">
-                    <div class="card-header">
-                        <div class="card-head-row">
-                            <div class="card-tools">
-                                <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="show_oc_attachmentModal()">
-                                    <span class="btn-label">
-                                        <i class="fa fa-print"></i>
-                                    </span>
-                                    Add
-                                </a>
-                            </div>
-                        </div>
-                    </div>
                     <div id="oc-file-attachment">
                         <div class="card-body">
                             <table class="table table-bordered">
@@ -611,8 +599,19 @@
                                    {% endfor %}
                                 </tbody>
                             </table>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Provisional Audit Date</label>
+                                         {% for application_details in application_details %}
+                                            <input type="text" class="form-control" value="{{application_details.Audit_Plan_Date}}" disabled>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -629,39 +628,43 @@
             <div id="audit_date_tab" class="collapse" role="tabpanel" aria-labelledby="audit_date_tab" data-parent="#audit_date_tab" style="">
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <div class="form-group">
-                                <label class="form-label">Nature Of Audit</label>
-                               <select class="form-control" name="Audit_Type">
-                                    <option value="">--SELECT--</option>
-                                    <option value="Preliminary visit">Preliminary visit</option>
-                                    <option value="Factory audit">Factory audit</option>
-                                    <option value="Surveillance audit">Surveillance audit</option>
-                                    <option value="Recertification audit">Recertification audit</option>
-                                    <option value="Others">Others</option>
+                                <label class="form-label">Audit Date  &nbsp;<font color='red'>*</font> </label>
+                               <input type="date" name="Audit_Plan_Date" id="Audit_Plan_Date" class="form-control date-picker flatpickr-input active">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="form-label">Audit Type &nbsp;<font color='red'>*</font> </label>
+                                <select class="form-control form-control" id="audit_plan_type" name="audit_plan_type" onchange="conveyanceChange(this.value)">
+                                    <option value="">-SELECT-</option>
+                                    <option value="Initial">Initial</option>
+                                    <option value="Revisit">Revisit/Follow Up</option>
+                                    <option value="Surveillance">Surveillance</option>
+                                    <option value="Renewal">Renewal</option>
+                                    <option value="Preliminary">Preliminary</option>
+                                    <option value="Special">Special</option>
+                                    <option value="Farm">Farm</option>
+                                    <option value="Company/Factory">Company/Factory</option>
+                                    <option value="Management System">Management System</option>
+                                    <option value="Processing">Processing</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">Audit Date </label>
-                               <input type="date" name="Audit_Date" class="form-control date-picker flatpickr-input active">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
                                 <label class="form-label">Remarks From Focal Officer </label>
-                                <textarea type="text" class="form-control" disabled>{{ application_details.FO_Remarks }}</textarea>
+                                <textarea class="form-control" disabled>{{ application_details.FO_Remarks }}</textarea>
                             </div>
                         </div>
                     </div>
+                    <div id="msgDiv" class="alert alert-info" style="display:none;"></div>
                     <hr>
                     <input type="hidden" name="audit_application_no" value="{{ application_details.Application_No }}">
                     <button type="button" class="btn btn-flat btn-primary" onclick="resubmit_details()">
-                        <i class="ace-icon fa fa-times"></i>
-                        &nbsp;&nbsp;Send For Acceptance
+                        <i class="ace-icon fa fa-share-square-o"></i>
+                        &nbsp;&nbsp;Share With Client
                     </button>
                 </div>
             </div>
@@ -990,26 +993,6 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">Audit Date </label>
-                               <input type="text" class="form-control" value="{{ application_details.Audit_Date }}" disabled>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Nature Of Audit</label>
-                               <select class="form-control" disabled>
-                                    <option value="Preliminary visit">Preliminary visit</option>
-                                    <option value="Factory audit">Factory audit</option>
-                                    <option value="Surveillance audit">Surveillance audit</option>
-                                    <option value="Recertification audit">Recertification audit</option>
-                                    <option value="Others">Others</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
                                 <label class="form-label">Remarks From Client </label>
                                 <textarea type="text" class="form-control" disabled>{{ application_details.Audit_Plan_Acceptance_Remarks }}</textarea>
                             </div>
@@ -1051,7 +1034,6 @@
                                         <th scope="col">Non Conformity</th>
                                         <th scope="col">Non Conformity Category</th>
                                         <th scope="col">Description of nonconformity</th>
-                                        <th scope="col">Corrective Action Proposed</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1062,7 +1044,6 @@
                                             <td>{{import.Non_Conformity}}</td>
                                             <td>{{import.Non_Conformity_Category}}</td>
                                             <td>{{import.Non_Conformity_Description}}</td>
-                                            <td>{{import.Corrective_Action_Proposed_Auditee}}</td>
                                         </tr>
                                         {% empty %}
                                         <tr>
@@ -1072,19 +1053,45 @@
                                 </tbody>
                             </table>
                         </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Audit Date </label>
+                                   <input type="date" class="form-control" name="audit_date" id="Audit_Date">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Nature Of Audit</label>
+                                   <select class="form-control" name="Audit_Type" id="Audit_Type">
+                                        <option value="">-SELECT-</option>
+                                        <option value="Initial">Initial</option>
+                                        <option value="Revisit">Revisit/Follow Up</option>
+                                        <option value="Surveillance">Surveillance</option>
+                                        <option value="Renewal">Renewal</option>
+                                        <option value="Preliminary">Preliminary</option>
+                                        <option value="Special">Special</option>
+                                        <option value="Farm">Farm</option>
+                                        <option value="Company/Factory">Company/Factory</option>
+                                        <option value="Management System">Management System</option>
+                                        <option value="Processing">Processing</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <input type="hidden" name="det_application_no" value="{{ application_details.Application_No }}">
                     <button type="button" id="approve-btn" class="btn btn-flat btn-primary" onclick="approve_details()">
-                        <i class="ace-icon fa fa-times"></i>
-                        &nbsp;&nbsp;Approve
+                        <i class="ace-icon fa fa-check"></i>
+                        &nbsp;&nbsp;Forward To Head Office
                     </button>
                     <button type="button" id="resubmit-btn" class="btn btn-flat btn-primary" onclick="resubmit_nc_details()">
-                        <i class="ace-icon fa fa-times"></i>
+                        <i class="ace-icon fa fa fa-reply-all"></i>
                         &nbsp;&nbsp;Resubmit
                     </button>
-                    <button type="button" class="btn btn-primary" onclick="closeTeamModal()">Close Modal</button>
                 </div>
             </div>
         </div>
@@ -1156,7 +1163,7 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Audit Team Accept</label>&nbsp;
+                                    <label class="form-label">Non-Conformity</label>&nbsp;
                                     <div class="justify-content-center">
                                         <label class="custom-control custom-radio">
                                             <input type="radio" name="Non_Conformity" class="custom-control-input" value="Yes" onchange="Check_Accept(this.value)">
@@ -1185,10 +1192,6 @@
                             <div class="col-md-4">
                                 <label class="form-label">Description of nonconformity</label>
                                 <textarea class="form-control" name="Non_Conformity_Description"></textarea>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Corrective Action Proposed</label>
-                                <textarea class="form-control" id="Corrective_Action_Proposed_Auditee" name="Corrective_Action_Proposed_Auditee" disabled></textarea>
                             </div>
                         </div>
                     </div>
@@ -1245,6 +1248,24 @@
         </form>
 
 <script>
+$(function(){
+    var dtToday = new Date();
+
+    var month = dtToday.getMonth() + 1;
+    var day = dtToday.getDate();
+    var year = dtToday.getFullYear();
+
+    if(month < 10)
+        month = '0' + month.toString();
+    if(day < 10)
+        day = '0' + day.toString();
+
+    var maxDate = year + '-' + month + '-' + day;
+    $('#Audit_Date').attr('max', maxDate);
+
+    var today = new Date().toISOString().split('T')[0];
+    $('#Audit_Plan_Date')[0].setAttribute('min', today);
+});
 function openInputModal()
 {
     $('#farmInputModal').modal('show');
@@ -1292,7 +1313,7 @@ function conform_observation()
 {
     $.ajax({
         type : "GET",
-        url : "{% url 'fpc_conform_observation' %}",
+        url : "{% url 'conform_observation' %}",
         data :$('#conform_form').serialize(),
         success : function(data) {
             $('#conform_details').html(data);
@@ -1303,14 +1324,42 @@ function conform_observation()
 
 function resubmit_details()
 {
-    $.ajax({
-        type : "GET",
-        url : "{% url 'send_audit_plan_resubmit' %}",
-        data :$('#oc_audit_date_form').serialize(),
-        success : function(data) {
-            location.reload();
-        }
-    });
+    var Audit_Plan_Date = $('#Audit_Plan_Date').val();
+    var audit_plan_type = $('#audit_plan_type').val();
+    if(Audit_Plan_Date == "")
+    {
+        $('#Audit_Plan_DateErrorMsg').html("Select Audit Date.");
+        $('#Audit_Plan_DateErrorMsg').show();
+        $('#Audit_Plan_DateErrorMsg').delay(2000).fadeOut('slow');
+        $("#Audit_Plan_Date").focus();
+    }
+    else if(audit_plan_type == "")
+    {
+        $('#audit_plan_typeErrorMsg').html("Select Audit Type.");
+        $('#audit_plan_typeErrorMsg').show();
+        $('#audit_plan_typeErrorMsg').delay(2000).fadeOut('slow');
+        $("#remarks").focus();
+    }
+    else
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'send_audit_plan_resubmit' %}",
+            data :$('#oc_audit_date_form').serialize(),
+            success : function(data) {
+                $('#msgDiv').html("Application Resubmitted For Acceptance To Client.");
+                $('#msgDiv').show();
+                setTimeout(function()
+                {
+                    $("#msgDiv").hide('blind', {}, 500)
+                }, 2000);
+                setTimeout(function()
+                {
+                     location.reload();
+                }, 3000);
+            }
+        });
+    }
 }
 
 function save_oc_attachment(application_no)
@@ -1377,7 +1426,7 @@ function resubmit_nc_details()
 {
     $.ajax({
         type : "GET",
-        url : "{% url 'resubmit_fpc_nc_details' %}",
+        url : "{% url 'resubmit_oc_nc_details' %}",
         data :$('#oc_audit_date_form').serialize(),
         success : function(data)
         {

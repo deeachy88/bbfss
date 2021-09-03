@@ -341,7 +341,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Inspection Team Leader</label>
+                                        <label class="form-label">Inspection Team Leader</label>
                                         <select class="form-control" name="teamLeader"  id="teamLeader">
                                             <option value="">--SELECT TEAM LEADER--</option>
                                             {% for inspector_list in inspector_list %}
@@ -352,7 +352,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="insTeam">Inspection Team </label>
+                                        <label class="form-label">Inspection Team </label>
                                         <textarea class="form-control" id="insTeam" rows="2"></textarea>
                                     </div>
                                 </div>
@@ -361,21 +361,30 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Date Of Inspection</label>
+                                    <label class="form-label">Date Of Inspection</label>
                                     <input type="text" class="form-control date-picker flatpickr-input active" id="dateOfInspection" name="date" readonly="readonly">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Remarks</label>
+                                    <label class="form-label">Remarks</label>
                                     <textarea class="form-control" id="remarks" rows="2"></textarea>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Validity Of Permit(no of days)</label>
+                                    <input type="number" class="form-control" id="validity" name="validity">
+                                </div>
+                                <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                          {% for application in application_details %}
-                            <button type="button" class="btn btn-success" onclick="approveApplication('{{ application.Application_No }}')"><i class="ace-icon fas fa-arrow-right"></i>&nbsp;&nbsp;Approve</button>
+                            <button type="button" class="btn btn-success" onclick="approve_movement_permit('{{ application.Application_No }}')"><i class="ace-icon fas fa-arrow-right"></i>&nbsp;&nbsp;Approve</button>
                             <button type="button" class="btn btn-flat btn-danger" onclick="rejectApplication('{{ application.Application_No }}')">
                                 <i class="ace-icon fa fa-times"></i>
                                 &nbsp;&nbsp;Reject
@@ -418,10 +427,12 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    {% for application_details in application_details %}
                     <button type="button" class="btn btn-flat btn-primary" onclick="add_details_ins('{{ application_details.Application_No }}')">
                         <i class="ace-icon fa fa-times"></i>
                         &nbsp;&nbsp;Add
                     </button>
+                    {% endfor %}
                     <button type="button" class="btn btn-primary" onclick="closeModal()">Close Modal</button>
                  </div>
                  <div id="messageDiv" style="display:none"></div>
@@ -444,6 +455,23 @@ function add_details_ins(application_id)
             $('#details').html(data);
             $('#details').show();
             $('#addModal').modal('hide');
+        }
+    });
+}
+
+function approve_movement_permit(application_id)
+{
+    Inspection_Leader = $('#teamLeader').val();
+    Inspection_Team = $('#insTeam').val();
+    remarks = $('#remarks').val();
+    dateOfInspection = $('#dateOfInspection').val();
+    validity_period = $('#validity').val();
+    $.ajax({
+        type : "POST",
+        url : "{% url 'approve_application' %}",
+        data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks , 'dateOfInspection':dateOfInspection , 'validity_period':validity_period, csrfmiddlewaretoken: '{{ csrf_token }}'},
+        success : function(data) {
+            location.reload();
         }
     });
 }

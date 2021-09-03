@@ -1,0 +1,44 @@
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Import Category</th>
+            <th scope="col">Pesticide Name</th>
+            <th scope="col">Description</th>
+            <th scope="col">Approved Quantity</th>
+            <th scope="col">Unit</th>
+            <th scope="col">Quantity Balance</th>
+            <th scope="col">Quantity Released</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+       {% for import in import %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{import.Import_Category}}</td>
+                    {% for pesticide in pesticide %}
+                        {% if pesticide.Pesticide_Id == import.Pesticide_Id %}
+                        <td>{{import.Pesticide_Name}}</td>
+                        {% endif %}
+                    {% endfor %}
+                    <td>{{import.Description}}</td>
+                    <td>{{import.Quantity}}</td>
+                    <td>{{import.Unit}}</td>
+                    <td>{{import.Quantity_Balance}}</td>
+                    <td>{{import.Quantity_Released}}</td>
+                    <td>
+                        <button type="button" class="btn btn-info"
+                        onclick="populateAgroDetails('{{ import.Record_Id }}', '{{import.Import_Category}}', '{{import.Pesticide_Id}}',
+                        '{{import.Description}}', '{{import.Quantity}}', '{{import.Unit}}', '{{import.Application_No}}')">
+                        <i class="zmdi zmdi-edit"></i>
+                        </button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="6" class="text-center">No Data</td>
+                </tr>
+       {% endfor %}
+    </tbody>
+</table>

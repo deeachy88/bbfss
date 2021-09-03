@@ -182,12 +182,12 @@ def user(request):
     if request.method == 'POST':
         name = request.POST['name']
         eid = request.POST['Employee_Id']
-        gender = request.POST['gender']
+        gender = request.POST['gender_name']
         email = request.POST['email']
         contact_number = request.POST['mobile']
         role = request.POST['role']
-        division = request.POST['division']
-        section = request.POST['section']
+        division_id = request.POST['division']
+        section_id = request.POST['section']
         field = request.POST['field']
 
         password = get_random_password_string(8)
@@ -206,10 +206,9 @@ def user(request):
                                              Address=None, Is_Active="Y", Logical_Delete="N",
                                              Last_Login_Date=None, Created_By=None, Created_On=None,
                                              Updated_By=None, Updated_On=None, Dzongkhag_Code=None,
-                                             Gewog_Code=None, Section_Id_id=section, Village_Code=None,
-                                             Accept_Reject=None, Division_Id_id=division, Field_Office_Id_id=None,
+                                             Gewog_Code=None, Section_Id_id=section_id, Village_Code=None,
+                                             Accept_Reject=None, Division_Id_id=division_id, Field_Office_Id_id=None,
                                              Role_Id_id=role)
-                user_details = t_user_master.objects.filter(Email_Id__iexact=email)
             elif role == "6":
                 t_user_master.objects.create(Login_Type="I", Client_Type=None, Name=name, Employee_Id=eid,
                                              Gender=gender,
@@ -219,9 +218,8 @@ def user(request):
                                              Last_Login_Date=None, Created_By=None, Created_On=None,
                                              Updated_By=None, Updated_On=None, Dzongkhag_Code=None,
                                              Gewog_Code=None, Section_Id_id=None, Village_Code=None,
-                                             Accept_Reject=None, Division_Id_id=division, Field_Office_Id_id=None,
+                                             Accept_Reject=None, Division_Id_id=division_id, Field_Office_Id_id=None,
                                              Role_Id_id=role)
-                user_details = t_user_master.objects.filter(Email_Id__iexact=email)
             elif role == "4":
                 t_user_master.objects.create(Login_Type="I", Client_Type=None, Name=name, Employee_Id=eid,
                                              Gender=gender,
@@ -233,7 +231,6 @@ def user(request):
                                              Gewog_Code=None, Section_Id_id=None, Village_Code=None,
                                              Accept_Reject=None, Division_Id_id=None, Field_Office_Id_id=field,
                                              Role_Id_id=role)
-                user_details = t_user_master.objects.filter(Email_Id__iexact=email)
             elif role == "5":
                 t_user_master.objects.create(Login_Type="I", Client_Type=None, Name=name, Employee_Id=eid,
                                              Gender=gender,
@@ -245,7 +242,6 @@ def user(request):
                                              Gewog_Code=None, Section_Id_id=None, Village_Code=None,
                                              Accept_Reject=None, Division_Id_id=None, Field_Office_Id_id=field,
                                              Role_Id_id=role)
-                user_details = t_user_master.objects.filter(Email_Id__iexact=email)
             else:
                 t_user_master.objects.create(Login_Type="I", Client_Type=None, Name=name, Employee_Id=eid,
                                              Gender=gender,
@@ -257,7 +253,6 @@ def user(request):
                                              Gewog_Code=None, Section_Id_id=None, Village_Code=None,
                                              Accept_Reject=None, Division_Id_id=None, Field_Office_Id_id=None,
                                              Role_Id_id=role)
-                user_details = t_user_master.objects.filter(Email_Id__iexact=email)
         details = t_user_master.objects.filter(Login_Type="I")
         sendmail(request, name, email, password)
         return render(request, 'user.html', {'form': form, 'details': details, 'role': roles, 'section': section,

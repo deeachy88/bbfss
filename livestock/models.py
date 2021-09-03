@@ -225,8 +225,8 @@ class t_livestock_import_permit_animal_t1(models.Model):
 class t_livestock_import_permit_animal_t2(models.Model):
     Record_Id = models.AutoField(primary_key=True)
     Application_No = models.CharField(max_length=20)
-    Species = models.IntegerField(blank=True, null=True)
-    Breed = models.IntegerField(blank=True, null=True)
+    Species = models.CharField(max_length=100, default=None, blank=True, null=True)
+    Breed = models.CharField(max_length=100, default=None, blank=True, null=True)
     Age = models.IntegerField(blank=True, null=True)
     Sex = models.CharField(max_length=10, blank=True, null=True)
     Description = models.TextField(blank=True, null=True)

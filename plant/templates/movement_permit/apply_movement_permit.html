@@ -59,27 +59,11 @@ option {
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="form-label">Nursery Registration Number</label>
-                                        <input type="text" class="form-control" id="regNo" name="regNo">
-                                    </div>
-                                    <div class="alert alert-danger" id="regNoErrorMsg" style="display:none"></div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Name of Seed Company/Nurseries &nbsp;<font color='red'>*</font></label>
-                                        <input type="text" class="form-control" id="companyName" name="companyName">
-                                    </div>
-                                    <div class="alert alert-danger" id="companyNameErrorMsg" style="display:none"></div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
                                         <label class="form-label">Applicant CID &nbsp;<font color='red'>*</font></label>
                                         <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCitizenDetails(this.value);">
                                     </div>
                                     <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
                                 </div>
-                            </div>
-                            <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Name &nbsp;<font color='red'>*</font></label>
@@ -89,27 +73,14 @@ option {
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="form-label">Contact Number &nbsp;<font color='red'>*</font></label>
-                                        <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
-                                    </div>
-                                    <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Email &nbsp;<font color='red'>*</font></label>
-                                        <input type="email" class="form-control" id="email" name="email" onchange="validateemailId(this.value)">
-                                    </div>
-                                    <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
                                         <label class="form-label">Dzongkhag &nbsp;<font color='red'>*</font></label>
                                         <input type="text" class="form-control" name="dzongkhag"  id="dzongkhag" readonly="readonly">
                                     </div>
                                     <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
                                 </div>
+                            </div>
+                            <div class="row">
+
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Gewog &nbsp;<font color='red'>*</font></label>
@@ -124,7 +95,38 @@ option {
                                     </div>
                                     <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
                                 </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Contact Number &nbsp;<font color='red'>*</font></label>
+                                        <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                                    </div>
+                                    <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
+                                </div>
                             </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Email &nbsp;<font color='red'>*</font></label>
+                                        <input type="email" class="form-control" id="email" name="email" onchange="validateemailId(this.value)">
+                                    </div>
+                                    <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Nursery Registration Number</label>
+                                        <input type="text" class="form-control" id="regNo" name="regNo">
+                                    </div>
+                                    <div class="alert alert-danger" id="regNoErrorMsg" style="display:none"></div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Name of Seed Company/Nurseries</label>
+                                        <input type="text" class="form-control" id="companyName" name="companyName">
+                                    </div>
+                                    <div class="alert alert-danger" id="companyNameErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
@@ -212,7 +214,7 @@ option {
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="form-label">Vehicle No &nbsp;<font color='red'>*</font></label>
+                                        <label class="form-label">Vehicle No &nbsp;<font class="vehicle_mandatory" color='red'>*</font></label>
                                         <input type="text" class="form-control" id="vehicleNo" name="vehicleNo">
                                     </div>
                                     <div class="alert alert-danger" id="vehicleNoErrorMsg" style="display:none"></div>
@@ -396,13 +398,6 @@ function save()
         $('#permitErrorMsg').show();
         $('#permitErrorMsg').delay(2000).fadeOut('slow');
         $("input[name=permitType]").focus();
-    }
-    else if(companyName == "")
-    {
-        $('#companyNameErrorMsg').html("Enter Company/Nursery.");
-        $('#companyNameErrorMsg').show();
-        $('#companyNameErrorMsg').delay(2000).fadeOut('slow');
-        $('#companyName').focus();
     }
     else if(cid == "")
     {
@@ -745,10 +740,12 @@ function conveyanceChange(value)
     if (value == "Air")
     {
         $('#vehicleNo').attr("disabled", "disabled");
+        $('.vehicle_mandatory').hide();
     }
     else
     {
         $('#vehicleNo').removeAttr("disabled");
+        $('.vehicle_mandatory').show();
     }
 }
 
@@ -759,7 +756,7 @@ function show_modal()
         url : "{% url 'get_unit_master' %}",
         success : function(data)
         {
-            $('#add_details').modal('show');
+             $('#add_details').modal('show');
              $('#unit').html(data);
         }
     });

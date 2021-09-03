@@ -888,7 +888,7 @@ option {
                     </div>
                     <div id="collapseThree" class="collapse" data-parent="#accordionExample">
                         {% for application_details in application_details %}
-                        <input type="hidden" id="certificate_type" value="{{ application_details.Certificate_Type }}">
+                        <input type="hidden" id="certificate_type" name="certificate_type" value="{{ application_details.Certificate_Type }}">
                         {% if application_details.Certificate_Type == 'P' %}
                             <div class="card-body">
                                 <div class="row">
@@ -996,13 +996,7 @@ option {
                                         </label>
                                         <div class="alert alert-danger" id="inspection_methodErrorMsg" style="display:none"></div>
                                     </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-group">
-                                            <label class="form-label" >Scientific Name Of Pest <font color="red">*</font></label>
-                                            <textarea class="form-control" id="Scientific_Name" name="Scientific_Name" rows="3"></textarea>
-                                        </div>
-                                        <div class="alert alert-danger" id="Scientific_NameErrorMsg" style="display:none"></div>
-                                    </div>
+
                                 </div>
                                 <hr>
                                 <div class="row justify-content-center">
@@ -1023,6 +1017,16 @@ option {
                                 </div>
                                 <br>
                                 <div id="if_yes" style="display:none;">
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <label class="form-label" >Scientific Name Of Pest <font color="red">*</font></label>
+                                        </div>
+                                        <div class="col-sm-6 justify-content-center">
+                                            <input type="text" class="form-control" id="Scientific_Name" name="Scientific_Name">
+                                        </div>
+                                        <div class="alert alert-danger" id="Scientific_NameErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <br>
                                     <div class="row">
                                         <div class="col-sm-2">
                                             <label class="form-label">Pest category <font color="red">*</font></label>
@@ -1166,42 +1170,16 @@ option {
                                             </div>
                                             <div class="alert alert-danger" id="Pest_QR_DetectedErrorMsg" style="display:none"></div>
                                         </div>
-                                        <div class="col-sm-5">
+                                        <!--<div class="col-sm-5">
                                             <div class="form-group">
                                                 <label class="form-label">Comments</label>
                                                 <textarea class="form-control" id="Pest_QR_Detected_Comments" name="Pest_QR_Detected_Comments" rows="3" disabled></textarea>
                                             </div>
                                             <div class="alert alert-danger" id="Pest_QR_Detected_CommentsErrorMsg" style="display:none"></div>
-                                        </div>
+                                        </div>-->
                                     </div>
                                     <br>
-                                    <div class="row">
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Treatment Possible <font color="red">*</font></label>
-                                        </div>
-                                        <div class="col-sm-5 justify-content-center">
-                                            <div class="form-check text-center">
-                                                <label class="custom-control custom-radio">
-                                                    <input type="radio"  class="custom-control-input" value="Yes" id="treatment_possible_Yes" name="treatment_possible" onclick="check_treatment_possible(this.value)">
-                                                    <span class="custom-control-indicator"></span>
-                                                    <span class="custom-control-description">Yes</span>
-                                                </label>
-                                                <label class="custom-control custom-radio">
-                                                    <input type="radio"  class="custom-control-input" value="No" id="treatment_possible_No" name="treatment_possible" onclick="check_treatment_possible(this.value)">
-                                                    <span class="custom-control-indicator"></span>
-                                                    <span class="custom-control-description">No</span>
-                                                </label>
-                                            </div>
-                                            <div class="alert alert-danger" id="treatment_possibleErrorMsg" style="display:none"></div>
-                                        </div>
-                                        <div class="col-sm-5" id="comment">
-                                            <div class="form-group">
-                                                <label>Comments</label>
-                                                <textarea class="form-control" id="Treatment_Comment" name="Treatment_Comment" rows="3" disabled></textarea>
-                                            </div>
-                                            <div class="alert alert-danger" id="Treatment_CommentErrorMsg" style="display:none"></div>
-                                        </div>
-                                    </div>
+
                                     <br>
                                     <div class="row">
                                         <div class="col-sm-2">
@@ -1259,6 +1237,34 @@ option {
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-2">
+                                            <label class="form-label">Treatment Possible <font color="red">*</font></label>
+                                        </div>
+                                        <div class="col-sm-5 justify-content-center">
+                                            <div class="form-check text-center">
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio"  class="custom-control-input" value="Yes" id="treatment_possible_Yes" name="treatment_possible" onclick="check_treatment_possible(this.value)">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Yes</span>
+                                                </label>
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio"  class="custom-control-input" value="No" id="treatment_possible_No" name="treatment_possible" onclick="check_treatment_possible(this.value)">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">No</span>
+                                                </label>
+                                            </div>
+                                            <div class="alert alert-danger" id="treatment_possibleErrorMsg" style="display:none"></div>
+                                        </div>
+                                        <div class="col-sm-5" id="comment">
+                                            <div class="form-group">
+                                                <label class="form-label">Comments</label>
+                                                <textarea class="form-control" id="Treatment_Comment" name="Treatment_Comment" rows="3" disabled></textarea>
+                                            </div>
+                                            <div class="alert alert-danger" id="Treatment_CommentErrorMsg" style="display:none"></div>
+                                        </div>
+                                    </div>
+                                    <div id="treatment_yes" style="display:none;">
+                                    <div class="row">
+                                        <div class="col-sm-2">
                                             <label class="form-label">Treatment Type <font color="red">*</font></label>
                                         </div>
                                         <div class="col-sm-10 justify-content-center">
@@ -1293,65 +1299,67 @@ option {
                                         </div>
                                     </div>
                                     <br>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label class="form-label">Chemical Name <font color="red">*</font></label>
-                                                <input type="text" class="form-control" id="chemical_name" name="chemical_name">
+
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">Chemical Name <font color="red">*</font></label>
+                                                    <input type="text" class="form-control" id="chemical_name" name="chemical_name">
+                                                </div>
+                                                <div class="alert alert-danger" id="chemical_nameErrorMsg" style="display:none"></div>
                                             </div>
-                                            <div class="alert alert-danger" id="chemical_nameErrorMsg" style="display:none"></div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">Treatment <font color="red">*</font></label>
+                                                    <select class="form-control form-control" id="treatment" name="treatment" onchange="showValue(this.value)">
+                                                        <option value="">-SELECT-</option>
+                                                        <option value="Fumigation">Fumigation</option>
+                                                        <option value="Spray">Spray</option>
+                                                        <option value="Seed treatment">Seed Treatment</option>
+                                                        <option value="others">Others(Specify)</option>
+                                                    </select>
+                                                </div>
+                                                <div class="alert alert-danger" id="treatmentErrorMsg" style="display:none"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">Concentration <font color="red">*</font></label>
+                                                    <input type="text" class="form-control" id="Concentration" name="Concentration">
+                                                </div>
+                                                <div class="alert alert-danger" id="ConcentrationErrorMsg" style="display:none"></div>
+                                            </div>
                                         </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label class="form-label">Treatment <font color="red">*</font></label>
-                                                <select class="form-control form-control" id="treatment" name="treatment" onchange="showValue(this.value)">
-                                                    <option value="">-SELECT-</option>
-                                                    <option value="Fumigation">Fumigation</option>
-                                                    <option value="Spray">Spray</option>
-                                                    <option value="Seed treatment">Seed Treatment</option>
-                                                    <option value="others">Others(Specify)</option>
-                                                </select>
+                                        <div class="row" id="others_div" style="display:none">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">Others</label>
+                                                    <input type="text" class="form-control" id="other_treatment" name="other_treatment">
+                                                </div>
+                                                <div class="alert alert-danger" id="other_treatmentErrorMsg" style="display:none"></div>
                                             </div>
-                                            <div class="alert alert-danger" id="treatmentErrorMsg" style="display:none"></div>
                                         </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label class="form-label">Concentration <font color="red">*</font></label>
-                                                <input type="text" class="form-control" id="Concentration" name="Concentration">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">Duration & Temperature <font color="red">*</font></label>
+                                                    <input type="text" class="form-control" id="Duration_Temperature" name="Duration_Temperature">
+                                                </div>
+                                                <div class="alert alert-danger" id="Duration_TemperatureErrorMsg" style="display:none"></div>
                                             </div>
-                                            <div class="alert alert-danger" id="ConcentrationErrorMsg" style="display:none"></div>
-                                        </div>
-                                    </div>
-                                    <div class="row" id="others_div" style="display:none">
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label class="form-label">Others</label>
-                                                <input type="text" class="form-control" id="other_treatment" name="other_treatment">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">Treated By <font color="red">*</font></label>
+                                                    <input type="text" class="form-control" id="treated_by" name="treated_by">
+                                                </div>
+                                                <div class="alert alert-danger" id="treated_byErrorMsg" style="display:none"></div>
                                             </div>
-                                            <div class="alert alert-danger" id="other_treatmentErrorMsg" style="display:none"></div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label class="form-label">Duration & Temperature <font color="red">*</font></label>
-                                                <input type="text" class="form-control" id="Duration_Temperature" name="Duration_Temperature">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">Treatment Supervised By <font color="red">*</font></label>
+                                                    <input type="text" class="form-control" id="treatment_supervised" name="treatment_supervised">
+                                                </div>
+                                                <div class="alert alert-danger" id="treatment_supervisedErrorMsg" style="display:none"></div>
                                             </div>
-                                            <div class="alert alert-danger" id="Duration_TemperatureErrorMsg" style="display:none"></div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label class="form-label">Treated By <font color="red">*</font></label>
-                                                <input type="text" class="form-control" id="treated_by" name="treated_by">
-                                            </div>
-                                            <div class="alert alert-danger" id="treated_byErrorMsg" style="display:none"></div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label class="form-label">Treatment Supervised By <font color="red">*</font></label>
-                                                <input type="text" class="form-control" id="treatment_supervised" name="treatment_supervised">
-                                            </div>
-                                            <div class="alert alert-danger" id="treatment_supervisedErrorMsg" style="display:none"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -1480,19 +1488,19 @@ option {
                 $('#inspection_methodErrorMsg').delay(2000).fadeOut('slow');
                 $("input[name=inspection_method]").focus();
             }
-            else if(Scientific_Name == "")
-            {
-                $('#Scientific_NameErrorMsg').html("Enter Scientific Name.");
-                $('#Scientific_NameErrorMsg').show();
-                $('#Scientific_NameErrorMsg').delay(2000).fadeOut('slow');
-                $('#Scientific_Name').focus();
-            }
             else if(pest_detected < 1)
             {
                 $('#pest_detectedErrorMsg').html("Select One Pest Detected.");
                 $('#pest_detectedErrorMsg').show();
                 $('#pest_detectedErrorMsg').delay(2000).fadeOut('slow');
                 $('#pest_detected').focus();
+            }
+            else if(pest_detected_value == "Yes" && Scientific_Name == "")
+            {
+                $('#Scientific_NameErrorMsg').html("Enter Scientific Name.");
+                $('#Scientific_NameErrorMsg').show();
+                $('#Scientific_NameErrorMsg').delay(2000).fadeOut('slow');
+                $('#Scientific_Name').focus();
             }
             else if(pest_detected_value == "Yes" && pest_category < 1)
             {
@@ -1727,10 +1735,12 @@ option {
         if(value == "Yes")
         {
             $("#Treatment_Comment").removeAttr("disabled");
+            $("#treatment_yes").show();
         }
         else
         {
             $("#Treatment_Comment").attr("disabled", "disabled");
+            $("#treatment_yes").hide();
         }
     }
 

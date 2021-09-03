@@ -623,6 +623,7 @@
                                         <th scope="col">#</th>
                                         <th scope="col">Name</th>
                                         <th scope="col">Role</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -631,6 +632,11 @@
                                             <td>{{ forloop.counter }}</td>
                                             <td>{{audit.Name}}</td>
                                             <td>{{audit.Role}}</td>
+                                            <td><button type="button" class="btn btn-danger btn-sm" onclick="Delete_Audit_Team('{{audit.Record_Id}}','{{audit.Application_No}}', 'OC')">
+                                                    <i class="zmdi zmdi-delete"></i>
+                                                    &nbsp;&nbsp;Delete
+                                                </button>
+                                            </td>
                                         </tr>
                                         {% empty %}
                                         <tr>
@@ -811,4 +817,15 @@ function forward_application(application_id)
     });
 }
 
+function Delete_Audit_Team(id,Application_No,identification_type)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'delete_audit_team' %}",
+        data :{'Record_Id':id, 'Application_No':Application_No, 'identification_type':identification_type},
+        success : function(data) {
+           $('#team_details').html(data);
+        }
+    });
+}
 </script>

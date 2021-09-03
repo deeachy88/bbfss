@@ -4,15 +4,13 @@
         <div class="card">
             <div class="card-header" role="tab" id="headingOne">
                 <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed">
-                    Collapsible Group Item #1
+                    Application Details
                 </a>
             </div>
 
             <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion" style="">
                 <div class="card-body">
-                    <div class="row justify-content-center">
-                    {% for application_details in application_details %}
-                            {% if application_details.Import_Type == 'P' %}
+                        {% if application_details.Import_Type == 'P' %}
                                 <div class="row justify-content-center">
                                     <div class="form-check text-center">
                                         <label>Import Type <font color="red">*</font></label><br>
@@ -117,6 +115,7 @@
                                                 <label class="form-label">Dzongkhag &nbsp;<font color='red'>*</font></label>
                                                 <input type="text" class="form-control" value="{{application_details.dzongkhag}}" disabled>
                                             </div>
+                                            <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -125,12 +124,14 @@
                                                 <label class="form-label">Gewog &nbsp;<font color='red'>*</font></label>
                                                 <input type="text" class="form-control" value="{{application_details.gewog}}" disabled>
                                             </div>
+                                            <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="form-label">Village &nbsp;<font color='red'>*</font></label>
                                                 <input type="text" class="form-control" value="{{application_details.village}}" disabled>
                                             </div>
+                                            <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
@@ -168,10 +169,12 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="form-label">Means of Conveyance <font color="red">*</font></label>
-                                                <select class="form-control form-control" id="conveyanceMeans" name="conveyanceMeans">
-                                                    <option value="">-SELECT-</option>
-                                                    <option value="Air">Air</option>
-                                                    <option value="Vehicular">Vehicular</option>
+                                                <select class="form-control form-control" disabled>
+                                                    {% if application_details.Means_of_Conveyance == 'Air' %}
+                                                        <option value="Air" selected>Air</option>
+                                                    {% else %}
+                                                        <option value="Vehicular" selected>Vehicular</option>
+                                                    {% endif %}
                                                 </select>
                                             </div>
                                         </div>
@@ -445,14 +448,13 @@
                                 </div>
                             </div>
                         {% endif %}
-                    </div>
                 </div>
             </div>
         </div>
         <div class="card">
             <div class="card-header" role="tab" id="headingTwo">
                 <a class="collapsed" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                    Collapsible Group Item #2
+                    File Attachments
                 </a>
             </div>
             <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
@@ -506,85 +508,110 @@
         <div class="card">
             <div class="card-header" role="tab" id="headingThree">
                 <a class="collapsed" data-toggle="collapse" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                    Collapsible Group Item #3
+                    Inspection Details
                 </a>
             </div>
             <div id="collapseThree" class="active" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion" style="">
                 <div class="card-body">
                     {% if application_details.Import_Type == 'P' %}
-                        <table id="details-table" class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Import Category</th>
-                                    <th scope="col">Crop Common Name</th>
-                                    <th scope="col">Crop Variety Name</th>
-                                    <th scope="col">Unit</th>
-                                    <th scope="col">Quantity</th>
-                                    <th scope="col">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for import in import %}
+                        <div id="details-plant">
+                            <table id="details-table" class="table table-bordered">
+                                <thead>
                                     <tr>
-                                        <td>{{ forloop.counter }}</td>
-                                        <td>{{import.Import_Category}}</td>
-                                        <td>{{import.Crop_Id}}</td>
-                                        <td>{{import.Variety_Id}}</td>
-                                        <td>{{import.Unit}}</td>
-                                        <td>{{import.Quantity}}</td>
-                                        <td>
-                                            <button type="button"
-									        class="btn btn-primary btn--icon btn-sm js-edit-details"
-                                            data-url="{% url 'edit_inspector_details' import.Record_Id %}">
-									        <i class="zmdi zmdi-edit"></i>
-								            </button>
-                                        </td>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Import Category</th>
+                                        <th scope="col">Crop Common Name</th>
+                                        <th scope="col">Crop Variety Name</th>
+                                        <th scope="col">Approved Quantity</th>
+                                        <th scope="col">Unit</th>
+                                        <th scope="col">Quantity Balance</th>
+                                        <th scope="col">Quantity Released</th>
+                                        <th scope="col">Action</th>
+
                                     </tr>
-                                    {% empty %}
-                                    <tr>
-                                        <td colspan="7" class="text-center">No Data</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    {% else %}
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Import Category</th>
-                                    <th scope="col">Pesticide Name</th>
-                                    <th scope="col">Description</th>
-                                    <th scope="col">Unit</th>
-                                    <th scope="col">Quantity</th>
-                                    <th scope="col">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                               {% for import in import %}
+                                </thead>
+                                <tbody>
+                                    {% for import in import %}
                                         <tr>
                                             <td>{{ forloop.counter }}</td>
                                             <td>{{import.Import_Category}}</td>
-                                            <td>{{import.Pesticide_Id}}</td>
-                                            <td>{{import.Description}}</td>
-                                            <td>{{import.Unit}}</td>
+                                            {% for crop in crop %}
+                                                {% if import.Crop_Id == crop.Crop_Id %}
+                                                    <td>{{ crop.Crop_Common_Name }}</td>
+                                                {% endif %}
+                                            {% endfor %}
+                                            {% for variety in variety %}
+                                                {% if variety.Crop_Variety_Id ==  import.Variety_Id %}
+                                                    <td>{{ variety.Crop_Variety_Name}}</td>
+                                                {% endif %}
+                                            {% endfor %}
                                             <td>{{import.Quantity}}</td>
+                                            <td>{{import.Unit}}</td>
+                                            <td>{{import.Quantity_Balance}}</td>
+                                            <td>{{import.Quantity_Released}}</td>
                                             <td>
-                                                <button type="button"
-                                                class="btn btn-primary btn--icon btn-sm js-edit-details"
-                                                data-url="{% url 'edit_inspector_details' import.Record_Id %}">
+                                                <button type="button" class="btn btn-info"
+                                                onclick="populateDetails('{{ import.Record_Id }}', '{{import.Import_Category}}', '{{import.Crop_Id}}',
+                                                '{{import.Variety_Id}}', '{{import.Quantity}}', '{{import.Unit}}', '{{import.Application_No}}', '{{import.Quantity_Balance}}')">
                                                 <i class="zmdi zmdi-edit"></i>
                                                 </button>
                                             </td>
                                         </tr>
                                         {% empty %}
                                         <tr>
-                                          <td colspan="6" class="text-center">No Data</td>
+                                            <td colspan="7" class="text-center">No Data</td>
                                         </tr>
-                               {% endfor %}
-                            </tbody>
-                        </table>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div id="details-agro">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Import Category</th>
+                                        <th scope="col">Pesticide Name</th>
+                                        <th scope="col">Description</th>
+                                        <th scope="col">Approved Quantity</th>
+                                        <th scope="col">Unit</th>
+                                        <th scope="col">Quantity Balance</th>
+                                        <th scope="col">Quantity Released</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                   {% for import in import %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td>{{import.Import_Category}}</td>
+                                                {% for pesticide in pesticide %}
+                                                    {% if pesticide.Pesticide_Id == import.Pesticide_Id %}
+                                                    <td>{{import.Pesticide_Name}}</td>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                <td>{{import.Description}}</td>
+                                                <td>{{import.Quantity}}</td>
+                                                <td>{{import.Unit}}</td>
+                                                <td>{{import.Quantity_Balance}}</td>
+                                                <td>{{import.Quantity_Released}}</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-info"
+                                                    onclick="populateAgroDetails('{{ import.Record_Id }}', '{{import.Import_Category}}', '{{import.Pesticide_Id}}',
+                                                    '{{import.Description}}', '{{import.Quantity}}', '{{import.Unit}}', '{{import.Application_No}}','{{import.Quantity_Balance}}')">
+                                                    <i class="zmdi zmdi-edit"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                              <td colspan="6" class="text-center">No Data</td>
+                                            </tr>
+                                   {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
                     {% endif %}
                     <br>
                     <hr>
@@ -604,7 +631,7 @@
                                     <th scope="col">#</th>
                                     <th scope="col">Current Observation</th>
                                     <th scope="col">Decision Conformity Statement</th>
-                                    <th scope="col">Action</th>
+                                   <!-- <th scope="col">Action</th>-->
                                 </tr>
                             </thead>
                             <tbody>
@@ -613,13 +640,13 @@
                                         <td>{{ forloop.counter }}</td>
                                         <td>{{import.Current_Observation}}</td>
                                         <td>{{import.Decision_Conformity}}</td>
-                                        <td>
+                                        <!--<td>
                                             <button type="button"
-                                            class="btn btn-primary btn--icon btn-sm js-edit"
+                                            class="btn btn-primary btn&#45;&#45;icon btn-sm js-edit"
                                             data-url="{% url 'edit_decision' import.Record_Id %}">
                                             <i class="zmdi zmdi-edit"></i>
                                             </button>
-                                        </td>
+                                        </td>-->
                                     </tr>
                                     {% empty %}
                                     <tr>
@@ -632,7 +659,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Inspection Team Leader</label>
+                                <label class="form-label">Inspection Team Leader</label>
                                 <select class="form-control" name="teamLeader"  id="teamLeader">
                                     <option value="">--SELECT TEAM LEADER--</option>
                                     {% for inspector_list in inspector_list %}
@@ -643,7 +670,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="insTeam">Inspection Team </label>
+                                <label class="form-label">Inspection Team </label>
                                 <textarea class="form-control" id="insTeam" rows="2"></textarea>
                             </div>
                         </div>
@@ -651,22 +678,25 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Date Of Inspection</label>
+                                <label class="form-label">Date Of Inspection</label>
                                 <input type="text" class="form-control date-picker flatpickr-input active" id="dateOfInspection" name="date"  placeholder="Pick a date" readonly="readonly">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Remarks</label>
+                                <label class="form-label">Remarks</label>
                                 <textarea class="form-control" id="remarks" rows="2"></textarea>
                             </div>
                         </div>
                     </div>
+                    <div class="alert alert-info" id="success_messageDiv" style="display:none">
+                        Application Approved
+                    </div>
                     <hr>
                     <div class="card-action text-center">
                         <button type="button" class="btn btn-flat btn-primary" onclick="submit_details('{{application_details.Application_No}}')">
-                            <i class="ace-icon fa fa-times"></i>
-                            &nbsp;&nbsp;Submit
+                            <i class="ace-icon fa fa-check"></i>
+                            &nbsp;&nbsp;Approve
                         </button>
                         <button type="button" class="btn btn-flat btn-danger">
                             <i class="ace-icon fa fa-times"></i>
@@ -696,7 +726,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="conveyanceMeans">Decision Conformity Statement </label>
+                                    <label>Decision Conformity Statement </label>
                                     <textarea class="form-control" id="decisionConform" rows="2"></textarea>
                                 </div>
                             </div>
@@ -730,14 +760,185 @@
       </div>
     </div>
 </div>
-<script src="{% static 'assets/bower_components/jquery/dist/jquery.min.js' %}"></script>
-<script src="{% static 'assets/bower_components/popper.js/dist/umd/popper.min.js' %}"></script>
-<script src="{% static 'assets/bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
-<script src="{% static 'assets/bower_components/jquery.scrollbar/jquery.scrollbar.min.js' %}"></script>
-<script src="{% static 'assets/bower_components/flatpickr/dist/flatpickr.min.js' %}"></script>
-<script src="{% static 'assets/js/app.min.js' %}"></script>
-<script src="{% static 'assets/js/inspector.js' %}"></script>
 
+<form method="post" id="edit_plant_form">
+    {% csrf_token %}
+    <div class="modal fade" id="add_plant_details" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <input type="text" name="plant_applicationNo" id="plant_applicationNo">
+                                <input type="text" name="record_id" id="record_id" style="display:none"/>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Import Category </label>
+                                            <select class="form-control form-control" id="plant_import_category" disabled>
+                                                <option value="Seed">Seed</option>
+                                                <option value="Plant">Plant</option>
+                                                <option value="Plant Products">Plant Products</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Crop</label>
+                                            <select class="form-control" name="crop_id"  id="crop_id" disabled>
+                                                {% for crop in crop %}
+                                                        <option value="{{ crop.Crop_Id }}">{{ crop.Crop_Common_Name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Crop Variety</label>
+                                            <select class="form-control" name="crop_variety_id"  id="crop_variety" disabled>
+                                                {% for variety in variety %}
+                                                        <option value="{{ variety.Crop_Variety_Id }}">{{ variety.Crop_Variety_Name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Quantity</label>
+                                            <input type="text" class="form-control" id="qty" name="qty" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Unit </label>
+                                            <input type="text" class="form-control" name="unit"  id="unit" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Quantity Balance</label>
+                                            <input type="text" class="form-control" id="qty_balance" name="qty_balance" readonly="readonly">
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Quantity Released</label>
+                                            <input type="text" class="form-control" id="qty_approved" name="qty_approved" onchange="balance_plant(this.value)">
+                                        </div>
+                                        <div class="alert alert-danger" id="certified_qtyErrorMsg" style="display:none"></div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="update_details_plant()">Update</button>
+            </div>
+            </div>
+        </div>
+    </div>
+</form>
+<form method="post" id="edit_agro_form">
+    {% csrf_token %}
+    <input type="hidden" name="agro_applicationNo" id="agro_applicationNo">
+    <div class="modal fade" id="add_agro_details" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                 <div class="modal-header">
+                        <h5 class="modal-title">Edit Details</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                        </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <input type="text" name="agro_record_id" id="agro_record_id" style="display:none"/>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Import Category </label>
+                                            <select class="form-control form-control" id="agro_category" disabled>
+                                                <option value="">-SELECT-</option>
+                                                <option value="Seed">Pesticides</option>
+                                                <option value="Plant">Bio-Pesticides</option>
+                                                <option value="Plant Products">Plant Products</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Pesticide</label>
+                                            <select class="form-control" name="pesticide_id"  id="pesticide_id" disabled>
+                                                {% for pesticide in pesticide %}
+                                                        <option value="{{ pesticide.Pesticide_Id }}">{{ pesticide.Pesticide_Name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Description</label>
+                                            <textarea class="form-control" rows="3" id="description" name="description" disabled></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Quantity</label>
+                                            <input type="text" class="form-control" id="agro_qty" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Unit </label>
+                                            <input type="text" class="form-control" name="agro_unit"  id="agro_unit" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Quantity Balance</label>
+                                            <input type="text" class="form-control" id="agro_qty_balance" name="agro_qty_balance" readonly="readonly">
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Quantity Released</label>
+                                            <input type="text" class="form-control" id="agro_qty_approved" name="agro_qty_approved" onchange="balance_agro(this.value)">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="update_details_agro()">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script src="{% static 'assets/js/app.min.js' %}"></script>
 <script>
 function openDecisionModal()
 {
@@ -779,11 +980,91 @@ function submit_details(application_id)
         url : "{% url 'submit_application' %}",
         data :{'application_no':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks , 'dateOfInspection':dateOfInspection},
         success : function(data) {
-            $('#application-details-modal').modal('hide');
-            location.reload();
+            $('#success_messageDiv').show();
+            setTimeout(function() {
+                $("#success_messageDiv").hide('blind', {}, 500)
+            }, 2000);
+            setTimeout(function() {
+                $('#application-details-modal').modal('hide');
+            }, 3000);
+            setTimeout(function() {
+                location.reload();
+            }, 3000);
         }
     });
 }
 
+function populateDetails(Record_Id, Import_Category, Crop_Id, Variety_Id, Quantity, Unit, application_no, quantity_balance)
+{
+    $('#record_id').val(Record_Id);
+    $('#plant_import_category').val(Import_Category);
+    $('#crop_id').val(Crop_Id);
+    $('#crop_variety').val(Variety_Id);
+    $('#qty').val(Quantity);
+    $('#unit').val(Unit);
+    $('#plant_applicationNo').val(application_no);
+    $('#qty_balance').val(quantity_balance);
+    $('#add_plant_details').modal('show');
+}
 
+function populateAgroDetails(Record_Id, Import_Category, Pesticide_Id, Description, Quantity, Unit, application_no, balance_quantity)
+{
+
+    $('#agro_record_id').val(Record_Id);
+    $('#agro_category').val(Import_Category);
+    $('#pesticide_id').val(Pesticide_Id);
+    $('#description').val(Description);
+    $('#agro_qty').val(Quantity);
+    $('#agro_unit').val(Unit);
+    $('#agro_applicationNo').val(application_no);
+    $('#agro_qty_balance').val(balance_quantity);
+    $('#add_agro_details').modal('show');
+}
+
+function update_details_plant()
+{
+    $.ajax({
+        type : "POST",
+        url : "{% url 'update_details_plant' %}",
+        data : $('#edit_plant_form').serialize(),
+        success : function(response) {
+             $('#details-plant').html(response);
+             $('#add_plant_details').modal('hide');
+             $('.modal-backdrop').remove();
+        }
+    });
+}
+
+function update_details_agro()
+{
+    $.ajax({
+        type : "POST",
+        url : "{% url 'update_details_agro' %}",
+        data : $('#edit_agro_form').serialize(),
+        success : function(response) {
+            $('#details-agro').html(response);
+            $('#add_agro_details').modal('hide');
+            $('.modal-backdrop').remove();
+        }
+    });
+}
+
+function balance_plant(approved_qty)
+{
+    var qty_balance = $('#qty_balance').val();
+    if(approved_qty > qty_balance)
+    {
+        $('#certified_qtyErrorMsg').html("quantity certified cannot be more than quantity requested.");
+        $('#certified_qtyErrorMsg').show();
+        $('#certified_qtyErrorMsg').delay(2000).fadeOut('slow');
+        $('#qty_approved').val("");
+    }
+}
+
+function balance_agro(approved_qty)
+{
+    var qty = $('#agro_qty_balance').val();
+    var balance = qty - approved_qty
+    $('#agro_qty_balance').val(balance);
+}
 </script>

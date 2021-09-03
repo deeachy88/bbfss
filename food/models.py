@@ -38,7 +38,7 @@ class t_food_export_certificate_t1(models.Model):
     Unit_Certified = models.CharField(max_length=100, blank=True, null=True)
     Quantity_Rejected = models.IntegerField(blank=True, null=True)
     Unit_Rejected = models.CharField(max_length=100, blank=True, null=True)
-    Export_Permit_No = models.CharField(max_length=20, blank=True, null=True)
+    Export_Permit_No = models.CharField(max_length=50, blank=True, null=True)
     Approved_Date = models.DateField(blank=True, null=True)
     Validity_Period = models.IntegerField(blank=True, null=True)
     Validity = models.DateField(blank=True, null=True)
@@ -71,7 +71,7 @@ class t_food_licensing_food_handler_t1(models.Model):
     Assessment_Score = models.IntegerField(blank=True, null=True)
     Minimum_Score = models.IntegerField(blank=True, null=True)
     Trainer = models.CharField(max_length=100, blank=True, null=True)
-    FH_License_No = models.CharField(max_length=20, blank=True, null=True)
+    FH_License_No = models.CharField(max_length=50, blank=True, null=True)
     Approved_Date = models.DateField(blank=True, null=True)
     FH_License_Validity_Period = models.IntegerField(blank=True, null=True)
     FH_License_Validity = models.DateField(blank=True, null=True)
@@ -109,14 +109,14 @@ class t_food_import_permit_t1(models.Model):
     Approve_Date = models.DateField(blank=True, null=True)
     Validity_Period = models.IntegerField(blank=True, null=True)
     Validity = models.DateField(blank=True, null=True)
-    Import_Permit_No = models.CharField(max_length=20, blank=True, null=True)
+    Import_Permit_No = models.CharField(max_length=50, blank=True, null=True)
     Applicant_Id = models.CharField(max_length=100, default=None, blank=True, null=True)
     Terms = models.TextField(blank=True, null=True)
 
 
 class t_food_import_permit_t2(models.Model):
     Record_Id = models.AutoField(primary_key=True)
-    Application_No = models.CharField(max_length=20)
+    Application_No = models.CharField(max_length=50)
     Common_Name = models.CharField(max_length=100, blank=True, null=True)
     Product_Category = models.CharField(max_length=100, blank=True, null=True)
     Product_Characteristics = models.CharField(max_length=250, blank=True, null=True)
@@ -152,7 +152,7 @@ class t_food_import_permit_inspection_t1(models.Model):
     Approve_Date = models.DateField(blank=True, null=True)
     Validity_Period = models.IntegerField(blank=True, null=True)
     Validity = models.DateField(blank=True, null=True)
-    Import_Permit_No = models.CharField(max_length=20, blank=True, null=True)
+    Import_Permit_No = models.CharField(max_length=50, blank=True, null=True)
     Proposed_Inspection_Date = models.DateField(blank=True, null=True)
     Actual_Point_Of_Entry = models.IntegerField(blank=True, null=True)
     Inspection_Request_Remarks = models.TextField(blank=True, null=True)
@@ -161,7 +161,7 @@ class t_food_import_permit_inspection_t1(models.Model):
     Inspection_Time = models.CharField(max_length=100, blank=True, null=True)
     Inspection_Leader = models.CharField(max_length=100, blank=True, null=True)
     Inspection_Team = models.TextField(blank=True, null=True)
-    Clearance_Ref_No = models.CharField(max_length=20, blank=True, null=True)
+    Clearance_Ref_No = models.CharField(max_length=50, blank=True, null=True)
     Inspection_Remarks = models.TextField(blank=True, null=True)
     Applicant_Id = models.CharField(max_length=100, default=None, blank=True, null=True)
     Terms = models.TextField(blank=True, null=True)
@@ -169,7 +169,7 @@ class t_food_import_permit_inspection_t1(models.Model):
 
 class t_food_import_permit_inspection_t2(models.Model):
     Record_Id = models.AutoField(primary_key=True)
-    Application_No = models.CharField(max_length=20)
+    Application_No = models.CharField(max_length=50)
     Common_Name = models.CharField(max_length=100, blank=True, null=True)
     Product_Category = models.CharField(max_length=100, blank=True, null=True)
     Product_Characteristics = models.CharField(max_length=250, blank=True, null=True)
@@ -184,7 +184,7 @@ class t_food_import_permit_inspection_t2(models.Model):
 
 class t_food_import_permit_inspection_t3(models.Model):
     Record_Id = models.AutoField(primary_key=True)
-    Application_No = models.CharField(max_length=20)
+    Application_No = models.CharField(max_length=50)
     Current_Observation = models.TextField(blank=True, null=True)
     Decision_Conformity = models.TextField(blank=True, null=True)
 
@@ -225,7 +225,7 @@ class t_food_business_registration_licensing_t1(models.Model):
     Inspection_Type = models.CharField(max_length=100, blank=True, null=True)
     Desired_FI_Inspection_Date = models.DateField(blank=True, null=True)
     Desired_FR_Inspection_Date = models.DateField(blank=True, null=True)
-    FB_License_No = models.CharField(max_length=100, blank=True, null=True) # System Generated FB License No
+    FB_License_No = models.CharField(max_length=100, blank=True, null=True)  # System Generated FB License No
     FI_Inspection_Date = models.DateField(blank=True, null=True)
     FI_Inspection_Leader = models.CharField(max_length=100, blank=True, null=True)
     FI_Response = models.TextField(blank=True, null=True)
@@ -242,12 +242,13 @@ class t_food_business_registration_licensing_t1(models.Model):
     Approve_Date = models.DateField(blank=True, null=True)
     Validity_Period = models.IntegerField(blank=True, null=True)
     Validity = models.DateField(blank=True, null=True)
-    FR_Inspection_Team = models.CharField(max_length=200, default=None, blank=True, null=True)
-    FI_Inspection_Team = models.CharField(max_length=200, default=None, blank=True, null=True)
+    FR_Inspection_Team = models.CharField(max_length=100, default=None, blank=True, null=True)
+    FI_Inspection_Team = models.CharField(max_length=100, default=None, blank=True, null=True)
     Dzongkhag_Code = models.IntegerField(default=None, blank=True, null=True)
     Gewog_Code = models.IntegerField(default=None, blank=True, null=True)
     Village_Code = models.IntegerField(default=None, blank=True, null=True)
     FO_Remarks = models.TextField(blank=True, null=True)
+
 
 class t_food_business_registration_licensing_t2(models.Model):
     Record_Id = models.AutoField(primary_key=True)
@@ -285,6 +286,8 @@ class t_food_business_registration_licensing_t5(models.Model):
     Concern = models.CharField(max_length=10, default=None, blank=True, null=True)
     Date = models.DateField(default=None, blank=True, null=True)
     FBO_Response = models.TextField(default=None, blank=True, null=True)
+    NC = models.CharField(max_length=10, default=None, blank=True, null=True)
+    NC_Category = models.CharField(max_length=10, default=None, blank=True, null=True)
 
 
 class t_food_business_registration_licensing_t6(models.Model):

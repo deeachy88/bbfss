@@ -53,9 +53,17 @@
                     {% for certification_details in certification_details %}
                         <tr>
                             <td>{{ forloop.counter }}</td>
-                            <td>{{certification_details.Crop}}</td>
-                            <td>{{certification_details.Variety}}</td>
-                            <td>{{certification_details.Qty_Certified}}</td>
+                            {% for crop in crop %}
+                                {% if import.Crop == crop.Crop_Id %}
+                                    <td>{{ crop.Crop_Common_Name }}</td>
+                                {% endif %}
+                            {% endfor %}
+                            {% for variety in variety %}
+                                {% if variety.Variety ==  import.Variety_Id %}
+                                    <td>{{ variety.Crop_Variety_Name}}</td>
+                                {% endif %}
+                            {% endfor %}
+                            <td>{{import.Qty_Certified}}</td>
                         </tr>
                         {% empty %}
                         <tr>
