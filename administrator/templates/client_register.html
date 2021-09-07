@@ -11,25 +11,16 @@
     <title>BAFRA | BBFSS </title>
 
     <!-- Bootstrap -->
-    <link href="{% static 'styles/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
     <!-- Font Awesome -->
     <link href="{% static 'assets/bower_components/material-design-iconic-font/dist/css/material-design-iconic-font.min.css' %}" rel="stylesheet">
     <!-- NProgress -->
     <link href="{% static 'styles/nprogress/nprogress.css' %}" rel="stylesheet">
     <!-- Animate.css -->
     <link rel="stylesheet" href="{% static 'assets/css/app.min.css' %}">
-
+    <link href="{% static 'assets/css/bootstrap.min.css' %}" rel="stylesheet">
     <!-- Custom Theme Style -->
   </head>
 <style>
-    body {
-    color: #73879C;
-    background: #131936;
-    font-family: "Helvetica Neue", Roboto, Arial, "Droid Sans", sans-serif;
-    font-size: 13px;
-    font-weight: 400;
-    line-height: 1.471;
-}
 .badge {
     position: absolute;
     right: -5px;
@@ -41,213 +32,216 @@
     margin-bottom: 2.3rem;
     box-shadow: 0 0px 0px rgb(0 0 0 / 10%);
 }
-.card {
-    position: relative;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    min-width: 0;
-    word-wrap: break-word;
-    background-color: rgb(19 25 54);
-    background-clip: border-box;
-    border: 1px solid transparent;
-    border-radius: 2px;
-}
 .content__title {
     margin-bottom: 0rem;
     padding: 0rem 0rem 0;
 }
+
 </style>
 <body>
 <header class="content__title">
     <img src="{% static 'assets/img/banner.png' %}" alt="placeholder 960" class="img-responsive" width="100%" />
 </header>
-<div class="card">
-    <div class="card-body text-center">
-        <h5 class="card-body__title">Client Registration</h5>
-        <div class="actions">
-            <a href="{% url 'index' %}" data-toggle="tooltip" data-placement="top" title="Back To Login" class="actions__item zmdi zmdi-arrow-left"></a>
+    <div class="card">
+        <div class="card-header">
+            <div class="card-head-row">
+                <div class="card-title text-center"><b>Client Registration</b></div>
+                <div class="card-tools">
+                    <a href="{% url 'index' %}" class="btn btn-info btn-border btn-round btn-sm mr-2 float-right" style="margin-top: -33px;">
+                        <span class="btn-label">
+                            <i class="zmdi zmdi-arrow-left"></i>
+                        </span>
+                        Login
+                    </a>
+                </div>
+            </div>
         </div>
-        <hr>
-        <form method="post" id="registration_form">
-        {% csrf_token %}
-            <div class="form-check text-center">
-                <label>Client Type <font color="red"><font color='red'>*</font></font></label><br>
-                <label class="custom-control custom-radio">
-                    <input type="radio" name="Client_Type" class="custom-control-input" value="Individual" onclick="changeOnClick(this.value)">
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description">Individual</span>
-                </label>
-                <label class="custom-control custom-radio">
-                    <input type="radio" name="Client_Type" class="custom-control-input" value="Organization" onclick="changeOnClick(this.value)">
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description">Organization</span>
-                </label>
-                <div class="alert alert-danger" id="Client_TypeErrorMsg" style="display:none"></div>
-            </div><br>
-            <div id="individualDiv">
-                <div class="form-row">
-                     <div class="col-md-4">
-                        <div class="form-group">
-                            <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCitizenDetails(this.value);" placeholder="CID">
+        <div class="card-body">
+            <form method="post" id="registration_form">
+            {% csrf_token %}
+                <div class="form-check text-center">
+                    <label>Client Type <font color='red' style="font-size: 20px;">*</font></label><br>
+                    <label class="form-radio-label">
+                        <input class="form-radio-input" type="radio" name="Client_Type" value="Individual" onclick="changeOnClick(this.value)">
+                        <span class="form-radio-sign">Individual</span>
+                    </label>
+                    <label class="form-radio-label ml-3">
+                        <input class="form-radio-input" name="Client_Type" type="radio" value="Organization" onclick="changeOnClick(this.value)">
+                        <span class="form-radio-sign">Organization</span>
+                    </label>
+                    <div class="alert alert-danger" id="Client_TypeErrorMsg" style="display:none"></div>
+                </div>
+                <div id="individualDiv">
+                    <div class="form-row">
+                         <div class="col-md-4">
+                            <div class="form-group">
+                                <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCitizenDetails(this.value);" placeholder="CID">
+                            </div>
+                             <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                            <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
+                         </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <input type="text" class="form-control form-control-md" name="Name" id="Name" placeholder="Name" readonly="readonly">
+                            </div>
+                            <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                            <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
                         </div>
-                         <span class="badge"><font color='red'><font color='red'>*</font></font></span>
-                        <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
-                     </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <input type="text" class="form-control form-control-md" name="Name" id="Name" placeholder="Name" readonly="readonly">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <input type="email" class="form-control" id="email" name="email" placeholder="Email Address" onchange="validateemailId(this.value)">
+                            </div>
+                            <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                            <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
                         </div>
-                        <span class="badge"><font color='red'><font color='red'>*</font></font></span>
-                        <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <input type="email" class="form-control" id="email" name="email" placeholder="Email Address" onchange="validateemailId(this.value)">
+                    <div class="form-row">
+                         <div class="col-md-4">
+                            <div class="form-group">
+                                <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onchange="checkContact(this.value)" placeholder="Contact No">
+                            </div>
+                             <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                            <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
+                         </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                 <input type="text" class="form-control" name="dzongkhag"  id="dzongkhag" placeholder="Dzongkhag" readonly="readonly">
+                            </div>
+                            <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                            <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
                         </div>
-                        <span class="badge"><font color='red'><font color='red'>*</font></font></span>
-                        <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="gewog"  id="gewog" placeholder="Gewog" readonly="readonly">
+                            </div>
+                            <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                            <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="village"  id="village" placeholder="Village" readonly="readonly">
+                            </div>
+                            <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                            <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <textarea class="form-control" placeholder="Address" id="Address" name="Address"></textarea>
+                            </div>
+                            <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                            <div class="alert alert-danger" id="AddressErrorMsg" style="display:none"></div>
+                        </div>
                     </div>
                 </div>
-                <div class="form-row">
-                     <div class="col-md-4">
-                        <div class="form-group">
-                            <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onchange="checkContact(this.value)" placeholder="Contact No">
+                <div id="organizationDiv" style="display:none">
+                    <div class="form-row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <input type="text" class="form-control form-control-md" name="Org_Name" id="Org_Name" placeholder="Organization Name">
+                            </div>
+                            <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                            <div class="alert alert-danger" id="Org_NameErrorMsg" style="display:none"></div>
                         </div>
-                         <span class="badge"><font color='red'><font color='red'>*</font></font></span>
-                        <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
-                     </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                             <input type="text" class="form-control" name="dzongkhag"  id="dzongkhag" placeholder="Dzongkhag" readonly="readonly">
-                        </div>
-                        <span class="badge"><font color='red'><font color='red'>*</font></font></span>
-                        <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <input type="text" class="form-control" name="gewog"  id="gewog" placeholder="Gewog" readonly="readonly">
-                        </div>
-                        <span class="badge"><font color='red'><font color='red'>*</font></font></span>
-                        <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <input type="text" class="form-control" name="village"  id="village" placeholder="Village" readonly="readonly">
-                        </div>
-                        <span class="badge"><font color='red'><font color='red'>*</font></font></span>
-                        <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <textarea class="form-control" placeholder="Address" id="Address" name="Address"></textarea>
-                        </div>
-                        <span class="badge"><font color='red'><font color='red'>*</font></font></span>
-                        <div class="alert alert-danger" id="AddressErrorMsg" style="display:none"></div>
-                    </div>
-                </div>
-            </div>
-            <div id="organizationDiv" style="display:none">
-                <div class="form-row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <input type="text" class="form-control form-control-md" name="Org_Name" id="Org_Name" placeholder="Organization Name">
-                        </div>
-                        <span class="badge"><font color='red'><font color='red'>*</font></font></span>
-                        <div class="alert alert-danger" id="Org_NameErrorMsg" style="display:none"></div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="License_No" name="License_No" placeholder="License Number">
-                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="License_No" name="License_No" placeholder="License Number">
+                            </div>
 
-                        <div class="alert alert-danger" id="License_NoErrorMsg" style="display:none"></div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <input type="text" class="form-control form-control-md" name="Contact_Person" id="Contact_Person" placeholder="Contact Person">
+                            <div class="alert alert-danger" id="License_NoErrorMsg" style="display:none"></div>
                         </div>
-                        <span class="badge"><font color='red'><font color='red'>*</font></font></span>
-                        <div class="alert alert-danger" id="Contact_PersonErrorMsg" style="display:none"></div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <input type="text" class="form-control form-control-md" name="Contact_Person" id="Contact_Person" placeholder="Contact Person">
+                            </div>
+                            <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                            <div class="alert alert-danger" id="Contact_PersonErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <input type="email" class="form-control" id="emailId" name="emailId" placeholder="Email Address" onchange="validateorgemailId(this.value)">
+                            </div>
+                            <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                            <div class="alert alert-danger" id="emailIdErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <input type="number" class="form-control" id="mobile_number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="mobile_number" maxlength="8" onkeypress="return isNumberKey(event)" onchange="check_org_Contact(this.value)" placeholder="Contact No">
+                            </div>
+                            <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                            <div class="alert alert-danger" id="mobile_numberErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <select class="form-control" name="org_dzongkhag"  id="org_dzongkhag" onchange="getGewog(this.value)">
+                                    <option value="">--SELECT ORGANIZATION DZONGKHAG--</option>
+                                    {% for dzongkhag in dzongkhag %}
+                                            <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                            <div class="alert alert-danger" id="org_dzongkhagErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <select class="form-control" name="org_gewog" id="org_gewog" onchange="getVillage(this.value)">
+                                    <option value="">--SELECT ORGANIZATION GEWOG--</option>
+                                    {% for gewog in gewog %}
+                                            <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                            <div class="alert alert-danger" id="org_gewogErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                 <select class="form-control" name="org_village" id="org_village">
+                                    <option value="">--SELECT ORGANIZATION VILLAGE--</option>
+                                    {% for village in village %}
+                                            <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
+                                    {% endfor %}
+                                 </select>
+                            </div>
+                            <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                            <div class="alert alert-danger" id="org_villageErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <textarea class="form-control" placeholder="Address" name="org_address" id="org_address"></textarea>
+                            </div>
+                            <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                            <div class="alert alert-danger" id="org_addressErrorMsg" style="display:none"></div>
+                        </div>
                     </div>
                 </div>
-                <div class="form-row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <input type="email" class="form-control" id="emailId" name="emailId" placeholder="Email Address" onchange="validateemailId(this.value)">
-                        </div>
-                        <span class="badge"><font color='red'><font color='red'>*</font></font></span>
-                        <div class="alert alert-danger" id="emailIdErrorMsg" style="display:none"></div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <input type="number" class="form-control" id="mobile_number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="mobile_number" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)" placeholder="Contact No">
-                        </div>
-                        <span class="badge"><font color='red'><font color='red'>*</font></font></span>
-                        <div class="alert alert-danger" id="mobile_numberErrorMsg" style="display:none"></div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <select class="form-control" name="org_dzongkhag"  id="org_dzongkhag" onchange="getGewog(this.value)">
-                                <option value="">--SELECT ORGANIZATION DZONGKHAG--</option>
-                                {% for dzongkhag in dzongkhag %}
-                                        <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <span class="badge"><font color='red'><font color='red'>*</font></font></span>
-                        <div class="alert alert-danger" id="org_dzongkhagErrorMsg" style="display:none"></div>
-                    </div>
+                <div id="sucessMsg" class="alert alert-info" role="alert" style="display:none;">
+                    You Have Successfully Submitted Your Registration Form. You Will Receive Email Confirming Yor Registration.
                 </div>
-                <div class="form-row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <select class="form-control" name="org_gewog" id="org_gewog" onchange="getVillage(this.value)">
-                                <option value="">--SELECT ORGANIZATION GEWOG--</option>
-                                {% for gewog in gewog %}
-                                        <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <span class="badge"><font color='red'><font color='red'>*</font></font></span>
-                        <div class="alert alert-danger" id="org_gewogErrorMsg" style="display:none"></div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                             <select class="form-control" name="org_village" id="org_village">
-                                <option value="">--SELECT ORGANIZATION VILLAGE--</option>
-                                {% for village in village %}
-                                        <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
-                                {% endfor %}
-                             </select>
-                        </div>
-                        <span class="badge"><font color='red'><font color='red'>*</font></font></span>
-                        <div class="alert alert-danger" id="org_villageErrorMsg" style="display:none"></div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <textarea class="form-control" placeholder="Address" name="org_address" id="org_address"></textarea>
-                        </div>
-                        <span class="badge"><font color='red'><font color='red'>*</font></font></span>
-                        <div class="alert alert-danger" id="org_addressErrorMsg" style="display:none"></div>
-                    </div>
-                </div>
-            </div>
-            <div id="sucessMsg" class="alert alert-info" role="alert" style="display:none;">
-                You Have Successfully Submitted Your Registration Form. You Will Receive Email Confirming Yor Registration.
-            </div>
-            <button type="button" onclick="save_client()" class="btn btn-primary">Register</button>
-        </form>
+                <button type="button" onclick="save_client()" class="btn btn-primary justify-content-center">Register</button>
+            </form>
+        </div>
     </div>
-</div>
 </body>
 <script src="{% static 'assets/bower_components/jquery/dist/jquery.min.js' %}"></script>
 <script src="{% static 'assets/bower_components/popper.js/dist/umd/popper.min.js' %}"></script>
 <script src="{% static 'assets/bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'assets/js/app.min.js' %}"></script>
 <script>
+    function isNumberKey(evt)
+    {
+     var charCode = (evt.which) ? evt.which : event.keyCode
+     if (charCode > 31 && (charCode < 48 || charCode > 57))
+        return false;
+
+     return true;
+    }
     function changeOnClick(value)
     {
         if(value == "Individual")
@@ -283,12 +277,20 @@
             gewog = $('#gewog').val();
             village = $('#village').val();
             Address = $('#Address').val();
+            cidcount = $('#cid').val().length;
 
             if(cid == "")
             {
                 $('#cidErrorMsg').html("Enter CID Number.");
                 $('#cidErrorMsg').show();
                 $('#cidErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(cidcount < 11)
+            {
+                $('#cidErrorMsg').html("Cannot Be Less THan Eleven Digits.");
+                $('#cidErrorMsg').show();
+                $('#cidErrorMsg').delay(2000).fadeOut('slow');
+                $("#cid").focus();
             }
             else if(Name == "")
             {
@@ -467,6 +469,24 @@ function validateemailId(emailId)
 
 }
 
+function validateorgemailId()
+{
+    var pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+    var no=emailId.match(pattern);
+
+    if(no==null)
+    {
+        $('#emailIdErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
+        $('#emailId').val("");
+        $('#emailIdErrorMsg').show();
+        $('#emailIdErrorMsg').delay(2000).fadeOut('slow');
+    }else
+    {
+     $('#emailIdErrorMsg').hide();
+    }
+
+}
+
 function checkContact(value)
 {
     var firstDigit = value.charAt(0);
@@ -500,25 +520,35 @@ function getCitizenDetails(cidNo)
 {
     $.ajax({
         type : "GET",
-        url : "{% url 'get_citizen_details' %}",
+        url : "{% url 'check_cid_exists' %}",
         data :{'cidNo':cidNo},
         success : function(data)
         {
-            const myObj =data.response;
-            var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
-            var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
-            var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
-            if (middleName == null) {
-                    middleName = "";
-                }
-            var CitizenName = firstName + " " + middleName + " " + lastName;
-            var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
-            var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
-            var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
-            $('#Name').val(CitizenName);
-            $('#dzongkhag').val(dzongkhagName);
-            $('#gewog').val(gewogName);
-            $('#village').val(villageName);
+            if(data.count > 0)
+            {
+                $('#cid').val("");
+                $('#cidErrorMsg').html("CID Already Exists.Try With Another one");
+                $('#cidErrorMsg').show();
+                $('#cidErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else
+            {
+                const myObj =data.response;
+                var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+                var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+                var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+                if (middleName == null) {
+                        middleName = "";
+                    }
+                var CitizenName = firstName + " " + middleName + " " + lastName;
+                var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
+                var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
+                var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
+                $('#Name').val(CitizenName);
+                $('#dzongkhag').val(dzongkhagName);
+                $('#gewog').val(gewogName);
+                $('#village').val(villageName);
+            }
         }
     });
 }
@@ -547,6 +577,35 @@ function getVillage(gewog_id)
             $('#org_village').html(data);
         }
     });
+}
+
+function check_org_Contact(value)
+{
+    var firstDigit = value.charAt(0);
+    var secondDigit = value.charAt(1);
+
+    if(firstDigit != 7 && firstDigit != 1){
+        $('#mobile_numberErrorMsg').html("Must Start with either 1 or 7.");
+        $('#mobile_numberErrorMsg').show();
+        $('#mobile_numberErrorMsg').delay(2000).fadeOut('slow');
+        $('#mobile_number').val("");
+    }else if(firstDigit == 1 && secondDigit != 6 && secondDigit != 7){
+        $('#mobile_numberErrorMsg').html("Second Digit Must Start with either 6 or 7.");
+        $('#mobile_numberErrorMsg').show();
+        $('#mobile_numberErrorMsg').delay(2000).fadeOut('slow');
+        $('#mobile_number').val("");
+    }else if(firstDigit == 7 && secondDigit == 6){
+        $('#mobile_numberErrorMsg').html("Second Digit Cannot be 6.");
+        $('#mobile_numberErrorMsg').show();
+        $('#mobile_numberErrorMsg').delay(2000).fadeOut('slow');
+        $('#mobile_number').val("");
+    }else if(firstDigit == 7 && secondDigit != 7){
+        $('#mobile_numberErrorMsg').html("Second Digit Must Start with 7.");
+        $('#mobile_numberErrorMsg').show();
+        $('#mobile_numberErrorMsg').delay(2000).fadeOut('slow');
+        $('#mobile_number').val("");
+    }
+
 }
 </script>
 </html>

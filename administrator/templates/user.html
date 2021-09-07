@@ -137,7 +137,7 @@
                     <div class="form-group col-md-6">
                         <label for="name">Name</label>
                         <input type="text" name="name" class="form-control" id="name" required>
-                        <div id="nameErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
+                        <div id="nameErrorMsg" class="alert alert-danger" style="display: none;"></div>
                     </div>
                     <div class="form-group col-md-6">
                         <label for="empId">Employee Id</label>
@@ -206,6 +206,7 @@
                                     <option value="{{ section.Section_Id }}">{{ section.Section_Name }}</option>
                             {% endfor %}
                          </select>
+                        <div id="sectionErrorMsg" class="alert alert-danger" role="alert" style="display: none;"></div>
                     </div>
                 </div>
                 <div class="row">
@@ -484,28 +485,94 @@ function validateemailId(emailId)
 
 function save_users()
 {
-    $("#pageloader").show();
-        $.ajax({
-            type : "POST",
-            url : "{% url 'user' %}",
-            data : $('#add_user_form').serialize(),
-            success : function()
-            {
-                $("#pageloader").hide();
-                $('#successMsg').html("User Successfully Added.");
-                $('#successMsg').show();
-                setTimeout(function() {
-                    $('#successMsg').delay(2000).fadeOut('slow');
-                }, 2000);
-                setTimeout(function() {
-                    $('#userModal').modal('hide');
-                }, 2000);
-                setTimeout(function() {
-                    location.reload();
-                }, 3000);
-            }
-        });
+        var name = $('#name').val();
+        var empId = $('#empId').val();
+        var gender_name = $("input[name=gender_name]:checked").length;
+        var email = $('#email').val();
+        var mobile = $('#mobile').val();
+        var role = $('#role').val();
+        var division = $('#role').val();
+        var section = $('#section').val();
+        var field_office = $('#fieldOffice').val();
 
+        if(name == "")
+        {
+            $('#nameErrorMsg').html("Enter Name.");
+            $('#nameErrorMsg').show();
+            $('#nameErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(empId == "")
+        {
+            $('#empIdErrorMsg').html("Enter Employee Id.");
+            $('#empIdErrorMsg').show();
+            $('#empIdErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(gender_name < 1)
+        {
+            $('#genderErrorMsg').html("Select One Gender.");
+            $('#genderErrorMsg').show();
+            $('#genderErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(email == "")
+        {
+            $('#emailErrorMsg').html("Enter Email.");
+            $('#emailErrorMsg').show();
+            $('#emailErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(mobile == "")
+        {
+            $('#mobileErrorMsg').html("Enter Mobile Number.");
+            $('#mobileErrorMsg').show();
+            $('#mobileErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(role == "")
+        {
+            $('#roleErrorMsg').html("Select Role.");
+            $('#roleErrorMsg').show();
+            $('#roleErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(role == "2" && division == "")
+        {
+            $('#divisionErrorMsg').html("Select Division.");
+            $('#divisionErrorMsg').show();
+            $('#divisionErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(role == "2" && section == "")
+        {
+            $('#sectionErrorMsg').html("Select Section.");
+            $('#sectionErrorMsg').show();
+            $('#sectionErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(role == "4" || role == "5" && fieldOffice == "")
+        {
+            $('#fieldOfficeErrorMsg').html("Select Field Office.");
+            $('#fieldOfficeErrorMsg').show();
+            $('#fieldOfficeErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            $("#pageloader").show();
+            $.ajax({
+                type : "POST",
+                url : "{% url 'user' %}",
+                data : $('#add_user_form').serialize(),
+                success : function()
+                {
+                    $("#pageloader").hide();
+                    $('#successMsg').html("User Successfully Added.");
+                    $('#successMsg').show();
+                    setTimeout(function() {
+                        $('#successMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#userModal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        location.reload();
+                    }, 3000);
+                }
+            });
+        }
 }
 
 function checkContact(value)

@@ -36,7 +36,7 @@ option {
                         <div id="plant_details">
                             <div class="row">
                                 <div class="col-sm-2">
-                                    <label class="form-label">Permit Type</label>
+                                    <label class="form-label">Permit Type <font color='red'>*</font></label>
                                 </div>
                                 <div class="col-sm-10 justify-content-center">
                                     <div class="form-check">
@@ -291,19 +291,19 @@ option {
                             <div class="box-body">
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Commodity</label>
+                                        <label class="form-label">Commodity <font color='red'>*</font></label>
                                         <input type="text" name="commodity" class="form-control" id="commodity" required>
                                         <div class="alert alert-danger" id="commodityErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Quantity</label>
+                                        <label class="form-label">Quantity <font color='red'>*</font></label>
                                         <input type="number" name="qty" class="form-control" id="qty" required>
                                         <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Unit</label>
+                                        <label class="form-label">Unit <font color='red'>*</font></label>
                                         <select class="form-control" name="unit"  id="unit">
                                             {% for unit in unit %}
                                                 <option value="unit.Unit">{{unit.Unit}}</option>
@@ -323,7 +323,7 @@ option {
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="save_form()">Add</button>
+                    <button type="button" class="btn btn-primary" onclick="save_details_movement()">Add</button>
                 </div>
             </div>
         </div>
@@ -601,18 +601,6 @@ function getToGewog(dzongkhag_id)
     });
 }
 
-function getToGewog(dzongkhag_id)
-{
-    $.ajax({
-        type : "GET",
-        url : "{% url 'load_gewog' %}",
-        data :{'dzongkhag_id':dzongkhag_id},
-        success : function(data)
-        {
-            $('#to_gewog').html(data);
-        }
-    });
-}
 
 
 
@@ -834,6 +822,51 @@ function getCitizenDetails(cidNo)
             $('#village').val(villageName);
         }
     });
+}
+
+function save_details_movement()
+{
+    var commodity = $('#commodity').val();
+    var qty = $('#qty').val();
+    var unit = $('#description').val();
+
+    if(commodity == "")
+    {
+        $('#commodityErrorMsg').html("Enter Commodity.");
+        $('#commodityErrorMsg').show();
+        $('#commodityErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(qty == "")
+    {
+        $('#qtyErrorMsg').html("Enter Quantity.");
+        $('#qtyErrorMsg').show();
+        $('#qtyErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(unit == "")
+    {
+        $('#unitErrorMsg').html("Select Unit.");
+        $('#unitErrorMsg').show();
+        $('#unitErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'save_details_movement' %}",
+            data : $('#save_form').serialize(),
+            success : function(responseText) {
+               $('#add_details').modal('hide');
+               $('#Details').html(responseText);
+               $('#movement-profile-tab').tab('show');
+               $('.modal-backdrop').remove();
+            }
+        });
+    }
+}
+
+function save_details_form()
+{
+    $('#pills-tab a:last').tab('show');
 }
 </script>
 {% endblock %}

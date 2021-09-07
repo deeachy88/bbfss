@@ -220,178 +220,177 @@
                         <button type="button" class="btn btn-primary" onclick="save_gap_certification()">Save</button>
                     </div>
                 </div>
+                <div class="tab-pane fade" id="farmers_group_details" role="tabpanel" aria-labelledby="pills-farmers-group">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-head-row">
+                                <div class="card-tools pull-right">
+                                    <button type="button" class="btn btn-light" onclick="farmer_group_modal()">Add Details</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="farmer_details">
+                                {% include 'GAP_Certification/farmer_group_details.html' %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <button type="button" class="btn btn-success" onclick="save_farmer_details()">Save-Next</button>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="crop_production_details" role="tabpanel" aria-labelledby="pills-crop-production">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-head-row">
+                                <div class="card-tools pull-right">
+                                    <button type="button" class="btn btn-light" onclick="crop_production_details_modal()">Add Details</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="details_crop_production">
 
-            <div class="tab-pane fade" id="farmers_group_details" role="tabpanel" aria-labelledby="pills-farmers-group">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-head-row">
-                            <div class="card-tools pull-right">
-                                <button type="button" class="btn btn-light" onclick="farmer_group_modal()">Add Details</button>
                             </div>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <div id="farmer_details">
-                            {% include 'GAP_Certification/farmer_group_details.html' %}
-                        </div>
+                    <div class="card-action">
+                        <button type="button" class="btn btn-success" onclick="next_crop_production()">Save-Next</button>
                     </div>
                 </div>
-                <div class="card-action">
-                    <button type="button" class="btn btn-success" onclick="save_farmer_details()">Save-Next</button>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="crop_production_details" role="tabpanel" aria-labelledby="pills-crop-production">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-head-row">
-                            <div class="card-tools pull-right">
-                                <button type="button" class="btn btn-light" onclick="crop_production_details_modal()">Add Details</button>
+                <div class="tab-pane fade" id="pack_house_details" role="tabpanel" aria-labelledby="pills-pack-house">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-head-row">
+                                <div class="card-tools pull-right">
+                                    <button type="button" class="btn btn-light" onclick="pack_house_modal()">Add Details</button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="card-body">
-                        <div id="details_crop_production">
+                        <div class="card-body">
+                            <div id="pack_house">
 
-                        </div>
-                    </div>
-                </div>
-                <div class="card-action">
-                    <button type="button" class="btn btn-success" onclick="next_crop_production()">Save-Next</button>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="pack_house_details" role="tabpanel" aria-labelledby="pills-pack-house">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-head-row">
-                            <div class="card-tools pull-right">
-                                <button type="button" class="btn btn-light" onclick="pack_house_modal()">Add Details</button>
                             </div>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <div id="pack_house">
-
-                        </div>
+                    <div class="card-action">
+                        <button type="button" class="btn btn-success" onclick="next_pack_house()">Save-Next</button>
                     </div>
                 </div>
-                <div class="card-action">
-                    <button type="button" class="btn btn-success" onclick="next_pack_house()">Save-Next</button>
+                <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="mortem-file-attach">
+                    <div id="file-attachment-mortem">
+                        {% include 'GAP_Certification/file_attachment.html' %}
+                    </div>
+                    <div class="card-action">
+                        <button type="button" class="btn btn-success" onclick="next_file_attach()">Save-Next</button>
+                    </div>
                 </div>
-            </div>
-            <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="mortem-file-attach">
-                <div id="file-attachment-mortem">
-                    {% include 'GAP_Certification/file_attachment.html' %}
-                </div>
-                <div class="card-action">
-                    <button type="button" class="btn btn-success" onclick="next_file_attach()">Save-Next</button>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="certification-standards" role="tabpanel" aria-labelledby="mortem-file-attach">
-                <div class="row">
-                    <div class="form-group col-md-6">
-                        <div class="form-check">
-                            <label class="form-label">Standard(s) for which we wish to be certified</label><br><br>
-                            <div class="form-group">
-                                <div class="form-check">
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" name="Standard" class="custom-control-input" value="BhutanGAP Standard(BTS 30:2017)" onchange="checkStandards(this.value)">
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">BhutanGAP Standard (BTS 30:2017)</span>
-                                    </label>&nbsp;
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" name="Standard" class="custom-control-input" value="Others" onchange="checkStandards(this.value)">
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Others</span>
-                                    </label>
+                <div class="tab-pane fade" id="certification-standards" role="tabpanel" aria-labelledby="mortem-file-attach">
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <div class="form-check">
+                                <label class="form-label">Standard(s) for which we wish to be certified</label><br><br>
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Standard" class="custom-control-input" value="BhutanGAP Standard(BTS 30:2017)" onchange="checkStandards(this.value)">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">BhutanGAP Standard (BTS 30:2017)</span>
+                                        </label>&nbsp;
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Standard" class="custom-control-input" value="Others" onchange="checkStandards(this.value)">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Others</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6" >
+                            <input type="text" class="form-control" id="other_standard" name="other_standard" disabled>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <div class="form-check">
+                                <label class="form-label">With a view to ensure the similarity of the process of production of the mentioned commodities as per related standard, we shall keep regular records and maintain all required documentation to fulfill the requirements of the identified Standard (refer previous point) and any other additional documentation required by the BAFRA as the Certification Body</label><br><br>
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Agree" onclick="checkStandardsRadio(this.value)">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Agree</span>
+                                        </label>&nbsp;
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio(this.value)">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Disagree</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <div class="form-check">
+                                <label class="form-label">We are willing to change our operational practices, as may be required from time to time to keep in line with our policy which may be directed by BAFRA.</label><br><br>
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Agree" onclick="checkStandardsRadio(this.value)">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Agree</span>
+                                        </label>&nbsp;
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio(this.value)">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Disagree</span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="form-group col-md-6" >
-                        <input type="text" class="form-control" id="other_standard" name="other_standard" disabled>
-                    </div>
-                    <div class="form-group col-md-12">
-                        <div class="form-check">
-                            <label class="form-label">With a view to ensure the similarity of the process of production of the mentioned commodities as per related standard, we shall keep regular records and maintain all required documentation to fulfill the requirements of the identified Standard (refer previous point) and any other additional documentation required by the BAFRA as the Certification Body</label><br><br>
-                            <div class="form-group">
-                                <div class="form-check">
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Agree" onclick="checkStandardsRadio(this.value)">
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Agree</span>
-                                    </label>&nbsp;
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio(this.value)">
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Disagree</span>
-                                    </label>
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <div class="form-check">
+                                <label class="form-label">If BAFRA desires to make a preliminary inspection or investigation then, we, agree to give all our reasonable opportunity and privileges to BAFRA and accordingly provide our cooperation as per certification requirements.</label><br><br>
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Terms_Abide" class="custom-control-input" value="Agree" onclick="checkStandardsRadio(this.value)">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Agree</span>
+                                        </label>&nbsp;
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Terms_Abide" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio(this.value)">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Disagree</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <div class="form-check">
+                                <label class="form-label">If the certificate is awarded, we will abide by all the terms and conditions of the certification, so long as it remains valid for use and also comply with the Rules and Regulations. If the license/certificate becomes prolonged or it is cancelled, then we, shall ensure that any use of the Standard Mark on any commodity under the license will be stopped immediately and all related advertisement, materials will be taken back and other necessary action will be taken</label><br><br>
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Agree" onclick="checkStandardsRadio(this.value)">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Agree</span>
+                                        </label>&nbsp;
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio(this.value)">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Disagree</span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="form-group col-md-12">
-                        <div class="form-check">
-                            <label class="form-label">We are willing to change our operational practices, as may be required from time to time to keep in line with our policy which may be directed by BAFRA.</label><br><br>
-                            <div class="form-group">
-                                <div class="form-check">
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Agree" onclick="checkStandardsRadio(this.value)">
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Agree</span>
-                                    </label>&nbsp;
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio(this.value)">
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Disagree</span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="card-action">
+                        <button type="button" class="btn btn-primary" id="button_submit" onclick="submit_gap_certificate_details()">Submit</button>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="form-group col-md-12">
-                        <div class="form-check">
-                            <label class="form-label">If BAFRA desires to make a preliminary inspection or investigation then, we, agree to give all our reasonable opportunity and privileges to BAFRA and accordingly provide our cooperation as per certification requirements.</label><br><br>
-                            <div class="form-group">
-                                <div class="form-check">
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" name="Terms_Abide" class="custom-control-input" value="Agree" onclick="checkStandardsRadio(this.value)">
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Agree</span>
-                                    </label>&nbsp;
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" name="Terms_Abide" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio(this.value)">
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Disagree</span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group col-md-12">
-                        <div class="form-check">
-                            <label class="form-label">If the certificate is awarded, we will abide by all the terms and conditions of the certification, so long as it remains valid for use and also comply with the Rules and Regulations. If the license/certificate becomes prolonged or it is cancelled, then we, shall ensure that any use of the Standard Mark on any commodity under the license will be stopped immediately and all related advertisement, materials will be taken back and other necessary action will be taken</label><br><br>
-                            <div class="form-group">
-                                <div class="form-check">
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Agree" onclick="checkStandardsRadio(this.value)">
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Agree</span>
-                                    </label>&nbsp;
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio(this.value)">
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Disagree</span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-action">
-                    <button type="button" class="btn btn-primary" id="button_submit" onclick="submit_gap_certificate_details()">Submit</button>
-                </div>
                 </div>
             </div>
         </form>
@@ -717,7 +716,7 @@
                                 <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Balance Stock Unit <font color="red">*</font></label>
-                                        <select class="form-control" name="current_sold_unit"  id="current_stock_unit">
+                                        <select class="form-control" name="current_stock_unit"  id="current_stock_unit">
                                             <option value="">--SELECT UNIT--</option>
                                             {% for unit in unit %}
                                                     <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
@@ -1192,32 +1191,242 @@ function save_crop_production_details()
         var crop_name = $('#crop_name').val();
         var area = $('#area').val();
         var area_unit = $('#area_unit').val();
-        $.ajax({
-            type : "GET",
-            url : "{% url 'gap_crop_production_details' %}",
-            data : $('#crop_production_form').serialize(),
-            success : function(response) {
-               $('#crop_production_modal').modal('hide');
-               $('#details_crop_production').html(response);
-               $('#pills-crop-production').tab('show');
-               $('.modal-backdrop').remove();
-            }
-        });
+        var prev_year = $('#prev_year').val();
+        var to_year = $('#to_year').val();
+        var yield = $('#yield').val();
+        var Yield_Unit = $('#Yield_Unit').val();
+        var harvest_month = $('#harvest_month').val();
+        var sold = $('#sold').val();
+        var balance_stock = $('#balance_stock').val();
+        var current_year = $('#current_year').val();
+        var to_current_year = $('#to_current_year').val();
+        var estimated_yield = $('#estimated_yield').val();
+        var estimated_Yield_Unit = $('#estimated_Yield_Unit').val();
+        var estimated_harvest_month = $('#estimated_harvest_month').val();
+
+        if(crop_name == "")
+        {
+            $('#crop_nameErrorMsg').html("Enter Crop Name.");
+            $('#crop_nameErrorMsg').show();
+            $('#crop_nameErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(area == "")
+        {
+            $('#areaErrorMsg').html("Enter Area.");
+            $('#areaErrorMsg').show();
+            $('#areaErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(area_unit == "")
+        {
+            $('#area_unitErrorMsg').html("Select Area Unit.");
+            $('#area_unitErrorMsg').show();
+            $('#area_unitErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(prev_year == "")
+        {
+            $('#prev_yearErrorMsg').html("Select From Date.");
+            $('#prev_yearErrorMsg').show();
+            $('#prev_yearErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(to_year == "")
+        {
+            $('#to_yearErrorMsg').html("Select To Date.");
+            $('#to_yearErrorMsg').show();
+            $('#to_yearErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(yield == "")
+        {
+            $('#yieldErrorMsg').html("Enter Yeild.");
+            $('#yieldErrorMsg').show();
+            $('#yieldErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(Yield_Unit == "")
+        {
+            $('#Yield_UnitErrorMsg').html("Select Yield Unit.");
+            $('#Yield_UnitErrorMsg').show();
+            $('#Yield_UnitErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(harvest_month == "")
+        {
+            $('#harvest_monthErrorMsg').html("Select Harvest Month.");
+            $('#harvest_monthErrorMsg').show();
+            $('#harvest_monthErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(sold == "")
+        {
+            $('#soldErrorMsg').html("Enter Sold.");
+            $('#soldErrorMsg').show();
+            $('#soldErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(current_year == "")
+        {
+            $('#current_yearErrorMsg').html("Select From Date.");
+            $('#current_yearErrorMsg').show();
+            $('#current_yearErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(to_current_year == "")
+        {
+            $('#to_current_yearErrorMsg').html("Select To Date.");
+            $('#to_current_yearErrorMsg').show();
+            $('#to_current_yearErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(estimated_yield == "")
+        {
+            $('#estimated_yieldErrorMsg').html("Enter Estimated Yield.");
+            $('#estimated_yieldErrorMsg').show();
+            $('#estimated_yieldErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(estimated_Yield_Unit == "")
+        {
+            $('#estimated_Yield_UnitErrorMsg').html("Select Yield Unit.");
+            $('#estimated_Yield_UnitErrorMsg').show();
+            $('#estimated_Yield_UnitErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(estimated_harvest_month == "")
+        {
+            $('#estimated_harvest_monthErrorMsg').html("Select Harvest Month.");
+            $('#estimated_harvest_monthErrorMsg').show();
+            $('#estimated_harvest_monthErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            $.ajax({
+                type : "GET",
+                url : "{% url 'gap_crop_production_details' %}",
+                data : $('#crop_production_form').serialize(),
+                success : function(response) {
+                   $('#crop_production_modal').modal('hide');
+                   $('#details_crop_production').html(response);
+                   $('#pills-crop-production').tab('show');
+                   $('.modal-backdrop').remove();
+                }
+            });
+        }
 }
 
 function save_pack_house_details()
 {
-    $.ajax({
-        type : "GET",
-        url : "{% url 'add_pack_house_details' %}",
-        data : $('#pack_house_form').serialize(),
-        success : function(response) {
-           $('#pack_house_model').modal('hide');
-           $('#pack_house').html(response);
-           $('#pills-pack-house').tab('show');
-           $('.modal-backdrop').remove();
+        var pack_house_name = $('#pack_house_name').val();
+        var pack_house_address = $('#pack_house_address').val();
+        var previous_from_date = $('#previous_from_date').val();
+        var previous_to_date = $('#previous_to_date').val();
+        var production = $('#production').val();
+        var production_unit = $('#production_unit').val();
+        var previous_sold = $('#previous_sold').val();
+        var previous_sold_unit = $('#previous_sold_unit').val();
+        var stock_balance = $('#stock_balance').val();
+        var current_from_date = $('#current_from_date').val();
+        var current_to_date = $('#current_to_date').val();
+        var current_Production = $('#current_Production').val();
+        var current_sold = $('#current_sold').val();
+        var current_sold_unit = $('#current_sold_unit').val();
+		var current_stock_balance = $('#current_stock_balance').val();
+		var current_stock_unit = $('#current_stock_unit').val();
+
+		if(pack_house_name == "")
+        {
+            $('#pack_house_nameErrorMsg').html("Enter Pack House Name.");
+            $('#pack_house_nameErrorMsg').show();
+            $('#pack_house_nameErrorMsg').delay(2000).fadeOut('slow');
         }
-    });
+        else if(pack_house_address == "")
+        {
+            $('#pack_house_addressErrorMsg').html("Enter Pack House Address.");
+            $('#pack_house_addressErrorMsg').show();
+            $('#pack_house_addressErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(previous_from_date == "")
+        {
+            $('#previous_from_dateErrorMsg').html("Select From Date.");
+            $('#previous_from_dateErrorMsg').show();
+            $('#previous_from_dateErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(previous_to_date == "")
+        {
+            $('#previous_to_dateErrorMsg').html("Select To Date.");
+            $('#previous_to_dateErrorMsg').show();
+            $('#previous_to_dateErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(production == "")
+        {
+            $('#productionErrorMsg').html("Enter Production.");
+            $('#productionErrorMsg').show();
+            $('#productionErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(production_unit == "")
+        {
+            $('#production_unitErrorMsg').html("Select Production Unit.");
+            $('#production_unitErrorMsg').show();
+            $('#production_unitErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(previous_sold == "")
+        {
+            $('#previous_soldErrorMsg').html("Enter Sold.");
+            $('#previous_soldErrorMsg').show();
+            $('#previous_soldErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(previous_sold_unit == "")
+        {
+            $('#previous_sold_unitErrorMsg').html("Select Sold Unit.");
+            $('#previous_sold_unitErrorMsg').show();
+            $('#previous_sold_unitErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(current_from_date == "")
+        {
+            $('#current_from_dateErrorMsg').html("Select From Date.");
+            $('#current_from_dateErrorMsg').show();
+            $('#current_from_dateErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(current_to_date == "")
+        {
+            $('#current_to_dateErrorMsg').html("Select To Date.");
+            $('#current_to_dateErrorMsg').show();
+            $('#current_to_dateErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(current_Production == "")
+        {
+            $('#current_ProductionErrorMsg').html("Enter Current Production.");
+            $('#current_ProductionErrorMsg').show();
+            $('#current_ProductionErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(estimated_Yield_Unit == "")
+        {
+            $('#estimated_Yield_UnitErrorMsg').html("Select Yield Unit.");
+            $('#estimated_Yield_UnitErrorMsg').show();
+            $('#estimated_Yield_UnitErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(current_sold == "")
+        {
+            $('#current_soldErrorMsg').html("Enter Current Sold.");
+            $('#current_soldErrorMsg').show();
+            $('#current_soldErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(current_sold_unit == "")
+        {
+            $('#current_sold_unitErrorMsg').html("Select Unit.");
+            $('#current_sold_unitErrorMsg').show();
+            $('#current_sold_unitErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(current_stock_unit == "")
+        {
+            $('#current_stock_unitErrorMsg').html("Select Unit.");
+            $('#current_stock_unitErrorMsg').show();
+            $('#current_stock_unitErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            $.ajax({
+                type : "GET",
+                url : "{% url 'add_pack_house_details' %}",
+                data : $('#pack_house_form').serialize(),
+                success : function(response) {
+                   $('#pack_house_model').modal('hide');
+                   $('#pack_house').html(response);
+                   $('#pills-pack-house').tab('show');
+                   $('.modal-backdrop').remove();
+                }
+            });
+        }
 }
 
 function checkStandards(value)

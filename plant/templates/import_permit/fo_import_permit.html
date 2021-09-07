@@ -569,12 +569,8 @@
                                 <textarea class="form-control" rows="5" id="remarks" name="remarks"></textarea>
                                 <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
                             </div>
-                            <div class="alert alert-info" id="messageDiv" style="display:none">
-                                Application Approved
-                            </div>
-                            <div class="alert alert-info" id="reject_messageDiv" style="display:none">
-                                Application Rejected
-                            </div>
+                            <div class="alert alert-success" id="fo_success_Msg" style="display:none"></div>
+                            <div class="alert alert-danger" id="fo_reject_Msg" style="display:none"></div>
                             <hr>
                         {% for application_details in application_details %}
                             <div class="card-action text-center">
@@ -609,15 +605,14 @@
                 url : "{% url 'fo_approve' %}",
                 data :{'application_id':application_id ,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(data) {
-                    $('#messageDiv').show();
-                    setTimeout(function() {
-                        $("#messageDiv").hide('blind', {}, 500)
-                    }, 2000);
+                    $('#fo_success_Msg').html("Application Approved.");
+                    $('#fo_success_Msg').show();
+                    $('#fo_success_Msg').delay(2000).fadeOut('slow');
                     setTimeout(function() {
                         $('#import_detailsModal').modal('hide');
                     }, 3000);
                     setTimeout(function() {
-                        location.reload();
+                        window.location.href = '{% url 'dashboard' %}';
                     }, 3000);
                 }
             });
@@ -637,17 +632,18 @@
                 url : "{% url 'fo_reject' %}",
                 data :{'application_id':application_id ,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(data) {
-                    $('#reject_messageDiv').show();
-                    setTimeout(function() {
-                        $("#reject_messageDiv").hide('blind', {}, 500)
-                    }, 2000);
+                    $('#fo_reject_Msg').html("Application Rejected.");
+                    $('#fo_reject_Msg').show();
+                    $('#fo_reject_Msg').delay(2000).fadeOut('slow');
                     setTimeout(function() {
                         $('#import_detailsModal').modal('hide');
                     }, 3000);
                     setTimeout(function() {
-                        location.reload();
+                        window.location.href = '{% url 'dashboard' %}';
                     }, 3000);
                 }
             });
         }
+
+
 </script>

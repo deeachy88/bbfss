@@ -13,6 +13,7 @@ from administrator.models import t_dzongkhag_master, t_gewog_master, t_village_m
     t_user_master, t_field_office_master, t_plant_crop_master, t_plant_pesticide_master, t_plant_crop_variety_master, \
     t_service_master, t_country_master, t_plant_crop_category_master, t_unit_master, t_section_master, \
     t_inspection_type_master
+from administrator.views import dashboard
 from bbfss import settings
 from food.models import t_food_export_certificate_t1, t_food_licensing_food_handler_t1, t_food_import_permit_t1, \
     t_food_import_permit_t2, t_food_import_permit_inspection_t1, t_food_import_permit_inspection_t2, \
@@ -330,15 +331,14 @@ def update_application_details(request):
 
 
 def save_details_movement(request):
-    if request.method == 'POST':
-        commodity = request.POST['commodity']
-        appNo = request.POST['appNo']
-        qty = request.POST['qty']
-        unit = request.POST['unit']
-        remarks = request.POST['remarks']
-        t_plant_movement_permit_t2.objects.create(Application_No=appNo, Commodity=commodity,
-                                                  Qty=qty, Unit=unit, Remarks=remarks)
-        imports_plant = t_plant_movement_permit_t2.objects.filter(Application_No=appNo)
+    commodity = request.GET.get['commodity']
+    appNo = request.GET.get['appNo']
+    qty = request.GET.get['qty']
+    unit = request.GET.get['unit']
+    remarks = request.GET.get['remarks']
+    t_plant_movement_permit_t2.objects.create(Application_No=appNo, Commodity=commodity,
+                                              Qty=qty, Unit=unit, Remarks=remarks)
+    imports_plant = t_plant_movement_permit_t2.objects.filter(Application_No=appNo)
     return render(request, 'movement_permit/movement_page.html', {'import': imports_plant, 'title': appNo})
 
 
@@ -1295,19 +1295,19 @@ def save_import_plant(request):
 
 def save_import_agro(request):
     if request.method == 'POST':
-        appNo = request.POST['appNo']
+        appNo = request.POST['agro_applicationNo']
         Import_Category = request.POST['agro_import_category']
         pesticide_id = request.POST['pesticide_id']
         description = request.POST['description']
-        unit = request.POST['unit']
-        qty = request.POST['qty']
+        unit = request.POST['agro_unit']
+        qty = request.POST['agro_qty']
         t_plant_import_permit_t2.objects.create(Application_No=appNo, Import_Category=Import_Category,
                                                 Crop_Id=None, Pesticide_Id=pesticide_id,
                                                 Description=description,
                                                 Variety_Id=None, Unit=unit, Quantity=qty,
                                                 Quantity_Released=None, Remarks=None, Quantity_Balance=qty)
         imports_plant = t_plant_import_permit_t2.objects.filter(Application_No=appNo)
-    return render(request, 'import_permit/import_page_agro.html', {'import': imports_plant, 'title': appNo})
+        return render(request, 'import_permit/import_page_agro.html', {'import': imports_plant})
 
 
 def fo_app_details(request):
@@ -2539,8 +2539,6 @@ def fo_approve(request):
     remarks = request.POST.get('remarks')
     print(appId)
     details = t_plant_import_permit_t1.objects.filter(Application_No=appId)
-    for email_id in details:
-        email = email_id.Email
     details.update(Import_Permit_No=new_import_permit)
     if remarks is not None:
         details.update(FO_Remarks=remarks)
@@ -2549,14 +2547,16 @@ def fo_approve(request):
     application_details = t_workflow_details.objects.filter(Application_No=appId)
     for app in application_details:
         client_login_id = app.Applicant_Id
-    client_id = t_user_master.objects.filter(Email_Id=client_login_id)
-    for client in client_id:
-        login_id = client.Login_Id
-        application_details.update(Assigned_To=login_id)
-    application_details.update(Action_Date=date.today())
-    application_details.update(Assigned_Role_Id=None)
-    send_import_approve_email(new_import_permit, email)
-    return redirect(focal_officer_application)
+        client_id = t_user_master.objects.filter(Email_Id=client_login_id)
+        for client in client_id:
+            login_id = client.Login_Id
+            application_details.update(Assigned_To=login_id)
+            application_details.update(Action_Date=date.today())
+            application_details.update(Assigned_Role_Id=None)
+    for email_id in details:
+        email = email_id.Email
+        send_import_approve_email(new_import_permit, email)
+    return redirect(dashboard)
 
 
 def send_import_approve_email(new_import_permit, Email):

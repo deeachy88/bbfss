@@ -1719,7 +1719,6 @@ def submit_fip_application(request):
     Inspection_Team = request.GET.get('Inspection_Team')
     remarks = request.GET.get('remarks')
     dateOfInspection = request.GET.get('dateOfInspection')
-    timeOfInspection = request.GET.get('timeOfInspection')
     date_format_ins = datetime.strptime(dateOfInspection, '%d-%m-%Y').date()
     clearnace_ref_no = fip_clearance_no(request)
 
@@ -1728,7 +1727,6 @@ def submit_fip_application(request):
     update_details.update(Inspection_Leader=Inspection_Leader)
     update_details.update(Inspection_Team=Inspection_Team)
     update_details.update(Inspection_Date=date_format_ins)
-    update_details.update(Inspection_Time=timeOfInspection)
     update_details.update(Approve_Date=date.today())
     if remarks is not None:
         update_details.update(Inspection_Remarks=remarks)

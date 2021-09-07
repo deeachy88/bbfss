@@ -3,12 +3,20 @@
 {% block content %}
 <style>
 option {
-    background-color: black !important;
+    background-color: white !important;
 }
 .custom-control {
     margin-bottom: 0;
     margin-top: 6px;
     min-height: 1.3rem;
+}
+.custom-control-input:checked ~ .custom-control-label::before {
+  color: #fff;
+  border-color: #7B1FA2;
+  background-color: #7B1FA2;
+}
+form, input, select, textarea{
+    color: black !important;
 }
 </style>
 
@@ -26,10 +34,10 @@ option {
                         <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadAppDetails()">Home</a>
                     </li>
                     <li class="nav-item" id="plant_details">
-                        <a class="nav-link" id="import-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="loadDetails()">Profile</a>
+                        <a class="nav-link" id="import-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="loadDetails()">Import Details</a>
                     </li>
                     <li class="nav-item" id="agro_details" style="display:none">
-                        <a class="nav-link" id="agro-profile-tab" data-toggle="pill" href="#agro-details" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_details()">Profile</a>
+                        <a class="nav-link" id="agro-profile-tab" data-toggle="pill" href="#agro-details" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_details()">Import Details</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="pills-import-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment()">Attach File</a>
@@ -130,7 +138,7 @@ option {
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Email <font color="red">*</font></label>
-                                    <input type="email" class="form-control" id="com_email" name="com_email" onchange="validateemailId(this.value)">
+                                    <input type="email" class="form-control" id="com_email" name="com_email" onchange="validatecomemailId(this.value)">
                                 </div>
                                 <div class="alert alert-danger" id="com_emailErrorMsg" style="display:none"></div>
                             </div>
@@ -206,16 +214,17 @@ option {
                             <div class="form-group">
                                 <label class="form-label">Products are derived from GMO? <font color="red">*</font></label><br>
                                 <label class="custom-control custom-radio">
-                                    <input type="radio" class="custom-control-input" name="GMO" value="Yes" onclick="GMO_Check(this.value)">
+                                    <input type="radio" class="custom-control-input" name="COM_GMO" value="Yes" onclick="GMO_Check(this.value)">
                                     <span class="custom-control-indicator"></span>
                                     <span class="custom-control-description">Yes</span>
                                 </label>
                                 <label class="custom-control custom-radio">
-                                    <input type="radio" class="custom-control-input" name="GMO" value="No" onclick="GMO_Check(this.value)">
+                                    <input type="radio" class="custom-control-input" name="COM_GMO" value="No" onclick="GMO_Check(this.value)">
                                     <span class="custom-control-indicator"></span>
                                     <span class="custom-control-description">No</span>
                                 </label>
                             </div>
+                            <div class="alert alert-danger" id="COM_GMOErrorMsg" style="display:none"></div>
                         </div>
                     </div>
                     <div id="bhutanese_div" style="display:none;">
@@ -354,6 +363,7 @@ option {
                                         <span class="custom-control-description">No</span>
                                     </label>
                                 </div>
+                                <div class="alert alert-danger" id="GMOErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                     </div>
@@ -476,16 +486,17 @@ option {
                                 <div class="form-group">
                                     <label class="form-label">Products are derived from GMO? <font color="red">*</font></label><br>
                                     <label class="custom-control custom-radio">
-                                        <input type="radio" class="custom-control-input" name="GMO" value="Yes" onclick="GMO_Check(this.value)">
+                                        <input type="radio" class="custom-control-input" name="P_GMO" value="Yes" onclick="GMO_Check(this.value)">
                                         <span class="custom-control-indicator"></span>
                                         <span class="custom-control-description">Yes</span>
                                     </label>
                                     <label class="custom-control custom-radio">
-                                        <input type="radio" class="custom-control-input" name="GMO" value="No" onclick="GMO_Check(this.value)">
+                                        <input type="radio" class="custom-control-input" name="P_GMO" value="No" onclick="GMO_Check(this.value)">
                                         <span class="custom-control-indicator"></span>
                                         <span class="custom-control-description">No</span>
                                     </label>
                                 </div>
+                                <div class="alert alert-danger" id="P_GMODateErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                     </div>
@@ -542,7 +553,7 @@ option {
 </div>
 <form method="post" id="save_plant_form">
     {% csrf_token %}
-    <input type="hidden" name="appNo" id="plant_applicationNo" value="{{ applicationNo }}">
+    <input type="hidden" name="appNo" id="plant_applicationNo">
     <div class="modal fade" id="add_plant_details" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -560,7 +571,7 @@ option {
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Import Category </label>
+                                            <label class="form-label">Import Category <font color="red">*</font> </label>
                                             <select class="form-control form-control" id="plant_import_category" name="plant_import_category">
                                                 <option value="">-SELECT-</option>
                                                 <option value="Seed">Seed</option>
@@ -572,7 +583,7 @@ option {
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Crop</label>
+                                            <label class="form-label">Crop <font color="red">*</font></label>
                                             <select class="form-control" name="crop_id"  id="crop_id" onchange="getVariety(this.value)">
                                                 <option value="">--SELECT--</option>
                                                 {% for crop in crop %}
@@ -584,7 +595,7 @@ option {
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Crop Variety</label>
+                                            <label class="form-label">Crop Variety <font color="red">*</font></label>
                                             <select class="form-control" name="crop_variety_id"  id="crop_variety">
                                                 <option value="">--SELECT--</option>
                                                 {% for variety in variety %}
@@ -598,14 +609,14 @@ option {
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <div class="form-group">
-                                            <label class="form-label">Quantity</label>
-                                            <input type="text" class="form-control" id="qty" name="qty">
+                                            <label class="form-label">Quantity <font color="red">*</font></label>
+                                            <input type="text" class="form-control" id="qty" name="qty" onkeypress="return isNumberKey(event)">
                                         </div>
                                         <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label class="form-label">Unit </label>
+                                            <label class="form-label">Unit <font color="red">*</font></label>
                                             <select class="form-control" name="unit"  id="unit">
                                                 <option value="">--SELECT--</option>
                                                 {% for unit in unit %}
@@ -630,7 +641,7 @@ option {
 </form>
 <form method="post" id="save_agro_form">
     {% csrf_token %}
-    <input type="hidden" name="appNo" id="agro_applicationNo" value="{{ title }}">
+    <input type="hidden" name="agro_applicationNo" id="agro_applicationNo">
     <div class="modal fade" id="add_agro_details" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -648,7 +659,7 @@ option {
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Import Category </label>
+                                            <label class="form-label">Import Category <font color="red">*</font></label>
                                             <select class="form-control form-control" id="agro_import_category" name="agro_import_category">
                                                 <option value="">-SELECT-</option>
                                                 <option value="Seed">Pesticides</option>
@@ -661,7 +672,7 @@ option {
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Pesticide</label>
+                                            <label class="form-label">Pesticide <font color="red">*</font></label>
                                             <select class="form-control" name="pesticide_id"  id="pesticide_id">
                                                 <option value="">--SELECT--</option>
                                                 {% for pesticide in pesticide %}
@@ -673,7 +684,7 @@ option {
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Description</label>
+                                            <label class="form-label">Description <font color="red">*</font></label>
                                             <textarea class="form-control" rows="5" id="description" name="description"></textarea>
                                         </div>
                                         <div class="alert alert-danger" id="descriptionErrorMsg" style="display:none"></div>
@@ -682,13 +693,14 @@ option {
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Quantity</label>
-                                            <input type="text" class="form-control" id="agro_qty" name="agro_qty">
+                                            <label class="form-label">Quantity <font color="red">*</font></label>
+                                            <input type="text" class="form-control" id="agro_qty" name="agro_qty" onkeypress="return isNumberKey(event)">
                                         </div>
+                                        <div class="alert alert-danger" id="agro_qtyErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Unit </label>
+                                            <label class="form-label">Unit <font color="red">*</font></label>
                                             <select class="form-control" name="agro_unit"  id="agro_unit">
                                                 <option value="">--SELECT--</option>
                                                 {% for unit in unit %}
@@ -784,6 +796,14 @@ option {
     </div>
 </form>
 <script>
+    function isNumberKey(evt)
+      {
+         var charCode = (evt.which) ? evt.which : event.keyCode
+         if (charCode > 31 && (charCode < 48 || charCode > 57))
+            return false;
+
+         return true;
+      }
 
     function change_selection(importType)
     {
@@ -838,7 +858,7 @@ option {
         var Nationality = $("input[name=Nationality_Type]:checked").length;
         var app_type = $('input[name="Application_Type"]:checked').val();
         var nationality_type = $('input[name="Nationality_Type"]:checked').val();
-
+        var GMO = $("input[name=GMO]:checked").length;
         var regNo = $('#regNo').val();
         var business_name = $('#business_name').val();
         var commercial_presentAddress = $('#commercial_presentAddress').val();
@@ -876,7 +896,7 @@ option {
         var p_movementPurpose = $('#p_movementPurpose').val();
         var p_finalDestination = $('#p_finalDestination').val();
         var p_expectedDate = $('#p_expectedDate').val();
-
+        var P_GMO = $("input[name=P_GMO]:checked").length;
         var cid_Count = $('#cid').val().length;
         var number_count = $('#contactNumber').val().length;
         var com_number_count = $('#com_contactNumber').val().length;
@@ -884,6 +904,7 @@ option {
         var Import_Type = $("input[name=Import_Type]:checked").length;
         var Application_Type = $("input[name=Application_Type]:checked").length;
         var Nationality = $("input[name=Nationality]:checked").length;
+        var COM_GMO = $("input[name=COM_GMO]:checked").length;
 
         if(Import_Type < 1)
         {
@@ -989,6 +1010,13 @@ option {
             $('#dateErrorMsg').delay(2000).fadeOut('slow');
             $('#expectedDate').focus();
         }
+        else if(app_type == "Commercial" && COM_GMO < 1)
+        {
+            $('#COM_GMOErrorMsg').html("Select One.");
+            $('#COM_GMOErrorMsg').show();
+            $('#COM_GMOErrorMsg').delay(2000).fadeOut('slow');
+            $("input[name=COM_GMO]").focus();
+        }
         else if(app_type == "Personal" && nationality_type == "Bhutanese" && cid == "")
         {
             $('#cidErrorMsg').html("Enter CID.");
@@ -1054,24 +1082,31 @@ option {
         }
         else if(app_type == "Personal" && nationality_type == "Bhutanese" && B_movementPurpose == "")
         {
-            $('#movementPurposeErrorMsg').html("Enter Purpose.");
-            $('#movementPurposeErrorMsg').show();
-            $('#movementPurposeErrorMsg').delay(2000).fadeOut('slow');
+            $('#B_movementPurposeErrorMsg').html("Enter Purpose.");
+            $('#B_movementPurposeErrorMsg').show();
+            $('#B_movementPurposeErrorMsg').delay(2000).fadeOut('slow');
             $('#B_movementPurpose').focus();
         }
         else if(app_type == "Personal" && nationality_type == "Bhutanese" && B_finalDestination == "")
         {
-            $('#finalDestinationErrorMsg').html("Enter Final Destination.");
-            $('#finalDestinationErrorMsg').show();
-            $('#finalDestinationErrorMsg').delay(2000).fadeOut('slow');
+            $('#B_final_DestinationErrorMsg').html("Enter Final Destination.");
+            $('#B_final_DestinationErrorMsg').show();
+            $('#B_final_DestinationErrorMsg').delay(2000).fadeOut('slow');
             $('#B_finalDestination').focus();
         }
         else if(app_type == "Personal" && nationality_type == "Bhutanese" && B_expectedDate == "")
         {
-            $('#dateErrorMsg').html("Select Expected Arrival Date.");
-            $('#dateErrorMsg').show();
-            $('#dateErrorMsg').delay(2000).fadeOut('slow');
+            $('#B_expectedDateErrorMsg').html("Select Expected Arrival Date.");
+            $('#B_expectedDateErrorMsg').show();
+            $('#B_expectedDateErrorMsg').delay(2000).fadeOut('slow');
             $('#B_expectedDate').focus();
+        }
+        else if(app_type == "Personal" && nationality_type == "Bhutanese" && GMO < 1)
+        {
+            $('#GMOErrorMsg').html("Select One.");
+            $('#GMOErrorMsg').show();
+            $('#GMOErrorMsg').delay(2000).fadeOut('slow');
+            $("input[name=GMO]").focus();
         }
         else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && passport == "")
         {
@@ -1087,13 +1122,6 @@ option {
             $('#nationalityErrorMsg').delay(2000).fadeOut('slow');
             $('#nationality').focus();
         }
-         else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && passport_name == "")
-        {
-            $('#cidErrorMsg').html("Enter CID.");
-            $('#cidErrorMsg').show();
-            $('#cidErrorMsg').delay(2000).fadeOut('slow');
-            $('#passport_name').focus();
-        }
         else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && p_email == "")
         {
             $('#p_emailErrorMsg').html("Enter Email.");
@@ -1101,6 +1129,14 @@ option {
             $('#p_emailErrorMsg').delay(2000).fadeOut('slow');
             $('#p_email').focus();
         }
+        else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && passport_name == "")
+        {
+            $('#passport_nameErrorMsg').html("Enter Name.");
+            $('#passport_nameErrorMsg').show();
+            $('#passport_nameErrorMsg').delay(2000).fadeOut('slow');
+            $('#passport_name').focus();
+        }
+
         else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && Address == "")
         {
             $('#AddressErrorMsg').html("Enter Address.");
@@ -1171,6 +1207,13 @@ option {
             $('#p_expectedDateErrorMsg').delay(2000).fadeOut('slow');
             $('#p_expectedDate').focus();
         }
+        else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && P_GMO < 1)
+        {
+            $('#P_GMOErrorMsg').html("Select One.");
+            $('#P_GMOErrorMsg').show();
+            $('#P_GMOErrorMsg').delay(2000).fadeOut('slow');
+             $("input[name=P_GMO]").focus();
+        }
 
         else
         {
@@ -1180,17 +1223,16 @@ option {
                 data : $('#importForm').serialize(),
                 success : function(data) {
                     $('#applicationNo').val(data.applNo);
+                    $('#plant_applicationNo').val(data.applNo);
+                    $('#agro_applicationNo').val(data.applNo);
                     if(data.importType == "P")
                     {
-                        $('#plant_applicationNo').val(data.applNo);
                         $('#import-profile-tab').tab('show');
-
                     }
                     else
                     {
-                         $('#agro_applicationNo').val(data.applNo);
-                         $('#agro-profile-tab').tab('show');
 
+                         $('#agro-profile-tab').tab('show');
                     }
                 }
             });
@@ -1228,6 +1270,12 @@ option {
                 $('#plant_import_categoryErrorMsg').show();
                 $('#plant_import_categoryErrorMsg').delay(2000).fadeOut('slow');
             }
+            else if(crop_id == "")
+            {
+                $('#crop_idErrorMsg').html("Select Crop.");
+                $('#crop_idErrorMsg').show();
+                $('#crop_idErrorMsg').delay(2000).fadeOut('slow');
+            }
             else if(crop_variety == "")
             {
                 $('#crop_varietyErrorMsg').html("Select Crop Variety.");
@@ -1257,6 +1305,7 @@ option {
                        $('#Details').html(responseText);
                        $('#import-profile-tab').tab('show');
                        $('.modal-backdrop').remove();
+                       $('#save_plant_form')[0].reset();
                     }
                 });
             }
@@ -1272,33 +1321,33 @@ option {
 
         if(agro_import_category == "")
             {
-                $('#agro_import_categoryErrorMsg').html("Enter Commodity.");
+                $('#agro_import_categoryErrorMsg').html("Select Import Category.");
                 $('#agro_import_categoryErrorMsg').show();
                 $('#agro_import_categoryErrorMsg').delay(2000).fadeOut('slow');
             }
             else if(pesticide_id == "")
             {
-                $('#pesticide_idErrorMsg').html("Enter Quantity.");
+                $('#pesticide_idErrorMsg').html("Select Pesticides.");
                 $('#pesticide_idErrorMsg').show();
                 $('#pesticide_idErrorMsg').delay(2000).fadeOut('slow');
             }
             else if(description == "")
             {
-                $('#descriptionErrorMsg').html("Enter Remarks.");
+                $('#descriptionErrorMsg').html("Enter Description.");
                 $('#descriptionErrorMsg').show();
                 $('#descriptionErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(agro_unit == "")
-            {
-                $('#agro_unitErrorMsg').html("Enter Unit.");
-                $('#agro_unitErrorMsg').show();
-                $('#agro_unitErrorMsg').delay(2000).fadeOut('slow');
             }
             else if(agro_qty == "")
             {
                 $('#agro_qtyErrorMsg').html("Enter Quantity.");
                 $('#agro_qtyErrorMsg').show();
                 $('#agro_qtyErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(agro_unit == "")
+            {
+                $('#agro_unitErrorMsg').html("Enter Unit.");
+                $('#agro_unitErrorMsg').show();
+                $('#agro_unitErrorMsg').delay(2000).fadeOut('slow');
             }
             else
             {
@@ -1311,6 +1360,7 @@ option {
                        $('#AgroDetails').html(responseText);
                        $('#agro-profile-tab').tab('show');
                        $('.modal-backdrop').remove();
+                       $('#save_agro_form')[0].reset();
                     }
                 });
             }
@@ -1352,13 +1402,14 @@ option {
                             $('#plant_attachmentModal').modal('hide');
                             $('#file-attachment').html(responseText);
                             $('.modal-backdrop').remove();
+                            $('#plant_attachment_form')[0].reset();
                         }
                     });
                 }else
                 {
-                    $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-                    $('#fileErrorMsg').show();
-                    $('#fileErrorMsg').delay(2000).fadeOut('slow');
+                    $('#plant_documentErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                    $('#plant_documentErrorMsg').show();
+                    $('#plant_documentErrorMsg').delay(2000).fadeOut('slow');
                 }
             }
         });
@@ -1401,13 +1452,14 @@ option {
                             $('#agro_attachmentModal').modal('hide');
                             $('#file-attachment').html(responseText);
                             $('.modal-backdrop').remove();
+                            $('#agro_attachment_form')[0].reset();
                         }
                     });
                 }else
                 {
-                    $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-                    $('#fileErrorMsg').show();
-                    $('#fileErrorMsg').delay(2000).fadeOut('slow');
+                    $('#agro_documentErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                    $('#agro_documentErrorMsg').show();
+                    $('#agro_documentErrorMsg').delay(2000).fadeOut('slow');
                 }
             }
         });
@@ -1567,19 +1619,19 @@ function validateemailId(emailId)
 
 }
 
-function validateemailId(emailId)
+function validatecomemailId(emailId)
 {
     var pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
     var no=emailId.match(pattern);
 
     if(no==null)
     {
-        $('#emailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
-        $('#email').val("");
-        $('#emailErrorMsg').show();
-        $('#emailErrorMsg').delay(2000).fadeOut('slow');
+        $('#com_emailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
+        $('#com_email').val("");
+        $('#com_emailErrorMsg').show();
+        $('#com_emailErrorMsg').delay(2000).fadeOut('slow');
     }else{
-     $('#emailErrorMsg').hide();
+     $('#com_emailErrorMsg').hide();
     }
 
 }

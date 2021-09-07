@@ -99,5 +99,6 @@ urlpatterns = [
     path('revoke_officiating', views.revoke_officiating, name='revoke_officiating'),
     path('check_already_assigned_officiating', views.check_already_assigned_officiating,
          name='check_already_assigned_officiating'),
-    path('manage_user', views.manage_user, name='manage_user')
+    path('manage_user', views.manage_user, name='manage_user'),
+    path('check_cid_exists', views.check_cid_exists, name='check_cid_exists')
 ]

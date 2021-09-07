@@ -13,7 +13,7 @@
         <div class="card">
             <div class="card-header" role="tab" id="headingOne">
                 <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed">
-                    Collapsible Group Item #1
+                    Application Details
                 </a>
             </div>
 
@@ -453,7 +453,7 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label>Inspection Team Leader</label>
+                                <label>Inspection Team Leader <font color="red">*</font></label>
                                 <select class="form-control" name="Inspection_Leader"  id="teamLeader">
                                     <option value="">--SELECT TEAM LEADER--</option>
                                     {% for inspector_list in inspector_list %}
@@ -461,43 +461,43 @@
                                     {% endfor %}
                                 </select>
                             </div>
+                            <div class="alert alert-danger" id="teamLeaderErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="insTeam">Inspection Team </label>
+                                <label for="insTeam">Inspection Team <font color="red">*</font></label>
                                 <textarea class="form-control" name="Inspection_Team" id="insTeam" rows="2"></textarea>
                             </div>
+                            <div class="alert alert-danger" id="insTeamErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label>Date Of Inspection</label>
+                                <label>Date Of Inspection <font color="red">*</font></label>
                                 <input type="text" class="form-control date-picker flatpickr-input active" id="dateOfInspection" name="dateOfInspection"  placeholder="Pick a date" readonly="readonly">
                             </div>
+                            <div class="alert alert-danger" id="dateOfInspectionErrorMsg" style="display:none"></div>
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Validity <font color="red">*</font></label>
+                                <input type="number" class="form-control" id="validity" name="validity">
+                            </div>
+                            <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>
+                        </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Remarks</label>
                                 <textarea class="form-control" id="remarks" rows="2"></textarea>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Validity</label>
-                                <input type="number" class="form-control" id="validity" name="validity">
-                            </div>
-                        </div>
+
                         {% for application_details in application_details %}
                             <input type="hidden" value="{{application_details.Application_No}}" name="application_id">
                         {% endfor %}
                     </div>
-                    <div class="alert alert-info" id="messageDiv" style="display:none">
-                        Application Approved
-                    </div>
-                    <div class="alert alert-info" id="reject_messageDiv" style="display:none">
-                        Application Rejected
-                    </div>
+                    <div class="alert alert-info" id="approve_Msg" style="display:none"></div>
                     <hr>
                     {% for application_details in application_details %}
                         <div class="card-action text-center">
@@ -528,20 +528,49 @@
 <script>
 function approve_details(application_id)
 {
-   $.ajax({
-        type : "POST",
-        url : "{% url 'approve_application_apm' %}",
-        data :$('#ins_form').serialize(),
-        success : function(data) {
-            $('#messageDiv').show();
-            setTimeout(function() {
-                $("#messageDiv").hide('blind', {}, 500)
-            }, 2000);
-            setTimeout(function() {
-                location.reload();
-            }, 3000);
-        }
-    });
+    Inspection_Leader = $('#teamLeader').val();
+    Inspection_Team = $('#insTeam').val();
+    remarks = $('#remarks').val();
+    dateOfInspection = $('#dateOfInspection').val();
+    timeOfInspection = $('#timeOfInspection').val();
+
+    if(Inspection_Leader == "")
+    {
+        $('#teamLeaderErrorMsg').html("Select Team Leader.");
+        $('#teamLeaderErrorMsg').show();
+        $('#teamLeaderErrorMsg').delay(2000).fadeOut('slow');
+        $('#teamLeader').focus();
+    }
+    else if(Inspection_Team == "")
+    {
+        $('#insTeamErrorMsg').html("Enter Inspection Team.");
+        $('#insTeamErrorMsg').show();
+        $('#insTeamErrorMsg').delay(2000).fadeOut('slow');
+        $('#insTeam').focus();
+    }
+    else if(dateOfInspection == "")
+    {
+        $('#dateOfInspectionErrorMsg').html("Select Date Of Inspection.");
+        $('#dateOfInspectionErrorMsg').show();
+        $('#dateOfInspectionErrorMsg').delay(2000).fadeOut('slow');
+        $('#dateOfInspection').focus();
+    }
+    else
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'approve_application_apm' %}",
+            data :$('#ins_form').serialize(),
+            success : function(data) {
+                $('#approve_Msg').html("Application Approved.");
+                $('#approve_Msg').show();
+                $('#approve_Msg').delay(2000).fadeOut('slow');
+                setTimeout(function() {
+                    window.location.href = '{% url 'dashboard' %}';
+                }, 3000);
+            }
+        });
+    }
 }
 
 function reject_details(application_id)

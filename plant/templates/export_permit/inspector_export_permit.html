@@ -1411,6 +1411,11 @@ option {
 </form>
 <script src="{% static 'assets/js/app.min.js' %}"></script>
 <script>
+    $(function(){
+        var today = new Date().toISOString().split('T')[0];
+        $('#c_dateOfInspection')[0].setAttribute('min', today);
+        $('#dateOfInspection')[0].setAttribute('min', today);
+    });
     function showOthers(value)
     {
         if(value == "Others")
@@ -1651,7 +1656,7 @@ option {
                     data : $('#inspectorExportForm').serialize(),
                     success : function(responseText)
                     {
-                        location.reload();
+                        window.location.href = '{% url 'dashboard' %}';
                     }
                 });
             }
@@ -1675,7 +1680,7 @@ option {
                     data : $('#inspectorExportForm').serialize(),
                     success : function(responseText)
                     {
-                        location.reload();
+                        window.location.href = '{% url 'dashboard' %}';
                     }
                 });
             }

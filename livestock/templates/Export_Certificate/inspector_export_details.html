@@ -564,12 +564,14 @@
                                     {% endfor %}
                                 </select>
                             </div>
+                            <div class="alert alert-danger" id="teamLeaderErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="insTeam">Inspection Team </label>
                                 <textarea class="form-control" id="insTeam" rows="2"></textarea>
                             </div>
+                            <div class="alert alert-danger" id="insTeamErrorMsg" style="display:none"></div>
                         </div>
                     </div>
                     <div class="row">
@@ -578,14 +580,15 @@
                                 <label>Date Of Inspection</label>
                                 <input type="text" class="form-control date-picker flatpickr-input active" id="dateOfInspection" name="date"  placeholder="Pick a date" readonly="readonly">
                             </div>
+                             <div class="alert alert-danger" id="dateOfInspectionErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Inspection Time</label>
                                 <input type="text" class="form-control time-picker flatpickr-input active" id="insTime" name="insTime" readonly="readonly">
                             </div>
+                            <div class="alert alert-danger" id="insTimeErrorMsg" style="display:none"></div>
                         </div>
-
                     </div>
                     <div class="row">
                         <div class="col-md-6">
@@ -593,21 +596,17 @@
                                 <label>Validity Of Permit</label>
                                 <input type="number" class="form-control" id="validity" name="validity">
                             </div>
+                            <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Remarks</label>
+                                <label>Remarks(Mandatory If Reject)</label>
                                 <textarea class="form-control" id="remarks" rows="2"></textarea>
                             </div>
+                            <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
                         </div>
-
                     </div>
-                    <div class="alert alert-info" id="messageDiv" style="display:none">
-                        Application Approved
-                    </div>
-                    <div class="alert alert-info" id="reject_messageDiv" style="display:none">
-                        Application Rejected
-                    </div>
+                    <div class="alert alert-info" id="approve_Msg" style="display:none"></div>
                     <hr>
                     {% for application_details in application_details %}
                         <div class="card-action text-center">
@@ -722,33 +721,56 @@ function approve_details(application_id)
 
     if(Inspection_Leader == "")
     {
-        $('#validityErrorMsg').html("Enter Validity.");
-        $('#validityErrorMsg').show();
-        $('#validityErrorMsg').delay(2000).fadeOut('slow');
-        $('#validity').focus();
+        $('#teamLeaderErrorMsg').html("Enter Validity.");
+        $('#teamLeaderErrorMsg').show();
+        $('#teamLeaderErrorMsg').delay(2000).fadeOut('slow');
+        $('#teamLeader').focus();
     }
     else if(Inspection_Team == "")
     {
-        $('#validityErrorMsg').html("Enter Validity.");
+        $('#insTeamErrorMsg').html("Enter Validity.");
+        $('#insTeamErrorMsg').show();
+        $('#insTeamErrorMsg').delay(2000).fadeOut('slow');
+        $('#insTeam').focus();
+    }
+    else if(dateOfInspection == "")
+    {
+        $('#dateOfInspectionErrorMsg').html("Select Date Of Inspection.");
+        $('#dateOfInspectionErrorMsg').show();
+        $('#dateOfInspectionErrorMsg').delay(2000).fadeOut('slow');
+        $('#dateOfInspection').focus();
+    }
+    else if(validity == "")
+    {
+        $('#validityErrorMsg').html("Select Inspection Time.");
         $('#validityErrorMsg').show();
         $('#validityErrorMsg').delay(2000).fadeOut('slow');
         $('#validity').focus();
     }
-   $.ajax({
-        type : "GET",
-        url : "{% url 'approve_application_export' %}",
-        data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks ,
-        'dateOfInspection':dateOfInspection, 'validity':validity, 'insTime':insTime},
-        success : function(data) {
-            $('#messageDiv').show();
-            setTimeout(function() {
-                $("#messageDiv").hide('blind', {}, 500)
-            }, 2000);
-            setTimeout(function() {
-                location.reload();
-            }, 3000);
-        }
-    });
+    else if(insTime == "")
+    {
+        $('#insTimeErrorMsg').html("Select Inspection Time.");
+        $('#insTimeErrorMsg').show();
+        $('#insTimeErrorMsg').delay(2000).fadeOut('slow');
+        $('#insTime').focus();
+    }
+    else
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'approve_application_export' %}",
+            data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks ,
+            'dateOfInspection':dateOfInspection, 'validity':validity, 'insTime':insTime},
+            success : function(data) {
+                $('#approve_Msg').html("Application Approved.");
+                $('#approve_Msg').show();
+                $('#approve_Msg').delay(2000).fadeOut('slow');
+                setTimeout(function() {
+                    window.location.href = '{% url 'dashboard' %}';
+                }, 3000);
+            }
+        });
+    }
 }
 
 function reject_details(application_id)
@@ -760,21 +782,58 @@ function reject_details(application_id)
     dateOfInspection = $('#dateOfInspection').val();
     insTime = $('#insTime').val();
 
-   $.ajax({
-        type : "GET",
-        url : "{% url 'reject_application_export' %}",
-        data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks ,
-        'dateOfInspection':dateOfInspection, 'insTime':insTime},
-        success : function(data) {
-            $('#messageDiv').show();
-            setTimeout(function() {
-                $("#reject_messageDiv").hide('blind', {}, 500)
-            }, 2000);
-             setTimeout(function() {
-                location.reload();
-            }, 3000);
-        }
-    });
+    if(Inspection_Leader == "")
+    {
+        $('#teamLeaderErrorMsg').html("Select Team Leader.");
+        $('#teamLeaderErrorMsg').show();
+        $('#teamLeaderErrorMsg').delay(2000).fadeOut('slow');
+        $('#teamLeader').focus();
+    }
+    else if(Inspection_Team == "")
+    {
+        $('#insTeamErrorMsg').html("Enter Inspection Team.");
+        $('#insTeamErrorMsg').show();
+        $('#insTeamErrorMsg').delay(2000).fadeOut('slow');
+        $('#insTeam').focus();
+    }
+    else if(dateOfInspection == "")
+    {
+        $('#dateOfInspectionErrorMsg').html("Select Date Of Inspection.");
+        $('#dateOfInspectionErrorMsg').show();
+        $('#dateOfInspectionErrorMsg').delay(2000).fadeOut('slow');
+        $('#dateOfInspection').focus();
+    }
+    else if(insTime == "")
+    {
+        $('#insTimeErrorMsg').html("Select Inspection Time.");
+        $('#insTimeErrorMsg').show();
+        $('#insTimeErrorMsg').delay(2000).fadeOut('slow');
+        $('#insTime').focus();
+    }
+    else if(remarks == "")
+    {
+        $('#remarksErrorMsg').html("Select Inspection Time.");
+        $('#remarksErrorMsg').show();
+        $('#remarksErrorMsg').delay(2000).fadeOut('slow');
+        $('#remarks').focus();
+    }
+    else
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'reject_application_export' %}",
+            data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks ,
+            'dateOfInspection':dateOfInspection, 'insTime':insTime},
+            success : function(data) {
+                $('#approve_Msg').html("Application Rejected.");
+                $('#approve_Msg').show();
+                $('#approve_Msg').delay(2000).fadeOut('slow');
+                setTimeout(function() {
+                    window.location.href = '{% url 'dashboard' %}';
+                }, 3000);
+            }
+        });
+    }
 }
 
 

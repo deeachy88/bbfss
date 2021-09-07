@@ -1169,7 +1169,8 @@ def add_pack_house_details(request):
         C_To_Date=c_to,
         C_Production=current_Production,
         C_Sold=current_sold,
-        C_Balance_Stock=current_stock_balance
+        C_Balance_Stock=current_stock_balance,
+        C_Balance_Stock_Unit=current_stock_unit
     )
 
     pack_house_details = t_certification_gap_t5.objects.filter(Application_No=application_no)
@@ -2661,3 +2662,169 @@ def delete_farmers_group(request):
         details.delete()
         farmer_group = t_certification_organic_t2.objects.filter(Application_No=application_no)
         return render(request, 'organic_certification/farmer_group_details.html', {'farmer_group': farmer_group})
+
+def load_fpc_details_page(request):
+    dzongkhag = t_dzongkhag_master.objects.all()
+    gewog = t_gewog_master.objects.all()
+    village = t_village_master.objects.all()
+
+    application_id = request.GET.get('application_id')
+    application_details = t_certification_organic_t1.objects.filter(Application_No=application_id)
+    return render(request, 'food_product_certification/fpc_application_details.html',
+                  {'application_details': application_details, 'dzongkhag': dzongkhag, 'gewog': gewog,
+                   'village': village})
+
+
+def update_fpc_details(request):
+    data = dict()
+    service_code = "FPC"
+    Application_No = request.GET.get('application_no')
+    Firm_Name = request.POST.get('Firm_Name')
+    Firm_Address = request.POST.get('Firm_Address')
+    Firm_Contact_No = request.POST.get('Firm_Contact_No')
+    Firm_Email = request.POST.get('Firm_Email')
+    Factory_Name = request.POST.get('Factory_Name')
+    Factory_Address = request.POST.get('Factory_Address')
+    Factory_Contact_No = request.POST.get('Factory_Contact_No')
+    Factory_Email = request.POST.get('Factory_Email')
+    Product_Description = request.POST.get('Product_Description')
+    Product_Trade_Mark = request.POST.get('Product_Trade_Mark')
+    P_From_Date = request.POST.get('From_Date')
+    P_To_Date = request.POST.get('P_To_Date')
+    P_Production = request.POST.get('P_Production')
+    P_Production_Unit = request.POST.get('P_Production_Unit')
+    P_Production_Value = request.POST.get('P_Production_Value')
+    P_Export = request.POST.get('P_Export')
+    P_Export_Unit = request.POST.get('P_Export_Unit')
+    C_From_Date = request.POST.get('C_From_Date')
+    C_To_Date = request.POST.get('C_To_Date')
+    C_Production = request.POST.get('C_Production')
+    C_Production_Unit = request.POST.get('C_Production_Unit')
+    C_Production_Value = request.POST.get('C_Production_Value')
+    C_Export = request.POST.get('C_Export')
+    C_Export_Unit = request.POST.get('C_Export_Unit')
+    C_Export_From_Date = request.POST.get('C_Export_From_Date')
+    C_Export_To_Date = request.POST.get('C_Export_To_Date')
+    C_Export_Value = request.POST.get('C_Export_Value')
+    P_Export_From_Date = request.POST.get('P_Export_From_Date')
+    P_Export_To_Date = request.POST.get('P_Export_To_Date')
+    P_Export_Value = request.POST.get('P_Export_Value')
+
+    date_from_p = datetime.strptime(P_From_Date, '%d-%m-%Y').date()
+    date_to_p = datetime.strptime(P_To_Date, '%d-%m-%Y').date()
+    date_from_c = datetime.strptime(C_From_Date, '%d-%m-%Y').date()
+    date_to_c = datetime.strptime(C_To_Date, '%d-%m-%Y').date()
+    if C_Export_From_Date:
+        date_export_f = datetime.strptime(C_Export_From_Date, '%d-%m-%Y').date()
+    else:
+        date_export_f = None
+    if C_Export_To_Date:
+        date_export_t = datetime.strptime(C_Export_To_Date, '%d-%m-%Y').date()
+    else:
+        date_export_t = None
+    if P_Export_From_Date:
+        date_export_pf = datetime.strptime(P_Export_From_Date, '%d-%m-%Y').date()
+    else:
+        date_export_pf = None
+    if P_Export_To_Date:
+        date_export_pt = datetime.strptime(P_Export_To_Date, '%d-%m-%Y').date()
+    else:
+        date_export_pt = None
+    if Factory_Contact_No:
+        contact_no = Factory_Contact_No
+    else:
+        contact_no = None
+    business_license_no = request.POST.get('business_license_no')
+    technical_in_charge = request.POST.get('technical_in_charge')
+    management_in_charge = request.POST.get('management_in_charge')
+
+    fpc_details = t_certification_food_t1.objects.filter(Application_No=Application_No)
+    fpc_details.update(
+        Application_Date=date.today(),
+        Firm_Name=Firm_Name,
+        Firm_Address=Firm_Address,
+        Firm_Contact_No=Firm_Contact_No,
+        Firm_Email=Firm_Email,
+        Factory_Name=Factory_Name,
+        Factory_Address=Factory_Address,
+        Factory_Contact_No=contact_no,
+        Factory_Email=Factory_Email,
+        Product_Description=Product_Description,
+        Product_Trade_Mark=Product_Trade_Mark,
+        P_From_Date=date_from_p,
+        P_To_Date=date_to_p,
+        P_Production=P_Production,
+        P_Production_Unit=P_Production_Unit,
+        P_Production_Value=P_Production_Value,
+        P_Export=P_Export,
+        P_Export_Unit=P_Export_Unit,
+        C_From_Date=date_from_c,
+        C_To_Date=date_to_c,
+        C_Production=C_Production,
+        C_Production_Unit=C_Production_Unit,
+        C_Production_Value=C_Production_Value,
+        C_Export=C_Export,
+        C_Export_Unit=C_Export_Unit,
+        Proposed_Standard=None,
+        Terms_Bafra_Certification=None,
+        Terms_Change_Willingness=None,
+        Terms_Abide=None,
+        Terms_Agreement=None,
+        Acknowledge=None,
+        FO_Remarks=None,
+        Audit_Team_Leader=None,
+        Audit_Team_Acceptance=None,
+        Audit_Team_Acceptance_Remarks=None,
+        Audit_Plan_Date=None,
+        Audit_Plan_Criteria=None,
+        Audit_Plan_Type=None,
+        Audit_Plan_Scope=None,
+        Audit_Plan_Acceptance='R',
+        Audit_Plan_Acceptance_Remarks=None,
+        Audit_Date=None,
+        Audit_Findings_Site_History_OE=None,
+        Audit_Findings_Water_Source_OE=None,
+        Audit_Findings_Product_Quality_OE=None,
+        Audit_Findings_Harvesting_OE=None,
+        Audit_Findings_Equipment_OE=None,
+        Audit_Findings_Manufacturing_Production_OE=None,
+        Audit_Findings_Sampling_Testing_OE=None,
+        Audit_Findings_Packing_Marking_OE=None,
+        Audit_Findings_Storage_Transport_OE=None,
+        Audit_Findings_Traceability_OE=None,
+        Audit_Findings_Worker_Health_OE=None,
+        Audit_Findings_Group_Requirement_OE=None,
+        Audit_Findings_Others_OE=None,
+        Audit_Findings_Site_History_Observations=None,
+        Audit_Findings_Water_Source_Observations=None,
+        Audit_Findings_Product_Quality_Observations=None,
+        Audit_Findings_Harvesting_Observations=None,
+        Audit_Findings_Equipment_Observations=None,
+        Audit_Findings_Manufacturing_Production_Observations=None,
+        Audit_Findings_Sampling_Testing_Observations=None,
+        Audit_Findings_Packing_Marking_Observations=None,
+        Audit_Findings_Storage_Transport_Observations=None,
+        Audit_Findings_Traceability_Observations=None,
+        Audit_Findings_Worker_Health_Observations=None,
+        Audit_Findings_Group_Requirement_Observations=None,
+        Audit_Findings_Others_Observations=None,
+        Approve_Date=None,
+        Certificate_No=None,
+        Validity_Period=None,
+        Validity=None,
+        Applicant_Id=request.session['email'],
+        Audit_Type=None,
+        C_Export_From_Date=date_export_f,
+        C_Export_To_Date=date_export_t,
+        C_Export_Value=C_Export_Value,
+        P_Export_From_Date=date_export_pf,
+        P_Export_To_Date=date_export_pt,
+        P_Export_Value=P_Export_Value,
+        Others_Standards=None,
+        Terms_Standards=None,
+        License_Number=business_license_no,
+        Technical_In_Charge=technical_in_charge,
+        Manager_In_Charge=management_in_charge
+    )
+    data['applNo'] = Application_No
+    return JsonResponse(data)

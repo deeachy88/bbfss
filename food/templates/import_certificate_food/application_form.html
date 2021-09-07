@@ -25,7 +25,7 @@
                         <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadDetails()">Application Form</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-food-import-details" data-toggle="pill" href="#details" role="tab" aria-controls="pills-food-import-details" aria-selected="false" onclick="load_details()">Details</a>
+                        <a class="nav-link" id="pills-food-import-details" data-toggle="pill" href="#details" role="tab" aria-controls="pills-food-import-details" aria-selected="false" onclick="load_details()">Import Details</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="pills-food-import-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
@@ -277,12 +277,12 @@
                             <div class="box-body">
                                 <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Common Name</label>
+                                        <label class="form-label">Common Name <font color="red">*</font></label>
                                         <input type="text" name="Common_Name" class="form-control" id="Common_Name" required>
                                         <div class="alert alert-danger" id="common_nameErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Product Category</label>
+                                        <label class="form-label">Product Category <font color="red">*</font></label>
                                         <select class="form-control" name="Product_Category"  id="Product_Category">
                                             <option value="">--SELECT CATEGORY--</option>
                                             {% for category in category %}
@@ -292,14 +292,14 @@
                                         <div class="alert alert-danger" id="product_categoryErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Product Characteristics</label>
+                                        <label class="form-label">Product Characteristics <font color="red">*</font></label>
                                         <textarea class="form-control" id="characteristics" name="characteristics"></textarea>
                                         <div class="alert alert-danger" id="characteristicsErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Quantity</label>
+                                        <label class="form-label">Quantity <font color="red">*</font></label>
                                         <input type="number" name="qty" class="form-control" id="qty" required>
                                         <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
                                     </div>
@@ -315,7 +315,7 @@
                                     </div>
                                     <div class="form-group col-md-4">
                                         <div class="form-check">
-                                            <label>Type Of Exporter</label><br>
+                                            <label>Type Of Exporter <font color="red">*</font></label><br>
                                             <label class="custom-control custom-radio">
                                                 <input type="radio" name="Export_Type" class="custom-control-input" value="Producer">
                                                 <span class="custom-control-indicator"></span>
@@ -654,15 +654,29 @@ function save_import_attachment()
 function save_food_import_permit_details()
 {
 
-    var Description = $('#Description').val();
+    var Common_Name = $('#Common_Name').val();
+    var Product_Category = $('#Product_Category').val();
+    var characteristics = $('#characteristics').val();
     var qty = $('#qty').val();
     var unit = $('#unit').val();
-
-    if(Description == "")
+    var Export_Type = $("input[name=Export_Type]:checked").val();
+    if(Common_Name == "")
     {
-        $('#DescriptionErrorMsg').html("Enter Description.");
-        $('#DescriptionErrorMsg').show();
-        $('#DescriptionErrorMsg').delay(2000).fadeOut('slow');
+        $('#Common_NameErrorMsg').html("Enter Common Name.");
+        $('#Common_NameErrorMsg').show();
+        $('#Common_NameErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Product_Category == "")
+    {
+        $('#Product_CategoryErrorMsg').html("Select Product Category.");
+        $('#Product_CategoryErrorMsg').show();
+        $('#Product_CategoryErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(characteristics == "")
+    {
+        $('#characteristicsErrorMsg').html("Enter Product Characteristics.");
+        $('#characteristicsErrorMsg').show();
+        $('#characteristicsErrorMsg').delay(2000).fadeOut('slow');
     }
     else if(qty == "")
     {
@@ -676,8 +690,14 @@ function save_food_import_permit_details()
         $('#unitErrorMsg').show();
         $('#unitErrorMsg').delay(2000).fadeOut('slow');
     }
-
-    else{
+    else if(Export_Type < 1)
+    {
+        $('#Export_TypeErrorMsg').html("Select One Exporter Type.");
+        $('#Export_TypeErrorMsg').show();
+        $('#Export_TypeErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else
+    {
         $.ajax({
             type : "POST",
             url : "{% url 'save_food_import_details' %}",
