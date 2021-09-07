@@ -10,9 +10,4 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='t_village_master',
-            name='Village_Name_Dzo',
-            field=models.CharField(default=None, max_length=100),
-        ),
     ]

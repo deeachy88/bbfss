@@ -18,10 +18,5 @@ class Migration(migrations.Migration):
                 ('Meat_Item', models.CharField(max_length=100)),
             ],
         ),
-        migrations.AddField(
-            model_name='t_village_master',
-            name='Village_Name_Dzo',
-            field=models.CharField(default=django.utils.timezone.now, max_length=100),
-            preserve_default=False,
-        ),
+
     ]
