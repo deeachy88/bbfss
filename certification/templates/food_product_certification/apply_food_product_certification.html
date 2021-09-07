@@ -1,7 +1,6 @@
 {% extends 'common_dashboard.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-{% load static %}
 <style>
     option
     {
@@ -23,116 +22,111 @@
             <div class="row justify-content-left">
                 <ul class="nav nav-pills nav-secondary" id="pills-mortem" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadDetails()">Application Form</a>
+                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="load_fpc_details()">Application Form</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="file-attach" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
+                        <a class="nav-link" id="fpc_file-attach" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="fpc_attachment_details()">File Attachment</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="certification_standards" data-toggle="pill" href="#certification-standards" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">Standards</a>
+                        <a class="nav-link" id="no_tab" data-toggle="pill" href="#certification-standards" role="tab" aria-controls="certification-standards" aria-selected="false">Standards</a>
                     </li>
                 </ul>
             </div>
             <div class="tab-content mt-2 mb-3" id="pills-mortemContent">
                 <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-                    <div class="form-group row">
-                        <label class="col-sm-3 form-label">Download (Mandatory To Fill)<font color="red">*</font></label>
-                        <div class="col-sm-8">
-                            <a href="{% static 'assets/question/QUESTIONNAIRE_FOR_FACTORY_ASSESSMENT.doc'%}" target="_blank">Initial Questionnaire</a>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">Name Of the Firm <font color="red">*</font></label>
-                                <input type="text" class="form-control" id="Firm_Name" name="Firm_Name">
+                    <div id="fpc_application_details">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Name Of the Firm <font color="red">*</font></label>
+                                    <input type="text" class="form-control" id="Firm_Name" name="Firm_Name">
+                                </div>
+                                <div class="alert alert-danger" id="Firm_NameErrorMsg" style="display:none"></div>
                             </div>
-                            <div class="alert alert-danger" id="Firm_NameErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">Address <font color="red">*</font></label>
-                                <textarea class="form-control" id="Firm_Address" name="Firm_Address"></textarea>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Address <font color="red">*</font></label>
+                                    <textarea class="form-control" id="Firm_Address" name="Firm_Address"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="Firm_AddressErrorMsg" style="display:none"></div>
                             </div>
-                            <div class="alert alert-danger" id="Firm_AddressErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">Dzongkhag <font color="red">*</font></label>
-                                <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
-                                    <option value="">--SELECT DZONGKHAG--</option>
-                                    {% for dzongkhag in dzongkhag %}
-                                            <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">Gewog <font color="red">*</font></label>
-                                <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
-                                    <option value="">--SELECT GEWOG--</option>
-                                    {% for gewog in gewog %}
-                                            <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">Village <font color="red">*</font></label>
-                                 <select class="form-control" name="village" id="village">
-                                    <option value="">--SELECT VILLAGE--</option>
-                                    {% for village in village %}
-                                            <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
-                                    {% endfor %}
-                                 </select>
-                            </div>
-                            <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">Email <font color="red">*</font></label>
-                                <input type="email" class="form-control" id="Firm_Email" name="Firm_Email" onchange="validateemailId(this.value)">
-                            </div>
-                            <div class="alert alert-danger" id="Firm_EmailErrorMsg" style="display:none"></div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">Contact Number <font color="red">*</font></label>
-                                <input type="number" class="form-control" id="Firm_Contact_No" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="Firm_Contact_No" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
-                            </div>
-                            <div class="alert alert-danger" id="Firm_Contact_NoErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">Business License Number (if applicable)</label>
-                                 <input type="text" name="business_license_no" id="business_license_no" class="form-control">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Dzongkhag <font color="red">*</font></label>
+                                    <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
+                                        <option value="">--SELECT DZONGKHAG--</option>
+                                        {% for dzongkhag in dzongkhag %}
+                                                <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">Name of the Technical Incharge(if different from the owner)</label>
-                                 <input type="text" name="technical_in_charge" id="technical_in_charge" class="form-control">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Gewog <font color="red">*</font></label>
+                                    <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
+                                        <option value="">--SELECT GEWOG--</option>
+                                        {% for gewog in gewog %}
+                                                <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Village <font color="red">*</font></label>
+                                     <select class="form-control" name="village" id="village">
+                                        <option value="">--SELECT VILLAGE--</option>
+                                        {% for village in village %}
+                                                <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                                <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Email <font color="red">*</font></label>
+                                    <input type="email" class="form-control" id="Firm_Email" name="Firm_Email" onchange="validateemailId(this.value)">
+                                </div>
+                                <div class="alert alert-danger" id="Firm_EmailErrorMsg" style="display:none"></div>
                             </div>
                         </div>
-                    </div>
-                    <div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">Name of the Management Incharge (if different from the owner)</label>
-                                 <input type="text" name="management_in_charge" id="management_in_charge" class="form-control">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Contact Number <font color="red">*</font></label>
+                                    <input type="number" class="form-control" id="Firm_Contact_No" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="Firm_Contact_No" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                                </div>
+                                <div class="alert alert-danger" id="Firm_Contact_NoErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Business License Number (if applicable)</label>
+                                     <input type="text" name="business_license_no" id="business_license_no" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Name of the Technical Incharge(if different from the owner)</label>
+                                    <input type="text" name="technical_in_charge" id="technical_in_charge" class="form-control">
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
-                        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Name of the Management Incharge (if different from the owner)</label>
+                                    <input type="text" name="management_in_charge" id="management_in_charge" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
                             <span class="px-2 small text-muted font-weight-bold text-muted form-label">Factory</span>
                             <span class="px-2 small text-muted font-weight-bold text-muted form-label">Details</span>
                             <span class="px-1 small text-muted font-weight-bold text-muted form-label">(If</span>
@@ -140,264 +134,266 @@
                             <span class="px-1 small text-muted font-weight-bold text-muted form-label">From</span>
                             <span class="px-1 small text-muted font-weight-bold text-muted form-label">Above)</span>
                             <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">Name Of Factory</label>
-                                <input type="text" class="form-control" name="Factory_Name" id="Factory_Name">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Name Of Factory</label>
+                                    <input type="text" class="form-control" name="Factory_Name" id="Factory_Name">
+                                </div>
+                                <div class="alert alert-danger" id="Factory_NameErrorMsg" style="display:none"></div>
                             </div>
-                            <div class="alert alert-danger" id="Factory_NameErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">Address</label>
-                                <textarea class="form-control" id="Factory_Address" name="Factory_Address"></textarea>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Address</label>
+                                    <textarea class="form-control" id="Factory_Address" name="Factory_Address"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="Factory_AddressErrorMsg" style="display:none"></div>
                             </div>
-                            <div class="alert alert-danger" id="Factory_AddressErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">Contact Number</label>
-                                <input type="number" class="form-control" id="Factory_Contact_No" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="Factory_Contact_No" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkFactoryContact(this.value)">
-                            </div>
-                            <div class="alert alert-danger" id="Factory_Contact_NoErrorMsg" style="display:none"></div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">Email</label>
-                                <input type="email" class="form-control" id="Factory_Email" name="Factory_Email" onchange="validateFactory_emailId(this.value)">
-                            </div>
-                            <div class="alert alert-danger" id="Factory_EmailErrorMsg" style="display:none"></div>
-                        </div>
-                    </div>
-                    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
-                        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
-                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Product</span>
-                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Information</span>
-                        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Brief description of the product <font color="red">*</font></label>
-                                <textarea class="form-control" id="Product_Description" name="Product_Description"></textarea>
-                            </div>
-                            <div class="alert alert-danger" id="Product_DescriptionErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Product Trade Mark(s)</label>
-                                <textarea class="form-control" id="Product_Trade_Mark" name="Product_Trade_Mark"></textarea>
-                            </div>
-                            <div class="alert alert-danger" id="Product_Trade_MarkErrorMsg" style="display:none"></div>
-                        </div>
-                    </div>
-                    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
-                        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
-                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Production</span>
-                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Details</span>
-                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Previous</span>
-                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Year</span>
-                        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">From date <font color="red">*</font></label>
-                                 <input type="text" name="From_Date" id="P_From_Date" class="form-control date-picker flatpickr-input active">
-                            </div>
-                            <div class="alert alert-danger" id="P_From_DateErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">To date <font color="red">*</font></label>
-                                 <input type="text" name="P_To_Date" id="P_To_Date" class="form-control date-picker flatpickr-input active">
-                            </div>
-                            <div class="alert alert-danger" id="P_To_DateErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label class="form-label">Production(Quantity) <font color="red">*</font></label>
-                            <input type="number" name="P_Production" class="form-control" id="P_Production" required>
-                            <div class="alert alert-danger" id="productionErrorMsg" style="display:none"></div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">Unit <font color="red">*</font></label>
-                                <select class="form-control" name="P_Production_Unit" id="P_Production_Unit">
-                                    <option value="">--SELECT--</option>
-                                    {% for unit in unit %}
-                                        <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
-                                    {% endfor %}
-                                </select>
-                                <div class="alert alert-danger" id="P_Production_UnitErrorMsg" style="display:none"></div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Contact Number</label>
+                                    <input type="number" class="form-control" id="Factory_Contact_No" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="Factory_Contact_No" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                                </div>
+                                <div class="alert alert-danger" id="Factory_Contact_NoErrorMsg" style="display:none"></div>
                             </div>
                         </div>
-                        <div class="form-group col-md-4">
-                            <label class="form-label">Value(in Nu.) <font color="red">*</font></label>
-                            <input type="number" name="P_Production_Value" class="form-control" id="P_Production_Value" required>
-                            <div class="alert alert-danger" id="P_Production_ValueErrorMsg" style="display:none"></div>
-                        </div>
-                    </div>
-
-                    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
-                        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
-                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Production</span>
-                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Details</span>
-                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Current</span>
-                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Year</span>
-                        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">From date <font color="red">*</font></label>
-                                 <input type="text" name="C_From_Date" id="C_From_Date" class="form-control date-picker flatpickr-input active">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="Factory_Email" name="Factory_Email" onchange="validateemailId(this.value)">
+                                </div>
+                                <div class="alert alert-danger" id="Factory_EmailErrorMsg" style="display:none"></div>
                             </div>
-                            <div class="alert alert-danger" id="C_From_DateErrorMsg" style="display:none"></div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">To date <font color="red">*</font></label>
-                                 <input type="text" name="C_To_Date" id="C_To_Date" class="form-control date-picker flatpickr-input active">
-                            </div>
-                            <div class="alert alert-danger" id="to_current_yearErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label class="form-label">Production(Quantity) <font color="red">*</font></label>
-                            <input type="number" name="C_Production" class="form-control" id="C_Production" required>
-                            <div class="alert alert-danger" id="C_ProductionErrorMsg" style="display:none"></div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-md-4">
-                            <label class="form-label">Unit <font color="red">*</font></label>
-                            <select class="form-control" name="C_Production_Unit" id="C_Production_Unit">
-                                <option value="">--SELECT--</option>
-                                {% for unit in unit %}
-                                        <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
-                                {% endfor %}
-                            </select>
-                            <div class="alert alert-danger" id="C_Production_UnitErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label class="form-label">Value (in Nu.)<font color="red">*</font></label>
-                            <input type="number" name="C_Production_Value" class="form-control" id="C_Production_Value" required>
-                            <div class="alert alert-danger" id="C_Production_ValueErrorMsg" style="display:none"></div>
-                        </div>
-                    </div>
-                    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
-                        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
-                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Export</span>
-                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Details</span>
-                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Previous</span>
-                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Year</span>
-                        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">From date</label>
-                                 <input type="text" name="P_Export_From_Date" id="P_Export_From_Date" class="form-control date-picker flatpickr-input active">
-                            </div>
-                            <div class="alert alert-danger" id="P_Export_From_DateErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">To date</label>
-                                 <input type="text" name="P_Export_To_Date" id="P_Export_To_Date" class="form-control date-picker flatpickr-input active">
-                            </div>
-                            <div class="alert alert-danger" id="P_Export_To_DateErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label class="form-label">Export(Quantity)</label>
-                            <input type="text" name="P_Export" class="form-control" id="P_Export" required>
-                            <div class="alert alert-danger" id="P_ExportErrorMsg" style="display:none"></div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-md-4">
-                            <label class="form-label">Export Unit</label>
-                            <select class="form-control" name="P_Export_Unit" id="P_Export_Unit">
-                                <option value="">--SELECT--</option>
-                                {% for unit in unit %}
-                                        <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
-                                {% endfor %}
-                            </select>
-                            <div class="alert alert-danger" id="export_unitErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label class="form-label">Export Value (in Nu.)</label>
-                            <input type="number" name="P_Export_Value" class="form-control" id="P_Export_Value" required>
-                            <div class="alert alert-danger" id="P_Export_ValueErrorMsg" style="display:none"></div>
-                        </div>
-                    </div>
                         <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
                             <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
-                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">Export</span>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">Product</span>
+                                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Information</span>
+                            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Brief description of the product <font color="red">*</font></label>
+                                    <textarea class="form-control" id="Product_Description" name="Product_Description"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="Product_DescriptionErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Product Trade Mark(s)</label>
+                                    <textarea class="form-control" id="Product_Trade_Mark" name="Product_Trade_Mark"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="Product_Trade_MarkErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">Production</span>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">Details</span>
+                                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Previous</span>
+                                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Year</span>
+                            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">From date <font color="red">*</font></label>
+                                     <input type="text" name="From_Date" id="P_From_Date" class="form-control date-picker flatpickr-input active">
+                                </div>
+                                <div class="alert alert-danger" id="P_From_DateErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">To date <font color="red">*</font></label>
+                                     <input type="text" name="P_To_Date" id="P_To_Date" class="form-control date-picker flatpickr-input active">
+                                </div>
+                                <div class="alert alert-danger" id="P_To_DateErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Production(Quantity) <font color="red">*</font></label>
+                                <input type="number" name="P_Production" class="form-control" id="P_Production" required>
+                                <div class="alert alert-danger" id="productionErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Unit <font color="red">*</font></label>
+                                    <select class="form-control" name="P_Production_Unit" id="P_Production_Unit">
+                                        <option value="">--SELECT--</option>
+                                        {% for unit in unit %}
+                                            <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <div class="alert alert-danger" id="P_Production_UnitErrorMsg" style="display:none"></div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Value <font color="red">*</font></label>
+                                <input type="number" name="P_Production_Value" class="form-control" id="P_Production_Value" required>
+                                <div class="alert alert-danger" id="P_Production_ValueErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">Production</span>
                                 <span class="px-2 small text-muted font-weight-bold text-muted form-label">Details</span>
                                 <span class="px-1 small text-muted font-weight-bold text-muted form-label">Current</span>
                                 <span class="px-1 small text-muted font-weight-bold text-muted form-label">Year</span>
                             <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
                         </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">From date</label>
-                                 <input type="text" name="C_Export_From_Date" id="C_Export_From_Date" class="form-control date-picker flatpickr-input active">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">From date <font color="red">*</font></label>
+                                     <input type="text" name="C_From_Date" id="C_From_Date" class="form-control date-picker flatpickr-input active">
+                                </div>
+                                <div class="alert alert-danger" id="C_From_DateErrorMsg" style="display:none"></div>
                             </div>
-                            <div class="alert alert-danger" id="C_Export_From_DateErrorMsg" style="display:none"></div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">To date</label>
-                                 <input type="text" name="C_Export_To_Date" id="C_Export_To_Date" class="form-control date-picker flatpickr-input active">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">To date <font color="red">*</font></label>
+                                     <input type="text" name="C_To_Date" id="C_To_Date" class="form-control date-picker flatpickr-input active">
+                                </div>
+                                <div class="alert alert-danger" id="to_current_yearErrorMsg" style="display:none"></div>
                             </div>
-                            <div class="alert alert-danger" id="C_Export_To_DateErrorMsg" style="display:none"></div>
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Production(Quantity) <font color="red">*</font></label>
+                                <input type="number" name="C_Production" class="form-control" id="C_Production" required>
+                                <div class="alert alert-danger" id="C_ProductionErrorMsg" style="display:none"></div>
+                            </div>
                         </div>
-                        <div class="form-group col-md-4">
-                            <label class="form-label">Export(Quantity)</label>
-                            <input type="number" name="C_Export" class="form-control" id="C_Export" required>
-                            <div class="alert alert-danger" id="export_yearErrorMsg" style="display:none"></div>
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Unit <font color="red">*</font></label>
+                                <select class="form-control" name="C_Production_Unit" id="C_Production_Unit">
+                                    <option value="">--SELECT--</option>
+                                    {% for unit in unit %}
+                                            <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="alert alert-danger" id="C_Production_UnitErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Value <font color="red">*</font></label>
+                                <input type="number" name="C_Production_Value" class="form-control" id="C_Production_Value" required>
+                                <div class="alert alert-danger" id="C_Production_ValueErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">Export</span>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">Details</span>
+                                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Previous</span>
+                                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Year</span>
+                            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">From Date</label>
+                                     <input type="text" name="P_Export_From_Date" id="P_Export_From_Date" class="form-control date-picker flatpickr-input active">
+                                </div>
+                                <div class="alert alert-danger" id="P_Export_From_DateErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">To Date</label>
+                                     <input type="text" name="P_Export_To_Date" id="P_Export_To_Date" class="form-control date-picker flatpickr-input active">
+                                </div>
+                                <div class="alert alert-danger" id="P_Export_To_DateErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Export(Quantity)</label>
+                                <input type="text" name="P_Export" class="form-control" id="P_Export" required>
+                                <div class="alert alert-danger" id="P_ExportErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Export Unit</label>
+                                <select class="form-control" name="P_Export_Unit" id="P_Export_Unit">
+                                    <option value="">--SELECT--</option>
+                                    {% for unit in unit %}
+                                            <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="alert alert-danger" id="export_unitErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Export Value (in Nu.)</label>
+                                <input type="number" name="P_Export_Value" class="form-control" id="P_Export_Value" required>
+                                <div class="alert alert-danger" id="P_Export_ValueErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                            <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                                <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                    <span class="px-2 small text-muted font-weight-bold text-muted form-label">Export</span>
+                                    <span class="px-2 small text-muted font-weight-bold text-muted form-label">Details</span>
+                                    <span class="px-1 small text-muted font-weight-bold text-muted form-label">Current</span>
+                                    <span class="px-1 small text-muted font-weight-bold text-muted form-label">Year</span>
+                                <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                            </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">From Date</label>
+                                     <input type="text" name="C_Export_From_Date" id="C_Export_From_Date" class="form-control date-picker flatpickr-input active">
+                                </div>
+                                <div class="alert alert-danger" id="C_Export_From_DateErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">To Date</label>
+                                     <input type="text" name="C_Export_To_Date" id="C_Export_To_Date" class="form-control date-picker flatpickr-input active">
+                                </div>
+                                <div class="alert alert-danger" id="C_Export_To_DateErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Export(Quantity)</label>
+                                <input type="number" name="C_Export" class="form-control" id="C_Export" required>
+                                <div class="alert alert-danger" id="export_yearErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Unit</label>
+                                <select class="form-control" name="C_Export_Unit" id="C_Export_Unit">
+                                    <option value="">--SELECT--</option>
+                                    {% for unit in unit %}
+                                            <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="alert alert-danger" id="C_Export_UnitErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="form-label">Value (in Nu.)</label>
+                                <input type="number" name="currentValue" class="form-control" id="currentValue" required>
+                                <div class="alert alert-danger" id="currentValueErrorMsg" style="display:none"></div>
+                            </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="form-group col-md-4">
-                            <label class="form-label">Unit</label>
-                            <select class="form-control" name="C_Export_Unit" id="C_Export_Unit">
-                                <option value="">--SELECT--</option>
-                                {% for unit in unit %}
-                                        <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
-                                {% endfor %}
-                            </select>
-                            <div class="alert alert-danger" id="C_Export_UnitErrorMsg" style="display:none"></div>
+                        <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+                            Save SuccessFul
                         </div>
-                        <div class="form-group col-md-4">
-                            <label class="form-label">Value (in Nu.)</label>
-                            <input type="number" name="currentValue" class="form-control" id="currentValue" required>
-                            <div class="alert alert-danger" id="currentValueErrorMsg" style="display:none"></div>
+                        <div class="card-action">
+                            <button type="button" class="btn btn-primary" onclick="save_food_product_form()">Save</button>
                         </div>
-                    </div>
-                    <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
-                        Save SuccessFul
-                    </div>
-                    <div class="card-action">
-                        <button type="button" class="btn btn-primary" onclick="save_food_product_form()">Save</button>
-                    </div>
                 </div>
-                <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="mortem-file-attach">
+
+                <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="fpc_file-attach">
                     <div id="file-attachment-mortem">
                         {% include 'food_product_certification/file_attachment.html' %}
                     </div>
                     <div class="card-action">
-                        <button type="button" class="btn btn-success" onclick="next_file_attach()">Save-Next</button>
+                        <button type="button" class="btn btn-success" onclick="fpc_attach()">Save-Next</button>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="certification-standards" role="tabpanel" aria-labelledby="mortem-file-attach">
+                <div class="tab-pane fade" id="certification-standards" role="tabpanel" aria-labelledby="no_tab">
                     <div class="row">
                         <div class="form-group col-md-2">
                             <label class="form-label">Standard(s) for which we wish to be certified</label><br><br>
@@ -425,12 +421,12 @@
                                 <div class="form-group">
                                     <div class="form-check">
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Agree" onclick="checkStandardsRadio(this.value)">
+                                            <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Agree">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Agree</span>
                                         </label>&nbsp;
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio(this.value)">
+                                            <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Disagree">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Disagree</span>
                                         </label>
@@ -444,12 +440,12 @@
                                 <div class="form-group">
                                     <div class="form-check">
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Agree" onclick="checkStandardsRadio(this.value)">
+                                            <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Agree">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Agree</span>
                                         </label>&nbsp;
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio(this.value)">
+                                            <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Disagree">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Disagree</span>
                                         </label>
@@ -465,12 +461,12 @@
                                 <div class="form-group">
                                     <div class="form-check">
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Abide" class="custom-control-input" value="Agree" onclick="checkStandardsRadio(this.value)">
+                                            <input type="radio" name="Terms_Abide" class="custom-control-input" value="Agree">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Agree</span>
                                         </label>&nbsp;
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Abide" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio(this.value)">
+                                            <input type="radio" name="Terms_Abide" class="custom-control-input" value="Disagree">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Disagree</span>
                                         </label>
@@ -484,12 +480,12 @@
                                 <div class="form-group">
                                     <div class="form-check">
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Agree" onclick="checkStandardsRadio(this.value)">
+                                            <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Agree">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Agree</span>
                                         </label>&nbsp;
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio(this.value)">
+                                            <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Disagree">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Disagree</span>
                                         </label>
@@ -499,7 +495,7 @@
                         </div>
                     </div>
                     <div class="card-action">
-                        <button type="button" class="btn btn-primary" id="button_submit" onclick="submit_fpc_certificate()">Submit</button>
+                        <button type="button" class="btn btn-primary" onclick="submit_fpc_certificate()">Submit</button>
                     </div>
                 </div>
             </div>
@@ -546,6 +542,7 @@
 
 function save_food_product_form()
 {
+    var referenceNo = $('#applicationNo').val();
     var Firm_Name = $('#Firm_Name').val();
     var Firm_Address = $('#Firm_Address').val();
     var dzongkhag = $('#dzongkhag').val();
@@ -716,7 +713,7 @@ function save_food_product_form()
         $('#C_Production_ValueErrorMsg').delay(2000).fadeOut('slow');
         $('#C_Production_Value').focus();
     }
-    else
+    else if(referenceNo == "")
     {
         $.ajax({
             type : "POST",
@@ -731,7 +728,27 @@ function save_food_product_form()
                     $("#submitMsg").hide('blind', {}, 500)
                 }, 2000);
                 setTimeout(function() {
-                    $('#file-attach').tab('show');
+                    $('#fpc_file-attach').tab('show');
+                }, 3000);
+            }
+        });
+    }
+    else if(referenceNo != "")
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'update_fpc_details' %}",
+            data : $('#food_product_form').serialize(),
+            success : function(response)
+            {
+                $('#applicationNo').val(data.applNo);
+                $('#attachment_appNo').val(data.applNo);
+                $('#updateMsg').show();
+                setTimeout(function() {
+                    $("#updateMsg").hide('blind', {}, 500)
+                }, 2000);
+                setTimeout(function() {
+                    $('#fpc_file-attach').tab('show');
                 }, 3000);
             }
         });
@@ -855,34 +872,15 @@ function validateemailId(emailId)
 
     if(no==null)
     {
-        $('#Firm_EmailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
-        $('#Firm_Email').val("");
-        $('#Firm_EmailErrorMsg').show();
-        $('#Firm_EmailErrorMsg').delay(2000).fadeOut('slow');
+        $('#emailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
+        $('#email').val("");
+        $('#emailErrorMsg').show();
+        $('#emailErrorMsg').delay(2000).fadeOut('slow');
     }else{
-     $('#Firm_EmailErrorMsg').hide();
+     $('#emailErrorMsg').hide();
     }
 
 }
-
-function validateFactory_emailId(emailId)
-{
-    var pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
-    var no=emailId.match(pattern);
-
-    if(no==null)
-    {
-        $('#Factory_EmailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
-        $('#Factory_Email').val("");
-        $('#Factory_EmailErrorMsg').show();
-        $('#Factory_EmailErrorMsg').delay(2000).fadeOut('slow');
-    }else{
-     $('#Factory_EmailErrorMsg').hide();
-    }
-
-}
-
-
 
 function checkContact(value)
 {
@@ -913,37 +911,6 @@ function checkContact(value)
 
 }
 
-function checkFactoryContact(value)
-{
-    var firstDigit = value.charAt(0);
-    var secondDigit = value.charAt(1);
-
-    if(firstDigit != 7 && firstDigit != 1){
-        $('#Factory_Contact_NoErrorMsg').html("Must Start with either 1 or 7.");
-        $('#Factory_Contact_NoErrorMsg').show();
-        $('#Factory_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
-        $('#Factory_Contact_No').val("");
-    }else if(firstDigit == 1 && secondDigit != 6 && secondDigit != 7){
-        $('#Factory_Contact_NoErrorMsg').html("Second Digit Must Start with either 6 or 7.");
-        $('#Factory_Contact_NoErrorMsg').show();
-        $('#Factory_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
-        $('#Factory_Contact_No').val("");
-    }else if(firstDigit == 7 && secondDigit == 6){
-        $('#Factory_Contact_NoErrorMsg').html("Second Digit Cannot be 6.");
-        $('#Factory_Contact_NoErrorMsg').show();
-        $('#Factory_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
-        $('#Factory_Contact_No').val("");
-    }else if(firstDigit == 7 && secondDigit != 7){
-        $('#Factory_Contact_NoErrorMsg').html("Second Digit Must Start with 7.");
-        $('#Factory_Contact_NoErrorMsg').show();
-        $('#Factory_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
-        $('#Factory_Contact_No').val("");
-    }
-
-}
-
-
-
 function  submit_organic_certificate()
 {
     $.ajax({
@@ -967,40 +934,69 @@ function checkStandards(value)
         $("#other_standard").attr("disabled", "disabled");
     }
 }
-function next_file_attach()
+
+function fpc_attach()
 {
-    $('#certification_standards').tab('show');
+    $('#file-attachment').hide();
+    $('#no_tab').tab('show');
 }
+
 function submit_fpc_certificate()
 {
-    var applicationNo = $('#applicationNo').val();
     $.ajax({
         type : "POST",
         url : "{% url 'submit_food_product_certificate' %}",
         data : $('#food_product_form').serialize(),
         success : function(responseText) {
-            swal("Application Submitted Successfully. Your Application No :" + applicationNo, {
-                buttons: false,
-                timer: 4000,
-            });
-            setTimeout(function()
-            {
-                location.reload();
-            }, 4000);
+           location.reload();
         }
     });
 }
 
-function checkStandardsRadio(value)
+function getGewog(dzongkhag_id)
 {
-    if(value="Agree")
-    {
-        $('#button_submit').show();
-    }
-    else
-    {
-        $('#button_submit').hide();
-    }
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_gewog' %}",
+        data :{'dzongkhag_id':dzongkhag_id},
+        success : function(data)
+        {
+            $('#gewog').html(data);
+        }
+    });
 }
+
+function getVillage(gewog_id)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_village' %}",
+        data :{'gewog_id':gewog_id},
+        success : function(data)
+        {
+            $('#village').html(data);
+        }
+    });
+}
+
+
+function load_fpc_details()
+{
+    var refNo = $('#applicationNo').val();
+    $('#file-attachment').hide();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_commodity_application_details' %}",
+        data :{'refNo':refNo},
+        data :{'application_id':appNo},
+        success : function(response)
+        {
+            $('#fpc_application_details').html(response);
+            $("#fpc_file-attach").prop('disabled', false);
+            $('#no_tab').prop('disabled', false);
+        }
+    });
+}
+
 </script>
 {% endblock %}

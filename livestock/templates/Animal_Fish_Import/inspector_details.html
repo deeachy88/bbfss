@@ -549,7 +549,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Inspection Team Leader</label>
+                                <label>Inspection Team Leader <font color="red">*</font></label>
                                 <select class="form-control" name="teamLeader"  id="teamLeader">
                                     <option value="">--SELECT TEAM LEADER--</option>
                                     {% for inspector_list in inspector_list %}
@@ -557,26 +557,30 @@
                                     {% endfor %}
                                 </select>
                             </div>
+                            <div class="alert alert-danger" id="teamLeaderErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="insTeam">Inspection Team </label>
+                                <label for="insTeam">Inspection Team <font color="red">*</font></label>
                                 <textarea class="form-control" id="insTeam" rows="2"></textarea>
                             </div>
+                            <div class="alert alert-danger" id="insTeamErrorMsg" style="display:none"></div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label>Date Of Inspection</label>
+                                <label>Date Of Inspection <font color="red">*</font></label>
                                 <input type="text" class="form-control date-picker flatpickr-input active" id="dateOfInspection" name="dateOfInspection"  placeholder="Pick a date" readonly="readonly">
                             </div>
+                            <div class="alert alert-danger" id="dateOfInspectionErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label>Time Of Inspection</label>
+                                <label>Time Of Inspection <font color="red">*</font></label>
                                 <input type="text" class="form-control date-picker flatpickr-input active" id="timeOfInspection" name="timeOfInspection"  placeholder="Pick a date" readonly="readonly">
                             </div>
+                            <div class="alert alert-danger" id="timeOfInspectionErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
@@ -585,6 +589,7 @@
                             </div>
                         </div>
                     </div>
+                    <div class="alert alert-info" id="approve_Msg" style="display:none"></div>
                     <hr>
                     <div class="card-action text-center">
                         <button type="button" class="btn btn-flat btn-primary" onclick="submit_details('{{application_details.Application_No}}')">
@@ -698,15 +703,53 @@ function submit_details(application_id)
     dateOfInspection = $('#dateOfInspection').val();
     timeOfInspection = $('#timeOfInspection').val();
 
-   $.ajax({
-        type : "GET",
-        url : "{% url 'submit_la_application' %}",
-        data :{'application_no':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks , 'dateOfInspection':dateOfInspection,'timeOfInspection':timeOfInspection},
-        success : function(data) {
-            $('#application-details-modal').modal('hide');
-            location.reload();
-        }
-    });
+    if(Inspection_Leader == "")
+    {
+        $('#teamLeaderErrorMsg').html("Select Team Leader.");
+        $('#teamLeaderErrorMsg').show();
+        $('#teamLeaderErrorMsg').delay(2000).fadeOut('slow');
+        $('#teamLeader').focus();
+    }
+    else if(Inspection_Team == "")
+    {
+        $('#insTeamErrorMsg').html("Enter Inspection Team.");
+        $('#insTeamErrorMsg').show();
+        $('#insTeamErrorMsg').delay(2000).fadeOut('slow');
+        $('#insTeam').focus();
+    }
+    else if(dateOfInspection == "")
+    {
+        $('#dateOfInspectionErrorMsg').html("Select Date Of Inspection.");
+        $('#dateOfInspectionErrorMsg').show();
+        $('#dateOfInspectionErrorMsg').delay(2000).fadeOut('slow');
+        $('#dateOfInspection').focus();
+    }
+    else if(timeOfInspection == "")
+    {
+        $('#timeOfInspectionErrorMsg').html("Select Time Of Inspection.");
+        $('#timeOfInspectionErrorMsg').show();
+        $('#timeOfInspectionErrorMsg').delay(2000).fadeOut('slow');
+        $('#timeOfInspection').focus();
+    }
+    else
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'submit_la_application' %}",
+            data :{'application_no':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks , 'dateOfInspection':dateOfInspection,'timeOfInspection':timeOfInspection},
+            success : function(data) {
+                $('#approve_Msg').html("Application Approved.");
+                $('#approve_Msg').show();
+                $('#approve_Msg').delay(2000).fadeOut('slow');
+                setTimeout(function() {
+                    $('#application-details-modal').modal('hide');
+                }, 3000);
+                setTimeout(function() {
+                    window.location.href = '{% url 'dashboard' %}';
+                }, 3000);
+            }
+        });
+    }
 }
 
 

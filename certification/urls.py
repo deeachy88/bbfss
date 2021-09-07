@@ -106,7 +106,8 @@ urlpatterns = [
     path('delete_farm_details', views.delete_farm_details, name='delete_farm_details'),
     path('update_nc_response', views.update_nc_response, name='update_nc_response'),
     path('delete_farmers_group', views.delete_farmers_group, name='delete_farmers_group'),
-
+    path('load_fpc_details_page', views.load_fpc_details_page, name='load_fpc_details_page'),
+    path('update_fpc_details', views.update_fpc_details, name='update_fpc_details')
 
 ]
 if settings.DEBUG:

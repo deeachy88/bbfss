@@ -65,7 +65,7 @@ class t_village_master(models.Model):
     Village_Code = models.AutoField(primary_key=True)
     Village_Name = models.CharField(max_length=100)
     Gewog_Code = models.ForeignKey(t_gewog_master, on_delete=models.CASCADE, null=True, blank=True)
-    Village_Name_Dzo = models.CharField(max_length=100, default=None)
+    Village_Name_Dzo = models.CharField(max_length=100)
 
     def __str__(self):
         return self.Gewog_Code

@@ -132,6 +132,7 @@ class t_certification_gap_t5(models.Model):  # GAP Certification pack house
     C_Production = models.IntegerField(blank=True, null=True)
     C_Sold = models.IntegerField(blank=True, null=True)
     C_Balance_Stock = models.IntegerField(blank=True, null=True)
+    C_Balance_Stock_Unit = models.IntegerField(blank=True, null=True)
 
 
 class t_certification_gap_t6(models.Model):  # GAP Certification Audit Plan

@@ -5,6 +5,7 @@ import string
 from datetime import date, datetime
 
 from django.contrib.auth.hashers import make_password, check_password
+import requests
 from django.core.mail import send_mail
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
@@ -34,7 +35,15 @@ def home(request):
 
 
 def dashboard(request):
-    return render(request, 'dashboard.html')
+    Role_Id = request.session['Role_Id']
+    section = request.session['section']
+    section_details = t_section_master.objects.filter(Section_Id=section)
+    for id_section in section_details:
+        section_name = id_section.Section_Name
+        message_count = t_workflow_details.objects.filter(
+            Assigned_Role_Id=Role_Id, Section=section_name,
+            Action_Date__isnull=False, Application_Status='P').count()
+        return render(request, 'dashboard.html', {'count': message_count})
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -102,7 +111,7 @@ def login(request):
                                             message_count = t_workflow_details.objects.filter(
                                                 Assigned_Role_Id=mainroles.Role_Id, Section=section_name,
                                                 Action_Date__isnull=False).exclude(Application_Status='A').count()
-                                            request.session['count'] = message_count
+                                            return render(request, 'dashboard.html', {'count': message_count})
                                     elif complaint_officer == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
                                         request.session['role'] = complaint_officer
@@ -119,7 +128,7 @@ def login(request):
                                             Assigned_Role_Id=mainroles.Role_Id,
                                             Field_Office_Id=user.Field_Office_Id_id,
                                             Action_Date__isnull=False).count()
-                                        request.session['count'] = message_count
+                                        return render(request, 'dashboard.html')
                                     elif Inspector == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
                                         request.session['role'] = Inspector
@@ -133,14 +142,14 @@ def login(request):
                                             Assigned_To=user.Login_Id,
                                             Field_Office_Id=user.Field_Office_Id_id,
                                             Action_Date__isnull=False).count()
-                                        request.session['count'] = message_count
+                                        return render(request, 'dashboard.html')
                                     elif Chief == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
                                         request.session['role'] = Chief
                                         request.session['Division_Id'] = user.Division_Id_id
                                         request.session['Login_Id'] = user.Login_Id
                                         request.session['email'] = user.Email_Id
-                                return render(request, 'dashboard.html')
+                                        return render(request, 'dashboard.html')
                     else:
                         _message = 'Your account is not activated'
                 else:
@@ -1729,3 +1738,17 @@ def user_password_reset_mail(Name, Email_Id, password):
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email_Id]
     send_mail(subject, message, email_from, recipient_list)
+
+
+def check_cid_exists(request):
+    data = dict()
+    cid = request.GET.get('cidNo')
+    message_count = t_user_master.objects.filter(CID=cid, Login_Type='C').count()
+    data['count'] = message_count
+    header = {'Authorization': 'Bearer 18b1d996-102a-31e6-92f7-5d86debb33ee'}
+    url = 'https://staging-datahub-apim.dit.gov.bt/dcrc_citizen_details_api/1.0.0/citizendetails/' + cid
+    # params = {'cid': cid}
+    response = requests.get(url, headers=header, verify=False)
+    data['response'] = response.json()
+    return JsonResponse(data)
+

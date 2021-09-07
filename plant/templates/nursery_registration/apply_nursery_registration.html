@@ -238,7 +238,7 @@
                             <div class="box-body">
                                 <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Crop Category</label>
+                                        <label class="form-label">Crop Category <font color="red">*</font></label>
                                          <select class="form-control" name="crop_category_id"  id="crop_category_id" onchange="getCrop(this.value)">
                                             <option value="">--SELECT--</option>
                                             {% for crop_category in crop_category %}
@@ -249,7 +249,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Crop</label>
+                                            <label class="form-label">Crop <font color="red">*</font></label>
                                             <select class="form-control" name="crop_id"  id="crop_id" onchange="getVariety(this.value)">
                                                 <option value="">--SELECT--</option>
                                                 {% for crop in crop %}
@@ -261,7 +261,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Crop Variety</label>
+                                            <label class="form-label">Crop Variety <font color="red">*</font></label>
                                             <select class="form-control" name="crop_variety_id" id="crop_variety">
                                                 <option value="">--SELECT--</option>
                                                 {% for variety in variety %}
@@ -274,17 +274,17 @@
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Source</label>
+                                        <label class="form-label">Source <font color="red">*</font></label>
                                         <input type="text" name="Source" class="form-control" id="Source" required>
                                         <div class="alert alert-danger" id="SourceErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Quantity</label>
+                                        <label class="form-label">Quantity <font color="red">*</font></label>
                                         <input type="number" name="qty" class="form-control" id="qty" required>
                                         <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Unit</label>
+                                        <label class="form-label">Unit <font color="red">*</font></label>
                                         <select class="form-control" name="unit"  id="unit">
                                             <option value="">--SELECT UNIT--</option>
                                             {% for unit in unit %}
@@ -589,17 +589,63 @@ function save_attachment()
 
 function save_nursery_details()
 {
-    $.ajax({
-        type : "POST",
-        url : "{% url 'add_reg_details' %}",
-        data : $('#save_nursery_form').serialize(),
-        success : function(responseText) {
-           $('#add_details').modal('hide');
-           $('#seed-details').html(responseText);
-           $('#pills-profile-tab').tab('show');
-           $('.modal-backdrop').remove();
-        }
-    });
+    var crop_category_id = $('#crop_category_id').val();
+    var crop_id =  $('#crop_id').val();
+    var crop_variety_id = $('#crop_variety').val();
+    var Source = $('#Source').val();
+    var qty = $('#qty').val();
+    var unit = $('#unit').val();
+
+    if(crop_category_id == "")
+    {
+        $('#crop_category_idErrorMsg').html("Select Crop Category.");
+        $('#crop_category_idErrorMsg').show();
+        $('#crop_category_idErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(crop_id == "")
+    {
+        $('#crop_idErrorMsg').html("Select Crop.");
+        $('#crop_idErrorMsg').show();
+        $('#crop_idErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(crop_variety_id == "")
+    {
+        $('#crop_varietyErrorMsg').html("Select Crop Variety.");
+        $('#crop_varietyErrorMsg').show();
+        $('#crop_varietyErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Source == "")
+    {
+        $('#SourceErrorMsg').html("Enter Source.");
+        $('#SourceErrorMsg').show();
+        $('#SourceErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(qty == "")
+    {
+        $('#qtyErrorMsg').html("Enter Quantity.");
+        $('#qtyErrorMsg').show();
+        $('#qtyErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(unit == "")
+    {
+        $('#unitErrorMsg').html("Select Unit.");
+        $('#unitErrorMsg').show();
+        $('#unitErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'add_reg_details' %}",
+            data : $('#save_nursery_form').serialize(),
+            success : function(responseText) {
+               $('#add_details').modal('hide');
+               $('#seed-details').html(responseText);
+               $('#pills-profile-tab').tab('show');
+               $('.modal-backdrop').remove();
+            }
+        });
+    }
 }
 
 function save_seed_form()
