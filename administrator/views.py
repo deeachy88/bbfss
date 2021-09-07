@@ -93,11 +93,13 @@ def login(request):
                                         request.session['role'] = admin
                                         request.session['Login_Id'] = user.Login_Id
                                         request.session['email'] = user.Email_Id
+                                        return render(request, 'dashboard.html')
                                     elif DG == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
                                         request.session['role'] = DG
                                         request.session['Login_Id'] = user.Login_Id
                                         request.session['email'] = user.Email_Id
+                                        return render(request, 'dashboard.html')
                                     elif focal_officer == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
                                         request.session['role'] = focal_officer
