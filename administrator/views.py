@@ -35,15 +35,76 @@ def home(request):
 
 
 def dashboard(request):
-    Role_Id = request.session['Role_Id']
-    section = request.session['section']
-    section_details = t_section_master.objects.filter(Section_Id=section)
-    for id_section in section_details:
-        section_name = id_section.Section_Name
-        message_count = t_workflow_details.objects.filter(
-            Assigned_Role_Id=Role_Id, Section=section_name,
-            Action_Date__isnull=False, Application_Status='P').count()
-        return render(request, 'dashboard.html', {'count': message_count})
+    login_type = request.session['Login_Type']
+
+    if login_type == 'I':
+        Role_Id = request.session['Role_Id']
+
+        if Role_Id == '2':
+            section = request.session['section']
+            login_id = request.session['Login_Id']
+            Field_Office_Id = request.session['field_office_id']
+            section_details = t_section_master.objects.filter(Section_Id=section)
+            for id_section in section_details:
+                section_name = id_section.Section_Name
+                message_count = t_workflow_details.objects.filter(
+                    Assigned_Role_Id=Role_Id, Section=section_name,
+                    Action_Date__isnull=False, Application_Status='P').count()
+                return render(request, 'dashboard.html', {'count': message_count})
+        elif Role_Id == '4':
+            login_id = request.session['Login_Id']
+            Field_Office_Id = request.session['field_office_id']
+
+            message_count = (t_workflow_details.objects.filter(Assigned_Role_Id='4', Field_Office_Id=Field_Office_Id,
+                                                               Application_Status='P',
+                                                               Action_Date__isnull=False) |
+                             t_workflow_details.objects.filter(Assigned_Role_Id='4', Field_Office_Id=Field_Office_Id,
+                                                               Application_Status='I',
+                                                               Action_Date__isnull=False) |
+                             t_workflow_details.objects.filter(Assigned_Role_Id='4', Field_Office_Id=Field_Office_Id,
+                                                               Application_Status='FR',
+                                                               Action_Date__isnull=False) |
+                             t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
+                                                               Action_Date__isnull=False)).count()
+            return render(request, 'dashboard.html', {'count': message_count})
+        elif Role_Id == '5':
+            login_id = request.session['Login_Id']
+            Field_Office_Id = request.session['field_office_id']
+            message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
+                                                               Action_Date__isnull=False)
+                             | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
+                                                                 Application_Status='I',
+                                                                 Action_Date__isnull=False)
+                             | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
+                                                                 Application_Status='FI',
+                                                                 Action_Date__isnull=False)
+                             | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
+                                                                 Application_Status='FR',
+                                                                 Action_Date__isnull=False)
+                             | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
+                                                                 Application_Status='P',
+                                                                 Action_Date__isnull=False)
+                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APA',
+                                                                 Action_Date__isnull=False)
+                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
+                                                                 Action_Date__isnull=False)).count()
+            return render(request, 'dashboard.html', {'ins_count': message_count})
+        else:
+            return render(request, 'dashboard.html')
+    else:
+        login_id = request.session['Login_Id']
+        message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
+
+        inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
+                                                                  Action_Date__isnull=False).count()
+        consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
+                                                                   Action_Date__isnull=False).count()
+        return render(request, 'dashboard.html', {'count': message_count, 'count_call': inspection_call_count,
+                                                  'consignment_call_count': consignment_call_count})
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -66,11 +127,11 @@ def login(request):
                                 main_role = t_role_master.objects.filter(Role_Id=user.Role_Id_id)
                                 for main_role in main_role:
                                     Role_Id = main_role.Role_Id
-                                request.session['Login_Id'] = user.Login_Id
-                                request.session['email'] = user.Email_Id
-                                request.session['Role_Id'] = Role_Id
-                                security = t_security_question_master.objects.all()
-                            return render(request, 'update_password.html', {'security': security})
+                                    request.session['Login_Id'] = user.Login_Id
+                                    request.session['email'] = user.Email_Id
+                                    request.session['Role_Id'] = Role_Id
+                                    security = t_security_question_master.objects.all()
+                                return render(request, 'update_password.html', {'security': security})
                         else:
                             if user.Login_Type == "C":
                                 client = "client"
@@ -78,7 +139,8 @@ def login(request):
                                 request.session['name'] = user.Name
                                 request.session['role'] = client
                                 request.session['Login_Id'] = user.Login_Id
-                                return render(request, 'dashboard.html')
+                                request.session['Login_Type'] = user.Login_Type
+                                return redirect(dashboard)
                             else:
                                 mainrole = t_role_master.objects.filter(Role_Id=user.Role_Id_id)
                                 for mainroles in mainrole:
@@ -93,13 +155,17 @@ def login(request):
                                         request.session['role'] = admin
                                         request.session['Login_Id'] = user.Login_Id
                                         request.session['email'] = user.Email_Id
-                                        return render(request, 'dashboard.html')
+                                        request.session['Login_Type'] = user.Login_Type
+                                        request.session['Role_Id'] = mainroles.Role_Id
+                                        return redirect(dashboard)
                                     elif DG == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
                                         request.session['role'] = DG
                                         request.session['Login_Id'] = user.Login_Id
                                         request.session['email'] = user.Email_Id
-                                        return render(request, 'dashboard.html')
+                                        request.session['Login_Type'] = user.Login_Type
+                                        request.session['Role_Id'] = mainroles.Role_Id
+                                        return redirect(dashboard)
                                     elif focal_officer == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
                                         request.session['role'] = focal_officer
@@ -107,18 +173,16 @@ def login(request):
                                         request.session['section'] = user.Section_Id_id
                                         request.session['Login_Id'] = user.Login_Id
                                         request.session['email'] = user.Email_Id
-                                        section_details = t_section_master.objects.filter(Section_Id=user.Section_Id_id)
-                                        for id_section in section_details:
-                                            section_name = id_section.Section_Name
-                                            message_count = t_workflow_details.objects.filter(
-                                                Assigned_Role_Id=mainroles.Role_Id, Section=section_name,
-                                                Action_Date__isnull=False).exclude(Application_Status='A').count()
-                                            return render(request, 'dashboard.html', {'count': message_count})
+                                        request.session['Login_Type'] = user.Login_Type
+                                        return redirect(dashboard)
                                     elif complaint_officer == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
                                         request.session['role'] = complaint_officer
                                         request.session['Login_Id'] = user.Login_Id
                                         request.session['email'] = user.Email_Id
+                                        request.session['Login_Type'] = user.Login_Type
+                                        request.session['Role_Id'] = mainroles.Role_Id
+                                        return redirect(dashboard)
                                     elif OIC == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
                                         request.session['role'] = OIC
@@ -126,11 +190,8 @@ def login(request):
                                         request.session['field_office_id'] = user.Field_Office_Id_id
                                         request.session['Login_Id'] = user.Login_Id
                                         request.session['email'] = user.Email_Id
-                                        message_count = t_workflow_details.objects.filter(
-                                            Assigned_Role_Id=mainroles.Role_Id,
-                                            Field_Office_Id=user.Field_Office_Id_id,
-                                            Action_Date__isnull=False).count()
-                                        return render(request, 'dashboard.html')
+                                        request.session['Login_Type'] = user.Login_Type
+                                        return redirect(dashboard)
                                     elif Inspector == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
                                         request.session['role'] = Inspector
@@ -138,20 +199,18 @@ def login(request):
                                         request.session['Login_Id'] = user.Login_Id
                                         request.session['email'] = user.Email_Id
                                         request.session['is_officiating'] = user.Is_Officiating
-                                        print(user.Login_Id)
-                                        print(user.Field_Office_Id_id)
-                                        message_count = t_workflow_details.objects.filter(
-                                            Assigned_To=user.Login_Id,
-                                            Field_Office_Id=user.Field_Office_Id_id,
-                                            Action_Date__isnull=False).count()
-                                        return render(request, 'dashboard.html')
+                                        request.session['Login_Type'] = user.Login_Type
+                                        request.session['Role_Id'] = mainroles.Role_Id
+                                        return redirect(dashboard)
                                     elif Chief == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
                                         request.session['role'] = Chief
                                         request.session['Division_Id'] = user.Division_Id_id
                                         request.session['Login_Id'] = user.Login_Id
                                         request.session['email'] = user.Email_Id
-                                        return render(request, 'dashboard.html')
+                                        request.session['Login_Type'] = user.Login_Type
+                                        request.session['Role_Id'] = mainroles.Role_Id
+                                        return redirect(dashboard)
                     else:
                         _message = 'Your account is not activated'
                 else:
@@ -1753,4 +1812,3 @@ def check_cid_exists(request):
     response = requests.get(url, headers=header, verify=False)
     data['response'] = response.json()
     return JsonResponse(data)
-
