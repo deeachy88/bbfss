@@ -3723,7 +3723,7 @@ def save_nursery_reg(request):
         CID=CID,
         Owner_Name=Owner_Name,
         Contact_No=contactNo,
-        email=email,
+        Email=email,
         Unit_Area=Unit_Area,
         Area=Area,
         Dzongkhag=dzongkhag,
