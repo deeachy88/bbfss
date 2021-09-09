@@ -1,28 +1,37 @@
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Conditional Clearance No</th>
-            <th scope="col">Application No</th>
-            <th scope="col">Application Date</th>
-            <th scope="col">Validity</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for application_details in application_details %}
+<div class="table-responsive">
+    <table id="import-data-table" class="table table-bordered">
+        <thead>
             <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{application_details.Conditional_Clearance_No}}</td>
-                <td>{{application_details.Application_No}}</td>
-                <td>{{application_details.Application_Date}}</td>
-                <td>{{application_details.Clearance_Validity}}</td>
-                <td><button  class="btn btn-default btn-border" type="button" onclick="print_certificate('CFC','{{application_details.Application_No}}')"><i class="zmdi zmdi-print"></i></button></td>
+                <th scope="col">#</th>
+                <th scope="col">Conditional Clearance No</th>
+                <th scope="col">Application No</th>
+                <th scope="col">Application Date</th>
+                <th scope="col">Validity</th>
+                <th></th>
             </tr>
-            {% empty %}
-            <tr>
-              <td colspan="5" class="text-center">No Data</td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            {% for application_details in application_details %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{application_details.Conditional_Clearance_No}}</td>
+                    <td>{{application_details.Application_No}}</td>
+                    <td>{{application_details.Application_Date}}</td>
+                    <td>{{application_details.Clearance_Validity}}</td>
+                    <td><button  class="btn btn-default btn-border" type="button" onclick="print_certificate('CFC','{{application_details.Application_No}}')"><i class="zmdi zmdi-print"></i></button></td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="5" class="text-center">No Data</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(function ()
+    {
+        $('#import-data-table').DataTable();
+    });
+</script>

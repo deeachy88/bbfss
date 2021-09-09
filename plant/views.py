@@ -659,8 +659,9 @@ def view_application_details(request):
                     Application_No=application_id, Meeting_Type="Factory Inspection")
                 feasibility_inspection_team_details = t_food_business_registration_licensing_t6.objects.filter(
                     Application_No=application_id, Meeting_Type='Feasibility Inspection')
-                feasibility_team_details = t_food_business_registration_licensing_t4.objects.filter(Application_No=application_id,
-                                                                                        Meeting_Type='Feasibility Inspection')
+                feasibility_team_details = t_food_business_registration_licensing_t4.objects.filter(
+                    Application_No=application_id,
+                    Meeting_Type='Feasibility Inspection')
                 feasibility_inspection_details = t_food_business_registration_licensing_t5.objects.filter(
                     Application_No=application_id,
                     Inspection_Type='Feasibility Inspection')
@@ -674,7 +675,7 @@ def view_application_details(request):
                                'team_details': team_details, 'inspection_team_details': inspection_team_details,
                                'food_handler': food_handler, 'dzongkhag': dzongkhag, 'gewog': gewog,
                                'village': village, 'feasibility_team_details': feasibility_team_details,
-                               'feasibility_inspection_team_details':feasibility_inspection_team_details,
+                               'feasibility_inspection_team_details': feasibility_inspection_team_details,
                                'feasibility_inspection_details': feasibility_inspection_details})
     elif service_code == 'OC':
         oc_work_details = t_workflow_details.objects.filter(Application_No=application_id, Application_Status='NCF')
@@ -776,7 +777,7 @@ def view_application_details(request):
                            })
 
 
-def         approve_application(request):
+def approve_application(request):
     application_id = request.POST.get('application_id')
     Inspection_Leader = request.POST.get('Inspection_Leader')
     Inspection_Team = request.POST.get('Inspection_Team')
@@ -820,6 +821,7 @@ def send_mpp_approve_email(permit_no, Email, validity_date):
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
     send_mail(subject, message, email_from, recipient_list)
+
 
 def reject_application(request):
     application_id = request.GET.get('application_id')
@@ -1498,7 +1500,8 @@ def fo_app_details(request):
                 crop_production = t_certification_gap_t4.objects.filter(Application_No=Application_No)
                 gap_house_details = t_certification_gap_t5.objects.filter(Application_No=Application_No)
                 file = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type__isnull=True)
-                audit_plan = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='Audit Plan')
+                audit_plan = t_file_attachment.objects.filter(Application_No=Application_No,
+                                                              Attachment_Type='Audit Plan')
                 farm_inputs = t_certification_gap_t7.objects.filter(Application_No=Application_No)
                 audit_observation = t_certification_gap_t8.objects.filter(Application_No=Application_No)
                 team_leader = t_user_master.objects.filter(Login_Type='I')
@@ -1981,8 +1984,8 @@ def add_import_details_ins(request):
     currentObservation = request.GET.get('currentObservation')
     decisionConform = request.GET.get('decisionConform')
     t_plant_import_permit_inspection_t3.objects.create(Application_No=application_id,
-                                            Current_Observation=currentObservation,
-                                            Decision_Conformity=decisionConform)
+                                                       Current_Observation=currentObservation,
+                                                       Decision_Conformity=decisionConform)
     import_permit = t_plant_import_permit_inspection_t3.objects.filter(Application_No=application_id)
     return render(request, 'import_permit/add_import_details.html', {'import_permit': import_permit})
 
@@ -2637,8 +2640,8 @@ def add_details_ins_import(request):
     currentObservation = request.GET.get('currentObservation')
     decisionConform = request.GET.get('decisionConform')
     t_plant_import_permit_inspection_t3.objects.create(Application_No=application_id,
-                                            Current_Observation=currentObservation,
-                                            Decision_Conformity=decisionConform)
+                                                       Current_Observation=currentObservation,
+                                                       Decision_Conformity=decisionConform)
     import_permit = t_plant_import_permit_inspection_t3.objects.filter(Application_No=application_id)
     return render(request, 'import_permit/add_import_details.html', {'import_permit': import_permit})
 
@@ -4460,169 +4463,324 @@ def certificate_print(request):
 def view_certificate_details(request):
     service_code = request.GET.get('service_code')
     login_id = request.session['email']
-    if service_code == 'MPP':
-        application_details = t_plant_movement_permit_t1.objects.filter(Applicant_Id=login_id,
-                                                                        Movement_Permit_No__isnull=False)
-        payment_details = t_payment_details.objects.all()
-        return render(request, 'certificates/movement_certificate_printing_details.html',
-                      {'application_details': application_details, 'payment_details': payment_details})
-    elif service_code == 'IPP':
-        application_details = t_plant_import_permit_t1.objects.filter(Applicant_Id=login_id,
-                                                                      Import_Permit_No__isnull=False)
-        return render(request, 'certificates/import_certificate_printing_details.html',
-                      {'application_details': application_details})
-    elif service_code == 'EPP':
-        application_details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(Applicant_Id=login_id,
-                                                                                                Export_Permit__isnull=False)
-        return render(request, 'certificates/export_certificate_printing_details.html',
-                      {'application_details': application_details})
-    elif service_code == 'RNS':
-        application_details = t_plant_clearence_nursery_seed_grower_t1.objects.filter(Applicant_Id=login_id,
-                                                                                      Clearance_Number__isnull=False)
-        return render(request, 'certificates/nursery_certificate_printing_details.html',
-                      {'application_details': application_details})
-    elif service_code == 'RSC':
-        application_details = t_plant_seed_certification_t1.objects.filter(Applicant_Id=login_id,
-                                                                           Seed_Certificate__isnull=False)
-        return render(request, 'certificates/seed_certificate_printing_details.html',
-                      {'application_details': application_details})
-    elif service_code == 'FFC':
-        application_details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(Applicant_Id=login_id,
-                                                                                                Export_Permit__isnull=False)
-        return render(request, 'certificates/fit_for_consumption_details.html',
-                      {'application_details': application_details})
-    elif service_code == 'NC':
-        application_details = t_plant_clearence_nursery_seed_grower_t1.objects.filter(Applicant_Id=login_id,
-                                                                                      Clearance_Number__isnull=False)
-        return render(request, 'certificates/nursery_clearance_details.html',
-                      {'application_details': application_details})
-    elif service_code == 'RF':
-        application_details = t_plant_import_permit_t1.objects.filter(Applicant_Id=login_id,
-                                                                      Clearance_Ref_No__isnull=False)
-        return render(request, 'certificates/release_form_details.html',
-                      {'application_details': application_details})
-    # LIVESTOCK_CERTIFICATE_DETAILS
-    elif service_code == 'APM':
-        application_details = t_livestock_ante_post_mortem_t1.objects.filter(Applicant_Id=login_id,
-                                                                             Clearance_No__isnull=False)
-        for application in application_details:
-            app_no = application.Clearance_No
-            payment_details = t_payment_details.objects.filter(Permit_No=app_no)
-        return render(request, 'livestock_certificates/ante_post_mortem/certificate_list.html',
-                      {'application_details': application_details, 'payment_details': payment_details})
-    elif service_code == 'CMS':
-        application_details = t_livestock_clearance_meat_shop_t1.objects.filter(Applicant_Id=login_id,
-                                                                                Meat_Shop_Clearance_No__isnull=False)
-        for application in application_details:
-            app_no = application.Meat_Shop_Clearance_No
-            payment_details = t_payment_details.objects.filter(Permit_No=app_no)
-        return render(request, 'livestock_certificates/meat_shop_clearance/clearance_list.html',
-                      {'application_details': application_details, 'payment_details': payment_details})
-    elif service_code == 'LMP':
-        application_details = t_livestock_movement_permit_t1.objects.filter(Applicant_Id=login_id,
+    login_type = request.session['Login_Type']
+
+    if login_type == 'I':
+        if service_code == 'MPP':
+            application_details = t_plant_movement_permit_t1.objects.filter(Movement_Permit_No__isnull=False)
+            payment_details = t_payment_details.objects.all()
+            return render(request, 'certificates/movement_certificate_printing_details.html',
+                          {'application_details': application_details, 'payment_details': payment_details})
+        elif service_code == 'IPP':
+            application_details = t_plant_import_permit_t1.objects.filter(Import_Permit_No__isnull=False)
+            return render(request, 'certificates/import_certificate_printing_details.html',
+                          {'application_details': application_details})
+        elif service_code == 'EPP':
+            application_details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(
+                Export_Permit__isnull=False)
+            return render(request, 'certificates/export_certificate_printing_details.html',
+                          {'application_details': application_details})
+        elif service_code == 'RNS':
+            application_details = t_plant_clearence_nursery_seed_grower_t1.objects.filter(
+                Clearance_Number__isnull=False)
+            return render(request, 'certificates/nursery_certificate_printing_details.html',
+                          {'application_details': application_details})
+        elif service_code == 'RSC':
+            application_details = t_plant_seed_certification_t1.objects.filter(Seed_Certificate__isnull=False)
+            return render(request, 'certificates/seed_certificate_printing_details.html',
+                          {'application_details': application_details})
+        elif service_code == 'FFC':
+            application_details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(
+                Export_Permit__isnull=False)
+            return render(request, 'certificates/fit_for_consumption_details.html',
+                          {'application_details': application_details})
+        elif service_code == 'NC':
+            application_details = t_plant_clearence_nursery_seed_grower_t1.objects.filter(
+                Clearance_Number__isnull=False)
+            return render(request, 'certificates/nursery_clearance_details.html',
+                          {'application_details': application_details})
+        elif service_code == 'RF':
+            application_details = t_plant_import_permit_t1.objects.filter(Clearance_Ref_No__isnull=False)
+            return render(request, 'certificates/release_form_details.html',
+                          {'application_details': application_details})
+        # LIVESTOCK_CERTIFICATE_DETAILS
+        elif service_code == 'APM':
+            application_details = t_livestock_ante_post_mortem_t1.objects.filter(Clearance_No__isnull=False)
+            for application in application_details:
+                app_no = application.Clearance_No
+                payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+            return render(request, 'livestock_certificates/ante_post_mortem/certificate_list.html',
+                          {'application_details': application_details, 'payment_details': payment_details})
+        elif service_code == 'CMS':
+            application_details = t_livestock_clearance_meat_shop_t1.objects.filter(
+                Meat_Shop_Clearance_No__isnull=False)
+            for application in application_details:
+                app_no = application.Meat_Shop_Clearance_No
+                payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+            return render(request, 'livestock_certificates/meat_shop_clearance/clearance_list.html',
+                          {'application_details': application_details, 'payment_details': payment_details})
+        elif service_code == 'LMP':
+            application_details = t_livestock_movement_permit_t1.objects.filter(Movement_Permit_No__isnull=False)
+            for application in application_details:
+                app_no = application.Movement_Permit_No
+                payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+            return render(request, 'livestock_certificates/movement_permit/movement_permit_list.html',
+                          {'application_details': application_details, 'payment_details': payment_details})
+        elif service_code == 'RFAF':
+            application_details = t_livestock_import_permit_animal_t1.objects.filter(Import_Permit_No__isnull=False)
+            for application in application_details:
+                app_no = application.Import_Permit_No
+                payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+            return render(request, 'livestock_certificates/import/release_form_list_animal.html',
+                          {'application_details': application_details, 'payment_details': payment_details})
+        elif service_code == 'RFLP':
+            application_details = t_livestock_import_permit_product_inspection_t1.objects.filter(
+                Import_Permit_No__isnull=False)
+            for application in application_details:
+                app_no = application.Import_Permit_No
+                payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+            return render(request, 'livestock_certificates/import/release_form_list.html',
+                          {'application_details': application_details, 'payment_details': payment_details})
+        elif service_code == 'IAF':
+            application_details = t_livestock_import_permit_animal_t1.objects.filter(Clearance_Ref_No__isnull=False)
+            for application in application_details:
+                app_no = application.Clearance_Ref_No
+                payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+            return render(request, 'livestock_certificates/import/import_cert_list.html',
+                          {'application_details': application_details, 'payment_details': payment_details})
+
+        elif service_code == 'ILP':
+            application_details = t_livestock_import_permit_product_t1.objects.filter(Import_Permit_No__isnull=False)
+            for application in application_details:
+                app_no = application.Import_Permit_No
+                payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+            return render(request, 'livestock_certificates/import/import_cert_list.html',
+                          {'application_details': application_details, 'payment_details': payment_details})
+
+        elif service_code == 'LEC':
+            application_details = t_livestock_export_certificate_t1.objects.filter(Export_Permit_No__isnull=False)
+            for application in application_details:
+                app_no = application.Export_Permit_No
+                payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+            return render(request, 'livestock_certificates/export_certificate/export_cert_list.html',
+                          {'application_details': application_details, 'payment_details': payment_details})
+
+        # FOOD SECTION
+        elif service_code == 'FIP':  # Import Permit Food
+            import_permit_details = t_food_import_permit_t1.objects.filter(Import_Permit_No__isnull=False)
+
+            return render(request, 'food_certificates/import_permit_food_list.html',
+                          {'import_permit_details': import_permit_details})
+
+        elif service_code == 'RFF':  # Release Form Food
+            application_details = t_food_import_permit_inspection_t1.objects.filter(Clearance_Ref_No__isnull=False)
+            return render(request, 'food_certificates/release_form_food_list.html',
+                          {'application_details': application_details})
+
+        elif service_code == 'ECF':  # Export Certificate Food
+            application_details = t_food_export_certificate_t1.objects.filter(Export_Permit_No__isnull=False)
+            return render(request, 'food_certificates/export_certificate_food_list.html',
+                          {'application_details': application_details})
+
+        elif service_code == 'CFC':  # Conditional Food Safety Clearance
+            application_details = t_food_business_registration_licensing_t1.objects.filter(
+                Conditional_Clearance_No__isnull=False)
+            return render(request, 'food_certificates/safety_clearance_food_list.html',
+                          {'application_details': application_details})
+
+        elif service_code == 'FSL':  # Food Safety License
+            application_details = t_food_business_registration_licensing_t1.objects.filter(FB_License_No__isnull=False)
+            return render(request, 'food_certificates/safety_license_food_list.html',
+                          {'application_details': application_details})
+
+        elif service_code == 'FHL':  # Food Handler License
+            application_details = t_food_licensing_food_handler_t1.objects.filter(FH_License_No__isnull=False)
+            return render(request, 'food_certificates/handler_license_food_list.html',
+                          {'application_details': application_details})
+
+        # CERTIFICATION SECTION
+        elif service_code == 'GAP':  # GAP Certificate
+            application_details = t_certification_gap_t1.objects.filter(Certificate_No__isnull=False)
+            return render(request, 'certification_certificates/gap_certificate_list.html',
+                          {'application_details': application_details})
+
+        elif service_code == 'ORC':  # Organic Certificate
+            application_details = t_certification_organic_t1.objects.filter(Certificate_No__isnull=False)
+            return render(request, 'certification_certificates/organic_certificate_list.html',
+                          {'application_details': application_details})
+
+        elif service_code == 'FPC':  # Food Product Certificate
+            application_details = t_certification_food_t1.objects.filter(Certificate_No__isnull=False)
+            return render(request, 'certification_certificates/food_certificate_list.html',
+                          {'application_details': application_details})
+    else:
+        if service_code == 'MPP':
+            application_details = t_plant_movement_permit_t1.objects.filter(Applicant_Id=login_id,
                                                                             Movement_Permit_No__isnull=False)
-        for application in application_details:
-            app_no = application.Movement_Permit_No
-            payment_details = t_payment_details.objects.filter(Permit_No=app_no)
-        return render(request, 'livestock_certificates/movement_permit/movement_permit_list.html',
-                      {'application_details': application_details, 'payment_details': payment_details})
-    elif service_code == 'RFAF':
-        application_details = t_livestock_import_permit_animal_t1.objects.filter(Applicant_Id=login_id,
-                                                                                 Import_Permit_No__isnull=False)
-        for application in application_details:
-            app_no = application.Import_Permit_No
-            payment_details = t_payment_details.objects.filter(Permit_No=app_no)
-        return render(request, 'livestock_certificates/import/release_form_list_animal.html',
-                      {'application_details': application_details, 'payment_details': payment_details})
-    elif service_code == 'RFLP':
-        application_details = t_livestock_import_permit_product_inspection_t1.objects.filter(
-            Import_Permit_No__isnull=False)
-        for application in application_details:
-            app_no = application.Import_Permit_No
-            payment_details = t_payment_details.objects.filter(Permit_No=app_no)
-        return render(request, 'livestock_certificates/import/release_form_list.html',
-                      {'application_details': application_details, 'payment_details': payment_details})
-    elif service_code == 'IAF':
-        application_details = t_livestock_import_permit_animal_t1.objects.filter(Applicant_Id=login_id,
-                                                                                 Clearance_Ref_No__isnull=False)
-        for application in application_details:
-            app_no = application.Clearance_Ref_No
-            payment_details = t_payment_details.objects.filter(Permit_No=app_no)
-        return render(request, 'livestock_certificates/import/import_cert_list.html',
-                      {'application_details': application_details, 'payment_details': payment_details})
+            payment_details = t_payment_details.objects.all()
+            return render(request, 'certificates/movement_certificate_printing_details.html',
+                          {'application_details': application_details, 'payment_details': payment_details})
+        elif service_code == 'IPP':
+            application_details = t_plant_import_permit_t1.objects.filter(Applicant_Id=login_id,
+                                                                          Import_Permit_No__isnull=False)
+            return render(request, 'certificates/import_certificate_printing_details.html',
+                          {'application_details': application_details})
+        elif service_code == 'EPP':
+            application_details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(
+                Applicant_Id=login_id,
+                Export_Permit__isnull=False)
+            return render(request, 'certificates/export_certificate_printing_details.html',
+                          {'application_details': application_details})
+        elif service_code == 'RNS':
+            application_details = t_plant_clearence_nursery_seed_grower_t1.objects.filter(Applicant_Id=login_id,
+                                                                                          Clearance_Number__isnull=False)
+            return render(request, 'certificates/nursery_certificate_printing_details.html',
+                          {'application_details': application_details})
+        elif service_code == 'RSC':
+            application_details = t_plant_seed_certification_t1.objects.filter(Applicant_Id=login_id,
+                                                                               Seed_Certificate__isnull=False)
+            return render(request, 'certificates/seed_certificate_printing_details.html',
+                          {'application_details': application_details})
+        elif service_code == 'FFC':
+            application_details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(
+                Applicant_Id=login_id,
+                Export_Permit__isnull=False)
+            return render(request, 'certificates/fit_for_consumption_details.html',
+                          {'application_details': application_details})
+        elif service_code == 'NC':
+            application_details = t_plant_clearence_nursery_seed_grower_t1.objects.filter(Applicant_Id=login_id,
+                                                                                          Clearance_Number__isnull=False)
+            return render(request, 'certificates/nursery_clearance_details.html',
+                          {'application_details': application_details})
+        elif service_code == 'RF':
+            application_details = t_plant_import_permit_t1.objects.filter(Applicant_Id=login_id,
+                                                                          Clearance_Ref_No__isnull=False)
+            return render(request, 'certificates/release_form_details.html',
+                          {'application_details': application_details})
+        # LIVESTOCK_CERTIFICATE_DETAILS
+        elif service_code == 'APM':
+            application_details = t_livestock_ante_post_mortem_t1.objects.filter(Applicant_Id=login_id,
+                                                                                 Clearance_No__isnull=False)
+            for application in application_details:
+                app_no = application.Clearance_No
+                payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+            return render(request, 'livestock_certificates/ante_post_mortem/certificate_list.html',
+                          {'application_details': application_details, 'payment_details': payment_details})
+        elif service_code == 'CMS':
+            application_details = t_livestock_clearance_meat_shop_t1.objects.filter(Applicant_Id=login_id,
+                                                                                    Meat_Shop_Clearance_No__isnull=False)
+            for application in application_details:
+                app_no = application.Meat_Shop_Clearance_No
+                payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+            return render(request, 'livestock_certificates/meat_shop_clearance/clearance_list.html',
+                          {'application_details': application_details, 'payment_details': payment_details})
+        elif service_code == 'LMP':
+            application_details = t_livestock_movement_permit_t1.objects.filter(Applicant_Id=login_id,
+                                                                                Movement_Permit_No__isnull=False)
+            for application in application_details:
+                app_no = application.Movement_Permit_No
+                payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+            return render(request, 'livestock_certificates/movement_permit/movement_permit_list.html',
+                          {'application_details': application_details, 'payment_details': payment_details})
+        elif service_code == 'RFAF':
+            application_details = t_livestock_import_permit_animal_t1.objects.filter(Applicant_Id=login_id,
+                                                                                     Import_Permit_No__isnull=False)
+            for application in application_details:
+                app_no = application.Import_Permit_No
+                payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+            return render(request, 'livestock_certificates/import/release_form_list_animal.html',
+                          {'application_details': application_details, 'payment_details': payment_details})
+        elif service_code == 'RFLP':
+            application_details = t_livestock_import_permit_product_inspection_t1.objects.filter(
+                Applicant_Id=login_id, Import_Permit_No__isnull=False)
+            for application in application_details:
+                app_no = application.Import_Permit_No
+                payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+            return render(request, 'livestock_certificates/import/release_form_list.html',
+                          {'application_details': application_details, 'payment_details': payment_details})
+        elif service_code == 'IAF':
+            application_details = t_livestock_import_permit_animal_t1.objects.filter(Applicant_Id=login_id,
+                                                                                     Clearance_Ref_No__isnull=False)
+            for application in application_details:
+                app_no = application.Clearance_Ref_No
+                payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+            return render(request, 'livestock_certificates/import/import_cert_list.html',
+                          {'application_details': application_details, 'payment_details': payment_details})
 
-    elif service_code == 'ILP':
-        application_details = t_livestock_import_permit_product_t1.objects.filter(Import_Permit_No__isnull=False)
-        for application in application_details:
-            app_no = application.Import_Permit_No
-            payment_details = t_payment_details.objects.filter(Permit_No=app_no)
-        return render(request, 'livestock_certificates/import/import_cert_list.html',
-                      {'application_details': application_details, 'payment_details': payment_details})
+        elif service_code == 'ILP':
+            application_details = t_livestock_import_permit_product_t1.objects.filter(Applicant_Id=login_id,
+                                                                                      Import_Permit_No__isnull=False)
+            for application in application_details:
+                app_no = application.Import_Permit_No
+                payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+            return render(request, 'livestock_certificates/import/import_cert_list.html',
+                          {'application_details': application_details, 'payment_details': payment_details})
 
-    elif service_code == 'LEC':
-        application_details = t_livestock_export_certificate_t1.objects.filter(Export_Permit_No__isnull=False)
-        for application in application_details:
-            app_no = application.Export_Permit_No
-            payment_details = t_payment_details.objects.filter(Permit_No=app_no)
-        return render(request, 'livestock_certificates/export_certificate/export_cert_list.html',
-                      {'application_details': application_details, 'payment_details': payment_details})
+        elif service_code == 'LEC':
+            application_details = t_livestock_export_certificate_t1.objects.filter(Applicant_Id=login_id,
+                                                                                   Export_Permit_No__isnull=False)
+            for application in application_details:
+                app_no = application.Export_Permit_No
+                payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+            return render(request, 'livestock_certificates/export_certificate/export_cert_list.html',
+                          {'application_details': application_details, 'payment_details': payment_details})
 
-    # FOOD SECTION
-    elif service_code == 'FIP':  # Import Permit Food
-        import_permit_details = t_food_import_permit_t1.objects.filter(Applicant_Id=login_id,
-                                                                       Import_Permit_No__isnull=False)
+        # FOOD SECTION
+        elif service_code == 'FIP':  # Import Permit Food
+            import_permit_details = t_food_import_permit_t1.objects.filter(Applicant_Id=login_id,
+                                                                           Import_Permit_No__isnull=False)
 
-        return render(request, 'food_certificates/import_permit_food_list.html',
-                      {'import_permit_details': import_permit_details})
+            return render(request, 'food_certificates/import_permit_food_list.html',
+                          {'import_permit_details': import_permit_details})
 
-    elif service_code == 'RFF':  # Release Form Food
-        application_details = t_food_import_permit_inspection_t1.objects.filter(Applicant_Id=login_id,
-                                                                                Clearance_Ref_No__isnull=False)
-        return render(request, 'food_certificates/release_form_food_list.html',
-                      {'application_details': application_details})
+        elif service_code == 'RFF':  # Release Form Food
+            application_details = t_food_import_permit_inspection_t1.objects.filter(Applicant_Id=login_id,
+                                                                                    Clearance_Ref_No__isnull=False)
+            return render(request, 'food_certificates/release_form_food_list.html',
+                          {'application_details': application_details})
 
-    elif service_code == 'ECF':  # Export Certificate Food
-        application_details = t_food_export_certificate_t1.objects.filter(Applicant_Id=login_id,
-                                                                          Export_Permit_No__isnull=False)
-        return render(request, 'food_certificates/export_certificate_food_list.html',
-                      {'application_details': application_details})
+        elif service_code == 'ECF':  # Export Certificate Food
+            application_details = t_food_export_certificate_t1.objects.filter(Applicant_Id=login_id,
+                                                                              Export_Permit_No__isnull=False)
+            return render(request, 'food_certificates/export_certificate_food_list.html',
+                          {'application_details': application_details})
 
-    elif service_code == 'CFC':  # Conditional Food Safety Clearance
-        application_details = t_food_business_registration_licensing_t1.objects.filter(Applicant_Id=login_id,
-                                                                                       Conditional_Clearance_No__isnull=False)
-        return render(request, 'food_certificates/safety_clearance_food_list.html',
-                      {'application_details': application_details})
+        elif service_code == 'CFC':  # Conditional Food Safety Clearance
+            application_details = t_food_business_registration_licensing_t1.objects.filter(Applicant_Id=login_id,
+                                                                        Conditional_Clearance_No__isnull=False)
+            return render(request, 'food_certificates/safety_clearance_food_list.html',
+                          {'application_details': application_details})
 
-    elif service_code == 'FSL':  # Food Safety License
-        application_details = t_food_business_registration_licensing_t1.objects.filter(Applicant_Id=login_id,
-                                                                                       FB_License_No__isnull=False)
-        return render(request, 'food_certificates/safety_license_food_list.html',
-                      {'application_details': application_details})
+        elif service_code == 'FSL':  # Food Safety License
+            application_details = t_food_business_registration_licensing_t1.objects.filter(Applicant_Id=login_id,
+                                                                                           FB_License_No__isnull=False)
+            return render(request, 'food_certificates/safety_license_food_list.html',
+                          {'application_details': application_details})
 
-    elif service_code == 'FHL':  # Food Handler License
-        application_details = t_food_licensing_food_handler_t1.objects.filter(Applicant_Id=login_id,
-                                                                              FH_License_No__isnull=False)
-        return render(request, 'food_certificates/handler_license_food_list.html',
-                      {'application_details': application_details})
+        elif service_code == 'FHL':  # Food Handler License
+            application_details = t_food_licensing_food_handler_t1.objects.filter(Applicant_Id=login_id,
+                                                                                  FH_License_No__isnull=False)
+            return render(request, 'food_certificates/handler_license_food_list.html',
+                          {'application_details': application_details})
 
-    # CERTIFICATION SECTION
-    elif service_code == 'GAP':  # GAP Certificate
-        application_details = t_certification_gap_t1.objects.filter(Applicant_Id=login_id,
-                                                                    Certificate_No__isnull=False)
-        return render(request, 'certification_certificates/gap_certificate_list.html',
-                      {'application_details': application_details})
-
-    elif service_code == 'ORC':  # Organic Certificate
-        application_details = t_certification_organic_t1.objects.filter(Applicant_Id=login_id,
+        # CERTIFICATION SECTION
+        elif service_code == 'GAP':  # GAP Certificate
+            application_details = t_certification_gap_t1.objects.filter(Applicant_Id=login_id,
                                                                         Certificate_No__isnull=False)
-        return render(request, 'certification_certificates/organic_certificate_list.html',
-                      {'application_details': application_details})
+            return render(request, 'certification_certificates/gap_certificate_list.html',
+                          {'application_details': application_details})
 
-    elif service_code == 'FPC':  # Food Product Certificate
-        application_details = t_certification_food_t1.objects.filter(Applicant_Id=login_id,
-                                                                     Certificate_No__isnull=False)
-        return render(request, 'certification_certificates/food_certificate_list.html',
-                      {'application_details': application_details})
+        elif service_code == 'ORC':  # Organic Certificate
+            application_details = t_certification_organic_t1.objects.filter(Applicant_Id=login_id,
+                                                                            Certificate_No__isnull=False)
+            return render(request, 'certification_certificates/organic_certificate_list.html',
+                          {'application_details': application_details})
+
+        elif service_code == 'FPC':  # Food Product Certificate
+            application_details = t_certification_food_t1.objects.filter(Applicant_Id=login_id,
+                                                                         Certificate_No__isnull=False)
+            return render(request, 'certification_certificates/food_certificate_list.html',
+                          {'application_details': application_details})
 
 
 def oic_inspector_certificate_details(request):
@@ -4738,7 +4896,7 @@ def get_certificate_details(request, t_livestock_import_permit_product_inspectio
             pesticide = t_plant_pesticide_master.objects.all()
             return render(request, 'certificates/agro_import_permit.html',
                           {'certificate_details': details, 'import': details_permit,
-                           'approved_date': approved_date,'location': location_mapping, 'country': country,
+                           'approved_date': approved_date, 'location': location_mapping, 'country': country,
                            'pesticide': pesticide})
     elif service_code == 'RNS':
         details = t_plant_clearence_nursery_seed_grower_t1.objects.filter(Application_No=application_No)
