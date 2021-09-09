@@ -107,7 +107,13 @@
                     <li class="@@datatableactive"><a href="{% url 'view_commodity_inspection_list' %}">View Reports</a></li>
                 </ul>
             </li>
-
+            <li class="navigation__sub @@formactive">
+                <a href="#"><font color="white"><i class="zmdi zmdi-collection-text" ></i>&nbsp; &nbsp;Reports</font></a>
+                <ul>
+                    <li class="@@datatableactive"><a href="{% url 'certificate_report_form' %}">1) List of Certificates Issued</a></li>
+                    <li class="@@datatableactive"><a href="{% url 'permit_report_form' %}">2) List of Permits Issued</a></li>
+                </ul>
+            </li>
         </ul>
     {% elif request.session.role == 'Complaint Officer' %}
         <ul class="navigation">
@@ -125,7 +131,7 @@
 
             <li class="@@datatableactive">
                 <a href="{% url 'oic_application' %}"><i class="zmdi zmdi-collection-text" ></i> Pending Applications
-                <span class="badge badge-danger">{{ message_count }}</span></a>
+                <span class="badge badge-danger">{{ count }}</span></a>
             </li>
             <li class="@@datatableactive"><a href="{% url 'payment_details' %}"><i class="zmdi zmdi-collection-text"></i>Payment Details</a></li>
             <li class="@@datatableactive"><a href="{% url 'investigation_complaint_list' %}"><i class="zmdi zmdi-collection-text"></i>Complaint List</a></li>
@@ -148,6 +154,13 @@
                 </ul>
             </li>
             <li class="@@datatableactive"><a href="{% url 'assign_revoke_officiating' %}"><i class="zmdi zmdi-collection-text"></i>Assign/Revoke Officiating</a></li>
+            <li class="navigation__sub @@formactive">
+                <a href="#"><font color="white"><i class="zmdi zmdi-collection-text" ></i>&nbsp; &nbsp;Reports</font></a>
+                <ul>
+                    <li class="@@datatableactive"><a href="{% url 'certificate_report_form' %}">1) List of Certificates Issued</a></li>
+                    <li class="@@datatableactive"><a href="{% url 'permit_report_form' %}">2) List of Permits Issued</a></li>
+                </ul>
+            </li>
         </ul>
     {% elif request.session.role == 'Inspector' %}
         <ul class="navigation">
@@ -195,10 +208,45 @@
                     <li class="@@datatableactive"><a href="{% url 'view_commodity_inspection_list' %}">View Reports</a></li>
                 </ul>
             </li>
-
+            <li class="navigation__sub @@formactive">
+                <a href="#"><font color="white"><i class="zmdi zmdi-collection-text" ></i>&nbsp; &nbsp;Reports</font></a>
+                <ul>
+                    <li class="@@datatableactive"><a href="{% url 'certificate_report_form' %}">1) List of Certificates Issued</a></li>
+                    <li class="@@datatableactive"><a href="{% url 'permit_report_form' %}">2) List of Permits Issued</a></li>
+                </ul>
+            </li>
         </ul>
     {% elif request.session.role == 'Chief' %}
+        <ul class="navigation">
+             <li class="navigation__active"><a href="{% url 'dashboard' %}"><i class="zmdi zmdi-home"></i> Home</a></li>
+             <li class="navigation__sub @@formactive">
+                <a href="#"><font color="white"><i class="zmdi zmdi-collection-text" ></i>&nbsp; &nbsp;Reports</font></a>
+                <ul>
+                    <li class="@@datatableactive"><a href="{% url 'certificate_report_form' %}">1) List of Certificates Issued</a></li>
+                    <li class="@@datatableactive"><a href="{% url 'permit_report_form' %}">2) List of Permits Issued</a></li>
+                    <li class="@@datatableactive"><a href="{% url 'complaint_closed_list' %}">3) List - Closed Complaint</a></li>
+                </ul>
+            </li>
+            <li class="@@datatableactive">
+                <a href="{% url 'feedback_list' %}"><i class="zmdi zmdi-collection-text"></i>Feedback</a>
+            </li>
+        </ul>
     {% elif request.session.role == 'DG' %}
+        <ul class="navigation">
+             <li class="navigation__active"><a href="{% url 'dashboard' %}"><i class="zmdi zmdi-home"></i> Home</a></li>
+             <li class="navigation__sub @@formactive">
+                <a href="#"><font color="white"><i class="zmdi zmdi-collection-text" ></i>&nbsp; &nbsp;Reports</font></a>
+                <ul>
+                    <li class="@@datatableactive"><a href="{% url 'certificate_report_form' %}">1) List of Certificates Issued</a></li>
+                    <li class="@@datatableactive"><a href="{% url 'permit_report_form' %}">2) List of Permits Issued</a></li>
+                    <li class="@@datatableactive"><a href="{% url 'complaint_closed_list' %}">3) List - Closed Complaint</a></li>
+                </ul>
+            </li>
+            <li class="@@datatableactive">
+                <a href="{% url 'feedback_list' %}"><i class="zmdi zmdi-collection-text"></i>Feedback</a>
+            </li>
+
+        </ul>
     {% elif request.session.role == 'client' %}
         <ul class="navigation">
             <li class="navigation__active"><a href="{% url 'dashboard' %}"><i class="zmdi zmdi-home"></i> Home</a></li>

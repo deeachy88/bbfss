@@ -1111,11 +1111,11 @@ def save_import_permit(request):
             Validity=None,
             Application_Type=Applicant_Type,
             Nationality=None,
-            dzongkhag=None,
-            gewog=None,
+            Dzongkhag=None,
+            Gewog=None,
             Nationality_Type=None,
-            village=None,
-            passport_number=None
+            Village=None,
+            Passport_Number=None
         )
     else:
         if Nationality == "Bhutanese":
@@ -1172,11 +1172,11 @@ def save_import_permit(request):
                 Validity=None,
                 Application_Type=Applicant_Type,
                 Nationality=None,
-                dzongkhag=dzongkhag,
-                gewog=gewog,
+                Dzongkhag=dzongkhag,
+                Gewog=gewog,
                 Nationality_Type=Nationality,
-                village=village,
-                passport_number=None
+                Village=village,
+                Passport_Number=None
             )
         else:
             passport_name = request.POST.get('passport_name')
@@ -1230,11 +1230,11 @@ def save_import_permit(request):
                 Validity=None,
                 Application_Type=Applicant_Type,
                 Nationality=nationality,
-                dzongkhag=None,
-                gewog=None,
+                Dzongkhag=None,
+                Gewog=None,
                 Nationality_Type=Nationality,
-                village=None,
-                passport_number=passport
+                Village=None,
+                Passport_Number=passport
             )
     t_workflow_details.objects.create(Application_No=last_application_no, Applicant_Id=request.session['email'],
                                       Assigned_To=None, Field_Office_Id=None, Section='Plant',
@@ -2080,11 +2080,11 @@ def update_inspection_call_details(request):
                 Validity=details.Validity,
                 Application_Type=details.Application_Type,
                 Nationality=details.Nationality,
-                dzongkhag=details.dzongkhag,
-                gewog=details.gewog,
+                Dzongkhag=details.dzongkhag,
+                Gewog=details.gewog,
                 Nationality_Type=details.Nationality_Type,
-                village=details.village,
-                passport_number=details.passport_number
+                Village=details.village,
+                Passport_Number=details.passport_number
             )
             for import_details in import_app:
                 t_plant_import_permit_inspection_t2.objects.create(
