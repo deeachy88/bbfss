@@ -562,9 +562,6 @@ def view_application_details(request):
         application_details = t_livestock_import_permit_animal_inspection_t1.objects.filter(
             Application_No=application_id)
         details = t_livestock_import_permit_animal_inspection_t2.objects.filter(Application_No=application_id)
-        for import_LP in details:
-            Product_Record_Id = import_LP.Product_Record_Id
-            balance = int(import_LP.Quantity_Balance) - int(import_LP.Quantity_Released)
         file = t_file_attachment.objects.filter(Application_No=application_id)
         workflow_details = t_workflow_details.objects.filter(Application_No=application_id)
         for application in workflow_details:
@@ -1753,9 +1750,12 @@ def view_oic_details(request):
     elif service_code == 'CMS':
         application_details = t_livestock_clearance_meat_shop_t1.objects.filter(Application_No=application_id)
         details = t_livestock_clearance_meat_shop_t2.objects.filter(Application_No=application_id)
+        workflow_details = t_workflow_details.objects.filter(Application_No=application_id)
         file = t_file_attachment.objects.filter(Application_No=application_id)
         unit = t_unit_master.objects.all()
-        inspector_list = t_user_master.objects.filter(Role_Id='5')
+        for application in workflow_details:
+            Field_Office = application.Field_Office_Id
+        inspector_list = t_user_master.objects.filter(Role_Id='5', Field_Office_Id_id=Field_Office)
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
@@ -1812,8 +1812,8 @@ def view_oic_details(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         village = t_village_master.objects.all()
         location = t_location_field_office_mapping.objects.all()
-        application_details = t_livestock_import_permit_animal_t1.objects.filter(Application_No=application_id)
-        details = t_livestock_import_permit_animal_t2.objects.filter(Application_No=application_id)
+        application_details = t_livestock_import_permit_animal_inspection_t1.objects.filter(Application_No=application_id)
+        details = t_livestock_import_permit_animal_inspection_t2.objects.filter(Application_No=application_id)
         file = t_file_attachment.objects.filter(Application_No=application_id)
         workflow_details = t_workflow_details.objects.filter(Application_No=application_id)
         for application in workflow_details:
@@ -2160,7 +2160,8 @@ def update_inspection_call_details(request):
                 Clearance_Ref_No=None,
                 FO_Remarks=details.FO_Remarks,
                 Inspection_Remarks=None,
-                Quarantine_Facilities=details.Quarantine_Facilities
+                Quarantine_Facilities=details.Quarantine_Facilities,
+                Applicant_Id=details.Applicant_Id
             )
         for import_details in import_app:
             t_livestock_import_permit_animal_inspection_t2.objects.create(
@@ -2230,7 +2231,8 @@ def update_inspection_call_details(request):
                 Clearance_Ref_No=None,
                 FO_Remarks=details.FO_Remarks,
                 Inspection_Remarks=None,
-                Import_Permit_No=details.Import_Permit_No
+                Import_Permit_No=details.Import_Permit_No,
+                Applicant_Id=details.Applicant_Id
             )
         for import_details_ILP in import_details:
             t_livestock_import_permit_product_inspection_t2.objects.create(
@@ -4514,10 +4516,14 @@ def view_certificate_details(request):
         elif service_code == 'CMS':
             application_details = t_livestock_clearance_meat_shop_t1.objects.filter(
                 Meat_Shop_Clearance_No__isnull=False)
-            for application in application_details:
-                app_no = application.Meat_Shop_Clearance_No
-                payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+            payment_details = t_payment_details.objects.all()
             return render(request, 'livestock_certificates/meat_shop_clearance/clearance_list.html',
+                          {'application_details': application_details, 'payment_details': payment_details})
+        elif service_code == 'CCMS':
+            application_details = t_livestock_clearance_meat_shop_t1.objects.filter(
+                Conditional_Clearance_No__isnull=False)
+            payment_details = t_payment_details.objects.all()
+            return render(request, 'livestock_certificates/meat_shop_clearance/conditional_clearance_list.html',
                           {'application_details': application_details, 'payment_details': payment_details})
         elif service_code == 'LMP':
             application_details = t_livestock_movement_permit_t1.objects.filter(Movement_Permit_No__isnull=False)
@@ -4528,32 +4534,26 @@ def view_certificate_details(request):
                           {'application_details': application_details, 'payment_details': payment_details})
         elif service_code == 'RFAF':
             application_details = t_livestock_import_permit_animal_t1.objects.filter(Import_Permit_No__isnull=False)
-            for application in application_details:
-                app_no = application.Import_Permit_No
-                payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+            
+            payment_details = t_payment_details.objects.all()
             return render(request, 'livestock_certificates/import/release_form_list_animal.html',
                           {'application_details': application_details, 'payment_details': payment_details})
         elif service_code == 'RFLP':
             application_details = t_livestock_import_permit_product_inspection_t1.objects.filter(
-                Import_Permit_No__isnull=False)
-            for application in application_details:
-                app_no = application.Import_Permit_No
-                payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+                Clearance_Ref_No__isnull=False)
+            payment_details = t_payment_details.objects.all()
             return render(request, 'livestock_certificates/import/release_form_list.html',
                           {'application_details': application_details, 'payment_details': payment_details})
         elif service_code == 'IAF':
-            application_details = t_livestock_import_permit_animal_t1.objects.filter(Clearance_Ref_No__isnull=False)
-            for application in application_details:
-                app_no = application.Clearance_Ref_No
-                payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+            application_details = t_livestock_import_permit_animal_t1.objects.filter(Import_Permit_No__isnull=False)
+
+            payment_details = t_payment_details.objects.all()
             return render(request, 'livestock_certificates/import/import_cert_list.html',
                           {'application_details': application_details, 'payment_details': payment_details})
-
         elif service_code == 'ILP':
             application_details = t_livestock_import_permit_product_t1.objects.filter(Import_Permit_No__isnull=False)
-            for application in application_details:
-                app_no = application.Import_Permit_No
-                payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+
+            payment_details = t_payment_details.objects.all()
             return render(request, 'livestock_certificates/import/import_cert_list.html',
                           {'application_details': application_details, 'payment_details': payment_details})
 
@@ -4661,67 +4661,55 @@ def view_certificate_details(request):
         elif service_code == 'APM':
             application_details = t_livestock_ante_post_mortem_t1.objects.filter(Applicant_Id=login_id,
                                                                                  Clearance_No__isnull=False)
-            for application in application_details:
-                app_no = application.Clearance_No
-                payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+            payment_details = t_payment_details.objects.all()
             return render(request, 'livestock_certificates/ante_post_mortem/certificate_list.html',
                           {'application_details': application_details, 'payment_details': payment_details})
         elif service_code == 'CMS':
             application_details = t_livestock_clearance_meat_shop_t1.objects.filter(Applicant_Id=login_id,
                                                                                     Meat_Shop_Clearance_No__isnull=False)
-            for application in application_details:
-                app_no = application.Meat_Shop_Clearance_No
-                payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+            payment_details = t_payment_details.objects.all()
             return render(request, 'livestock_certificates/meat_shop_clearance/clearance_list.html',
+                          {'application_details': application_details, 'payment_details': payment_details})
+        elif service_code == 'CCMS':
+            application_details = t_livestock_clearance_meat_shop_t1.objects.filter(
+                Conditional_Clearance_No__isnull=False)
+            payment_details = t_payment_details.objects.all()
+            return render(request, 'livestock_certificates/meat_shop_clearance/conditional_clearance_list.html',
                           {'application_details': application_details, 'payment_details': payment_details})
         elif service_code == 'LMP':
             application_details = t_livestock_movement_permit_t1.objects.filter(Applicant_Id=login_id,
                                                                                 Movement_Permit_No__isnull=False)
-            for application in application_details:
-                app_no = application.Movement_Permit_No
-                payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+            payment_details = t_payment_details.objects.all()
             return render(request, 'livestock_certificates/movement_permit/movement_permit_list.html',
                           {'application_details': application_details, 'payment_details': payment_details})
         elif service_code == 'RFAF':
-            application_details = t_livestock_import_permit_animal_t1.objects.filter(Applicant_Id=login_id,
-                                                                                     Import_Permit_No__isnull=False)
-            for application in application_details:
-                app_no = application.Import_Permit_No
-                payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+            application_details = t_livestock_import_permit_animal_inspection_t1.objects.filter(Applicant_Id=login_id,
+                                                                                                Clearance_Ref_No__isnull=False)
             return render(request, 'livestock_certificates/import/release_form_list_animal.html',
-                          {'application_details': application_details, 'payment_details': payment_details})
+                          {'application_details': application_details})
         elif service_code == 'RFLP':
             application_details = t_livestock_import_permit_product_inspection_t1.objects.filter(
-                Applicant_Id=login_id, Import_Permit_No__isnull=False)
-            for application in application_details:
-                app_no = application.Import_Permit_No
-                payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+                Applicant_Id=login_id, Clearance_Ref_No__isnull=False)
             return render(request, 'livestock_certificates/import/release_form_list.html',
-                          {'application_details': application_details, 'payment_details': payment_details})
+                          {'application_details': application_details})
         elif service_code == 'IAF':
             application_details = t_livestock_import_permit_animal_t1.objects.filter(Applicant_Id=login_id,
-                                                                                     Clearance_Ref_No__isnull=False)
-            for application in application_details:
-                app_no = application.Clearance_Ref_No
-                payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+                                                                                     Import_Permit_No__isnull=False)
+            payment_details = t_payment_details.objects.all()
             return render(request, 'livestock_certificates/import/import_cert_list.html',
                           {'application_details': application_details, 'payment_details': payment_details})
 
         elif service_code == 'ILP':
             application_details = t_livestock_import_permit_product_t1.objects.filter(Applicant_Id=login_id,
                                                                                       Import_Permit_No__isnull=False)
-            for application in application_details:
-                app_no = application.Import_Permit_No
-                payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+            payment_details = t_payment_details.objects.all()
             return render(request, 'livestock_certificates/import/import_cert_list.html',
                           {'application_details': application_details, 'payment_details': payment_details})
 
         elif service_code == 'LEC':
             application_details = t_livestock_export_certificate_t1.objects.filter(Applicant_Id=login_id,
                                                                                    Export_Permit_No__isnull=False)
-            for application in application_details:
-                app_no = application.Export_Permit_No
-                payment_details = t_payment_details.objects.filter(Permit_No=app_no)
+            payment_details = t_payment_details.objects.all()
             return render(request, 'livestock_certificates/export_certificate/export_cert_list.html',
                           {'application_details': application_details, 'payment_details': payment_details})
 
@@ -4747,7 +4735,7 @@ def view_certificate_details(request):
 
         elif service_code == 'CFC':  # Conditional Food Safety Clearance
             application_details = t_food_business_registration_licensing_t1.objects.filter(Applicant_Id=login_id,
-                                                                        Conditional_Clearance_No__isnull=False)
+                                                                                           Conditional_Clearance_No__isnull=False)
             return render(request, 'food_certificates/safety_clearance_food_list.html',
                           {'application_details': application_details})
 
@@ -4985,6 +4973,21 @@ def get_certificate_details(request, t_livestock_import_permit_product_inspectio
                        'From_Dzongkhag': from_dzongkhag, 'To_Dzongkhag': to_dzongkhag,
                        'movement_details': details_permit})
     elif service_code == 'CMS':
+        details = t_livestock_clearance_meat_shop_t1.objects.filter(Application_No=application_No)
+        for det in details:
+            dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.Dzongkhag_Code)
+            for det_dz in dzongkhag_code:
+                dzongkhag_code_name = det_dz.Dzongkhag_Name
+            village_code = t_village_master.objects.filter(Village_Code=det.Village_Code)
+            for name_vill in village_code:
+                village_code_name = name_vill.Village_Name
+            gewog_code = t_gewog_master.objects.filter(Gewog_Code=det.Gewog_Code)
+            for gew in gewog_code:
+                gewog_code_name = gew.Gewog_Name
+        return render(request, 'livestock_certificates/meat_shop_clearance/meat_safety_clearance.html',
+                      {'certificate_details': details, 'Dzongkhag': dzongkhag_code_name,
+                       'Village': village_code_name, 'Gewog': gewog_code_name})
+    elif service_code == 'CCMS':
         details = t_livestock_clearance_meat_shop_t1.objects.filter(Application_No=application_No)
         for det in details:
             dzongkhag_code = t_dzongkhag_master.objects.filter(Dzongkhag_Code=det.Dzongkhag_Code)

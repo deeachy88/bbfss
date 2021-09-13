@@ -62,6 +62,8 @@ urlpatterns = [
     path('edit_la_inspector_details/<int:Record_Id>', views.edit_la_inspector_details,
          name='edit_la_inspector_details'),
     path('submit_la_application', views.submit_la_application, name='submit_la_application'),
+    path('approve_fo_la_import', views.approve_fo_la_import, name='approve_fo_la_import'),
+    path('reject_fo_la_import', views.reject_fo_la_import, name='reject_fo_la_import'),
 
     # import permit for livestock products and animal feed
     path('import_permit_application', views.import_permit_application, name='import_permit_application'),

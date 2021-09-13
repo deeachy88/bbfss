@@ -1,4 +1,9 @@
 {% load static %}
+<style>
+form, input, select, textarea{
+    color: black !important;
+}
+</style>
 <form method="post" id="inspection_call_form">
     {% csrf_token %}
     <div class="animated fadeIn">
@@ -315,7 +320,7 @@
                             </div>
                             <div class="col-sm-4">
                                 <label class="form-label">Date For Inspection</label>
-                                <input type="text" class="form-control date-picker flatpickr-input active" id="date" name="date">
+                                <input type="date" name="date" id="date" class="form-control date-picker flatpickr-input active">
                             </div>
                              <div class="col-md-4">
                                 <div class="form-group">
@@ -326,14 +331,14 @@
                          </div>
                         {% endfor %}
                         <div id="messageDiv" class="alert alert-info" role="alert" style="display:none;">
-                            Application Approved
+                            Application Submitted
                         </div>
                         <div id="rejectMsg" class="alert alert-info" role="alert" style="display:none;">
                             Application Rejected
                         </div>
                         {% for application_details in application_details %}
                             <input type="hidden" name="application_No" value="{{application_details.Application_No}}">
-                            <input type="hidden" name="service_code" value="FIP">
+                            <input type="hidden" name="service_code" value="IAF">
                             <div class="card-action text-center">
                                 <button type="button" id="approve_button" class="btn btn-flat btn-primary" onclick="update_details()">
                                     <i class="ace-icon fa fa-check"></i>
@@ -350,8 +355,11 @@
             </div>
         </div>
 </form>
-<script src="{% static 'assets/js/app.min.js' %}"></script>
 <script>
+$(function(){
+    var today = new Date().toISOString().split('T')[0];
+    $('#date')[0].setAttribute('min', today);
+});
     function update_details()
     {
         $.ajax({

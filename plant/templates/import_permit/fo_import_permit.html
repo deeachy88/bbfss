@@ -1,3 +1,17 @@
+{% load static %}
+<style>
+form, input, select, textarea{
+    color: black !important;
+}
+#loader img
+{
+  left: 50%;
+  margin-left: -32px;
+  margin-top: -32px;
+  position: absolute;
+  top: 50%;
+}
+</style>
 <form method="post" id="applicationForm">
     {% csrf_token %}
     <div class="animated fadeIn">
@@ -572,6 +586,9 @@
                             <div class="alert alert-success" id="fo_success_Msg" style="display:none"></div>
                             <div class="alert alert-danger" id="fo_reject_Msg" style="display:none"></div>
                             <hr>
+                        <div id="loader" style="display:none">
+                            <img src="{% static 'assets/img/ajax-loader.gif' %}" alt="processing..." />
+                        </div>
                         {% for application_details in application_details %}
                             <div class="card-action text-center">
                                 <button type="button" id="approve_button" class="btn btn-flat btn-primary" onclick="fo_approve('{{application_details.Application_No}}')">
@@ -582,7 +599,7 @@
                                     <i class="ace-icon fa fa-reply-all"></i>
                                     &nbsp;&nbsp;Reject
                                 </button>
-                                <button type="button" class="btn btn-flat btn-danger">
+                                <button type="button" class="btn btn-flat btn-danger" data-dismiss="modal">
                                     <i class="ace-icon fa fa-times"></i>
                                     &nbsp;&nbsp;Cancel
                                 </button>
@@ -598,6 +615,7 @@
 <script>
     function fo_approve(application_id)
         {
+            $("#loader").show();
             remarks = $('#remarks').val();
 
             $.ajax({
@@ -605,6 +623,7 @@
                 url : "{% url 'fo_approve' %}",
                 data :{'application_id':application_id ,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(data) {
+                    $("#loader").hide();
                     $('#fo_success_Msg').html("Application Approved.");
                     $('#fo_success_Msg').show();
                     $('#fo_success_Msg').delay(2000).fadeOut('slow');
@@ -619,6 +638,7 @@
         }
     function fo_reject(application_id)
         {
+            $("#loader").show();
             remarks = $('#remarks').val();
 
             if(remarks == "")
@@ -632,6 +652,7 @@
                 url : "{% url 'fo_reject' %}",
                 data :{'application_id':application_id ,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(data) {
+                    $("#loader").hide();
                     $('#fo_reject_Msg').html("Application Rejected.");
                     $('#fo_reject_Msg').show();
                     $('#fo_reject_Msg').delay(2000).fadeOut('slow');

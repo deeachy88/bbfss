@@ -1,3 +1,8 @@
+<style>
+form, input, select, textarea{
+    color: black !important;
+}
+</style>
 <form method="post" id="applicationForm">
     {% csrf_token %}
     <div class="animated fadeIn">
@@ -28,12 +33,12 @@
                                         <label class="custom-control custom-radio">
                                             <input type="radio" class="custom-control-input" disabled>
                                             <span class="custom-control-indicator"></span>
-                                            <span class="custom-control-description">Livestock Product</span>
+                                            <span class="custom-control-description">Animal</span>
                                         </label>
                                         <label class="custom-control custom-radio">
                                             <input type="radio" class="custom-control-input" checked>
                                             <span class="custom-control-indicator"></span>
-                                            <span class="custom-control-description">Animal Feed</span>
+                                            <span class="custom-control-description">Fish</span>
                                         </label>
                                     </div>
                                 {% endif %}
@@ -128,7 +133,7 @@
                                     </div>
                                 {% endif %}
                             </div>
-                            {% if application_details.Import_Type == 'Individual' and if application_details.Nationality == 'Bhutanese'%}
+                            {% if application_details.Import_Type == 'Individual' and application_details.Nationality == 'Bhutanese'%}
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
@@ -238,9 +243,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            {% elif application_details.Import_Type == 'Individual' and if application_details.Nationality == 'Non-Bhutanese' %}
-
-
+                            {% elif application_details.Import_Type == 'Individual' and application_details.Nationality == 'Non-Bhutanese' %}
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">

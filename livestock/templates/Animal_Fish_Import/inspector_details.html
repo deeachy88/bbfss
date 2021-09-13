@@ -1,10 +1,15 @@
 {% load static %}
+<style>
+form, input, select, textarea{
+    color: black !important;
+}
+</style>
 <div class="accordion" role="tablist">
     {% for application_details in application_details %}
         <div class="card">
             <div class="card-header" role="tab" id="headingOne">
                 <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed">
-                    Collapsible Group Item #1
+                    Application Details
                 </a>
             </div>
 
@@ -133,7 +138,7 @@
                                 </div>
                             {% endif %}
                         </div>
-                        {% if application_details.Import_Type == 'Individual' and if application_details.Nationality == 'Bhutanese'%}
+                        {% if application_details.Import_Type == 'Individual' and application_details.Nationality == 'Bhutanese'%}
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
@@ -243,7 +248,7 @@
                                     </div>
                                 </div>
                             </div>
-                        {% elif application_details.Import_Type == 'Individual' and if application_details.Nationality == 'Non-Bhutanese' %}
+                        {% elif application_details.Import_Type == 'Individual' and application_details.Nationality == 'Non-Bhutanese' %}
 
 
                             <div class="row">
@@ -472,29 +477,38 @@
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Particulars</th>
-                                <th scope="col">Company Name</th>
+                                <th scope="col">Species</th>
+                                <th scope="col">Breed</th>
+                                <th scope="col">Age</th>
+                                <th scope="col">Sex</th>
+                                <th scope="col">Approved Quantity</th>
                                 <th scope="col">Description</th>
-                                <th scope="col">Quantity</th>
-                                <th scope="col">Unit</th>
+                                <th scope="col">Quantity Balance</th>
+                                <th scope="col">Quantity Released</th>
+                                <th scope="col">Remarks</th>
+                                <th scope="col"></th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for import in import %}
+                            {% for import in details %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td>{{import.Particulars}}</td>
-                                    <td>{{import.Company_Name}}</td>
-                                    <td>{{import.Description}}</td>
-                                    <td>{{import.Unit}}</td>
+                                    <td>{{import.Species}}</td>
+                                    <td>{{import.Breed}}</td>
+                                    <td>{{import.Age}}</td>
+                                    <td>{{import.Sex}}</td>
                                     <td>{{import.Quantity}}</td>
-                                    <!--<td>
-                                        <button type="button"
-                                        class="btn btn-primary btn&#45;&#45;icon btn-sm js-edit-details"
-                                        data-url="{% url 'edit_inspector_details' import.Record_Id %}">
+                                     <td>{{import.Description}}</td>
+                                    <td>{{ import.Quantity_Balance}} </td>
+                                    <td>{{import.Quantity_Released}}</td>
+                                    <td>{{import.Remarks}}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-info"
+                                        onclick="populateEditDetails('{{ import.Species }}', '{{import.Breed}}', '{{import.Age}}',
+                                        '{{import.Sex}}', '{{import.Quantity}}', '{{import.Description}}', '{{import.Application_No}}','{{import.Quantity_Balance}}')">
                                         <i class="zmdi zmdi-edit"></i>
                                         </button>
-                                    </td>-->
+                                    </td>
                                 </tr>
                                 {% empty %}
                                 <tr>
@@ -643,13 +657,101 @@
         </div>
         </div>
     {% endfor %}
-    <div class="modal fade" id="modal-common">
+<form method="post" id="permit_details_form">
+    {% csrf_token %}
+    <input type="hidden" id="applNo" name="applNo">
+    <div class="modal fade" id="permit_details_model" tabindex="-1">
         <div class="modal-dialog modal-lg">
-          <div class="modal-content edit">
-
-          </div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Species</label>
+                                        <select class="form-control" name="Species" id="Species">
+                                            <option value="">--SELECT--</option>
+                                            {% for species in species %}
+                                                <option value="{{ species.Species_Name }}">{{ species.Species_Name }}</option>
+                                            {% endfor %}
+                                         </select>
+                                        <div class="alert alert-danger" id="SpeciesErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Breed</label>
+                                        <select class="form-control" name="Breed" id="Breed">
+                                            <option value="">--SELECT--</option>
+                                            {% for breed in breed %}
+                                                <option value="{{ breed.Species_Breed_Name }}">{{ breed.Species_Breed_Name }}</option>
+                                            {% endfor %}
+                                         </select>
+                                        <div class="alert alert-danger" id="BreedErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Age</label>
+                                        <input type="number" name="Age" class="form-control" id="Age" required>
+                                        <div class="alert alert-danger" id="AgeErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Sex</label>
+                                        <input type="text" name="Sex" class="form-control" id="Sex" required>
+                                        <div class="alert alert-danger" id="SexErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Description</label>
+                                        <textarea name="animal_Description" class="form-control" id="animal_Description" rows="3"></textarea>
+                                        <div class="alert alert-danger" id="animal_DescriptionErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Number</label>
+                                        <input type="number" name="no" class="form-control" id="no" required>
+                                        <div class="alert alert-danger" id="noErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Remarks</label>
+                                        <textarea name="AP_Remarks" class="form-control" id="AP_Remarks" rows="3"></textarea>
+                                        <div class="alert alert-danger" id="product_remarks_ErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Balance Number</label>
+                                            <input type="text" class="form-control" id="agro_qty_balance" name="agro_qty_balance" readonly="readonly">
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Number Released</label>
+                                            <input type="text" class="form-control" id="agro_qty_approved" name="agro_qty_approved" onchange="balance_agro(this.value)">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="update_permit_details_form()">Update</button>
+                </div>
+            </div>
         </div>
     </div>
+</form>
 </div>
 <div class="modal fade" id="modal-decision">
     <div class="modal-dialog modal-lg">
@@ -752,5 +854,18 @@ function submit_details(application_id)
     }
 }
 
+function populateEditDetails(Species, Breed, Age, Sex, Quantity, Description,Application_No, Record_Id, balance_quantity)
+{
+    $('#Record_Id').val(Record_Id);
+    $('#Species').val(Species);
+    $('#Breed').val(Breed);
+    $('#Age').val(Age);
+    $('#Sex').val(Sex);
+    $('#no').val(Quantity);
+    $('#animal_Description').val(Description);
+    $('#applicationNo').val(Application_No);
+    $('#balance_quantity').val(balance_quantity);
+    $('#permit_details_model').modal('show');
+}
 
 </script>

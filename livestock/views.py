@@ -10,6 +10,7 @@ from django.utils import timezone
 from administrator.models import t_dzongkhag_master, t_gewog_master, t_village_master, t_location_field_office_mapping, \
     t_user_master, t_field_office_master, t_unit_master, t_service_master, t_livestock_species_master, \
     t_livestock_species_breed_master, t_meat_item_master
+from administrator.views import dashboard
 from bbfss import settings
 from livestock.forms import ImportFormProduct, MeatShopFeasibilityForm
 from livestock.models import t_livestock_clearance_meat_shop_t1, t_livestock_clearance_meat_shop_t2, \
@@ -209,11 +210,7 @@ def meat_shop_fo_approve(request):
     else:
         details.update(FO_Remarks=None)
     details.update(Field_Office_Id=field_office)
-    for email_id in details:
-        email = email_id.Email
-        send_meat_shop_approve_email(email)
-
-    return redirect(focal_officer_application)
+    return redirect(dashboard)
 
 
 def meat_shop_fo_reject(request):
@@ -227,7 +224,7 @@ def meat_shop_fo_reject(request):
     for email_id in details:
         email = email_id.Email
         send_meat_shop_reject_email(email, remarks)
-    return redirect(focal_officer_application())
+    return redirect(dashboard)
 
 
 
@@ -505,7 +502,7 @@ def meat_shop_submit(request):
         details.update(FO_Remarks=remarks)
     else:
         details.update(FO_Remarks=None)
-    details.update(FB_License_No=clearance)
+    details.update(Meat_Shop_Clearance_No=clearance)
     details.update(Approve_Date=date.today())
     d = timedelta(days=int(validity))
     validity_date = date.today() + d
@@ -768,7 +765,7 @@ def save_import_la_fish(request):
     # applicant_Id = request.session['email']
     Application_Type = request.POST.get('Application_Type')
     Import_Type = request.POST.get('Import_Type')
-    Nationality = request.POST.get('Nationality')
+    Nationality = request.POST.get('nationality')
     Country = request.POST.get('Country')
     cid = request.POST.get('cid')
     Name = request.POST.get('Name')
@@ -818,7 +815,8 @@ def save_import_la_fish(request):
         Approve_Date=None,
         Validity_Period=None,
         Validity=None,
-        Quarantine_Facilities=QF
+        Quarantine_Facilities=QF,
+        Applicant_Id=request.session['email']
     )
     t_workflow_details.objects.create(Application_No=application_no, Applicant_Id=request.session['email'],
                                       Assigned_To=None, Field_Office_Id=None, Section='Livestock',
@@ -882,7 +880,8 @@ def add_la_file_name(request):
 
 
 def submit_import_application(request):
-    application_no = request.GET.get('appNo')
+    application_no = request.POST.get('application_no')
+    print(application_no)
     workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
     workflow_details.update(Action_Date=date.today())
     return redirect(import_permit)
@@ -906,16 +905,16 @@ def live_animal_fish_application_no(service_code):
 def approve_fo_la_import(request):
     service_code = "IAF"
     permit_no = get_la_permit_no(service_code)
-    application_no = request.GET.get('application_no')
+    application_no = request.POST.get('application_id')
     remarks = request.POST.get('remarks')
-    validity = request.GET.get('validity')
+    validity = request.POST.get('validity')
     workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
     for app in workflow_details:
         client_login_id = app.Applicant_Id
-    client_id = t_user_master.objects.filter(Email_Id=client_login_id)
-    for client in client_id:
-        login_id = client.Login_Id
-        workflow_details.update(Assigned_To=login_id)
+        client_id = t_user_master.objects.filter(Email_Id=client_login_id)
+        for client in client_id:
+            login_id = client.Login_Id
+            workflow_details.update(Assigned_To=login_id)
     workflow_details.update(Action_Date=date.today())
     workflow_details.update(Assigned_Role_Id=None)
     details = t_livestock_import_permit_animal_t1.objects.filter(Application_No=application_no)
@@ -941,7 +940,7 @@ def approve_fo_la_import(request):
                                      Receipt_Date=None,
                                      Updated_By=None,
                                      Updated_On=None)
-
+    return redirect(focal_officer_application)
 
 def reject_fo_la_import(request):
     application_no = request.GET.get('application_no')
@@ -961,7 +960,7 @@ def send_la_approve_email(new_import_permit, Email, validity_date):
     message = "Dear Sir," \
               "" \
               "Your Application for Import Permit for Live Animal And Fish Has Been Approved. Your " \
-              "Import Permit No is:" + new_import_permit + " And is Valid TIll " + validity_date + \
+              "Import Permit No is:" + new_import_permit + " And is Valid TIll " + str(validity_date) + \
               " Please Make Payment Before Validity Expires. "
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]

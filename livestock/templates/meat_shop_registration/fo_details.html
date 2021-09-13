@@ -1,3 +1,8 @@
+<style>
+form, input, select, textarea{
+    color: black !important;
+}
+</style>
 <form method="post" id="applicationForm">
     {% csrf_token %}
     <div class="animated fadeIn">
@@ -171,10 +176,10 @@
                             </div>
                         </div>
                         <br>
-                        <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+                        <div id="submitMsg" class="alert alert-info" style="display:none;">
                             Application Approved
                         </div>
-                        <div id="rejectMsg" class="alert alert-info" role="alert" style="display:none;">
+                        <div id="rejectMsg" class="alert alert-info" style="display:none;">
                             Application Rejected
                         </div>
                         <div class="modal-footer justify-content-center">
@@ -184,9 +189,9 @@
                                         <option value="{{ oic_list.Field_Office_Id }}">{{ oic_list.Field_Office }}</option>
                                 {% endfor %}
                             </select>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" onclick="fbr_fo_approve('{{ application_details.Application_No }}')"> Approve </button>
-                            <button type="button" class="btn btn-danger" onclick="fbr_fo_reject('{{ application_details.Application_No }}')"> Reject </button>
+                            <button type="button" class="btn btn-primary" onclick="cms_fo_approve('{{ application_details.Application_No }}')"> Forward </button>
+                            <button type="button" class="btn btn-danger" onclick="cms_fo_reject('{{ application_details.Application_No }}')"> Reject </button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                         </div>
                     {% endfor %}
                 </div>
@@ -195,7 +200,7 @@
     </div>
 </form>
 <script>
-    function fbr_fo_approve(application_id)
+    function cms_fo_approve(application_id)
         {
             remarks = $('#remarks').val();
             forwardTo = $('#forwardTo').val();
@@ -203,7 +208,7 @@
                 type : "POST",
                 url : "{% url 'meat_shop_fo_approve' %}",
                 data :{'application_id':application_id ,'forwardTo':forwardTo,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
-                success : function(data) {
+                success : function() {
                     $('#submitMsg').show();
                     setTimeout(function()
                     {
@@ -222,7 +227,7 @@
             });
 
         }
-    function fbr_fo_reject(application_id)
+    function cms_fo_reject(application_id)
         {
             remarks = $('#remarks').val();
 
@@ -232,22 +237,27 @@
                 $('#remarksErrorMsg').show();
                 $('#remarksErrorMsg').delay(2000).fadeOut('slow');
             }
-            $.ajax({
-                type : "POST",
-                url : "{% url 'meat_shop_fo_reject' %}",
-                data :{'application_id':application_id ,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
-                success : function(data) {
-                    $('#import_detailsModal').modal('hide');
-                    $('#rejectMsg').show();
-                    setTimeout(function()
-                    {
-                        $("#rejectMsg").hide('blind', {}, 500)
-                    }, 2000);
-                    setTimeout(function()
-                    {
-                         location.reload();
-                    }, 3000);
-                }
-            });
+            else{
+                $.ajax({
+                    type : "POST",
+                    url : "{% url 'meat_shop_fo_reject' %}",
+                    data :{'application_id':application_id ,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                    success : function() {
+                        $('#rejectMsg').show();
+                        setTimeout(function()
+                        {
+                            $("#rejectMsg").hide('blind', {}, 500)
+                        }, 2000);
+                        setTimeout(function()
+                        {
+                            $('#import_detailsModal').modal('hide');
+                        }, 3000);
+                        setTimeout(function()
+                        {
+                             location.reload();
+                        }, 3000);
+                    }
+                });
+            }
         }
 </script>

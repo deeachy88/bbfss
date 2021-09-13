@@ -18,7 +18,7 @@ class t_livestock_clearance_meat_shop_t1(models.Model):
     Inspection_Type = models.CharField(max_length=100, blank=True, null=True)
     Desired_FI_Inspection_Date = models.DateField(blank=True, null=True)
     Desired_FR_Inspection_Date = models.DateField(blank=True, null=True)
-    FB_License_No = models.CharField(max_length=100, blank=True, null=True)
+    Meat_Shop_Clearance_No = models.CharField(max_length=100, blank=True, null=True)
     FI_Inspection_Date = models.DateField(blank=True, null=True)
     FI_Inspection_Leader = models.CharField(max_length=100, blank=True, null=True)
     FI_Response = models.TextField(blank=True, null=True)
@@ -115,6 +115,7 @@ class t_livestock_import_permit_product_t1(models.Model):
     Validity_Period = models.IntegerField(blank=True, null=True)
     Validity = models.DateField(blank=True, null=True)
     Import_Permit_No = models.CharField(max_length=20, blank=True, null=True)
+    Applicant_Id = models.CharField(max_length=100, default=None, blank=True, null=True)
 
 
 class t_livestock_import_permit_product_t2(models.Model):
@@ -167,6 +168,7 @@ class t_livestock_import_permit_product_inspection_t1(models.Model):
     Clearance_Ref_No = models.CharField(max_length=20, blank=True, null=True)
     FO_Remarks = models.TextField(blank=True, null=True)
     Inspection_Remarks = models.TextField(blank=True, null=True)
+    Applicant_Id = models.CharField(max_length=100, default=None, blank=True, null=True)
 
 
 class t_livestock_import_permit_product_inspection_t2(models.Model):
@@ -220,6 +222,7 @@ class t_livestock_import_permit_animal_t1(models.Model):
     Validity = models.DateField(blank=True, null=True)
     Quarantine_Facilities = models.CharField(max_length=100, default=None, blank=True, null=True)
     Import_Permit_No = models.CharField(max_length=20, blank=True, null=True)
+    Applicant_Id = models.CharField(max_length=100, default=None, blank=True, null=True)
 
 
 class t_livestock_import_permit_animal_t2(models.Model):
@@ -275,7 +278,7 @@ class t_livestock_import_permit_animal_inspection_t1(models.Model):
     FO_Remarks = models.TextField(blank=True, null=True)
     Inspection_Remarks = models.TextField(blank=True, null=True)
     Quarantine_Facilities = models.CharField(max_length=100, default=None, blank=True, null=True)
-
+    Applicant_Id = models.CharField(max_length=100, default=None, blank=True, null=True)
 
 class t_livestock_import_permit_animal_inspection_t2(models.Model):
     Record_Id = models.AutoField(primary_key=True)
