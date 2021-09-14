@@ -1,0 +1,44 @@
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Species</th>
+            <th scope="col">Breed</th>
+            <th scope="col">Age</th>
+            <th scope="col">Sex</th>
+            <th scope="col">Approved Number</th>
+            <th scope="col">Description</th>
+            <th scope="col">Balance</th>
+            <th scope="col">Released Number</th>
+            <th scope="col">Remarks</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for import in import %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{import.Species}}</td>
+                <td>{{import.Breed}}</td>
+                <td>{{import.Age}}</td>
+                <td>{{import.Sex}}</td>
+                <td>{{import.Quantity}}</td>
+                <td>{{import.Description}}</td>
+                <td>{{import.Quantity_Balance}} </td>
+                <td>{{import.Quantity_Released}}</td>
+                <td>{{import.Remarks}}</td>
+                <td>
+                    <button type="button" class="btn btn-info"
+                    onclick="populateEditDetails('{{ import.Species }}', '{{import.Breed}}', '{{import.Age}}',
+                    '{{import.Sex}}', '{{import.Quantity}}', '{{import.Description}}', '{{import.Application_No}}','{{import.Record_Id}}', '{{import.Quantity_Balance}}')">
+                    <i class="zmdi zmdi-edit"></i>
+                    </button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="6" class="text-center">No Data</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

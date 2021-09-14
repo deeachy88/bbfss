@@ -12,7 +12,7 @@ import requests
 from administrator.models import t_dzongkhag_master, t_gewog_master, t_village_master, t_location_field_office_mapping, \
     t_user_master, t_field_office_master, t_plant_crop_master, t_plant_pesticide_master, t_plant_crop_variety_master, \
     t_service_master, t_country_master, t_plant_crop_category_master, t_unit_master, t_section_master, \
-    t_inspection_type_master
+    t_inspection_type_master, t_livestock_species_master, t_livestock_species_breed_master
 from administrator.views import dashboard
 from bbfss import settings
 from food.models import t_food_export_certificate_t1, t_food_licensing_food_handler_t1, t_food_import_permit_t1, \
@@ -564,13 +564,15 @@ def view_application_details(request):
         details = t_livestock_import_permit_animal_inspection_t2.objects.filter(Application_No=application_id)
         file = t_file_attachment.objects.filter(Application_No=application_id)
         workflow_details = t_workflow_details.objects.filter(Application_No=application_id)
+        species = t_livestock_species_master.objects.all()
+        breed = t_livestock_species_breed_master.objects.all()
         for application in workflow_details:
             Field_Office = application.Field_Office_Id
         user_role_list = t_user_master.objects.filter(Role_Id='5', Field_Office_Id_id=Field_Office)
         return render(request, 'Animal_Fish_Import/inspector_details.html',
                       {'application_details': application_details, 'file': file, 'dzongkhag': dzongkhag,
                        'village': village, 'location': location, 'import': details,
-                       'inspector_list': user_role_list})
+                       'inspector_list': user_role_list, 'species': species, 'breed':breed})
     elif service_code == 'FEC':
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
@@ -2882,6 +2884,15 @@ def update_details_plant(request):
         balance = int(import_IPP.Quantity_Balance) - int(import_IPP.Quantity_Released)
         product_details = t_plant_import_permit_t2.objects.filter(pk=Product_Record_Id)
         product_details.update(Quantity_Balance=balance)
+        if balance == 0:
+            import_details = t_plant_import_permit_inspection_t1.objects.filter(
+                Application_No=application_no)
+            for import_det in import_details:
+                la_details = t_plant_import_permit_t1.objects.filter(
+                    Import_Permit_No=import_det.Import_Permit_No)
+                for la in la_details:
+                    work_details = t_workflow_details.objects.filter(Application_No=la.Application_No)
+                    work_details.update(Application_Status='C')
     application_details = t_plant_import_permit_inspection_t2.objects.filter(Application_No=application_no)
     crop = t_plant_crop_master.objects.all()
     variety = t_plant_crop_variety_master.objects.all()
@@ -2903,8 +2914,16 @@ def update_details_agro(request):
         balance = int(import_IPP.Quantity_Balance) - int(import_IPP.Quantity_Released)
         product_details = t_plant_import_permit_t2.objects.filter(pk=Product_Record_Id)
         product_details.update(Quantity_Balance=balance)
-
-    application_details = t_plant_import_permit_t2.objects.filter(Application_No=application_no)
+        if balance == 0:
+            import_details = t_plant_import_permit_inspection_t1.objects.filter(
+                Application_No=application_no)
+            for import_det in import_details:
+                la_details = t_plant_import_permit_t1.objects.filter(
+                    Import_Permit_No=import_det.Import_Permit_No)
+                for la in la_details:
+                    work_details = t_workflow_details.objects.filter(Application_No=la.Application_No)
+                    work_details.update(Application_Status='C')
+    application_details = t_plant_import_permit_inspection_t2.objects.filter(Application_No=application_no)
     pesticide = t_plant_pesticide_master.objects.all()
     return render(request, 'import_permit/agro_details.html', {'import': application_details,
                                                                'pesticide': pesticide})
@@ -5144,9 +5163,13 @@ def get_certificate_details(request, t_livestock_import_permit_product_inspectio
 # Common Details
 def call_for_inspection(request):
     login_id = request.session['Login_Id']
-    application_details = t_workflow_details.objects.filter(Assigned_To=login_id, Action_Date__isnull=False)
+    application_details = t_workflow_details.objects.filter(Assigned_To=login_id, Action_Date__isnull=False,
+                                                            Application_Status='P')
     service_details = t_service_master.objects.all()
-    balance_count = t_food_import_permit_t2.objects.aggregate(Sum('Quantity_Balance'))
+    food_import_details = t_food_import_permit_t2.objects.all()
+    plant_details = t_plant_import_permit_t2.objects.all()
+    animal_fish_details = t_livestock_import_permit_animal_t2.objects.all()
+    product_details = t_livestock_import_permit_product_t2.objects.all()
     return render(request, 'inspection_call.html',
                   {'application_details': application_details, 'service_details': service_details})
 

@@ -89,7 +89,7 @@
                     <div class="form-row">
                          <div class="col-md-4">
                             <div class="form-group">
-                                <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCitizenDetails(this.value);" placeholder="CID">
+                                <input type="text" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCitizenDetails(this.value);" placeholder="CID">
                             </div>
                              <span class="badge"><font color='red'><font color='red'>*</font></font></span>
                             <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
@@ -298,7 +298,7 @@
             village = $('#village').val();
             Address = $('#Address').val();
             cidcount = $('#cid').val().length;
-
+            alert(Name);
             if(cid == "")
             {
                 $('#cidErrorMsg').html("Enter CID Number.");
@@ -314,9 +314,9 @@
             }
             else if(Name == "")
             {
-                $('#NameErrorMsg').html("Enter Name.");
-                $('#NameErrorMsg').show();
-                $('#NameErrorMsg').delay(2000).fadeOut('slow');
+                $('#nameErrorMsg').html("Enter Name.");
+                $('#nameErrorMsg').show();
+                $('#nameErrorMsg').delay(2000).fadeOut('slow');
             }
             else if(email == "")
             {
@@ -554,20 +554,31 @@ function getCitizenDetails(cidNo)
             else
             {
                 const myObj =data.response;
-                var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
-                var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
-                var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
-                if (middleName == null) {
-                        middleName = "";
-                    }
-                var CitizenName = firstName + " " + middleName + " " + lastName;
-                var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
-                var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
-                var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
-                $('#Name').val(CitizenName);
-                $('#dzongkhag').val(dzongkhagName);
-                $('#gewog').val(gewogName);
-                $('#village').val(villageName);
+                if(myObj.citizenDetailsResponse.citizenDetail == undefined)
+                {
+                    $('#cid').val("");
+                    $('#cidErrorMsg').html("Invalid CID.Try With Another one");
+                    $('#cidErrorMsg').show();
+                    $('#cidErrorMsg').delay(2000).fadeOut('slow');
+                }
+                else
+                {
+                    var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+                    var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+                    var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+                    if (middleName == null) {
+                            middleName = "";
+                        }
+                    var CitizenName = firstName + " " + middleName + " " + lastName;
+
+                    var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
+                    var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
+                    var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
+                    $('#Name').val(CitizenName);
+                    $('#dzongkhag').val(dzongkhagName);
+                    $('#gewog').val(gewogName);
+                    $('#village').val(villageName);
+                }
             }
         }
     });

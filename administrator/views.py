@@ -93,7 +93,7 @@ def dashboard(request):
         inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
                                                                   Action_Date__isnull=False).count()
         consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
-                                                                   Action_Date__isnull=False).count()
+                                                                   Action_Date__isnull=False, Application_Status='P').count()
         return render(request, 'dashboard.html', {'count': message_count, 'count_call': inspection_call_count,
                                                   'consignment_call_count': consignment_call_count})
 
@@ -1801,5 +1801,6 @@ def check_cid_exists(request):
     url = 'https://staging-datahub-apim.dit.gov.bt/dcrc_citizen_details_api/1.0.0/citizendetails/' + cid
     # params = {'cid': cid}
     response = requests.get(url, headers=header, verify=False)
+    print(response)
     data['response'] = response.json()
     return JsonResponse(data)

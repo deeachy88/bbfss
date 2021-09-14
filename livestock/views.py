@@ -843,7 +843,7 @@ def import_permit_la_details(request):
                                                        Sex=Sex,
                                                        Description=Description,
                                                        Quantity=No_Of_Animal,
-                                                       Quantity_Balance=None,
+                                                       Quantity_Balance=No_Of_Animal,
                                                        Remarks=Remarks
                                                        )
     import_details = t_livestock_import_permit_animal_t2.objects.filter(Application_No=application_no)
@@ -1074,6 +1074,38 @@ def save_la_inspector_details(request, form, Record_Id, Quantity_Released, Remar
     context = {'form': form}
     data['html_form'] = render_to_string(template_name, context, request=request)
     return JsonResponse(data)
+
+
+def update_details_la(request):
+    application_no = request.POST.get('applicationNo')
+    record_id = request.POST.get('import_record_id')
+    approved_quantity = request.POST.get('number_released')
+    balance_number = request.POST.get('agro_qty_balance')
+    remarks = request.POST.get('import_Remarks')
+
+    import_det = t_livestock_import_permit_animal_inspection_t2.objects.filter(pk=record_id)
+    if remarks is not None:
+        import_det.update(Remarks=remarks)
+    else:
+        import_det.update(Remarks=None)
+    import_det.update(Quantity_Released=approved_quantity)
+    import_det.update(Quantity_Balance=balance_number)
+    for import_ILA in import_det:
+        Product_Record_Id = import_ILA.Product_Record_Id
+        balance = int(import_ILA.Quantity_Balance) - int(import_ILA.Quantity_Released)
+        product_details = t_livestock_import_permit_animal_t2.objects.filter(pk=Product_Record_Id)
+        product_details.update(Quantity_Balance=balance)
+        if balance == 0:
+            import_details = t_livestock_import_permit_animal_inspection_t1.objects.filter(
+                Application_No=application_no)
+            for import_det in import_details:
+                la_details = t_livestock_import_permit_animal_t1.objects.filter(
+                    Import_Permit_No=import_det.Import_Permit_No)
+                for la in la_details:
+                    work_details = t_workflow_details.objects.filter(Application_No=la.Application_No)
+                    work_details.update(Application_Status='C')
+    application_details = t_livestock_import_permit_animal_inspection_t2.objects.filter(Application_No=application_no)
+    return render(request, 'Animal_Fish_Import/animal_import_details.html', {'import': application_details})
 
 
 # import permit for livestock products and animal feed
@@ -1387,6 +1419,15 @@ def save_lp_inspector_details(request, form, Record_Id, Quantity_Released, Remar
             balance = int(import_LP.Quantity_Balance) - int(import_LP.Quantity_Released)
             product_details = t_livestock_import_permit_product_t2.objects.filter(pk=Product_Record_Id)
             product_details.update(Quantity_Balance=balance)
+            if balance == 0:
+                import_details = t_livestock_import_permit_product_inspection_t1.objects.filter(
+                    Application_No=import_det.Application_No)
+                for import_det in import_details:
+                    la_details = t_livestock_import_permit_product_t1.objects.filter(
+                        Import_Permit_No=import_det.Import_Permit_No)
+                    for la in la_details:
+                        work_details = t_workflow_details.objects.filter(Application_No=la.Application_No)
+                        work_details.update(Application_Status='C')
         roles = t_livestock_import_permit_product_inspection_t2.objects.all()
         data['html_book_list'] = render_to_string('Livestock_Import/details_import.html', {
             'import': roles, 'balance': balance

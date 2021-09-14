@@ -3,6 +3,22 @@
 form, input, select, textarea{
     color: black !important;
 }
+.flatpickr-calendar {
+    border-radius: 2px;
+    border: 0;
+    box-shadow: 0 4px 18px rgb(0 0 0 / 50%);
+    width: auto;
+    margin-top: -4px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-color: rgb(240 237 237 / 96%);
+}
+.flatpickr-time .flatpickr-am-pm, .flatpickr-time .numInputWrapper {
+    height: auto;
+    color: #121111;
+}
 </style>
 <div class="accordion" role="tablist">
     {% for application_details in application_details %}
@@ -473,50 +489,52 @@ form, input, select, textarea{
             </div>
             <div id="collapseThree" class="active" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion" style="">
                 <div class="card-body">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Species</th>
-                                <th scope="col">Breed</th>
-                                <th scope="col">Age</th>
-                                <th scope="col">Sex</th>
-                                <th scope="col">Approved Quantity</th>
-                                <th scope="col">Description</th>
-                                <th scope="col">Quantity Balance</th>
-                                <th scope="col">Quantity Released</th>
-                                <th scope="col">Remarks</th>
-                                <th scope="col"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for import in details %}
+                    <div id="details-import">
+                        <table class="table table-bordered">
+                            <thead>
                                 <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>{{import.Species}}</td>
-                                    <td>{{import.Breed}}</td>
-                                    <td>{{import.Age}}</td>
-                                    <td>{{import.Sex}}</td>
-                                    <td>{{import.Quantity}}</td>
-                                     <td>{{import.Description}}</td>
-                                    <td>{{ import.Quantity_Balance}} </td>
-                                    <td>{{import.Quantity_Released}}</td>
-                                    <td>{{import.Remarks}}</td>
-                                    <td>
-                                        <button type="button" class="btn btn-info"
-                                        onclick="populateEditDetails('{{ import.Species }}', '{{import.Breed}}', '{{import.Age}}',
-                                        '{{import.Sex}}', '{{import.Quantity}}', '{{import.Description}}', '{{import.Application_No}}','{{import.Quantity_Balance}}')">
-                                        <i class="zmdi zmdi-edit"></i>
-                                        </button>
-                                    </td>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Species</th>
+                                    <th scope="col">Breed</th>
+                                    <th scope="col">Age</th>
+                                    <th scope="col">Sex</th>
+                                    <th scope="col">Approved Number</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Balance</th>
+                                    <th scope="col">Released Number</th>
+                                    <th scope="col">Remarks</th>
+                                    <th scope="col"></th>
                                 </tr>
-                                {% empty %}
-                                <tr>
-                                  <td colspan="6" class="text-center">No Data</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {% for import in import %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{import.Species}}</td>
+                                        <td>{{import.Breed}}</td>
+                                        <td>{{import.Age}}</td>
+                                        <td>{{import.Sex}}</td>
+                                        <td>{{import.Quantity}}</td>
+                                        <td>{{import.Description}}</td>
+                                        <td>{{ import.Quantity_Balance}} </td>
+                                        <td>{{import.Quantity_Released}}</td>
+                                        <td>{{import.Remarks}}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-info"
+                                            onclick="populateEditDetails('{{ import.Species }}', '{{import.Breed}}', '{{import.Age}}',
+                                            '{{import.Sex}}', '{{import.Quantity}}', '{{import.Description}}', '{{import.Application_No}}','{{import.Record_Id}}', '{{import.Quantity_Balance}}')">
+                                            <i class="zmdi zmdi-edit"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="6" class="text-center">No Data</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                     <br>
                     <hr>
                     <div class="card-tools">
@@ -585,14 +603,14 @@ form, input, select, textarea{
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Date Of Inspection <font color="red">*</font></label>
-                                <input type="text" class="form-control date-picker flatpickr-input active" id="dateOfInspection" name="dateOfInspection"  placeholder="Pick a date" readonly="readonly">
+                                <input type="date" class="form-control" id="dateOfInspection" name="dateOfInspection">
                             </div>
                             <div class="alert alert-danger" id="dateOfInspectionErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Time Of Inspection <font color="red">*</font></label>
-                                <input type="text" class="form-control date-picker flatpickr-input active" id="timeOfInspection" name="timeOfInspection"  placeholder="Pick a date" readonly="readonly">
+                                <input type="text" class="form-control time-picker flatpickr-input active" id="timeOfInspection" name="timeOfInspection"  placeholder="Pick a date" readonly="readonly">
                             </div>
                             <div class="alert alert-danger" id="timeOfInspectionErrorMsg" style="display:none"></div>
                         </div>
@@ -659,7 +677,7 @@ form, input, select, textarea{
     {% endfor %}
 <form method="post" id="permit_details_form">
     {% csrf_token %}
-    <input type="hidden" id="applNo" name="applNo">
+    <input type="hidden" id="applicationNo" name="applicationNo">
     <div class="modal fade" id="permit_details_model" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -671,12 +689,14 @@ form, input, select, textarea{
                 </div>
                 <div class="modal-body">
                     <div class="col-lg-12">
+                        <input type="hidden" id="balance_quantity">
+                        <input type="hidden" id="import_record_id" name="import_record_id">
                         <div class="box box-primary">
                             <div class="box-body">
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Species</label>
-                                        <select class="form-control" name="Species" id="Species">
+                                        <select class="form-control" name="Species" id="Species" disabled>
                                             <option value="">--SELECT--</option>
                                             {% for species in species %}
                                                 <option value="{{ species.Species_Name }}">{{ species.Species_Name }}</option>
@@ -686,7 +706,7 @@ form, input, select, textarea{
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Breed</label>
-                                        <select class="form-control" name="Breed" id="Breed">
+                                        <select class="form-control" name="Breed" id="Breed" disabled>
                                             <option value="">--SELECT--</option>
                                             {% for breed in breed %}
                                                 <option value="{{ breed.Species_Breed_Name }}">{{ breed.Species_Breed_Name }}</option>
@@ -698,46 +718,46 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Age</label>
-                                        <input type="number" name="Age" class="form-control" id="Age" required>
+                                        <input type="number" name="Age" class="form-control" id="Age" disabled>
                                         <div class="alert alert-danger" id="AgeErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Sex</label>
-                                        <input type="text" name="Sex" class="form-control" id="Sex" required>
+                                        <input type="text" name="Sex" class="form-control" id="Sex" disabled>
                                         <div class="alert alert-danger" id="SexErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Description</label>
-                                        <textarea name="animal_Description" class="form-control" id="animal_Description" rows="3"></textarea>
+                                        <textarea name="animal_Description" class="form-control" id="animal_Description" rows="3" disabled></textarea>
                                         <div class="alert alert-danger" id="animal_DescriptionErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Number</label>
-                                        <input type="number" name="no" class="form-control" id="no" required>
+                                        <label class="form-label">Approved Number</label>
+                                        <input type="number" name="no" class="form-control" id="total_no" disabled>
                                         <div class="alert alert-danger" id="noErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Remarks</label>
-                                        <textarea name="AP_Remarks" class="form-control" id="AP_Remarks" rows="3"></textarea>
-                                        <div class="alert alert-danger" id="product_remarks_ErrorMsg" style="display:none"></div>
+                                        <div class="form-group">
+                                            <label class="form-label">Number Released</label>
+                                            <input type="number" class="form-control" id="number_released" name="number_released" onchange="get_balance_import()">
+                                        </div>
+                                        <div class="alert alert-danger" id="number_releasedErrorMsg" style="display:none"></div>
                                     </div>
-                                </div>
-                                <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="form-label">Balance Number</label>
-                                            <input type="text" class="form-control" id="agro_qty_balance" name="agro_qty_balance" readonly="readonly">
+                                            <input type="text" class="form-control" id="balance" name="balance" readonly="readonly">
                                         </div>
                                     </div>
+                                </div>
+                                <div class="row">
                                     <div class="form-group col-md-6">
-                                        <div class="form-group">
-                                            <label class="form-label">Number Released</label>
-                                            <input type="text" class="form-control" id="agro_qty_approved" name="agro_qty_approved" onchange="balance_agro(this.value)">
-                                        </div>
+                                        <label class="form-label">Remarks</label>
+                                        <textarea name="import_Remarks" class="form-control" id="import_Remarks" rows="3"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -760,15 +780,12 @@ form, input, select, textarea{
       </div>
     </div>
 </div>
-<script src="{% static 'assets/bower_components/jquery/dist/jquery.min.js' %}"></script>
-<script src="{% static 'assets/bower_components/popper.js/dist/umd/popper.min.js' %}"></script>
-<script src="{% static 'assets/bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
-<script src="{% static 'assets/bower_components/jquery.scrollbar/jquery.scrollbar.min.js' %}"></script>
-<script src="{% static 'assets/bower_components/flatpickr/dist/flatpickr.min.js' %}"></script>
 <script src="{% static 'assets/js/app.min.js' %}"></script>
-<script src="{% static 'assets/js/inspector.js' %}"></script>
-
 <script>
+$(function(){
+    var today = new Date().toISOString().split('T')[0];
+    $('#dateOfInspection')[0].setAttribute('min', today);
+});
 function openDecisionModal()
 {
     $('#addModal').modal('show');
@@ -854,18 +871,50 @@ function submit_details(application_id)
     }
 }
 
-function populateEditDetails(Species, Breed, Age, Sex, Quantity, Description,Application_No, Record_Id, balance_quantity)
+function populateEditDetails(Species, Breed, Age, Sex, Quantity, Description,Application_No, Record_Id, Quantity_Balance)
 {
-    $('#Record_Id').val(Record_Id);
+    $('#import_record_id').val(Record_Id);
     $('#Species').val(Species);
     $('#Breed').val(Breed);
     $('#Age').val(Age);
     $('#Sex').val(Sex);
-    $('#no').val(Quantity);
+    $('#total_no').val(Quantity);
     $('#animal_Description').val(Description);
     $('#applicationNo').val(Application_No);
-    $('#balance_quantity').val(balance_quantity);
+    $('#balance_quantity').val(Quantity_Balance);
     $('#permit_details_model').modal('show');
+}
+
+function get_balance_import(qty)
+{
+    var balance_quantity = $('#balance_quantity').val();
+    var number_released = $('#number_released').val();
+    var quantity = balance_quantity - number_released
+    if(quantity < 0)
+    {
+        $('#number_releasedErrorMsg').html("quantity certified cannot be more than quantity requested.");
+        $('#number_releasedErrorMsg').show();
+        $('#number_releasedErrorMsg').delay(2000).fadeOut('slow');
+        $('#number_released').val("");
+    }
+    else
+    {
+        $('#balance').val(quantity);
+    }
+}
+
+function update_permit_details_form()
+{
+    $.ajax({
+        type : "POST",
+        url : "{% url 'update_details_la' %}",
+        data : $('#permit_details_form').serialize(),
+        success : function(response) {
+            $('#details-import').html(response);
+            $('#permit_details_model').modal('hide');
+            $('.modal-backdrop').remove();
+        }
+    });
 }
 
 </script>

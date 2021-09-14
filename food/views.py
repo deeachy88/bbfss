@@ -1691,6 +1691,15 @@ def save_fip_inspector_details(request, form, Record_Id, Quantity_Released, Rema
             balance = int(import_LP.Quantity_Balance) - int(import_LP.Quantity_Released)
             product_details = t_food_import_permit_t2.objects.filter(pk=Product_Record_Id)
             product_details.update(Quantity_Balance=balance)
+            if balance == 0:
+                import_details = t_food_import_permit_inspection_t1.objects.filter(
+                    Application_No=import_det.Application_No)
+                for import_det in import_details:
+                    la_details = t_food_import_permit_t1.objects.filter(
+                        Import_Permit_No=import_det.Import_Permit_No)
+                    for la in la_details:
+                        work_details = t_workflow_details.objects.filter(Application_No=la.Application_No)
+                        work_details.update(Application_Status='C')
         data['form_is_valid'] = True
         roles = t_food_import_permit_inspection_t2.objects.all()
         data['html_form'] = render_to_string('import_certificate_food/inspector_details.html', {

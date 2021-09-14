@@ -280,6 +280,7 @@ class t_livestock_import_permit_animal_inspection_t1(models.Model):
     Quarantine_Facilities = models.CharField(max_length=100, default=None, blank=True, null=True)
     Applicant_Id = models.CharField(max_length=100, default=None, blank=True, null=True)
 
+
 class t_livestock_import_permit_animal_inspection_t2(models.Model):
     Record_Id = models.AutoField(primary_key=True)
     Application_No = models.CharField(max_length=20)
