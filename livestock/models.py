@@ -182,6 +182,7 @@ class t_livestock_import_permit_product_inspection_t2(models.Model):
     Quantity_Released = models.IntegerField(blank=True, null=True)
     Remarks = models.TextField(blank=True, null=True)
     Quantity_Balance = models.IntegerField(blank=True, null=True)
+    Quantity_Balance_1 = models.IntegerField(blank=True, null=True)
     Product_Record_Id = models.IntegerField(blank=True, null=True)
 
 
@@ -293,6 +294,7 @@ class t_livestock_import_permit_animal_inspection_t2(models.Model):
     Quantity_Released = models.IntegerField(blank=True, null=True)
     Remarks = models.TextField(blank=True, null=True)
     Quantity_Balance = models.IntegerField(blank=True, null=True)
+    Quantity_Balance_1 = models.IntegerField(blank=True, null=True)
     Product_Record_Id = models.IntegerField(blank=True, null=True)
 
 

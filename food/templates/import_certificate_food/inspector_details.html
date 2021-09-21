@@ -310,9 +310,9 @@ form, input, select, textarea{
                                         <td>{{import.Quantity_Released}}</td>
                                         <td>{{import.Remarks}}</td>
                                         <td>
-                                            <button type="button"
-                                            class="btn btn-primary btn--icon btn-sm js-edit-details"
-                                            data-url="{% url 'edit_food_inspector_details' import.Record_Id %}">
+                                            <button type="button" class="btn btn-info"
+                                            onclick="populateEditDetails('{{ import.Common_Name }}', '{{import.Product_Category}}', '{{import.Product_Characteristics}}',
+                                            '{{import.Exporter_Type}}', '{{import.Quantity}}', '{{import.Unit}}', '{{import.Application_No}}','{{import.Record_Id}}', '{{import.Quantity_Balance_1}}', '{{import.Quantity_Balance}}')">
                                             <i class="zmdi zmdi-edit"></i>
                                             </button>
                                         </td>
@@ -449,7 +449,7 @@ form, input, select, textarea{
                     <div class="alert alert-success" id="approve_Msg" style="display:none"></div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-flat btn-primary" onclick="add_details_ins('{{ application_details.Application_No }}')">
-                            <i class="ace-icon fa fa-times"></i>
+                            <i class="ace-icon fa fa-check"></i>
                             &nbsp;&nbsp;Add
                         </button>
                         <button type="button" class="btn btn-primary" onclick="closeModal()">Close Modal</button>
@@ -458,13 +458,101 @@ form, input, select, textarea{
             </div>
         </div>
 </div>
-<div class="modal fade" id="modal-book">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content edit">
-
-      </div>
+<form method="post" id="food_permit_details_form">
+    {% csrf_token %}
+    <input type="hidden" id="applicationNo" name="applicationNo">
+    <div class="modal fade" id="permit_details_model" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <input type="hidden" id="balance_quantity_1">
+                                <input type="hidden" id="import_record_id" name="import_record_id">
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Common Name <font color="red">*</font></label>
+                                        <input type="text" name="Common_Name" class="form-control" id="Common_Name" disabled>
+                                        <div class="alert alert-danger" id="common_nameErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Product Category <font color="red">*</font></label>
+                                        <input type="text" name="Product_Category" class="form-control" id="Product_Category" disabled>
+                                        <div class="alert alert-danger" id="product_categoryErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Product Characteristics <font color="red">*</font></label>
+                                        <textarea class="form-control" id="characteristics" name="characteristics" disabled></textarea>
+                                        <div class="alert alert-danger" id="characteristicsErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Quantity <font color="red">*</font></label>
+                                        <input type="number" name="qty" class="form-control" id="qty" disabled>
+                                        <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Unit</label>
+                                        <input type="text" name="unit" class="form-control" id="unit" disabled>
+                                        <div class="alert alert-danger" id="unitErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label>Type Of Exporter <font color="red">*</font></label><br>
+                                            <label class="custom-control custom-radio">
+                                                <input type="radio" name="Export_Type" class="custom-control-input" id="Producer" disabled>
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">Producer</span>
+                                            </label>
+                                            <label class="custom-control custom-radio">
+                                                <input type="radio" name="Export_Type" class="custom-control-input" id="Exporter" disabled>
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">Exporter</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Quantity Released</label>
+                                            <input type="text" class="form-control" id="qty_approved" name="qty_approved" onchange="get_balance_import(this.value)">
+                                        </div>
+                                        <div class="alert alert-danger" id="certified_qtyErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Quantity Balance</label>
+                                            <input type="text" class="form-control" id="qty_balance" name="qty_balance" readonly="readonly">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Remarks</label>
+                                            <textarea class="form-control" id="import_remarks" name="import_remarks"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="update_permit_details_form()">Update</button>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+</form>
 <div class="modal fade" id="modal-decision">
     <div class="modal-dialog modal-lg">
       <div class="modal-content edit">
@@ -560,22 +648,57 @@ function submit_details(application_id)
     }
 }
 
-function check_certified_qty(certified_qty)
+function populateEditDetails(Common_Name, Product_Category, Product_Characteristics, Exporter_Type, Quantity, Unit, Application_No, Record_Id,Quantity_Balance_1, Quantity_Balance)
 {
-    requested_qty = $('#requested_qty').val()
-    if(certified_qty > requested_qty)
+    $('#import_record_id').val(Record_Id);
+    $('#Common_Name').val(Common_Name);
+    $('#Product_Category').val(Product_Category);
+    $('#characteristics').val(Product_Characteristics);
+    $('#qty').val(Quantity);
+    $('#unit').val(Unit);
+    $('#applicationNo').val(Application_No);
+    $('#balance_quantity_1').val(Quantity_Balance_1);
+    $('#balance_quantity').val(Quantity_Balance);
+    $('#permit_details_model').modal('show');
+    if(Exporter_Type == 'Producer')
+    {
+        $("#Producer").prop("checked", true);
+    }
+    else
+    {
+        $("#Exporter").prop("checked", true);
+    }
+}
+
+function get_balance_import(qty)
+{
+    var balance_quantity_1 = $('#balance_quantity_1').val();
+    var number_released = $('#qty_approved').val();
+    var quantity = balance_quantity_1 - number_released
+    if(quantity < 0)
     {
         $('#certified_qtyErrorMsg').html("quantity certified cannot be more than quantity requested.");
         $('#certified_qtyErrorMsg').show();
         $('#certified_qtyErrorMsg').delay(2000).fadeOut('slow');
-        $('#certified_qty').val("");
-         $('#rejected_qty').val("");
+        $('#qty_approved').val("");
     }
     else
     {
-        qty = requested_qty - certified_qty
-        $('#rejected_qty').val(qty);
+        $('#qty_balance').val(quantity);
     }
+}
 
+function update_permit_details_form()
+{
+    $.ajax({
+        type : "POST",
+        url : "{% url 'update_import_details_food' %}",
+        data : $('#food_permit_details_form').serialize(),
+        success : function(response) {
+            $('#import-details').html(response);
+            $('#permit_details_model').modal('hide');
+            $('.modal-backdrop').remove();
+        }
+    });
 }
 </script>

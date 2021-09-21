@@ -1,3 +1,4 @@
+{% load static %}
 <style>
 form, input, select, textarea{
     color: black !important;
@@ -319,7 +320,7 @@ form, input, select, textarea{
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Validity Period (If Approve Please Fill The Validity Period)</label>
+                                    <label class="form-label">Validity Period (If Approve Please Fill The Validity Period)<font color="red">*</font></label>
                                     <input type="number" class="form-control" name="validity" id="validity">
                                 </div>
                                 <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>
@@ -335,7 +336,7 @@ form, input, select, textarea{
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label class="form-label">Special Terms And Conditions</label>
+                                    <label class="form-label">Special Terms And Conditions(If Applicable)</label>
                                     <textarea class="form-control" rows="3" id="terms" name="terms"></textarea>
                                 </div>
                                 <div class="alert alert-danger" id="termsErrorMsg" style="display:none"></div>
@@ -347,6 +348,9 @@ form, input, select, textarea{
                         </div>
                         <div id="rejectMsg" class="alert alert-info" role="alert" style="display:none;">
                             Application Rejected
+                        </div>
+                        <div id="loader" style="display:none">
+                            <img src="{% static 'assets/img/ajax-loader.gif' %}" alt="processing..." />
                         </div>
                         {% for application_details in application_details %}
                             <div class="card-action text-center">
@@ -376,11 +380,13 @@ form, input, select, textarea{
             }
             else
             {
+                $("#loader").show();
                 $.ajax({
                     type : "POST",
                     url : "{% url 'approve_fo_fip_import' %}",
                     data :{'application_id':application_id ,'remarks':remarks,'validity':validity,'terms':terms, csrfmiddlewaretoken: '{{ csrf_token }}'},
                     success : function(data) {
+                        $("#loader").hide();
                         $('#submitMsg').show();
                         setTimeout(function()
                         {
@@ -390,9 +396,8 @@ form, input, select, textarea{
                         {
                             $('#import_detailsModal').modal('hide');
                         }, 3000);
-                        setTimeout(function()
-                        {
-                             location.reload();
+                        setTimeout(function() {
+                            window.location.href = '{% url 'dashboard' %}';
                         }, 3000);
 
                     }
@@ -401,6 +406,7 @@ form, input, select, textarea{
         }
     function fo_fip_import_reject(application_id)
         {
+
             remarks = $('#remarks').val();
 
             if(remarks == "")
@@ -409,25 +415,28 @@ form, input, select, textarea{
                 $('#remarksErrorMsg').show();
                 $('#remarksErrorMsg').delay(2000).fadeOut('slow');
             }
-            $.ajax({
-                type : "POST",
-                url : "{% url 'reject_fo_fip_import' %}",
-                data :{'application_id':application_id ,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
-                success : function(data) {
-                    $('#rejectMsg').show();
-                    setTimeout(function()
-                    {
-                        $("#rejectMsg").hide('blind', {}, 500)
-                    }, 2000);
-                    setTimeout(function()
-                    {
-                        $('#import_detailsModal').modal('hide');
-                    }, 3000);
-                    setTimeout(function()
-                    {
-                         location.reload();
-                    }, 3000);
-                }
-            });
+            else
+            {
+                $("#loader").show();
+                $.ajax({
+                    type : "POST",
+                    url : "{% url 'reject_fo_fip_import' %}",
+                    data :{'application_id':application_id ,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                    success : function(data) {
+                        $('#rejectMsg').show();
+                        setTimeout(function()
+                        {
+                            $("#rejectMsg").hide('blind', {}, 500)
+                        }, 2000);
+                        setTimeout(function()
+                        {
+                            $('#import_detailsModal').modal('hide');
+                        }, 3000);
+                        setTimeout(function() {
+                            window.location.href = '{% url 'dashboard' %}';
+                        }, 3000);
+                    }
+                });
+            }
         }
 </script>

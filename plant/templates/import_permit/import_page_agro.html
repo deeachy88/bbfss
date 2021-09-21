@@ -14,7 +14,11 @@
             <tr>
                 <td>{{ forloop.counter }}</td>
                 <td>{{import.Import_Category}}</td>
-                <td>{{import.Pesticide_Id}}</td>
+                {% for pesticide in pesticide %}
+                    {% if import.Pesticide_Id == pesticide.Pesticide_Id %}
+                        <td>{{pesticide.Pesticide_Name}}</td>
+                    {% endif %}
+                {% endfor %}
                 <td>{{import.Description}}</td>
                 <td>{{import.Quantity}}</td>
                 <td>{{import.Unit}}</td>

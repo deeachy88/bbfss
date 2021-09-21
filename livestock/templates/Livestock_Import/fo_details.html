@@ -1,3 +1,4 @@
+{% load static %}
 <style>
 form, input, select, textarea{
     color: black !important;
@@ -478,6 +479,9 @@ form, input, select, textarea{
                     </div>
                     <br>
                     <hr>
+                    <div id="loader" style="display:none">
+                        <img src="{% static 'assets/img/ajax-loader.gif' %}" alt="processing..." />
+                    </div>
                     <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
                         Application Approved
                     </div>
@@ -501,6 +505,7 @@ form, input, select, textarea{
 <script>
     function fo_approve(application_id)
         {
+            $("#loader").show();
             remarks = $('#remarks').val();
             validity = $('#validity').val();
             if(validity == "")
@@ -516,7 +521,7 @@ form, input, select, textarea{
                     url : "{% url 'approve_fo_lp_import' %}",
                     data :{'application_id':application_id ,'remarks':remarks,'validity':validity, csrfmiddlewaretoken: '{{ csrf_token }}'},
                     success : function(data) {
-
+                        $("#loader").hide();
                         $('#submitMsg').show();
                         setTimeout(function()
                         {
@@ -526,9 +531,8 @@ form, input, select, textarea{
                         {
                             $('#import_detailsModal').modal('hide');
                         }, 2000);
-                        setTimeout(function()
-                        {
-                             location.reload();
+                        setTimeout(function() {
+                            window.location.href = '{% url 'dashboard' %}';
                         }, 3000);
 
                     }
@@ -537,6 +541,7 @@ form, input, select, textarea{
         }
     function fo_reject(application_id)
         {
+            $("#loader").show();
             remarks = $('#remarks').val();
 
             if(remarks == "")
@@ -550,6 +555,7 @@ form, input, select, textarea{
                 url : "{% url 'reject_fo_lp_import' %}",
                 data :{'application_id':application_id ,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(data) {
+                    $("#loader").hide();
                     $('#rejectMsg').show();
                     setTimeout(function()
                     {
@@ -559,9 +565,8 @@ form, input, select, textarea{
                     {
                         $('#import_detailsModal').modal('hide');
                     }, 2000);
-                    setTimeout(function()
-                    {
-                         location.reload();
+                    setTimeout(function() {
+                        window.location.href = '{% url 'dashboard' %}';
                     }, 3000);
                 }
             });

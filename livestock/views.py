@@ -1016,10 +1016,8 @@ def submit_la_application(request):
     application_details = t_workflow_details.objects.filter(Application_No=application_no)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='C')
-    application_list = t_workflow_details.objects.filter(Application_Status='A')
 
-    return render(request, 'inspector_pending_list.html',
-                  {'service_name': None, 'application_details': application_list})
+    return redirect(inspector_application)
 
 
 def la_clearance_no(request):
@@ -1353,14 +1351,13 @@ def submit_lp_application(request):
     remarks = request.GET.get('remarks')
     dateOfInspection = request.GET.get('dateOfInspection')
     timeOfInspection = request.GET.get('timeOfInspection')
-    expected_date = datetime.strptime(dateOfInspection, '%d-%m-%Y').date()
     clearnace_ref_no = lp_clearance_no(request)
 
     update_details = t_livestock_import_permit_product_inspection_t1.objects.filter(Application_No=application_no)
     update_details.update(Clearance_Ref_No=clearnace_ref_no)
     update_details.update(Inspection_Leader=Inspection_Leader)
     update_details.update(Inspection_Team=Inspection_Team)
-    update_details.update(Inspection_Date=expected_date)
+    update_details.update(Inspection_Date=dateOfInspection)
     update_details.update(Inspection_Time=timeOfInspection)
     if remarks is not None:
         update_details.update(Inspection_Remarks=remarks)
@@ -1369,10 +1366,8 @@ def submit_lp_application(request):
     application_details = t_workflow_details.objects.filter(Application_No=application_no)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='C')
-    application_list = t_workflow_details.objects.filter(Application_Status='A')
 
-    return render(request, 'inspector_pending_list.html',
-                  {'service_name': None, 'application_details': application_list})
+    return redirect(inspector_application)
 
 
 def lp_clearance_no(request):
@@ -1396,45 +1391,36 @@ def lp_clearance_no(request):
     return newPermitNo
 
 
-def edit_lp_inspector_details(request, Record_Id):
-    roles = get_object_or_404(t_livestock_import_permit_product_inspection_t2, pk=Record_Id)
-    Quantity_Released = request.POST.get('Quantity_Released')
-    Remarks = request.POST.get('Remarks')
-    if request.method == 'POST':
-        form = ImportFormProduct(request.POST, instance=roles)
+def update_details_lp(request):
+    application_no = request.POST.get('applicationNo')
+    record_id = request.POST.get('import_record_id')
+    approved_quantity = request.POST.get('number_released')
+    balance_number = request.POST.get('balance')
+    remarks = request.POST.get('import_Remarks')
+
+    import_det = t_livestock_import_permit_product_inspection_t2.objects.filter(pk=record_id)
+    if remarks is not None:
+        import_det.update(Remarks=remarks)
     else:
-        form = ImportFormProduct(instance=roles)
-    return save_lp_inspector_details(request, form, Record_Id, Quantity_Released, Remarks,
-                                     'Livestock_Import/edit_inspector_details.html')
-
-
-def save_lp_inspector_details(request, form, Record_Id, Quantity_Released, Remarks, template_name):
-    data = dict()
-    if request.method == 'POST':
-        import_det = t_livestock_import_permit_product_inspection_t2.objects.filter(pk=Record_Id)
-        import_det.update(Quantity_Released=Quantity_Released)
-        import_det.update(Remarks=Remarks)
-        for import_LP in import_det:
-            Product_Record_Id = import_LP.Product_Record_Id
-            balance = int(import_LP.Quantity_Balance) - int(import_LP.Quantity_Released)
-            product_details = t_livestock_import_permit_product_t2.objects.filter(pk=Product_Record_Id)
-            product_details.update(Quantity_Balance=balance)
-            if balance == 0:
-                import_details = t_livestock_import_permit_product_inspection_t1.objects.filter(
-                    Application_No=import_det.Application_No)
-                for import_det in import_details:
-                    la_details = t_livestock_import_permit_product_t1.objects.filter(
-                        Import_Permit_No=import_det.Import_Permit_No)
-                    for la in la_details:
-                        work_details = t_workflow_details.objects.filter(Application_No=la.Application_No)
-                        work_details.update(Application_Status='C')
-        roles = t_livestock_import_permit_product_inspection_t2.objects.all()
-        data['html_book_list'] = render_to_string('Livestock_Import/details_import.html', {
-            'import': roles, 'balance': balance
-        })
-    context = {'form': form}
-    data['html_form'] = render_to_string(template_name, context, request=request)
-    return JsonResponse(data)
+        import_det.update(Remarks=None)
+    import_det.update(Quantity_Released=approved_quantity)
+    import_det.update(Quantity_Balance=balance_number)
+    for import_ILA in import_det:
+        Product_Record_Id = import_ILA.Product_Record_Id
+        balance = int(import_ILA.Quantity_Balance) - int(import_ILA.Quantity_Released)
+        product_details = t_livestock_import_permit_product_t2.objects.filter(pk=Product_Record_Id)
+        product_details.update(Quantity_Balance=balance)
+        if balance == 0:
+            import_details = t_livestock_import_permit_product_inspection_t1.objects.filter(
+                Application_No=application_no)
+            for import_det in import_details:
+                la_details = t_livestock_import_permit_product_t1.objects.filter(
+                    Import_Permit_No=import_det.Import_Permit_No)
+                for la in la_details:
+                    work_details = t_workflow_details.objects.filter(Application_No=la.Application_No)
+                    work_details.update(Application_Status='C')
+    application_details = t_livestock_import_permit_product_inspection_t2.objects.filter(Application_No=application_no)
+    return render(request, 'Livestock_Import/livestock_import_details.html', {'import': application_details})
 
 
 # export certificate for animal and animal products

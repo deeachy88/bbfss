@@ -166,13 +166,7 @@ form, input, select, textarea{
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="form-label">Country Of Origin <font color="red">*</font></label>
-                                                 <select class="form-control" name="Country_Of_Origin"  id="Country_Of_Origin">
-                                                     {% for country in country %}
-                                                        <option value="{{country.Country_Code}}"{% if application_details.Country_Of_Origin == country.Country_Code %}selected{% endif %}>
-                                                            {{ country.Country_Name }}
-                                                        </option>
-                                                    {% endfor %}
-                                                 </select>
+                                                <input type="text" class="form-control" value="{{application_details.Country_Of_Origin}}" disabled>
                                             </div>
                                         </div>
                                     </div>
@@ -192,9 +186,9 @@ form, input, select, textarea{
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="form-label">Place Of Entry <font color="red">*</font></label>
-                                                 <select class="form-control" name="entry_point"  id="entry_point">
+                                                 <select class="form-control" disabled>
                                                      {% for location in location %}
-                                                        <option value="{{location.Field_Office_Id}}"{% if application_details.Actual_Point_Of_Entry == location.Field_Office_Id %}selected{% endif %}>
+                                                        <option value="{{location.Field_Office_Id}}"{% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>
                                                             {{ location.Field_Office }}
                                                         </option>
                                                     {% endfor %}
@@ -212,7 +206,7 @@ form, input, select, textarea{
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="form-label">Final Destination <font color="red">*</font></label>
-                                                <input type="text" class="form-control" value="{{application_details.Final_Destination}}">
+                                                <input type="text" class="form-control" value="{{application_details.Final_Destination}}" disabled>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
@@ -245,13 +239,13 @@ form, input, select, textarea{
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Passport No <font color="red">*</font></label>
-                                        <input type="text" class="form-control" value="{{application_details.Passport_Number}}">
+                                        <input type="text" class="form-control" value="{{application_details.Passport_Number}}" disabled>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Nationality <font color="red">*</font></label>
-                                        <input type="text" class="form-control" value="{{application_details.Nationality}}">
+                                        <input type="text" class="form-control" value="{{application_details.Nationality}}" disabled>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -291,21 +285,18 @@ form, input, select, textarea{
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Country Of Origin <font color="red">*</font></label>
-                                         <select class="form-control" name="Origin" id="Origin">
-                                            <option value="">--SELECT--</option>
-                                            {% for country in country %}
-                                                <option value="{{ country.Country_Name }}">{{ country.Country_Name }}</option>
-                                            {% endfor %}
-                                         </select>
+                                        <input type="text" class="form-control" value="{{application_details.Country_Of_Origin}}" disabled>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Means of Conveyance <font color="red">*</font></label>
-                                        <select class="form-control form-control" id="p_conveyanceMeans" name="p_conveyanceMeans">
-                                            <option value="">-SELECT-</option>
-                                            <option value="Air">Air</option>
-                                            <option value="Vehicular">Vehicular</option>
+                                        <select class="form-control form-control" disabled>
+                                            {% if application_details.Means_of_Conveyance == 'Air' %}
+                                                <option value="Air" selected>Air</option>
+                                            {% else %}
+                                                <option value="Vehicular" selected>Vehicular</option>
+                                            {% endif %}
                                         </select>
                                     </div>
                                 </div>
@@ -314,10 +305,11 @@ form, input, select, textarea{
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Place Of Entry <font color="red">*</font></label>
-                                         <select class="form-control" name="p_entry_point"  id="p_entry_point">
-                                            <option value="">--SELECT--</option>
-                                            {% for location in location %}
-                                                <option value="{{ location.Field_Office_Id }}">{{ location.Field_Office }}</option>
+                                         <select class="form-control" name="entry_point"  id="entry_point" disabled>
+                                             {% for location in location %}
+                                                <option value="{{location.Field_Office_Id}}"{% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>
+                                                    {{ location.Field_Office }}
+                                                </option>
                                             {% endfor %}
                                          </select>
                                     </div>
@@ -342,7 +334,7 @@ form, input, select, textarea{
                                         <input type="text" class="form-control" value="{{application_details.Expected_Arrival_Date}}" disabled>
                                     </div>
                                 </div>
-                                <div class="col-sm-6 justify-content-center">
+                                <!--<div class="col-sm-6 justify-content-center">
                                     <div class="form-group">
                                         <label class="form-label">Products are derived from GMO? <font color="red">*</font></label><br>
                                         <label class="custom-control custom-radio">
@@ -356,7 +348,7 @@ form, input, select, textarea{
                                             <span class="custom-control-description">No</span>
                                         </label>
                                     </div>
-                                </div>
+                                </div>-->
                             </div>
                             {% endif %}
                             {% else %}
@@ -371,7 +363,7 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Business Name <font color="red">*</font></label>
-                                            <input type="text" class="form-control" value="{{application_details.License_No}}" disabled>
+                                            <input type="text" class="form-control" value="{{application_details.Business_Name}}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -405,37 +397,33 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Country Of Origin <font color="red">*</font></label>
-                                             <select class="form-control" name="Com_Country_Of_Origin"  id="Com_Country_Of_Origin">
-                                                <option value="">--SELECT--</option>
-                                                {% for country in country %}
-                                                    <option value="{{ country.Country_Name }}">{{ country.Country_Name }}</option>
-                                                {% endfor %}
-                                             </select>
+                                            <input type="text" class="form-control" value="{{application_details.Country_Of_Origin}}" disabled>
                                             <div class="alert alert-danger" id="Com_Country_Of_OriginErrorMsg" style="display:none"></div>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Means of Conveyance <font color="red">*</font></label>
-                                            <select class="form-control form-control" id="com_conveyanceMeans" name="com_conveyanceMeans">
-                                                <option value="">-SELECT-</option>
-                                                <option value="Air">Air</option>
-                                                <option value="Vehicular">Vehicular</option>
+                                            <select class="form-control form-control" disabled>
+                                                {% if application_details.Means_of_Conveyance == 'Air' %}
+                                                    <option value="Air" selected>Air</option>
+                                                {% else %}
+                                                    <option value="Vehicular" selected>Vehicular</option>
+                                                {% endif %}
                                             </select>
                                         </div>
-                                        <div class="alert alert-danger" id="com_conveyanceMeansErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Place Of Entry <font color="red">*</font></label>
-                                             <select class="form-control" name="com_entry_point"  id="com_entry_point">
-                                                <option value="">--SELECT--</option>
-                                                {% for location in location %}
-                                                    <option value="{{ location.Field_Office_Id }}">{{ location.Field_Office }}</option>
+                                             <select class="form-control" disabled>
+                                                 {% for location in location %}
+                                                    <option value="{{location.Field_Office_Id}}"{% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>
+                                                        {{ location.Field_Office }}
+                                                    </option>
                                                 {% endfor %}
                                              </select>
                                         </div>
-                                        <div class="alert alert-danger" id="com_entry_pointErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -448,13 +436,13 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Final Destination <font color="red">*</font></label>
-                                            <input type="text" class="form-control" value="{{application_details.Final_Destination}}">
+                                            <input type="text" class="form-control" value="{{application_details.Final_Destination}}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Expected Arrival Date <font color="red">*</font></label>
-                                            <input type="text" class="form-control" value="{{application_details.Expected_Arrival_Date}}">
+                                            <input type="text" class="form-control" value="{{application_details.Expected_Arrival_Date}}" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -545,7 +533,7 @@ form, input, select, textarea{
                                            {% for file_attach in file %}
                                                     <tr>
                                                         <td>{{ forloop.counter }}</td>
-                                                        <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                                                        <td><a href='{{file_attach.File_Path}}' target="_blank">{{file_attach.Attachment}}</a></td>
                                                     </tr>
                                                     {% empty %}
                                                     <tr>

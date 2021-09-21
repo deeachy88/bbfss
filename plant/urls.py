@@ -36,6 +36,7 @@ urlpatterns = [
     path('mov_plant_attachment', views.mov_plant_attachment, name='mov_plant_attachment'),
     path('mov_agro_attachment', views.mov_agro_attachment, name='mov_agro_attachment'),
     path('get_unit_master', views.get_unit_master, name='get_unit_master'),
+    path('load_to_location', views.load_to_location, name='load_to_location'),
 
     # for import of plant and plant products
     path('apply_import_permit', views.apply_import_permit, name='apply_import_permit'),

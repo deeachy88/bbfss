@@ -77,8 +77,7 @@ urlpatterns = [
          name='submit_livestock_product_application'),
     path('approve_fo_lp_import', views.approve_fo_lp_import, name='approve_fo_lp_import'),
     path('reject_fo_lp_import', views.reject_fo_lp_import, name='reject_fo_lp_import'),
-    path('edit_lp_inspector_details/<int:Record_Id>', views.edit_lp_inspector_details,
-         name='edit_lp_inspector_details'),
+    path('update_details_lp', views.update_details_lp, name='update_details_lp'),
     path('submit_lp_application', views.submit_lp_application, name='submit_lp_application'),
 
     # export certificate for animal and animal products

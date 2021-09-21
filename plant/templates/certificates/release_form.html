@@ -3,12 +3,17 @@
     .header-card {
     background-color: white;
 }
+
+table, th, td {
+  border: 1px solid black;
+}
+
 </style>
 <div class="card">
-    <div class="card-header header-card">
+    <div class="card-header header-card"><font color='black'>
         <div class="card-head-row float-right">
             <div class="card-tools">
-                <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Test Report';printClientTable()">
+                <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Release Form';printTable()">
                     <span class="btn-label">
                         <i class="zmdi zmdi-print"></i>
                     </span>
@@ -22,50 +27,117 @@
             <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
         </div>
         <h6 class="text-center"><font color='black'><b>RELEASE FORM</b></font></h6>
-    </div>
-    <div class="card-body">
-        <div class="row justify-content-center">
-            <p>The following consignment is released to </p>
-        </div>
-        {% for certificate_details in certificate_details %}
-        <div class="row justify-content-between">
-            <label>Ref.No&nbsp;:&nbsp;{{certificate_details.Clearance_Ref_No}}</label>
-            <label>Import Permit&nbsp;:&nbsp;{{certificate_details.Import_Permit_No}}</label>
-        </div>
-        <div class="row justify-content-center">
-            <label>Mr/Ms&nbsp;:&nbsp;{{certificate_details.Applicant_Name}}</label>
-        </div>
-        {% endfor %}
-        <div class="row">
-            <table  class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th scope="col">Sl.No</th>
-                        <th scope="col">Product(s)</th>
-                        <th scope="col">Quantity (MT/KG)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                   {% for release_form in release_form %}
+        <div class="card-body">
+            <div class="row justify-content-center">
+                <p>The following consignment is released to </p>
+            </div>
+            {% for certificate_details in certificate_details %}
+            <div class="row justify-content-between">
+                <label>Ref.No&nbsp;:&nbsp;{{certificate_details.Clearance_Ref_No}}</label>
+                <label>Import Permit&nbsp;:&nbsp;{{certificate_details.Import_Permit_No}}</label>
+            </div>
+            <div class="row justify-content-center">
+                <label>Mr/Ms&nbsp;:&nbsp;{{certificate_details.Applicant_Name}}</label>
+            </div>
+            {% endfor %}
+            <div class="row">
+                <table  class="table table-bordered">
+                    <thead>
                         <tr>
-                            <td>{{ forloop.counter }}</td>
-                            {% for crop in crop %}
-                                {% if release_form.Crop_Id == crop.Crop_Id %}
-                                    <td>{{ crop.Crop_Common_Name }}</td>
-                                {% endif %}
-                            {% endfor %}
-                            <td>{{release_form.Quantity_Released}}</td>
+                            <th scope="col">Sl.No</th>
+                            <th scope="col">Product(s)</th>
+                            <th scope="col">Quantity (MT/KG)</th>
                         </tr>
-                        {% empty %}
-                        <tr>
-                          <td colspan="4" class="text-center">No Data</td>
-                        </tr>
-                   {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                       {% for release_form in release_form %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                {% for crop in crop %}
+                                    {% if release_form.Crop_Id == crop.Crop_Id %}
+                                        <td>{{ crop.Crop_Common_Name }}</td>
+                                    {% endif %}
+                                {% endfor %}
+                                <td>{{release_form.Quantity_Released}}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                              <td colspan="4" class="text-center">No Data</td>
+                            </tr>
+                       {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="row">
+                {% for release_form in certificate_details %}
+                    Date of Issue &nbsp;:&nbsp;&nbsp;{{release_form.Approved_Date}}
+                {% endfor %}
+            </div>
         </div>
-        <div class="row">
-            Date of Issue &nbsp;:&nbsp;&nbsp;{{approved_date}}
+        <div class="col-md-12" style="display:none;" id="print">
+            <div>
+                <div class="card-title text-center">
+                    <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
+                </div>
+                <h6 class="text-center"><font color='black'><b>RELEASE FORM</b></font></h6>
+                <div class="card-body">
+                    <div class="row justify-content-center">
+                        <p>The following consignment is released to </p>
+                    </div>
+                    {% for certificate_details in certificate_details %}
+                    <div class="row justify-content-between">
+                        <label>Ref.No&nbsp;:&nbsp;{{certificate_details.Clearance_Ref_No}}</label>
+                        <label>Import Permit&nbsp;:&nbsp;{{certificate_details.Import_Permit_No}}</label>
+                    </div>
+                    <div class="row justify-content-center">
+                        <label>Mr/Ms&nbsp;:&nbsp;{{certificate_details.Applicant_Name}}</label>
+                    </div>
+                    {% endfor %}
+                    <div class="row">
+                        <table  class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Sl.No</th>
+                                    <th scope="col">Product(s)</th>
+                                    <th scope="col">Quantity (MT/KG)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               {% for release_form in release_form %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        {% for crop in crop %}
+                                            {% if release_form.Crop_Id == crop.Crop_Id %}
+                                                <td>{{ crop.Crop_Common_Name }}</td>
+                                            {% endif %}
+                                        {% endfor %}
+                                        <td>{{release_form.Quantity_Released}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="4" class="text-center">No Data</td>
+                                    </tr>
+                               {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row">
+                        {% for release_form in certificate_details %}
+                            Date of Issue &nbsp;:&nbsp;&nbsp;{{release_form.Approved_Date}}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
         </div>
+        </font>
     </div>
 </div>
+<script>
+    function printTable()
+    {
+        $("#print").show();
+	    jQuery('#print').print();
+	    $("#print").hide();
+    }
+
+</script>

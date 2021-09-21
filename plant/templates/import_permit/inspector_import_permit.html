@@ -15,7 +15,7 @@ form, input, select, textarea{
 
             <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion" style="">
                 <div class="card-body">
-                        {% if application_details.Import_Type == 'P' %}
+                            {% if application_details.Import_Type == "P" %}
                                 <div class="row justify-content-center">
                                     <div class="form-check text-center">
                                         <label>Import Type <font color="red">*</font></label><br>
@@ -161,12 +161,7 @@ form, input, select, textarea{
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="form-label">Country Of Origin <font color="red">*</font></label>
-                                                 <select class="form-control" name="Country_Of_Origin"  id="Country_Of_Origin">
-                                                    <option value="">--SELECT--</option>
-                                                    {% for country in country %}
-                                                        <option value="{{ country.Country_Name }}">{{ country.Country_Name }}</option>
-                                                    {% endfor %}
-                                                 </select>
+                                                <input type="text" class="form-control" value="{{application_details.Country_Of_Origin}}" disabled>
                                             </div>
                                         </div>
                                     </div>
@@ -186,10 +181,11 @@ form, input, select, textarea{
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="form-label">Place Of Entry <font color="red">*</font></label>
-                                                 <select class="form-control" name="entry_point"  id="entry_point">
-                                                    <option value="">--SELECT--</option>
-                                                    {% for location in location %}
-                                                        <option value="{{ location.Field_Office_Id }}">{{ location.Field_Office }}</option>
+                                                 <select class="form-control" disabled>
+                                                     {% for location in location %}
+                                                        <option value="{{location.Field_Office_Id}}"{% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>
+                                                            {{ location.Field_Office }}
+                                                        </option>
                                                     {% endfor %}
                                                  </select>
                                             </div>
@@ -197,7 +193,7 @@ form, input, select, textarea{
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="form-label">Purpose <font color="red">*</font></label>
-                                                <textarea class="form-control" rows="2" id="B_movementPurpose" name="B_movementPurpose">{{application_details.Purpose}}</textarea>
+                                                <textarea class="form-control" rows="2" disabled>{{application_details.Purpose}}</textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -205,13 +201,13 @@ form, input, select, textarea{
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="form-label">Final Destination <font color="red">*</font></label>
-                                                <input type="text" class="form-control" id="B_finalDestination" name="B_final_Destination">
+                                                <input type="text" class="form-control" value="{{application_details.Final_Destination}}" disabled>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="form-label">Expected Arrival Date <font color="red">*</font></label>
-                                                <input type="text" class="form-control date-picker flatpickr-input active" id="B_expectedDate" name="date_expected"  placeholder="Pick a date" readonly="readonly">
+                                                <input type="text" class="form-control" readonly="readonly" value="{{application_details.Expected_Arrival_Date}}">
                                             </div>
                                             <div class="alert alert-danger" id="B_expectedDateErrorMsg" style="display:none"></div>
                                         </div>
@@ -238,13 +234,13 @@ form, input, select, textarea{
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Passport No <font color="red">*</font></label>
-                                        <input type="text" class="form-control" value="{{application_details.Passport_Number}}">
+                                        <input type="text" class="form-control" value="{{application_details.Passport_Number}}" disabled>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Nationality <font color="red">*</font></label>
-                                        <input type="text" class="form-control" value="{{application_details.Nationality}}">
+                                        <input type="text" class="form-control" value="{{application_details.Nationality}}" disabled>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -284,21 +280,18 @@ form, input, select, textarea{
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Country Of Origin <font color="red">*</font></label>
-                                         <select class="form-control" name="Origin" id="Origin">
-                                            <option value="">--SELECT--</option>
-                                            {% for country in country %}
-                                                <option value="{{ country.Country_Name }}">{{ country.Country_Name }}</option>
-                                            {% endfor %}
-                                         </select>
+                                        <input type="text" class="form-control" value="{{application_details.Country_Of_Origin}}" disabled>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Means of Conveyance <font color="red">*</font></label>
-                                        <select class="form-control form-control" id="p_conveyanceMeans" name="p_conveyanceMeans">
-                                            <option value="">-SELECT-</option>
-                                            <option value="Air">Air</option>
-                                            <option value="Vehicular">Vehicular</option>
+                                        <select class="form-control form-control" disabled>
+                                            {% if application_details.Means_of_Conveyance == 'Air' %}
+                                                <option value="Air" selected>Air</option>
+                                            {% else %}
+                                                <option value="Vehicular" selected>Vehicular</option>
+                                            {% endif %}
                                         </select>
                                     </div>
                                 </div>
@@ -307,10 +300,11 @@ form, input, select, textarea{
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Place Of Entry <font color="red">*</font></label>
-                                         <select class="form-control" name="p_entry_point"  id="p_entry_point">
-                                            <option value="">--SELECT--</option>
-                                            {% for location in location %}
-                                                <option value="{{ location.Field_Office_Id }}">{{ location.Field_Office }}</option>
+                                         <select class="form-control" name="entry_point"  id="entry_point" disabled>
+                                             {% for location in location %}
+                                                <option value="{{location.Field_Office_Id}}"{% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>
+                                                    {{ location.Field_Office }}
+                                                </option>
                                             {% endfor %}
                                          </select>
                                     </div>
@@ -335,7 +329,7 @@ form, input, select, textarea{
                                         <input type="text" class="form-control" value="{{application_details.Expected_Arrival_Date}}" disabled>
                                     </div>
                                 </div>
-                                <div class="col-sm-6 justify-content-center">
+                                <!--<div class="col-sm-6 justify-content-center">
                                     <div class="form-group">
                                         <label class="form-label">Products are derived from GMO? <font color="red">*</font></label><br>
                                         <label class="custom-control custom-radio">
@@ -349,7 +343,7 @@ form, input, select, textarea{
                                             <span class="custom-control-description">No</span>
                                         </label>
                                     </div>
-                                </div>
+                                </div>-->
                             </div>
                             {% endif %}
                             {% else %}
@@ -364,7 +358,7 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Business Name <font color="red">*</font></label>
-                                            <input type="text" class="form-control" value="{{application_details.License_No}}" disabled>
+                                            <input type="text" class="form-control" value="{{application_details.Business_Name}}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -398,37 +392,33 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Country Of Origin <font color="red">*</font></label>
-                                             <select class="form-control" name="Com_Country_Of_Origin"  id="Com_Country_Of_Origin">
-                                                <option value="">--SELECT--</option>
-                                                {% for country in country %}
-                                                    <option value="{{ country.Country_Name }}">{{ country.Country_Name }}</option>
-                                                {% endfor %}
-                                             </select>
+                                            <input type="text" class="form-control" value="{{application_details.Country_Of_Origin}}" disabled>
                                             <div class="alert alert-danger" id="Com_Country_Of_OriginErrorMsg" style="display:none"></div>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Means of Conveyance <font color="red">*</font></label>
-                                            <select class="form-control form-control" id="com_conveyanceMeans" name="com_conveyanceMeans">
-                                                <option value="">-SELECT-</option>
-                                                <option value="Air">Air</option>
-                                                <option value="Vehicular">Vehicular</option>
+                                            <select class="form-control form-control" disabled>
+                                                {% if application_details.Means_of_Conveyance == 'Air' %}
+                                                    <option value="Air" selected>Air</option>
+                                                {% else %}
+                                                    <option value="Vehicular" selected>Vehicular</option>
+                                                {% endif %}
                                             </select>
                                         </div>
-                                        <div class="alert alert-danger" id="com_conveyanceMeansErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Place Of Entry <font color="red">*</font></label>
-                                             <select class="form-control" name="com_entry_point"  id="com_entry_point">
-                                                <option value="">--SELECT--</option>
-                                                {% for location in location %}
-                                                    <option value="{{ location.Field_Office_Id }}">{{ location.Field_Office }}</option>
+                                             <select class="form-control" disabled>
+                                                 {% for location in location %}
+                                                    <option value="{{location.Field_Office_Id}}"{% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>
+                                                        {{ location.Field_Office }}
+                                                    </option>
                                                 {% endfor %}
                                              </select>
                                         </div>
-                                        <div class="alert alert-danger" id="com_entry_pointErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -441,22 +431,22 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Final Destination <font color="red">*</font></label>
-                                            <input type="text" class="form-control" value="{{application_details.Final_Destination}}">
+                                            <input type="text" class="form-control" value="{{application_details.Final_Destination}}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Expected Arrival Date <font color="red">*</font></label>
-                                            <input type="text" class="form-control" value="{{application_details.Expected_Arrival_Date}}">
+                                            <input type="text" class="form-control" value="{{application_details.Expected_Arrival_Date}}" disabled>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        {% endif %}
+                            {% endif %}
                 </div>
             </div>
         </div>
-        <div class="card">
+        <!--<div class="card">
             <div class="card-header" role="tab" id="headingTwo">
                 <a class="collapsed" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                     File Attachments
@@ -509,7 +499,7 @@ form, input, select, textarea{
                     {% endif %}
                 </div>
             </div>
-        </div>
+        </div>-->
         <div class="card">
             <div class="card-header" role="tab" id="headingThree">
                 <a class="collapsed" data-toggle="collapse" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
@@ -557,7 +547,8 @@ form, input, select, textarea{
                                             <td>
                                                 <button type="button" class="btn btn-info"
                                                 onclick="populateDetails('{{ import.Record_Id }}', '{{import.Import_Category}}', '{{import.Crop_Id}}',
-                                                '{{import.Variety_Id}}', '{{import.Quantity}}', '{{import.Unit}}', '{{import.Application_No}}', '{{import.Quantity_Balance}}')">
+                                                '{{import.Variety_Id}}', '{{import.Quantity}}', '{{import.Unit}}', '{{import.Application_No}}','{{import.Quantity_Balance}}',
+                                                 '{{import.Quantity_Balance_1}}')">
                                                 <i class="zmdi zmdi-edit"></i>
                                                 </button>
                                             </td>
@@ -593,7 +584,7 @@ form, input, select, textarea{
                                                 <td>{{import.Import_Category}}</td>
                                                 {% for pesticide in pesticide %}
                                                     {% if pesticide.Pesticide_Id == import.Pesticide_Id %}
-                                                    <td>{{import.Pesticide_Name}}</td>
+                                                    <td>{{pesticide.Pesticide_Name}}</td>
                                                     {% endif %}
                                                 {% endfor %}
                                                 <td>{{import.Description}}</td>
@@ -604,7 +595,8 @@ form, input, select, textarea{
                                                 <td>
                                                     <button type="button" class="btn btn-info"
                                                     onclick="populateAgroDetails('{{ import.Record_Id }}', '{{import.Import_Category}}', '{{import.Pesticide_Id}}',
-                                                    '{{import.Description}}', '{{import.Quantity}}', '{{import.Unit}}', '{{import.Application_No}}','{{import.Quantity_Balance}}')">
+                                                    '{{import.Description}}', '{{import.Quantity}}', '{{import.Unit}}', '{{import.Application_No}}','{{import.Quantity_Balance}}',
+                                                    '{{import.Quantity_Balance_1}}')">
                                                     <i class="zmdi zmdi-edit"></i>
                                                     </button>
                                                 </td>
@@ -751,7 +743,6 @@ form, input, select, textarea{
                   </div>
             </div>
         </div>
-
     {% endfor %}
     <div class="modal fade" id="modal-common">
         <div class="modal-dialog modal-lg">
@@ -784,8 +775,9 @@ form, input, select, textarea{
                     <div class="col-lg-12">
                         <div class="box box-primary">
                             <div class="box-body">
-                                <input type="text" name="plant_applicationNo" id="plant_applicationNo">
+                                <input type="hidden" name="plant_applicationNo" id="plant_applicationNo">
                                 <input type="text" name="record_id" id="record_id" style="display:none"/>
+                                <input type="hidden" class="form-control" id="qty_balance_1">
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
@@ -833,20 +825,25 @@ form, input, select, textarea{
                                     </div>
                                 </div>
                                 <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Quantity Released</label>
+                                            <input type="text" class="form-control" id="qty_approved" name="qty_approved" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57" onchange="balance_plant(this.value)">
+                                        </div>
+                                        <div class="alert alert-danger" id="certified_qtyErrorMsg" style="display:none"></div>
+                                    </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Quantity Balance</label>
                                             <input type="text" class="form-control" id="qty_balance" name="qty_balance" readonly="readonly">
                                         </div>
                                     </div>
-                                    <div class="form-group col-md-4">
+                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Quantity Released</label>
-                                            <input type="text" class="form-control" id="qty_approved" name="qty_approved" onchange="balance_plant(this.value)">
+                                            <label class="form-label">Remarks</label>
+                                            <textarea name="import_Remarks" class="form-control" id="import_Remarks" rows="3"></textarea>
                                         </div>
-                                        <div class="alert alert-danger" id="certified_qtyErrorMsg" style="display:none"></div>
-                                    </div>
-
+                                     </div>
                                 </div>
                             </div>
                         </div>
@@ -877,14 +874,15 @@ form, input, select, textarea{
                         <div class="box box-primary">
                             <div class="box-body">
                                 <input type="text" name="agro_record_id" id="agro_record_id" style="display:none"/>
+                                <input type="hidden" class="form-control" id="agro_qty_balance_1">
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Import Category </label>
                                             <select class="form-control form-control" id="agro_category" disabled>
                                                 <option value="">-SELECT-</option>
-                                                <option value="Seed">Pesticides</option>
-                                                <option value="Plant">Bio-Pesticides</option>
+                                                <option value="Pesticides">Pesticides</option>
+                                                <option value="Bio-Pesticides">Bio-Pesticides</option>
                                                 <option value="Plant Products">Plant Products</option>
                                             </select>
                                         </div>
@@ -931,8 +929,17 @@ form, input, select, textarea{
                                         <div class="form-group">
                                             <label class="form-label">Quantity Released</label>
                                             <input type="text" class="form-control" id="agro_qty_approved" name="agro_qty_approved" onchange="balance_agro(this.value)">
+                                            <div class="alert alert-danger" id="agro_certified_qtyErrorMsg" style="display:none"></div>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Remarks</label>
+                                            <textarea name="agro_import_Remarks" class="form-control" id="agro_import_Remarks" rows="3"></textarea>
+                                        </div>
+                                     </div>
                                 </div>
                             </div>
                         </div>
@@ -940,7 +947,7 @@ form, input, select, textarea{
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="update_details_agro()">Add</button>
+                    <button type="button" class="btn btn-primary" onclick="update_details_agro()">Update</button>
                 </div>
             </div>
         </div>
@@ -1030,7 +1037,7 @@ function submit_details(application_id)
     }
 }
 
-function populateDetails(Record_Id, Import_Category, Crop_Id, Variety_Id, Quantity, Unit, application_no, quantity_balance)
+function populateDetails(Record_Id, Import_Category, Crop_Id, Variety_Id, Quantity, Unit, application_no,balance_quantity, balance_quantity_1)
 {
     $('#record_id').val(Record_Id);
     $('#plant_import_category').val(Import_Category);
@@ -1039,13 +1046,14 @@ function populateDetails(Record_Id, Import_Category, Crop_Id, Variety_Id, Quanti
     $('#qty').val(Quantity);
     $('#unit').val(Unit);
     $('#plant_applicationNo').val(application_no);
-    $('#qty_balance').val(quantity_balance);
+    $('#qty_balance').val(balance_quantity);
+    $('#qty_balance_1').val(balance_quantity_1);
     $('#add_plant_details').modal('show');
 }
 
-function populateAgroDetails(Record_Id, Import_Category, Pesticide_Id, Description, Quantity, Unit, application_no, balance_quantity)
+function populateAgroDetails(Record_Id, Import_Category, Pesticide_Id, Description, Quantity, Unit, application_no,balance_quantity, balance_quantity_1)
 {
-
+    alert(balance_quantity_1);
     $('#agro_record_id').val(Record_Id);
     $('#agro_category').val(Import_Category);
     $('#pesticide_id').val(Pesticide_Id);
@@ -1053,6 +1061,7 @@ function populateAgroDetails(Record_Id, Import_Category, Pesticide_Id, Descripti
     $('#agro_qty').val(Quantity);
     $('#agro_unit').val(Unit);
     $('#agro_applicationNo').val(application_no);
+    $('#agro_qty_balance_1').val(balance_quantity_1);
     $('#agro_qty_balance').val(balance_quantity);
     $('#add_agro_details').modal('show');
 }
@@ -1085,22 +1094,40 @@ function update_details_agro()
     });
 }
 
-function balance_plant(approved_qty)
+
+function balance_plant(qty)
 {
-    var qty_balance = $('#qty_balance').val();
-    if(approved_qty > qty_balance)
+    var balance_quantity_1 = $('#qty_balance_1').val();
+    var number_released = $('#qty_approved').val();
+    var quantity = balance_quantity_1 - number_released
+    if(quantity < 0)
     {
         $('#certified_qtyErrorMsg').html("quantity certified cannot be more than quantity requested.");
         $('#certified_qtyErrorMsg').show();
         $('#certified_qtyErrorMsg').delay(2000).fadeOut('slow');
         $('#qty_approved').val("");
     }
+    else
+    {
+        $('#qty_balance').val(quantity);
+    }
 }
 
 function balance_agro(approved_qty)
 {
-    var qty = $('#agro_qty_balance').val();
-    var balance = qty - approved_qty
-    $('#agro_qty_balance').val(balance);
+    var balance_quantity_1 = $('#agro_qty_balance_1').val();
+    var number_released = $('#agro_qty_approved').val();
+    var quantity = balance_quantity_1 - number_released
+    if(quantity < 0)
+    {
+        $('#agro_certified_qtyErrorMsg').html("quantity certified cannot be more than quantity requested.");
+        $('#agro_certified_qtyErrorMsg').show();
+        $('#agro_certified_qtyErrorMsg').delay(2000).fadeOut('slow');
+        $('#agro_qty_approved').val("");
+    }
+    else
+    {
+        $('#agro_qty_balance').val(quantity);
+    }
 }
 </script>

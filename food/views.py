@@ -1723,7 +1723,6 @@ def food_details_ins_import(request):
 
 def submit_fip_application(request):
     application_no = request.GET.get('application_no')
-    print(application_no)
     Inspection_Leader = request.GET.get('Inspection_Leader')
     Inspection_Team = request.GET.get('Inspection_Team')
     remarks = request.GET.get('remarks')
@@ -1744,10 +1743,40 @@ def submit_fip_application(request):
     application_details = t_workflow_details.objects.filter(Application_No=application_no)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='C')
-    application_list = t_workflow_details.objects.filter(Application_Status='P', Assigned_Role_Id='5')
+    return redirect(inspector_application)
 
-    return render(request, 'inspector_pending_list.html',
-                  {'service_name': None, 'application_details': application_list})
+
+def update_import_details_food(request):
+    application_no = request.POST.get('applicationNo')
+    record_id = request.POST.get('import_record_id')
+    approved_quantity = request.POST.get('qty_approved')
+    qty_balance = request.POST.get('qty_balance')
+    remarks = request.POST.get('import_remarks')
+    print(application_no)
+
+    import_det = t_food_import_permit_inspection_t2.objects.filter(pk=record_id)
+    if remarks is not None:
+        import_det.update(Remarks=remarks)
+    else:
+        import_det.update(Remarks=None)
+    import_det.update(Quantity_Released=approved_quantity)
+    import_det.update(Quantity_Balance=qty_balance)
+    for import_IPP in import_det:
+        Product_Record_Id = import_IPP.Product_Record_Id
+        balance = int(import_IPP.Quantity_Balance) - int(import_IPP.Quantity_Released)
+        product_details = t_food_import_permit_t2.objects.filter(pk=Product_Record_Id)
+        product_details.update(Quantity_Balance=balance)
+        if balance == 0:
+            import_details = t_food_import_permit_inspection_t1.objects.filter(
+                Application_No=application_no)
+            for import_det in import_details:
+                la_details = t_food_import_permit_t1.objects.filter(
+                    Import_Permit_No=import_det.Import_Permit_No)
+                for la in la_details:
+                    work_details = t_workflow_details.objects.filter(Application_No=la.Application_No)
+                    work_details.update(Application_Status='C')
+    application_details = t_food_import_permit_inspection_t2.objects.filter(Application_No=application_no)
+    return render(request, 'import_certificate_food/import_details.html', {'import': application_details})
 
 
 def fip_clearance_no(request):

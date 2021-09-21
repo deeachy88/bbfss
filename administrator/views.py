@@ -36,7 +36,6 @@ def home(request):
 
 def dashboard(request):
     login_type = request.session['Login_Type']
-
     if login_type == 'I':
         Role = request.session['role']
         Role_Id = request.session['Role_Id']
@@ -122,9 +121,9 @@ def login(request):
                                     request.session['email'] = user.Email_Id
                                     request.session['Role_Id'] = Role_Id
                                     security = t_security_question_master.objects.all()
-                                return render(request, 'update_password.html', {'security': security})
+                            return render(request, 'update_password.html', {'security': security})
                         else:
-                            if user.Login_Type == "C":
+                            if str(user.Login_Type) == "C":
                                 client = "client"
                                 request.session['email'] = user.Email_Id
                                 request.session['name'] = user.Name
@@ -207,7 +206,7 @@ def login(request):
                 else:
                     _message = 'Invalid login, please try again.'
         else:
-            _message = 'Invalid login, please try again.'
+            _message = 'No details'
     context = {'message': _message}
     return render(request, 'index.html', context)
 
@@ -1354,19 +1353,13 @@ def get_random_password_string(length):
 
 
 def reset_password(request, Login_Id, Email_Id, Name):
-    salt = os.urandom(32)
     password = get_random_password_string(8)
-    key = hashlib.pbkdf2_hmac(
-        'sha256',  # The hash digest algorithm for HMAC
-        password.encode('utf-8'),  # Convert the password to bytes
-        salt,  # Provide the salt
-        100000  # It is recommended to use at least 100,000 iterations of SHA-256
-    )
+    password_value = make_password(password)
     reg_users = t_user_master.objects.filter(Email_Id=Email_Id)
     reg_users.update(Last_Login_Date=None)
-    reg_users.update(Password=key)
-    reg_users.update(Password_Salt=salt)
+    reg_users.update(Password=password_value)
     details = t_user_master.objects.filter(Login_Type="I")
+    send_reset_pass_mail(Name, Email_Id, password)
     return render(request, 'user.html', {'details': details})
 
 
@@ -1380,19 +1373,11 @@ def deactivate_user(request, Login_Id, Email_Id, Name):
 def reset_client_password(request):
     Email_Id = request.GET.get('Email_Id')
     Name = request.GET.get('Name')
-    salt = os.urandom(32)
     password = get_random_password_string(8)
-    key = hashlib.pbkdf2_hmac(
-        'sha256',  # The hash digest algorithm for HMAC
-        password.encode('utf-8'),  # Convert the password to bytes
-        salt,  # Provide the salt
-        100000  # It is recommended to use at least 100,000 iterations of SHA-256
-    )
+    password_value = make_password(password)
     reg_users = t_user_master.objects.filter(Email_Id=Email_Id)
     reg_users.update(Last_Login_Date=None)
-    reg_users.update(Password=key)
-    reg_users.update(Password_Salt=salt)
-    details = t_user_master.objects.filter(Login_Type="C")
+    reg_users.update(Password=password_value)
     send_reset_pass_mail(Name, Email_Id, password)
     return redirect(registered_clients)
 

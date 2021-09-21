@@ -89,7 +89,7 @@ urlpatterns = [
          name='edit_food_inspector_details'),
     path('food_details_ins_import', views.food_details_ins_import, name='food_details_ins_import'),
     path('submit_fip_application', views.submit_fip_application, name='submit_fip_application'),
-
+    path('update_import_details_food', views.update_import_details_food, name='update_import_details_food'),
     # Common
     path('food_handler_application', views.food_handler_application, name='food_handler_application'),
     path('update_batch_no', views.update_batch_no, name='update_batch_no'),

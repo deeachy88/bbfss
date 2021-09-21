@@ -3,160 +3,172 @@
     .header-card {
     background-color: white;
 }
+
+table, th, td {
+  border: 1px solid black;
+}
+
 </style>
 <div class="animated fadeIn">
-    <div class="row">
+    <div class="card-header header-card"><font color='black'>
         <div class="col-md-12">
-            <div class="card">
-                <div class="card-header header-card">
-                    <div class="card-head-row float-right">
-                        <div class="card-tools">
-                            <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Test Report';printClientTable()">
-                                <span class="btn-label">
-                                    <i class="zmdi zmdi-print"></i>
-                                </span>
-                                Print
-                            </a>
-                        </div>
+            <div >
+                <div class="card-head-row float-right">
+                    <div class="card-tools">
+                        <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Import Permit';printTable()">
+                            <span class="btn-label">
+                                <i class="zmdi zmdi-print"></i>
+                            </span>
+                            Print
+                        </a>
                     </div>
-                    <br>
-                    <br>
-                    <div class="card-title text-center">
-                        <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
-                    </div>
-                    <h6 class="text-center"><font color='black'><b>IMPORT PERMIT FOR PLANT/PLANT PRODUCTS</b></font></h6>
                 </div>
+                <br>
+                <br>
+                <div class="card-title text-center">
+                    <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
+                </div>
+                <h4 class="text-center"><font color='black'><b>IMPORT PERMIT FOR PLANT/PLANT PRODUCTS</b></font></h4>
                 {% for certificate_details in certificate_details %}
-                <div class="card-body">
-                    <div class="row float-right">
-                        <p>Permit No&nbsp;:&nbsp;{{certificate_details.Import_Permit_No}}</p>
-                    </div>
-                    <br>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Name of the Importer</label>
-                                {{certificate_details.Applicant_Name}}
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Name and Address of the Exporter</label>
-                                {{certificate_details.Name_And_Address_Supplier}}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
+                <div class="row float-right">
+                    <p style="margin-right:10px;">Permit No&nbsp;:&nbsp;<b>{{certificate_details.Import_Permit_No}}</b></p>
+                </div>
+                <div style="margin-left:10px;">
+                    <table style="width:100%">
+                        <tr>
+                            <td colspan="2">
+                                This Import Permit is granted in accordance with the Plant Quarantine Act of Bhutan, 1993; The Seeds Act of Bhutan, 2000 and rules and regulations there under.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Name of the Importer: </label>
+                                <b>{{certificate_details.Applicant_Name}}</b>
+                            </td>
+                            <td>
+                                <label>Name and Address of the Exporter: </label>
+                                <b>{{certificate_details.Name_And_Address_Supplier}}</b>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:50%">
                                 <label>Entry Point</label>
+                                {{certificate_details.Point_Of_Entry}}
                                 {% for location in location %}
-                                    {% if certificate_details.Actual_Point_Of_Entry == location.Field_Office_Id %}
+                                    {% if certificate_details.Place_Of_Entry == location.Field_Office_Id %}
                                         {{ location.Field_Office }}
                                     {% endif %}
                                 {% endfor %}
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
+                            </td>
+                            <td style="width:50%">
                                 <label>Country of origin</label>
                                 {{certificate_details.Country_Of_Origin}}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Crop Common Name</th>
-                                    <th scope="col">Crop Variety Name</th>
-                                    <th scope="col">Quantity</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for import in import %}
-                                    <tr>
-                                        <td>{{ forloop.counter }}</td>
-                                        {% for crop in crop %}
-                                            {% if import.Crop_Id == crop.Crop_Id %}
-                                                <td>{{ crop.Crop_Common_Name }}</td>
-                                            {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Crop Common Name</th>
+                                            <th scope="col">Crop Variety Name</th>
+                                            <th scope="col">Quantity</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for import in import %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                {% for crop in crop %}
+                                                    {% if import.Crop_Id == crop.Crop_Id %}
+                                                        <td>{{ crop.Crop_Common_Name }}</td>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {% for variety in variety %}
+                                                    {% if variety.Crop_Variety_Id ==  import.Variety_Id %}
+                                                        <td>{{ variety.Crop_Variety_Name}}</td>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                <td>{{import.Quantity}}</td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                                <td colspan="6" class="text-center">No Data</td>
+                                            </tr>
                                         {% endfor %}
-                                        {% for variety in variety %}
-                                            {% if variety.Crop_Variety_Id ==  import.Variety_Id %}
-                                                <td>{{ variety.Crop_Variety_Name}}</td>
-                                            {% endif %}
-                                        {% endfor %}
-                                        <td>{{import.Quantity}}</td>
-                                    </tr>
-                                    {% empty %}
-                                    <tr>
-                                        <td colspan="6" class="text-center">No Data</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="row">
-                        <p><b>General Entry Conditions</b></p>
-                        <p>The consignment of Plant/Plant products should be:</p>
-                        <p>(i)&nbsp;Free from soil, weed seeds and other contaminants</p>
-                        <p>(ii)&nbsp;Accompanied by an Official Phytosanitary Certificate</p>
-                        <p>(iii)&nbsp;All import shall furnish GMO free written certificate from the source.</p>
-                    </div>
-                    <div class="row">
-                        <p><b>Special Entry Conditions/ Additional Declaration: NA</b></p>
-                    </div>
-                    <div class="row">
-                        <p><b>PEQ requirements</b></p>
-                        <p>For a period of 0 Day(s)</p>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <h5 class="text-left"><font color='black'><b>General Entry Conditions :</b></font></h5>
+                                <p><b>General Entry Conditions</b></p>
+                                <p>The consignment of Plant/Plant products should be:</p>
+                                <p>(i)&nbsp;Free from soil, weed seeds and other contaminants</p>
+                                <p>(ii)&nbsp;Accompanied by an Official Phytosanitary Certificate</p>
+                                <p>(iii)&nbsp;All import shall furnish GMO free written certificate from the source.</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <h5 class="text-left"><font color='black'><b>Special Entry Conditions/ Additional Declaration : NA</b></font></h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <h5 class="text-left"><font color='black'><b>PEQ requirements</b></font></h5>
+                                <p><b>For a period of 0 Day(s)</b></p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
                                 <label>Final Destination</label>
                                 {{certificate_details.Final_Destination}}
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
+                            </td>
+                            <td>
                                 <label>Expected date of arrival</label>
                                 {{certificate_details.Expected_Arrival_Date}}
-                            </div>
-                        </div>
-                    </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="card-body">
                     <div class="col-md-12">
                         <div class="row">
                              <div class="col-md-3">
                                 <div class="form-group">
-                                    <label>Date of Issue</label>
-                                    {{certificate_details.Approved_Date}}
+                                    <label>Date of Issue:</label>
+                                    <b>{{certificate_details.Approved_Date}}</b>
                                 </div>
                             </div>
                         </div>
-                        <!--<div class="row">
+                        <div class="row">
                              <div class="col-md-3">
                                 <div class="form-group">
-                                    <label>Validity</label>
+                                    <label>Validity:</label>
+                                    <b>{{certificate_details.Validity}}</b>
                                 </div>
                             </div>
-                        </div>-->
+                        </div>
                         <div class="row">
                              <div class="col-md-3">
                                 <div class="form-group">
                                     <label>Place of Issue</label>
                                     {% for location in location %}
-                                        {% if certificate_details.Actual_Point_Of_Entry == location.Field_Office_Id %}
+                                        {% if certificate_details.Place_Of_Entry == location.Field_Office_Id %}
                                             {{ location.Field_Office }}
                                         {% endif %}
                                     {% endfor %}
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Name and signature of Authorized Officer</label>
+                        <div class="row">
+                             <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Name and signature of Authorized Officer</label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -164,5 +176,167 @@
                 {% endfor %}
             </div>
         </div>
+        <div class="col-md-12" style="display:none;" id="print">
+            <div>
+                <div class="card-title text-center">
+                    <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
+                </div>
+                <h4 class="text-center"><font color='black'><b>IMPORT PERMIT FOR PLANT/PLANT PRODUCTS</b></font></h4>
+                {% for certificate_details in certificate_details %}
+                <div class="row float-right">
+                    <p style="margin-right:10px;">Permit No&nbsp;:&nbsp;<b>{{certificate_details.Import_Permit_No}}</b></p>
+                </div>
+                <div style="margin-left:10px;">
+                    <table style="width:100%">
+                        <tr>
+                            <td colspan="2">
+                                This Import Permit is granted in accordance with the Plant Quarantine Act of Bhutan, 1993; The Seeds Act of Bhutan, 2000 and rules and regulations there under.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Name and Address of the Importer: </label>
+                                <b>{{certificate_details.Applicant_Name}}</b>
+                            </td>
+                            <td>
+                                <label>Name and Address of the Exporter: </label>
+                                <b>{{certificate_details.Name_And_Address_Supplier}}</b>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:50%">
+                                <label>Entry Point</label>
+                                {% for location in location %}
+                                    {% if certificate_details.Actual_Point_Of_Entry == location.Field_Office_Id %}
+                                        {{ location.Field_Office }}
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                            <td style="width:50%">
+                                <label>Country of origin</label>
+                                {{certificate_details.Country_Of_Origin}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Crop Common Name</th>
+                                            <th scope="col">Crop Variety Name</th>
+                                            <th scope="col">Quantity</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for import in import %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                {% for crop in crop %}
+                                                    {% if import.Crop_Id == crop.Crop_Id %}
+                                                        <td>{{ crop.Crop_Common_Name }}</td>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {% for variety in variety %}
+                                                    {% if variety.Crop_Variety_Id ==  import.Variety_Id %}
+                                                        <td>{{ variety.Crop_Variety_Name}}</td>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                <td>{{import.Quantity}}</td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                                <td colspan="6" class="text-center">No Data</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <h5 class="text-left"><font color='black'><b>General Entry Conditions :</b></font></h5>
+                                <p><b>General Entry Conditions</b></p>
+                                <p>The consignment of Plant/Plant products should be:</p>
+                                <p>(i)&nbsp;Free from soil, weed seeds and other contaminants</p>
+                                <p>(ii)&nbsp;Accompanied by an Official Phytosanitary Certificate</p>
+                                <p>(iii)&nbsp;All import shall furnish GMO free written certificate from the source.</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <h5 class="text-left"><font color='black'><b>Special Entry Conditions/ Additional Declaration : NA</b></font></h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <h5 class="text-left"><font color='black'><b>PEQ requirements</b></font></h5>
+                                <p><b>For a period of 0 Day(s)</b></p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Final Destination</label>
+                                {{certificate_details.Final_Destination}}
+                            </td>
+                            <td>
+                                <label>Expected date of arrival</label>
+                                {{certificate_details.Expected_Arrival_Date}}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="card-body">
+                    <div class="col-md-12">
+                        <div class="row">
+                             <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Date of Issue:</label>
+                                    <b>{{certificate_details.Approved_Date}}</b>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                             <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Validity:</label>
+                                    <b>{{certificate_details.Validity}}</b>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                             <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Place of Issue</label>
+                                    {% for location in location %}
+                                        {% if certificate_details.Place_Of_Entry == location.Field_Office_Id %}
+                                            {{ location.Field_Office }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                             <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Name and signature of Authorized Officer</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </font>
     </div>
 </div>
+<script>
+    function printTable()
+    {
+        $("#print").show();
+	    jQuery('#print').print();
+	    $("#print").hide();
+    }
+
+</script>

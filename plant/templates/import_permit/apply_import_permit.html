@@ -246,7 +246,7 @@ form, input, select, textarea{
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Dzongkhag &nbsp;<font color='red'>*</font></label>
-                                     <input type="text" class="form-control" name="dzongkhag"  id="dzongkhag" disabled>
+                                     <input type="text" class="form-control" name="dzongkhag"  id="dzongkhag" readonly="readonly">
                                 </div>
                                 <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
                             </div>
@@ -255,14 +255,14 @@ form, input, select, textarea{
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Gewog &nbsp;<font color='red'>*</font></label>
-                                    <input type="text" class="form-control" name="gewog" id="gewog" disabled>
+                                    <input type="text" class="form-control" name="gewog" id="gewog" readonly="readonly">
                                 </div>
                                 <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Village &nbsp;<font color='red'>*</font></label>
-                                    <input type="text" class="form-control" name="village" id="village" disabled>
+                                    <input type="text" class="form-control" name="village" id="village" readonly="readonly">
                                 </div>
                                 <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
                             </div>
@@ -478,7 +478,7 @@ form, input, select, textarea{
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Expected Arrival Date <font color="red">*</font></label>
-                                    <input type="text" class="form-control date-picker flatpickr-input active" id="p_expectedDate" name="p_expectedDate"  placeholder="Pick a date" readonly="readonly">
+                                    <input type="text" class="form-control date-picker flatpickr-input active" id="p_expectedDate" name="expected_date"  placeholder="Pick a date" readonly="readonly">
                                 </div>
                                 <div class="alert alert-danger" id="p_expectedDateErrorMsg" style="display:none"></div>
                             </div>
@@ -662,8 +662,8 @@ form, input, select, textarea{
                                             <label class="form-label">Import Category <font color="red">*</font></label>
                                             <select class="form-control form-control" id="agro_import_category" name="agro_import_category">
                                                 <option value="">-SELECT-</option>
-                                                <option value="Seed">Pesticides</option>
-                                                <option value="Plant">Bio-Pesticides</option>
+                                                <option value="Pesticides">Pesticides</option>
+                                                <option value="Bio-Pesticides">Bio-Pesticides</option>
                                                 <option value="Plant Products">Plant Products</option>
                                             </select>
                                         </div>
@@ -726,7 +726,7 @@ form, input, select, textarea{
 
 <form method="post" id="plant_attachment_form" enctype="multipart/form-data">
     {% csrf_token %}
-    <input type="text" id="plant_attachment_applicationNo" name="appNo" value="{{ applNo }}" style="display:none">
+    <input type="text" id="plant_attachment_applicationNo" style="display:none">
     <div class="modal fade" id="plant_attachmentModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -762,7 +762,7 @@ form, input, select, textarea{
 
 <form method="post" id="agro_attachment_form" enctype="multipart/form-data">
     {% csrf_token %}
-    <input type="text" id="agro_attachment_applicationNo" name="appNo" value="{{ applNo }}" style="display:none">
+    <input type="text" id="agro_attachment_applicationNo" style="display:none">
     <div class="modal fade" id="agro_attachmentModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -1225,6 +1225,8 @@ form, input, select, textarea{
                     $('#applicationNo').val(data.applNo);
                     $('#plant_applicationNo').val(data.applNo);
                     $('#agro_applicationNo').val(data.applNo);
+                    $('#agro_attachment_applicationNo').val(data.applNo);
+                    $('#plant_attachment_applicationNo').val(data.applNo);
                     if(data.importType == "P")
                     {
                         $('#import-profile-tab').tab('show');
@@ -1282,17 +1284,17 @@ form, input, select, textarea{
                 $('#crop_varietyErrorMsg').show();
                 $('#crop_varietyErrorMsg').delay(2000).fadeOut('slow');
             }
-            else if(unit == "")
-            {
-                $('#unitErrorMsg').html("Enter Unit.");
-                $('#unitErrorMsg').show();
-                $('#unitErrorMsg').delay(2000).fadeOut('slow');
-            }
             else if(qty == "")
             {
                 $('#qtyErrorMsg').html("Enter Quantity.");
                 $('#qtyErrorMsg').show();
                 $('#qtyErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(unit == "")
+            {
+                $('#unitErrorMsg').html("Enter Unit.");
+                $('#unitErrorMsg').show();
+                $('#unitErrorMsg').delay(2000).fadeOut('slow');
             }
             else
             {
@@ -1391,12 +1393,13 @@ form, input, select, textarea{
             {
                 if (data.form_is_valid)
                 {
-                    var appNo = $('#applicationNo').val();
+                    var appNo = $('#plant_attachment_applicationNo').val();
+                    var file_url = data.file_url
                     $.ajax
                     ({
                         type : "POST",
                         url : "{% url 'add_plant_attach' %}",
-                        data : {'appNo':appNo , 'filename':fileName},
+                        data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
                         success : function(responseText)
                         {
                             $('#plant_attachmentModal').modal('hide');
@@ -1441,12 +1444,13 @@ form, input, select, textarea{
             {
                 if (data.form_is_valid)
                 {
-                    var appNo = $('#applicationNo').val();
+                    var appNo = $('#agro_attachment_applicationNo').val();
+                    var file_url = data.file_url
                     $.ajax
                     ({
                         type : "POST",
                         url : "{% url 'add_agro_attach' %}",
-                        data : {'appNo':appNo , 'filename':fileName},
+                        data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
                         success : function(responseText)
                         {
                             $('#agro_attachmentModal').modal('hide');
@@ -1506,8 +1510,8 @@ function getCitizenDetails(cidNo)
                 }
             var CitizenName = firstName + " " + middleName + " " + lastName;
             var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
-            var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
-            var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
+            var villageName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
+            var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
             $('#name').val(CitizenName);
             $('#dzongkhag').val(dzongkhagName);
             $('#gewog').val(gewogName);

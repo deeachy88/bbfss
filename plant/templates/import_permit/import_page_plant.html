@@ -14,8 +14,16 @@
             <tr>
                 <td>{{ forloop.counter }}</td>
                 <td>{{import.Import_Category}}</td>
-                <td>{{import.Crop_Id}}</td>
-                <td>{{import.Variety_Id}}</td>
+                {% for crop in crop %}
+                    {% if import.Crop_Id == crop.Crop_Id %}
+                        <td>{{crop.Crop_Common_Name}}</td>
+                    {% endif %}
+                {% endfor %}
+                {% for variety in variety %}
+                    {% if import.Variety_Id == variety.Crop_Variety_Id %}
+                        <td>{{variety.Crop_Variety_Name}}</td>
+                    {% endif %}
+                {% endfor %}
                 <td>{{import.Quantity}}</td>
                 <td>{{import.Unit}}</td>
             </tr>

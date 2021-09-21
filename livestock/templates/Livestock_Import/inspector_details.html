@@ -3,6 +3,22 @@
 form, input, select, textarea{
     color: black !important;
 }
+.flatpickr-calendar {
+    border-radius: 2px;
+    border: 0;
+    box-shadow: 0 4px 18px rgb(0 0 0 / 50%);
+    width: auto;
+    margin-top: -4px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-color: rgb(240 237 237 / 96%);
+}
+.flatpickr-time .flatpickr-am-pm, .flatpickr-time .numInputWrapper {
+    height: auto;
+    color: #121111;
+}
 </style>
 <div class="accordion" role="tablist">
         <div class="card">
@@ -139,7 +155,7 @@ form, input, select, textarea{
                                 {% endif %}
                             </div>
                         {% endif %}
-                            {% if application_details.Import_Type == 'Individual' and if application_details.Nationality == 'Bhutanese'%}
+                            {% if application_details.Import_Type == 'Individual' and application_details.Nationality == 'Bhutanese'%}
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
@@ -243,7 +259,7 @@ form, input, select, textarea{
                                     </div>
                                 </div>
                             </div>
-                        {% elif application_details.Import_Type == 'Individual' and if application_details.Nationality == 'Non-Bhutanese' %}
+                        {% elif application_details.Import_Type == 'Individual' and application_details.Nationality == 'Non-Bhutanese' %}
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
@@ -523,13 +539,13 @@ form, input, select, textarea{
                                         <td>{{import.Description}}</td>
                                         <td>{{import.Quantity}}</td>
                                         <td>{{import.Unit}}</td>
-                                        <td>{{ balance }}</td>
+                                        <td>{{ import.Quantity_Balance }} </td>
                                         <td>{{import.Quantity_Released}}</td>
                                         <td>{{import.Remarks}}</td>
                                         <td>
-                                            <button type="button"
-                                            class="btn btn-primary btn--icon btn-sm js-edit-details"
-                                            data-url="{% url 'edit_lp_inspector_details' import.Record_Id %}">
+                                            <button type="button" class="btn btn-info"
+                                            onclick="populateEditDetails('{{ import.Particulars }}', '{{import.Company_Name}}', '{{import.Description}}',
+                                            '{{import.Quantity}}', '{{import.Unit}}','{{import.Quantity_Balance_1}}','{{import.Quantity_Balance}}', '{{import.Application_No}}','{{import.Record_Id}}')">
                                             <i class="zmdi zmdi-edit"></i>
                                             </button>
                                         </td>
@@ -566,21 +582,21 @@ form, input, select, textarea{
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label>Date Of Inspection <font color="red">*</font></label>
-                                <input type="text" class="form-control date-picker flatpickr-input active" id="dateOfInspection" name="dateOfInspection"  placeholder="Pick a date" readonly="readonly">
+                                <input type="date" class="form-control" id="dateOfInspection" name="dateOfInspection">
                             </div>
                             <div class="alert alert-danger" id="dateOfInspectionErrorMsg" style="display:none"></div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label>Time Of Inspection <font color="red">*</font></label>
                                 <input type="text" class="form-control time-picker flatpickr-input active" id="timeOfInspection" name="timeOfInspection" readonly="readonly">
                             </div>
                             <div class="alert alert-danger" id="timeOfInspectionErrorMsg" style="display:none"></div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label>Remarks</label>
                                 <textarea class="form-control" id="remarks" rows="2"></textarea>
@@ -641,13 +657,89 @@ form, input, select, textarea{
         </div>
 </div>
 
-    <div class="modal fade" id="modal-book">
+<form method="post" id="permit_details_form">
+    {% csrf_token %}
+    <input type="hidden" id="applicationNo" name="applicationNo">
+    <div class="modal fade" id="permit_details_model" tabindex="-1">
         <div class="modal-dialog modal-lg">
-          <div class="modal-content edit">
-
-          </div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <input type="hidden" id="balance_quantity_1">
+                        <input type="hidden" id="import_record_id" name="import_record_id">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Particulars</label>
+                                        <input type="text" name="Particulars" class="form-control" id="Particulars" disabled>
+                                        <div class="alert alert-danger" id="ParticularsErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Company/Producer</label>
+                                        <input type="text" name="Company_Name" class="form-control" id="Company_Name" disabled>
+                                        <div class="alert alert-danger" id="Company_NameErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Description</label>
+                                        <textarea class="form-control" name="Description" id="Description" disabled></textarea>
+                                        <div class="alert alert-danger" id="remarksMeansErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Approved Quantity</label>
+                                        <input type="text" name="no" class="form-control" id="total_no" disabled>
+                                        <div class="alert alert-danger" id="noErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Unit</label>
+                                        <input type="text" name="unit" class="form-control" id="unit" disabled>
+                                        <div class="alert alert-danger" id="unitErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Quantity Released</label>
+                                            <input type="number" class="form-control" id="number_released" name="number_released" onchange="get_balance_import()">
+                                        </div>
+                                        <div class="alert alert-danger" id="number_releasedErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Balance Number</label>
+                                            <input type="text" class="form-control" id="balance" name="balance" readonly="readonly">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Remarks</label>
+                                        <textarea name="import_Remarks" class="form-control" id="import_Remarks" rows="3"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="update_permit_details_form()">Update</button>
+                </div>
+            </div>
         </div>
     </div>
+</form>
 </div>
 <div class="modal fade" id="modal-decision">
     <div class="modal-dialog modal-lg">
@@ -662,6 +754,10 @@ form, input, select, textarea{
 <script src="{% static 'assets/js/app.min.js' %}"></script>
 <script src="{% static 'assets/js/inspector.js' %}"></script>
 <script>
+$(function(){
+    var today = new Date().toISOString().split('T')[0];
+    $('#dateOfInspection')[0].setAttribute('min', today);
+});
 function openDecisionModal()
 {
     $('#addModal').modal('show');
@@ -747,5 +843,49 @@ function submit_details(application_id)
     }
 }
 
+function populateEditDetails(Particulars, Company_Name, Description, Quantity, Unit,Quantity_Balance_1, Quantity_Balance, Application_No, Record_Id)
+{
+    $('#import_record_id').val(Record_Id);
+    $('#Particulars').val(Particulars);
+    $('#Company_Name').val(Company_Name);
+    $('#Description').val(Description);
+    $('#total_no').val(Quantity);
+    $('#unit').val(Unit);
+    $('#balance_quantity_1').val(Quantity_Balance_1);
+    $('#balance_quantity').val(Quantity_Balance);
+    $('#applicationNo').val(Application_No);
+    $('#permit_details_model').modal('show');
+}
 
+function get_balance_import(qty)
+{
+    var balance_quantity = $('#balance_quantity_1').val();
+    var number_released = $('#number_released').val();
+    var quantity = balance_quantity - number_released
+    if(quantity < 0)
+    {
+        $('#number_releasedErrorMsg').html("quantity released cannot be more than quantity requested.");
+        $('#number_releasedErrorMsg').show();
+        $('#number_releasedErrorMsg').delay(2000).fadeOut('slow');
+        $('#number_released').val("");
+    }
+    else
+    {
+        $('#balance').val(quantity);
+    }
+}
+
+function update_permit_details_form()
+{
+    $.ajax({
+        type : "POST",
+        url : "{% url 'update_details_lp' %}",
+        data : $('#permit_details_form').serialize(),
+        success : function(response) {
+            $('#import-details').html(response);
+            $('#permit_details_model').modal('hide');
+            $('.modal-backdrop').remove();
+        }
+    });
+}
 </script>

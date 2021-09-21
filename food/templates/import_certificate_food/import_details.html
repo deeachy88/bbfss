@@ -1,0 +1,44 @@
+<table id="details-table" class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Common Namesss</th>
+            <th scope="col">Product Category</th>
+            <th scope="col">Product Characteristics</th>
+            <th scope="col">Exporter Type</th>
+            <th scope="col">Approved Quantity</th>
+            <th scope="col">Unit</th>
+            <th scope="col">Quantity Balance</th>
+            <th scope="col">Quantity Released</th>
+            <th scope="col">Remarks</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for import in import %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{import.Common_Name}}</td>
+                <td>{{import.Product_Category}}</td>
+                <td>{{import.Product_Characteristics}}</td>
+                <td>{{import.Exporter_Type}}</td>
+                <td>{{import.Quantity}}</td>
+                <td>{{import.Unit}}</td>
+                <td>{{ import.Quantity_Balance}} </td>
+                <td>{{import.Quantity_Released}}</td>
+                <td>{{import.Remarks}}</td>
+                <td>
+                    <button type="button" class="btn btn-info"
+                    onclick="populateEditDetails('{{ import.Common_Name }}', '{{import.Product_Category}}', '{{import.Product_Characteristics}}',
+                    '{{import.Exporter_Type}}', '{{import.Quantity}}', '{{import.Unit}}', '{{import.Application_No}}','{{import.Record_Id}}', '{{import.Quantity_Balance}}')">
+                    <i class="zmdi zmdi-edit"></i>
+                    </button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="6" class="text-center">No Data</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
