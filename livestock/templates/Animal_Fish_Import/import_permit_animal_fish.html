@@ -110,7 +110,7 @@ form, input, select, textarea{
                             <div class="col-md-4 bhutanese_div">
                                 <div class="form-group">
                                     <label class="form-label">Applicant CID <font color="red">*</font></label>
-                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCitizenDetails(this.value)">
+                                    <input type="text" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCitizenDetails(this.value)">
                                 </div>
                                 <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
                             </div>
@@ -338,7 +338,7 @@ form, input, select, textarea{
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Number</label>
-                                        <input type="number" name="no" class="form-control" id="no" required>
+                                        <input type="text" name="no" class="form-control" id="no" onkeypress="return isNumberKey(event)">
                                         <div class="alert alert-danger" id="noErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
@@ -669,6 +669,7 @@ function save_attachment()
                     $('#attachmentModal').modal('hide');
                     $('#file-attachment').html(responseText);
                     $('.modal-backdrop').remove();
+                    $('#attachment_form')[0].reset();
                 }
             });
         }else
@@ -790,6 +791,7 @@ function save_permit_details_form()
                $('#permit_details').html(responseText);
                $('#pills-details').tab('show');
                $('.modal-backdrop').remove();
+               $('#permit_details_form')[0].reset();
             }
         });
     }

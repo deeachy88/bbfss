@@ -74,7 +74,7 @@ color: black !important;
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="form-label">CID <font color="red">*</font></label>
-                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="p_cid" name="p_cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getPhytoCitizenDetails(this.value);">
+                                    <input type="text" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="p_cid" name="p_cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getPhytoCitizenDetails(this.value);">
                                 </div>
                                 <div class="alert alert-danger" id="p_cidErrorMsg" style="display:none"></div>
                             </div>
@@ -170,7 +170,7 @@ color: black !important;
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label class="form-label">Quantity (Gross Weight) <font color="red">*</font></label>
-                                    <input type="number" class="form-control" id="p_Qty_Gross" name="p_Qty_Gross">
+                                    <input type="text" class="form-control" id="p_Qty_Gross" name="p_Qty_Gross" onkeypress="return isNumberKey(event)">
                                 </div>
                                 <div class="alert alert-danger" id="p_Qty_GrossErrorMsg" style="display:none"></div>
                             </div>
@@ -201,7 +201,7 @@ color: black !important;
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label class="form-label">Quantity (Net Weight) <font color="red">*</font></label>
-                                    <input type="number" class="form-control" id="p_Qty_Net" name="p_Qty_Net">
+                                    <input type="text" class="form-control" id="p_Qty_Net" name="p_Qty_Net" onkeypress="return isNumberKey(event)">
                                 </div>
                                 <div class="alert alert-danger" id="p_Qty_NetErrorMsg" style="display:none"></div>
                             </div>
@@ -456,7 +456,7 @@ color: black !important;
                                 <div class="alert alert-danger" id="p_additional_Info_ErrorMsg" style="display:none"></div>
                             </div>
                         </div>-->
-                        <div class="card-footer">
+                        <div class="card-action">
                             <button type="button" class="btn btn-primary" onclick="save_export_permit()">Save</button>
                         </div>
                         </div>
@@ -505,7 +505,7 @@ color: black !important;
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="form-label">CID <font color="red">*</font></label>
-                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="c_cid" name="c_cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCitizenDetails(this.value);">
+                                    <input type="text" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="c_cid" name="c_cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCitizenDetails(this.value);">
                                 </div>
                                 <div class="alert alert-danger" id="c_cidErrorMsg" style="display:none"></div>
                             </div>
@@ -528,7 +528,7 @@ color: black !important;
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label class="form-label">Contact Number <font color="red">*</font></label>
-                                        <input type="number" class="form-control" id="c_Contact_No" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="c_Contact_No" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkExportContact(this.value)">
+                                        <input type="text" class="form-control" id="c_Contact_No" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="c_Contact_No" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkExportContact(this.value)">
                                     </div>
                                     <div class="alert alert-danger" id="c_Contact_NoErrorMsg" style="display:none"></div>
                                 </div>
@@ -762,7 +762,7 @@ color: black !important;
                             <p>2.	I/We shall provide any relevant information and related documents connected with export of
                             consignment for issuance of the Export Certificate</p>.
                         </div>
-                        <div class="card-footer">
+                        <div class="card-action">
                             <button type="button" class="btn btn-primary" onclick="save_export_permit()">Save</button>
                         </div>
                         </div>
@@ -773,7 +773,6 @@ color: black !important;
                         </div>
                     </div>
                 </div>
-            </div>
         </form>
     </div>
 </div>
@@ -848,6 +847,14 @@ color: black !important;
     </div>
 </form>
 <script>
+function isNumberKey(evt)
+{
+ var charCode = (evt.which) ? evt.which : event.keyCode
+ if (charCode > 31 && (charCode < 48 || charCode > 57))
+    return false;
+
+ return true;
+}
     function showOthers(value)
     {
         if(value == "Others")
@@ -1261,6 +1268,7 @@ color: black !important;
                             $('#phyto_attachmentModal').modal('hide');
                             $('#phytoAttach').html(responseText);
                             $('.modal-backdrop').remove();
+                            $('#phyto_attachmentModal')[0].reset();
                         }
                     });
                 }else
@@ -1311,6 +1319,7 @@ color: black !important;
                             $('#cordyceps_attachmentModal').modal('hide');
                             $('#cordycepsAttach').html(responseText);
                             $('.modal-backdrop').remove();
+                            $('#cordyceps_attachmentModal')[0].reset();
                         }
                     });
                 }else
@@ -1463,24 +1472,24 @@ function checkExportContact(value)
     var secondDigit = value.charAt(1);
 
     if(firstDigit != 7 && firstDigit != 1){
-        $('#c_Contact_NoNumberErrorMsg').html("Must Start with either 1 or 7.");
-        $('#c_Contact_NoNumberErrorMsg').show();
-        $('#c_Contact_NoNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#c_Contact_NoErrorMsg').html("Must Start with either 1 or 7.");
+        $('#c_Contact_NoErrorMsg').show();
+        $('#c_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
         $('#c_Contact_No').val("");
     }else if(firstDigit == 1 && secondDigit != 6 && secondDigit != 7){
-        $('#c_Contact_NoNumberErrorMsg').html("Second Digit Must Start with either 6 or 7.");
-        $('#c_Contact_NoNumberErrorMsg').show();
-        $('#c_Contact_NoNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#c_Contact_NoErrorMsg').html("Second Digit Must Start with either 6 or 7.");
+        $('#c_Contact_NoErrorMsg').show();
+        $('#c_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
         $('#c_Contact_No').val("");
     }else if(firstDigit == 7 && secondDigit == 6){
-        $('#c_Contact_NoNumberErrorMsg').html("Second Digit Cannot be 6.");
-        $('#c_Contact_NoNumberErrorMsg').show();
-        $('#c_Contact_NoNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#c_Contact_NoErrorMsg').html("Second Digit Cannot be 6.");
+        $('#c_Contact_NoErrorMsg').show();
+        $('#c_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
         $('#c_Contact_No').val("");
     }else if(firstDigit == 7 && secondDigit != 7){
-        $('#c_Contact_NoNumberErrorMsg').html("Second Digit Must Start with 7.");
-        $('#c_Contact_NoNumberErrorMsg').show();
-        $('#c_Contact_NoNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#c_Contact_NoErrorMsg').html("Second Digit Must Start with 7.");
+        $('#c_Contact_NoErrorMsg').show();
+        $('#c_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
         $('#c_Contact_No').val("");
     }
 }

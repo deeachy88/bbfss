@@ -49,7 +49,7 @@ form, input, select, textarea{
                              <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">CID of the Owner <font color="red">*</font></label>
-                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCitizenDetails(this.value);">
+                                    <input type="text" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCitizenDetails(this.value);">
                                 </div>
                                 <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
                             </div>
@@ -442,6 +442,7 @@ function save_meat_attachment()
                     $('#attachmentModal').modal('hide');
                     $('#file-attachment-mortem').html(responseText);
                     $('.modal-backdrop').remove();
+                    $('#attachment_form')[0].reset();
                 }
             });
         }
@@ -545,6 +546,7 @@ function save_meat_item_details()
                    $('#meat_item_details').html(responseText);
                    $('#pills-file').tab('show');
                    $('.modal-backdrop').remove();
+                   $('#fh_form')[0].reset();
                 }
             });
     }

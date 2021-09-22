@@ -338,11 +338,11 @@ def update_application_details(request):
 
 
 def save_details_movement(request):
-    commodity = request.GET.get['commodity']
-    appNo = request.GET.get['appNo']
-    qty = request.GET.get['qty']
-    unit = request.GET.get['unit']
-    remarks = request.GET.get['remarks']
+    commodity = request.POST.get('commodity')
+    appNo = request.POST.get('appNo')
+    qty = request.POST.get('qty')
+    unit = request.POST.get('unit')
+    remarks = request.POST.get('remarks')
     t_plant_movement_permit_t2.objects.create(Application_No=appNo, Commodity=commodity,
                                               Qty=qty, Unit=unit, Remarks=remarks)
     imports_plant = t_plant_movement_permit_t2.objects.filter(Application_No=appNo)
@@ -3857,24 +3857,24 @@ def add_file_name_reg(request):
 
 
 def add_reg_details(request):
-    Application_No = request.POST.get('appNo')
+    Application_No = request.POST.get('nursery_appNo')
+    print(Application_No)
     crop_id = request.POST.get('crop_id')
     crop_category_id = request.POST.get('crop_category_id')
-    crop_sci_id = request.POST.get('crop_sci_id')
     crop_variety_id = request.POST.get('crop_variety_id')
     Source = request.POST.get('Source')
     qty = request.POST.get('qty')
     remarks = request.POST.get('remarks')
     t_plant_clearence_nursery_seed_grower_t2.objects.create(
         Application_No=Application_No,
-        Crop_Scientific_Name=crop_sci_id,
+        Crop_Category=crop_category_id,
+        Crop=crop_id,
+        Crop_Scientific_Name=None,
         Variety=crop_variety_id,
         Source=Source,
         Qty=qty,
-        Remarks=remarks,
-        Crop=crop_id,
-        Crop_Category=crop_category_id
-    )
+        Remarks=remarks)
+
     seed_details = t_plant_clearence_nursery_seed_grower_t2.objects.filter(Application_No=Application_No)
     return render(request, 'nursery_registration/seed_details_page.html', {'seed_details': seed_details})
 
@@ -4961,12 +4961,12 @@ def get_certificate_details(request, t_livestock_import_permit_product_inspectio
                                                                                     Certificate_Type='P')
         application_details = t_workflow_details.objects.filter(Application_No=application_No)
         if details.exists():
-            return render(request, 'certification_certificates/fit_for_human_consumtion_p.html',
+            return render(request, 'certificates/fit_for_human_consumtion_p.html',
                           {'certificate_details': details})
         else:
             details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(Application_No=application_No,
                                                                                         Certificate_Type='C')
-            return render(request, 'certification_certificates/fit_for_human_consumtion_c.html',
+            return render(request, 'certificates/fit_for_human_consumtion_c.html',
                           {'certificate_details': details})
     elif service_code == 'RF':
         details = t_plant_import_permit_inspection_t1.objects.filter(Application_No=application_No)

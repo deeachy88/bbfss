@@ -42,7 +42,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Applicant CID <font color="red">*</font></label>
-                                    <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCitizenDetails(this.value)">
+                                    <input type="text" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCitizenDetails(this.value)">
                                 </div>
                                 <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
                             </div>
@@ -617,6 +617,7 @@ function save_attachment()
                     $('#attachmentModal').modal('hide');
                     $('#file-attachment').html(responseText);
                     $('.modal-backdrop').remove();
+                    $('#attachment_form')[0].reset();
                 }
             });
         }else
