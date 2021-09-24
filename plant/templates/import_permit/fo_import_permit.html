@@ -352,7 +352,7 @@ form, input, select, textarea{
                             </div>
                             {% endif %}
                             {% else %}
-                            <div id="commercial_div" style="display:none;">
+                            <div id="commercial_div">
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
@@ -369,7 +369,7 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Present Address <font color="red">*</font></label>
-                                            <textarea class="form-control" rows="2" id="commercial_presentAddress" name="commercial_presentAddress">{{application_details.Present_Address}}</textarea>
+                                            <textarea class="form-control" rows="2" id="commercial_presentAddress" name="commercial_presentAddress" disabled>{{application_details.Present_Address}}</textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -554,7 +554,7 @@ form, input, select, textarea{
                                            {% for file_attach in file %}
                                                     <tr>
                                                         <td>{{ forloop.counter }}</td>
-                                                        <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                                                        <td><a href='{{file_attach.File_Path}}' target="_blank">{{file_attach.Attachment}}</a></td>
                                                     </tr>
                                                     {% empty %}
                                                     <tr>
@@ -566,10 +566,21 @@ form, input, select, textarea{
                                 {% endif %}
                         {% endfor %}
                             </div>
-                            <div class="form-group">
-                                <label for="remarks">Remarks(If Reject Please Fill THe Remarks)</label>
-                                <textarea class="form-control" rows="5" id="remarks" name="remarks"></textarea>
-                                <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Validity Period (If Approve - No Of Days)<font color="red">*</font></label>
+                                        <input type="number" class="form-control" name="validity" id="validity">
+                                    </div>
+                                    <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>
+                                </div>
+                                 <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="remarks">Remarks(If Reject Please Fill THe Remarks)</label>
+                                        <textarea class="form-control" rows="5" id="remarks" name="remarks"></textarea>
+                                        <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
+                                    </div>
+                                 </div>
                             </div>
                             <div class="alert alert-success" id="fo_success_Msg" style="display:none"></div>
                             <div class="alert alert-danger" id="fo_reject_Msg" style="display:none"></div>
@@ -601,15 +612,23 @@ form, input, select, textarea{
 </form>
 
 <script>
-    function fo_approve(application_id)
+        function fo_approve(application_id)
         {
             $("#loader").show();
             remarks = $('#remarks').val();
-
-            $.ajax({
+            validity = $('#validity').val();
+            if(validity == "")
+            {
+                $('#validityErrorMsg').html("Enter Validity.");
+                $('#validityErrorMsg').show();
+                $('#validityErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else
+            {
+                $.ajax({
                 type : "POST",
                 url : "{% url 'fo_approve' %}",
-                data :{'application_id':application_id ,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                data :{'application_id':application_id ,'remarks':remarks,'validity': validity, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(data) {
                     $("#loader").hide();
                     $('#fo_success_Msg').html("Application Approved.");
@@ -621,10 +640,12 @@ form, input, select, textarea{
                     setTimeout(function() {
                         window.location.href = '{% url 'dashboard' %}';
                     }, 3000);
-                }
-            });
+                    }
+                });
+            }
         }
-    function fo_reject(application_id)
+
+        function fo_reject(application_id)
         {
             $("#loader").show();
             remarks = $('#remarks').val();
@@ -635,23 +656,26 @@ form, input, select, textarea{
                 $('#remarksErrorMsg').show();
                 $('#remarksErrorMsg').delay(2000).fadeOut('slow');
             }
-            $.ajax({
-                type : "POST",
-                url : "{% url 'fo_reject' %}",
-                data :{'application_id':application_id ,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
-                success : function(data) {
-                    $("#loader").hide();
-                    $('#fo_reject_Msg').html("Application Rejected.");
-                    $('#fo_reject_Msg').show();
-                    $('#fo_reject_Msg').delay(2000).fadeOut('slow');
-                    setTimeout(function() {
-                        $('#import_detailsModal').modal('hide');
-                    }, 3000);
-                    setTimeout(function() {
-                        window.location.href = '{% url 'dashboard' %}';
-                    }, 3000);
-                }
-            });
+            else
+            {
+                $.ajax({
+                    type : "POST",
+                    url : "{% url 'fo_reject' %}",
+                    data :{'application_id':application_id ,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                    success : function(data) {
+                        $("#loader").hide();
+                        $('#fo_reject_Msg').html("Application Rejected.");
+                        $('#fo_reject_Msg').show();
+                        $('#fo_reject_Msg').delay(2000).fadeOut('slow');
+                        setTimeout(function() {
+                            $('#import_detailsModal').modal('hide');
+                        }, 3000);
+                        setTimeout(function() {
+                            window.location.href = '{% url 'dashboard' %}';
+                        }, 3000);
+                    }
+                });
+            }
         }
 
 

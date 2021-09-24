@@ -85,7 +85,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Amount</label>
-                                <input type="number" class="form-control" name="Amount" id="Amount">
+                                <input type="text" class="form-control" name="Amount" id="Amount" onkeypress="return isNumberKey(event)">
                             </div>
                         </div>
                     </div>
@@ -118,6 +118,14 @@
     </div>
 </form>
 <script>
+    function isNumberKey(evt)
+    {
+     var charCode = (evt.which) ? evt.which : event.keyCode
+     if (charCode > 31 && (charCode < 48 || charCode > 57))
+        return false;
+
+     return true;
+    }
     function update_payment()
     {
         $.ajax({

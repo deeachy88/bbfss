@@ -259,9 +259,9 @@ def send_fbr_approve_email(new_import_permit, Email, validity_date):
     subject = 'APPLICATION APPROVED'
     message = "Dear Sir," \
               "" \
-              "Your Application for Import Permit for Food Products Has Been Approved. Your " \
-              "Registration No is:" + new_import_permit + " And is Valid TIll " + str(validity_date) + \
-              " Please Make Payment Before Validity Expires. "
+              "Your Application for Food Business Registration Has Been Approved. Your " \
+              "Registration No is:" + new_import_permit + " And is Valid Till " + str(validity_date) + \
+              " Please Make Payment Before Validity Expires. Visit The Nearest Bafra Office For Payment."
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
     send_mail(subject, message, email_from, recipient_list)
@@ -271,7 +271,7 @@ def send_fbr_reject_email(Email, remarks):
     subject = 'APPLICATION REJECTED'
     message = "Dear Sir," \
               "" \
-              "Your Application for Food Business And Registration Has Been Rejected." \
+              "Your Application for Food Business Registration Has Been Rejected." \
               " Reason: " + remarks + ""
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
@@ -391,8 +391,8 @@ def feasibility_clearance_no(request):
 def send_feasibility_approve_email(Clearance_No, Email):
     subject = 'APPLICATION APPROVED'
     message = "Dear Sir, Your Application for Feasibility Inspection of " \
-              "Food Business And License Registration  Has Been Approved. Your " \
-              "Registration No is :" + Clearance_No + "."
+              "Food Business Registration And Licensing Has Been Approved. Your " \
+              "Clearance No is :" + Clearance_No + "."
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
     send_mail(subject, message, email_from, recipient_list)
@@ -400,8 +400,9 @@ def send_feasibility_approve_email(Clearance_No, Email):
 
 def send_feasibility_reject_email(remarks, Email):
     subject = 'APPLICATION REJECTED'
-    message = "Dear " + "Sir" + " Your Application for Feasibility Inspection of Food Business And License " \
-                                "Registration Has Been Rejected Because" + remarks + ""
+    message = "Dear " + "Sir" + " Your Feasibility Inspection of Food Business Registration " \
+                                "And Licensing " \
+                                "Has Been Rejected Because" + remarks + ""
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
     send_mail(subject, message, email_from, recipient_list)
@@ -524,7 +525,9 @@ def approve_factory_inspection(request):
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='FRA')
     application_details.update(Assigned_Role_Id='2')
-
+    for email_id in details:
+        emailId = email_id.Email
+        send_factory_approve_email(emailId)
     return redirect(inspector_application)
 
 
@@ -572,12 +575,10 @@ def factory_clearance_no(request, application_id):
             return newAppNo
 
 
-def send_factory_approve_email(Clearance_No, Email):
+def send_factory_approve_email(Email):
     subject = 'APPLICATION APPROVED'
-    message = "Dear Sir, Your Application for Factory Inspection of " \
-              "Food Business And License Registration  Has Been Approved. Your " \
-              "Registration No is:" + Clearance_No + " And is Valid Till " \
-                                                     "."
+    message = "Dear Sir, Your Factory Inspection of " \
+              "Food Business Registration And Licensing Has Been Approved. "
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
     send_mail(subject, message, email_from, recipient_list)
@@ -585,8 +586,8 @@ def send_factory_approve_email(Clearance_No, Email):
 
 def send_factory_reject_email(remarks, Email):
     subject = 'APPLICATION REJECTED'
-    message = "Dear " + "Sir" + " Your Application for Factory Inspection of Food Business And License " \
-                                "Registration Has Been Rejected Because" + remarks + ""
+    message = "Dear " + "Sir" + " Your Factory Inspection of Food Business Registration And Licensing " \
+                                "Has Been Rejected Because" + remarks + ""
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
     send_mail(subject, message, email_from, recipient_list)
@@ -1004,7 +1005,7 @@ def send_fec_approve_email(Export_Permit_No, Email, validity_date):
     message = "Dear Sir, Your Application for Export Certificate for Food Products Has Been Approved. " \
               "Your " \
               "Registration No is:" + Export_Permit_No + " And is Valid Till " + str(valid_till) + \
-              "." + " Please Make Payment Before Validity Expires. "
+              "." + " Please Make Payment Before Validity Expires. Visit The Nearest Bafra Office For Payment."
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
     send_mail(subject, message, email_from, recipient_list)
@@ -1636,7 +1637,7 @@ def send_fip_approve_email(new_import_permit, Email, validity_date):
               "" \
               "Your Application for Import Permit for Food Products Has Been Approved. Your " \
               "Import Permit No is:" + new_import_permit + " And is Valid TIll " + str(validity_date) + \
-              " Please Make Payment Before Validity Expires. "
+              " Please Make Payment Before Validity Expires. Visit The Nearest Bafra Office For Payment."
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
     send_mail(subject, message, email_from, recipient_list)

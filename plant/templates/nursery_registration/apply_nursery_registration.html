@@ -543,6 +543,7 @@ function save_nursery_form()
             data : $('#seedForm').serialize(),
             success : function(data) {
                 $('#applicationNo').val(data.applicationNo);
+                $('#appNo').val(data.applicationNo);
                 $('#plant_applicationNo').val(data.applicationNo);
                 $('#pills-profile-tab').tab('show');
             }
@@ -576,17 +577,18 @@ function save_attachment()
             if (data.form_is_valid)
             {
                 var appNo = $('#appNo').val();
+                var file_url = data.file_url
                 $.ajax
                 ({
                     type : "POST",
                     url : "{% url 'add_file_name_reg' %}",
-                    data : {'appNo':appNo , 'filename':fileName},
+                    data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
                     success : function(responseText)
                     {
                         $('#attachmentModal').modal('hide');
                         $('#seedAttach').html(responseText);
                         $('.modal-backdrop').remove();
-                        $('#attachmentModal')[0].reset();
+                        $('#attachment_form')[0].reset();
                     }
                 });
             }else

@@ -5,10 +5,10 @@
 }
 </style>
 <div class="card">
-    <div class="card-header header-card">
+    <div class="card-header header-card"><font color='black'>
 		<div class="card-head-row float-left">
             <div class="card-tools">
-                <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Test Report';printClientTable()">
+                <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Nursery Certificate';printTable()">
                     <span class="btn-label">
                         <i class="zmdi zmdi-print"></i>
                     </span>
@@ -22,7 +22,7 @@
             <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
         </div>
         <h6 class="text-center"><font color='black'><b>NURSERY REGISTRATION CERTIFICATE</b></font></h6>
-	</div>
+
     <div class="card-body">
         <div class="row">
             <p class="float-left">Office ref. no.</p>
@@ -105,4 +105,105 @@
         </div>
         {% endfor %}
     </div>
+        <div class="col-md-12" style="display:none;" id="print">
+            <div class="card-title text-center">
+                <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
+            </div>
+            <h6 class="text-center"><font color='black'><b>NURSERY REGISTRATION CERTIFICATE</b></font></h6>
+
+            <div class="card-body">
+                <div class="row">
+                    <p class="float-left">Office ref. no.</p>
+                    <p class="float-right">Date:</p>
+                </div>
+                <div class="row">
+                    <p>To</p>
+                </div>
+                <div class="row">
+                    <p>The Director General</p>
+                </div>
+                <div class="row">
+                    <p>DCSI, MoEA</p>
+                </div>
+                <div class="row">
+                    <p>Thimphu</p>
+                </div>
+                <div class="row">
+                    <p>Subject: Clearance for Licensing of Nursery Establishment</p>
+                </div>
+                <div class="row">
+                    <p>
+                        Respected Sir/Madam,
+                    </p>
+                </div>
+                <div class="row">
+                    {% for certificate_details in certificate_details %}
+                    <p>
+                        This is to inform that in accordance with the Seed Act of Bhutan 2000
+                        and the Seed Rules and Regulations of Bhutan 2018, {{ Dzongkhag }},
+                        BAFRA Office had conducted feasibility inspection of nursery facilities of the proponent
+                        mentioned below on dated {{certificate_details.Inspection_Date }}:
+                    </p>
+
+                </div>
+                <div class="row">
+                    <p>
+                        Name of the Applicant&nbsp;:&nbsp;{{certificate_details.Owner_Name }}
+                    </p>
+                </div>
+                <div class="row">
+                    <p>
+                        Contact Number&nbsp;:&nbsp;{{ certificate_details.contactNo }}
+                    </p>
+                </div>
+                <div class="row">
+                    <p>
+                        CID Number&nbsp;:&nbsp;{{ certificate_details.CID }}
+                    </p>
+                </div>
+                <div class="row">
+                    <p>
+                        Category of Nursery (Agro-Forestry/ Ornamental/Fruits and Nuts, Fodder)&nbsp;:&nbsp;{{ certificate_details.Nursery_Category }}
+                    </p>
+                </div>
+                <div class="row">
+                    <p>
+                        Upon fulfillment of the requirements in the above-mentioned rules,
+                        we are pleased to issue a clearance to the proponent for establishing nursery and
+                        for further processing with your office for obtaining the business license
+                    </p>
+                </div>
+                <br><br><br><br><br><br><br><br><br><br><br>
+                <div class="row">
+                    <p>
+                        Officer In-charge&nbsp;:&nbsp;
+                    </p>
+                    <p>
+                        Bafra&nbsp;:&nbsp;
+                    </p>
+                </div>
+                <div class="row">
+                    <p>
+                        Cc:
+                        1.	The Director General, BAFRA, MoAF, Thimphu for kind information.
+                    </p>
+                    <p>
+                       2.	Concern individual for necessary action.
+                    </p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        </font>
+    </div>
 </div>
+
+<script>
+    function printTable()
+    {
+        $("#print").show();
+	    jQuery('#print').print();
+	    $("#print").hide();
+    }
+
+</script>

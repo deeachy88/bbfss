@@ -193,6 +193,7 @@ form, input, select, textarea{
                             <button type="button" class="btn btn-danger" onclick="cms_fo_reject('{{ application_details.Application_No }}')"> Reject </button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                         </div>
+                        <div class="alert alert-danger" id="forwardToErrorMsg" style="display:none"></div>
                     {% endfor %}
                 </div>
             </div>
@@ -204,7 +205,16 @@ form, input, select, textarea{
         {
             remarks = $('#remarks').val();
             forwardTo = $('#forwardTo').val();
-            $.ajax({
+            if(forwardTo == "")
+            {
+                $('#forwardToErrorMsg').html("Select Inspector.");
+                $('#forwardToErrorMsg').show();
+                $('#forwardToErrorMsg').delay(2000).fadeOut('slow');
+                $('#forwardTo').focus();
+            }
+            else
+            {
+                $.ajax({
                 type : "POST",
                 url : "{% url 'meat_shop_fo_approve' %}",
                 data :{'application_id':application_id ,'forwardTo':forwardTo,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
@@ -224,8 +234,8 @@ form, input, select, textarea{
                     }, 3000);
 
                 }
-            });
-
+                });
+            }
         }
     function cms_fo_reject(application_id)
         {

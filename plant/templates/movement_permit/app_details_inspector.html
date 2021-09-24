@@ -1,4 +1,9 @@
 {% load static %}
+<style>
+    form, input, select, textarea{
+    color: black !important;
+    }
+</style>
 <form method="post" id="applicationForm">
     {% csrf_token %}
     <div class="animated fadeIn">
@@ -291,7 +296,7 @@
                                    {% for file_attach in file %}
                                             <tr>
                                                 <td>{{ forloop.counter }}</td>
-                                                <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                                                <td><a href='{{file_attach.File_Path}}' target="_blank">{{file_attach.Attachment}}</a></td>
                                             </tr>
                                             {% empty %}
                                             <tr>
@@ -379,36 +384,38 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Remarks</label>
+                                    <label class="form-label">Remarks(If Reject<font color="red">*</font>)</label>
                                     <textarea class="form-control" id="remarks" rows="2"></textarea>
                                 </div>
+                                <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
                             </div>
                         </div>
+                    </div>
+                    <div id="loader" style="display:none">
+                        <img src="{% static 'assets/img/ajax-loader.gif' %}" alt="processing..." />
                     </div>
                     <div class="alert alert-success" id="approve_Msg" style="display:none"></div>
                     <div class="modal-footer">
                          {% for application in application_details %}
                             <button type="button" class="btn btn-success" onclick="approve_movement_permit('{{ application.Application_No }}')"><i class="ace-icon fas fa-arrow-right"></i>&nbsp;&nbsp;Approve</button>
-                            <button type="button" class="btn btn-flat btn-danger" onclick="rejectApplication('{{ application.Application_No }}')">
+                            <button type="button" class="btn btn-flat btn-danger" onclick="rejectMovementApplication('{{ application.Application_No }}')">
                                 <i class="ace-icon fa fa-times"></i>
                                 &nbsp;&nbsp;Reject
                             </button>
                          {% endfor %}
-                        <button class="btn btn-flat btn-danger" data-dismiss="modal">
-                            <i class="ace-icon fa fa-times"></i>
-                            &nbsp;&nbsp;Cancel
-                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div id="addModal" class="modal" tabindex="-1">
+</form>
+<form method="post" id="decision_form">
+<div id="addModal" class="modal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title"></h5>
-                    <button type="button" class="close" onclick="closeModal()">
+                    <button type="button" class="close" data-dismiss="modal">
                         <span aria-hidden="true">&times;</span>
                     </button>
 
@@ -420,12 +427,14 @@
                                 <label>Current Observation</label>
                                 <textarea class="form-control" id="currentObservation" rows="2"></textarea>
                             </div>
+                            <div class="alert alert-danger" id="currentObservationErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="conveyanceMeans">Decision Conformity Statement </label>
                                 <textarea class="form-control" id="decisionConform" rows="2"></textarea>
                             </div>
+                            <div class="alert alert-danger" id="decisionConformErrorMsg" style="display:none"></div>
                         </div>
                     </div>
                 </div>
@@ -433,11 +442,12 @@
                 <div class="modal-footer">
                     {% for application_details in application_details %}
                     <button type="button" class="btn btn-flat btn-primary" onclick="add_details_ins('{{ application_details.Application_No }}')">
-                        <i class="ace-icon fa fa-times"></i>
+                        <i class="ace-icon fa fa-check"></i>
                         &nbsp;&nbsp;Add
                     </button>
                     {% endfor %}
-                    <button type="button" class="btn btn-primary" onclick="closeModal()">Close Modal</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="ace-icon fa fa-times"></i>
+                        &nbsp;&nbsp;Close Modal</button>
                  </div>
                  <div id="messageDiv" style="display:none"></div>
               </div>
@@ -454,17 +464,34 @@ function add_details_ins(application_id)
 {
     currentObservation = $('#currentObservation').val();
     decisionConform = $('#decisionConform').val();
-
-    $.ajax({
-        type : "GET",
-        url : "{% url 'add_details_ins' %}",
-        data :{'application_id':application_id,'currentObservation':currentObservation,'decisionConform':decisionConform},
-        success : function(data) {
-            $('#details').html(data);
-            $('#details').show();
-            $('#addModal').modal('hide');
-        }
-    });
+    if(currentObservation == "")
+    {
+        $('#currentObservationErrorMsg').html("Enter Current Observation.");
+        $('#currentObservationErrorMsg').show();
+        $('#currentObservationErrorMsg').delay(2000).fadeOut('slow');
+        $('#currentObservation').focus();
+    }
+    else if(decisionConform == "")
+    {
+        $('#decisionConformErrorMsg').html("Enter Decision Conformity Statement.");
+        $('#decisionConformErrorMsg').show();
+        $('#decisionConformErrorMsg').delay(2000).fadeOut('slow');
+        $('#decisionConform').focus();
+    }
+    else
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'add_details_ins' %}",
+            data :{'application_id':application_id,'currentObservation':currentObservation,'decisionConform':decisionConform},
+            success : function(data) {
+                $('#details').html(data);
+                $('#details').show();
+                $('#addModal').modal('hide');
+                $('#decision_form')[0].reset();
+            }
+        });
+    }
 }
 
 function approve_movement_permit(application_id)
@@ -505,12 +532,45 @@ function approve_movement_permit(application_id)
     }
     else
     {
+        $("#loader").show();
         $.ajax({
             type : "POST",
             url : "{% url 'approve_application' %}",
             data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks , 'dateOfInspection':dateOfInspection , 'validity_period':validity_period, csrfmiddlewaretoken: '{{ csrf_token }}'},
             success : function(data) {
+                $("#loader").hide();
                 $('#approve_Msg').html("Application Approved.");
+                $('#approve_Msg').show();
+                $('#approve_Msg').delay(2000).fadeOut('slow');
+                setTimeout(function() {
+                    window.location.href = '{% url 'dashboard' %}';
+                }, 3000);
+            }
+        });
+    }
+}
+
+function rejectMovementApplication(application_id)
+{
+    $("#loader").show();
+    remarks = $('#remarks').val();
+
+    if(remarks == "")
+    {
+        $('#remarksErrorMsg').html("Enter Remarks.");
+        $('#remarksErrorMsg').show();
+        $('#remarksErrorMsg').delay(2000).fadeOut('slow');
+        $('#remarks').focus();
+    }
+    else
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'reject_movement_application' %}",
+            data :{'application_id':application_id ,'remarks':remarks ,csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success : function(data) {
+                $("#loader").hide();
+                $('#approve_Msg').html("Application Rejected.");
                 $('#approve_Msg').show();
                 $('#approve_Msg').delay(2000).fadeOut('slow');
                 setTimeout(function() {

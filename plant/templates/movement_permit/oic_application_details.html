@@ -221,7 +221,7 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Vehicle No</label>
-                                            <input type="text" class="form-control" value="{{ application_details.Authorized_Route }}" readonly="readonly">
+                                            <input type="text" class="form-control" value="{{ application_details.Vehicle_No }}" readonly="readonly">
                                         </div>
                                     </div>
                                 {% else %}
@@ -292,7 +292,7 @@ form, input, select, textarea{
                                        {% for file_attach in file %}
                                                 <tr>
                                                     <td>{{ forloop.counter }}</td>
-                                                    <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                                                    <td><a href='{{file_attach.File_Path}}' target="_blank">{{file_attach.Attachment}}</a></td>
                                                 </tr>
                                                 {% empty %}
                                                 <tr>
@@ -311,6 +311,7 @@ form, input, select, textarea{
                                         <option value="{{ inspector_list.Login_Id }}">{{ inspector_list.Name }}</option>
                                 {% endfor %}
                             </select>
+
                             {% for application_details in application_details %}
                                 <button type="button" class="btn btn-success" onclick="forwardApplication('{{ application_details.Application_No }}')"><i class="ace-icon fas fa-arrow-right"></i>&nbsp;&nbsp;Forward</button>
                             {% endfor %}
@@ -319,6 +320,7 @@ form, input, select, textarea{
                                 &nbsp;&nbsp;Cancel
                             </button>
                         </div>
+                        <div class="alert alert-danger" id="forwardToErrorMsg" style="display:none"></div>
                         <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
                             Application Forwarded Successfully
                         </div>

@@ -292,22 +292,15 @@ form, input, select, textarea{
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-6">
-                                        <label class="form-label">Country</label>
-                                        <select class="form-control" disabled>
-                                            {% for Country in Country %}
-                                                <option value="{{Country.Country_Code}}"{% if application_details.Importing_Country == Country.Country_Code %}selected{% endif %}>
-                                                    {{ Country.Country }}
-                                                </option>
-                                            {% endfor %}
-                                        </select>
+                                        <label class="form-label">Importing Country</label>
+                                        <input type="text" class="form-control" value="{{application_details.Importing_Country}}" disabled>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label class="form-label">Declared point of Entry</label>
-                                            <select class="form-control" name="p_Entry_Point"  id="p_Entry_Point">
-                                                <option value="">--SELECT--</option>
+                                            <select class="form-control" name="p_Entry_Point"  id="p_Entry_Point" disabled>
                                                 {% for entry_point in entry_point %}
-                                                    <option value="{{ entry_point.Field_Office_Id }}"{% if application_details.Entry_Point == dzongkhag.Field_Office_Id %}selected{% endif %}>
+                                                    <option value="{{ entry_point.Field_Office_Id }}"{% if application_details.Entry_Point == entry_point.Field_Office_Id %}selected{% endif %}>
                                                         {{ entry_point.Field_Office }}
                                                     </option>
                                                 {% endfor %}
@@ -530,32 +523,10 @@ form, input, select, textarea{
                                     </div>
                                 </div>
                             {% else %}
-                                {% if application_details.Applicant_Type == 'bothRadio' %}
+                                {% if "directRadio" == application_details.Applicant_Type%}
                                     <div class="row justify-content-center">
                                         <div class="form-check text-center">
                                             <label class="form-label">Applicant Type <font color="red">*</font></label><br>
-                                            <label class="form-radio-label">
-                                                <input class="form-radio-input" type="radio" checked>
-                                                <span class="form-radio-sign">Both Export and Retail </span>
-                                            </label>
-                                            <label class="form-radio-label ml-3">
-                                                <input class="form-radio-input" type="radio">
-                                                <span class="form-radio-sign">Direct Export Only</span>
-                                            </label>
-                                            <label class="form-radio-label ml-3">
-                                                <input class="form-radio-input" type="radio">
-                                                <span class="form-radio-sign">Retail Outlets Only</span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                {% elif application_details.Applicant_Type == 'directRadio' %}
-                                    <div class="row justify-content-center">
-                                        <div class="form-check text-center">
-                                            <label class="form-label">Applicant Type <font color="red">*</font></label><br>
-                                            <label class="form-radio-label">
-                                                <input class="form-radio-input" type="radio">
-                                                <span class="form-radio-sign">Both Export and Retail </span>
-                                            </label>
                                             <label class="form-radio-label ml-3">
                                                 <input class="form-radio-input" type="radio" checked>
                                                 <span class="form-radio-sign">Direct Export Only</span>
@@ -570,10 +541,6 @@ form, input, select, textarea{
                                     <div class="row justify-content-center">
                                         <div class="form-check text-center">
                                             <label class="form-label">Applicant Type <font color="red">*</font></label><br>
-                                            <label class="form-radio-label">
-                                                <input class="form-radio-input" type="radio">
-                                                <span class="form-radio-sign">Both Export and Retail </span>
-                                            </label>
                                             <label class="form-radio-label ml-3">
                                                 <input class="form-radio-input" type="radio">
                                                 <span class="form-radio-sign">Direct Export Only</span>
@@ -635,36 +602,6 @@ form, input, select, textarea{
                                         </div>
                                     </div>
                                 </div>
-                                {% if application_details.Applicant_Type == 'bothRadio' %}
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label class="form-label">Current Address</label>
-                                                <textarea class="form-control" disabled rows="4">{{application_details.Exporter_Address}}</textarea>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label class="form-label">Permanent Address(if different from the current address)</label>
-                                                <textarea class="form-control" disabled rows="4">{{application_details.Permanent_Address}}</textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label class="form-label">Date Of Inspection Requested</label>
-                                                <input type="text" class="form-control" value="{{application_details.Desired_Inspection_Date}}" readonly="readonly">
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label class="form-label">Place Of Inspection Requested</label>
-                                                <input type="text" class="form-control" value="{{application_details.Desired_Inspection_Place}}" readonly="readonly">
-                                            </div>
-                                        </div>
-                                    </div>
-                                {% elif application_details.Applicant_Type == 'directRadio' %}
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <div class="form-group">
@@ -725,13 +662,7 @@ form, input, select, textarea{
                                         <div class="col-sm-4">
                                             <div class="form-group">
                                                 <label class="form-label">Importing Country</label>
-                                                <select class="form-control" disabled>
-                                                    {% for Country in Country %}
-                                                        <option value="{{Country.Country_Code}}"{% if application_details.Importing_Country == Country.Country_Code %}selected{% endif %}>
-                                                            {{ Country.Country }}
-                                                        </option>
-                                                    {% endfor %}
-                                                </select>
+                                                <input type="text" class="form-control" value="{{application_details.Importing_Country}}" disabled>
                                             </div>
                                         </div>
                                         <div class="col-sm-4">
@@ -761,78 +692,6 @@ form, input, select, textarea{
                                             </div>
                                         </div>
                                     </div>
-                                {% else %}
-                                    <div class="form-group row">
-                                        <label class="col-sm-4 col-form-label">Gross Weight (Weight of Cordyceps and package)</label>
-                                        <div class="col-sm-4">
-                                            <div class="input-group">
-                                                <div class="form-group">
-                                                    <input type="text" class="form-control" value="{{application_details.Qty_Gross}}" readonly="readonly">
-                                                    <i class="form-group__bar"></i>
-                                                </div>
-                                                <span class="input-group-addon">Gm(s)</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <div class="input-group">
-                                                <div class="form-group">
-                                                    <input type="text" class="form-control" value="{{application_details.Pieces_Gross}}" readonly="readonly">
-                                                    <i class="form-group__bar"></i>
-                                                </div>
-                                                <span class="input-group-addon">Pieces</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-sm-4 col-form-label">Net Weight (Weight of Cordycep only)</label>
-                                        <div class="col-sm-4">
-                                            <div class="input-group">
-                                                <div class="form-group">
-                                                    <input type="text" class="form-control" value="{{application_details.Qty_Net}}" readonly="readonly">
-                                                    <i class="form-group__bar"></i>
-                                                </div>
-                                                <span class="input-group-addon">Gm(s)</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <div class="input-group">
-                                                <div class="form-group">
-                                                    <input type="text" class="form-control" value="{{application_details.Pieces_Net}}" readonly="readonly">
-                                                    <i class="form-group__bar"></i>
-                                                </div>
-                                                <span class="input-group-addon">Pieces</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-4">
-                                            <div class="form-group">
-                                                <label class="form-label">Total No Of Packages</label>
-                                                <input type="text" class="form-control"  value="{{application_details.Packages_No}}" readonly="readonly">
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <div class="form-group">
-                                                <label class="form-label">Name Of The Outlet</label>
-                                                <input type="text" class="form-control"  value="{{application_details.Outlet_name}}" readonly="readonly">
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <div class="form-group">
-                                                <label class="form-label">Contact No of the outlet owner</label>
-                                                <input type="text" class="form-control" value="{{application_details.Outlet_Contact_No}}" readonly="readonly">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="form-label">Address of the outlet</label>
-                                                <textarea class="form-control" rows="3" disabled>{{application_details.Outlet_Address}}</textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-                                {% endif %}
                             {% endif %}
                         <br>
                             <table class="table table-bordered">
@@ -846,7 +705,7 @@ form, input, select, textarea{
                                     {% for file_attach in file %}
                                         <tr>
                                             <td>{{ forloop.counter }}</td>
-                                            <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                                            <td><a href='{{file_attach.File_Path}}' target="_blank">{{file_attach.Attachment}}</a></td>
                                         </tr>
                                     {% empty %}
                                         <tr>
@@ -868,6 +727,7 @@ form, input, select, textarea{
                                     &nbsp;&nbsp;Cancel
                                 </button>
                             </div>
+                            <div class="alert alert-danger" id="forwardToErrorMsg" style="display:none"></div>
                         {% endfor %}
                     </div>
                 </div>

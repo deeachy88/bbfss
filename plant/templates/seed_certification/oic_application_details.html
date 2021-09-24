@@ -158,7 +158,7 @@ form, input, select, textarea{
                        {% for file_attach in file %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                                    <td><a href='{{file_attach.File_Path}}' target="_blank">{{file_attach.Attachment}}</a></td>
                                 </tr>
                                 {% empty %}
                                 <tr>
@@ -169,7 +169,7 @@ form, input, select, textarea{
                 </table>
                 <br>
                 <br>
-                {% if not application_details.Resubmit_Remarks %}
+                {% if application_details.Resubmit_Remarks %}
                     <br>
                     <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
                         <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
@@ -181,7 +181,7 @@ form, input, select, textarea{
                          <div class="col-md-6">
                             <div class="from-label">
                                 <label class="from-label">Resubmit Remarks</label>
-                                <textarea class="form-control" rows="3" id="Resubmit_Remarks" value="{{application_details.Resubmit_Remarks}}"></textarea>
+                                <textarea class="form-control" rows="3" id="Resubmit_Remarks" disabled>{{application_details.Resubmit_Remarks}}</textarea>
                             </div>
                         </div>
                      </div>
@@ -193,12 +193,14 @@ form, input, select, textarea{
                                 <option value="{{ inspector_list.Login_Id }}">{{ inspector_list.Name }}</option>
                         {% endfor %}
                     </select>
+
                     <button type="button" class="btn btn-success" onclick="forwardApplication('{{ application_details.Application_No }}')"><i class="ace-icon fas fa-arrow-right"></i>&nbsp;Forward</button>
                     <button class="btn btn-flat btn-danger" data-dismiss="modal">
                         <i class="ace-icon fa fa-times"></i>
                         &nbsp;&nbsp;Cancel
                     </button>
                 </div>
+                <div class="alert alert-danger" id="forwardToErrorMsg" style="display:none"></div>
             </div>
     {% endfor %}
     </div>

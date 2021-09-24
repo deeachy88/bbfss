@@ -2,7 +2,7 @@
         <div class="card-header">
             <div class="card-head-row">
                 <div class="card-tools">
-                    <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="show_phyto_attachmentModal()">
+                    <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="show_cordyceps_attachmentModal()">
                         <span class="btn-label">
                             <i class="fa fa-print"></i>
                         </span>
@@ -73,11 +73,11 @@ function DeleteAttachment(id)
     var appNo = $('#agro_appNo').val();
     $.ajax({
         type : "GET",
-        url : "{% url 'delete_file' %}",
+        url : "{% url 'delete_file_export' %}",
         data :{'appNo':appNo , 'file_id': id},
         success : function(responseText)
         {
-            $('#agro-file-attachment').html(responseText);
+            $('#cordycepsAttach').html(responseText);
         }
     });
 }

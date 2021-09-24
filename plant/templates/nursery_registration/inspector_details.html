@@ -73,7 +73,7 @@ form, input, select, textarea{
                                         <div class="col-sm-4">
                                             <div class="form-group">
                                                 <label class="form-label">Nursery Category</label>
-                                                <select class="form-control form-control" id="Nursery_Category" name="Nursery_Category">
+                                                <select class="form-control form-control" id="Nursery_Category" name="Nursery_Category" disabled>
                                                     {% if application_details.Nursery_Category == "Agro-Forestry" %}
                                                     <option value="Agro-Forestry" selected>Agro-Forestry</option>
                                                     {% elif application_details.Nursery_Category == "Ornamental" %}
@@ -103,7 +103,7 @@ form, input, select, textarea{
                                         <div class="col-sm-4">
                                             <div class="form-group">
                                                 <label class="form-label">Nursery Type</label>
-                                                <select class="form-control form-control" id="Nursery_Type" name="Nursery_Type">
+                                                <select class="form-control form-control" id="Nursery_Type" name="Nursery_Type" disabled>
                                                     {% if application_details.Nursery_Type == "Bi-annual" %}
                                                     <option value="Bi-annual" selected>Bi-annual</option>
                                                     {% elif application_details.Nursery_Category == "Annual" %}
@@ -185,7 +185,7 @@ form, input, select, textarea{
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for seed_details in seed_details %}
+                                        {% for seed_details in details_list %}
                                             <tr>
                                                 <td>{{ forloop.counter }}</td>
                                                 <td>{{seed_details.Crop_Category}}</td>
@@ -224,7 +224,7 @@ form, input, select, textarea{
                                        {% for file_attach in file %}
                                                 <tr>
                                                     <td>{{ forloop.counter }}</td>
-                                                    <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                                                    <td><a href='{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
                                                 </tr>
                                                 {% empty %}
                                                 <tr>
@@ -399,7 +399,7 @@ form, input, select, textarea{
                                     </table>
                                 </div>
                                 <br>
-                                {% if not application_details.Resubmit_Date %}
+                                {% if application_details.Resubmit_Date %}
                                     <br>
                                     <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
                                         <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
@@ -409,13 +409,13 @@ form, input, select, textarea{
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-6">
-                                            <label class="from-label">Date For Inspection</label>
-                                            <input type="text" name="date" id="inspection_date" class="form-control" value="{{application_details.Resubmit_Remarks}}">
+                                            <label class="from-label">Requested Date For Inspection</label>
+                                            <input type="text" name="date" id="inspection_date" class="form-control" value="{{application_details.Resubmit_Date}}" disabled>
                                         </div>
                                          <div class="col-md-6">
                                             <div class="from-label">
                                                 <label class="from-label">Resubmit Remarks</label>
-                                                <textarea class="form-control" rows="3" id="Resubmit_Remarks" value="{{application_details.Resubmit_Remarks}}"></textarea>
+                                                <textarea class="form-control" rows="3" id="Resubmit_Remarks" disabled>{{application_details.Resubmit_Remarks}}</textarea>
                                             </div>
                                         </div>
                                      </div>
@@ -445,7 +445,7 @@ form, input, select, textarea{
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="form-label">Date Of Inspection <font color="red">*</font></label>
-                                            <input type="text" class="form-control date-picker flatpickr-input active" placeholder="Pick a date" readonly="readonly">
+                                            <input type="date" class="form-control" id="dateOfInspection">
                                         </div>
                                         <div class="alert alert-danger" id="dateOfInspectionErrorMsg" style="display:none"></div>
                                     </div>
@@ -485,7 +485,7 @@ form, input, select, textarea{
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title"></h5>
-                <button type="button" class="close" onclick="closeModal()">
+                <button type="button" class="close" data-dismiss="modal">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -493,26 +493,28 @@ form, input, select, textarea{
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="form-label">Current Observation</label>
+                            <label class="form-label">Current Observation <font color="red">*</font></label>
                             <textarea class="form-control" id="currentObservation" rows="2"></textarea>
                         </div>
+                         <div class="alert alert-danger" id="currentObservationErrorMsg" style="display:none"></div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="form-label">Decision Conformity Statement </label>
+                            <label class="form-label">Decision Conformity Statement <font color="red">*</font></label>
                             <textarea class="form-control" id="decisionConform" rows="2"></textarea>
                         </div>
+                        <div class="alert alert-danger" id="decisionConformErrorMsg" style="display:none"></div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
                  {% for application_details in application_details %}
                     <button type="button" class="btn btn-flat btn-primary" onclick="add_details_ins('{{ application_details.Application_No }}')">
-                        <i class="ace-icon fa fa-times"></i>
+                        <i class="ace-icon fa fa-check"></i>
                         &nbsp;&nbsp;Add
                     </button>
                  {% endfor %}
-                <button type="button" class="btn btn-primary" onclick="closeModal()">Close Modal</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="ace-icon fa fa-times"></i>&nbsp;Close</button>
              </div>
              <div id="messageDiv" style="display:none"></div>
           </div>
@@ -530,17 +532,34 @@ function add_details_ins(application_id)
     currentObservation = $('#currentObservation').val();
     decisionConform = $('#decisionConform').val();
 
-    $.ajax({
-        type : "GET",
-        url : "{% url 'add_details_nursery' %}",
-        data :{'application_id':application_id,'currentObservation':currentObservation,'decisionConform':decisionConform},
-        success : function(data) {
-            $('#addModal').modal('hide');
-            $('#decision_details').html(data);
-            $('#decision_details').show();
-            $('#decision_details').focus();
-        }
-    });
+    if(currentObservation == "")
+    {
+        $('#currentObservationErrorMsg').html("Select Team Leader.");
+        $('#currentObservationErrorMsg').show();
+        $('#currentObservationErrorMsg').delay(2000).fadeOut('slow');
+        $('#currentObservation').focus();
+    }
+    else if(decisionConform == "")
+    {
+        $('#decisionConformErrorMsg').html("Enter Inspection Team.");
+        $('#decisionConformErrorMsg').show();
+        $('#decisionConformErrorMsg').delay(2000).fadeOut('slow');
+        $('#decisionConform').focus();
+    }
+    else
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'add_details_nursery' %}",
+            data :{'application_id':application_id,'currentObservation':currentObservation,'decisionConform':decisionConform},
+            success : function(data) {
+                $('#addModal').modal('hide');
+                $('#decision_details').html(data);
+                $('#decision_details').show();
+                $('#decision_details').focus();
+            }
+        });
+    }
 }
 
 function approve_application()

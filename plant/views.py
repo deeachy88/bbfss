@@ -411,10 +411,12 @@ def view_application_details(request):
         for application in workflow_details:
             Field_Office = application.Field_Office_Id
         user_role_list = t_user_master.objects.filter(Role_Id='5', Field_Office_Id_id=Field_Office)
+        country = t_country_master.objects.all()
+        entry_point = t_field_office_master.objects.filter(Is_Entry_Point='Y')
         return render(request, 'export_permit/inspector_export_permit.html',
                       {'application_details': application_details,
                        'location': location, 'inspector_list': user_role_list,
-                       'file': file, 'dzongkhag': dzongkhag})
+                       'file': file, 'dzongkhag': dzongkhag, 'Country': country, 'entry_point': entry_point})
     elif service_code == 'RNS':
         application_details = t_plant_clearence_nursery_seed_grower_t1.objects.filter(Application_No=application_id)
         dzongkhag = t_dzongkhag_master.objects.all()
@@ -807,20 +809,20 @@ def approve_application(request):
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='A')
-    update_payment_details(application_id, permit_no, 'IPP', validity_date)
+    update_payment_details(application_id, permit_no, 'MPP', validity_date)
     for email_id in application_details:
         emailId = email_id.Email
-        send_ipp_approve_email(permit_no, emailId, validity_date)
+        send_mpp_approve_email(permit_no, emailId, validity_date)
     return redirect(inspector_application)
 
 
-def send_ipp_approve_email(permit_no, Email, validity_date):
+def send_mpp_approve_email(permit_no, Email, validity_date):
     subject = 'APPLICATION APPROVED'
     message = "Dear Sir," \
               "" \
               "Your Application for Movement Permit for Plant And Plant Products Has Been Approved. Your " \
               "Movement Permit No is:" + permit_no + " And is Valid Till " + " " + str(validity_date) + \
-              " Please Make Payment Before Validity Expires. "
+              " Please Make Payment Before Validity Expires. Visit The Nearest Bafra Office For Payment."
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
     send_mail(subject, message, email_from, recipient_list)
@@ -828,22 +830,28 @@ def send_ipp_approve_email(permit_no, Email, validity_date):
 
 def reject_application(request):
     application_id = request.GET.get('application_id')
-    Inspection_Leader = request.GET.get('Inspection_Leader')
-    Inspection_Team = request.GET.get('Inspection_Team')
     remarks = request.GET.get('remarks')
-    Movement_Date = request.POST.get('dateOfInspection')
-    dateOfInspection = datetime.strptime(Movement_Date, '%d-%m-%Y').date()
     details = t_plant_movement_permit_t1.objects.filter(Application_No=application_id)
-    if remarks is not None:
-        details.update(Remarks=remarks)
-    else:
-        details.update(Remarks=None)
-    details.update(Inspection_Leader=Inspection_Leader)
-    details.update(Inspection_Team=Inspection_Team)
-    details.update(Inspection_Date=dateOfInspection)
+    details.update(Remarks=remarks)
+    details.update(Application_Status='R')
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='R')
+    return render(request, 'movement_permit/application_details.html', {'application_details': application_details})
+
+
+def reject_movement_application(request):
+    application_id = request.POST.get('application_id')
+    remarks = request.POST.get('remarks')
+    details = t_plant_movement_permit_t1.objects.filter(Application_No=application_id)
+    details.update(Remarks=remarks)
+    details.update(Application_Status='R')
+    application_details = t_workflow_details.objects.filter(Application_No=application_id)
+    application_details.update(Action_Date=date.today())
+    application_details.update(Application_Status='R')
+    for email_id in details:
+        emailId = email_id.Email
+        send_movement_reject_email(remarks, emailId)
     return render(request, 'movement_permit/application_details.html', {'application_details': application_details})
 
 
@@ -911,12 +919,14 @@ def add_file_name(request):
 def save_movement_file(request):
     data = dict()
     myFile = request.FILES['document']
-    fs = FileSystemStorage("attachments/plant/movement_permit" + str(timezone.now().year))
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/plant/movement_permit")
     if fs.exists(myFile.name):
         data['form_is_valid'] = False
     else:
         fs.save(myFile.name, myFile)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/plant/movement_permit" + "/" + myFile.name
         data['form_is_valid'] = True
+        data['file_url'] = file_url
     return JsonResponse(data)
 
 
@@ -1717,12 +1727,12 @@ def view_oic_details(request):
             Field_Office = application.Field_Office_Id
         user_role_list = t_user_master.objects.filter(Role_Id='5', Field_Office_Id_id=Field_Office)
         file = t_file_attachment.objects.filter(Application_No=application_id)
-        entry_point = t_field_office_master.objects.filter(Is_Entry_Point='Y')
-        country = t_country_master.objects.all()
+        entry_point = t_field_office_master.objects.all()
+        Country_list = t_country_master.objects.all()
         return render(request, 'export_permit/oic_application_details.html',
                       {'application_details': application_details, 'file': file, 'dzongkhag': dzongkhag,
                        'location': location, 'inspector_list': user_role_list, 'entry_point': entry_point,
-                       'country': country})
+                       'Country_list': Country_list})
     elif service_code == 'RNS':
         application_id = request.GET.get('application_id')
         application_details = t_plant_clearence_nursery_seed_grower_t1.objects.filter(Application_No=application_id)
@@ -2008,6 +2018,7 @@ def approve_import_application(request):
     Inspection_Team = request.GET.get('Inspection_Team')
     remarks = request.GET.get('remarks')
     dateOfInspection = request.GET.get('dateOfInspection')
+    validity_period = request.POST.get('validity')
     permit_no = get_permit_no(request)
     details = t_plant_import_permit_t1.objects.filter(Application_No=application_id)
     if remarks is not None:
@@ -2018,31 +2029,56 @@ def approve_import_application(request):
     details.update(Inspection_Team=Inspection_Team)
     details.update(Inspection_Date=dateOfInspection)
     details.update(Movement_Permit_No=permit_no)
+    details.update(Validity_Period=validity_period)
+    d = timedelta(days=int(validity_period))
+    validity_date = date.today() + d
+    details.update(Validity=validity_date)
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='A')
-
+    update_payment_details(application_id, permit_no, 'IPP', validity_date)
+    for email_id in application_details:
+        emailId = email_id.Email
+        send_ipp_approve_email(permit_no, emailId, validity_date)
     return render(request, 'import_permit/inspector_import_permit.html', {'application_details': application_details})
+
+
+def send_ipp_approve_email(permit_no, Email, validity_date):
+    subject = 'APPLICATION APPROVED'
+    message = "Dear Sir," \
+              "" \
+              "Your Application for Import Permit for Plant And Plant Products Has Been Approved. Your " \
+              "Movement Permit No is:" + permit_no + " And is Valid Till " + " " + str(validity_date) + \
+              " Please Make Payment Before Validity Expires. Visit The Nearest Bafra Office For Payment."
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = [Email]
+    send_mail(subject, message, email_from, recipient_list)
+
+
+def send_ipp_reject_email(Email):
+    subject = 'APPLICATION REJECTED'
+    message = "Dear Sir," \
+              "" \
+              "Your Application for Import Permit for Plant And Plant Products Has Been Rejected."
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = [Email]
+    send_mail(subject, message, email_from, recipient_list)
 
 
 def reject_import_application(request):
     application_id = request.GET.get('application_id')
-    Inspection_Leader = request.GET.get('Inspection_Leader')
-    Inspection_Team = request.GET.get('Inspection_Team')
     remarks = request.GET.get('remarks')
-    dateOfInspection = request.GET.get('dateOfInspection')
-
     details = t_plant_import_permit_t1.objects.filter(Application_No=application_id)
     if remarks is not None:
         details.update(Remarks=remarks)
     else:
         details.update(Remarks=None)
-    details.update(Inspection_Leader=Inspection_Leader)
-    details.update(Inspection_Team=Inspection_Team)
-    details.update(Inspection_Date=dateOfInspection)
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='R')
+    for email_id in application_details:
+        emailId = email_id.Email
+        send_ipp_reject_email(emailId)
     return render(request, 'import_permit/inspector_import_permit.html', {'application_details': application_details})
 
 
@@ -2487,7 +2523,7 @@ def delete_plant_file(request):
     file = t_file_attachment.objects.filter(pk=File_Id)
     for file in file:
         fileName = file.Attachment
-        fs = FileSystemStorage("attachments/plant/import_permit" + str(timezone.now().year))
+        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/plant/import_permit")
         fs.delete(str(fileName))
     file.delete()
 
@@ -2502,7 +2538,7 @@ def delete_agro_file(request):
     file = t_file_attachment.objects.filter(pk=File_Id)
     for file in file:
         fileName = file.Attachment
-        fs = FileSystemStorage("attachments/plant/import_permit" + str(timezone.now().year))
+        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/plant/import_permit")
         fs.delete(str(fileName))
     file.delete()
 
@@ -2554,7 +2590,15 @@ def fo_reject(request):
 
 def send_import_reject_email(remarks, Email):
     subject = 'APPLICATION REJECTED'
-    message = "Dear " + "Sir" + " Your Application for Import Of Plant And Plant Products Has Been Rejected Because" + remarks + ""
+    message = "Dear " + "Sir" + " Your Application for Import Of Plant And Plant Products Has Been Rejected Because " + remarks + ""
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = [Email]
+    send_mail(subject, message, email_from, recipient_list)
+
+
+def send_movement_reject_email(remarks, Email):
+    subject = 'APPLICATION REJECTED'
+    message = "Dear " + "Sir" + " Your Application for Movement Permit For Plant And Plant Products Has Been Rejected Because " + remarks + ""
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
     send_mail(subject, message, email_from, recipient_list)
@@ -2564,7 +2608,6 @@ def fo_approve(request):
     new_import_permit = get_import_permit_no()
     appId = request.POST.get('application_id')
     remarks = request.POST.get('remarks')
-    print(appId)
     details = t_plant_import_permit_t1.objects.filter(Application_No=appId)
     details.update(Import_Permit_No=new_import_permit)
     if remarks is not None:
@@ -2583,13 +2626,15 @@ def fo_approve(request):
     for email_id in details:
         email = email_id.Email
         send_import_approve_email(new_import_permit, email)
+    update_payment_details(appId, new_import_permit, 'IPP', None)
     return redirect(dashboard)
 
 
 def send_import_approve_email(new_import_permit, Email):
     subject = 'APPLICATION APPROVED'
     message = "Dear Sir Your Application for Import Of Plant And Plant Products Has Been Approved. Your " \
-              "Import Permit No is:" + new_import_permit + " Please Login To BBFSS and Download The Permit. "
+              "Import Permit No is:" + new_import_permit + " Please Make Payment To Download The Permit." \
+                                                           " Visit The Nearest Bafra Office For Payment."
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
     send_mail(subject, message, email_from, recipient_list)
@@ -2696,7 +2741,7 @@ def save_decision_form(request, form, template_name):
     return JsonResponse(data)
 
 
-def submit_application(request):
+def approve_clearance_application(request):
     application_no = request.GET.get('application_no')
     Inspection_Leader = request.GET.get('Inspection_Leader')
     Inspection_Team = request.GET.get('Inspection_Team')
@@ -2721,7 +2766,7 @@ def submit_application(request):
     application_details.update(Application_Status='C')
     for email_id in update_details:
         emailId = email_id.Email
-        send_imp_approve_email(clearnace_ref_no, emailId)
+        send_clearance_approve_email(clearnace_ref_no, emailId)
     return redirect(inspector_application)
 
 
@@ -2732,7 +2777,7 @@ def clearance_ref_no(request):
     for code in code:
         Field_Code = code.Field_Office_Code
 
-    last_clearance_ref_no = t_plant_import_permit_t1.objects.aggregate(Max('Clearance_Ref_No'))
+    last_clearance_ref_no = t_plant_import_permit_inspection_t1.objects.aggregate(Max('Clearance_Ref_No'))
     last_permit_no = last_clearance_ref_no['Clearance_Ref_No__max']
     if not last_permit_no:
         year = timezone.now().year
@@ -2746,12 +2791,12 @@ def clearance_ref_no(request):
     return newPermitNo
 
 
-def send_imp_approve_email(new_import_permit, Email):
+def send_clearance_approve_email(clearance_ref_No, Email):
     subject = 'APPLICATION APPROVED'
     message = "Dear Sir," \
               "" \
-              "Your Application for Import Permit for Plant And Plant Products Has Been Approved. Your " \
-              "Reference No is:" + new_import_permit + " . "
+              "Your Application for Release Form Has Been Approved. Your " \
+              "Clearance Reference No is:" + clearance_ref_No + " . "
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
     send_mail(subject, message, email_from, recipient_list)
@@ -2977,7 +3022,7 @@ def submit_export(request):
     data = dict()
     serviceCode = "EPP"
     lastExportApplication = get_export_application_no(serviceCode)
-    Applicant_Type = request.POST.get('ApplicantType')
+    Applicant_Type = request.POST.get('Applicant_Type')
     Certificate_Type = request.POST.get('Import_Type')
     License_No = request.POST.get('p_License_No')
     CID = request.POST.get('p_cid')
@@ -3034,14 +3079,6 @@ def submit_export(request):
     c_country = request.POST.get('c_country')
     c_Name_Address = request.POST.get('c_Name_Address')
     c_conveyanceMeans = request.POST.get('c_conveyanceMeans')
-    retail_gross_weight_gms = request.POST.get('c_conveyanceMeans')
-    retail_gross_weight_pieces = request.POST.get('c_conveyanceMeans')
-    retail_net_weight_gms = request.POST.get('c_conveyanceMeans')
-    retail_net_weight_pieces = request.POST.get('c_conveyanceMeans')
-    c_retail_package = request.POST.get('c_retail_package')
-    c_outlet_name = request.POST.get('c_outlet_name')
-    c_phoneNumber = request.POST.get('c_phoneNumber')
-    c_address = request.POST.get('c_address')
     Applicant_Id = request.session['email']
 
     if Certificate_Type == 'P':
@@ -3140,288 +3177,99 @@ def submit_export(request):
         )
         field_office_id = Entry_Point
     else:
-        if Applicant_Type == 'bothRadio':
-            t_plant_export_certificate_plant_plant_products_t1.objects.create(
-                Application_No=lastExportApplication,
-                Applicant_Type=Applicant_Type,
-                Certificate_Type=Certificate_Type,
-                License_No=None,
-                CID=C_CID,
-                Exporter_Name=C_Exporter_Name,
-                Exporter_Address=c_current_address,
-                Permanent_Address=c_permanent_address,
-                Contact_No=C_Contact_No,
-                Email=C_Email,
-                Dzongkhag_Code=C_Dzongkhag_Code,
-                Locatipn_Code=C_Locatipn_Code,
-                Consingee_Name_Address=None,
-                Botanical_Name=None,
-                Description=None,
-                Qty_Gross=None,
-                Unit_Gross=None,
-                Pieces_Gross=None,
-                Qty_Net=None,
-                Unit_Net=None,
-                Pieces_Net=None,
-                Importing_Country=None,
-                Entry_Point=None,
-                Packages_No=None,
-                Packages_Description=None,
-                Distinguishing_Marks=None,
-                Purpose_End_Use=None,
-                Mode_Of_Conveyance=None,
-                Name_Of_Conveyance=None,
-                Departure_Date=None,
-                Desired_Inspection_Date=Desired_Inspection_Date,
-                Desired_Inspection_Place=Desired_Inspection_Place,
-                Additional_Declaring=None,
-                Outlet_name=None,
-                Outlet_Contact_No=None,
-                Outlet_Address=None,
-                Inspection_Date=None,
-                Sample_Drawn_By=None,
-                Sample_Inspected_By=None,
-                Sample_Drawn=None,
-                Sample_Size=None,
-                Inspection_Method=None,
-                Inspection_Method_Other=None,
-                Pest_Detected=None,
-                Pest_Insect=None,
-                Pest_Mite=None,
-                Pest_Fungi=None,
-                Pest_Bacteria=None,
-                Pest_Virus=None,
-                Pest_Nematode=None,
-                Pest_Weed=None,
-                Pest_Scientific_Name=None,
-                Infestation_Level=None,
-                Pest_Status=None,
-                Pest_Risk_Category=None,
-                Pest_QR_Detected=None,
-                Pest_QR_Comment=None,
-                Treatment_Possible=None,
-                Treatment_Comment=None,
-                Phytosanitary_Measures=None,
-                Phytosanitary_Measures_Comment=None,
-                Treatment_Chemical_Name=None,
-                Treatment_Chemical_Fumigation=None,
-                Treatment_Chemical_Spray=None,
-                Treatment_Chemical_Seed=None,
-                Treatment_Chemical_Other=None,
-                Treatment_Chemical_Other_Specific=None,
-                Treatment_Chemical_Concentration=None,
-                Treatment_Chemical_Duration=None,
-                Treatment_Chemical_Treated_By=None,
-                Treatment_Chemical_Additional_Info=None,
-                Treatment_Irradiation=None,
-                Treatment_Hot_Water=None,
-                Treatment_Dry_Heat=None,
-                Treatment_Vapour_Heat=None,
-                Treatment_Cold_Treatment=None,
-                Feasibility_Status=None,
-                Export_Permit=None,
-                Additional_Information_Pre=None,
-                Chemical_Name_Pre=None,
-                Concentration_Pre=None,
-                Duration_Temperature_Pre=None,
-                Pre_Application_Treatment=None,
-                Treated_By_Pre=None,
-                Treated_Supervised_By_Pre=None,
-                Treatment_Pre=None,
-                Other_Pre=None,
-                Other_Treatment=None,
-                Application_Date=date.today(),
-                Applicant_Id=Applicant_Id,
-                Common_Name=None
-            )
-        elif Applicant_Type == 'directRadio':
-            t_plant_export_certificate_plant_plant_products_t1.objects.create(
-                Application_No=lastExportApplication,
-                Applicant_Type=Applicant_Type,
-                Certificate_Type=Certificate_Type,
-                License_No=c_License_No,
-                CID=C_CID,
-                Exporter_Name=C_Exporter_Name,
-                Exporter_Address=c_current_address,
-                Permanent_Address=c_permanent_address,
-                Contact_No=C_Contact_No,
-                Email=C_Email,
-                Dzongkhag_Code=C_Dzongkhag_Code,
-                Locatipn_Code=C_Locatipn_Code,
-                Consingee_Name_Address=c_Name_Address,
-                Botanical_Name=None,
-                Description=None,
-                Qty_Gross=gross_weight_gms,
-                Unit_Gross="Gm(s)",
-                Pieces_Gross=gross_weight_pieces,
-                Qty_Net=net_weight_gms,
-                Unit_Net="Gm(s)",
-                Pieces_Net=net_weight_pieces,
-                Importing_Country=c_country,
-                Entry_Point=None,
-                Packages_No=c_package,
-                Packages_Description=None,
-                Distinguishing_Marks=None,
-                Purpose_End_Use=None,
-                Mode_Of_Conveyance=c_conveyanceMeans,
-                Name_Of_Conveyance=None,
-                Departure_Date=None,
-                Desired_Inspection_Date=None,
-                Desired_Inspection_Place=None,
-                Additional_Declaring=None,
-                Outlet_name=None,
-                Outlet_Contact_No=None,
-                Outlet_Address=None,
-                Inspection_Date=None,
-                Sample_Drawn_By=None,
-                Sample_Inspected_By=None,
-                Sample_Drawn=None,
-                Sample_Size=None,
-                Inspection_Method=None,
-                Inspection_Method_Other=None,
-                Pest_Detected=None,
-                Pest_Insect=None,
-                Pest_Mite=None,
-                Pest_Fungi=None,
-                Pest_Bacteria=None,
-                Pest_Virus=None,
-                Pest_Nematode=None,
-                Pest_Weed=None,
-                Pest_Scientific_Name=None,
-                Infestation_Level=None,
-                Pest_Status=None,
-                Pest_Risk_Category=None,
-                Pest_QR_Detected=None,
-                Pest_QR_Comment=None,
-                Treatment_Possible=None,
-                Treatment_Comment=None,
-                Phytosanitary_Measures=None,
-                Phytosanitary_Measures_Comment=None,
-                Treatment_Chemical_Name=None,
-                Treatment_Chemical_Fumigation=None,
-                Treatment_Chemical_Spray=None,
-                Treatment_Chemical_Seed=None,
-                Treatment_Chemical_Other=None,
-                Treatment_Chemical_Other_Specific=None,
-                Treatment_Chemical_Concentration=None,
-                Treatment_Chemical_Duration=None,
-                Treatment_Chemical_Treated_By=None,
-                Treatment_Chemical_Additional_Info=None,
-                Treatment_Irradiation=None,
-                Treatment_Hot_Water=None,
-                Treatment_Dry_Heat=None,
-                Treatment_Vapour_Heat=None,
-                Treatment_Cold_Treatment=None,
-                Feasibility_Status=None,
-                Export_Permit=None,
-                Additional_Information_Pre=None,
-                Chemical_Name_Pre=None,
-                Concentration_Pre=None,
-                Duration_Temperature_Pre=None,
-                Pre_Application_Treatment=None,
-                Treated_By_Pre=None,
-                Treated_Supervised_By_Pre=None,
-                Treatment_Pre=None,
-                Other_Pre=None,
-                Other_Treatment=None,
-                Application_Date=date.today(),
-                Applicant_Id=Applicant_Id,
-                Common_Name=None
-            )
-        else:
-            t_plant_export_certificate_plant_plant_products_t1.objects.create(
-                Application_No=lastExportApplication,
-                Applicant_Type=Applicant_Type,
-                Certificate_Type=Certificate_Type,
-                License_No=None,
-                CID=C_CID,
-                Exporter_Name=C_Exporter_Name,
-                Exporter_Address=c_current_address,
-                Permanent_Address=c_permanent_address,
-                Contact_No=C_Contact_No,
-                Email=C_Email,
-                Dzongkhag_Code=C_Dzongkhag_Code,
-                Locatipn_Code=C_Locatipn_Code,
-                Consingee_Name_Address=None,
-                Botanical_Name=None,
-                Description=None,
-                Qty_Gross=retail_gross_weight_gms,
-                Unit_Gross="Gm(s)",
-                Pieces_Gross=retail_gross_weight_pieces,
-                Qty_Net=retail_net_weight_gms,
-                Unit_Net="Gm(s)",
-                Pieces_Net=retail_net_weight_pieces,
-                Importing_Country=None,
-                Entry_Point=None,
-                Packages_No=c_retail_package,
-                Packages_Description=None,
-                Distinguishing_Marks=None,
-                Purpose_End_Use=None,
-                Mode_Of_Conveyance=None,
-                Name_Of_Conveyance=None,
-                Departure_Date=None,
-                Desired_Inspection_Date=None,
-                Desired_Inspection_Place=None,
-                Additional_Declaring=None,
-                Outlet_name=c_outlet_name,
-                Outlet_Contact_No=c_phoneNumber,
-                Outlet_Address=c_address,
-                Inspection_Date=None,
-                Sample_Drawn_By=None,
-                Sample_Inspected_By=None,
-                Sample_Drawn=None,
-                Sample_Size=None,
-                Inspection_Method=None,
-                Inspection_Method_Other=None,
-                Pest_Detected=None,
-                Pest_Insect=None,
-                Pest_Mite=None,
-                Pest_Fungi=None,
-                Pest_Bacteria=None,
-                Pest_Virus=None,
-                Pest_Nematode=None,
-                Pest_Weed=None,
-                Pest_Scientific_Name=None,
-                Infestation_Level=None,
-                Pest_Status=None,
-                Pest_Risk_Category=None,
-                Pest_QR_Detected=None,
-                Pest_QR_Comment=None,
-                Treatment_Possible=None,
-                Treatment_Comment=None,
-                Phytosanitary_Measures=None,
-                Phytosanitary_Measures_Comment=None,
-                Treatment_Chemical_Name=None,
-                Treatment_Chemical_Fumigation=None,
-                Treatment_Chemical_Spray=None,
-                Treatment_Chemical_Seed=None,
-                Treatment_Chemical_Other=None,
-                Treatment_Chemical_Other_Specific=None,
-                Treatment_Chemical_Concentration=None,
-                Treatment_Chemical_Duration=None,
-                Treatment_Chemical_Treated_By=None,
-                Treatment_Chemical_Additional_Info=None,
-                Treatment_Irradiation=None,
-                Treatment_Hot_Water=None,
-                Treatment_Dry_Heat=None,
-                Treatment_Vapour_Heat=None,
-                Treatment_Cold_Treatment=None,
-                Feasibility_Status=None,
-                Export_Permit=None,
-                Additional_Information_Pre=None,
-                Chemical_Name_Pre=None,
-                Concentration_Pre=None,
-                Duration_Temperature_Pre=None,
-                Pre_Application_Treatment=None,
-                Treated_By_Pre=None,
-                Treated_Supervised_By_Pre=None,
-                Treatment_Pre=None,
-                Other_Pre=None,
-                Other_Treatment=None,
-                Application_Date=date.today(),
-                Applicant_Id=Applicant_Id,
-                Common_Name=None
-            )
+        t_plant_export_certificate_plant_plant_products_t1.objects.create(
+            Application_No=lastExportApplication,
+            Applicant_Type=Applicant_Type,
+            Certificate_Type=Certificate_Type,
+            License_No=c_License_No,
+            CID=C_CID,
+            Exporter_Name=C_Exporter_Name,
+            Exporter_Address=c_current_address,
+            Permanent_Address=c_permanent_address,
+            Contact_No=C_Contact_No,
+            Email=C_Email,
+            Dzongkhag_Code=C_Dzongkhag_Code,
+            Locatipn_Code=C_Locatipn_Code,
+            Consingee_Name_Address=c_Name_Address,
+            Botanical_Name=None,
+            Description=None,
+            Qty_Gross=gross_weight_gms,
+            Unit_Gross="Gm(s)",
+            Pieces_Gross=gross_weight_pieces,
+            Qty_Net=net_weight_gms,
+            Unit_Net="Gm(s)",
+            Pieces_Net=net_weight_pieces,
+            Importing_Country=c_country,
+            Entry_Point=None,
+            Packages_No=c_package,
+            Packages_Description=None,
+            Distinguishing_Marks=None,
+            Purpose_End_Use=None,
+            Mode_Of_Conveyance=c_conveyanceMeans,
+            Name_Of_Conveyance=None,
+            Departure_Date=None,
+            Desired_Inspection_Date=None,
+            Desired_Inspection_Place=None,
+            Additional_Declaring=None,
+            Outlet_name=None,
+            Outlet_Contact_No=None,
+            Outlet_Address=None,
+            Inspection_Date=None,
+            Sample_Drawn_By=None,
+            Sample_Inspected_By=None,
+            Sample_Drawn=None,
+            Sample_Size=None,
+            Inspection_Method=None,
+            Inspection_Method_Other=None,
+            Pest_Detected=None,
+            Pest_Insect=None,
+            Pest_Mite=None,
+            Pest_Fungi=None,
+            Pest_Bacteria=None,
+            Pest_Virus=None,
+            Pest_Nematode=None,
+            Pest_Weed=None,
+            Pest_Scientific_Name=None,
+            Infestation_Level=None,
+            Pest_Status=None,
+            Pest_Risk_Category=None,
+            Pest_QR_Detected=None,
+            Pest_QR_Comment=None,
+            Treatment_Possible=None,
+            Treatment_Comment=None,
+            Phytosanitary_Measures=None,
+            Phytosanitary_Measures_Comment=None,
+            Treatment_Chemical_Name=None,
+            Treatment_Chemical_Fumigation=None,
+            Treatment_Chemical_Spray=None,
+            Treatment_Chemical_Seed=None,
+            Treatment_Chemical_Other=None,
+            Treatment_Chemical_Other_Specific=None,
+            Treatment_Chemical_Concentration=None,
+            Treatment_Chemical_Duration=None,
+            Treatment_Chemical_Treated_By=None,
+            Treatment_Chemical_Additional_Info=None,
+            Treatment_Irradiation=None,
+            Treatment_Hot_Water=None,
+            Treatment_Dry_Heat=None,
+            Treatment_Vapour_Heat=None,
+            Treatment_Cold_Treatment=None,
+            Feasibility_Status=None,
+            Export_Permit=None,
+            Additional_Information_Pre=None,
+            Chemical_Name_Pre=None,
+            Concentration_Pre=None,
+            Duration_Temperature_Pre=None,
+            Pre_Application_Treatment=None,
+            Treated_By_Pre=None,
+            Treated_Supervised_By_Pre=None,
+            Treatment_Pre=None,
+            Other_Pre=None,
+            Other_Treatment=None,
+            Application_Date=date.today(),
+            Applicant_Id=Applicant_Id,
+            Common_Name=None
+        )
         field_id = t_location_field_office_mapping.objects.filter(pk=C_Locatipn_Code)
         for field_office in field_id:
             field_office_id = field_office.Field_Office_Id_id
@@ -3452,12 +3300,14 @@ def get_export_application_no(serviceCode):
 def add_file_phyto(request):
     data = dict()
     myFile = request.FILES['phyto_document']
-    fs = FileSystemStorage("attachments/plant/export_permit" + str(timezone.now().year))
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/plant/export_permit")
     if fs.exists(myFile.name):
         data['form_is_valid'] = False
     else:
         fs.save(myFile.name, myFile)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/plant/export_permit" + "/" + myFile.name
         data['form_is_valid'] = True
+        data['file_url'] = file_url
     return JsonResponse(data)
 
 
@@ -3466,10 +3316,12 @@ def add_file_name_phyto(request):
         Application_No = request.POST.get('appNo')
         fileName = request.POST.get('filename')
         Applicant_Id = request.session['email']
+        file_url = request.POST.get('file_url')
 
         t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
-                                         Role_Id=None,
+                                         Role_Id=None, File_Path=file_url,
                                          Attachment=fileName)
+
         file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
     return render(request, 'export_permit/phyto_file_attachment_page.html', {'file_attach': file_attach})
 
@@ -3477,12 +3329,14 @@ def add_file_name_phyto(request):
 def add_file_cordyceps(request):
     data = dict()
     myFile = request.FILES['cordyceps_document']
-    fs = FileSystemStorage("attachments/plant/export_permit" + str(timezone.now().year))
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/plant/export_permit")
     if fs.exists(myFile.name):
         data['form_is_valid'] = False
     else:
         fs.save(myFile.name, myFile)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/plant/export_permit" + "/" + myFile.name
         data['form_is_valid'] = True
+        data['file_url'] = file_url
     return JsonResponse(data)
 
 
@@ -3491,11 +3345,42 @@ def add_file_name_cordyceps(request):
         Application_No = request.POST.get('appNo')
         fileName = request.POST.get('filename')
         Applicant_Id = request.session['email']
+        file_url = request.POST.get('file_url')
 
         t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
-                                         Role_Id=None,
+                                         Role_Id=None, File_Path=file_url,
                                          Attachment=fileName)
         file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+    return render(request, 'export_permit/cordyceps_file_attachment_page.html', {'file_attach': file_attach})
+
+
+def delete_file_phyto(request):
+    File_Id = request.GET.get('file_id')
+    Application_No = request.GET.get('appNo');
+
+    file = t_file_attachment.objects.filter(pk=File_Id)
+    for file in file:
+        fileName = file.Attachment
+        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/plant/export_permit")
+        fs.delete(str(fileName))
+    file.delete()
+
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+    return render(request, 'export_permit/phyto_file_attachment_page.html', {'file_attach': file_attach})
+
+
+def delete_file_export(request):
+    File_Id = request.GET.get('file_id')
+    Application_No = request.GET.get('appNo');
+
+    file = t_file_attachment.objects.filter(pk=File_Id)
+    for file in file:
+        fileName = file.Attachment
+        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/plant/export_permit")
+        fs.delete(str(fileName))
+    file.delete()
+
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
     return render(request, 'export_permit/cordyceps_file_attachment_page.html', {'file_attach': file_attach})
 
 
@@ -3523,8 +3408,7 @@ def get_export_permit_no(request):
 def export_complete(request):
     export_permit = get_export_permit_no(request)
     Application_No = request.POST.get('appNo')
-    print(Application_No)
-    date_of_inspection = request.POST.get('date')
+    Inspection_Date = request.POST.get('date')
     no_of_sample_drawn = request.POST.get('no_of_sample_drawn')
     total_sample_size = request.POST.get('total_sample_size')
     sample_drawn_by = request.POST.get('sample_drawn_by')
@@ -3554,9 +3438,8 @@ def export_complete(request):
     chemcial_name = request.POST.get('chemical_name')
     others_treatment = request.POST.get('others_treatment')
     treatmentType = request.POST.get('treatmentType')
-    c_dateOfInspection = request.POST.get('c_dateOfInspection')
+    C_Inspection_Date = request.POST.get('c_dateOfInspection')
     c_remarks = request.POST.get('c_remarks')
-    Inspection_Date = datetime.strptime(date_of_inspection, '%d-%m-%Y').date()
 
     if certificate_type == 'P':
         if pest_detected == 'Yes':
@@ -3656,7 +3539,6 @@ def export_complete(request):
                                        )
 
     else:
-        C_Inspection_Date = datetime.strptime(c_dateOfInspection, '%d-%m-%Y').date()
         application_details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(
             Application_No=Application_No)
         application_details.update(Inspection_Date=C_Inspection_Date,
@@ -3667,7 +3549,23 @@ def export_complete(request):
     work_details = t_workflow_details.objects.filter(Application_No=Application_No)
     work_details.update(Action_Date=date.today())
     work_details.update(Application_Status='A')
+    update_payment_details(Application_No, export_permit, 'EPP', None)
+    for email_id in application_details:
+        emailId = email_id.Email
+        send_export_approve_email(export_permit, emailId)
     return redirect(inspector_application)
+
+
+def send_export_approve_email(export_permit, Email):
+    subject = 'APPLICATION APPROVED'
+    message = "Dear Sir," \
+              "" \
+              "Your Application for Export Permit for Plant And Plant Products Has Been Approved. Your " \
+              "Export Permit No is:" + export_permit + ". Please Make Payment To Download The Permit." \
+                                                       " Visit The Nearest Bafra Office For Payment."
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = [Email]
+    send_mail(subject, message, email_from, recipient_list)
 
 
 def permit_plant_details(request):
@@ -3718,6 +3616,7 @@ def cordyceps_file_details(request):
 
 def save_export_permit(request):
     appNo = request.POST.get('applicationNo')
+    print(appNo)
     workflow_details = t_workflow_details.objects.filter(Application_No=appNo)
     workflow_details.update(Action_Date=date.today())
     dzongkhag = t_dzongkhag_master.objects.all()
@@ -3834,25 +3733,44 @@ def nursery_reg_app_no(serviceCode):
 def add_file_reg(request):
     data = dict()
     myFile = request.FILES['document']
-    fs = FileSystemStorage("attachments/plant/nursery_registration" + str(timezone.now().year))
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/plant/nursery_registration")
     if fs.exists(myFile.name):
         data['form_is_valid'] = False
     else:
         fs.save(myFile.name, myFile)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/plant/nursery_registration" + "/" + myFile.name
         data['form_is_valid'] = True
+        data['file_url'] = file_url
     return JsonResponse(data)
 
 
 def add_file_name_reg(request):
     if request.method == 'POST':
         Application_No = request.POST.get('appNo')
+        print(Application_No)
         fileName = request.POST.get('filename')
         Applicant_Id = request.session['email']
+        file_url = request.POST.get('file_url')
 
         t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
-                                         Role_Id=None,
+                                         Role_Id=None, File_Path=file_url,
                                          Attachment=fileName)
         file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+    return render(request, 'nursery_registration/file_attachment_page.html', {'file_attach': file_attach})
+
+
+def delete_file_nursery(request):
+    File_Id = request.GET.get('file_id')
+    Application_No = request.GET.get('appNo');
+
+    file = t_file_attachment.objects.filter(pk=File_Id)
+    for file in file:
+        fileName = file.Attachment
+        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/plant/nursery_registration")
+        fs.delete(str(fileName))
+    file.delete()
+
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
     return render(request, 'nursery_registration/file_attachment_page.html', {'file_attach': file_attach})
 
 
@@ -3936,8 +3854,22 @@ def approve_nursery_application(request):
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='A')
-
+    # update_payment_details(application_id, clearance_ref_no, 'RNS', None)
+    for email_id in application_details:
+        emailId = email_id.Email
+        send_nursery_approve_email(clearance_ref_no, emailId)
     return redirect(inspector_application)
+
+
+def send_nursery_approve_email(clearance_ref_no, Email):
+    subject = 'APPLICATION APPROVED'
+    message = "Dear Sir," \
+              "" \
+              "Your Application for Nursery/Seed Growers Registration Has Been Approved. Your " \
+              "Registration No is:" + clearance_ref_no + "."
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = [Email]
+    send_mail(subject, message, email_from, recipient_list)
 
 
 def reject_nursery_application(request):
@@ -4226,12 +4158,14 @@ def certifcate_app_no(serviceCode):
 def add_file_certificate(request):
     data = dict()
     myFile = request.FILES['document']
-    fs = FileSystemStorage("attachments/plant/seed_certification" + str(timezone.now().year))
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/plant/seed_certification")
     if fs.exists(myFile.name):
         data['form_is_valid'] = False
     else:
         fs.save(myFile.name, myFile)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/plant/seed_certification" + "/" + myFile.name
         data['form_is_valid'] = True
+        data['file_url'] = file_url
     return JsonResponse(data)
 
 
@@ -4240,11 +4174,27 @@ def add_file_name_certificate(request):
         Application_No = request.POST.get('appNo')
         fileName = request.POST.get('filename')
         Applicant_Id = request.session['email']
+        file_url = request.POST.get('file_url')
 
         t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
-                                         Role_Id=None,
+                                         Role_Id=None, File_Path=file_url,
                                          Attachment=fileName)
         file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+        return render(request, 'seed_certification/file_attachment_page.html', {'file_attach': file_attach})
+
+
+def delete_file_seed(request):
+    File_Id = request.GET.get('file_id')
+    Application_No = request.GET.get('appNo');
+
+    file = t_file_attachment.objects.filter(pk=File_Id)
+    for file in file:
+        fileName = file.Attachment
+        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/plant/seed_certification")
+        fs.delete(str(fileName))
+    file.delete()
+
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
     return render(request, 'seed_certification/file_attachment_page.html', {'file_attach': file_attach})
 
 
@@ -4319,6 +4269,7 @@ def approve_certificate_application(request):
     Inspection_Team = request.GET.get('Inspection_Team')
     remarks = request.GET.get('inspector_remarks')
     dateOfInspection = request.GET.get('dateOfInspection')
+    validity_period = request.POST.get('validity')
     certificate_no = get_seed_cerficate_no(request)
     details = t_plant_seed_certification_t1.objects.filter(Application_No=application_id)
     if remarks is not None:
@@ -4330,11 +4281,30 @@ def approve_certificate_application(request):
     details.update(Inspection_Date=dateOfInspection)
     details.update(Seed_Certificate=certificate_no)
     details.update(Approved_Date=date.today())
+    details.update(Validity_Period=validity_period)
+    d = timedelta(days=int(validity_period))
+    validity_date = date.today() + d
+    details.update(Validity=validity_date)
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='A')
-
+    update_payment_details(application_id, certificate_no, 'RSC', validity_date)
+    for email_id in application_details:
+        emailId = email_id.Email
+        send_seed_approve_email(certificate_no, emailId, validity_date)
     return redirect(inspector_application)
+
+
+def send_seed_approve_email(clearance_ref_no, Email, validity_date):
+    subject = 'APPLICATION APPROVED'
+    message = "Dear Sir," \
+              "" \
+              "Your Application for Seed Certification Has Been Approved. Your " \
+              "Seed Certificate No is:" + clearance_ref_no + " And is Valid Till " + " " + str(validity_date) + \
+              " Please Make Payment Before Validity Expires.Visit The Nearest Bafra Office For Payment."
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = [Email]
+    send_mail(subject, message, email_from, recipient_list)
 
 
 def reject_certificate_application(request):
@@ -4355,12 +4325,25 @@ def reject_certificate_application(request):
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='R')
+    for email_id in application_details:
+        emailId = email_id.Email
+        send_seed_reject_email(emailId)
+
     return redirect(inspector_application)
+
+
+def send_seed_reject_email(Email):
+    subject = 'APPLICATION REJECT'
+    message = "Dear Sir," \
+              "" \
+              "Your Application for Seed Certification Has Been Rejected. "
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = [Email]
+    send_mail(subject, message, email_from, recipient_list)
 
 
 def resubmit_seed_application(request):
     application_id = request.GET.get('application_id')
-    print(application_id)
     Inspection_Leader = request.GET.get('Inspection_Leader')
     Inspection_Team = request.GET.get('Inspection_Team')
     Inspection_Date = request.GET.get('dateOfInspection')
@@ -4406,7 +4389,6 @@ def seed_certification_client_resubmit(request):
 
 def add_details_ins_certificate(request):
     application_id = request.GET.get('application_id')
-    print(application_id)
     currentObservation = request.GET.get('currentObservation')
     decisionConform = request.GET.get('decisionConform')
     t_plant_seed_certification_t3.objects.create(Application_No=application_id,
@@ -4427,6 +4409,10 @@ def add_recommendation_details(request):
     recommend_remarks = request.GET.get('remarks')
     application_no = request.GET.get('application_no')
     details_statement = t_plant_seed_certification_t2.objects.filter(Record_Id=record_id)
+    if recommend_remarks is not None:
+        details_statement.update(Remarks=recommend_remarks)
+    else:
+        details_statement.update(Remarks=None)
     details_statement.update(
         Qty_Certified=quantity_certified,
         Unit_Certified=unit_certified,
@@ -4434,7 +4420,6 @@ def add_recommendation_details(request):
         Qty_Rejected=quantity_rejected,
         Unit_Rejected=unit_rejected,
         Value_Rejected=value_rejected,
-        Remarks=recommend_remarks,
     )
     recommendation = t_plant_seed_certification_t2.objects.filter(Application_No=application_no)
     return render(request, 'seed_certification/add_recommendation_details.html', {'recommendation': recommendation})
@@ -4516,7 +4501,6 @@ def view_certificate_details(request):
     login_id = request.session['email']
     login_type = request.session['Login_Type']
 
-
     if login_type == 'I':
         if service_code == 'MPP':
             application_details = t_plant_movement_permit_t1.objects.filter(Movement_Permit_No__isnull=False)
@@ -4525,22 +4509,26 @@ def view_certificate_details(request):
                           {'application_details': application_details, 'payment_details': payment_details})
         elif service_code == 'IPP':
             application_details = t_plant_import_permit_t1.objects.filter(Import_Permit_No__isnull=False)
+            payment_details = t_payment_details.objects.all()
             return render(request, 'certificates/import_certificate_printing_details.html',
-                          {'application_details': application_details})
+                          {'application_details': application_details, 'payment_details': payment_details})
         elif service_code == 'EPP':
             application_details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(
                 Export_Permit__isnull=False)
+            payment_details = t_payment_details.objects.all()
             return render(request, 'certificates/export_certificate_printing_details.html',
-                          {'application_details': application_details})
+                          {'application_details': application_details, 'payment_details': payment_details})
         elif service_code == 'RNS':
             application_details = t_plant_clearence_nursery_seed_grower_t1.objects.filter(
                 Clearance_Number__isnull=False)
+            payment_details = t_payment_details.objects.all()
             return render(request, 'certificates/nursery_certificate_printing_details.html',
-                          {'application_details': application_details})
+                          {'application_details': application_details, 'payment_details': payment_details})
         elif service_code == 'RSC':
             application_details = t_plant_seed_certification_t1.objects.filter(Seed_Certificate__isnull=False)
+            payment_details = t_payment_details.objects.all()
             return render(request, 'certificates/seed_certificate_printing_details.html',
-                          {'application_details': application_details})
+                          {'application_details': application_details, 'payment_details': payment_details})
         elif service_code == 'FFC':
             application_details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(
                 Export_Permit__isnull=False)
@@ -4652,7 +4640,8 @@ def view_certificate_details(request):
             else:
                 application_details = t_food_licensing_food_handler_t1.objects.filter(FH_License_No__isnull=False,
                                                                                       Preferred_Inspection_Place=
-                                                                                      request.session['field_office_id'])
+                                                                                      request.session[
+                                                                                          'field_office_id'])
                 return render(request, 'food_certificates/handler_license_food_list.html',
                               {'application_details': application_details})
 
@@ -4681,24 +4670,28 @@ def view_certificate_details(request):
         elif service_code == 'IPP':
             application_details = t_plant_import_permit_t1.objects.filter(Applicant_Id=login_id,
                                                                           Import_Permit_No__isnull=False)
+            payment_details = t_payment_details.objects.all()
             return render(request, 'certificates/import_certificate_printing_details.html',
-                          {'application_details': application_details})
+                          {'application_details': application_details, 'payment_details': payment_details})
         elif service_code == 'EPP':
             application_details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(
                 Applicant_Id=login_id,
                 Export_Permit__isnull=False)
+            payment_details = t_payment_details.objects.all()
             return render(request, 'certificates/export_certificate_printing_details.html',
-                          {'application_details': application_details})
+                          {'application_details': application_details, 'payment_details': payment_details})
         elif service_code == 'RNS':
             application_details = t_plant_clearence_nursery_seed_grower_t1.objects.filter(Applicant_Id=login_id,
                                                                                           Clearance_Number__isnull=False)
+            payment_details = t_payment_details.objects.all()
             return render(request, 'certificates/nursery_certificate_printing_details.html',
-                          {'application_details': application_details})
+                          {'application_details': application_details, 'payment_details': payment_details})
         elif service_code == 'RSC':
             application_details = t_plant_seed_certification_t1.objects.filter(Applicant_Id=login_id,
                                                                                Seed_Certificate__isnull=False)
+            payment_details = t_payment_details.objects.all()
             return render(request, 'certificates/seed_certificate_printing_details.html',
-                          {'application_details': application_details})
+                          {'application_details': application_details, 'payment_details': payment_details})
         elif service_code == 'FFC':
             application_details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(
                 Applicant_Id=login_id,
@@ -4954,7 +4947,7 @@ def get_certificate_details(request, t_livestock_import_permit_product_inspectio
         crop = t_plant_crop_master.objects.all()
         variety = t_plant_crop_variety_master.objects.all()
         return render(request, 'certificates/seed_certificate.html',
-                      {'certificate_details': details, 'certification_details': details_permit,
+                      {'certificate_details': details, 'details_permit': details_permit,
                        'approved_date': approved_date, 'crop': crop, 'variety': variety})
     elif service_code == 'FFC':
         details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(Application_No=application_No,

@@ -397,26 +397,36 @@
             {
                 forwardTo = $('#forwardTo').val();
 
-                $.ajax({
-                    type : "POST",
-                    url : "{% url 'forward_application' %}",
-                    data :{'application_id':application_id ,'forwardTo':forwardTo, csrfmiddlewaretoken: '{{ csrf_token }}'},
-                    success : function(data) {
-                        $('#application-details-modal').modal('hide');
-                        $('#submitMsg').show();
-                        setTimeout(function() {
-                            $("#submitMsg").hide('blind', {}, 500)
-                        }, 2000);
-                        setTimeout(function() {
+                if(forwardTo == "")
+                {
+                    $('#forwardToErrorMsg').html("Select Inspector.");
+                    $('#forwardToErrorMsg').show();
+                    $('#forwardToErrorMsg').delay(2000).fadeOut('slow');
+                    $('#forwardTo').focus();
+                }
+                else
+                {
+                    $.ajax({
+                        type : "POST",
+                        url : "{% url 'forward_application' %}",
+                        data :{'application_id':application_id ,'forwardTo':forwardTo, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                        success : function(data) {
                             $('#application-details-modal').modal('hide');
-                        }, 3000);
-                        setTimeout(function()
-                        {
-                            location.reload();
-                        }, 3000);
+                            $('#submitMsg').show();
+                            setTimeout(function() {
+                                $("#submitMsg").hide('blind', {}, 500)
+                            }, 2000);
+                            setTimeout(function() {
+                                $('#application-details-modal').modal('hide');
+                            }, 3000);
+                            setTimeout(function()
+                            {
+                                location.reload();
+                            }, 3000);
 
-                    }
-                });
+                        }
+                    });
+                }
             }
 
 
@@ -437,23 +447,7 @@
                 });
             }
 
-            function rejectApplication(application_id)
-            {
-                Inspection_Leader = $('#teamLeader').val();
-                Inspection_Team = $('#insTeam').val();
-                remarks = $('#remarks').val();
-                dateOfInspection = $('#dateOfInspection').val();
 
-                $.ajax({
-                    type : "POST",
-                    url : "{% url 'reject_application' %}",
-                    data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks , 'dateOfInspection':dateOfInspection , csrfmiddlewaretoken: '{{ csrf_token }}'},
-                    success : function(data) {
-                        $('#application-details-modal').modal('hide');
-                        location.reload();
-                    }
-                });
-            }
 
             function add_details(application_id)
             {

@@ -361,11 +361,12 @@ function save_certificate_attachment()
             if (data.form_is_valid)
             {
                 var appNo = $('#appNo').val();
+                var file_url = data.file_url
                 $.ajax
                 ({
                     type : "POST",
                     url : "{% url 'add_file_name_certificate' %}",
-                    data : {'appNo':appNo , 'filename':fileName},
+                    data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
                     success : function(responseText)
                     {
                         $('#attachmentModal').modal('hide');

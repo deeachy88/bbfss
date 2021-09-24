@@ -283,7 +283,7 @@ form, input, select, textarea{
                         <label class="form-label"> Proposed Factory Inspection Date</label>
                         <input type="text" class="form-control date-picker flatpickr-input active" id="date" name="date"  placeholder="Pick a date" readonly="readonly">
                     </div>
-                    <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
+                    <div class="alert alert-danger" id="dateErrorMsg" style="display:none"></div>
                 </div>
             </div>
             <br>
@@ -304,8 +304,16 @@ form, input, select, textarea{
     function forward_factory_application(application_id)
         {
             date = $('#date').val();
-
-            $.ajax({
+            if(date == "")
+            {
+                $('#dateErrorMsg').html("Select Inspector.");
+                $('#dateErrorMsg').show();
+                $('#dateErrorMsg').delay(2000).fadeOut('slow');
+                $('#date').focus();
+            }
+            else
+            {
+                $.ajax({
                 type : "POST",
                 url : "{% url 'forward_meat_shop_factory_application' %}",
                 data :{'application_id':application_id , 'date':date, csrfmiddlewaretoken: '{{ csrf_token }}'},
@@ -324,8 +332,8 @@ form, input, select, textarea{
                          location.reload();
                     }, 3000);
 
-                }
-            });
-
+                    }
+                });
+            }
         }
 </script>

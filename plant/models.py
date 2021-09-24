@@ -245,10 +245,10 @@ class t_plant_export_certificate_plant_plant_products_t1(models.Model):
     Description = models.TextField(blank=True, null=True)
     Qty_Gross = models.CharField(max_length=100, blank=True, null=True)
     Unit_Gross = models.CharField(max_length=10, blank=True, null=True)
-    Pieces_Gross = models.IntegerField(default=None, blank=True, null=True)
+    Pieces_Gross = models.CharField(max_length=100, default=None, blank=True, null=True)
     Qty_Net = models.CharField(max_length=100, blank=True, null=True)
     Unit_Net = models.CharField(max_length=10, blank=True, null=True)
-    Pieces_Net = models.IntegerField(blank=True, null=True)
+    Pieces_Net = models.CharField(max_length=100, default=None, blank=True, null=True)
     Importing_Country = models.CharField(max_length=100, blank=True, null=True)
     Entry_Point = models.CharField(max_length=100, blank=True, null=True)
     Packages_No = models.CharField(max_length=10, blank=True, null=True)
@@ -427,7 +427,8 @@ class t_plant_seed_certification_t2(models.Model):
 
 
 class t_plant_seed_certification_t3(models.Model):
-    Application_No = models.CharField(max_length=30, primary_key=True)
+    Record_Id = models.AutoField(primary_key=True, default=None)
+    Application_No = models.CharField(max_length=30, default=None)
     Observation = models.TextField(blank=True, null=True)
     Action = models.TextField(blank=True, null=True)
 
@@ -447,3 +448,5 @@ class t_payment_details(models.Model):
     Receipt_Date = models.DateField(default=None, blank=True, null=True)
     Updated_By = models.CharField(max_length=100, default=None, blank=True, null=True)
     Updated_On = models.DateField(default=None, blank=True, null=True)
+
+#Remember to make changes in plant export permit models

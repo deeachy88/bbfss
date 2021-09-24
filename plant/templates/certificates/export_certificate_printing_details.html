@@ -16,7 +16,13 @@
                     <td>{{application_details.Export_Permit}}</td>
                     <td>{{application_details.Application_No}}</td>
                     <td>{{application_details.Application_Date}}</td>
-                    <td><button  class="btn btn-default btn-border" type="button" onclick="print_certificate('EPP','{{application_details.Application_No}}')"><i class="zmdi zmdi-print"></i></button></td>
+                    {% for payment_details in payment_details%}
+                        {% if application_details.Application_No == payment_details.Application_No %}
+                            {% if payment_details.Receipt_Date %}
+                                <td><button  class="btn btn-default btn-border" type="button" onclick="print_certificate('EPP','{{application_details.Application_No}}')"><i class="zmdi zmdi-print"></i></button></td>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
                 </tr>
                 {% empty %}
                 <tr>

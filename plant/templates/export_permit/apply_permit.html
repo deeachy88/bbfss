@@ -3,7 +3,7 @@
 {% block content %}
 <style>
 option {
-    background-color: black !important;
+    background-color: white !important;
 }
 .custom-control {
     margin-bottom: 0;
@@ -113,7 +113,7 @@ color: black !important;
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="form-label">Dzongkhag <font color="red">*</font></label>
-                                    <select class="form-control" name="p_Dzongkhag_Code"  id="p_Dzongkhag_Code" onchange="getLocation(this.value),getLocation(this.value)">
+                                    <select class="form-control" name="p_Dzongkhag_Code"  id="p_Dzongkhag_Code" onchange="getLocation(this.value)">
                                         <option value="">--SELECT DZONGKHAG--</option>
                                         {% for dzongkhag in dzongkhag %}
                                                 <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
@@ -235,7 +235,7 @@ color: black !important;
                                     <select class="form-control" name="p_Country_Code"  id="p_Country_Code">
                                         <option value="">--SELECT COUNTRY--</option>
                                         {% for country in country %}
-                                            <option value="{{ country.Country_Code }}">{{ country.Country_Name }}</option>
+                                            <option value="{{ country.Country_Name }}">{{ country.Country_Name }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -258,7 +258,7 @@ color: black !important;
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="form-label">Number of Packages <font color="red">*</font></label>
-                                    <textarea class="form-control" id="p_Package_number" name="p_Package_number" rows="3"></textarea>
+                                    <input type="text" class="form-control" id="p_Package_number" name="p_Package_number" onkeypress="return isNumberKey(event)">
                                 </div>
                                 <div class="alert alert-danger" id="p_Package_numberErrorMsg" style="display:none"></div>
                             </div>
@@ -470,35 +470,34 @@ color: black !important;
             </div>
             <div id="Cordyceps" style="display:none;">
                 <div class="row justify-content-left">
-                    <ul class="nav nav-pills nav-secondary" id="pills-tab-cordyceps" role="tablist">
+                    <ul class="nav nav-pills nav-secondary" id="cordyceps-tab" role="tablist">
                         <li class="nav-item">
                             <a class="nav-link active" id="pills-cordyceps-tab" data-toggle="pill" href="#cordyceps-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="load_agro_details()">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="pills-cordyceps-file" data-toggle="pill" href="#cordyceps-file-attachment" role="tab" aria-controls="pills-cordyceps-file" aria-selected="false" onclick="load_agro_attachment()">Attach File</a>
+                            <a class="nav-link" id="cordyceps-attach" data-toggle="pill" href="#cordyceps-file-attachment" role="tab" aria-controls="cordyceps-attach" aria-selected="false">Attach File</a>
                         </li>
                     </ul>
                 </div>
                 <div class="tab-content mt-2 mb-3" id="pills-tab-cordyceps-tabContent">
                     <div class="tab-pane fade show active" id="cordyceps-home" role="tabpanel" aria-labelledby="pills-phyto-tab">
-                        <div id="cordyceps-details">
                         <div class="row">
                             <div class="col-sm-3">
                                 <label class="form-label">Applicant Type <font color="red">*</font></label>
                             </div>
                             <div class="col-sm-8 justify-content-center">
                                 <label class="custom-control custom-radio">
-                                    <input type="radio" class="custom-control-input" name="ApplicantType" id="directRadio" value="directRadio" onclick="changeRadio(this.value)">
+                                    <input type="radio" class="custom-control-input" name="Applicant_Type" id="directRadio" value="directRadio" onclick="changeRadio(this.value)">
                                     <span class="custom-control-indicator"></span>
                                     <span class="custom-control-description">Direct Export Only</span>
                                 </label>
                                 <label class="custom-control custom-radio">
-                                    <input type="radio" class="custom-control-input" name="ApplicantType" id="retailRadio" value="retailRadio" onclick="changeRadio(this.value)">
+                                    <input type="radio" class="custom-control-input" name="Applicant_Type" id="retailRadio" value="retailRadio" onclick="changeRadio(this.value)">
                                     <span class="custom-control-indicator"></span>
                                     <span class="custom-control-description">Retail Outlets Only</span>
                                 </label>
+                                <div class="alert alert-danger" id="Applicant_TypeErrorMsg" style="display:none"></div>
                             </div>
-                            <div class="alert alert-danger" id="Applicant_TypeErrorMsg" style="display:none"></div>
                         </div>
                         <br>
                         <div class="row">
@@ -524,75 +523,69 @@ color: black !important;
                                 <div class="alert alert-danger" id="c_EmailErrorMsg" style="display:none"></div>
                             </div>
                         </div>
-                            <div class="row">
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Contact Number <font color="red">*</font></label>
-                                        <input type="text" class="form-control" id="c_Contact_No" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="c_Contact_No" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkExportContact(this.value)">
-                                    </div>
-                                    <div class="alert alert-danger" id="c_Contact_NoErrorMsg" style="display:none"></div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="form-label">Contact Number <font color="red">*</font></label>
+                                    <input type="text" class="form-control" id="c_Contact_No" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="c_Contact_No" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkExportContact(this.value)">
                                 </div>
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Dzongkhag <font color="red">*</font></label>
-                                        <select class="form-control" name="c_Dzongkhag_Code"  id="c_Dzongkhag_Code" onchange="getLocation(this.value),getLocation(this.value)">
-                                            <option value="">--SELECT DZONGKHAG--</option>
-                                            {% for dzongkhag in dzongkhag %}
-                                                    <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                    <div class="alert alert-danger" id="c_Dzongkhag_CodeErrorMsg" style="display:none"></div>
-                                </div>
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Location <font color="red">*</font></label>
-                                        <select class="form-control" name="c_Location_Code"  id="c_Location_Code">
-                                            <option value="">--SELECT LOCATION--</option>
-                                            {% for location in location %}
-                                                <option value="{{ location.Location_Code }}">{{ location.Location_Name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                    <div class="alert alert-danger" id="c_Location_CodeErrorMsg" style="display:none"></div>
-                                </div>
+                                <div class="alert alert-danger" id="c_Contact_NoErrorMsg" style="display:none"></div>
                             </div>
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Current Address <font color="red">*</font></label>
-                                        <textarea class="form-control" id="c_current_address" name="c_current_address" rows="4"></textarea>
-                                    </div>
-                                    <div class="alert alert-danger" id="c_current_addressErrorMsg" style="display:none"></div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="form-label">Dzongkhag <font color="red">*</font></label>
+                                    <select class="form-control" name="c_Dzongkhag_Code"  id="c_Dzongkhag_Code" onchange="getExportLocation(this.value)">
+                                        <option value="">--SELECT DZONGKHAG--</option>
+                                        {% for dzongkhag in dzongkhag %}
+                                                <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                        {% endfor %}
+                                    </select>
                                 </div>
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Permanent Address(if different from the current address)</label>
-                                        <textarea class="form-control" id="c_permanent_address" name="c_permanent_address" rows="4"></textarea>
-                                    </div>
-                                </div>
+                                <div class="alert alert-danger" id="c_Dzongkhag_CodeErrorMsg" style="display:none"></div>
                             </div>
-                             <div class="row">
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Date Of Inspection Requested <font color="red">*</font></label>
-                                        <input type="text" class="form-control date-picker flatpickr-input active" id="date" name="date_for_Inspection"  placeholder="Pick a date" readonly="readonly">
-                                    </div>
-                                    <div class="alert alert-danger" id="date_for_InspectionErrorMsg" style="display:none"></div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="form-label">Location <font color="red">*</font></label>
+                                    <select class="form-control" name="c_Location_Code"  id="c_Location_Code">
+                                        <option value="">--SELECT LOCATION--</option>
+                                        {% for location in location %}
+                                            <option value="{{ location.Location_Code }}">{{ location.Location_Name }}</option>
+                                        {% endfor %}
+                                    </select>
                                 </div>
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Place Of Inspection Requested <font color="red">*</font></label>
-                                        <input type="text" class="form-control" id="c_requested_place" name="Desired_Inspection_Place">
-                                    </div>
-                                    <div class="alert alert-danger" id="c_requested_placeErrorMsg" style="display:none"></div>
+                                <div class="alert alert-danger" id="c_Location_CodeErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="form-label">Current Address <font color="red">*</font></label>
+                                    <textarea class="form-control" id="c_current_address" name="c_current_address" rows="4"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="c_current_addressErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="form-label">Permanent Address(if different from the current address)</label>
+                                    <textarea class="form-control" id="c_permanent_address" name="c_permanent_address" rows="4"></textarea>
                                 </div>
                             </div>
                         </div>
-                        <hr>
-                        <div id="bothRadioContent">
-
-
+                         <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="form-label">Date Of Inspection Requested <font color="red">*</font></label>
+                                    <input type="text" class="form-control date-picker flatpickr-input active" id="date" name="date_for_Inspection"  placeholder="Pick a date" readonly="readonly">
+                                </div>
+                                <div class="alert alert-danger" id="date_for_InspectionErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="form-label">Place Of Inspection Requested <font color="red">*</font></label>
+                                    <input type="text" class="form-control" id="c_requested_place" name="Desired_Inspection_Place">
+                                </div>
+                                <div class="alert alert-danger" id="c_requested_placeErrorMsg" style="display:none"></div>
+                            </div>
                         </div>
                         <div id="directContent" style="display:none">
                             <div class="row">
@@ -608,7 +601,7 @@ color: black !important;
                                 <div class="col-sm-4">
                                     <div class="input-group">
                                         <div class="form-group">
-                                            <input type="text" class="form-control" id="gross_weight_gms" name="gross_weight_gms">
+                                            <input type="text" class="form-control" id="gross_weight_gms" name="gross_weight_gms" onkeypress="return isNumberKey(event)">
                                             <i class="form-group__bar"></i>
                                         </div>
                                         <span class="input-group-addon">Gm(s)</span>
@@ -617,7 +610,7 @@ color: black !important;
                                 <div class="col-sm-4">
                                     <div class="input-group">
                                         <div class="form-group">
-                                            <input type="text" class="form-control" id="gross_weight_pieces" name="gross_weight_pieces">
+                                            <input type="text" class="form-control" id="gross_weight_pieces" name="gross_weight_pieces" onkeypress="return isNumberKey(event)">
                                             <i class="form-group__bar"></i>
                                         </div>
                                         <span class="input-group-addon">Pieces</span>
@@ -629,7 +622,7 @@ color: black !important;
                                 <div class="col-sm-4">
                                     <div class="input-group">
                                         <div class="form-group">
-                                            <input type="text" class="form-control" id="net_weight_gms" name="net_weight_gms">
+                                            <input type="text" class="form-control" id="net_weight_gms" name="net_weight_gms" onkeypress="return isNumberKey(event)">
                                             <i class="form-group__bar"></i>
                                         </div>
                                         <span class="input-group-addon">Gm(s)</span>
@@ -638,7 +631,7 @@ color: black !important;
                                 <div class="col-sm-4">
                                     <div class="input-group">
                                         <div class="form-group">
-                                            <input type="text" class="form-control" id="net_weight_pieces" name="net_weight_pieces">
+                                            <input type="text" class="form-control" id="net_weight_pieces" name="net_weight_pieces" onkeypress="return isNumberKey(event)">
                                             <i class="form-group__bar"></i>
                                         </div>
                                         <span class="input-group-addon">Pieces</span>
@@ -649,13 +642,18 @@ color: black !important;
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label class="form-label">No Of Packages</label>
-                                        <input type="text" class="form-control" id="c_package" name="c_package">
+                                        <input type="text" class="form-control" id="c_package" name="c_package" onkeypress="return isNumberKey(event)">
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label class="form-label">Importing Country</label>
-                                        <input type="text" class="form-control" id="c_country" name="c_country">
+                                        <select class="form-control" name="c_country"  id="c_country">
+                                            <option value="">--SELECT--</option>
+                                            {% for country in country %}
+                                                <option value="{{ country.Country_Name }}">{{ country.Country_Name }}</option>
+                                            {% endfor %}
+                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
@@ -765,7 +763,7 @@ color: black !important;
                         <div class="card-action">
                             <button type="button" class="btn btn-primary" onclick="save_export_permit()">Save</button>
                         </div>
-                        </div>
+                    </div>
                     </div>
                     <div class="tab-pane fade" id="cordyceps-file-attachment" role="tabpanel" aria-labelledby="pills-cordyceps-file">
                         <div id="cordycepsAttach">
@@ -1046,12 +1044,6 @@ function isNumberKey(evt)
                 $('#p_Package_descriptionErrorMsg').show();
                 $('#p_Package_descriptionErrorMsg').delay(2000).fadeOut('slow');
             }
-            else if(p_Distinguish_Marks == "")
-            {
-                $('#p_Distinguish_MarksErrorMsg').html("Enter Distingushing Marks.");
-                $('#p_Distinguish_MarksErrorMsg').show();
-                $('#p_Distinguish_MarksErrorMsg').delay(2000).fadeOut('slow');
-            }
             else if(p_purpose < 1)
             {
                 $('#p_purposeErrorMsg').html("Select One Purpose End Use.");
@@ -1073,22 +1065,22 @@ function isNumberKey(evt)
             else
             {
                 $.ajax({
-                        type : "POST",
-                        url : "{% url 'submit_export' %}",
-                        data : $('#permitForm').serialize(),
-                        success : function(data)
-                        {
-                            $('#applicationNo').val(data.applicationNo);
-                            $('#phyto_attachment_applicationNo').val(data.applicationNo);
-                            $('#pills-tab-phyto a:last').tab('show');
-                        }
+                    type : "POST",
+                    url : "{% url 'submit_export' %}",
+                    data : $('#permitForm').serialize(),
+                    success : function(data)
+                    {
+                        $('#applicationNo').val(data.applicationNo);
+                        $('#phyto_attachment_applicationNo').val(data.applicationNo);
+                        $('#pills-tab-phyto a:last').tab('show');
+                    }
                 });
             }
         }
         else
         {
-            var ApplicantType = $("input[name=ApplicantType]:checked").length;
-            var ApplicantTypeVal = $('input[name="ApplicantType"]:checked').val();
+            var ApplicantType = $("input[name=Applicant_Type]:checked").length;
+            var ApplicantTypeVal = $("input[name=Applicant_Type]:checked").val();
             var c_cid = $('#c_cid').val();
             var c_Exporter_Name = $('#c_Exporter_Name').val();
             var c_Email = $('#c_Email').val();
@@ -1102,9 +1094,9 @@ function isNumberKey(evt)
 
             if(ApplicantType < 1)
             {
-                $('#ApplicantTypeErrorMsg').html("Select One Unit.");
-                $('#ApplicantTypeErrorMsg').show();
-                $('#ApplicantTypeErrorMsg').delay(2000).fadeOut('slow');
+                $('#Applicant_TypeErrorMsg').html("Select One Applicant Type.");
+                $('#Applicant_TypeErrorMsg').show();
+                $('#Applicant_TypeErrorMsg').delay(2000).fadeOut('slow');
             }
             else if(ApplicantTypeVal == "bothRadio" && c_cid == "")
             {
@@ -1224,7 +1216,8 @@ function isNumberKey(evt)
                         {
                             $('#applicationNo').val(data.applicationNo);
                             $('#cordyceps_attachment_applicationNo').val(data.applicationNo);
-                            $('#pills-tab-cordyceps a:last').tab('show');
+                            $('#cordyceps-tab a:last').tab('show');
+		                    $('#cordyceps-home').hide();
                         }
                 });
             }
@@ -1258,17 +1251,18 @@ function isNumberKey(evt)
                 if (data.form_is_valid)
                 {
                     var appNo = $('#phyto_attachment_applicationNo').val();
+                    var file_url = data.file_url
                     $.ajax
                     ({
                         type : "POST",
                         url : "{% url 'add_file_name_phyto' %}",
-                        data : {'appNo':appNo , 'filename':fileName},
+                        data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
                         success : function(responseText)
                         {
                             $('#phyto_attachmentModal').modal('hide');
                             $('#phytoAttach').html(responseText);
                             $('.modal-backdrop').remove();
-                            $('#phyto_attachmentModal')[0].reset();
+                            $('#phyto_attachment_form')[0].reset();
                         }
                     });
                 }else
@@ -1308,18 +1302,18 @@ function isNumberKey(evt)
                 if (data.form_is_valid)
                 {
                     var appNo = $('#cordyceps_attachment_applicationNo').val();
-
+                    var file_url = data.file_url
                     $.ajax
                     ({
                         type : "POST",
                         url : "{% url 'add_file_name_cordyceps' %}",
-                        data : {'appNo':appNo , 'filename':fileName},
+                        data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
                         success : function(responseText)
                         {
                             $('#cordyceps_attachmentModal').modal('hide');
                             $('#cordycepsAttach').html(responseText);
                             $('.modal-backdrop').remove();
-                            $('#cordyceps_attachmentModal')[0].reset();
+                            $('#cordyceps_attachment_form')[0].reset();
                         }
                     });
                 }else
@@ -1517,13 +1511,47 @@ function validateExportemailId(emailId)
 
     if(no==null)
     {
-        $('#c_EmailNumberErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
+        $('#c_EmailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
         $('#c_Email').val("");
-        $('#c_EmailNumberErrorMsg').show();
-        $('#c_EmailNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#c_EmailErrorMsg').show();
+        $('#c_EmailErrorMsg').delay(2000).fadeOut('slow');
     }else{
-     $('#c_EmailNumberErrorMsg').hide();
+     $('#c_EmailErrorMsg').hide();
     }
+}
+
+function getLocation(dzongkhag_id)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_location_nursery' %}",
+        data :{'dzongkhag_id':dzongkhag_id},
+        success : function(data) {
+            $('#p_Location_Code').html(data);
+        }
+    });
+}
+
+function getExportLocation(dzongkhag_id)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_location_nursery' %}",
+        data :{'dzongkhag_id':dzongkhag_id},
+        success : function(data) {
+            $('#c_Location_Code').html(data);
+        }
+    });
+}
+
+function show_phyto_attachmentModal()
+{
+    $('#phyto_attachmentModal').modal('show');
+}
+
+function show_cordyceps_attachmentModal()
+{
+    $('#cordyceps_attachmentModal').modal('show');
 }
 </script>
 {% endblock %}

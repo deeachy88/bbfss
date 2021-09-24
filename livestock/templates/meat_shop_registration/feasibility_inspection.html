@@ -721,6 +721,7 @@ function add_team_details(application_id)
     designation = $('#designation').val();
     opening_date = $('#opening_date').val();
     closing_date = $('#closing_date').val();
+
     $.ajax({
         type : "GET",
         url : "{% url 'meat_shop_team_details_feasibility_ins' %}",
@@ -807,28 +808,7 @@ function reject_feasibility_inspection(application_id)
     remarks = $('#remarks').val();
     dateOfInspection = $('#dateOfInspection').val();
 
-    if(Inspection_Leader == "")
-    {
-        $('#teamLeaderErrorMsg').html("Select Team Leader.");
-        $('#teamLeaderErrorMsg').show();
-        $('#teamLeaderErrorMsg').delay(2000).fadeOut('slow');
-        $('#teamLeader').focus();
-    }
-    else if(Inspection_Team == "")
-    {
-        $('#insTeamErrorMsg').html("Enter Inspection Team.");
-        $('#insTeamErrorMsg').show();
-        $('#insTeamErrorMsg').delay(2000).fadeOut('slow');
-        $('#insTeam').focus();
-    }
-    else if(dateOfInspection == "")
-    {
-        $('#dateOfInspectionErrorMsg').html("Select Date of Inspection.");
-        $('#dateOfInspectionErrorMsg').show();
-        $('#dateOfInspectionErrorMsg').delay(2000).fadeOut('slow');
-        $('#dateOfInspection').focus();
-    }
-    else if(remarks == "")
+    if(remarks == "")
     {
         $('#remarksErrorMsg').html("Please Enter Remarks.");
         $('#remarksErrorMsg').show();

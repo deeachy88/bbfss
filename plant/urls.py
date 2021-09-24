@@ -24,7 +24,7 @@ urlpatterns = [
     path('save_details_movement', views.save_details_movement, name='save_details_movement'),
     path('forward_application', views.forward_application, name='forward_application'),
     path('approve_application', views.approve_application, name='approve_application'),
-    path('reject_application', views.reject_application, name='reject_application'),
+    path('reject_movement_application', views.reject_movement_application, name='reject_movement_application'),
     path('add_details_ins', views.add_details_ins, name='add_details_ins'),
     path('save_file', views.add_file, name="save_file"),
     path('add_file_name', views.add_file_name, name='add_file_name'),
@@ -48,8 +48,8 @@ urlpatterns = [
     path('print_imp_permit', views.print_import_details, name='print_imp_permit'),
     path('view_oic_details', views.view_oic_details, name='view_oic_details'),
     path('add_import_details_ins', views.add_import_details_ins, name='add_import_details_ins'),
-    path('approve_import_application', views.approve_application, name='approve_import_application'),
-    path('reject_import_application', views.reject_application, name='reject_import_application'),
+    path('approve_import_application', views.approve_import_application, name='approve_import_application'),
+    path('reject_import_application', views.reject_import_application, name='reject_import_application'),
     path('add_plant_import_file', views.add_plant_import_file, name="add_plant_import_file"),
     path('add_agro_import_file', views.add_agro_import_file, name="add_agro_import_file"),
     path('add_plant_attach', views.add_plant_attach, name='add_plant_attach'),
@@ -64,7 +64,7 @@ urlpatterns = [
     path('add_details_ins_import', views.add_details_ins_import, name='add_details_ins_import'),
     path('edit_decision/<int:Record_Id>', views.edit_decision, name='edit_decision'),
     path('view_application_details', views.view_application_details, name='view_application_details'),
-    path('submit_application', views.submit_application, name='submit_application'),
+    path('approve_clearance_application', views.approve_clearance_application, name='approve_clearance_application'),
     path('load_import_details', views.load_import_details, name='load_import_details'),
     path('agro_details_permit', views.load_import_details_agro, name='agro_details_permit'),
     path('permit_attachment_plant', views.permit_attachment_plant, name='permit_attachment_plant'),
@@ -95,6 +95,8 @@ urlpatterns = [
     path('plant_file_details', views.plant_file_details, name='plant_file_details'),
     path('cordyceps_file_details', views.cordyceps_file_details, name='cordyceps_file_details'),
     path('save_export_permit', views.save_export_permit, name='save_export_permit'),
+    path('delete_file_export', views.delete_file_export, name='delete_file_export'),
+    path('delete_file_phyto', views.delete_file_phyto, name='delete_file_phyto'),
 
     # Registration Of Nursery/Seed Growers
     path('registration_application', views.registration_application, name='registration_application'),
@@ -113,6 +115,7 @@ urlpatterns = [
     path('load_file_details', views.load_file_details, name='load_file_details'),
     path('load_location_nursery', views.load_location_nursery, name='load_location_nursery'),
     path('nursery_client_resubmit', views.nursery_client_resubmit, name='nursery_client_resubmit'),
+    path('delete_file_nursery', views.delete_file_nursery, name='delete_file_nursery'),
 
     # Seed Certification
     path('seed_certificate_application', views.seed_certificate_application, name='seed_certificate_application'),
@@ -133,6 +136,7 @@ urlpatterns = [
     path('load_seed_variety', views.load_seed_variety, name='load_seed_variety'),
     path('seed_certification_client_resubmit', views.seed_certification_client_resubmit,
          name='seed_certification_client_resubmit'),
+    path('delete_file_seed', views.delete_file_seed, name='delete_file_seed'),
 
     # Common Details
     path('application_status', views.application_status, name='application_status'),

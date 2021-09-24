@@ -689,7 +689,7 @@ def approve_oc_application(request):
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='A')
-    update_payment(application_id, Certificate_No, 'OC', validity_date)
+    #update_payment(application_id, Certificate_No, 'OC', validity_date)
     for email_id in details:
         emailId = email_id.Email
         send_oc_approve_email(Certificate_No, emailId, validity_date)
@@ -700,10 +700,10 @@ def send_oc_approve_email(Export_Permit_No, Email, validity_date):
     valid_till = validity_date.strftime('%d-%m-%Y')
 
     subject = 'APPLICATION APPROVED'
-    message = "Dear Sir, Your Application for GAP Certificate Has Been Approved. " \
+    message = "Dear Sir, Your Application for Organic Certificate Has Been Approved. " \
               "Your " \
-              "Registration No is:" + Export_Permit_No + " And is Valid Till " + str(valid_till) + \
-              "." + " Please Make Payment Before Validity Expires. "
+              "Certificate No is:" + Export_Permit_No + " And is Valid Till " + str(valid_till) + \
+              "."
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
     send_mail(subject, message, email_from, recipient_list)
@@ -1538,7 +1538,7 @@ def approve_gap_application(request):
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='A')
-    update_payment(application_id, certificate_no, 'GAP', validity_date)
+    # update_payment(application_id, certificate_no, 'GAP', validity_date)
     for email_id in details:
         emailId = email_id.Email
         send_gap_approve_email(certificate_no, emailId, validity_date)
@@ -1551,8 +1551,8 @@ def send_gap_approve_email(Export_Permit_No, Email, validity_date):
     subject = 'APPLICATION APPROVED'
     message = "Dear Sir, Your Application for GAP Certificate Has Been Approved. " \
               "Your " \
-              "Registration No is:" + Export_Permit_No + " And is Valid Till " + str(valid_till) + \
-              "." + " Please Make Payment Before Validity Expires. "
+              "Certificate No is:" + Export_Permit_No + " And is Valid Till " + str(valid_till) + \
+              "."
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
     send_mail(subject, message, email_from, recipient_list)
@@ -1976,7 +1976,7 @@ def approve_fpc_application(request):
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='A')
-    update_payment(application_id, Export_Permit_No, 'GAP', validity_date)
+    #update_payment(application_id, Export_Permit_No, 'GAP', validity_date)
     for email_id in details:
         emailId = email_id.Firm_Email
         send_fpc_approve_email(Export_Permit_No, emailId, validity_date)
@@ -1987,10 +1987,10 @@ def send_fpc_approve_email(Export_Permit_No, Email, validity_date):
     valid_till = validity_date.strftime('%d-%m-%Y')
 
     subject = 'APPLICATION APPROVED'
-    message = "Dear Sir, Your Application for GAP Certificate Has Been Approved. " \
+    message = "Dear Sir, Your Application for Food Product Certificate Has Been Approved. " \
               "Your " \
-              "Registration No is:" + Export_Permit_No + " And is Valid Till " + str(valid_till) + \
-              "." + " Please Make Payment Before Validity Expires. "
+              "Certificate No is:" + Export_Permit_No + " And is Valid Till " + str(valid_till) + \
+              "."
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
     send_mail(subject, message, email_from, recipient_list)

@@ -63,7 +63,7 @@ form, input, select, textarea{
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label class="form-label">Nursery Category</label>
-                            <select class="form-control form-control" id="Nursery_Category" name="Nursery_Category">
+                            <select class="form-control form-control" id="Nursery_Category" name="Nursery_Category" disabled>
                                 {% if application_details.Nursery_Category == "Agro-Forestry" %}
                                 <option value="Agro-Forestry" selected>Agro-Forestry</option>
                                 {% elif application_details.Nursery_Category == "Ornamental" %}
@@ -93,7 +93,7 @@ form, input, select, textarea{
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label class="form-label">Nursery Type</label>
-                            <select class="form-control form-control" id="Nursery_Type" name="Nursery_Type">
+                            <select class="form-control form-control" id="Nursery_Type" name="Nursery_Type" disabled>
                                 {% if application_details.Nursery_Type == "Bi-annual" %}
                                 <option value="Bi-annual" selected>Bi-annual</option>
                                 {% elif application_details.Nursery_Category == "Annual" %}
@@ -178,7 +178,7 @@ form, input, select, textarea{
                         </tr>
                     </thead>
                     <tbody>
-                        {% for seed_details in seed_details %}
+                        {% for seed_details in details_list %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
                                 <td>{{seed_details.Crop_Category}}</td>
@@ -213,7 +213,7 @@ form, input, select, textarea{
                        {% for file_attach in file %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                                    <td><a href='{{file_attach.File_Path}}' target="_blank">{{file_attach.Attachment}}</a></td>
                                 </tr>
                                 {% empty %}
                                 <tr>
@@ -222,7 +222,7 @@ form, input, select, textarea{
                        {% endfor %}
                     </tbody>
                 </table>
-                {% if not application_details.Resubmit_Date %}
+                {% if application_details.Resubmit_Date %}
                     <br>
                     <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
                         <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
@@ -233,12 +233,12 @@ form, input, select, textarea{
                     <div class="row">
                         <div class="col-sm-6">
                             <label class="from-label">Date For Inspection</label>
-                            <input type="text" name="date" id="inspection_date" class="form-control" value="{{application_details.Resubmit_Date}}">
+                            <input type="text" name="date" id="inspection_date" class="form-control" value="{{application_details.Resubmit_Date}}" disabled>
                         </div>
                          <div class="col-md-6">
                             <div class="from-label">
                                 <label class="from-label">Resubmit Remarks</label>
-                                <textarea class="form-control" rows="3" id="Resubmit_Remarks" value="{{application_details.Resubmit_Remarks}}"></textarea>
+                                <textarea class="form-control" rows="3" id="Resubmit_Remarks" disabled>{{application_details.Resubmit_Remarks}}</textarea>
                             </div>
                         </div>
                      </div>
@@ -256,6 +256,7 @@ form, input, select, textarea{
                         &nbsp;&nbsp;Cancel
                     </button>
                 </div>
+                <div class="alert alert-danger" id="forwardToErrorMsg" style="display:none"></div>
             </div>
           </div>
       </div>
