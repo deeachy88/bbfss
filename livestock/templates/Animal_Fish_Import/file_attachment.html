@@ -68,14 +68,14 @@ function save_details()
 
 function DeleteAttachment(id)
 {
-    var appNo = $('#agro_attachment_applicationNo').val();
+    var appNo = $('#appNo').val();
     $.ajax({
         type : "GET",
-        url : "{% url 'delete_agro_file' %}",
+        url : "{% url 'delete_la_file' %}",
         data :{'appNo':appNo , 'file_id': id},
         success : function(responseText)
         {
-            $('#file-attachment').html(responseText);
+            $('#fileAttach').html(responseText);
         }
     });
 }

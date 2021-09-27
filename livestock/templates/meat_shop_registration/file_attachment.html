@@ -22,20 +22,20 @@
                 </thead>
                 <tbody>
                    {% for file_attach in file_attach %}
-                            <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
-                                <td>
-                                    <button type="button"
-									    class="btn btn-danger btn-sm" onclick="DeleteAttachment('{{ file_attach.File_Id }}')">
-									    <i class="zmdi zmdi-delete"></i>
-								    </button>
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                              <td colspan="3" class="text-center">No Data</td>
-                            </tr>
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td><a href='{{file_attach.File_Path}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                            <td>
+                                <button type="button"
+                                    class="btn btn-danger btn-sm" onclick="DeleteAttachment('{{ file_attach.File_Id }}')">
+                                    <i class="zmdi zmdi-delete"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                          <td colspan="3" class="text-center">No Data</td>
+                        </tr>
                    {% endfor %}
                 </tbody>
             </table>
@@ -73,11 +73,11 @@ function DeleteAttachment(id)
     var appNo = $('#attachment_appNo').val();
     $.ajax({
         type : "GET",
-        url : "{% url 'delete_fh_file' %}",
+        url : "{% url 'delete_meat_shop_fh_file' %}",
         data :{'appNo':appNo , 'file_id': id},
         success : function(responseText)
         {
-            $('#file-attachment').html(responseText);
+            $('#file-attachment-mortem').html(responseText);
         }
     });
 }

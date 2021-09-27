@@ -70,14 +70,14 @@ function submit_mortem_details()
 
 function DeleteAttachment(id)
 {
-    var appNo = $('#agro_attachment_applicationNo').val();
+    var appNo = $('#attachment_appNo').val();
     $.ajax({
         type : "GET",
-        url : "{% url 'delete_agro_file' %}",
+        url : "{% url 'delete_mortem_file' %}",
         data :{'appNo':appNo , 'file_id': id},
         success : function(responseText)
         {
-            $('#file-attachment').html(responseText);
+            $('#file-attachment-mortem').html(responseText);
         }
     });
 }

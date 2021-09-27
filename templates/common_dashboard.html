@@ -480,6 +480,83 @@
             {
                 $('#agro_attachmentModal').modal('show');
             }
+
+            function delete_details(Record_Id, Application_No,identification_type)
+            {
+                $.ajax({
+                    type : "GET",
+                    url : "{% url 'delete_details' %}",
+                    data :{'Application_No':Application_No , 'Record_Id': Record_Id, 'identification_type':identification_type},
+                    success : function(responseText)
+                    {
+                        if(identification_type =='PIP')
+                        {
+                            $('#Details').html(responseText);
+                        }
+                        else if(identification_type =='AIP')
+                        {
+                            $('#AgroDetails').html(responseText);
+                        }
+                        else if(identification_type =='RNS')
+                        {
+                            $('#seed-details').html(responseText);
+                        }
+                        else if(identification_type =='RSC')
+                        {
+                            $('#certification-details').html(responseText);
+                        }
+                        else if(identification_type =='MPP')
+                        {
+                            $('#Details').html(responseText);
+                        }
+
+                        else if(identification_type =='CMS')
+                        {
+                            $('#meat_item_details').html(responseText);
+                        }
+                        else if(identification_type =='ALEC')
+                        {
+                            $('#animal_details').html(responseText);
+                        }
+                        else if(identification_type =='APLEC')
+                        {
+                            $('#animal_product_details').html(responseText);
+                        }
+                        else if(identification_type =='LPIP')
+                        {
+                            $('#permit_details').html(responseText);
+                        }
+                        else if(identification_type =='AFIP')
+                        {
+                            $('#permit_details').html(responseText);
+                        }
+                        else if(identification_type =='APM')
+                        {
+                            $('#mortem_details').html(responseText);
+                        }
+                        else if(identification_type =='ALMP')
+                        {
+                            $('#animal_details').html(responseText);
+                        }
+                        else if(identification_type =='APLMP')
+                        {
+                            $('#animal_product_details').html(responseText);
+                        }
+                        else if(identification_type =='FBR-OP')
+                        {
+                            $('#fbr_details').html(responseText);
+                        }
+                        else if(identification_type =='FIP')
+                        {
+                            $('#permit_details').html(responseText);
+                        }
+                        else if(identification_type =='FBR-FH')
+                        {
+                            $('#food_handler_details').html(responseText);
+                        }
+                    }
+                });
+            }
         </script>
     </body>
 </html>

@@ -89,7 +89,7 @@ def save_meat_shop_registration(request):
         Inspection_Type=None,
         Desired_FI_Inspection_Date=None,
         Desired_FR_Inspection_Date=None,
-        FB_License_No=None,
+        Meat_Shop_Clearance_No=None,
         FI_Inspection_Date=None,
         FI_Inspection_Leader=None,
         FI_Response=None,
@@ -178,7 +178,7 @@ def delete_meat_shop_fh_file(request):
     file = t_file_attachment.objects.filter(pk=File_Id)
     for file in file:
         fileName = file.Attachment
-        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/food/food_business_registration")
+        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/livestock/meat_shop_licensing")
         fs.delete(str(fileName))
     file.delete()
 
@@ -225,7 +225,6 @@ def meat_shop_fo_reject(request):
         email = email_id.Email
         send_meat_shop_reject_email(email, remarks)
     return redirect(dashboard)
-
 
 
 def send_meat_shop_approve_email(new_import_permit, Email, validity_date):
@@ -875,7 +874,22 @@ def add_la_file_name(request):
                                          Attachment=fileName)
 
         file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
-        return render(request, 'Livestock_Import/file_attachment.html', {'file_attach': file_attach})
+        return render(request, 'Animal_Fish_Import/file_attachment.html', {'file_attach': file_attach})
+
+
+def delete_la_file(request):
+    File_Id = request.GET.get('file_id')
+    Application_No = request.GET.get('appNo')
+
+    file = t_file_attachment.objects.filter(pk=File_Id)
+    for file in file:
+        fileName = file.Attachment
+        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/livestock/livestock_import")
+        fs.delete(str(fileName))
+    file.delete()
+
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+    return render(request, 'Animal_Fish_Import/file_attachment.html', {'file_attach': file_attach})
 
 
 def submit_import_application(request):
@@ -940,6 +954,7 @@ def approve_fo_la_import(request):
                                      Updated_By=None,
                                      Updated_On=None)
     return redirect(focal_officer_application)
+
 
 def reject_fo_la_import(request):
     application_no = request.GET.get('application_no')
@@ -1239,6 +1254,21 @@ def add_livestock_product_name(request):
 
         file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
         return render(request, 'Livestock_Import/file_attachment.html', {'file_attach': file_attach})
+
+
+def delete_lp_file(request):
+    File_Id = request.GET.get('file_id')
+    Application_No = request.GET.get('appNo')
+
+    file = t_file_attachment.objects.filter(pk=File_Id)
+    for file in file:
+        fileName = file.Attachment
+        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/livestock/livestock_product_import")
+        fs.delete(str(fileName))
+    file.delete()
+
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+    return render(request, 'Livestock_Import/file_attachment.html', {'file_attach': file_attach})
 
 
 def submit_livestock_product_application(request):
@@ -1541,9 +1571,9 @@ def save_liv_export_details(request):
             Breed = request.POST.get('Breed')
             Age = request.POST.get('Age')
             Sex = request.POST.get('Sex')
-            No_Of_Animal = request.POST.get('No_Of_Animal')
-            Remarks = request.POST.get('Remarks')
-            Description = request.POST.get('Description')
+            No_Of_Animal = request.POST.get('no')
+            Remarks = request.POST.get('AP_Remarks')
+            Description = request.POST.get('animal_Description')
 
             t_livestock_export_certificate_t2.objects.create(
                 Application_No=application_no,
@@ -1566,7 +1596,7 @@ def save_liv_export_details(request):
             application_no = request.POST.get('appNo')
             Particulars = request.POST.get('Particulars')
             Company_Name = request.POST.get('Company_Name')
-            Quantity = request.POST.get('Quantity')
+            Quantity = request.POST.get('qty')
             Unit = request.POST.get('Unit')
             Remarks = request.POST.get('Remarks')
 
@@ -1616,6 +1646,21 @@ def add_ec_file_name(request):
 
         file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
         return render(request, 'Export_Certificate/EC_file_attachment.html', {'file_attach': file_attach})
+
+
+def delete_ec_file(request):
+    File_Id = request.GET.get('file_id')
+    Application_No = request.GET.get('appNo')
+
+    file = t_file_attachment.objects.filter(pk=File_Id)
+    for file in file:
+        fileName = file.Attachment
+        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/livestock/export_certificate")
+        fs.delete(str(fileName))
+    file.delete()
+
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+    return render(request, 'Export_Certificate/EC_file_attachment.html', {'file_attach': file_attach})
 
 
 def submit_ec_details(request):
@@ -1916,7 +1961,22 @@ def add_lmp_file_name(request):
                                          Attachment=fileName)
 
         file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
-        return render(request, 'ante_post_mortem/file_attachment.html', {'file_attach': file_attach})
+        return render(request, 'Movement_Permit_Livestock/file_attachment.html', {'file_attach': file_attach})
+
+
+def delete_lmp_file(request):
+    File_Id = request.GET.get('file_id')
+    Application_No = request.GET.get('appNo')
+
+    file = t_file_attachment.objects.filter(pk=File_Id)
+    for file in file:
+        fileName = file.Attachment
+        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/livestock/movement_permit")
+        fs.delete(str(fileName))
+    file.delete()
+
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+    return render(request, 'Movement_Permit_Livestock/file_attachment.html', {'file_attach': file_attach})
 
 
 def submit_lmp_details(request):
@@ -2187,6 +2247,21 @@ def add_mortem_file_name(request):
                                          Attachment=fileName)
 
         file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+        return render(request, 'ante_post_mortem/file_attachment.html', {'file_attach': file_attach})
+
+
+def delete_mortem_file(request):
+    File_Id = request.GET.get('file_id')
+    Application_No = request.GET.get('appNo')
+
+    file = t_file_attachment.objects.filter(pk=File_Id)
+    for file in file:
+        fileName = file.Attachment
+        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/livestock/livestock_import")
+        fs.delete(str(fileName))
+    file.delete()
+
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
     return render(request, 'ante_post_mortem/file_attachment.html', {'file_attach': file_attach})
 
 

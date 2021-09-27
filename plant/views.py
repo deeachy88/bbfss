@@ -346,7 +346,7 @@ def save_details_movement(request):
     t_plant_movement_permit_t2.objects.create(Application_No=appNo, Commodity=commodity,
                                               Qty=qty, Unit=unit, Remarks=remarks)
     imports_plant = t_plant_movement_permit_t2.objects.filter(Application_No=appNo)
-    return render(request, 'movement_permit/movement_page.html', {'import': imports_plant, 'title': appNo})
+    return render(request, 'movement_permit/movement_page.html', {'import': imports_plant})
 
 
 def forward_application(request):
@@ -956,7 +956,7 @@ def delete_file(request):
     file.delete()
 
     file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
-    return render(request, 'movement_permit/ile_attachment_page.html', {'file_attach': file_attach})
+    return render(request, 'movement_permit/file_attachment_page.html', {'file_attach': file_attach})
 
 
 def update_movement_details(request):
@@ -5579,3 +5579,128 @@ def update_payment_details(application_no, permit_no, service_code, validity_dat
                                      Receipt_Date=None,
                                      Updated_By=None,
                                      Updated_On=None)
+
+
+def delete_details(request):
+    identification_type = request.GET.get('identification_type')
+    # Plant Section Delete
+    if identification_type == 'PIP':
+        application_no = request.GET.get('Application_No')
+        record_id = request.GET.get('Record_Id')
+        details = t_plant_import_permit_t2.objects.filter(Record_Id=record_id)
+        details.delete()
+        import_details = t_plant_import_permit_t2.objects.filter(Application_No=application_no)
+        return render(request, 'import_permit/import_page_plant.html', {'import': import_details})
+    elif identification_type == 'AIP':
+        application_no = request.GET.get('Application_No')
+        record_id = request.GET.get('Record_Id')
+        details = t_plant_import_permit_t2.objects.filter(Record_Id=record_id)
+        details.delete()
+        import_details = t_plant_import_permit_t2.objects.filter(Application_No=application_no)
+        return render(request, 'import_permit/import_page_agro.html', {'import': import_details})
+    elif identification_type == 'RNS':
+        application_no = request.GET.get('Application_No')
+        record_id = request.GET.get('Record_Id')
+        details = t_plant_clearence_nursery_seed_grower_t2.objects.filter(Record_Id=record_id)
+        details.delete()
+        seed_details = t_plant_clearence_nursery_seed_grower_t2.objects.filter(Application_No=application_no)
+        return render(request, 'nursery_registration/seed_details_page.html', {'seed_details': seed_details})
+    elif identification_type == 'RSC':
+        application_no = request.GET.get('Application_No')
+        record_id = request.GET.get('Record_Id')
+        details = t_plant_seed_certification_t2.objects.filter(Record_Id=record_id)
+        details.delete()
+        certification_details = t_plant_seed_certification_t2.objects.filter(Application_No=application_no)
+        return render(request, 'seed_certification/seed_certification_details_page.html',
+                      {'certification_details': certification_details})
+    elif identification_type == 'MPP':
+        application_no = request.GET.get('Application_No')
+        record_id = request.GET.get('Record_Id')
+        details = t_plant_movement_permit_t2.objects.filter(Record_Id=record_id)
+        details.delete()
+        imports_plant = t_plant_movement_permit_t2.objects.filter(Application_No=application_no)
+        return render(request, 'movement_permit/movement_page.html', {'import': imports_plant})
+
+    # Livestock Section Delete
+
+    elif identification_type == 'CMS':
+        application_no = request.GET.get('Application_No')
+        record_id = request.GET.get('Record_Id')
+        details = t_livestock_clearance_meat_shop_t2.objects.filter(Record_Id=record_id)
+        details.delete()
+        meat_details = t_livestock_clearance_meat_shop_t2.objects.filter(Application_No=application_no)
+        return render(request, 'meat_shop_registration/details.html', {'meat_details': meat_details})
+    elif identification_type == 'ALEC':
+        application_no = request.GET.get('Application_No')
+        record_id = request.GET.get('Record_Id')
+        details = t_livestock_export_certificate_t2.objects.filter(Record_Id=record_id)
+        details.delete()
+        export_details = t_livestock_export_certificate_t2.objects.filter(Application_No=application_no)
+        return render(request, 'Export_Certificate/animal_details.html', {'export_details': export_details})
+    elif identification_type == 'APLEC':
+        application_no = request.GET.get('Application_No')
+        record_id = request.GET.get('Record_Id')
+        details = t_livestock_export_certificate_t2.objects.filter(Record_Id=record_id)
+        details.delete()
+        export_details = t_livestock_export_certificate_t2.objects.filter(Application_No=application_no)
+        return render(request, 'Export_Certificate/animal_product_details.html', {'export_details': export_details})
+    elif identification_type == 'LPIP':
+        application_no = request.GET.get('Application_No')
+        record_id = request.GET.get('Record_Id')
+        details = t_livestock_import_permit_product_t2.objects.filter(Record_Id=record_id)
+        details.delete()
+        import_details = t_livestock_import_permit_product_t2.objects.filter(Application_No=application_no)
+        return render(request, 'Livestock_Import/permit_details.html', {'import': import_details})
+    elif identification_type == 'AFIP':
+        application_no = request.GET.get('Application_No')
+        record_id = request.GET.get('Record_Id')
+        details = t_livestock_import_permit_animal_t2.objects.filter(Record_Id=record_id)
+        details.delete()
+        import_details = t_livestock_import_permit_animal_t2.objects.filter(Application_No=application_no)
+        return render(request, 'Animal_Fish_Import/animal_details.html', {'import': import_details})
+    elif identification_type == 'APM':
+        application_no = request.GET.get('Application_No')
+        record_id = request.GET.get('Record_Id')
+        details = t_livestock_ante_post_mortem_t2.objects.filter(Record_Id=record_id)
+        details.delete()
+        mortem_details = t_livestock_ante_post_mortem_t2.objects.filter(Application_No=application_no)
+        return render(request, 'ante_post_mortem/details.html', {'mortem': mortem_details})
+    elif identification_type == 'ALMP':
+        application_no = request.GET.get('Application_No')
+        record_id = request.GET.get('Record_Id')
+        details = t_livestock_ante_post_mortem_t2.objects.filter(Record_Id=record_id)
+        details.delete()
+        movement_details = t_livestock_movement_permit_t2.objects.filter(Application_No=application_no)
+        return render(request, 'Movement_Permit_Livestock/animal_details.html', {'import': movement_details})
+    elif identification_type == 'APLMP':
+        application_no = request.GET.get('Application_No')
+        record_id = request.GET.get('Record_Id')
+        details = t_livestock_ante_post_mortem_t2.objects.filter(Record_Id=record_id)
+        details.delete()
+        movement_details = t_livestock_movement_permit_t2.objects.filter(Application_No=application_no)
+        return render(request, 'Movement_Permit_Livestock/animal_details.html', {'import': movement_details})
+
+    # Food Section Delete
+
+    elif identification_type == 'FBR-OP':
+        application_no = request.GET.get('Application_No')
+        record_id = request.GET.get('Record_Id')
+        details = t_food_business_registration_licensing_t2.objects.filter(Record_Id=record_id)
+        details.delete()
+        fh_details = t_food_business_registration_licensing_t2.objects.filter(Application_No=application_no)
+        return render(request, 'registration_licensing/details.html', {'fh_details': fh_details})
+    elif identification_type == 'FBR-FH':
+        application_no = request.GET.get('Application_No')
+        record_id = request.GET.get('Record_Id')
+        details = t_livestock_ante_post_mortem_t2.objects.filter(Record_Id=record_id)
+        details.delete()
+        fh_details = t_food_business_registration_licensing_t3.objects.filter(Application_No=application_no)
+        return render(request, 'registration_licensing/food_handler_details.html', {'fh_details': fh_details})
+    elif identification_type == 'FIP':
+        application_no = request.GET.get('Application_No')
+        record_id = request.GET.get('Record_Id')
+        details = t_food_import_permit_t2.objects.filter(Record_Id=record_id)
+        details.delete()
+        import_details = t_food_import_permit_t2.objects.filter(Application_No=application_no)
+        return render(request, 'import_certificate_food/food_permit_details.html', {'import': import_details})
+

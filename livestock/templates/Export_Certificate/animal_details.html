@@ -7,8 +7,9 @@
             <th scope="col">Age</th>
             <th scope="col">Sex</th>
             <th scope="col">Description</th>
-            <th scope="col">Quantity</th>
-            <th scope="col">Unit</th>
+            <th scope="col">No of Animals</th>
+            <th scope="col">Remarks</th>
+            <th scope="col"></th>
         </tr>
     </thead>
     <tbody>
@@ -20,12 +21,18 @@
                 <td>{{import.Age}}</td>
                 <td>{{import.Sex}}</td>
                 <td>{{import.Description}}</td>
-                <td>{{import.Quantity}}</td>
-                <td>{{import.Unit}}</td>
+                <td>{{import.No_Of_Animal}}</td>
+                <td>{{import.Remarks}}</td>
+                <td>
+                    <button type="button" class="btn btn-primary btn-sm"
+                    onclick="delete_details('{{import.Record_Id}}','{{import.Application_No}}', 'ALEC')">
+                    <i class="zmdi zmdi-delete"></i>
+                    </button>
+                </td>
             </tr>
             {% empty %}
             <tr>
-              <td colspan="8" class="text-center">No Data</td>
+              <td colspan="9" class="text-center">No Data</td>
             </tr>
         {% endfor %}
     </tbody>

@@ -351,7 +351,7 @@ class t_livestock_export_certificate_t2(models.Model):
     Age = models.IntegerField(blank=True, null=True)
     Sex = models.CharField(max_length=10, blank=True, null=True)
     Particulars = models.CharField(max_length=10, blank=True, null=True)
-    Company_Name = models.IntegerField(blank=True, null=True)
+    Company_Name = models.CharField(max_length=100, blank=True, null=True)
     Description = models.TextField(blank=True, null=True)
     Quantity = models.IntegerField(blank=True, null=True)
     Quantity_Released = models.IntegerField(blank=True, null=True)

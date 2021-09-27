@@ -635,12 +635,14 @@ form, input, select, textarea{
                                     <label class="form-label">Current Observation</label>
                                     <textarea class="form-control" id="currentObservation" rows="2"></textarea>
                                 </div>
+                                <div class="alert alert-danger" id="currentObservationErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Decision Conformity Statement </label>
                                     <textarea class="form-control" id="decisionConform" rows="2"></textarea>
                                 </div>
+                                <div class="alert alert-danger" id="decisionConformErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                     </div>
@@ -773,16 +775,33 @@ function add_details_ins(application_id)
     currentObservation = $('#currentObservation').val();
     decisionConform = $('#decisionConform').val();
 
-    $.ajax({
-        type : "GET",
-        url : "{% url 'add_details_ins_import' %}",
-        data :{'application_id':application_id,'currentObservation':currentObservation,'decisionConform':decisionConform},
-        success : function(data) {
-            $('#details').html(data);
-            $('#details').show();
-            $('#addModal').modal('hide');
-        }
-    });
+    if(currentObservation == "")
+    {
+        $('#currentObservationErrorMsg').html("Enter Current Observation.");
+        $('#currentObservationErrorMsg').show();
+        $('#currentObservationErrorMsg').delay(2000).fadeOut('slow');
+        $('#currentObservation').focus();
+    }
+    else if(decisionConform == "")
+    {
+        $('#decisionConformErrorMsg').html("Enter Decision Conformity Statement.");
+        $('#decisionConformErrorMsg').show();
+        $('#decisionConformErrorMsg').delay(2000).fadeOut('slow');
+        $('#decisionConform').focus();
+    }
+    else
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'add_details_ins_import' %}",
+            data :{'application_id':application_id,'currentObservation':currentObservation,'decisionConform':decisionConform},
+            success : function(data) {
+                $('#details').html(data);
+                $('#details').show();
+                $('#addModal').modal('hide');
+            }
+        });
+    }
 }
 
 function submit_details(application_id)

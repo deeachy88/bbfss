@@ -24,7 +24,7 @@
                    {% for file_attach in file_attach %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-                                <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                                <td><a href='{{file_attach.File_Path}}' target="_blank">{{file_attach.Attachment}}</a></td>
                                 <td>
                                     <button type="button"
 									    class="btn btn-danger btn-sm" onclick="DeleteAttachment('{{ file_attach.File_Id }}')">
@@ -70,14 +70,14 @@ function save_ec_details()
 
 function DeleteAttachment(id)
 {
-    var appNo = $('#agro_attachment_applicationNo').val();
+    var appNo = $('#appNo').val();
     $.ajax({
         type : "GET",
-        url : "{% url 'delete_agro_file' %}",
+        url : "{% url 'delete_ec_file' %}",
         data :{'appNo':appNo , 'file_id': id},
         success : function(responseText)
         {
-            $('#file-attachment').html(responseText);
+            $('#fileAttach').html(responseText);
         }
     });
 }

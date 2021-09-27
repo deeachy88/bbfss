@@ -58,6 +58,7 @@ urlpatterns = [
     path('import_permit_details', views.import_permit_la_details, name='import_permit_details'),
     path('add_la_permit_file', views.add_la_permit_file, name='add_la_permit_file'),
     path('add_la_file_name', views.add_la_file_name, name='add_la_file_name'),
+    path('delete_la_file', views.delete_la_file, name='delete_la_file'),
     path('submit_import_application', views.submit_import_application, name='submit_import_application'),
     path('edit_la_inspector_details/<int:Record_Id>', views.edit_la_inspector_details,
          name='edit_la_inspector_details'),
@@ -73,6 +74,7 @@ urlpatterns = [
          name='import_livestock_product_details'),
     path('add_livestock_product_file', views.add_livestock_product_file, name='add_livestock_product_file'),
     path('add_livestock_product_name', views.add_livestock_product_name, name='add_livestock_product_name'),
+    path('delete_lp_file', views.delete_lp_file, name='delete_lp_file'),
     path('submit_livestock_product_application', views.submit_livestock_product_application,
          name='submit_livestock_product_application'),
     path('approve_fo_lp_import', views.approve_fo_lp_import, name='approve_fo_lp_import'),
@@ -89,6 +91,7 @@ urlpatterns = [
     path('submit_ec_details', views.submit_ec_details, name='submit_ec_details'),
     path('approve_application_export', views.approve_application_export, name='approve_application_export'),
     path('reject_application_export', views.reject_application_export, name='reject_application_export'),
+    path('delete_ec_file', views.delete_ec_file, name='delete_ec_file'),
 
     # movement permit for animal, animal products and animal feed apply_movement_permit
     path('movement_permit_application', views.movement_permit_application, name='movement_permit_application'),
@@ -97,6 +100,7 @@ urlpatterns = [
     path('save_movement_permit_details', views.save_movement_permit_details, name='save_movement_permit_details'),
     path('add_lmp_file', views.add_lmp_file, name='add_lmp_file'),
     path('add_lmp_file_name', views.add_lmp_file_name, name='add_lmp_file_name'),
+    path('delete_lmp_file', views.delete_ec_file, name='delete_lmp_file'),
     path('submit_lmp_details', views.submit_lmp_details, name='submit_lmp_details'),
     path('details_ins_lmp', views.details_ins_lmp, name='details_ins_lmp'),
     path('approve_application_lmp', views.approve_application_lmp, name='approve_application_lmp'),
@@ -111,7 +115,7 @@ urlpatterns = [
     path('submit_mortem_details', views.submit_mortem_details, name='submit_mortem_details'),
     path('approve_application_apm', views.approve_application_apm, name='approve_application_apm'),
     path('reject_application_apm', views.reject_application_apm, name='reject_application_apm'),
-
+    path('delete_mortem_file', views.delete_mortem_file, name='delete_mortem_file'),
     path('load_gewog', views.load_gewog, name='load_gewog'),
     path('load_village', views.load_village, name='load_village'),
     path('load_location', views.load_location, name='load_location'),

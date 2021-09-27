@@ -7,6 +7,7 @@
             <th scope="col">Quantity</th>
             <th scope="col">Unit</th>
             <th scope="col">Remarks</th>
+            <th scope="col"></th>
         </tr>
     </thead>
     <tbody>
@@ -18,10 +19,16 @@
                 <td>{{import.Quantity}}</td>
                 <td>{{import.Unit}}</td>
                 <td>{{import.Remarks}}</td>
+                <td>
+                    <button type="button" class="btn btn-primary btn-sm"
+                    onclick="delete_details('{{import.Record_Id}}','{{import.Application_No}}', 'APLEC')">
+                    <i class="zmdi zmdi-delete"></i>
+                    </button>
+                </td>
             </tr>
             {% empty %}
             <tr>
-              <td colspan="6" class="text-center">No Data</td>
+              <td colspan="7" class="text-center">No Data</td>
             </tr>
         {% endfor %}
     </tbody>

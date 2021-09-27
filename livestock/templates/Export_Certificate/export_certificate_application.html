@@ -394,7 +394,11 @@
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Sex</label>
-                                        <input type="text" name="Sex" class="form-control" id="Sex" required>
+                                        <select name="Sex" class="form-control" id="Sex">
+                                            <option value="">-SELECT-</option>
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                        </select>
                                         <div class="alert alert-danger" id="SexErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
@@ -449,7 +453,7 @@
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <label>Attach File</label>
-                                        <input type="file" name="document" id="document">
+                                        <input type="file" name="document" id="document" accept=".png,.jpg,.jpeg,.gif,.pdf,.docx,.doc">
                                         <div class="alert alert-danger" id="fileErrorMsg" style="display:none"></div>
                                      </div>
                                 </div>
@@ -760,7 +764,7 @@ function save_attachment()
                 success : function(responseText)
                 {
                     $('#attachmentModal').modal('hide');
-                    $('#file-attachment').html(responseText);
+                    $('#fileAttach').html(responseText);
                     $('.modal-backdrop').remove();
                     $('#attachment_form')[0].reset();
                 }
