@@ -382,17 +382,9 @@ def send_feasibility_reject_email(remarks, Email):
 
 def reject_meat_shop_feasibility_inspection(request):
     application_id = request.GET.get('application_id')
-    Inspection_Leader = request.GET.get('Inspection_Leader')
-    Inspection_Team = request.GET.get('Inspection_Team')
     remarks = request.GET.get('remarks')
-    dateOfInspection = request.GET.get('dateOfInspection')
-    date_format_ins = datetime.strptime(dateOfInspection, '%d-%m-%Y').date()
     details = t_livestock_clearance_meat_shop_t1.objects.filter(Application_No=application_id)
-
-    details.update(FI_Inspection_Date=date_format_ins)
     details.update(FI_Recommendation=remarks)
-    details.update(FI_Inspection_Leader=Inspection_Leader)
-    details.update(FI_Inspection_Team=Inspection_Team)
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='IRS')
@@ -570,17 +562,10 @@ def send_factory_reject_email(remarks, Email):
 
 def reject_meat_shop_factory_inspection(request):
     application_id = request.GET.get('application_id')
-    Inspection_Leader = request.GET.get('Inspection_Leader')
-    Inspection_Team = request.GET.get('Inspection_Team')
     remarks = request.GET.get('remarks')
-    dateOfInspection = request.GET.get('dateOfInspection')
-    date_format_ins = datetime.strptime(dateOfInspection, '%d-%m-%Y').date()
     details = t_livestock_clearance_meat_shop_t1.objects.filter(Application_No=application_id)
 
     details.update(FR_Recommendation=remarks)
-    details.update(FR_Inspection_Date=date_format_ins)
-    details.update(FR_Inspection_Leader=Inspection_Leader)
-    details.update(FR_Inspection_Team=Inspection_Team)
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='RS')

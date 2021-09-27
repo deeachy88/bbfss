@@ -812,7 +812,6 @@ form, input, select, textarea{
                             <div class="box-body">
                                 <input type="hidden" name="plant_applicationNo" id="edit_plant_applicationNo">
                                 <input type="text" name="record_id" id="record_id" style="display:none"/>
-                                <input type="hidden" class="form-control" id="qty_balance_1">
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
@@ -865,7 +864,7 @@ form, input, select, textarea{
                 </div>
                 <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="update_details_plant()">Update</button>
+                <button type="button" class="btn btn-primary" onclick="update_edit_details()">Update</button>
             </div>
             </div>
         </div>
@@ -888,7 +887,6 @@ form, input, select, textarea{
                         <div class="box box-primary">
                             <div class="box-body">
                                 <input type="text" name="agro_record_id" id="agro_record_id" style="display:none"/>
-                                <input type="hidden" class="form-control" id="agro_qty_balance_1">
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
@@ -938,7 +936,7 @@ form, input, select, textarea{
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="update_details_agro()">Update</button>
+                    <button type="button" class="btn btn-primary" onclick="update_edit_details()">Update</button>
                 </div>
             </div>
         </div>
@@ -1821,16 +1819,28 @@ function populateDetails(Record_Id, Import_Category, Crop_Id, Variety_Id, Quanti
 
 function populateAgroDetails(Record_Id, Import_Category, Crop_Id, Variety_Id, Quantity, Unit, application_no,balance_quantity, balance_quantity_1)
 {
-    $('#record_id').val(Record_Id);
+    $('#agro_record_id').val(Record_Id);
     $('#edit_plant_import_category').val(Import_Category);
-    $('#crop_id').val(Crop_Id);
-    $('#crop_variety').val(Variety_Id);
-    $('#qty').val(Quantity);
-    $('#unit').val(Unit);
-    $('#plant_applicationNo').val(application_no);
-    $('#qty_balance').val(balance_quantity);
-    $('#qty_balance_1').val(balance_quantity_1);
-    $('#add_plant_details').modal('show');
+    $('#edit_crop_id').val(Crop_Id);
+    $('#edit_crop_variety').val(Variety_Id);
+    $('#edit_agro_qty').val(Quantity);
+    $('#edit_agro_unit').val(Unit);
+    $('#agro_applicationNo').val(application_no);
+    $('#edit_agro_details').modal('show');
+}
+
+function update_edit_details()
+{
+    $.ajax({
+        type : "POST",
+        url : "{% url 'update_edit_details' %}",
+        data : $('#edit_plant_form').serialize(),
+        success : function(response) {
+             $('#Details').html(response);
+             $('#edit_plant_details').modal('hide');
+             $('.modal-backdrop').remove();
+        }
+    });
 }
 </script>
 {% endblock %}

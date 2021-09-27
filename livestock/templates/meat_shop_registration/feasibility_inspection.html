@@ -174,7 +174,7 @@ form, input, select, textarea{
                            {% for file_attach in file %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                                    <td><a href='{{file_attach.File_Path}}' target="_blank">{{file_attach.Attachment}}</a></td>
                                 </tr>
                                 {% empty %}
                                 <tr>
@@ -444,15 +444,17 @@ form, input, select, textarea{
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Requirement</label>
+                                    <label class="form-label">Requirement <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="Requirement">
                                 </div>
+                                <div class="alert alert-danger" id="RequirementErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Clause No</label>
+                                    <label class="form-label">Clause No <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="Clause_No">
                                 </div>
+                                <div class="alert alert-danger" id="Clause_NoErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                         <div class="row">
@@ -460,7 +462,7 @@ form, input, select, textarea{
                                 <div class="form-group">
                                     <div class="form-group col-md-6">
                                         <div class="form-check">
-                                           <label class="form-label">Concern</label><br>
+                                           <label class="form-label">Concern <font color="red">*</font></label><br>
                                             <label class="form-radio-label">
                                                 <input class="form-radio-input" type="radio" name="Concern" value="Yes" onclick="checkConcern(this.value)">
                                                 <span class="form-radio-sign">Yes</span>
@@ -472,20 +474,23 @@ form, input, select, textarea{
                                         </div>
                                     </div>
                                 </div>
+                                <div class="alert alert-danger" id="ConcernErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Observations/Finding</label>
+                                    <label class="form-label">Observations/Finding <font color="red">*</font></label>
                                     <textarea class="form-control" id="Observations" rows="2"></textarea>
                                 </div>
+                                <div class="alert alert-danger" id="ObservationsErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Response or Actions proposed by FBO</label>
+                                    <label class="form-label">Response or Actions proposed by FBO <font color="red">*</font></label>
                                     <textarea class="form-control" id="response_fbo" rows="2"></textarea>
                                 </div>
+                                <div class="alert alert-danger" id="response_fboErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                     </div>
@@ -517,29 +522,33 @@ form, input, select, textarea{
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Name Of Key Personal</label>
+                                    <label class="form-label">Name Of Key Personal <font color="red">*</font></label>
                                     <input type="text" class="form-control" name="name" id="name">
                                 </div>
+                                <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Designation Of Key Personal</label>
+                                    <label class="form-label">Designation Of Key Personal <font color="red">*</font></label>
                                     <input type="text" class="form-control" name="designation" id="designation">
                                 </div>
+                                <div class="alert alert-danger" id="designationErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Opening Meeting(Date)</label>
+                                    <label class="form-label">Opening Meeting(Date) <font color="red">*</font></label>
                                     <input type="text" class="form-control date-picker flatpickr-input active" name="opening_date" id="opening_date" readonly>
                                 </div>
+                                <div class="alert alert-danger" id="opening_dateErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Closing Meeting(Date)</label>
+                                    <label class="form-label">Closing Meeting(Date) <font color="red">*</font></label>
                                     <input type="text" class="form-control date-picker flatpickr-input active" name="closing_date" id="closing_date" readonly>
                                 </div>
+                                <div class="alert alert-danger" id="closing_dateErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                     </div>
@@ -571,15 +580,17 @@ form, input, select, textarea{
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Name</label>
+                                    <label class="form-label">Name <font color="red">*</font></label>
                                     <input type="text" class="form-control" name="ins_name" id="ins_name">
                                 </div>
+                                <div class="alert alert-danger" id="ins_nameErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Designation</label>
+                                    <label class="form-label">Designation <font color="red">*</font></label>
                                     <input type="text" class="form-control" name="ins_designation" id="ins_designation">
                                 </div>
+                                <div class="alert alert-danger" id="ins_designationErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                     </div>
@@ -696,68 +707,156 @@ function closeModal()
 
 function add_details_ins(application_id)
 {
-    Requirement = $('#Requirement').val();
-    Clause_No = $('#Clause_No').val();
-    Concern = $('input[name="Concern"]:checked').val();
-    response_fbo = $('#response_fbo').val();
-    Observations = $('#Observations').val();
-    meeting_type = "Feasibility"
+    var Requirement = $('#Requirement').val();
+    var Clause_No = $('#Clause_No').val();
+    var Concern = $('input[name="Concern"]:checked').val();
+    var response_fbo = $('#response_fbo').val();
+    var Observations = $('#Observations').val();
+    var meeting_type = "Feasibility";
 
-    $.ajax({
-        type : "GET",
-        url : "{% url 'meat_shop_concern_details_feasibility_ins' %}",
-        data :{'application_id':application_id,'Requirement':Requirement,'Observations':Observations,'Clause_No':Clause_No,'response_fbo':response_fbo,'Concern':Concern, 'meeting_type':meeting_type},
-        success : function(data) {
-            $('#details').html(data);
-            $('#details').show();
-            $('#addModal').modal('hide');
-        }
-    });
+    if(Requirement == "")
+    {
+        $('#RequirementErrorMsg').html("Enter Requirement.");
+        $('#RequirementErrorMsg').show();
+        $('#RequirementErrorMsg').delay(2000).fadeOut('slow');
+        $("#cid").focus();
+    }
+    else if(Clause_No == "")
+    {
+        $('#Clause_NoErrorMsg').html("Enter Clause No.");
+        $('#Clause_NoErrorMsg').show();
+        $('#Clause_NoErrorMsg').delay(2000).fadeOut('slow');
+        $("#Clause_No").focus();
+    }
+    else if(Concern < 1)
+    {
+        $('#ConcernErrorMsg').html("Please Check One Concern.");
+        $('#ConcernErrorMsg').show();
+        $('#ConcernErrorMsg').delay(2000).fadeOut('slow');
+        $("input[name=Concern]").focus();
+    }
+    else if(Observations == "")
+    {
+        $('#ObservationsErrorMsg').html("Enter Observations.");
+        $('#ObservationsErrorMsg').show();
+        $('#ObservationsErrorMsg').delay(2000).fadeOut('slow');
+        $("#Observations").focus();
+    }
+    else if(response_fbo == "")
+    {
+        $('#response_fboErrorMsg').html("Enter Response FBO.");
+        $('#response_fboErrorMsg').show();
+        $('#response_fboErrorMsg').delay(2000).fadeOut('slow');
+        $("#response_fbo").focus();
+    }
+    else
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'meat_shop_concern_details_feasibility_ins' %}",
+            data :{'application_id':application_id,'Requirement':Requirement,'Observations':Observations,'Clause_No':Clause_No,'response_fbo':response_fbo,'Concern':Concern, 'meeting_type':meeting_type},
+            success : function(data) {
+                $('#details').html(data);
+                $('#details').show();
+                $('#addModal').modal('hide');
+            }
+        });
+    }
 }
 
 function add_team_details(application_id)
 {
-    name = $('#name').val();
-    designation = $('#designation').val();
-    opening_date = $('#opening_date').val();
-    closing_date = $('#closing_date').val();
+    var name = $('#name').val();
+    var designation = $('#designation').val();
+    var opening_date = $('#opening_date').val();
+    var closing_date = $('#closing_date').val();
 
-    $.ajax({
-        type : "GET",
-        url : "{% url 'meat_shop_team_details_feasibility_ins' %}",
-        data :{'application_id':application_id,'name':name,'designation':designation,'opening_date':opening_date,'closing_date':closing_date},
-        success : function(data) {
-            $('#team_details').html(data);
-            $('#team_details').show();
-            $('#teamModal').modal('hide');
-        }
-    });
+    if(name == "")
+    {
+        $('#nameErrorMsg').html("Enter Name.");
+        $('#nameErrorMsg').show();
+        $('#nameErrorMsg').delay(2000).fadeOut('slow');
+        $("#name").focus();
+    }
+    else if(designation == "")
+    {
+        $('#designationErrorMsg').html("Enter Designation.");
+        $('#designationErrorMsg').show();
+        $('#designationErrorMsg').delay(2000).fadeOut('slow');
+        $("#designation").focus();
+    }
+    else if(opening_date == "")
+    {
+        $('#opening_dateErrorMsg').html("Select Openeing Date.");
+        $('#opening_dateErrorMsg').show();
+        $('#opening_dateErrorMsg').delay(2000).fadeOut('slow');
+        $("#opening_date").focus();
+    }
+    else if(closing_date == "")
+    {
+        $('#closing_dateErrorMsg').html("Select Closing Date.");
+        $('#closing_dateErrorMsg').show();
+        $('#closing_dateErrorMsg').delay(2000).fadeOut('slow');
+        $("#closing_date").focus();
+    }
+    else
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'meat_shop_team_details_feasibility_ins' %}",
+            data :{'application_id':application_id,'name':name,'designation':designation,'opening_date':opening_date,'closing_date':closing_date},
+            success : function(data) {
+                $('#team_details').html(data);
+                $('#team_details').show();
+                $('#teamModal').modal('hide');
+            }
+        });
+    }
 }
 
 function add_inspection_team_details(application_id)
 {
-    name = $('#ins_name').val();
-    designation = $('#ins_designation').val();
-    meeting_type = "Feasibility Inspection"
-    $.ajax({
-        type : "GET",
-        url : "{% url 'meat_shop_inspection_team_details' %}",
-        data :{'application_id':application_id,'name':name,'designation':designation, 'meeting_type':meeting_type},
-        success : function(data) {
-            $('#inspection_team_details').html(data);
-            $('#inspection_team_details').show();
-            $('#InspectionTeamModal').modal('hide');
-        }
-    });
+    var name = $('#ins_name').val();
+    var designation = $('#ins_designation').val();
+    var meeting_type = "Feasibility Inspection";
+
+    if(name == "")
+    {
+        $('#ins_nameErrorMsg').html("Enter Name.");
+        $('#ins_nameErrorMsg').show();
+        $('#ins_nameErrorMsg').delay(2000).fadeOut('slow');
+        $("#ins_name").focus();
+    }
+    else if(designation == "")
+    {
+        $('#ins_designationErrorMsg').html("Enter Designation.");
+        $('#ins_designationErrorMsg').show();
+        $('#ins_designationErrorMsg').delay(2000).fadeOut('slow');
+        $("#ins_designation").focus();
+    }
+    else
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'meat_shop_inspection_team_details' %}",
+            data :{'application_id':application_id,'name':name,'designation':designation, 'meeting_type':meeting_type},
+            success : function(data) {
+                $('#inspection_team_details').html(data);
+                $('#inspection_team_details').show();
+                $('#InspectionTeamModal').modal('hide');
+            }
+        });
+    }
 }
 
 function approve_feasibility_inspection(application_id)
 {
-    Inspection_Leader = $('#teamLeader').val();
-    Inspection_Team = $('#insTeam').val();
-    remarks = $('#remarks').val();
-    dateOfInspection = $('#dateOfInspection').val();
-    validity = $('#validity').val();
+    var Inspection_Leader = $('#teamLeader').val();
+    var Inspection_Team = $('#insTeam').val();
+    var remarks = $('#remarks').val();
+    var dateOfInspection = $('#dateOfInspection').val();
+    var validity = $('#validity').val();
+
     if(Inspection_Leader == "")
     {
         $('#teamLeaderErrorMsg').html("Select Team Leader.");
@@ -803,10 +902,7 @@ function approve_feasibility_inspection(application_id)
 function reject_feasibility_inspection(application_id)
 {
 
-    Inspection_Leader = $('#teamLeader').val();
-    Inspection_Team = $('#insTeam').val();
-    remarks = $('#remarks').val();
-    dateOfInspection = $('#dateOfInspection').val();
+    var remarks = $('#remarks').val();
 
     if(remarks == "")
     {
@@ -820,7 +916,7 @@ function reject_feasibility_inspection(application_id)
         $.ajax({
             type : "GET",
             url : "{% url 'reject_meat_shop_feasibility_inspection' %}",
-            data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks ,
+            data :{'application_id':application_id ,'remarks':remarks ,
             'dateOfInspection':dateOfInspection},
             success : function(data) {
                 $('#messageDiv').show();

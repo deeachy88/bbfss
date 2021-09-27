@@ -513,7 +513,7 @@
                                    {% for file_attach in file %}
                                         <tr>
                                             <td>{{ forloop.counter }}</td>
-                                            <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                                            <td><a href='{{file_attach.File_Path}}' target="_blank">{{file_attach.Attachment}}</a></td>
                                         </tr>
                                         {% empty %}
                                         <tr>
@@ -559,8 +559,9 @@
 <script>
     function fbr_fo_approve(application_id)
         {
-            remarks = $('#remarks').val();
-            forwardTo = $('#forwardTo').val();
+            var remarks = $('#remarks').val();
+            var forwardTo = $('#forwardTo').val();
+
             if(forwardTo == "")
             {
                 $('#forwardToErrorMsg').html("Select OIC.");
@@ -594,7 +595,7 @@
         }
     function fbr_fo_reject(application_id)
         {
-            remarks = $('#remarks').val();
+            var remarks = $('#remarks').val();
 
             if(remarks == "")
             {

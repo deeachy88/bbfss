@@ -5704,3 +5704,8 @@ def delete_details(request):
         import_details = t_food_import_permit_t2.objects.filter(Application_No=application_no)
         return render(request, 'import_certificate_food/food_permit_details.html', {'import': import_details})
 
+
+
+def update_edit_details(request):
+    application_no = request.POST.get('plant_applicationNo')
+    record_id = request.POST.get('record_id')

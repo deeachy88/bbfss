@@ -150,7 +150,8 @@ urlpatterns = [
     path('get_crop', views.get_crop, name='get_crop'),
     path('validate_receipt_no', views.validate_receipt_no, name='validate_receipt_no'),
     path('get_citizen_details', views.get_citizen_details, name='get_citizen_details'),
-    path('delete_details', views.delete_details, name='delete_details')
+    path('delete_details', views.delete_details, name='delete_details'),
+    path('update_edit_details', views.update_edit_details, name='update_edit_details')
 
 ]
 if settings.DEBUG:
