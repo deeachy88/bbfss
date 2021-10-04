@@ -1458,39 +1458,68 @@ def save_food_import(request):
     conveyanceMeans = request.POST.get('conveyanceMeans')
     Place_of_Entry = request.POST.get('Place_of_Entry')
     Final_Destination = request.POST.get('Final_Destination')
-    expectedArrivalDate = request.POST.get('expectedArrivalDate')
-    date_format_ins = datetime.strptime(expectedArrivalDate, '%d-%m-%Y').date()
+    date_format_ins = request.POST.get('expectedArrivalDate')
 
-    t_food_import_permit_t1.objects.create(
-        Application_No=application_no,
-        Import_Type=Import_Type,
-        License_No=license_no,
-        CID=cid,
-        Applicant_Name=Name,
-        Dzongkhag_Code=dzongkhag,
-        Gewog_Code=gewog,
-        Village_Code=village,
-        Present_Address=present_address,
-        Contact_No=contact_number,
-        Email=email,
-        Operation_Type=Operation,
-        Origin_Country_Food=Country_Of_Origin,
-        Transit_Country=country_of_transit,
-        Country_Of_Transit=Country_Name,
-        Means_of_Conveyance=conveyanceMeans,
-        Place_Of_Entry=Place_of_Entry,
-        Final_Destination=Final_Destination,
-        Expected_Arrival_Date=date_format_ins,
-        FO_Remarks=None,
-        Application_Date=date.today(),
-        Approve_Date=None,
-        Validity_Period=None,
-        Validity=None,
-        Import_Permit_No=None,
-        Applicant_Id=request.session['email'],
-        Terms=None
-    )
-
+    if Import_Type == "Individual":
+        t_food_import_permit_t1.objects.create(
+            Application_No=application_no,
+            Import_Type=Import_Type,
+            License_No=license_no,
+            CID=cid,
+            Applicant_Name=Name,
+            Dzongkhag_Code=dzongkhag,
+            Gewog_Code=gewog,
+            Village_Code=village,
+            Present_Address=present_address,
+            Contact_No=contact_number,
+            Email=email,
+            Operation_Type=Operation,
+            Origin_Country_Food=Country_Of_Origin,
+            Transit_Country=country_of_transit,
+            Country_Of_Transit=Country_Name,
+            Means_of_Conveyance=conveyanceMeans,
+            Place_Of_Entry=Place_of_Entry,
+            Final_Destination=Final_Destination,
+            Expected_Arrival_Date=date_format_ins,
+            FO_Remarks=None,
+            Application_Date=date.today(),
+            Approve_Date=None,
+            Validity_Period=None,
+            Validity=None,
+            Import_Permit_No=None,
+            Applicant_Id=request.session['email'],
+            Terms=None
+        )
+    else:
+        t_food_import_permit_t1.objects.create(
+            Application_No=application_no,
+            Import_Type=Import_Type,
+            License_No=license_no,
+            CID=None,
+            Applicant_Name=Name,
+            Dzongkhag_Code=None,
+            Gewog_Code=None,
+            Village_Code=None,
+            Present_Address=present_address,
+            Contact_No=contact_number,
+            Email=email,
+            Operation_Type=Operation,
+            Origin_Country_Food=Country_Of_Origin,
+            Transit_Country=country_of_transit,
+            Country_Of_Transit=Country_Name,
+            Means_of_Conveyance=conveyanceMeans,
+            Place_Of_Entry=Place_of_Entry,
+            Final_Destination=Final_Destination,
+            Expected_Arrival_Date=date_format_ins,
+            FO_Remarks=None,
+            Application_Date=date.today(),
+            Approve_Date=None,
+            Validity_Period=None,
+            Validity=None,
+            Import_Permit_No=None,
+            Applicant_Id=request.session['email'],
+            Terms=None
+        )
     t_workflow_details.objects.create(Application_No=application_no, Applicant_Id=request.session['email'],
                                       Assigned_To=None, Field_Office_Id=Place_of_Entry, Section='Food',
                                       Assigned_Role_Id='2', Action_Date=None, Application_Status='P',

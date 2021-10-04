@@ -6,6 +6,30 @@ form, input, select, textarea{
 option {
     background-color: white !important;
 }
+#loader img
+{
+  left: 50%;
+  margin-left: -32px;
+  margin-top: -32px;
+  position: absolute;
+  top: 50%;
+}
+.flatpickr-calendar {
+    border-radius: 2px;
+    border: 0;
+    box-shadow: 0 4px 18px rgb(0 0 0 / 50%);
+    width: auto;
+    margin-top: -4px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-color: rgb(240 237 237 / 96%);
+}
+.flatpickr-time .flatpickr-am-pm, .flatpickr-time .numInputWrapper {
+    height: auto;
+    color: #121111;
+}
 </style>
 <div class="accordion" role="tablist">
     {% for application_details in application_details %}
@@ -603,14 +627,13 @@ option {
                     </div>
                     <div class="alert alert-info" id="approve_Msg" style="display:none"></div>
                     <hr>
+                    <div id="loader" style="display:none">
+                        <img src="{% static 'assets/img/ajax-loader.gif' %}" alt="processing..." />
+                    </div>
                     <div class="card-action text-center">
                         <button type="button" class="btn btn-flat btn-primary" onclick="submit_details('{{application_details.Application_No}}')">
                             <i class="ace-icon fa fa-times"></i>
                             &nbsp;&nbsp;Submit
-                        </button>
-                        <button type="button" class="btn btn-flat btn-danger">
-                            <i class="ace-icon fa fa-times"></i>
-                            &nbsp;&nbsp;Cancel
                         </button>
                     </div>
                 </div>
@@ -630,15 +653,17 @@ option {
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Current Observation</label>
+                                    <label class="form-label">Current Observation <font color="red">*</font></label>
                                     <textarea class="form-control" id="currentObservation" rows="2"></textarea>
                                 </div>
+                                <div class="alert alert-danger" id="currentObservationErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Decision Conformity Statement </label>
+                                    <label class="form-label">Decision Conformity Statement <font color="red">*</font></label>
                                     <textarea class="form-control" id="decisionConform" rows="2"></textarea>
                                 </div>
+                                <div class="alert alert-danger" id="decisionConformErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                     </div>
@@ -714,7 +739,7 @@ option {
                                         <div class="alert alert-danger" id="animal_DescriptionErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Approved Number</label>
+                                        <label class="form-label">Approved Number <font color="red">*</font></label>
                                         <input type="number" name="no" class="form-control" id="total_no" disabled>
                                         <div class="alert alert-danger" id="noErrorMsg" style="display:none"></div>
                                     </div>
@@ -722,8 +747,8 @@ option {
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <div class="form-group">
-                                            <label class="form-label">Number Released</label>
-                                            <input type="number" class="form-control" id="number_released" name="number_released" onchange="get_balance_import()">
+                                            <label class="form-label">Number Released <font color="red">*</font></label>
+                                            <input type="text" class="form-control" id="number_released" name="number_released" onchange="get_balance_import()" onkeypress="return isNumberKey(event)">
                                         </div>
                                         <div class="alert alert-danger" id="number_releasedErrorMsg" style="display:none"></div>
                                     </div>
@@ -736,7 +761,7 @@ option {
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Remarks</label>
+                                        <label class="form-label">Remarks (If Any)</label>
                                         <textarea name="import_Remarks" class="form-control" id="import_Remarks" rows="3"></textarea>
                                     </div>
                                 </div>
@@ -766,6 +791,16 @@ $(function(){
     var today = new Date().toISOString().split('T')[0];
     $('#dateOfInspection')[0].setAttribute('min', today);
 });
+
+function isNumberKey(evt)
+{
+ var charCode = (evt.which) ? evt.which : event.keyCode
+ if (charCode > 31 && (charCode < 48 || charCode > 57))
+    return false;
+
+ return true;
+}
+
 function openDecisionModal()
 {
     $('#addModal').modal('show');
@@ -781,16 +816,33 @@ function add_details_ins(application_id)
     currentObservation = $('#currentObservation').val();
     decisionConform = $('#decisionConform').val();
 
-    $.ajax({
-        type : "GET",
-        url : "{% url 'add_details_ins_import' %}",
-        data :{'application_id':application_id,'currentObservation':currentObservation,'decisionConform':decisionConform},
-        success : function(data) {
-            $('#details').html(data);
-            $('#details').show();
-            $('#addModal').modal('hide');
-        }
-    });
+    if(currentObservation == "")
+    {
+        $('#currentObservationErrorMsg').html("Enter Current Observation.");
+        $('#currentObservationErrorMsg').show();
+        $('#currentObservationErrorMsg').delay(2000).fadeOut('slow');
+        $('#currentObservation').focus();
+    }
+    else if(decisionConform == "")
+    {
+        $('#decisionConformErrorMsg').html("Enter Decision Conform.");
+        $('#decisionConformErrorMsg').show();
+        $('#decisionConformErrorMsg').delay(2000).fadeOut('slow');
+        $('#decisionConform').focus();
+    }
+    else
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'add_details_ins_import' %}",
+            data :{'application_id':application_id,'currentObservation':currentObservation,'decisionConform':decisionConform},
+            success : function(data) {
+                $('#details').html(data);
+                $('#details').show();
+                $('#addModal').modal('hide');
+            }
+        });
+    }
 }
 
 function submit_details(application_id)
@@ -832,11 +884,13 @@ function submit_details(application_id)
     }
     else
     {
+        $("#loader").show();
         $.ajax({
             type : "GET",
             url : "{% url 'submit_la_application' %}",
             data :{'application_no':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks , 'dateOfInspection':dateOfInspection,'timeOfInspection':timeOfInspection},
             success : function(data) {
+                $("#loader").hide();
                 $('#approve_Msg').html("Application Approved.");
                 $('#approve_Msg').show();
                 $('#approve_Msg').delay(2000).fadeOut('slow');
@@ -886,16 +940,28 @@ function get_balance_import(qty)
 
 function update_permit_details_form()
 {
-    $.ajax({
-        type : "POST",
-        url : "{% url 'update_details_la' %}",
-        data : $('#permit_details_form').serialize(),
-        success : function(response) {
-            $('#details-import').html(response);
-            $('#permit_details_model').modal('hide');
-            $('.modal-backdrop').remove();
-        }
-    });
+    var number_released = $('#number_released').val();
+
+    if(number_released == "")
+    {
+        $('#number_releasedErrorMsg').html("Enter Number Released.");
+        $('#number_releasedErrorMsg').show();
+        $('#number_releasedErrorMsg').delay(2000).fadeOut('slow');
+        $('#number_released').focus();
+    }
+    else
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'update_details_la' %}",
+            data : $('#permit_details_form').serialize(),
+            success : function(response) {
+                $('#details-import').html(response);
+                $('#permit_details_model').modal('hide');
+                $('.modal-backdrop').remove();
+            }
+        });
+    s}
 }
 
 </script>

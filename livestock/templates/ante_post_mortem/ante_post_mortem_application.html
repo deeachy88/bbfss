@@ -1,6 +1,7 @@
 {% extends 'common_dashboard.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+{% load static %}
 <style>
     option
     {
@@ -120,7 +121,7 @@ form, input, select, textarea{
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Location_Dzongkhag_Code <font color="red">*</font></label>
+                                    <label class="form-label">Dzongkhag <font color="red">*</font></label>
                                     <select class="form-control" name="Location_Dzongkhag_Code"  id="Location_Dzongkhag_Code" onchange="getLocation(this.value)">
                                         <option value="">--SELECT DZONGKHAG--</option>
                                         {% for dzongkhag in dzongkhag %}
@@ -134,9 +135,9 @@ form, input, select, textarea{
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Location Code <font color="red">*</font></label>
+                                    <label class="form-label">Location<font color="red">*</font></label>
                                      <select class="form-control" name="location_code"  id="location_code">
-                                        <option value="">--SELECT--</option>
+                                        <option value="">--SELECT LOCATION--</option>
                                         {% for location in location %}
                                             <option value="{{ location.Location_Code }}">{{ location.Location_Name }}</option>
                                         {% endfor %}
@@ -154,7 +155,7 @@ form, input, select, textarea{
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Request Date for Inspection <font color="red">*</font></label>
-                                     <input type="date" name="inspectionDate" id="inspectionDate" class="form-control date-picker flatpickr-input active">
+                                    <input type="date" class="form-control" id="inspectionDate" name="inspectionDate">
                                 </div>
                                 <div class="alert alert-danger" id="inspectionDateErrorMsg" style="display:none"></div>
                             </div>
@@ -290,8 +291,81 @@ form, input, select, textarea{
         </div>
     </div>
 </form>
-<script>
 
+<form method="post" id="edit_mortem_details_form">
+    {% csrf_token %}
+    <input type="hidden" id="edit_application_no" name="edit_application_no">
+    <div class="modal fade" id="edit_mortem_details" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <input type="hidden" name="edit_mortem_record_id" id="edit_mortem_record_id"/>
+                                <input type="hidden" name="identifier" value="APM"/>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Species</label>
+                                        <select class="form-control" name="edit_Species" id="edit_Species">
+                                            <option value="">--SELECT--</option>
+                                            {% for species in species %}
+                                                <option value="{{ species.Species_Name }}">{{ species.Species_Name }}</option>
+                                            {% endfor %}
+                                         </select>
+                                        <div class="alert alert-danger" id="edit_SpeciesErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Nos</label>
+                                        <input type="text" name="edit_Nos" class="form-control" id="edit_Nos" onkeypress="return isNumberKey(event)">
+                                        <div class="alert alert-danger" id="edit_NosErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Quantity</label>
+                                        <input type="text" name="edit_qty" class="form-control" id="edit_qty" onkeypress="return isNumberKey(event)">
+                                        <div class="alert alert-danger" id="edit_qtyErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Remarks</label>
+                                        <input type="text" name="edit_remarks" class="form-control" id="edit_remarks" required>
+                                        <div class="alert alert-danger" id="edit_remarksErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="update_edit_details('APM')">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script src="{% static 'assets/bower_components/jquery/dist/jquery.min.js' %}"></script>
+<script>
+$(function()
+{
+    var today = new Date().toISOString().split('T')[0];
+    $('#inspectionDate')[0].setAttribute('min', today);
+});
+function isNumberKey(evt)
+    {
+     var charCode = (evt.which) ? evt.which : event.keyCode
+     if (charCode > 31 && (charCode < 48 || charCode > 57))
+        return false;
+
+     return true;
+    }
 function save_mortem_form()
 {
     var Inspection_Type = $("input[name=Inspection_Type]:checked").length;
@@ -429,7 +503,7 @@ function save_mortem_attachment()
         if (data.form_is_valid)
         {
             var file_url = data.file_url
-            var appNo = $('#attachment_appNo').val();
+            var appNo = $('#applicationNo').val();
             $.ajax
             ({
                 type : "POST",
@@ -573,22 +647,60 @@ function getCitizenDetails(cidNo)
     success : function(data)
     {
         const myObj =data.response;
-        var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
-        var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
-        var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
-        if (middleName == null) {
-                middleName = "";
-            }
-        var CitizenName = firstName + " " + middleName + " " + lastName;
-        var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
-        var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
-        var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
-        $('#name').val(CitizenName);
-        $('#dzongkhag').val(dzongkhagName);
-        $('#gewog').val(gewogName);
-        $('#village').val(villageName);
+        if(myObj.citizenDetailsResponse.citizenDetail == undefined)
+        {
+            $('#name').val("");
+            $('#dzongkhag').val("");
+            $('#gewog').val("");
+            $('#village').val("");
+            $('#cid').val("");
+            $('#cidErrorMsg').html("Invalid CID.Try With Another one");
+            $('#cidErrorMsg').show();
+            $('#cidErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+            var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+            var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+            if (middleName == null) {
+                    middleName = "";
+                }
+            var CitizenName = firstName + " " + middleName + " " + lastName;
+
+            var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
+            var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
+            var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
+            $('#name').val(CitizenName);
+            $('#dzongkhag').val(dzongkhagName);
+            $('#gewog').val(gewogName);
+            $('#village').val(villageName);
+        }
     }
 });
+}
+
+function populateDetails(Record_Id, Species, Nos, Quantity, Description, Application_No)
+{
+    $('#edit_mortem_record_id').val(Record_Id);
+    $('#edit_Species').val(Species);
+    $('#edit_Nos').val(Nos);
+    $('#edit_qty').val(Quantity);
+    $('#edit_remarks').val(Description);
+    $('#edit_application_no').val(Application_No);
+    $('#edit_mortem_details').modal('show');
+}
+
+function getLocation(dzongkhag_id)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_location_nursery' %}",
+        data :{'dzongkhag_id':dzongkhag_id},
+        success : function(data) {
+            $('#location_code').html(data);
+        }
+    });
 }
 </script>
 {% endblock %}

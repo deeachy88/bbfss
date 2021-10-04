@@ -8,50 +8,44 @@ form, input, select, textarea{
 {% csrf_token %}
         <div class="card-body">
             {% for application_details in application_details %}
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Scope</label>
-                            {% if application_details.Inspection_Type == 'P' %}
-                                <div class="row">
-                                    <div class="col-sm-2">
-                                        <label class="form-label">Inspection Type</label>
-                                    </div>
-                                    <div class="col-sm-4 justify-content-center">
-                                        <label class="custom-control custom-radio">
-                                            <input type="radio" class="custom-control-input" checked>
-                                            <span class="custom-control-indicator"></span>
-                                            <span class="custom-control-description">Ante-mortem</span>
-                                        </label>
-                                        <label class="custom-control custom-radio">
-                                            <input type="radio" class="custom-control-input" disabled>
-                                            <span class="custom-control-indicator"></span>
-                                            <span class="custom-control-description">Post-mortem</span>
-                                        </label>
-                                    </div>
-                                </div><br>
-                            {% else %}
-                                <div class="row">
-                                    <div class="col-sm-2">
-                                        <label class="form-label">Inspection Type</label>
-                                    </div>
-                                    <div class="col-sm-4 justify-content-center">
-                                        <label class="custom-control custom-radio">
-                                            <input type="radio" class="custom-control-input" disabled>
-                                            <span class="custom-control-indicator"></span>
-                                            <span class="custom-control-description">Ante-mortem</span>
-                                        </label>
-                                        <label class="custom-control custom-radio">
-                                            <input type="radio" class="custom-control-input" checked>
-                                            <span class="custom-control-indicator"></span>
-                                            <span class="custom-control-description">Post-mortem</span>
-                                        </label>
-                                    </div>
-                                </div><br>
-                            {% endif %}
+                {% if application_details.Inspection_Type == 'P' %}
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <label class="form-label">Inspection Type</label>
                         </div>
-                    </div>
-                </div>
+                        <div class="col-sm-4 justify-content-center">
+                            <label class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" checked>
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Ante-mortem</span>
+                            </label>
+                            <label class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" disabled>
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Post-mortem</span>
+                            </label>
+                        </div>
+                    </div><br>
+                {% else %}
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <label class="form-label">Inspection Type</label>
+                        </div>
+                        <div class="col-sm-4 justify-content-center">
+                            <label class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" disabled>
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Ante-mortem</span>
+                            </label>
+                            <label class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" checked>
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Post-mortem</span>
+                            </label>
+                        </div>
+                    </div><br>
+                {% endif %}
+                <br>
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
@@ -136,7 +130,7 @@ form, input, select, textarea{
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="form-label">Request Date for Inspection</label>
-                             <input type="date"  class="form-control" value="{{application_details.Inspection_Date_Requested}}" disabled>
+                             <input type="text"  class="form-control" value="{{application_details.Inspection_Date_Requested}}" disabled>
                         </div>
                     </div>
                 </div>

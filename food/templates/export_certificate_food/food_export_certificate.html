@@ -1,6 +1,7 @@
 {% extends 'common_dashboard.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+{% load static %}
 <style>
     option
     {
@@ -151,7 +152,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Number Of Packages <font color="red">*</font></label>
-                                    <input type="number" class="form-control" id="no_of_packages" name="no_of_packages">
+                                    <input type="text" class="form-control" id="no_of_packages" name="no_of_packages" onkeypress="return isNumberKey(event)">
                                 </div>
                                 <div class="alert alert-danger" id="no_of_packagesErrorMsg" style="display:none"></div>
                             </div>
@@ -168,7 +169,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Quantity <font color="red">*</font></label>
-                                    <input type="number" class="form-control" id="quantity" name="quantity">
+                                    <input type="text" class="form-control" id="quantity" name="quantity" onkeypress="return isNumberKey(event)">
                                 </div>
                                 <div class="alert alert-danger" id="quantityErrorMsg" style="display:none"></div>
                             </div>
@@ -201,14 +202,14 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Expected Date for Export <font color="red">*</font></label>
-                                     <input type="date" name="Export_Expected_Date" id="Export_Expected_Date" class="form-control date-picker flatpickr-input active">
+                                    <input type="date" class="form-control" id="Export_Expected_Date" name="Export_Expected_Date">
                                 </div>
                                 <div class="alert alert-danger" id="Export_Expected_DateErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Propose Date for Inspection <font color="red">*</font></label>
-                                     <input type="date" name="inspectionDate" id="inspectionDate" class="form-control date-picker flatpickr-input active">
+                                    <input type="date" class="form-control" id="inspectionDate" name="inspectionDate">
                                 </div>
                                 <div class="alert alert-danger" id="inspectionDateErrorMsg" style="display:none"></div>
                             </div>
@@ -316,7 +317,14 @@
         </div>
     </div>
 </form>
+<script src="{% static 'assets/bower_components/jquery/dist/jquery.min.js' %}"></script>
 <script>
+$(function()
+{
+    var today = new Date().toISOString().split('T')[0];
+    $('#Export_Expected_Date')[0].setAttribute('min', today);
+    $('#inspectionDate')[0].setAttribute('min', today);
+});
 function save_food_export()
 {
     var license_no = $('#license_no').val();

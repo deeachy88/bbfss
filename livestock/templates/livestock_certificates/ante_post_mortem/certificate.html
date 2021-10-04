@@ -101,181 +101,406 @@
         </div>
         <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
             <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
-                <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Ante-mortem</span>
+                <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Ante-</span>
+                <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -5px;">mortem </span>
                 <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Examination</span>
             <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
         </div>
+        {% for certificate_details in certificate_details %}
         <div class="row">
             <div class="col-sm-4">
                 <label class="form-label">Abnormalities in Respiration (If the breathing pattern is different from normal the animal should be segregated as a suspect)</label>
             </div>
-            <div class="col-sm-8 justify-content-center">
-                <label class="custom-control custom-radio">
-                    <input type="radio" name="Respiration_Abnormalities" class="custom-control-input" value="Yes">
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description">Yes</span>
-                </label>
-                <label class="custom-control custom-radio">
-                    <input type="radio" name="Respiration_Abnormalities" class="custom-control-input" value="No">
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description">No</span>
-                </label>
-                <div class="alert alert-danger" id="Respiration_AbnormalitiesErrorMsg" style="display:none"></div>
-            </div>
+            {% if certificate_details.Respiration_Abnormalities == "Yes" %}
+                <div class="col-sm-8 justify-content-center">
+                    <label class="custom-control custom-radio">
+                        <input type="radio" name="Respiration_Abnormalities" class="custom-control-input" value="Yes" checked>
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">Yes</span>
+                    </label>
+                    <label class="custom-control custom-radio">
+                        <input type="radio" name="Respiration_Abnormalities" class="custom-control-input" value="No" disabled>
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">No</span>
+                    </label>
+                </div>
+            {% else %}
+                <div class="col-sm-8 justify-content-center">
+                    <label class="custom-control custom-radio">
+                        <input type="radio" name="Respiration_Abnormalities" class="custom-control-input" value="Yes" disabled>
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">Yes</span>
+                    </label>
+                    <label class="custom-control custom-radio">
+                        <input type="radio" name="Respiration_Abnormalities" class="custom-control-input" value="No" checked>
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">No</span>
+                    </label>
+                </div>
+            {% endif %}
         </div>
+        <br>
         <div class="row">
             <div class="col-sm-4">
                 <label class="form-label">Abnormalities in behaviour</label>
             </div>
             <div class="col-sm-8 justify-content-center">
-                <div class="custom-control custom-checkbox custom-control-inline">
-                    <input type="checkbox" class="custom-control-input" name="Abnormalities_Behaviour">
-                    <label class="custom-control-label">Animal is calm, active and do not show any uncharacteristic behaviour</label>
-                </div>
-                <div class="custom-control custom-checkbox custom-control-inline">
-                    <input type="checkbox" class="custom-control-input" name="Abnormalities_Behaviour">
-                    <label class="custom-control-label">Animal walk in circle or show an abnormal gait or posture</label>
-                </div>
-                <div class="custom-control custom-checkbox custom-control-inline">
-                    <input type="checkbox" class="custom-control-input" name="Abnormalities_Behaviour">
-                    <label class="custom-control-label">pushing its head against a wall</label>
-                </div>
-                <div class="custom-control custom-checkbox custom-control-inline">
-                    <input type="checkbox" class="custom-control-input" name="Abnormalities_Behaviour">
-                    <label class="custom-control-label">showing a dull and anxious expression in the eyes</label>
-                </div>
-                <div class="alert alert-danger" id="Abnormalities_behaviourErrorMsg" style="display:none"></div>
+                {% if certificate_details.Structure_Abnormalities_1 == "1" %}
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="Abnormalities_Behaviour" checked>
+                      <label class="form-check-label">
+                        Animal is calm, active and do not show any uncharacteristic behaviour
+                      </label>
+                    </div>
+                {% else %}
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="Abnormalities_Behaviour" disabled>
+                      <label class="form-check-label">
+                        Animal is calm, active and do not show any uncharacteristic behaviour
+                      </label>
+                    </div>
+                {% endif %}
+                {% if certificate_details.Structure_Abnormalities_2 == "1" %}
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="Abnormalities_Behaviour" checked>
+                      <label class="form-check-label">
+                        Animal walk in circle or show an abnormal gait or posture
+                      </label>
+                    </div>
+                {% else %}
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="Abnormalities_Behaviour" disabled>
+                      <label class="form-check-label">
+                        Animal walk in circle or show an abnormal gait or posture
+                      </label>
+                    </div>
+                {% endif %}
+                {% if certificate_details.Structure_Abnormalities_1 == "1" %}
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="Abnormalities_Behaviour" checked>
+                      <label class="form-check-label">
+                        pushing its head against a wall
+                      </label>
+                    </div>
+                {% else %}
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="Abnormalities_Behaviour" disabled>
+                      <label class="form-check-label">
+                        pushing its head against a wall
+                      </label>
+                    </div>
+                {% endif %}
+                {% if certificate_details.Structure_Abnormalities_1 == "1" %}
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="Abnormalities_Behaviour" checked>
+                      <label class="form-check-label">
+                        showing a dull and anxious expression in the eyes
+                      </label>
+                    </div>
+                {% else %}
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="Abnormalities_Behaviour" disabled>
+                      <label class="form-check-label">
+                        showing a dull and anxious expression in the eyes
+                      </label>
+                    </div>
+                {% endif %}
             </div>
+
+
         </div>
+        <br>
         <div class="row">
             <div class="col-sm-4">
                 <label class="form-label">Abnormalities in structure</label>
             </div>
             <div class="col-sm-8 justify-content-center">
-                <div class="custom-control custom-checkbox custom-control-inline">
-                    <input type="checkbox" class="custom-control-input" name="Abnormalities_Structure">
-                    <label class="custom-control-label">swellings (abscesses) seen commonly in swine</label>
+                {% if certificate_details.Structure_Abnormalities_1 == "1" %}
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="Abnormalities_Structure" checked>
+                      <label class="form-check-label">
+                        swellings (abscesses) seen commonly in swine
+                      </label>
+                    </div>
+                {% else %}
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="Abnormalities_Structure" disabled>
+                      <label class="form-check-label">
+                        swellings (abscesses) seen commonly in swine
+                      </label>
+                    </div>
+                {% endif %}
+                {% if certificate_details.Structure_Abnormalities_2 == "1" %}
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="Abnormalities_Structure" checked>
+                      <label class="form-check-label">
+                        enlarged joints
+                      </label>
+                    </div>
+                {% else %}
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="Abnormalities_Structure" disabled>
+                      <label class="form-check-label">
+                        enlarged joints
+                      </label>
+                    </div>
+                {% endif %}
+                {% if certificate_details.Structure_Abnormalities_3 == "1" %}
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="Abnormalities_Structure" checked>
+                      <label class="form-check-label">
+                        umbilical swelling
+                      </label>
+                    </div>
+                {% else %}
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="Abnormalities_Structure" disabled>
+                      <label class="form-check-label">
+                        umbilical swelling
+                      </label>
+                    </div>
+                {% endif %}
+                {% if certificate_details.Structure_Abnormalities_4 == "1" %}
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="Abnormalities_Structure" checked>
+                      <label class="form-check-label">
+                        enlarged jaw (“lumpy jaw”)
+                      </label>
+                    </div>
+                {% else %}
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="Abnormalities_Structure" disabled>
+                      <label class="form-check-label">
+                        enlarged jaw (“lumpy jaw”)
+                      </label>
+                    </div>
+                {% endif %}
+                {% if certificate_details.Structure_Abnormalities_5 == "1" %}
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="Abnormalities_Structure" checked>
+                      <label class="form-check-label">
+                        Abdominal distension
+                      </label>
+                    </div>
+                {% else %}
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="Abnormalities_Structure" disabled>
+                      <label class="form-check-label">
+                        Abdominal distension
+                      </label>
+                    </div>
+                {% endif %}
+                {% if certificate_details.Structure_Abnormalities_1 == "1" %}
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="Abnormalities_Structure" checked>
+                      <label class="form-check-label">
+                        Any lesions
+                      </label>
+                    </div>
+                {% else %}
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="Abnormalities_Structure" disabled>
+                      <label class="form-check-label">
+                        Any lesions
+                      </label>
+                    </div>
+                {% endif %}
                 </div>
-                <div class="custom-control custom-checkbox custom-control-inline">
-                    <input type="checkbox" class="custom-control-input" name="Abnormalities_Structure">
-                    <label class="custom-control-label">enlarged joints</label>
-                </div>
-                <div class="custom-control custom-checkbox custom-control-inline">
-                    <input type="checkbox" class="custom-control-input" name="Abnormalities_Structure">
-                    <label class="custom-control-label">umbilical swelling</label>
-                </div>
-                <div class="custom-control custom-checkbox custom-control-inline">
-                    <input type="checkbox" class="custom-control-input" name="Abnormalities_Structure">
-                    <label class="custom-control-label">enlarged jaw (“lumpy jaw”)</label>
-                </div>
-                <div class="custom-control custom-checkbox custom-control-inline">
-                    <input type="checkbox" class="custom-control-input" name="Abnormalities_Structure">
-                    <label class="custom-control-label">Abdominal distension </label>
-                </div>
-                <div class="custom-control custom-checkbox custom-control-inline">
-                    <input type="checkbox" class="custom-control-input" name="Abnormalities_Structure">
-                    <label class="custom-control-label">Any lesions </label>
-                </div>
-                <div class="alert alert-danger" id="Abnormalities_structureErrorMsg" style="display:none"></div>
-            </div>
         </div>
+        <br>
         <div class="row">
             <div class="col-sm-4">
                 <label class="form-label">An abnormal gait (associated with pain in the legs, chest or abdomen or is an indication of nervous disease)</label>
             </div>
-            <div class="col-sm-8 justify-content-center">
-                <label class="custom-control custom-radio">
-                    <input type="radio" name="gait" class="custom-control-input" value="Yes">
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description">Yes</span>
-                </label>
-                <label class="custom-control custom-radio">
-                    <input type="radio" name="gait" class="custom-control-input" value="No">
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description">No</span>
-                </label>
-                <div class="alert alert-danger" id="gaitErrorMsg" style="display:none"></div>
-            </div>
+            {% if certificate_details.Abnormal_Gait == "Yes" %}
+                <div class="col-sm-8 justify-content-center">
+                    <label class="custom-control custom-radio">
+                        <input type="radio" name="gait" class="custom-control-input" value="Yes" checked>
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">Yes</span>
+                    </label>
+                    <label class="custom-control custom-radio">
+                        <input type="radio" name="gait" class="custom-control-input" value="No" disabled>
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">No</span>
+                    </label>
+                </div>
+            {% else %}
+                <div class="col-sm-8 justify-content-center">
+                    <label class="custom-control custom-radio">
+                        <input type="radio" name="gait" class="custom-control-input" value="Yes" disabled>
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">Yes</span>
+                    </label>
+                    <label class="custom-control custom-radio">
+                        <input type="radio" name="gait" class="custom-control-input" value="No" checked>
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">No</span>
+                    </label>
+                </div>
+            {% endif %}
         </div>
+        <br>
         <div class="row">
             <div class="col-sm-4">
                 <label class="form-label">Abnormalities in posture (Downer animals should be handled with caution in order to prevent further suffering)</label>
             </div>
-            <div class="col-sm-8 justify-content-center">
-                <label class="custom-control custom-radio">
-                    <input type="radio" name="posture" class="custom-control-input" value="Yes">
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description">Yes</span>
-                </label>
-                <label class="custom-control custom-radio">
-                    <input type="radio" name="posture" class="custom-control-input" value="No">
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description">No</span>
-                </label>
-                <div class="alert alert-danger" id="postureErrorMsg" style="display:none"></div>
-            </div>
+            {% if certificate_details.Abnormal_Posture == "Yes" %}
+                <div class="col-sm-8 justify-content-center">
+                    <label class="custom-control custom-radio">
+                        <input type="radio" name="posture" class="custom-control-input" value="Yes" checked>
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">Yes</span>
+                    </label>
+                    <label class="custom-control custom-radio">
+                        <input type="radio" name="posture" class="custom-control-input" value="No" disabled>
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">No</span>
+                    </label>
+                </div>
+            {% else %}
+                <div class="col-sm-8 justify-content-center">
+                    <label class="custom-control custom-radio">
+                        <input type="radio" name="posture" class="custom-control-input" value="Yes" checked>
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">Yes</span>
+                    </label>
+                    <label class="custom-control custom-radio">
+                        <input type="radio" name="posture" class="custom-control-input" value="No" disabled>
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">No</span>
+                    </label>
+                </div>
+            {% endif %}
         </div>
+        <br>
         <div class="row">
             <div class="col-sm-4">
-                <label class="form-label">Abnormalities in structure</label>
+                <label class="form-label">Abnormal discharges or protrusions from the body</label>
             </div>
             <div class="col-sm-8 justify-content-center">
-                <div class="custom-control custom-checkbox custom-control-inline">
-                    <input type="checkbox" class="custom-control-input" name="Abnormal_Discharge">
-                    <label class="custom-control-label">discharges from the nose, excessive saliva from the mouth</label>
+                {% if certificate_details.Discharge_Abnormalities_1 == "1" %}
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="Discharge_Abnormalities" checked>
+                      <label class="form-check-label">
+                        discharges from the nose, excessive saliva from the mouth
+                      </label>
+                    </div>
+                {% else %}
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="Discharge_Abnormalities" disabled>
+                      <label class="form-check-label">
+                        discharges from the nose, excessive saliva from the mouth
+                      </label>
+                    </div>
+                {% endif %}
+                {% if certificate_details.Discharge_Abnormalities_2 == "1" %}
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="Discharge_Abnormalities" checked>
+                      <label class="form-check-label">
+                        protruding from the vulva, intestine, vagina, rectum and uterus
+                      </label>
+                    </div>
+                {% else %}
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="Discharge_Abnormalities" disabled>
+                      <label class="form-check-label">
+                        protruding from the vulva, intestine, vagina, rectum and uterus
+                      </label>
+                    </div>
+                {% endif %}
+                {% if certificate_details.Discharge_Abnormalities_3 == "1" %}
+                 <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="Discharge_Abnormalities" checked>
+                  <label class="form-check-label">
+                    growths on the eye and bloody diarrhoea
+                  </label>
                 </div>
-                <div class="custom-control custom-checkbox custom-control-inline">
-                    <input type="checkbox" class="custom-control-input" name="Abnormal_Discharge">
-                    <label class="custom-control-label">protruding from the vulva, intestine, vagina, rectum and uterus</label>
-                </div>
-                <div class="custom-control custom-checkbox custom-control-inline">
-                    <input type="checkbox" class="custom-control-input" name="Abnormal_Discharge">
-                    <label class="custom-control-label">growths on the eye and bloody diarrhoea</label>
-                </div>
-                <div class="alert alert-danger" id="Abnormal_DischargeErrorMsg" style="display:none"></div>
+                {% else %}
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="Discharge_Abnormalities" disabled>
+                      <label class="form-check-label">
+                        growths on the eye and bloody diarrhoea
+                      </label>
+                    </div>
+                {% endif %}
             </div>
+
         </div>
+        <br>
         <div class="row">
             <div class="col-sm-4">
                 <label class="form-label">Abnormal colour (black areas on horses and swine, red areas on light coloured skin (inflammation), dark blue areas on the skin or udder (gangrene).</label>
             </div>
-            <div class="col-sm-8 justify-content-center">
-                <label class="custom-control custom-radio">
-                    <input type="radio" name="colour" class="custom-control-input" value="Yes">
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description">Yes</span>
-                </label>
-                <label class="custom-control custom-radio">
-                    <input type="radio" name="colour" class="custom-control-input" value="No">
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description">No</span>
-                </label>
-                <div class="alert alert-danger" id="colourErrorMsg" style="display:none"></div>
-            </div>
+            {% if certificate_details.Abnormal_Odour == "Yes" %}
+                <div class="col-sm-8 justify-content-center">
+                    <label class="custom-control custom-radio">
+                        <input type="radio" name="colour" class="custom-control-input" value="Yes" checked>
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">Yes</span>
+                    </label>
+                    <label class="custom-control custom-radio">
+                        <input type="radio" name="colour" class="custom-control-input" value="No" disabled>
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">No</span>
+                    </label>
+                </div>
+            {% else %}
+                <div class="col-sm-8 justify-content-center">
+                    <label class="custom-control custom-radio">
+                        <input type="radio" name="colour" class="custom-control-input" value="Yes" disabled>
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">Yes</span>
+                    </label>
+                    <label class="custom-control custom-radio">
+                        <input type="radio" name="colour" class="custom-control-input" value="No" checked>
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">No</span>
+                    </label>
+                </div>
+            {% endif %}
         </div>
         <div class="row">
             <div class="col-sm-4">
                 <label class="form-label">An abnormal odour (odour of an abscess, a medicinal odour, stinkweed odour or an acetone odour of ketosis)</label>
             </div>
-            <div class="col-sm-8 justify-content-center">
-                <label class="custom-control custom-radio">
-                    <input type="radio" name="odour" class="custom-control-input" value="Yes">
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description">Yes</span>
-                </label>
-                <label class="custom-control custom-radio">
-                    <input type="radio" name="odour" class="custom-control-input" value="No">
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description">No</span>
-                </label>
-                <div class="alert alert-danger" id="odourErrorMsg" style="display:none"></div>
-            </div>
+            {% if certificate_details.Abnormal_Odour == "Yes" %}
+                <div class="col-sm-8 justify-content-center">
+                    <label class="custom-control custom-radio">
+                        <input type="radio" name="odour" class="custom-control-input" value="Yes" checked>
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">Yes</span>
+                    </label>
+                    <label class="custom-control custom-radio">
+                        <input type="radio" name="odour" class="custom-control-input" value="No" disabled>
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">No</span>
+                    </label>
+                </div>
+            {% else %}
+                <div class="col-sm-8 justify-content-center">
+                    <label class="custom-control custom-radio">
+                        <input type="radio" name="odour" class="custom-control-input" value="Yes" disabled>
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">Yes</span>
+                    </label>
+                    <label class="custom-control custom-radio">
+                        <input type="radio" name="odour" class="custom-control-input" value="No" checked>
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">No</span>
+                    </label>
+                </div>
+            {% endif %}
         </div>
+        <br>
         <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
             <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
                 <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Decision</span>
-                <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">of the </span>
-                <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Ante-mortem</span>
+                <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">of</span>
+                <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">the </span>&nbsp;
+                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Ante </span>
+                <span class="px-1 small text-muted font-weight-bold text-muted form-label">-</span>
+                <span class="px-1 small text-muted font-weight-bold text-muted form-label">mortem</span>
                 <span class="px-1 small text-muted font-weight-bold text-muted form-label">inspection</span>
             <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
         </div>
@@ -283,13 +508,13 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Animal passed as Fit for Slaughter without restrictions (Animals with no obvious diseases or abnormal conditions)</label>
-                    <input type="number" class="form-control" id="fit_for_slaughter" name="fit_for_slaughter">
+                    <input type="number" class="form-control" value="{{certificate_details.No_Without_Restrictions}}" disabled>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label>No. of animals permitted for slaughter but under close supervision (Animals suspected for anemia, jaundice, oedema, ecthyma,  etc.)</label>
-                    <input type="number" class="form-control" id="fit_for_slaughter_supervision" name="fit_for_slaughter_supervision">
+                    <input type="number" class="form-control" value="{{certificate_details.No_Close_Supervision}}" disabled>
                 </div>
             </div>
         </div>
@@ -297,13 +522,13 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>No. of animals withheld for slaughter (In the opinion of inspector, the animal with a disease or condition would likely respond to a delay in slaughtering or to a suitable treatment such as metaboli disease, disturbance to CNS etc.)</label>
-                    <input type="number" class="form-control" id="withheld_for_slaughter" name="withheld_for_slaughter">
+                    <input type="number" class="form-control" value="{{certificate_details.No_Withheld}}" disabled>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Emergency slaughter of animals(Animals which are in acute pain from a condition where a delay in slaughter will compromise the animal welfare.)</label>
-                    <input type="number" class="form-control" id="emergency_slaughter" name="emergency_slaughter">
+                    <input type="number" class="form-control" value="{{certificate_details.No_Emergency}}" disabled>
                 </div>
             </div>
         </div>
@@ -311,9 +536,10 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Unfit for Human Consumption (Animals with infectious disseases such as tetanus, Hemorrhagic septicemina, swine fever, botulism, etc.)</label>
-                    <input type="number" class="form-control" id="unfifit_for_consumption" name="unfifit_for_consumption">
+                    <input type="text" class="form-control" value="{{certificate_details.No_Unfit}}" disabled>
                 </div>
             </div>
         </div>
+        {% endfor %}
     </div>
 </div>

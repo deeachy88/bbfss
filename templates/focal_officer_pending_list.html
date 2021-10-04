@@ -19,7 +19,7 @@
                                     <th scope="col">Application Date</th>
                                     {% for application_details in application_details %}
                                     {% if application_details.Service_Code == 'OC' or application_details.Service_Code == 'FBR' and application_details.Application_Status != 'ACK'%}
-                                               <th scope="col">Action</th>
+                                               <th scope="col"></th>
                                         {% endif %}
                                     {% endfor %}
                                 </tr>
@@ -100,7 +100,6 @@
     }
     function acknowledge(appId)
     {
-    alert(appId);
         $.ajax({
             type : "GET",
             url : "{% url 'send_acknowledge' %}",

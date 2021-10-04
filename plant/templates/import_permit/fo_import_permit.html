@@ -614,7 +614,7 @@ form, input, select, textarea{
 <script>
         function fo_approve(application_id)
         {
-            $("#loader").show();
+
             remarks = $('#remarks').val();
             validity = $('#validity').val();
             if(validity == "")
@@ -625,6 +625,7 @@ form, input, select, textarea{
             }
             else
             {
+                $("#loader").show();
                 $.ajax({
                 type : "POST",
                 url : "{% url 'fo_approve' %}",
@@ -647,7 +648,6 @@ form, input, select, textarea{
 
         function fo_reject(application_id)
         {
-            $("#loader").show();
             remarks = $('#remarks').val();
 
             if(remarks == "")
@@ -658,6 +658,7 @@ form, input, select, textarea{
             }
             else
             {
+                $("#loader").show();
                 $.ajax({
                     type : "POST",
                     url : "{% url 'fo_reject' %}",

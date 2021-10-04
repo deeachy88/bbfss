@@ -282,6 +282,92 @@
     </div>
 </form>
 
+<form method="post" id="edit_certificate_form">
+    {% csrf_token %}
+    <input type="hidden" id="edit_app_No" name="edit_app_No">
+    <div class="modal fade" id="edit_seed_details" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <input type="text" name="seed_record_id" id="seed_record_id" style="display:none"/>
+                                <input type="hidden" name="identifier" value="RSC"/>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Crop <font color="red">*</font></label>
+                                            <select class="form-control" name="edit_crop_id"  id="edit_crop_id" onchange="getEditVariety(this.value)">
+                                                <option value="">--SELECT--</option>
+                                                {% for crop in crop %}
+                                                        <option value="{{ crop.Crop_Common_Name }}">{{ crop.Crop_Common_Name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="alert alert-danger" id="edit_crop_idErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Crop Variety <font color="red">*</font></label>
+                                            <select class="form-control" name="edit_crop_variety"  id="edit_crop_variety">
+                                                <option value="">--SELECT--</option>
+                                                {% for variety in variety %}
+                                                        <option value="{{ variety.Crop_Variety_Name }}">{{ variety.Crop_Variety_Name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="alert alert-danger" id="edit_crop_varietyErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Source <font color="red">*</font></label>
+                                        <input type="text" name="edit_Source" class="form-control" id="edit_Source" required>
+                                        <div class="alert alert-danger" id="edit_SourceErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Quantity <font color="red">*</font></label>
+                                        <input type="text" name="edit_qty" class="form-control" id="edit_qty" onkeypress="return isNumberKey(event)">
+                                        <div class="alert alert-danger" id="edit_qtyErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Unit <font color="red">*</font></label>
+                                        <select name="edit_Unit" class="form-control" id="edit_Unit">
+                                            <option value="">--SELECT--</option>
+                                            {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="alert alert-danger" id="edit_UnitErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Purpose <font color="red">*</font></label>
+                                        <textarea class="form-control" id="edit_purpose" name="edit_purpose" rows="3"></textarea>
+                                        <div class="alert alert-danger" id="edit_purposeErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="update_edit_details('RSC')">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
 <script>
 function isNumberKey(evt)
 {
@@ -360,7 +446,7 @@ function save_certificate_attachment()
         {
             if (data.form_is_valid)
             {
-                var appNo = $('#appNo').val();
+                var appNo = $('#applicationNo').val();
                 var file_url = data.file_url
                 $.ajax
                 ({
@@ -633,17 +719,29 @@ function getCitizenDetails(cidNo)
         success : function(data)
         {
             const myObj =data.response;
-            var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
-            var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
-            var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
-            if (middleName == null) {
-                    middleName = "";
-                }
-            var CitizenName = firstName + " " + middleName + " " + lastName;
-            var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
-            var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
-            var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
-            $('#Owner_Name').val(CitizenName);
+            if(myObj.citizenDetailsResponse.citizenDetail == undefined)
+            {
+                $('#CID').val("");
+                $('#Owner_Name').val();
+                $('#CIDErrorMsg').html("Invalid CID.Try With Another one");
+                $('#CIDErrorMsg').show();
+                $('#CIDErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else
+            {
+                var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+                var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+                var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+                if (middleName == null) {
+                        middleName = "";
+                    }
+                var CitizenName = firstName + " " + middleName + " " + lastName;
+
+                var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
+                var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
+                var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
+                $('#Owner_Name').val(CitizenName);
+            }
         }
     });
 }
@@ -705,5 +803,31 @@ function getVariety(crop_id)
         }
     });
 }
+
+function getEditVariety(crop_id)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_seed_variety' %}",
+        data :{'crop_id':crop_id},
+        success : function(data) {
+            $('#edit_crop_variety').html(data);
+        }
+    });
+}
+
+function populateSeedDetails(Record_Id,Crop, Variety,Seed_Source, Quantity, Unit, Purpose, application_no)
+    {
+        $('#seed_record_id').val(Record_Id);
+        $('#edit_crop_id').val(Crop);
+        $('#edit_crop_variety').val(Variety);
+        $('#edit_Source').val(Seed_Source);
+        $('#edit_qty').val(Quantity);
+        $('#edit_Unit').val(Unit);
+        $('#edit_purpose').val(Purpose);
+        $('#edit_app_No').val(application_no);
+        $('#edit_seed_details').modal('show');
+
+    }
 </script>
 {% endblock %}

@@ -116,7 +116,7 @@ class t_livestock_import_permit_product_t1(models.Model):
     Validity = models.DateField(blank=True, null=True)
     Import_Permit_No = models.CharField(max_length=20, blank=True, null=True)
     Applicant_Id = models.CharField(max_length=100, default=None, blank=True, null=True)
-
+    Passport_Number = models.CharField(default=None, max_length=100, blank=True, null=True)
 
 class t_livestock_import_permit_product_t2(models.Model):
     Record_Id = models.AutoField(primary_key=True)
@@ -169,7 +169,7 @@ class t_livestock_import_permit_product_inspection_t1(models.Model):
     FO_Remarks = models.TextField(blank=True, null=True)
     Inspection_Remarks = models.TextField(blank=True, null=True)
     Applicant_Id = models.CharField(max_length=100, default=None, blank=True, null=True)
-
+    Passport_Number = models.CharField(default=None, max_length=100, blank=True, null=True)
 
 class t_livestock_import_permit_product_inspection_t2(models.Model):
     Record_Id = models.AutoField(primary_key=True)
@@ -224,6 +224,7 @@ class t_livestock_import_permit_animal_t1(models.Model):
     Quarantine_Facilities = models.CharField(max_length=100, default=None, blank=True, null=True)
     Import_Permit_No = models.CharField(max_length=20, blank=True, null=True)
     Applicant_Id = models.CharField(max_length=100, default=None, blank=True, null=True)
+    Passport_Number = models.CharField(default=None, max_length=100, blank=True, null=True)
 
 
 class t_livestock_import_permit_animal_t2(models.Model):
@@ -280,7 +281,7 @@ class t_livestock_import_permit_animal_inspection_t1(models.Model):
     Inspection_Remarks = models.TextField(blank=True, null=True)
     Quarantine_Facilities = models.CharField(max_length=100, default=None, blank=True, null=True)
     Applicant_Id = models.CharField(max_length=100, default=None, blank=True, null=True)
-
+    Passport_Number = models.CharField(default=None, max_length=100, blank=True, null=True)
 
 class t_livestock_import_permit_animal_inspection_t2(models.Model):
     Record_Id = models.AutoField(primary_key=True)
@@ -371,7 +372,7 @@ class t_livestock_movement_permit_t1(models.Model):
     Application_No = models.CharField(max_length=20, primary_key=True)
     Permit_Type = models.CharField(max_length=3, default=None)
     Application_Type = models.CharField(max_length=20, default=None, blank=True, null=True)
-    CID = models.BigIntegerField()
+    CID = models.BigIntegerField(default=None, blank=True, null=True)
     Applicant_Name = models.CharField(max_length=250)
     Dzongkhag_Code = models.CharField(max_length=100, default=None, blank=True, null=True)
     Gewog_Code = models.CharField(max_length=100, default=None, blank=True, null=True)
@@ -454,18 +455,28 @@ class t_livestock_ante_post_mortem_t1(models.Model):
     Validity_Period = models.CharField(default=None, max_length=10, blank=True, null=True)
     Validity = models.DateField(default=None, blank=True, null=True)
     Respiration_Abnormalities = models.CharField(max_length=100, default=None, blank=True, null=True)
-    Behaviour_Abnormalities = models.TextField(default=None, blank=True, null=True)
-    Structure_Abnormalities = models.TextField(default=None, blank=True, null=True)
+    Behaviour_Abnormalities_1 = models.CharField(max_length=1, default=None, blank=True, null=True)
+    Behaviour_Abnormalities_2 = models.CharField(max_length=1, default=None, blank=True, null=True)
+    Behaviour_Abnormalities_3 = models.CharField(max_length=1, default=None, blank=True, null=True)
+    Behaviour_Abnormalities_4 = models.CharField(max_length=1, default=None, blank=True, null=True)
+    Structure_Abnormalities_1 = models.CharField(max_length=1, default=None, blank=True, null=True)
+    Structure_Abnormalities_2 = models.CharField(max_length=1, default=None, blank=True, null=True)
+    Structure_Abnormalities_3 = models.CharField(max_length=1, default=None, blank=True, null=True)
+    Structure_Abnormalities_4 = models.CharField(max_length=1, default=None, blank=True, null=True)
+    Structure_Abnormalities_5 = models.CharField(max_length=1, default=None, blank=True, null=True)
+    Structure_Abnormalities_6 = models.CharField(max_length=1, default=None, blank=True, null=True)
     Abnormal_Gait = models.CharField(max_length=10, default=None, blank=True, null=True)
     Abnormal_Posture = models.CharField(max_length=10, default=None, blank=True, null=True)
-    Discharge_Abnormalities = models.TextField(default=None, blank=True, null=True)
+    Discharge_Abnormalities_1 = models.CharField(max_length=1, default=None, blank=True, null=True)
+    Discharge_Abnormalities_2 = models.CharField(max_length=1, default=None, blank=True, null=True)
+    Discharge_Abnormalities_3 = models.CharField(max_length=1, default=None, blank=True, null=True)
     Abnormal_Colour = models.CharField(max_length=10, default=None, blank=True, null=True)
     Abnormal_Odour = models.CharField(max_length=10, default=None, blank=True, null=True)
-    No_Without_Restrictions = models.CharField(max_length=10, default=None, blank=True, null=True)
-    No_Close_Supervision = models.CharField(max_length=10, default=None, blank=True, null=True)
-    No_Withheld = models.CharField(max_length=10, default=None, blank=True, null=True)
-    No_Emergency = models.CharField(max_length=10, default=None, blank=True, null=True)
-    No_Unfit = models.CharField(max_length=10, default=None, blank=True, null=True)
+    No_Without_Restrictions = models.IntegerField(default=None, blank=True, null=True)
+    No_Close_Supervision = models.IntegerField(default=None, blank=True, null=True)
+    No_Withheld = models.IntegerField(default=None, blank=True, null=True)
+    No_Emergency = models.IntegerField(default=None, blank=True, null=True)
+    No_Unfit = models.IntegerField(default=None, blank=True, null=True)
 
 
 class t_livestock_ante_post_mortem_t2(models.Model):

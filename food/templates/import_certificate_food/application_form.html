@@ -1,6 +1,7 @@
 {% extends 'common_dashboard.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+{% load static %}
 <style>
     option
     {
@@ -220,7 +221,7 @@ form, input, select, textarea{
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Expected Arrival Date <font color="red">*</font></label>
-                                    <input type="text" class="form-control date-picker flatpickr-input active" id="expectedArrivalDate" name="expectedArrivalDate">
+                                    <input type="date" class="form-control" id="expectedArrivalDate" name="expectedArrivalDate">
                                 </div>
                                 <div class="alert alert-danger" id="dateErrorMsg" style="display:none"></div>
                             </div>
@@ -282,7 +283,7 @@ form, input, select, textarea{
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Common Name <font color="red">*</font></label>
                                         <input type="text" name="Common_Name" class="form-control" id="Common_Name" required>
-                                        <div class="alert alert-danger" id="common_nameErrorMsg" style="display:none"></div>
+                                        <div class="alert alert-danger" id="Common_NameErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Product Category <font color="red">*</font></label>
@@ -307,7 +308,7 @@ form, input, select, textarea{
                                         <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Unit</label>
+                                        <label class="form-label">Unit <font color="red">*</font></label>
                                         <select class="form-control" name="unit"  id="unit">
                                             <option value="">--SELECT UNIT--</option>
                                             {% for unit in unit %}
@@ -330,6 +331,7 @@ form, input, select, textarea{
                                                 <span class="custom-control-description">Exporter</span>
                                             </label>
                                         </div>
+                                        <div class="alert alert-danger" id="Export_TypeErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                             </div>
@@ -381,7 +383,99 @@ form, input, select, textarea{
         </div>
     </div>
 </form>
+
+<form method="post" id="edit_import_form">
+    {% csrf_token %}
+    <input type="hidden" id="edit_import_app_no" name="edit_import_app_no">
+    <div class="modal fade" id="edit_import_model" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <input type="text" name="import_record_id" id="import_record_id" style="display:none"/>
+                                    <input type="hidden" name="identifier" value="FIP"/>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Common Name <font color="red">*</font></label>
+                                        <input type="text" name="edit_Common_Name" class="form-control" id="edit_Common_Name" required>
+                                        <div class="alert alert-danger" id="edit_Common_NameErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Product Category <font color="red">*</font></label>
+                                        <select class="form-control" name="edit_Product_Category"  id="edit_Product_Category">
+                                            <option value="">--SELECT CATEGORY--</option>
+                                            {% for category in category %}
+                                                    <option value="{{ category.Category_Name }}">{{ category.Category_Name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="alert alert-danger" id="edit_Product_CategoryErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Product Characteristics <font color="red">*</font></label>
+                                        <textarea class="form-control" id="edit_characteristics" name="edit_characteristics"></textarea>
+                                        <div class="alert alert-danger" id="edit_characteristicsErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Quantity <font color="red">*</font></label>
+                                        <input type="text" name="edit_qty" class="form-control" id="edit_qty" onkeypress="return isNumberKey(event)">
+                                        <div class="alert alert-danger" id="edit_qtyErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Unit</label>
+                                        <select class="form-control" name="edit_unit"  id="edit_unit">
+                                            <option value="">--SELECT UNIT--</option>
+                                            {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="alert alert-danger" id="edit_unitErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <div class="form-check">
+                                            <label>Type Of Exporter <font color="red">*</font></label><br>
+                                            <label class="custom-control custom-radio">
+                                                <input type="radio" name="Edit_Export_Type" class="custom-control-input" value="Producer" id="Producer">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">Producer</span>
+                                            </label>
+                                            <label class="custom-control custom-radio">
+                                                <input type="radio" name="Edit_Export_Type" class="custom-control-input" value="Exporter" id="Exporter">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">Exporter</span>
+                                            </label>
+                                        </div>
+                                        <div class="alert alert-danger" id="edit_Export_TypeErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="update_edit_details('FIP')">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script src="{% static 'assets/bower_components/jquery/dist/jquery.min.js' %}"></script>
 <script>
+$(function()
+{
+    var today = new Date().toISOString().split('T')[0];
+    $('#Expected_Arrival_Date')[0].setAttribute('min', today);
+});
 function save_food_permit_details()
 {
     var cid = $('#cid').val();
@@ -420,6 +514,12 @@ function save_food_permit_details()
         $('#cidErrorMsg').html("Enter CID Number.");
         $('#cidErrorMsg').show();
         $('#cidErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Import_Type_value == "Indvidual" && cidCount < 11)
+    {
+        $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits.");
+        $('#cidErrorMsg').show();
+        setTimeout('hideStatus("cidErrorMsg")',2000);
     }
     else if(name == "")
     {
@@ -469,7 +569,13 @@ function save_food_permit_details()
         $('#OperationErrorMsg').show();
         $('#OperationErrorMsg').delay(2000).fadeOut('slow');
     }
-    else if(Import_Type_value == "Commercial" || Import_Type_value == "Institution" && license_no == "")
+    else if(Import_Type_value == "Commercial" && license_no == "")
+    {
+        $('#license_noErrorMsg').html("Enter License No.");
+        $('#license_noErrorMsg').show();
+        $('#license_noErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Import_Type_value == "Institution" && license_no == "")
     {
         $('#license_noErrorMsg').html("Enter License No.");
         $('#license_noErrorMsg').show();
@@ -511,12 +617,7 @@ function save_food_permit_details()
         $('#Place_of_ExitErrorMsg').show();
         $('#Place_of_ExitErrorMsg').delay(2000).fadeOut('slow');
     }
-    else if(cidCount < 11)
-    {
-        $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits.");
-        $('#cidErrorMsg').show();
-        setTimeout('hideStatus("cidErrorMsg")',2000);
-    }
+
     else if(number_count < 8)
     {
         $('#contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
@@ -664,6 +765,7 @@ function save_food_import_permit_details()
     var qty = $('#qty').val();
     var unit = $('#unit').val();
     var Export_Type = $("input[name=Export_Type]:checked").val();
+
     if(Common_Name == "")
     {
         $('#Common_NameErrorMsg').html("Enter Common Name.");
@@ -672,9 +774,9 @@ function save_food_import_permit_details()
     }
     else if(Product_Category == "")
     {
-        $('#Product_CategoryErrorMsg').html("Select Product Category.");
-        $('#Product_CategoryErrorMsg').show();
-        $('#Product_CategoryErrorMsg').delay(2000).fadeOut('slow');
+        $('#product_categoryErrorMsg').html("Select Product Category.");
+        $('#product_categoryErrorMsg').show();
+        $('#product_categoryErrorMsg').delay(2000).fadeOut('slow');
     }
     else if(characteristics == "")
     {
@@ -744,7 +846,7 @@ function checkForm(value)
     if(value == "Individual")
     {
         $("#cid").removeAttr("disabled");
-        $("#license_no").attr("disabled", "disabled");
+        $("#name").attr("readonly", "readonly");
     }
     else
     {
@@ -755,6 +857,7 @@ function checkForm(value)
         $('#dzongkhag').val("");
         $('#village').val("");
         $('#gewog').val("");
+        $("#name").removeAttr("readonly");
     }
 }
 
@@ -788,6 +891,72 @@ function getCitizenDetails(cidNo)
 function food_export_attachment_modal()
 {
     $('#attachmentModal').modal('show');
+}
+
+function populateDetails(Record_Id,Common_Name,Product_Category,Product_Characteristics,Quantity,Unit,Exporter_Type, Application_No)
+{
+    $('#import_record_id').val(Record_Id);
+    $('#edit_Common_Name').val(Common_Name);
+    $('#edit_Product_Category').val(Product_Category);
+    $('#edit_characteristics').val(Product_Characteristics);
+    $('#edit_qty').val(Quantity);
+    $('#edit_unit').val(Unit);
+    if(Exporter_Type == 'Producer')
+    {
+        $("#Producer").prop("checked", true);
+    }
+    else
+    {
+        $("#Exporter").prop("checked", true);
+    }
+    $('#edit_import_app_no').val(Application_No);
+    $('#edit_import_model').modal('show');
+}
+
+function checkContact(value)
+{
+    var firstDigit = value.charAt(0);
+    var secondDigit = value.charAt(1);
+
+    if(firstDigit != 7 && firstDigit != 1){
+        $('#contactNumberErrorMsg').html("Must Start with either 1 or 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 1 && secondDigit != 6 && secondDigit != 7){
+        $('#contactNumberErrorMsg').html("Second Digit Must Start with either 6 or 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 7 && secondDigit == 6){
+        $('#contactNumberErrorMsg').html("Second Digit Cannot be 6.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }else if(firstDigit == 7 && secondDigit != 7){
+        $('#contactNumberErrorMsg').html("Second Digit Must Start with 7.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contactNumber').val("");
+    }
+
+}
+
+function validateemailId(emailId)
+{
+    var pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+    var no=emailId.match(pattern);
+
+    if(no==null)
+    {
+        $('#emailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
+        $('#email').val("");
+        $('#emailErrorMsg').show();
+        $('#emailErrorMsg').delay(2000).fadeOut('slow');
+    }else{
+     $('#emailErrorMsg').hide();
+    }
+
 }
 </script>
 {% endblock %}

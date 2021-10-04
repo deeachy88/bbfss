@@ -1,6 +1,7 @@
 {% extends 'common_dashboard.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+{% load static %}
 <style>
     option
     {
@@ -203,7 +204,7 @@ form, input, select, textarea{
                                     <select class="form-control" name="Place_of_Exit" id="Place_of_Exit">
                                         <option value="">--SELECT--</option>
                                         {% for location in location %}
-                                            <option value="{{ location.Field_Office_Code }}">{{ location.Field_Office }}</option>
+                                            <option value="{{ location.Field_Office_Id }}">{{ location.Field_Office }}</option>
                                         {% endfor %}
                                      </select>
                                 </div>
@@ -219,7 +220,7 @@ form, input, select, textarea{
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Expected Date Of Arrival <font color="red">*</font></label>
-                                     <input type="date" name="Expected_Arrival_Date" id="Expected_Arrival_Date" class="form-control date-picker flatpickr-input active">
+                                    <input type="date" class="form-control" id="Expected_Arrival_Date" name="Expected_Arrival_Date">
                                 </div>
                                 <div class="alert alert-danger" id="Expected_Arrival_DateErrorMsg" style="display:none"></div>
                             </div>
@@ -363,7 +364,89 @@ form, input, select, textarea{
         </div>
     </div>
 </form>
+
+<form method="post" id="edit_permit_details_form">
+    {% csrf_token %}
+    <input type="hidden" id="edit_applNo" name="edit_applNo">
+    <div class="modal fade" id="edit_permit_details_model" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <input type="hidden" name="edit_product_record_id" id="edit_product_record_id"/>
+                                <input type="hidden" name="identifier" value="LPIP"/>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Particulars</label>
+                                        <input type="text" name="edit_Particulars" class="form-control" id="edit_Particulars" required>
+                                        <div class="alert alert-danger" id="edit_ParticularsErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Company/Producer</label>
+                                        <input type="text" name="edit_Company_Name" class="form-control" id="edit_Company_Name" required>
+                                        <div class="alert alert-danger" id="edit_Company_NameErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Description</label>
+                                        <textarea class="form-control" name="edit_Description" id="edit_Description"></textarea>
+                                        <div class="alert alert-danger" id="edit_DescriptionErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Quantity</label>
+                                        <input type="text" name="edit_qty" class="form-control" id="edit_qty" onkeypress="return isNumberKey(event)">
+                                        <div class="alert alert-danger" id="edit_qtyErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Unit</label>
+                                        <select class="form-control" name="edit_unit"  id="edit_unit">
+                                            <option value="">--SELECT UNIT--</option>
+                                            {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="alert alert-danger" id="edit_unitErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="update_edit_details('LPIP')">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script src="{% static 'assets/bower_components/jquery/dist/jquery.min.js' %}"></script>
 <script>
+function isNumberKey(evt)
+    {
+     var charCode = (evt.which) ? evt.which : event.keyCode
+     if (charCode > 31 && (charCode < 48 || charCode > 57))
+        return false;
+
+     return true;
+    }
+$(function()
+{
+    var today = new Date().toISOString().split('T')[0];
+    $('#Expected_Arrival_Date')[0].setAttribute('min', today);
+});
 function permit_save_details()
 {
 
@@ -419,6 +502,7 @@ function permit_save_details()
         $('#cidErrorMsg').html("Enter CID Number.");
         $('#cidErrorMsg').show();
         $('#cidErrorMsg').delay(2000).fadeOut('slow');
+        $('#cid').focus();
     }
     else if(app_type == "Individual" && nationality_type == "Bhutanese" && cidCount < 11)
     {
@@ -722,11 +806,13 @@ function checkNationality(value)
     {
         $('.bhutanese_div').show();
         $('.non_bhutanese_div').hide();
+        $("#name").attr("readonly", "readonly");
     }
     else
     {
         $('.bhutanese_div').hide();
         $('.non_bhutanese_div').show();
+        $("#name").removeAttr("readonly");
     }
 }
 
@@ -780,20 +866,35 @@ function getCitizenDetails(cidNo)
     success : function(data)
     {
         const myObj =data.response;
-        var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
-        var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
-        var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
-        if (middleName == null) {
-                middleName = "";
-            }
-        var CitizenName = firstName + " " + middleName + " " + lastName;
-        var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
-        var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
-        var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
-        $('#name').val(CitizenName);
-        $('#dzongkhag').val(dzongkhagName);
-        $('#gewog').val(gewogName);
-        $('#village').val(villageName);
+        if(myObj.citizenDetailsResponse.citizenDetail == undefined)
+        {
+            $('#name').val("");
+            $('#dzongkhag').val("");
+            $('#gewog').val("");
+            $('#village').val("");
+            $('#cid').val("");
+            $('#cidErrorMsg').html("Invalid CID.Try With Another one");
+            $('#cidErrorMsg').show();
+            $('#cidErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+            var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+            var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+            if (middleName == null) {
+                    middleName = "";
+                }
+            var CitizenName = firstName + " " + middleName + " " + lastName;
+
+            var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
+            var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
+            var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
+            $('#name').val(CitizenName);
+            $('#dzongkhag').val(dzongkhagName);
+            $('#gewog').val(gewogName);
+            $('#village').val(villageName);
+        }
     }
 });
 }
@@ -847,6 +948,18 @@ function checkContact(value)
 function livestock_import_attachment_modal()
 {
     $('#attachmentModal').modal('show');
+}
+
+function populateDetails(Record_Id, Particulars, Company_Name, Description, Quantity, Unit, Application_No)
+{
+    $('#edit_product_record_id').val(Record_Id);
+    $('#edit_Particulars').val(Particulars);
+    $('#edit_Company_Name').val(Company_Name);
+    $('#edit_Description').val(Description);
+    $('#edit_qty').val(Quantity);
+    $('#edit_unit').val(Unit);
+    $('#edit_applNo').val(Application_No);
+    $('#edit_permit_details_model').modal('show');
 }
 </script>
 {% endblock %}

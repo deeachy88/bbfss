@@ -8,7 +8,14 @@
 form, input, select, textarea{
     color: black !important;
 }
-
+#loader img
+{
+  left: 50%;
+  margin-left: -32px;
+  margin-top: -32px;
+  position: absolute;
+  top: 50%;
+}
 </style>
         <div class="card">
             <div class="card-header" role="tab" id="headingOne">
@@ -338,7 +345,7 @@ form, input, select, textarea{
                     </div>
                     <br>
                      {% for application_details in application_details %}
-                        {% if not application_details.FR_Response %}
+                        {% if application_details.FI_Response %}
                         <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
                             <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
                                 <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Client </span>&nbsp;&nbsp;&nbsp;
@@ -349,13 +356,13 @@ form, input, select, textarea{
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Desired Inspection Date</label>
-                                    <input type="text" class="form-control" value="{{ application_details.FR_Inspection_Date }}" readonly="readonly">
+                                    <input type="text" class="form-control" value="{{ application_details.Desired_FI_Inspection_Date }}" readonly="readonly">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Response From Client</label>
-                                    <input type="text" class="form-control" value="{{ application_details.FR_Response }}" readonly="readonly">
+                                    <input type="text" class="form-control" value="{{ application_details.FI_Response }}" readonly="readonly">
                                 </div>
                             </div>
                         </div>
@@ -371,7 +378,7 @@ form, input, select, textarea{
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">Inspection Team Leader</label>
+                                <label class="form-label">Inspection Team Leader <font color="red">*</font></label>
                                 <select class="form-control" name="teamLeader"  id="teamLeader">
                                     <option value="">--SELECT TEAM LEADER--</option>
                                     {% for inspector_list in inspector_list %}
@@ -383,7 +390,7 @@ form, input, select, textarea{
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">Inspection Team </label>
+                                <label class="form-label">Inspection Team <font color="red">*</font></label>
                                 <textarea class="form-control" id="insTeam" rows="2"></textarea>
                             </div>
                             <div class="alert alert-danger" id="insTeamErrorMsg" style="display:none"></div>
@@ -392,8 +399,8 @@ form, input, select, textarea{
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">Date Of Inspection</label>
-                                <input type="text" class="form-control date-picker flatpickr-input active" id="dateOfInspection" name="date"  placeholder="Pick a date" readonly="readonly">
+                                <label class="form-label">Date Of Inspection <font color="red">*</font></label>
+                                <input type="date" class="form-control" id="dateOfInspection" name="date">
                             </div>
                             <div class="alert alert-danger" id="dateOfInspectionErrorMsg" style="display:none"></div>
                         </div>
@@ -402,13 +409,17 @@ form, input, select, textarea{
                                 <label class="form-label">Recommendation</label>
                                 <textarea class="form-control" id="remarks" rows="2"></textarea>
                             </div>
+                            <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
                         </div>
                     </div>
                     <div class="alert alert-info" id="messageDiv" style="display:none">
                         Application Approved
                     </div>
                     <div class="alert alert-info" id="reject_messageDiv" style="display:none">
-                        Application Rejected
+                        Application Sent To Client
+                    </div>
+                    <div id="loader" style="display:none">
+                        <img src="{% static 'assets/img/ajax-loader.gif' %}" alt="processing..." />
                     </div>
                     <hr>
                     {% for application_details in application_details %}
@@ -420,10 +431,6 @@ form, input, select, textarea{
                             <button type="button" id="resubmit-btn" class="btn btn-flat btn-primary" onclick="reject_feasibility_inspection('{{application_details.Application_No}}')">
                                 <i class="ace-icon fa fa-reply-all"></i>
                                 &nbsp;&nbsp;Resubmit
-                            </button>
-                            <button type="button" class="btn btn-flat btn-danger">
-                                <i class="ace-icon fa fa-times"></i>
-                                &nbsp;&nbsp;Cancel
                             </button>
                         </div>
                     {% endfor %}
@@ -674,6 +681,11 @@ form, input, select, textarea{
 </form>
 <script src="{% static 'assets/js/app.min.js' %}"></script>
 <script>
+$(function()
+{
+    var today = new Date().toISOString().split('T')[0];
+    $('#dateOfInspection')[0].setAttribute('min', today);
+});
 function openDecisionModal()
 {
     $('#addModal').modal('show');
@@ -742,7 +754,7 @@ function add_details_ins(application_id)
         $('#ObservationsErrorMsg').delay(2000).fadeOut('slow');
         $("#Observations").focus();
     }
-    else if(response_fbo == "")
+    else if(Concern == "Yes" && response_fbo == "")
     {
         $('#response_fboErrorMsg').html("Enter Response FBO.");
         $('#response_fboErrorMsg').show();
@@ -751,13 +763,13 @@ function add_details_ins(application_id)
     }
     else
     {
+
         $.ajax({
             type : "GET",
             url : "{% url 'meat_shop_concern_details_feasibility_ins' %}",
             data :{'application_id':application_id,'Requirement':Requirement,'Observations':Observations,'Clause_No':Clause_No,'response_fbo':response_fbo,'Concern':Concern, 'meeting_type':meeting_type},
-            success : function(data) {
-                $('#details').html(data);
-                $('#details').show();
+            success : function(response) {
+                $('#details').html(response);
                 $('#addModal').modal('hide');
             }
         });
@@ -880,6 +892,7 @@ function approve_feasibility_inspection(application_id)
     }
     else
     {
+        $("#loader").show();
         $.ajax({
             type : "GET",
             url : "{% url 'approve_meat_shop_feasibility_inspection' %}",
@@ -887,6 +900,7 @@ function approve_feasibility_inspection(application_id)
             'dateOfInspection':dateOfInspection},
             success : function(data)
             {
+                $("#loader").hide();
                 $('#messageDiv').show();
                 setTimeout(function() {
                     $("#messageDiv").hide('blind', {}, 500)
@@ -903,23 +917,23 @@ function reject_feasibility_inspection(application_id)
 {
 
     var remarks = $('#remarks').val();
-
     if(remarks == "")
     {
-        $('#remarksErrorMsg').html("Please Enter Remarks.");
+        $('#remarksErrorMsg').html("Please Enter Recommendation.");
         $('#remarksErrorMsg').show();
         $('#remarksErrorMsg').delay(2000).fadeOut('slow');
         $('#remarks').focus();
     }
     else
     {
+        $("#loader").show();
         $.ajax({
             type : "GET",
             url : "{% url 'reject_meat_shop_feasibility_inspection' %}",
-            data :{'application_id':application_id ,'remarks':remarks ,
-            'dateOfInspection':dateOfInspection},
+            data :{'application_id':application_id ,'remarks':remarks},
             success : function(data) {
-                $('#messageDiv').show();
+                $("#loader").hide();
+                $('#reject_messageDiv').show();
                 setTimeout(function() {
                     $("#reject_messageDiv").hide('blind', {}, 500)
                 }, 2000);

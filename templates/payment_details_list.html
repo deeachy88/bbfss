@@ -22,7 +22,6 @@
                                     <th scope="col">Service Name</th>
                                     <th scope="col">Application Date</th>
                                     <th scope="col">Validity</th>
-                                    <th scope="col">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -37,7 +36,6 @@
                                         {% endfor %}
                                         <td>{{application_details.Application_Date|date:"d-m-Y"}}</td>
                                         <td>{{application_details.Validity|date:"d-m-Y"}}</td>
-                                        <td>Status</td>
                                     </tr>
                                     {% empty %}
                                     <tr>
@@ -67,7 +65,7 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label>Payment Type</label>
+                                <label>Payment Type <font color="red">*</font></label>
                                 <select class="form-control" name="Payment_Type" id="Payment_Type" onchange="checkPaymentType(this.value)">
                                     <option value="">--SELECT--</option>
                                     <option value="Cash">Cash</option>
@@ -75,33 +73,37 @@
                                     <option value="Online">Online</option>
                                 </select>
                             </div>
+                            <div class="alert alert-danger" id="Payment_TypeErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label>Instrument No</label>
+                                <label>Instrument No <font color="red">*</font></label>
                                 <input type="text" class="form-control" name="Instrument_No" id="Instrument_No">
                             </div>
+                            <div class="alert alert-danger" id="Instrument_NoErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label>Amount</label>
+                                <label>Amount <font color="red">*</font></label>
                                 <input type="text" class="form-control" name="Amount" id="Amount" onkeypress="return isNumberKey(event)">
                             </div>
+                            <div class="alert alert-danger" id="AmountErrorMsg" style="display:none"></div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label>Receipt No</label>
+                                <label>Receipt No <font color="red">*</font></label>
                                 <input type="text" class="form-control" name="Receipt_No" id="Receipt_No" onchange="checkReceiptNo(this.value)">
                             </div>
                             <div class="alert alert-danger" id="Receipt_NoErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label>Receipt Date</label>
-                                <input type="text" class="form-control date-picker flatpickr-input active" id="dateOfInspection" name="Receipt_Date"  placeholder="Pick a date" readonly="readonly">
+                                <label>Receipt Date <font color="red">*</font></label>
+                                <input type="text" class="form-control date-picker flatpickr-input active" id="Receipt_Date" name="Receipt_Date"  placeholder="Pick a date" readonly="readonly">
                             </div>
+                            <div class="alert alert-danger" id="Receipt_DateErrorMsg" style="display:none"></div>
                         </div>
                     </div>
                     </div>
@@ -128,25 +130,69 @@
     }
     function update_payment()
     {
-        $.ajax({
-            type : "POST",
-            url : "{% url 'update_payment_details' %}",
-            data :$('#payment_form').serialize(),
-            success : function()
-            {
-                $('#submitMsg').show();
-                setTimeout(function() {
-                    $("#submitMsg").hide('blind', {}, 500)
-                }, 2000);
-                setTimeout(function() {
-                    $("#payment-modal").modal('hide')
-                }, 3000);
-                setTimeout(function() {
-                    location.reload();
-                }, 3000);
-            }
-        });
+        var Payment_Type = $('#Payment_Type').val();
+        var Instrument_No = $('#Instrument_No').val();
+        var Amount = $('#Amount').val();
+        var Receipt_No = $('#Receipt_No').val();
+        var Receipt_Date = $('#Receipt_Date').val();
 
+        if(Payment_Type == "")
+        {
+            $('#Payment_TypeErrorMsg').html("Select Payment Type.");
+            $('#Payment_TypeErrorMsg').show();
+            $('#Payment_TypeErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(Payment_Type == "Cheque" && Instrument_No == "")
+        {
+            $('#Instrument_NoErrorMsg').html("Enter Instrument No");
+            $('#Instrument_NoErrorMsg').show();
+            $('#Instrument_NoErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(Payment_Type == "Online" && Instrument_No == "")
+        {
+            $('#Instrument_NoErrorMsg').html("Enter Instrument No");
+            $('#Instrument_NoErrorMsg').show();
+            $('#Instrument_NoErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(Amount == "")
+        {
+            $('#AmountErrorMsg').html("Enter Amount");
+            $('#AmountErrorMsg').show();
+            $('#AmountErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(Receipt_No == "")
+        {
+            $('#Receipt_NoErrorMsg').html("Enter Receipt No");
+            $('#Receipt_NoErrorMsg').show();
+            $('#Receipt_NoErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(Receipt_Date == "")
+        {
+            $('#Receipt_DateErrorMsg').html("Select Receipt Date");
+            $('#Receipt_DateErrorMsg').show();
+            $('#Receipt_DateErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            $.ajax({
+                type : "POST",
+                url : "{% url 'update_payment_details' %}",
+                data :$('#payment_form').serialize(),
+                success : function()
+                {
+                    $('#submitMsg').show();
+                    setTimeout(function() {
+                        $("#submitMsg").hide('blind', {}, 500)
+                    }, 2000);
+                    setTimeout(function() {
+                        $("#payment-modal").modal('hide')
+                    }, 3000);
+                    setTimeout(function() {
+                        location.reload();
+                    }, 3000);
+                }
+            });
+        }
     }
 
     function checkReceiptNo(receipt_no)

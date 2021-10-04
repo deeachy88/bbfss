@@ -258,7 +258,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Expected Date of Movement <font color="red">*</font></label>
-                                    <input type="text" class="form-control date-picker flatpickr-input active" id="date" name="date"  placeholder="Pick a date" readonly="readonly">
+                                    <input type="date" class="form-control" id="date" name="date">
                                 </div>
                                 <div class="alert alert-danger" id="dateErrorMsg" style="display:none"></div>
                             </div>
@@ -340,7 +340,7 @@
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label for="Company_Name">Company/Producer</label>
-                                        <input type="number" name="Company_Name" class="form-control" id="Company_Name" required>
+                                        <input type="text" name="Company_Name" class="form-control" id="Company_Name" required>
                                         <div class="alert alert-danger" id="Company_NameErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
@@ -364,7 +364,7 @@
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <label for="remarks">Remarks</label>
-                                        <input type="text" name="remarks" class="form-control" id="remarks" required>
+                                        <textarea rows="3" name="remarks" class="form-control" id="remarks"></textarea>
                                         <div class="alert alert-danger" id="remarksMeansErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
@@ -400,8 +400,8 @@
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label for="Company_Name">Scientific Name</label>
-                                        <input type="text" name="Breed" class="form-control" id="Breed" required>
-                                        <div class="alert alert-danger" id="BreedErrorMsg" style="display:none"></div>
+                                        <input type="text" name="Scientific_Name" class="form-control" id="Scientific_Name" required>
+                                        <div class="alert alert-danger" id="Scientific_NameErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -419,7 +419,7 @@
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <label for="remarks">Remarks</label>
-                                        <input type="text" name="Animal_Remarks" class="form-control" id="Animal_Remarks" required>
+                                        <textarea rows="3" name="Animal_Remarks" class="form-control" id="Animal_Remarks"></textarea>
                                         <div class="alert alert-danger" id="Animal_Remarks_ErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
@@ -471,7 +471,142 @@
         </div>
     </div>
 </form>
+
+<form method="post" id="edit_animal_product_form">
+    {% csrf_token %}
+    <input type="hidden" id="edit_app_No" name="edit_app_No">
+    <div class="modal fade" id="edit_animal_product_model" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <input type="hidden" name="edit_product_record_id" id="edit_product_record_id"/>
+                                    <input type="hidden" name="identifier" value="APLMP"/>
+                                    <div class="form-group col-md-6">
+                                        <label for="Particulars">Particulars</label>
+                                        <input type="text" name="edit_Particulars" class="form-control" id="edit_Particulars" required>
+                                        <div class="alert alert-danger" id="edit_ParticularsErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="Company_Name">Company/Producer</label>
+                                        <input type="text" name="edit_Company_Name" class="form-control" id="edit_Company_Name" required>
+                                        <div class="alert alert-danger" id="edit_Company_NameErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label for="qty">Quantity</label>
+                                        <input type="text" name="edit_qty" class="form-control" id="edit_qty" onkeypress="return isNumberKey(event)">
+                                        <div class="alert alert-danger" id="edit_qtyErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label >Unit</label>
+                                        <select class="form-control" name="edit_unit"  id="edit_unit">
+                                            <option value="">--SELECT UNIT--</option>
+                                            {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="alert alert-danger" id="edit_unitErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label for="remarks">Remarks</label>
+                                        <textarea rows="3" name="edit_remarks" class="form-control" id="edit_remarks"></textarea>
+                                        <div class="alert alert-danger" id="edit_remarksErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="update_edit_details('APLMP')">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form method="post" id="edit_animal_form">
+    {% csrf_token %}
+    <div class="modal fade" id="edit_animal_model" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <input type="hidden" name="edit_animal_application_no" id="edit_animal_application_no"/>
+                                <input type="hidden" name="edit_animal_record_id" id="edit_animal_record_id"/>
+                                <input type="hidden" name="identifier" value="ALMP"/>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label for="Particulars">Common Name</label>
+                                        <input type="text" name="edit_Common_Name" class="form-control" id="edit_Common_Name" required>
+                                        <div class="alert alert-danger" id="edit_Common_NameErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="Company_Name">Scientific Name</label>
+                                        <input type="text" name="edit_Scientific_Name" class="form-control" id="edit_Scientific_Name" required>
+                                        <div class="alert alert-danger" id="edit_BreedErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label for="Particulars">Age</label>
+                                        <input type="text" name="edit_Age" class="form-control" id="edit_Age" required>
+                                        <div class="alert alert-danger" id="edit_AgeErrorMsg" style="display:none"></div>
+                                    </div>
+                                   <div class="form-group col-md-6">
+                                        <label for="qty">No Of Animals</label>
+                                        <input type="text" name="edit_No_Of_Animal" class="form-control" id="edit_No_Of_Animal" onkeypress="return isNumberKey(event)">
+                                        <div class="alert alert-danger" id="edit_No_Of_AnimalErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label for="remarks">Remarks</label>
+                                        <textarea rows="3" name="edit_Animal_Remarks" class="form-control" id="edit_Animal_Remarks"></textarea>
+                                        <div class="alert alert-danger" id="edit_Animal_Remarks_ErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="update_edit_details('ALMP')">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
 <script>
+$(function()
+{
+    var today = new Date().toISOString().split('T')[0];
+    $('#date')[0].setAttribute('min', today);
+});
+
 function save_movement_permit()
 {
     var Permit_Type = $("input[name=Permit_Type]:checked").length;
@@ -549,14 +684,28 @@ function save_movement_permit()
         $('#emailErrorMsg').delay(2000).fadeOut('slow');
         $("#email").focus();
     }
-    else if(Application_Type_Value == "Commercial" || Application_Type_Value == "Institution" && license_no == "")
+    else if(Application_Type_Value == "Commercial" && license_no == "")
     {
         $('#license_noErrorMsg').html("Enter License No.");
         $('#license_noErrorMsg').show();
         $('#license_noErrorMsg').delay(2000).fadeOut('slow');
         $("#license_no").focus();
     }
-    else if (Application_Type_Value == "Commercial" || Application_Type_Value == "Institution" && business_name == "")
+    else if(Application_Type_Value == "Institution" && license_no == "")
+    {
+        $('#license_noErrorMsg').html("Enter License No.");
+        $('#license_noErrorMsg').show();
+        $('#license_noErrorMsg').delay(2000).fadeOut('slow');
+        $("#license_no").focus();
+    }
+    else if (Application_Type_Value == "Commercial" && business_name == "")
+    {
+        $('#business_nameErrorMsg').html("Enter Business Name.");
+        $('#business_nameErrorMsg').show();
+        $('#business_nameErrorMsg').delay(2000).fadeOut('slow');
+        $("#business_name").focus();
+    }
+    else if (Application_Type_Value == "Institution" && business_name == "")
     {
         $('#business_nameErrorMsg').html("Enter Business Name.");
         $('#business_nameErrorMsg').show();
@@ -640,7 +789,6 @@ function save_movement_permit()
         $('#dateErrorMsg').delay(2000).fadeOut('slow');
         $("#date").focus();
     }
-
     else
     {
         $.ajax({
@@ -679,15 +827,28 @@ function save_movement_permit()
 
 
 
-function getGewog(dzongkhag_id)
+function getFromGewog(dzongkhag_id)
 {
     $.ajax({
         type : "GET",
-        url : "{% url 'load_gewog' %}",
+        url : "{% url 'to_gewog_list' %}",
         data :{'dzongkhag_id':dzongkhag_id},
         success : function(data)
         {
-            $('#gewog').html(data);
+            $('#from_gewog').html(data);
+        }
+    });
+}
+
+function getToGewog(dzongkhag_id)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_to_location' %}",
+        data :{'dzongkhag_id':dzongkhag_id},
+        success : function(data)
+        {
+            $('#to_gewog').html(data);
         }
     });
 }
@@ -853,7 +1014,7 @@ function save_animal_product_details()
     var qty = $('#qty').val();
     var unit = $('#unit').val();
 
-    if(Species == "")
+    if(Particulars == "")
     {
         $('#ParticularsErrorMsg').html("Select Particulars.");
         $('#ParticularsErrorMsg').show();
@@ -916,6 +1077,8 @@ function enableForms(value)
         $("#license_no").attr("disabled", "disabled");
         $("#business_name").attr("disabled", "disabled");
         $("#cid").removeAttr("disabled");
+        $("#name").attr("readonly", "readonly");
+
     }
     else if(value == "Commercial")
     {
@@ -925,7 +1088,7 @@ function enableForms(value)
         $("#village").attr("disabled", "disabled");
         $("#license_no").removeAttr("disabled");
         $("#business_name").removeAttr("disabled");
-
+        $("#name").removeAttr("readonly");
     }
     else
     {
@@ -935,6 +1098,7 @@ function enableForms(value)
         $("#village").attr("disabled", "disabled");
         $("#license_no").removeAttr("disabled");
         $("#business_name").removeAttr("disabled");
+        $("#name").removeAttr("readonly");
     }
 }
 
@@ -947,20 +1111,35 @@ function getCitizenDetails(cidNo)
     success : function(data)
     {
         const myObj =data.response;
-        var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
-        var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
-        var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
-        if (middleName == null) {
-                middleName = "";
-            }
-        var CitizenName = firstName + " " + middleName + " " + lastName;
-        var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
-        var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
-        var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
-        $('#name').val(CitizenName);
-        $('#dzongkhag').val(dzongkhagName);
-        $('#gewog').val(gewogName);
-        $('#village').val(villageName);
+        if(myObj.citizenDetailsResponse.citizenDetail == undefined)
+        {
+            $('#cid').val("");
+            $('#name').val("");
+            $('#dzongkhag').val("");
+            $('#gewog').val("");
+            $('#village').val("");
+            $('#cidErrorMsg').html("Invalid CID.Try With Another one");
+            $('#cidErrorMsg').show();
+            $('#cidErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+            var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+            var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+            if (middleName == null) {
+                    middleName = "";
+                }
+            var CitizenName = firstName + " " + middleName + " " + lastName;
+
+            var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
+            var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
+            var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
+            $('#name').val(CitizenName);
+            $('#dzongkhag').val(dzongkhagName);
+            $('#gewog').val(gewogName);
+            $('#village').val(villageName);
+        }
     }
 });
 }
@@ -968,6 +1147,32 @@ function getCitizenDetails(cidNo)
 function liv_attachment_modal()
 {
     $('#attachmentModal').modal('show');
+}
+
+function populateDetails(Record_Id, Common_Name, Scientific_Name, Age, No_Of_Animal, Remarks,application_no)
+{
+    $('#edit_animal_record_id').val(Record_Id);
+    $('#edit_Common_Name').val(Common_Name);
+    $('#edit_Scientific_Name').val(Scientific_Name);
+    $('#edit_Age').val(Age);
+    $('#edit_No_Of_Animal').val(No_Of_Animal);
+    $('#edit_Animal_Remarks').val(Remarks);
+    $('#edit_animal_application_no').val(application_no);
+    $('#edit_animal_model').modal('show');
+
+}
+function populateProductDetails(Record_Id, Particulars, Company_Name, Description, Quantity, Unit,Remarks, application_no)
+{
+    $('#edit_product_record_id').val(Record_Id);
+    $('#edit_Particulars').val(Particulars);
+    $('#edit_Company_Name').val(Company_Name);
+    $('#edit_Description').val(Description);
+    $('#edit_qty').val(Quantity);
+    $('#edit_unit').val(Unit);
+    $('#edit_remarks').val(Remarks);
+    $('#edit_app_No').val(application_no);
+    $('#edit_animal_product_model').modal('show');
+
 }
 </script>
 {% endblock %}

@@ -301,12 +301,12 @@ class t_plant_export_certificate_plant_plant_products_t1(models.Model):
     Laboratory_Analysis_Comment = models.CharField(max_length=100, default=None, blank=True, null=True)
     Phytosanitary_Measures = models.CharField(max_length=5, default=None, blank=True, null=True)
     Phytosanitary_Measures_Comment = models.CharField(max_length=100, default=None, blank=True, null=True)
-    Treatment_Chemical = models.CharField(max_length=10, default=None, blank=True, null=True)
-    Treatment_Chemical_Name = models.CharField(max_length=10, default=None, blank=True, null=True)
+    Treatment_Chemical = models.CharField(max_length=100, default=None, blank=True, null=True)
+    Treatment_Chemical_Name = models.CharField(max_length=100, default=None, blank=True, null=True)
     Treatment_Chemical_Fumigation = models.CharField(max_length=100, default=None, blank=True, null=True)
-    Treatment_Chemical_Spray = models.CharField(max_length=10, default=None, blank=True, null=True)
-    Treatment_Chemical_Seed = models.CharField(max_length=10, default=None, blank=True, null=True)
-    Treatment_Chemical_Other = models.CharField(max_length=10, default=None, blank=True, null=True)
+    Treatment_Chemical_Spray = models.CharField(max_length=100, default=None, blank=True, null=True)
+    Treatment_Chemical_Seed = models.CharField(max_length=100, default=None, blank=True, null=True)
+    Treatment_Chemical_Other = models.CharField(max_length=100, default=None, blank=True, null=True)
     Treatment_Chemical_Other_Specific = models.CharField(max_length=250, default=None, blank=True, null=True)
     Treatment_Chemical_Concentration = models.CharField(max_length=250, default=None, blank=True, null=True)
     Treatment_Chemical_Duration = models.CharField(max_length=250, default=None, blank=True, null=True)
@@ -319,11 +319,11 @@ class t_plant_export_certificate_plant_plant_products_t1(models.Model):
     Treatment_Cold_Treatment = models.CharField(max_length=250, default=None, blank=True, null=True)
     Feasibility_Status = models.CharField(max_length=5, default=None, blank=True, null=True)
     Inspection_Remarks = models.TextField(blank=True, null=True)
-    Export_Permit = models.CharField(max_length=20, default=None, blank=True, null=True)
+    Export_Permit = models.CharField(max_length=50, default=None, blank=True, null=True)
     Application_Date = models.DateField(blank=True, null=True)
     Applicant_Id = models.CharField(max_length=100)
     Approved_Date = models.DateField(default=None, blank=True, null=True)
-    Validity_Period = models.CharField(default=None, max_length=10, blank=True, null=True)
+    Validity_Period = models.CharField(default=None, max_length=100, blank=True, null=True)
     Validity = models.DateField(default=None, blank=True, null=True)
 
 
@@ -371,7 +371,8 @@ class t_plant_clearence_nursery_seed_grower_t1(models.Model):
 
 
 class t_plant_clearence_nursery_seed_grower_t2(models.Model):
-    Application_No = models.CharField(max_length=30, primary_key=True)
+    Record_Id = models.AutoField(primary_key=True, default=None)
+    Application_No = models.CharField(max_length=30, default=None)
     Crop_Category = models.CharField(max_length=30, blank=True, null=True)
     Crop = models.CharField(max_length=30, blank=True, null=True)
     Crop_Scientific_Name = models.CharField(max_length=100, blank=True, null=True)
@@ -379,6 +380,7 @@ class t_plant_clearence_nursery_seed_grower_t2(models.Model):
     Source = models.CharField(max_length=100, blank=True, null=True)
     Qty = models.IntegerField(blank=True, null=True)
     Remarks = models.CharField(max_length=100, blank=True, null=True)
+    Unit = models.CharField(max_length=100, blank=True, null=True)
 
 
 class t_plant_seed_certification_t1(models.Model):

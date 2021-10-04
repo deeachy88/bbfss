@@ -202,7 +202,8 @@ def save_farmers_group_details(request):
     application_no = request.GET.get('farmers_group_application_no')
     cid = request.GET.get('farmers_group_cid')
     name = request.GET.get('farmers_group_fullname')
-    farmers_group_details = t_certification_organic_t2.objects.filter(Application_No=application_no, CID=cid, Name=name)
+    t_certification_organic_t2.objects.create(Application_No=application_no, CID=cid, Name=name)
+    farmers_group_details = t_certification_organic_t2.objects.filter(Application_No=application_no)
     return render(request, 'organic_certification/farmer_group_details.html',
                   {'farmers_group_details': farmers_group_details})
 

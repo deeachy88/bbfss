@@ -3,6 +3,14 @@
 form, input, select, textarea{
     color: black !important;
 }
+#loader img
+{
+  left: 50%;
+  margin-left: -32px;
+  margin-top: -32px;
+  position: absolute;
+  top: 50%;
+}
 </style>
 <form method="post" id="applicationForm">
     {% csrf_token %}
@@ -535,7 +543,6 @@ form, input, select, textarea{
 <script>
     function fo_approve(application_id)
         {
-            $("#loader").show();
             remarks = $('#remarks').val();
             validity = $('#validity').val();
             if(validity == "")
@@ -546,6 +553,7 @@ form, input, select, textarea{
             }
             else
             {
+                $("#loader").show();
                 $.ajax({
                     type : "POST",
                     url : "{% url 'approve_fo_la_import' %}",
@@ -567,7 +575,7 @@ form, input, select, textarea{
         }
     function fo_reject(application_id)
         {
-            $("#loader").show();
+
             remarks = $('#remarks').val();
 
             if(remarks == "")
@@ -577,6 +585,7 @@ form, input, select, textarea{
                 $('#remarksErrorMsg').delay(2000).fadeOut('slow');
             }
             $.ajax({
+                $("#loader").show();
                 type : "POST",
                 url : "{% url 'reject_fo_la_import' %}",
                 data :{'application_id':application_id ,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},

@@ -3,6 +3,14 @@
 form, input, select, textarea{
     color: black !important;
 }
+#loader img
+{
+  left: 50%;
+  margin-left: -32px;
+  margin-top: -32px;
+  position: absolute;
+  top: 50%;
+}
 </style>
 <form method="post" id="applicationForm">
     {% csrf_token %}
@@ -208,8 +216,8 @@ form, input, select, textarea{
                                     <div class="form-group">
                                         <label class="form-label">Place of Entry</label>
                                         <select class="form-control"disabled>
-                                            {% for location in location %}
-                                                <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                            {% for location in location_mapping %}
+                                                <option value="{{ location.Field_Office_Id }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
                                             {% endfor %}
                                          </select>
                                     </div>
@@ -222,7 +230,7 @@ form, input, select, textarea{
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Expected Date for Arrival</label>
                                          <input type="text" class="form-control" value="{{application_details.Expected_Arrival_Date }}" disabled>
@@ -233,8 +241,8 @@ form, input, select, textarea{
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="cid">Passport No</label>
-                                        <input type="number" class="form-control" value="{{ application_details.Passport_No }}" disabled>
+                                        <label class="form-label">Passport No</label>
+                                        <input type="text" class="form-control" value="{{ application_details.Passport_Number }}" disabled>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -281,32 +289,21 @@ form, input, select, textarea{
                                     <div class="form-group">
                                         <label class="form-label">Place Of Entry</label>
                                         <select class="form-control" disabled>
-                                            <option value="">--SELECT--</option>
-                                            {% for location in location %}
-                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
+                                            {% for location in location_mapping %}
+                                                    <option value="{{ location.Field_Office_Id }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
                                             {% endfor %}
                                          </select>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Place of Entry</label>
-                                        <select class="form-control"disabled>
-                                            {% for location in location %}
-                                                <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
-                                            {% endfor %}
-                                         </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Final Destination</label>
                                          <input type="text" class="form-control" value="{{application_details.Final_Destination }}" disabled>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Expected Date for Arrival</label>
                                          <input type="text" class="form-control" value="{{application_details.Expected_Arrival_Date }}" disabled>
@@ -505,7 +502,7 @@ form, input, select, textarea{
 <script>
     function fo_approve(application_id)
         {
-            $("#loader").show();
+
             remarks = $('#remarks').val();
             validity = $('#validity').val();
             if(validity == "")
@@ -516,6 +513,7 @@ form, input, select, textarea{
             }
             else
             {
+                $("#loader").show();
                 $.ajax({
                     type : "POST",
                     url : "{% url 'approve_fo_lp_import' %}",
@@ -541,7 +539,7 @@ form, input, select, textarea{
         }
     function fo_reject(application_id)
         {
-            $("#loader").show();
+
             remarks = $('#remarks').val();
 
             if(remarks == "")
@@ -550,25 +548,29 @@ form, input, select, textarea{
                 $('#remarksErrorMsg').show();
                 $('#remarksErrorMsg').delay(2000).fadeOut('slow');
             }
-            $.ajax({
-                type : "POST",
-                url : "{% url 'reject_fo_lp_import' %}",
-                data :{'application_id':application_id ,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
-                success : function(data) {
-                    $("#loader").hide();
-                    $('#rejectMsg').show();
-                    setTimeout(function()
-                    {
-                        $("#rejectMsg").hide('blind', {}, 500)
-                    }, 2000);
-                    setTimeout(function()
-                    {
-                        $('#import_detailsModal').modal('hide');
-                    }, 2000);
-                    setTimeout(function() {
-                        window.location.href = '{% url 'dashboard' %}';
-                    }, 3000);
-                }
-            });
+            else
+            {
+                $("#loader").show();
+                $.ajax({
+                    type : "POST",
+                    url : "{% url 'reject_fo_lp_import' %}",
+                    data :{'application_id':application_id ,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                    success : function(data) {
+                        $("#loader").hide();
+                        $('#rejectMsg').show();
+                        setTimeout(function()
+                        {
+                            $("#rejectMsg").hide('blind', {}, 500)
+                        }, 2000);
+                        setTimeout(function()
+                        {
+                            $('#import_detailsModal').modal('hide');
+                        }, 2000);
+                        setTimeout(function() {
+                            window.location.href = '{% url 'dashboard' %}';
+                        }, 3000);
+                    }
+                });
+            }
         }
 </script>

@@ -24,7 +24,7 @@
                    {% for file_attach in file_attach %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-                                <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                                <td><a href='{{file_attach.File_Path}}' target="_blank">{{file_attach.Attachment}}</a></td>
                                 <td>
                                     <button type="button"
 									    class="btn btn-danger btn-sm" onclick="DeleteAttachment('{{ file_attach.File_Id }}')">
@@ -70,7 +70,7 @@ function export_permit_save()
 
 function DeleteAttachment(id)
 {
-    var appNo = $('#phyto_attachment_applicationNo').val();
+    var appNo = $('#applicationNo').val();
     $.ajax({
         type : "GET",
         url : "{% url 'delete_file_phyto' %}",

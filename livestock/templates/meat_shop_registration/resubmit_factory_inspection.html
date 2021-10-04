@@ -337,14 +337,14 @@ form, input, select, textarea{
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">Desired Inspection Date</label>
-                                <input type="text" class="form-control date-picker flatpickr-input active" id="dateOfInspection" name="date"  placeholder="Pick a date" readonly="readonly">
+                                <label class="form-label">Desired Inspection Date <font color="red">*</font></label>
+                                <input type="date" class="form-control" id="dateOfInspection" name="date">
                             </div>
                             <div class="alert alert-danger" id="dateOfInspectionErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">Response</label>
+                                <label class="form-label">Response <font color="red">*</font></label>
                                 <textarea class="form-control" id="remarks" rows="2"></textarea>
                             </div>
                             <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
@@ -460,6 +460,11 @@ form, input, select, textarea{
     </div>
 <script src="{% static 'assets/js/app.min.js' %}"></script>
 <script>
+$(function()
+{
+    var today = new Date().toISOString().split('T')[0];
+    $('#dateOfInspection')[0].setAttribute('min', today);
+});
 function openDecisionModal()
 {
     $('#addModal').modal('show');

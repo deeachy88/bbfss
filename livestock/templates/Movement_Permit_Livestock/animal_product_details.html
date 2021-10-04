@@ -5,9 +5,9 @@
             <th scope="col">#</th>
             <th scope="col">Particulars</th>
             <th scope="col">Company Name</th>
-            <th scope="col">Description</th>
             <th scope="col">Quantity</th>
             <th scope="col">Unit</th>
+            <th scope="col">Remarks</th>
             <th scope="col"></th>
         </tr>
     </thead>
@@ -17,19 +17,25 @@
                 <td>{{ forloop.counter }}</td>
                 <td>{{import.Particulars}}</td>
                 <td>{{import.Company_Name}}</td>
-                <td>{{import.Description}}</td>
                 <td>{{import.Quantity}}</td>
                 <td>{{import.Unit}}</td>
+                <td>{{import.Remarks}}</td>
                 <td>
                     <button type="button" class="btn btn-primary btn-sm"
                     onclick="delete_details('{{import.Record_Id}}','{{import.Application_No}}', 'APLMP')">
                     <i class="zmdi zmdi-delete"></i>
                     </button>
+                    <button  type="button" class="btn btn-info btn-sm" data-toggle="tooltip" title="Edit"
+                         onclick="populateProductDetails('{{ import.Record_Id }}', '{{import.Particulars}}',
+                         '{{import.Company_Name}}','{{import.Description}}','{{import.Quantity}}','{{import.Unit}}',
+                          '{{import.Remarks}}','{{import.Application_No}}')">
+                        <i class="fa fa-edit"></i>
+                    </button>
                 </td>
             </tr>
             {% empty %}
             <tr>
-              <td colspan="6" class="text-center">No Data</td>
+              <td colspan="8" class="text-center">No Data</td>
             </tr>
         {% endfor %}
     </tbody>

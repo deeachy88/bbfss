@@ -1,6 +1,7 @@
 {% extends 'common_dashboard.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+{% load static %}
 <style>
     option
     {
@@ -220,17 +221,17 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Expected Date for Export <font color="red">*</font></label>
-                                     <input type="date" name="Export_Expected_Date" id="Export_Expected_Date" class="form-control date-picker flatpickr-input active">
+                                    <input type="date" class="form-control" id="Export_Expected_Date" name="Export_Expected_Date">
                                 </div>
                                 <div class="alert alert-danger" id="Export_Expected_DateErrorMsg" style="display:none"></div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Propose Date for Inspection <font color="red">*</font></label>
-                                     <input type="date" name="inspectionDate" id="inspectionDate" class="form-control date-picker flatpickr-input active">
+                                    <input type="date" class="form-control" id="inspectionDate" name="inspectionDate">
                                 </div>
                                 <div class="alert alert-danger" id="inspectionDateErrorMsg" style="display:none"></div>
                             </div>
@@ -469,7 +470,169 @@
         </div>
     </div>
 </form>
+
+<form method="post" id="edit_animal_product_form">
+    {% csrf_token %}
+    <input type="hidden" id="edit_application_no" name="edit_application_no">
+    <div class="modal fade" id="edit_animal_products_model" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <input type="text" name="edit_product_record_id" id="edit_product_record_id" style="display:none"/>
+                                <input type="hidden" name="identifier" value="APLEC"/>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Particulars</label>
+                                        <input type="text" name="edit_Particulars" class="form-control" id="edit_Particulars" required>
+                                        <div class="alert alert-danger" id="edit_ParticularsErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Company/Producer</label>
+                                        <input type="text" name="edit_Company_Name" class="form-control" id="edit_Company_Name" required>
+                                        <div class="alert alert-danger" id="edit_Company_NameErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Quantity</label>
+                                        <input type="text" name="edit_qty" class="form-control" id="edit_qty" onkeypress="return isNumberKey(event)">
+                                        <div class="alert alert-danger" id="edit_qtyErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Unit</label>
+                                        <select class="form-control" name="edit_unit"  id="edit_unit">
+                                            <option value="">--SELECT UNIT--</option>
+                                            {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="alert alert-danger" id="edit_unitErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Remarks</label>
+                                        <textarea name="edit_remarks" class="form-control" id="edit_remarks" rows="3"></textarea>
+                                        <div class="alert alert-danger" id="edit_remarksMeansErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="update_edit_details('APLEC')">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form method="post" id="edit_animal_details_form">
+    {% csrf_token %}
+    <div class="modal fade" id="edit_animal_model" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <input type="hidden" id="animal_application_no" name="animal_application_no">
+                                <input type="hidden" name="edit_record_id" id="edit_record_id"/>
+                                <input type="hidden" name="identifier" value="ALEC"/>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Species</label>
+                                        <select class="form-control" name="edit_Species" id="edit_Species">
+                                            <option value="">--SELECT--</option>
+                                            {% for species in species %}
+                                                <option value="{{ species.Species_Name }}">{{ species.Species_Name }}</option>
+                                            {% endfor %}
+                                         </select>
+                                        <div class="alert alert-danger" id="edit_SpeciesErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Breed</label>
+                                        <select class="form-control" name="edit_Breed" id="edit_Breed">
+                                            <option value="">--SELECT--</option>
+                                            {% for breed in breed %}
+                                                <option value="{{ breed.Species_Breed_Name }}">{{ breed.Species_Breed_Name }}</option>
+                                            {% endfor %}
+                                         </select>
+                                        <div class="alert alert-danger" id="edit_BreedErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Age</label>
+                                        <input type="text" name="edit_Age" class="form-control" id="edit_Age" required>
+                                        <div class="alert alert-danger" id="edit_AgeErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Sex</label>
+                                        <select name="edit_Sex" class="form-control" id="edit_Sex">
+                                            <option value="">-SELECT-</option>
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                        </select>
+                                        <div class="alert alert-danger" id="edit_SexErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Description/Identification No</label>
+                                        <textarea name="edit_animal_Description" class="form-control" id="edit_animal_Description" rows="3"></textarea>
+                                        <div class="alert alert-danger" id="edit_animal_DescriptionErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">No Of Animals</label>
+                                        <input type="text" name="edit_no" class="form-control" id="edit_no" onkeypress="return isNumberKey(event)">
+                                        <div class="alert alert-danger" id="edit_noErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Remarks</label>
+                                        <textarea name="edit_AP_Remarks" class="form-control" id="edit_AP_Remarks" rows="3"></textarea>
+                                        <div class="alert alert-danger" id="edit_product_remarks_ErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="update_edit_details('ALEC')">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script src="{% static 'assets/bower_components/jquery/dist/jquery.min.js' %}"></script>
 <script>
+$(function()
+{
+    var today = new Date().toISOString().split('T')[0];
+    $('#Export_Expected_Date')[0].setAttribute('min', today);
+    $('#inspectionDate')[0].setAttribute('min', today);
+});
 function saveExportForm()
 {
     var Application_Type = $("input[name=Application_Type]:checked").length;
@@ -575,14 +738,28 @@ function saveExportForm()
         $('#emailErrorMsg').delay(2000).fadeOut('slow');
         $('#email').focus();
     }
-    else if(app_type == "Commercial" || app_type == "Institution" && license_no == "")
+    else if(app_type == "Commercial" && license_no == "")
     {
         $('#license_noErrorMsg').html("Enter License No.");
         $('#license_noErrorMsg').show();
         $('#license_noErrorMsg').delay(2000).fadeOut('slow');
         $('#license_no').focus();
     }
-    else if(app_type == "Commercial" || app_type == "Institution" && business_name == "")
+    else if(app_type == "Institution" && license_no == "")
+    {
+        $('#license_noErrorMsg').html("Enter License No.");
+        $('#license_noErrorMsg').show();
+        $('#license_noErrorMsg').delay(2000).fadeOut('slow');
+        $('#license_no').focus();
+    }
+    else if(app_type == "Commercial" && business_name == "")
+    {
+        $('#business_nameErrorMsg').html("Enter Business Name.");
+        $('#business_nameErrorMsg').show();
+        $('#business_nameErrorMsg').delay(2000).fadeOut('slow');
+        $('#business_name').focus();
+    }
+    else if(app_type == "Institution" && business_name == "")
     {
         $('#business_nameErrorMsg').html("Enter Business Name.");
         $('#business_nameErrorMsg').show();
@@ -605,7 +782,7 @@ function saveExportForm()
     }
     else if (Importer_Name_Address == "")
     {
-        $('#Importer_Name_AddressErrorMsg').html("Enter Origin of Source of Products.");
+        $('#Importer_Name_AddressErrorMsg').html("Enter Importers Name And Address.");
         $('#Importer_Name_AddressErrorMsg').show();
         $('#Importer_Name_AddressErrorMsg').delay(2000).fadeOut('slow');
         $('#Importer_Name_Address').focus();
@@ -619,7 +796,7 @@ function saveExportForm()
     }
     else if (Place_of_Exit == "")
     {
-        $('#Place_of_ExitErrorMsg').html("Enter Origin of Source of Products.");
+        $('#Place_of_ExitErrorMsg').html("Select Place Of Exit.");
         $('#Place_of_ExitErrorMsg').show();
         $('#Place_of_ExitErrorMsg').delay(2000).fadeOut('slow');
         $('#Place_of_Exit').focus();
@@ -880,8 +1057,8 @@ function save_export_details_form(identifier)
         var Age = $('#Age').val();
         var Sex = $('#Sex').val();
         var Description = $('#Description').val();
-        var No_Of_Animal = $('#No_Of_Animal').val();
-        var remarks = $('#Animal_Remarks').val();
+        var No_Of_Animal = $('#no').val();
+        var remarks = $('#AP_Remarks').val();
 
         if(Species == "")
         {
@@ -915,9 +1092,9 @@ function save_export_details_form(identifier)
         }
         else if(No_Of_Animal == "")
         {
-            $('#No_Of_AnimalErrorMsg').html("Enter No Of Animal.");
-            $('#No_Of_AnimalErrorMsg').show();
-            $('#No_Of_AnimalErrorMsg').delay(2000).fadeOut('slow');
+            $('#noErrorMsg').html("Enter No Of Animal.");
+            $('#noErrorMsg').show();
+            $('#noErrorMsg').delay(2000).fadeOut('slow');
         }
         else if(remarks == "")
         {
@@ -968,13 +1145,13 @@ function checkNationality(value)
     {
         $('.bhutanese_div').show();
         $('.non_bhutanese_div').hide();
-        $("#name").attr("disabled", "disabled");
+        $("#name").attr("readonly", "readonly");
     }
     else
     {
         $('.bhutanese_div').hide();
         $('.non_bhutanese_div').show();
-        $("#name").removeAttr("disabled");
+        $("#name").removeAttr("readonly");
     }
 }
 
@@ -1029,25 +1206,64 @@ function getCitizenDetails(cidNo)
     success : function(data)
     {
         const myObj =data.response;
-        var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
-        var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
-        var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
-        if (middleName == null) {
-                middleName = "";
-            }
-        var CitizenName = firstName + " " + middleName + " " + lastName;
-        var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
-        var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
-        var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
-        $('#name').val(CitizenName);
-        $('#dzongkhag').val(dzongkhagName);
-        $('#gewog').val(gewogName);
-        $('#village').val(villageName);
+        if(myObj.citizenDetailsResponse.citizenDetail == undefined)
+        {
+            $('#name').val("");
+            $('#dzongkhag').val("");
+            $('#gewog').val("");
+            $('#village').val("");
+            $('#cid').val("");
+            $('#cidErrorMsg').html("Invalid CID.Try With Another one");
+            $('#cidErrorMsg').show();
+            $('#cidErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+            var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+            var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+            if (middleName == null) {
+                    middleName = "";
+                }
+            var CitizenName = firstName + " " + middleName + " " + lastName;
+
+            var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
+            var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
+            var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
+            $('#name').val(CitizenName);
+            $('#dzongkhag').val(dzongkhagName);
+            $('#gewog').val(gewogName);
+            $('#village').val(villageName);
+        }
     }
 });
 }
 
+function populateDetails(Record_Id, Species, Breed, Age, Sex, Description, No_Of_Animal, Remarks, application_no)
+{
+    $('#edit_record_id').val(Record_Id);
+    $('#edit_Species').val(Species);
+    $('#edit_Breed').val(Breed);
+    $('#edit_Age').val(Age);
+    $('#edit_Sex').val(Sex);
+    $('#edit_animal_Description').val(Description);
+    $('#edit_no').val(No_Of_Animal);
+    $('#edit_AP_Remarks').val(Remarks);
+    $('#animal_application_no').val(application_no);
+    $('#edit_animal_model').modal('show');
+}
 
+function populate_productDetails(Record_Id, Particulars, Company_Name, Quantity, Unit, Remarks, application_no)
+{
+    $('#edit_product_record_id').val(Record_Id);
+    $('#edit_Particulars').val(Particulars);
+    $('#edit_Company_Name').val(Company_Name);
+    $('#edit_qty').val(Quantity);
+    $('#edit_unit').val(Unit);
+    $('#edit_remarks').val(Remarks);
+    $('#edit_application_no').val(application_no);
+    $('#edit_animal_products_model').modal('show');
+}
 
 </script>
 {% endblock %}

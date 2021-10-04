@@ -10,6 +10,22 @@ option {
 form, input, select, textarea{
 color: black !important;
 }
+#loader img
+{
+  left: 50%;
+  margin-left: -32px;
+  margin-top: -32px;
+  position: absolute;
+  top: 50%;
+}
+#loaders img
+{
+  left: 50%;
+  margin-left: -32px;
+  margin-top: -32px;
+  position: absolute;
+  top: 50%;
+}
 </style>
 <form method="post" id="inspectorExportForm">
     {% csrf_token %}
@@ -34,11 +50,11 @@ color: black !important;
                                             <label class="form-label">Certificate Type <font color="red">*</font></label><br>
                                             <label class="form-radio-label">
                                                 <input class="form-radio-input" type="radio" checked>
-                                                <span class="form-radio-sign">Phytosanitary</span>
+                                                <span class="form-radio-sign">Phytosanitary Certificate</span>
                                             </label>
                                             <label class="form-radio-label ml-3">
-                                                <input class="form-radio-input" type="radio">
-                                                <span class="form-radio-sign">Cordyceps</span>
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Export Certificate</span>
                                             </label>
                                         </div>
                                     </div>
@@ -47,12 +63,12 @@ color: black !important;
                                         <div class="form-check text-center">
                                             <label class="form-label">Certificate Type <font color="red">*</font></label><br>
                                             <label class="form-radio-label">
-                                                <input class="form-radio-input" type="radio">
-                                                <span class="form-radio-sign">Phytosanitary</span>
+                                                <input class="form-radio-input" type="radio" disabled>
+                                                <span class="form-radio-sign">Phytosanitary Certificate</span>
                                             </label>
                                             <label class="form-radio-label ml-3">
                                                 <input class="form-radio-input" type="radio" checked>
-                                                <span class="form-radio-sign">Cordyceps</span>
+                                                <span class="form-radio-sign">Export Certificate </span>
                                             </label>
                                         </div>
                                     </div>
@@ -763,17 +779,17 @@ color: black !important;
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
-                                            <label class="form-label">No Of Sample Drawn <font color="red">*</font></label>
-                                            <input type="text" class="form-control" id="no_of_sample_drawn" name="no_of_sample_drawn" onkeypress="return isNumberKey(event)">
-                                        </div>
-                                        <div class="alert alert-danger" id="no_of_sample_drawnErrorMsg" style="display:none"></div>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <div class="form-group">
                                             <label class="form-label">Total Sample Size <font color="red">*</font></label>
                                             <input type="text" class="form-control" id="total_sample_size" name="total_sample_size" onkeypress="return isNumberKey(event)">
                                         </div>
                                         <div class="alert alert-danger" id="total_sample_sizeErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label class="form-label">No Of Sample Drawn <font color="red">*</font></label>
+                                            <input type="text" class="form-control" id="no_of_sample_drawn" name="no_of_sample_drawn" onkeypress="return isNumberKey(event)" onchange="calculate(this.value)">
+                                        </div>
+                                        <div class="alert alert-danger" id="no_of_sample_drawnErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -1240,6 +1256,11 @@ color: black !important;
                                         </div>
                                     </div>
                                 </div>
+                                <hr>
+                                <div id="loaders" style="display:none">
+                                    <img src="{% static 'assets/img/ajax-loader.gif' %}" alt="processing..." />
+                                </div>
+                                <div class="alert alert-success" id="export_success_Msg" style="display:none"></div>
                                 <div class="card-action">
                                     <button type="button" class="btn btn-primary" onclick="export_complete()">Complete</button>
                                 </div>
@@ -1261,6 +1282,11 @@ color: black !important;
                                             </div>
                                         </div>
                                     </div>
+                                    <hr>
+                                    <div id="loader" style="display:none">
+                                        <img src="{% static 'assets/img/ajax-loader.gif' %}" alt="processing..." />
+                                    </div>
+                                    <div class="alert alert-success" id="fo_success_Msg" style="display:none"></div>
                                     <div class="card-action">
                                         <button type="button" class="btn btn-primary" onclick="export_complete()">Complete</button>
                                     </div>
@@ -1320,8 +1346,9 @@ color: black !important;
         var Treatment_Comment = $("#Treatment_Comment").val();
         var Laboratory_Analysis_Required = $('input[name="Laboratory_Analysis_Required"]:checked').length;
         var Laboratory_Analysis_Required_Value = $('input[name="Laboratory_Analysis_Required"]:checked').val();
+        var analysis_Comment = $("#analysis_Comment").val();
         var Phytosanitary_Measures = $('input[name="Phytosanitary_Measures"]:checked').length;
-        var Phytosanitary_Measures_Value = $('input[name="Laboratory_Analysis_Required"]:checked').val();
+        var Phytosanitary_Measures_Value = $('input[name="Phytosanitary_Measures"]:checked').val();
         var phytosanitary_Comment = $("#phytosanitary_Comment").val();
         var treatmentType = $('input[name="treatmentType"]:checked').length;
         var chemical_name = $("#chemical_name").val();
@@ -1418,20 +1445,6 @@ color: black !important;
                 $('#Pest_QR_Detected_CommentsErrorMsg').delay(2000).fadeOut('slow');
                 $('#Pest_QR_Detected_Comments').focus();
             }
-            else if(pest_detected_value == "Yes" && treatment_possible < 1)
-            {
-                $('#treatment_possibleErrorMsg').html("Select One Treatment Possible.");
-                $('#treatment_possibleErrorMsg').show();
-                $('#treatment_possibleErrorMsg').delay(2000).fadeOut('slow');
-                $('input[name="treatment_possible"]').focus();
-            }
-            else if(treatment_possible_value == "Yes" && Treatment_Comment == "")
-            {
-                $('#Treatment_CommentErrorMsg').html("Enter Comment.");
-                $('#Treatment_CommentErrorMsg').show();
-                $('#Treatment_CommentErrorMsg').delay(2000).fadeOut('slow');
-                $('#Treatment_Comment').focus();
-            }
             else if(pest_detected_value == "Yes" && Laboratory_Analysis_Required < 1)
             {
                 $('#Laboratory_Analysis_RequiredErrorMsg').html("Select One Laboratory Analysis Required.");
@@ -1439,7 +1452,7 @@ color: black !important;
                 $('#Laboratory_Analysis_RequiredErrorMsg').delay(2000).fadeOut('slow');
                 $('input[name="Laboratory_Analysis_Required"]').focus();
             }
-            else if(treatment_possible_value == "Yes" && analysis_Comment == "")
+            else if(Laboratory_Analysis_Required_Value == "Yes" && analysis_Comment == "")
             {
                 $('#analysis_CommentErrorMsg').html("Enter Comment.");
                 $('#analysis_CommentErrorMsg').show();
@@ -1453,12 +1466,26 @@ color: black !important;
                 $('#Phytosanitary_MeasuresErrorMsg').delay(2000).fadeOut('slow');
                 $('input[name="Phytosanitary_Measures"]').focus();
             }
-            else if(treatment_possible_value == "Yes" && phytosanitary_Comment == "")
+            else if(Phytosanitary_Measures_Value == "Yes" && phytosanitary_Comment == "")
             {
                 $('#phytosanitary_CommentErrorMsg').html("Enter Comment.");
                 $('#phytosanitary_CommentErrorMsg').show();
                 $('#phytosanitary_CommentErrorMsg').delay(2000).fadeOut('slow');
                 $('#phytosanitary_Comment').focus();
+            }
+            else if(pest_detected_value == "Yes" && treatment_possible < 1)
+            {
+                $('#treatment_possibleErrorMsg').html("Select One Treatment Possible.");
+                $('#treatment_possibleErrorMsg').show();
+                $('#treatment_possibleErrorMsg').delay(2000).fadeOut('slow');
+                $('input[name="treatment_possible"]').focus();
+            }
+            else if(treatment_possible_value == "Yes" && Treatment_Comment == "")
+            {
+                $('#Treatment_CommentErrorMsg').html("Enter Comment.");
+                $('#Treatment_CommentErrorMsg').show();
+                $('#Treatment_CommentErrorMsg').delay(2000).fadeOut('slow');
+                $('#Treatment_Comment').focus();
             }
             else if(pest_detected_value == "Yes" && treatmentType < 1)
             {
@@ -1476,14 +1503,14 @@ color: black !important;
             }
             else if(pest_detected_value == "Yes" && treatment == "")
             {
-                $('#treatmentErrorMsg').html("Enter Chemical Name.");
+                $('#treatmentErrorMsg').html("Select Treatment.");
                 $('#treatmentErrorMsg').show();
                 $('#treatmentErrorMsg').delay(2000).fadeOut('slow');
                 $('#treatment').focus();
             }
             else if(pest_detected_value == "Yes" && Concentration == "")
             {
-                $('#ConcentrationErrorMsg').html("Enter Chemical Name.");
+                $('#ConcentrationErrorMsg').html("Enter Concentration.");
                 $('#ConcentrationErrorMsg').show();
                 $('#ConcentrationErrorMsg').delay(2000).fadeOut('slow');
                 $('#Concentration').focus();
@@ -1518,6 +1545,7 @@ color: black !important;
             }
             else
             {
+                $("#loaders").show();
                 $.ajax
                 ({
                     type : "POST",
@@ -1525,7 +1553,13 @@ color: black !important;
                     data : $('#inspectorExportForm').serialize(),
                     success : function(responseText)
                     {
-                        window.location.href = '{% url 'dashboard' %}';
+                        $("#loaders").hide();
+                        $('#export_success_Msg').html("Application Approved.");
+                        $('#export_success_Msg').show();
+                        $('#export_success_Msg').delay(2000).fadeOut('slow');
+                        setTimeout(function() {
+                                window.location.href = '{% url 'dashboard' %}';
+                        }, 3000);
                     }
                 });
             }
@@ -1542,6 +1576,7 @@ color: black !important;
             }
             else
             {
+                $("#loader").show();
                 $.ajax
                 ({
                     type : "POST",
@@ -1549,7 +1584,13 @@ color: black !important;
                     data : $('#inspectorExportForm').serialize(),
                     success : function(responseText)
                     {
-                        window.location.href = '{% url 'dashboard' %}';
+                        $("#loader").hide();
+                        $('#fo_success_Msg').html("Application Approved.");
+                        $('#fo_success_Msg').show();
+                        $('#fo_success_Msg').delay(2000).fadeOut('slow');
+                        setTimeout(function() {
+                            window.location.href = '{% url 'dashboard' %}';
+                        }, 3000);
                     }
                 });
             }
@@ -1649,5 +1690,22 @@ color: black !important;
         return false;
 
      return true;
+    }
+
+    function calculate(value)
+    {
+        var total_sample_size = $("#total_sample_size").val();
+        if(value > total_sample_size)
+        {
+            $('#no_of_sample_drawnErrorMsg').html("Cannot Be Less Than Total Sample.");
+            $('#no_of_sample_drawnErrorMsg').show();
+            $('#no_of_sample_drawnErrorMsg').delay(2000).fadeOut('slow');
+            $('#no_of_sample_drawn').val("");
+            $('#no_of_sample_drawn').focus();
+        }
+        else
+        {
+            $('#no_of_sample_drawnErrorMsg').hide();
+        }
     }
 </script>

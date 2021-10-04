@@ -438,7 +438,7 @@ form, input, select, textarea{
                 </div>
             </div>
             <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="mortem-file-attach">
-                <div id="file-attachment-mortem">
+                <div id="file-attachment-fbr">
                     {% include 'registration_licensing/file_attachment.html' %}
                 </div>
             </div>
@@ -477,8 +477,8 @@ form, input, select, textarea{
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Contact <font color="red">*</font></label>
-                                        <input type="number" class="form-control" id="contact_number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contact_number" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                                        <label class="form-label">Contact No<font color="red">*</font></label>
+                                        <input type="number" class="form-control" id="contact_number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contact_number" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkfhContact(this.value)">
                                         <div class="alert alert-danger" id="contact_numberErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
@@ -507,7 +507,7 @@ form, input, select, textarea{
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" >Add Details</h5>
+                    <h5 class="modal-title" >Edit Details</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -571,6 +571,104 @@ form, input, select, textarea{
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_fbr_attachment()"> Submit </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form method="post" id="edit_fh_form">
+    {% csrf_token %}
+    <input type="hidden" id="edit_fh_application_no" name="edit_fh_application_no">
+    <div class="modal fade" id="edit_fh_details" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" >Edit Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <input type="text" name="fh_record_id" id="fh_record_id" style="display:none"/>
+                                <input type="hidden" name="identifier" value="FBR-FH"/>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">FH Name <font color="red">*</font></label>
+                                        <input type="text" name="edit_fh_name" class="form-control" id="edit_fh_name" required>
+                                        <div class="alert alert-danger" id="edit_fh_nameErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">FH License No <font color="red">*</font></label>
+                                        <input type="text" name="edit_fh_license" class="form-control" id="edit_fh_license" required>
+                                        <div class="alert alert-danger" id="edit_fh_licenseErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="update_edit_details('FBR-FH')">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form method="post" id="edit_op_form">
+    {% csrf_token %}
+    <input type="hidden" id="edit_op_application_no" name="edit_op_application_no">
+    <div class="modal fade" id="edit_op_model" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <input type="text" name="op_record_id" id="op_record_id" style="display:none"/>
+                                <input type="hidden" name="identifier" value="FBR-OP"/>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Name <font color="red">*</font></label>
+                                        <input type="text" name="edit_name" class="form-control" id="edit_name" required>
+                                        <div class="alert alert-danger" id="edit_nameErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Address Details <font color="red">*</font></label>
+                                       <textarea name="edit_address" class="form-control" id="edit_address"></textarea>
+                                        <div class="alert alert-danger" id="edit_addressErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Contact No<font color="red">*</font></label>
+                                        <input type="number" class="form-control" id="edit_contact_number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="edit_contact_number" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkEditContact(this.value)">
+                                        <div class="alert alert-danger" id="edit_contact_numberErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Food Safety License Number</label>
+                                        <input type="text" name="edit_bafra_license_no" class="form-control" id="edit_bafra_license_no" required>
+                                        <div class="alert alert-danger" id="edit_bafra_license_noErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="update_edit_details('FBR-OP')">Update</button>
                 </div>
             </div>
         </div>
@@ -885,7 +983,7 @@ function save_fbr_attachment()
                 success : function(responseText)
                 {
                     $('#attachmentModal').modal('hide');
-                    $('#file-attachment-mortem').html(responseText);
+                    $('#file-attachment-fbr').html(responseText);
                     $('.modal-backdrop').remove();
                     $('#attachment_form')[0].reset();
                 }
@@ -1000,6 +1098,66 @@ function checkContact(value)
         $('#contactNumberErrorMsg').show();
         $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
         $('#contactNumber').val("");
+    }
+
+}
+
+function checkfhContact(value)
+{
+    var firstDigit = value.charAt(0);
+    var secondDigit = value.charAt(1);
+
+    if(firstDigit != 7 && firstDigit != 1){
+        $('#contact_numberErrorMsg').html("Must Start with either 1 or 7.");
+        $('#contact_numberErrorMsg').show();
+        $('#contact_numberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contact_number').val("");
+    }else if(firstDigit == 1 && secondDigit != 6 && secondDigit != 7){
+        $('#contact_numberErrorMsg').html("Second Digit Must Start with either 6 or 7.");
+        $('#contact_numberErrorMsg').show();
+        $('#contact_numberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contact_number').val("");
+    }else if(firstDigit == 7 && secondDigit == 6){
+        $('#contact_numberErrorMsg').html("Second Digit Cannot be 6.");
+        $('#contact_numberErrorMsg').show();
+        $('#contact_numberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contact_number').val("");
+    }else if(firstDigit == 7 && secondDigit != 7){
+        $('#contact_numberErrorMsg').html("Second Digit Must Start with 7.");
+        $('#contact_numberErrorMsg').show();
+        $('#contact_numberErrorMsg').delay(2000).fadeOut('slow');
+        $('#contact_number').val("");
+    }
+
+}
+
+
+
+function checkEditContact(value)
+{
+    var firstDigit = value.charAt(0);
+    var secondDigit = value.charAt(1);
+
+    if(firstDigit != 7 && firstDigit != 1){
+        $('#edit_contact_numberErrorMsg').html("Must Start with either 1 or 7.");
+        $('#edit_contact_numberErrorMsg').show();
+        $('#edit_contact_numberErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_contact_number').val("");
+    }else if(firstDigit == 1 && secondDigit != 6 && secondDigit != 7){
+        $('#edit_contact_numberErrorMsg').html("Second Digit Must Start with either 6 or 7.");
+        $('#edit_contact_numberErrorMsg').show();
+        $('#edit_contact_numberErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_contact_number').val("");
+    }else if(firstDigit == 7 && secondDigit == 6){
+        $('#edit_contact_numberErrorMsg').html("Second Digit Cannot be 6.");
+        $('#edit_contact_numberErrorMsg').show();
+        $('#edit_contact_numberErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_contact_number').val("");
+    }else if(firstDigit == 7 && secondDigit != 7){
+        $('#edit_contact_numberErrorMsg').html("Second Digit Must Start with 7.");
+        $('#edit_contact_numberErrorMsg').show();
+        $('#edit_contact_numberErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_contact_number').val("");
     }
 
 }
@@ -1180,6 +1338,26 @@ function getCitizenDetails(cidNo)
 
         }
     });
+}
+
+function populate_fh_details(Record_Id,FH_Name,FH_License_No, Application_No)
+{
+    $('#fh_record_id').val(Record_Id);
+    $('#edit_fh_name').val(FH_Name);
+    $('#edit_fh_license').val(FH_License_No);
+    $('#edit_fh_application_no').val(Application_No);
+    $('#edit_fh_details').modal('show');
+}
+
+function populateDetails(Record_Id,BP_Outsourced_To,Address,Contact_No,BAFRA_License_No, Application_No)
+{
+    $('#op_record_id').val(Record_Id);
+    $('#edit_name').val(BP_Outsourced_To);
+    $('#edit_address').val(Address);
+    $('#edit_contact_number').val(Contact_No);
+    $('#edit_bafra_license_no').val(BAFRA_License_No);
+    $('#edit_op_application_no').val(Application_No);
+    $('#edit_op_model').modal('show');
 }
 
 </script>

@@ -1,6 +1,7 @@
 {% extends 'common_dashboard.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+{% load static %}
 <style>
     option
     {
@@ -238,7 +239,7 @@ form, input, select, textarea{
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Expected Date Of Arrival <font color="red">*</font></label>
-                                     <input type="date" name="Expected_Arrival_Date" id="Expected_Arrival_Date" class="form-control date-picker flatpickr-input active">
+                                    <input type="date" class="form-control" id="Expected_Arrival_Date" name="Expected_Arrival_Date">
                                 </div>
                                 <div class="alert alert-danger" id="Expected_Arrival_DateErrorMsg" style="display:none"></div>
                             </div>
@@ -321,7 +322,7 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Age</label>
-                                        <input type="number" name="Age" class="form-control" id="Age" required>
+                                        <input type="text" name="Age" class="form-control" id="Age" onkeypress="return isNumberKey(event)">
                                         <div class="alert alert-danger" id="AgeErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
@@ -391,7 +392,100 @@ form, input, select, textarea{
         </div>
     </div>
 </form>
+
+<form method="post" id="edit_details_form">
+    {% csrf_token %}
+    <input type="hidden" id="edit_app_no" name="edit_app_no">
+    <div class="modal fade" id="edit_model" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <input type="text" name="edit_la_record_id" id="edit_la_record_id" style="display:none"/>
+                                <input type="hidden" name="identifier" value="AFIP"/>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Species</label>
+                                        <select class="form-control" name="edit_Species" id="edit_Species">
+                                            <option value="">--SELECT--</option>
+                                            {% for species in species %}
+                                                <option value="{{ species.Species_Name }}">{{ species.Species_Name }}</option>
+                                            {% endfor %}
+                                         </select>
+                                        <div class="alert alert-danger" id="edit_SpeciesErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Breed</label>
+                                        <select class="form-control" name="edit_Breed" id="edit_Breed">
+                                            <option value="">--SELECT--</option>
+                                            {% for breed in breed %}
+                                                <option value="{{ breed.Species_Breed_Name }}">{{ breed.Species_Breed_Name }}</option>
+                                            {% endfor %}
+                                         </select>
+                                        <div class="alert alert-danger" id="edit_BreedErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Age</label>
+                                        <input type="text" name="edit_Age" class="form-control" id="edit_Age" onkeypress="return isNumberKey(event)">
+                                        <div class="alert alert-danger" id="edit_AgeErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Sex</label>
+                                        <input type="text" name="edit_Sex" class="form-control" id="edit_Sex" required>
+                                        <div class="alert alert-danger" id="edit_SexErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Description</label>
+                                        <textarea name="edit_animal_Description" class="form-control" id="edit_animal_Description" rows="3"></textarea>
+                                        <div class="alert alert-danger" id="edit_animal_DescriptionErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Number</label>
+                                        <input type="text" name="edit_no" class="form-control" id="edit_no" onkeypress="return isNumberKey(event)">
+                                        <div class="alert alert-danger" id="edit_noErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="update_edit_details('AFIP')">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script src="{% static 'assets/bower_components/jquery/dist/jquery.min.js' %}"></script>
 <script>
+$(function()
+{
+    var today = new Date().toISOString().split('T')[0];
+    $('#Expected_Arrival_Date')[0].setAttribute('min', today);
+});
+
+function isNumberKey(evt)
+    {
+     var charCode = (evt.which) ? evt.which : event.keyCode
+     if (charCode > 31 && (charCode < 48 || charCode > 57))
+        return false;
+
+     return true;
+    }
+
 function permit_save_details()
 {
 
@@ -547,7 +641,7 @@ function permit_save_details()
     }
     else if(Expected_Arrival_Date == "")
     {
-        $('#Expected_Arrival_DateErrorMsg').html("Enter Final Destination.");
+        $('#Expected_Arrival_DateErrorMsg').html("Enter Expected Date.");
         $('#Expected_Arrival_DateErrorMsg').show();
         $('#Expected_Arrival_DateErrorMsg').delay(2000).fadeOut('slow');
         $('#Expected_Arrival_Date').focus();
@@ -657,7 +751,7 @@ function save_attachment()
         {
         if (data.form_is_valid)
         {
-            var appNo = $('#appNo').val();
+            var appNo = $('#applicationNo').val();
             var file_url = data.file_url
             $.ajax
             ({
@@ -667,7 +761,7 @@ function save_attachment()
                 success : function(responseText)
                 {
                     $('#attachmentModal').modal('hide');
-                    $('#file-attachment').html(responseText);
+                    $('#fileAttach').html(responseText);
                     $('.modal-backdrop').remove();
                     $('#attachment_form')[0].reset();
                 }
@@ -818,11 +912,13 @@ function checkNationality(value)
     {
         $('.bhutanese_div').show();
         $('.non_bhutanese_div').hide();
+        $("#name").attr("readonly", "readonly");
     }
     else
     {
         $('.bhutanese_div').hide();
         $('.non_bhutanese_div').show();
+        $("#name").removeAttr("readonly");
     }
 }
 
@@ -872,22 +968,50 @@ function getCitizenDetails(cidNo)
     success : function(data)
     {
         const myObj =data.response;
-        var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
-        var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
-        var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
-        if (middleName == null) {
-                middleName = "";
-            }
-        var CitizenName = firstName + " " + middleName + " " + lastName;
-        var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
-        var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
-        var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
-        $('#name').val(CitizenName);
-        $('#dzongkhag').val(dzongkhagName);
-        $('#gewog').val(gewogName);
-        $('#village').val(villageName);
+        if(myObj.citizenDetailsResponse.citizenDetail == undefined)
+        {
+            $('#name').val("");
+            $('#dzongkhag').val("");
+            $('#gewog').val("");
+            $('#village').val("");
+            $('#cid').val("");
+            $('#cidErrorMsg').html("Invalid CID.Try With Another one");
+            $('#cidErrorMsg').show();
+            $('#cidErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+            var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+            var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+            if (middleName == null) {
+                    middleName = "";
+                }
+            var CitizenName = firstName + " " + middleName + " " + lastName;
+
+            var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
+            var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
+            var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
+            $('#name').val(CitizenName);
+            $('#dzongkhag').val(dzongkhagName);
+            $('#gewog').val(gewogName);
+            $('#village').val(villageName);
+        }
     }
 });
+}
+
+function populateDetails(Record_Id, Species, Breed, Age, Sex, Description,Quantity, application_no)
+{
+    $('#edit_la_record_id').val(Record_Id);
+    $('#edit_Species').val(Species);
+    $('#edit_Breed').val(Breed);
+    $('#edit_Age').val(Age);
+    $('#edit_Sex').val(Sex);
+    $('#edit_animal_Description').val(Description);
+    $('#edit_no').val(Quantity);
+    $('#edit_app_no').val(application_no);
+    $('#edit_model').modal('show');
 }
 </script>
 {% endblock %}

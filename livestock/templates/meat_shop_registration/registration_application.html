@@ -211,7 +211,7 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Meat Item</label>
-                                        <select class="form-control" name="meat_name"  id="meat_name" onchange="getGewog(this.value)">
+                                        <select class="form-control" name="meat_name"  id="meat_name">
                                             <option value="">--SELECT MEAT ITEM--</option>
                                             {% for meat_item in meat_item %}
                                                     <option value="{{ meat_item.Meat_Item }}">{{ meat_item.Meat_Item }}</option>
@@ -268,8 +268,59 @@ form, input, select, textarea{
         </div>
     </div>
 </form>
-<script>
 
+<form method="post" id="meat_item_form">
+    {% csrf_token %}
+    <input type="hidden" id="meat_item_application_no" name="meat_item_application_no">
+    <div class="modal fade" id="meat_item_modal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" >Edit Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <input type="text" name="edit_meat_record_id" id="edit_meat_record_id" style="display:none"/>
+                                <input type="hidden" name="identifier" value="CMS"/>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Meat Item</label>
+                                        <select class="form-control" name="edit_meat_name"  id="edit_meat_name">
+                                            <option value="">--SELECT MEAT ITEM--</option>
+                                            {% for meat_item in meat_item %}
+                                                    <option value="{{ meat_item.Meat_Item }}">{{ meat_item.Meat_Item }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="alert alert-danger" id="edit_meat_nameErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="update_edit_details('CMS')">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+function isNumberKey(evt)
+{
+ var charCode = (evt.which) ? evt.which : event.keyCode
+ if (charCode > 31 && (charCode < 48 || charCode > 57))
+    return false;
+
+ return true;
+}
 function save_fbr_form()
 {
     var Business_Name = $('#Business_Name').val();
@@ -606,19 +657,39 @@ function getCitizenDetails(cidNo)
         success : function(data)
         {
             const myObj =data.response;
-            var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
-            var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
-            var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
-            if (middleName == null) {
-                    middleName = "";
-                }
-            var CitizenName = firstName + " " + middleName + " " + lastName;
-            var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
-            var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
-            var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
-            $('#name').val(CitizenName);
+            if(myObj.citizenDetailsResponse.citizenDetail == undefined)
+            {
+                $('#cid').val("");
+                $('#name').val("");
+                $('#cidErrorMsg').html("Invalid CID.Try With Another one");
+                $('#cidErrorMsg').show();
+                $('#cidErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else
+            {
+                var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+                var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+                var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+                if (middleName == null) {
+                        middleName = "";
+                    }
+                var CitizenName = firstName + " " + middleName + " " + lastName;
+
+                var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
+                var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
+                var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
+                $('#name').val(CitizenName);
+            }
         }
     });
+}
+
+function populateMeatDetails(Record_Id, Meat_Item, application_no)
+{
+    $('#edit_meat_record_id').val(Record_Id);
+    $('#edit_meat_name').val(Meat_Item);
+    $('#meat_item_application_no').val(application_no);
+    $('#meat_item_modal').modal('show');
 }
 </script>
 {% endblock %}

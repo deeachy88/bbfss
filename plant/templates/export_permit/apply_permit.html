@@ -30,39 +30,38 @@ color: black !important;
         <form method="post" id="permitForm">
         {% csrf_token %}
             <input type="hidden" id="applicationNo" name="applicationNo">
-            <div class="row">
-                <div class="col-sm-3">
-                    <label class="form-label">Certificate Type <font color="red">*</font></label>
-                </div>
-                <div class="col-sm-8 justify-content-center">
-                    <label class="custom-control custom-radio">
-                        <input type="radio" class="custom-control-input" name="Import_Type" id="phytoRadio" value="P" checked onchange="changeExportType(this.value)">
-                        <span class="custom-control-indicator"></span>
-                        <span class="custom-control-description">Phytosanitary Certificate</span>
-                    </label>
-                    <label class="custom-control custom-radio">
-                        <input type="radio" class="custom-control-input" name="Import_Type" id="cordycepRadio" value="C" onchange="changeExportType(this.value)">
-                        <span class="custom-control-indicator"></span>
-                        <span class="custom-control-description">Export Certificate</span>
-                    </label>
-                </div>
-                <div class="alert alert-danger" id="Certificate_TypeErrorMsg" style="display:none"></div>
+            <div class="row justify-content-left">
+                <ul class="nav nav-pills nav-secondary" id="pills-tab-phyto" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="pills-phyto-tab" data-toggle="pill" href="#phyto-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="load_details()">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="pills-phyto-file" data-toggle="pill" href="#phyto-file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_plant_attachment()">Attach File</a>
+                    </li>
+                </ul>
             </div>
-            <br>
-            <div id='Phytosanitary'>
-                <div class="row justify-content-left">
-                    <ul class="nav nav-pills nav-secondary" id="pills-tab-phyto" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" id="pills-phyto-tab" data-toggle="pill" href="#phyto-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="load_details()">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="pills-phyto-file" data-toggle="pill" href="#phyto-file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_plant_attachment()">Attach File</a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="tab-content mt-2 mb-3" id="pills-tab-phyto-tabContent">
-                    <div class="tab-pane fade show active" id="phyto-home" role="tabpanel" aria-labelledby="pills-phyto-tab">
-                       <div id="plant-details">
+            <div class="tab-content mt-2 mb-3" id="pills-tab-phyto-tabContent">
+                <div class="tab-pane fade show active" id="phyto-home" role="tabpanel" aria-labelledby="pills-phyto-tab">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label class="form-label">Certificate Type <font color="red">*</font></label>
+                        </div>
+                        <div class="col-sm-8 justify-content-center">
+                            <label class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" name="Import_Type" id="phytoRadio" value="P" checked onchange="changeExportType(this.value)">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Phytosanitary Certificate</span>
+                            </label>
+                            <label class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" name="Import_Type" id="cordycepRadio" value="C" onchange="changeExportType(this.value)">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Export Certificate</span>
+                            </label>
+                        </div>
+                        <div class="alert alert-danger" id="Certificate_TypeErrorMsg" style="display:none"></div>
+                    </div>
+                    <br>
+                    <div id='Phytosanitary'>
                         <div class="row">
                             <div class="col-sm-4">
                                 <div class="form-group">
@@ -341,146 +340,8 @@ color: black !important;
                                 </div>
                             </div>
                         </div>
-                        <!--<div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
-                            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
-                                <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Pre-</span>
-                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">Application</span>
-                                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Treatment</span>
-                            <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Details</span>
-                            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
-                        </div>
-                        <div class="row justify-content-center">
-                            <div class="form-check text-center">
-                                <label class="form-radio-label">
-                                    <input class="form-radio-input" type="radio" name="treatmentType"  value="Chemical" onclick="showOthers('Chemical')">
-                                    <span class="form-radio-sign">Chemical</span>
-                                </label>
-                                <label class="form-radio-label ml-3">
-                                    <input class="form-radio-input" type="radio" name="treatmentType" value="Irradiation" onclick="showOthers('Irradiation')">
-                                    <span class="form-radio-sign">Irradiation</span>
-                                </label>
-                                <label class="form-radio-label ml-3">
-                                    <input class="form-radio-input" type="radio" name="treatmentType" value="Hot Water" onclick="showOthers('Hot Water')">
-                                    <span class="form-radio-sign">Hot Water</span>
-                                </label>
-                                <label class="form-radio-label ml-3">
-                                    <input class="form-radio-input" type="radio" name="treatmentType" value="Vapour Heat" onclick="showOthers('Vapour Heat')">
-                                    <span class="form-radio-sign">Vapour Heat</span>
-                                </label>
-                                <label class="form-radio-label ml-3">
-                                    <input class="form-radio-input" type="radio" name="treatmentType" value="Cold Treatment" onclick="showOthers('Cold Treatment')">
-                                    <span class="form-radio-sign">Cold Treatment</span>
-                                </label>
-                                <label class="form-radio-label ml-3">
-                                    <input class="form-radio-input" type="radio" name="treatmentType" value="Others" onclick="showOthers('Others')">
-                                    <span class="form-radio-sign">Others</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="row" id="others_pre" style="display:none">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">Others</label>
-                                    <input type="text" class="form-control" id="p_others_pre" name="p_others_treatment">
-                                </div>
-                                <div class="alert alert-danger" id="p_others_preErrorMsg" style="display:none"></div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Chemical Name <font color="red">*</font></label>
-                                    <input type="text" class="form-control" id="p_chemcial_name" name="p_chemcial_name">
-                                </div>
-                                <div class="alert alert-danger" id="p_chemcial_nameErrorMsg" style="display:none"></div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Treatment <font color="red">*</font></label>
-                                    <select class="form-control form-control" id="p_treatment" name="p_treatment" onchange="showValue(this.value)">
-                                        <option value="">-SELECT-</option>
-                                        <option value="Fumigation">Fumigation</option>
-                                        <option value="Spray">Spray</option>
-                                        <option value="Seed treatment">Seed Treatment</option>
-                                        <option value="others">Others(Specify)</option>
-                                    </select>
-                                </div>
-                                <div class="alert alert-danger" id="p_treatmentErrorMsg" style="display:none"></div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Concentration</label>
-                                    <input type="text" class="form-control" id="p_Concentration" name="p_Concentration">
-                                </div>
-                                <div class="alert alert-danger" id="p_ConcentrationErrorMsg" style="display:none"></div>
-                            </div>
-                        </div>
-                        <div class="row" id="others" style="display:none">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">Others</label>
-                                    <input type="text" class="form-control" id="p_others" name="p_others">
-                                </div>
-                                <div class="alert alert-danger" id="p_othersErrorMsg" style="display:none"></div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Duration & Temperature</label>
-                                    <input type="text" class="form-control" id="p_Duration_Temperature" name="p_Duration_Temperature">
-                                </div>
-                                <div class="alert alert-danger" id="p_Duration_TemperatureErrorMsg" style="display:none"></div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Treated By</label>
-                                    <input type="text" class="form-control" id="p_treated_by" name="p_treated_by">
-                                </div>
-                                <div class="alert alert-danger" id="p_treated_byErrorMsg" style="display:none"></div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Treatment Supervised By</label>
-                                    <input type="text" class="form-control" id="p_treatment_supervised" name="p_treatment_supervised">
-                                </div>
-                                <div class="alert alert-danger" id="p_treatment_supervisedErrorMsg" style="display:none"></div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">Additional Information</label>
-                                    <textarea id="p_additional_Info" name="p_additional_Info" rows="4" cols="50"></textarea>
-                                </div>
-                                <div class="alert alert-danger" id="p_additional_Info_ErrorMsg" style="display:none"></div>
-                            </div>
-                        </div>-->
-                        <div class="card-action">
-                            <button type="button" class="btn btn-primary" onclick="save_export_permit()">Save</button>
-                        </div>
-                        </div>
                     </div>
-                    <div class="tab-pane fade" id="phyto-file-attachment" role="tabpanel" aria-labelledby="pills-phyto-file">
-                        <div id="phytoAttach">
-                            {% include 'export_permit/phyto_file_attachment_page.html' %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="Cordyceps" style="display:none;">
-                <div class="row justify-content-left">
-                    <ul class="nav nav-pills nav-secondary" id="cordyceps-tab" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" id="pills-cordyceps-tab" data-toggle="pill" href="#cordyceps-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="load_agro_details()">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="cordyceps-attach" data-toggle="pill" href="#cordyceps-file-attachment" role="tab" aria-controls="cordyceps-attach" aria-selected="false">Attach File</a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="tab-content mt-2 mb-3" id="pills-tab-cordyceps-tabContent">
-                    <div class="tab-pane fade show active" id="cordyceps-home" role="tabpanel" aria-labelledby="pills-phyto-tab">
+                    <div id="Cordyceps" style="display:none;">
                         <div class="row">
                             <div class="col-sm-3">
                                 <label class="form-label">Applicant Type <font color="red">*</font></label>
@@ -575,7 +436,7 @@ color: black !important;
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label class="form-label">Date Of Inspection Requested <font color="red">*</font></label>
-                                    <input type="text" class="form-control date-picker flatpickr-input active" id="date" name="date_for_Inspection"  placeholder="Pick a date" readonly="readonly">
+                                    <input type="date" class="form-control" id="date_for_Inspection" name="date_for_Inspection">
                                 </div>
                                 <div class="alert alert-danger" id="date_for_InspectionErrorMsg" style="display:none"></div>
                             </div>
@@ -682,7 +543,7 @@ color: black !important;
                         </div>
                         <div id="retailContent" style="display:none">
                             <div class="form-group row">
-                                <label class="col-sm-4 col-form-label form-label">Gross Weight (Weight of Cordyceps and package)</label>
+                                <label class="col-sm-4 col-form-label form-label">Gross Weight (Weight of Cordyceps and package) <font color="red">*</font></label>
                                 <div class="col-sm-4">
                                     <div class="input-group">
                                         <div class="form-group">
@@ -691,6 +552,7 @@ color: black !important;
                                         </div>
                                         <span class="input-group-addon">Gm(s)</span>
                                     </div>
+                                    <div class="alert alert-danger" id="retail_gross_weight_gmsErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="input-group">
@@ -700,10 +562,11 @@ color: black !important;
                                         </div>
                                         <span class="input-group-addon">Pieces</span>
                                     </div>
+                                    <div class="alert alert-danger" id="retail_gross_weight_piecesErrorMsg" style="display:none"></div>
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="col-sm-4 col-form-label form-label">Net Weight (Weight of Cordycep only)</label>
+                                <label class="col-sm-4 col-form-label form-label">Net Weight (Weight of Cordycep only)<font color="red">*</font></label>
                                 <div class="col-sm-4">
                                     <div class="input-group">
                                         <div class="form-group">
@@ -712,42 +575,47 @@ color: black !important;
                                         </div>
                                         <span class="input-group-addon">Gm(s)</span>
                                     </div>
+                                    <div class="alert alert-danger" id="retail_net_weight_gmsErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="input-group">
                                         <div class="form-group">
-                                            <input type="text" class="form-control" id="retail_net_weight_pieces" name="net_weight_pieces">
+                                            <input type="text" class="form-control" id="retail_net_weight_pieces" name="retail_net_weight_pieces">
                                             <i class="form-group__bar"></i>
                                         </div>
                                         <span class="input-group-addon">Pieces</span>
                                     </div>
+                                    <div class="alert alert-danger" id="retail_net_weight_piecesErrorMsg" style="display:none"></div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-sm-4">
                                     <div class="form-group">
-                                        <label class="form-label">Total No Of Packages</label>
-                                        <input type="text" class="form-control" id="c_retail_package" name="c_retail_package">
+                                        <label class="form-label">Total No Of Packages <font color="red">*</font></label>
+                                        <input type="text" class="form-control" id="c_retail_package" name="c_retail_package" onkeypress="return isNumberKey(event)">
                                     </div>
+                                    <div class="alert alert-danger" id="c_retail_packageErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="form-group">
-                                        <label class="form-label">Name Of The Outlet</label>
+                                        <label class="form-label">Name Of The Outlet <font color="red">*</font></label>
                                         <input type="text" class="form-control" id="c_outlet_name" name="c_outlet_name">
                                     </div>
+                                    <div class="alert alert-danger" id="c_outlet_nameErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="form-group">
-                                        <label class="form-label">Contact No of the outlet owner</label>
-                                        <input type="text" class="form-control" id="c_phoneNumber" name="c_phoneNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="8" onkeypress="return isNumberKey(event)">
+                                        <label class="form-label">Contact No of the outlet owner <font color="red">*</font></label>
+                                        <input type="text" class="form-control" id="c_phoneNumber" name="c_phoneNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkComContact(this.value)">
                                     </div>
+                                    <div class="alert alert-danger" id="c_phoneNumberErrorMsg" style="display:none"></div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="form-label">Address of the outlet</label>
-                                        <textarea class="form-control" rows="5" id="c_address" name="c_address"></textarea>
+                                        <label class="form-label">Address of the outlet <font color="red">*</font></label>
+                                        <textarea class="form-control" rows="3" id="c_address" name="c_address"></textarea>
                                     </div>
                                     <div class="alert alert-danger" id="c_addressErrorMsg" style="display:none"></div>
                                 </div>
@@ -755,28 +623,30 @@ color: black !important;
                         </div>
                         <div class="row">
                             <p>Declaration</p>
+                        </div>
+                        <div class="row">
                             <p>1.	I/We the exporter/.authorized agent of the exporter declare that the information furnished
                                 in this form, to the best of our knowledge and belief, is true, correct and complete in every respect.</p>
                             <p>2.	I/We shall provide any relevant information and related documents connected with export of
                             consignment for issuance of the Export Certificate</p>.
                         </div>
-                        <div class="card-action">
-                            <button type="button" class="btn btn-primary" onclick="save_export_permit()">Save</button>
-                        </div>
                     </div>
-                    </div>
-                    <div class="tab-pane fade" id="cordyceps-file-attachment" role="tabpanel" aria-labelledby="pills-cordyceps-file">
-                        <div id="cordycepsAttach">
-                            {% include 'export_permit/cordyceps_file_attachment_page.html' %}
-                        </div>
+                    <div class="card-action">
+                        <button type="button" class="btn btn-primary" onclick="save_export_permit()">Save</button>
                     </div>
                 </div>
+                <div class="tab-pane fade" id="phyto-file-attachment" role="tabpanel" aria-labelledby="pills-phyto-file">
+                    <div id="phytoAttach">
+                        {% include 'export_permit/phyto_file_attachment_page.html' %}
+                    </div>
+                </div>
+            </div>
+            <br>
         </form>
     </div>
 </div>
 <form method="post" id="phyto_attachment_form" enctype="multipart/form-data">
     {% csrf_token %}
-    <input type="text" id="phyto_attachment_applicationNo" name="appNo" style="display:none">
     <div class="modal fade" id="phyto_attachmentModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -844,7 +714,8 @@ color: black !important;
         </div>
     </div>
 </form>
-<script>
+
+<script>1
 function isNumberKey(evt)
 {
  var charCode = (evt.which) ? evt.which : event.keyCode
@@ -853,6 +724,9 @@ function isNumberKey(evt)
 
  return true;
 }
+
+
+
     function showOthers(value)
     {
         if(value == "Others")
@@ -1071,7 +945,6 @@ function isNumberKey(evt)
                     success : function(data)
                     {
                         $('#applicationNo').val(data.applicationNo);
-                        $('#phyto_attachment_applicationNo').val(data.applicationNo);
                         $('#pills-tab-phyto a:last').tab('show');
                     }
                 });
@@ -1089,62 +962,25 @@ function isNumberKey(evt)
             var c_Location_Code = $('#c_Location_Code').val();
 
             var c_current_address = $('#c_current_address').val();
-            var date_for_Inspection = $('#date').val();
+            var date_for_Inspection = $('#date_for_Inspection').val();
             var c_requested_place = $('#c_requested_place').val();
+
+            var retail_gross_weight_gms = $('#retail_gross_weight_gms').val();
+            var retail_gross_weight_pieces = $('#retail_gross_weight_pieces').val();
+            var retail_net_weight_gms = $('#retail_net_weight_gms').val();
+            var retail_net_weight_pieces = $('#retail_net_weight_pieces').val();
+            var c_retail_package = $('#c_retail_package').val();
+            var c_outlet_name = $('#c_outlet_name').val();
+            var c_phoneNumber = $('#c_phoneNumber').val();
+            var c_phoneNumber_length = $('#c_phoneNumber').val().length;
+            var c_address = $('#c_address').val();
+
 
             if(ApplicantType < 1)
             {
                 $('#Applicant_TypeErrorMsg').html("Select One Applicant Type.");
                 $('#Applicant_TypeErrorMsg').show();
                 $('#Applicant_TypeErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(ApplicantTypeVal == "bothRadio" && c_cid == "")
-            {
-                $('#c_cidErrorMsg').html("Enter CID.");
-                $('#c_cidErrorMsg').show();
-                $('#c_cidErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(ApplicantTypeVal == "bothRadio" && c_Contact_No == "")
-            {
-                $('#c_Contact_NoErrorMsg').html("Enter Contact No.");
-                $('#c_Contact_NoErrorMsg').show();
-                $('#c_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(ApplicantTypeVal == "bothRadio" && c_Email == "")
-            {
-                $('#c_EmailErrorMsg').html("Enter Email.");
-                $('#c_EmailErrorMsg').show();
-                $('#c_EmailErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(ApplicantTypeVal == "bothRadio" && c_Dzongkhag_Code == "")
-            {
-                $('#c_Dzongkhag_CodeErrorMsg').html("Select Dzongkhag.");
-                $('#c_Dzongkhag_CodeErrorMsg').show();
-                $('#c_Dzongkhag_CodeErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(ApplicantTypeVal == "bothRadio" && c_Location_Code == "")
-            {
-                $('#c_Location_CodeErrorMsg').html("Select Location.");
-                $('#c_Location_CodeErrorMsg').show();
-                $('#c_Location_CodeErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(ApplicantTypeVal == "bothRadio" && c_current_address == "")
-            {
-                $('#c_current_addressErrorMsg').html("Enter Current Address.");
-                $('#c_current_addressErrorMsg').show();
-                $('#c_current_addressErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(ApplicantTypeVal == "bothRadio" && date_for_Inspection == "")
-            {
-                $('#date_for_InspectionErrorMsg').html("Select Date For Inspection");
-                $('#date_for_InspectionErrorMsg').show();
-                $('#date_for_InspectionErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(ApplicantTypeVal == "bothRadio" && c_requested_place == "")
-            {
-                $('#c_requested_placeErrorMsg').html("Enter Place Of Inspection.");
-                $('#c_requested_placeErrorMsg').show();
-                $('#c_requested_placeErrorMsg').delay(2000).fadeOut('slow');
             }
             else if(ApplicantTypeVal == "directRadio" && c_cid == "")
             {
@@ -1176,23 +1012,41 @@ function isNumberKey(evt)
                 $('#c_Location_CodeErrorMsg').show();
                 $('#c_Location_CodeErrorMsg').delay(2000).fadeOut('slow');
             }
+            else if(ApplicantTypeVal == "directRadio" && c_current_address == "")
+            {
+                $('#c_current_addressErrorMsg').html("Enter Current Address.");
+                $('#c_current_addressErrorMsg').show();
+                $('#c_current_addressErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(ApplicantTypeVal == "directRadio" && date_for_Inspection == "")
+            {
+                $('#date_for_InspectionErrorMsg').html("Select Date For Inspection");
+                $('#date_for_InspectionErrorMsg').show();
+                $('#date_for_InspectionErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(ApplicantTypeVal == "directRadio" && c_requested_place == "")
+            {
+                $('#c_requested_placeErrorMsg').html("Enter Place Of Inspection");
+                $('#c_requested_placeErrorMsg').show();
+                $('#c_requested_placeErrorMsg').delay(2000).fadeOut('slow');
+            }
             else if(ApplicantTypeVal == "retailRadio" && c_cid == "")
             {
                 $('#c_cidErrorMsg').html("Enter CID.");
                 $('#c_cidErrorMsg').show();
                 $('#c_cidErrorMsg').delay(2000).fadeOut('slow');
             }
-            else if(ApplicantTypeVal == "retailRadio" && c_Contact_No == "")
-            {
-                $('#c_Contact_NoErrorMsg').html("Enter Contact No.");
-                $('#c_Contact_NoErrorMsg').show();
-                $('#c_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
-            }
             else if(ApplicantTypeVal == "retailRadio" && c_Email == "")
             {
                 $('#c_EmailErrorMsg').html("Enter Email.");
                 $('#c_EmailErrorMsg').show();
                 $('#c_EmailErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(ApplicantTypeVal == "retailRadio" && c_Contact_No == "")
+            {
+                $('#c_Contact_NoErrorMsg').html("Enter Contact No.");
+                $('#c_Contact_NoErrorMsg').show();
+                $('#c_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
             }
             else if(ApplicantTypeVal == "retailRadio" && c_Dzongkhag_Code == "")
             {
@@ -1206,6 +1060,78 @@ function isNumberKey(evt)
                 $('#c_Location_CodeErrorMsg').show();
                 $('#c_Location_CodeErrorMsg').delay(2000).fadeOut('slow');
             }
+            else if(ApplicantTypeVal == "retailRadio" && c_current_address == "")
+            {
+                $('#c_current_addressErrorMsg').html("Enter Current Address.");
+                $('#c_current_addressErrorMsg').show();
+                $('#c_current_addressErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(ApplicantTypeVal == "retailRadio" && date_for_Inspection == "")
+            {
+                $('#date_for_InspectionErrorMsg').html("Select Date For Inspection");
+                $('#date_for_InspectionErrorMsg').show();
+                $('#date_for_InspectionErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(ApplicantTypeVal == "retailRadio" && c_requested_place == "")
+            {
+                $('#c_requested_placeErrorMsg').html("Enter Place Of Inspection");
+                $('#c_requested_placeErrorMsg').show();
+                $('#c_requested_placeErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(ApplicantTypeVal == "retailRadio" && retail_gross_weight_gms == "")
+            {
+                $('#retail_gross_weight_gmsErrorMsg').html("Enter Gross Weight Gm(s)");
+                $('#retail_gross_weight_gmsErrorMsg').show();
+                $('#retail_gross_weight_gmsErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(ApplicantTypeVal == "retailRadio" && retail_gross_weight_pieces == "")
+            {
+                $('#retail_gross_weight_piecesErrorMsg').html("Enter Gross Weight Pieces");
+                $('#retail_gross_weight_piecesErrorMsg').show();
+                $('#retail_gross_weight_piecesErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(ApplicantTypeVal == "retailRadio" && retail_net_weight_gms == "")
+            {
+                $('#retail_net_weight_gmsErrorMsg').html("Enter Net Weight Gm(s)");
+                $('#retail_net_weight_gmsErrorMsg').show();
+                $('#retail_net_weight_gmsErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(ApplicantTypeVal == "retailRadio" && retail_net_weight_pieces == "")
+            {
+                $('#retail_net_weight_piecesErrorMsg').html("Enter Net Weight Pieces");
+                $('#retail_net_weight_piecesErrorMsg').show();
+                $('#retail_net_weight_piecesErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(ApplicantTypeVal == "retailRadio" && c_retail_package == "")
+            {
+                $('#c_retail_packageErrorMsg').html("Enter Total No Of Packages");
+                $('#c_retail_packageErrorMsg').show();
+                $('#c_retail_packageErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(ApplicantTypeVal == "retailRadio" && c_outlet_name == "")
+            {
+                $('#c_outlet_nameErrorMsg').html("Enter Name Of The Outlet");
+                $('#c_outlet_nameErrorMsg').show();
+                $('#c_outlet_nameErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(ApplicantTypeVal == "retailRadio" && c_phoneNumber == "")
+            {
+                $('#c_phoneNumberErrorMsg').html("Enter Contact No");
+                $('#c_phoneNumberErrorMsg').show();
+                $('#c_phoneNumberErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(ApplicantTypeVal == "retailRadio" && c_phoneNumber_length < 8)
+            {
+                $('#c_phoneNumberErrorMsg').html("Cannot Be Less Than 8 Digits");
+                $('#c_phoneNumberErrorMsg').show();
+                $('#c_phoneNumberErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else if(ApplicantTypeVal == "retailRadio" && c_address == "")
+            {
+                $('#c_addressErrorMsg').html("Enter Address");
+                $('#c_addressErrorMsg').show();
+                $('#c_addressErrorMsg').delay(2000).fadeOut('slow');
+            }
             else
             {
                 $.ajax({
@@ -1215,9 +1141,7 @@ function isNumberKey(evt)
                         success : function(data)
                         {
                             $('#applicationNo').val(data.applicationNo);
-                            $('#cordyceps_attachment_applicationNo').val(data.applicationNo);
-                            $('#cordyceps-tab a:last').tab('show');
-		                    $('#cordyceps-home').hide();
+                            $('#pills-tab-phyto a:last').tab('show');
                         }
                 });
             }
@@ -1250,7 +1174,7 @@ function isNumberKey(evt)
             {
                 if (data.form_is_valid)
                 {
-                    var appNo = $('#phyto_attachment_applicationNo').val();
+                    var appNo = $('#applicationNo').val();
                     var file_url = data.file_url
                     $.ajax
                     ({
@@ -1385,48 +1309,72 @@ function isNumberKey(evt)
 
 function getPhytoCitizenDetails(cidNo)
 {
-$.ajax({
-    type : "GET",
-    url : "{% url 'get_citizen_details' %}",
-    data :{'cidNo':cidNo},
-    success : function(data)
-    {
-        const myObj =data.response;
-        var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
-        var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
-        var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
-        if (middleName == null) {
-                middleName = "";
+    $.ajax({
+        type : "GET",
+        url : "{% url 'get_citizen_details' %}",
+        data :{'cidNo':cidNo},
+        success : function(data)
+        {
+            const myObj =data.response;
+            if(myObj.citizenDetailsResponse.citizenDetail == undefined)
+            {
+                $('#p_cid').val("");
+                $('#p_Exporter_Name').val("");
+                $('#p_cidErrorMsg').html("Invalid CID.Try With Another one");
+                $('#p_cidErrorMsg').show();
+                $('#p_cidErrorMsg').delay(2000).fadeOut('slow');
             }
-        var CitizenName = firstName + " " + middleName + " " + lastName;
-        var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
-        var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
-        var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
-        $('#p_Exporter_Name').val(CitizenName);
-    }
-});
+            else
+            {
+                var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+                var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+                var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+                if (middleName == null) {
+                        middleName = "";
+                    }
+                var CitizenName = firstName + " " + middleName + " " + lastName;
+
+                var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
+                var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
+                var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
+                $('#p_Exporter_Name').val(CitizenName);
+            }
+        }
+    });
 }
 
 function getCitizenDetails(cidNo)
 {
-$.ajax({
+    $.ajax({
     type : "GET",
     url : "{% url 'get_citizen_details' %}",
     data :{'cidNo':cidNo},
     success : function(data)
     {
         const myObj =data.response;
-        var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
-        var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
-        var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
-        if (middleName == null) {
-                middleName = "";
-            }
-        var CitizenName = firstName + " " + middleName + " " + lastName;
-        var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
-        var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
-        var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
-        $('#c_Exporter_Name').val(CitizenName);
+        if(myObj.citizenDetailsResponse.citizenDetail == undefined)
+        {
+            $('#c_cid').val("");
+            $('#c_Exporter_Name').val("");
+            $('#c_cidErrorMsg').html("Invalid CID.Try With Another one");
+            $('#c_cidErrorMsg').show();
+            $('#c_cidErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+            var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+            var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+            if (middleName == null) {
+                    middleName = "";
+                }
+            var CitizenName = firstName + " " + middleName + " " + lastName;
+
+            var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
+            var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
+            var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
+            $('#c_Exporter_Name').val(CitizenName);
+        }
     }
 });
 }
@@ -1553,5 +1501,33 @@ function show_cordyceps_attachmentModal()
 {
     $('#cordyceps_attachmentModal').modal('show');
 }
+
+function checkComContact(value)
+    {
+        var firstDigit = value.charAt(0);
+        var secondDigit = value.charAt(1);
+
+        if(firstDigit != 7 && firstDigit != 1){
+            $('#c_phoneNumberErrorMsg').html("Must Start with either 1 or 7.");
+            $('#c_phoneNumberErrorMsg').show();
+            $('#c_phoneNumberErrorMsg').delay(2000).fadeOut('slow');
+            $('#c_phoneNumber').val("");
+        }else if(firstDigit == 1 && secondDigit != 6 && secondDigit != 7){
+            $('#c_phoneNumberErrorMsg').html("Second Digit Must Start with either 6 or 7.");
+            $('#c_phoneNumberErrorMsg').show();
+            $('#c_phoneNumberErrorMsg').delay(2000).fadeOut('slow');
+            $('#c_phoneNumber').val("");
+        }else if(firstDigit == 7 && secondDigit == 6){
+            $('#c_phoneNumberErrorMsg').html("Second Digit Cannot be 6.");
+            $('#c_phoneNumberErrorMsg').show();
+            $('#c_phoneNumberErrorMsg').delay(2000).fadeOut('slow');
+            $('#c_phoneNumber').val("");
+        }else if(firstDigit == 7 && secondDigit != 7){
+            $('#c_phoneNumberErrorMsg').html("Second Digit Must Start with 7.");
+            $('#c_phoneNumberErrorMsg').show();
+            $('#c_phoneNumberErrorMsg').delay(2000).fadeOut('slow');
+            $('#c_phoneNumber').val("");
+        }
+    }
 </script>
 {% endblock %}

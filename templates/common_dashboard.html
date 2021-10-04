@@ -557,6 +557,263 @@
                     }
                 });
             }
+
+            $(function(){
+                var today = new Date().toISOString().split('T')[0];
+                $('#date_for_Inspection')[0].setAttribute('min', today);
+            });
+
+            function update_edit_details(identifier)
+            {
+                if(identifier == 'PIP')
+                {
+                    $.ajax({
+                        type : "POST",
+                        url : "{% url 'update_edit_details' %}",
+                        data : $('#edit_plant_form').serialize(),
+                        success : function(response) {
+                             $('#Details').html(response);
+                             $('#edit_plant_details').modal('hide');
+                             $('.modal-backdrop').remove();
+                        }
+                    });
+                }
+                else if(identifier == 'AIP')
+                {
+                    $.ajax({
+                        type : "POST",
+                        url : "{% url 'update_edit_details' %}",
+                        data : $('#edit_agro_form').serialize(),
+                        success : function(response) {
+                             $('#AgroDetails').html(response);
+                             $('#edit_agro_details').modal('hide');
+                             $('.modal-backdrop').remove();
+                        }
+                    });
+                }
+                else if(identifier == 'RNS')
+                {
+                    $.ajax({
+                        type : "POST",
+                        url : "{% url 'update_edit_details' %}",
+                        data : $('#edit_nursery_form').serialize(),
+                        success : function(response) {
+                             $('#seed-details').html(response);
+                             $('#edit_details').modal('hide');
+                             $('.modal-backdrop').remove();
+                        }
+                    });
+                }
+                else if(identifier == 'RSC')
+                {
+                    $.ajax({
+                        type : "POST",
+                        url : "{% url 'update_edit_details' %}",
+                        data : $('#edit_certificate_form').serialize(),
+                        success : function(response) {
+                             $('#certification-details').html(response);
+                             $('#edit_seed_details').modal('hide');
+                             $('.modal-backdrop').remove();
+                        }
+                    });
+                }
+                else if(identifier == 'MPP')
+                {
+                    $.ajax({
+                        type : "POST",
+                        url : "{% url 'update_edit_details' %}",
+                        data : $('#edit_movement_form').serialize(),
+                        success : function(response) {
+                             $('#Details').html(response);
+                             $('#edit_details').modal('hide');
+                             $('.modal-backdrop').remove();
+                        }
+                    });
+                }
+                else if(identifier == 'CMS')
+                {
+                    $.ajax({
+                        type : "POST",
+                        url : "{% url 'update_edit_details' %}",
+                        data : $('#meat_item_form').serialize(),
+                        success : function(response) {
+                             $('#meat_item_details').html(response);
+                             $('#meat_item_modal').modal('hide');
+                             $('.modal-backdrop').remove();
+                        }
+                    });
+                }
+                else if(identifier == 'AFIP')
+                {
+                    $.ajax({
+                        type : "POST",
+                        url : "{% url 'update_edit_details' %}",
+                        data : $('#edit_details_form').serialize(),
+                        success : function(response) {
+                             $('#permit_details').html(response);
+                             $('#edit_model').modal('hide');
+                             $('.modal-backdrop').remove();
+                        }
+                    });
+                }
+                else if(identifier == 'APLEC')
+                {
+                    $.ajax({
+                        type : "POST",
+                        url : "{% url 'update_edit_details' %}",
+                        data : $('#edit_animal_product_form').serialize(),
+                        success : function(response) {
+                             $('#animal_product_details').html(response);
+                             $('#edit_animal_products_model').modal('hide');
+                             $('.modal-backdrop').remove();
+                        }
+                    });
+                }
+                else if(identifier == 'ALEC')
+                {
+                    $.ajax({
+                        type : "POST",
+                        url : "{% url 'update_edit_details' %}",
+                        data : $('#edit_animal_details_form').serialize(),
+                        success : function(response) {
+                             $('#animal_details').html(response);
+                             $('#edit_animal_model').modal('hide');
+                             $('.modal-backdrop').remove();
+                        }
+                    });
+                }
+                else if(identifier == 'LPIP')
+                {
+                    $.ajax({
+                        type : "POST",
+                        url : "{% url 'update_edit_details' %}",
+                        data : $('#edit_permit_details_form').serialize(),
+                        success : function(response) {
+                             $('#permit_details').html(response);
+                             $('#edit_permit_details_model').modal('hide');
+                             $('.modal-backdrop').remove();
+                        }
+                    });
+                }
+                else if(identifier == 'APM')
+                {
+                    $.ajax({
+                        type : "POST",
+                        url : "{% url 'update_edit_details' %}",
+                        data : $('#edit_mortem_details_form').serialize(),
+                        success : function(response) {
+                             $('#mortem_details').html(response);
+                             $('#edit_mortem_details').modal('hide');
+                             $('.modal-backdrop').remove();
+                        }
+                    });
+                }
+                else if(identifier == 'ALMP')
+                {
+                    $.ajax({
+                        type : "POST",
+                        url : "{% url 'update_edit_details' %}",
+                        data : $('#edit_animal_form').serialize(),
+                        success : function(response) {
+                             $('#animal_details').html(response);
+                             $('#edit_animal_model').modal('hide');
+                             $('.modal-backdrop').remove();
+                        }
+                    });
+                }
+                else if(identifier == 'APLMP')
+                {
+                    $.ajax({
+                        type : "POST",
+                        url : "{% url 'update_edit_details' %}",
+                        data : $('#edit_animal_product_form').serialize(),
+                        success : function(response) {
+                             $('#animal_product_details').html(response);
+                             $('#edit_animal_product_model').modal('hide');
+                             $('.modal-backdrop').remove();
+                        }
+                    });
+                }
+                else if(identifier == 'FBR-OP')
+                {
+                    $.ajax({
+                        type : "POST",
+                        url : "{% url 'update_edit_details' %}",
+                        data : $('#edit_op_form').serialize(),
+                        success : function(response) {
+                             $('#fbr_details').html(response);
+                             $('#edit_op_model').modal('hide');
+                             $('.modal-backdrop').remove();
+                        }
+                    });
+                }
+                else if(identifier == 'FBR-FH')
+                {
+                    $.ajax({
+                        type : "POST",
+                        url : "{% url 'update_edit_details' %}",
+                        data : $('#edit_fh_form').serialize(),
+                        success : function(response) {
+                             $('#food_handler_details').html(response);
+                             $('#edit_fh_details').modal('hide');
+                             $('.modal-backdrop').remove();
+                        }
+                    });
+                }
+                else if(identifier == 'FIP')
+                {
+                    $.ajax({
+                        type : "POST",
+                        url : "{% url 'update_edit_details' %}",
+                        data : $('#edit_import_form').serialize(),
+                        success : function(response) {
+                             $('#permit_details').html(response);
+                             $('#edit_import_model').modal('hide');
+                             $('.modal-backdrop').remove();
+                        }
+                    });
+                }
+                else if(identifier == 'GAP-FG')
+                {
+                    $.ajax({
+                        type : "POST",
+                        url : "{% url 'update_edit_details' %}",
+                        data : $('#edit_farmers_group_form').serialize(),
+                        success : function(response) {
+                             $('#farmer_details').html(response);
+                             $('#edit_farmers_group_model').modal('hide');
+                             $('.modal-backdrop').remove();
+                        }
+                    });
+                }
+                else if(identifier == 'GAP-CP')
+                {
+                    $.ajax({
+                        type : "POST",
+                        url : "{% url 'update_edit_details' %}",
+                        data : $('#edit_crop_production_form').serialize(),
+                        success : function(response) {
+                             $('#details_crop_production').html(response);
+                             $('#edit_crop_production_modal').modal('hide');
+                             $('.modal-backdrop').remove();
+                        }
+                    });
+                }
+                else if(identifier == 'GAP-PH')
+                {
+                    $.ajax({
+                        type : "POST",
+                        url : "{% url 'update_edit_details' %}",
+                        data : $('#edit_pack_house_form').serialize(),
+                        success : function(response) {
+                             $('#pack_house').html(response);
+                             $('#edit_pack_house_model').modal('hide');
+                             $('.modal-backdrop').remove();
+                        }
+                    });
+                }
+
+            }
         </script>
     </body>
 </html>

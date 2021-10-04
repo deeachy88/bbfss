@@ -8,6 +8,7 @@
             <th scope="col">Estimated Production</th>
             <th scope="col">Estimated Production Unit</th>
             <th scope="col">Product Sold</th>
+            <th scope="col"></th>
         </tr>
     </thead>
     <tbody>
@@ -20,6 +21,18 @@
                 <td>{{animal.Estimated_Production}}</td>
                 <td>{{animal.Production_Unit}}</td>
                 <td>{{animal.Production_Sold}}</td>
+                <td>
+                    <button type="button" class="btn btn-primary btn-sm"
+                    onclick="delete_details('{{animal.Record_Id}}','{{animal.Application_No}}', 'OC-AH')">
+                    <i class="zmdi zmdi-delete"></i>
+                    </button>
+                    <button  type="button" class="btn btn-info btn-sm" data-toggle="tooltip" title="Edit"
+                     onclick="populate_crop_details('{{ animal.Record_Id }}', {{animal.Livestock_Type}},
+                     '{{animal.Male_no}}','{{animal.Female_no}}','{{animal.Estimated_Production}}','{{animal.Production_Unit}}',
+                     '{{animal.Production_Sold}}','{{animal.Application_No}}')">
+                    <i class="fa fa-edit"></i>
+                    </button>
+                </td>
             </tr>
             {% empty %}
             <tr>

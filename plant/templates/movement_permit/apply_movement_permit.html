@@ -291,6 +291,7 @@ option {
                     <div class="col-lg-12">
                         <div class="box box-primary">
                             <div class="box-body">
+
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Commodity <font color='red'>*</font></label>
@@ -308,7 +309,7 @@ option {
                                         <label class="form-label">Unit <font color='red'>*</font></label>
                                         <select class="form-control" name="unit"  id="unit">
                                             {% for unit in unit %}
-                                                <option value="unit.Unit">{{unit.Unit}}</option>
+                                                <option value="{{unit.Unit}}">{{unit.Unit}}</option>
                                             {% endfor %}
                                         </select>
                                         <div class="alert alert-danger" id="unitErrorMsg" style="display:none"></div>
@@ -364,6 +365,65 @@ option {
                     <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_attachment()"> Submit </button>
                 </div>
 
+            </div>
+        </div>
+    </div>
+</form>
+
+<form method="post" id="edit_movement_form">
+    {% csrf_token %}
+    <input type="hidden" id="edit_app_No" name="edit_app_No">
+    <div class="modal fade" id="edit_details" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <input type="text" name="movement_record_id" id="movement_record_id" style="display:none"/>
+                                <input type="hidden" name="identifier" value="MPP"/>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Commodity <font color='red'>*</font></label>
+                                        <input type="text" name="edit_commodity" class="form-control" id="edit_commodity" required>
+                                        <div class="alert alert-danger" id="edit_commodityErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Quantity <font color='red'>*</font></label>
+                                        <input type="text" name="edit_qty" class="form-control" id="edit_qty" onkeypress="return isNumberKey(event)">
+                                        <div class="alert alert-danger" id="edit_qtyErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Unit <font color='red'>*</font></label>
+                                        <select class="form-control" name="edit_unit"  id="edit_unit">
+                                            {% for unit in unit %}
+                                                <option value="{{unit.Unit}}">{{unit.Unit}}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="alert alert-danger" id="edit_unitErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Remarks</label>
+                                        <input type="text" name="edit_remarks" class="form-control" id="edit_remarks" required>
+                                        <div class="alert alert-danger" id="edit_remarksErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="update_edit_details('MPP')">Update</button>
+                </div>
             </div>
         </div>
     </div>
@@ -461,9 +521,9 @@ function save()
     }
     else if(to_gewog == "")
     {
-        $('#from_gewogErrorMsg').html("Select To Gewog.");
-        $('#from_gewogErrorMsg').show();
-        $('#from_gewogErrorMsg').delay(2000).fadeOut('slow');
+        $('#to_gewogErrorMsg').html("Select To Gewog.");
+        $('#to_gewogErrorMsg').show();
+        $('#to_gewogErrorMsg').delay(2000).fadeOut('slow');
         $('#to_gewog').focus();
     }
     else if(to_exact_location == "")
@@ -679,7 +739,7 @@ function save_attachment()
             if (data.form_is_valid)
             {
                 var file_url = data.file_url
-                var appNo = $('#appNo').val();
+                var appNo = $('#applicationNo').val();
                 $.ajax
                 ({
                     type : "POST",
@@ -818,20 +878,35 @@ function getCitizenDetails(cidNo)
         success : function(data)
         {
             const myObj =data.response;
-            var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
-            var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
-            var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
-            if (middleName == null) {
-                    middleName = "";
-                }
-            var CitizenName = firstName + " " + middleName + " " + lastName;
-            var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
-            var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
-            var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
-            $('#name').val(CitizenName);
-            $('#dzongkhag').val(dzongkhagName);
-            $('#gewog').val(gewogName);
-            $('#village').val(villageName);
+            if(myObj.citizenDetailsResponse.citizenDetail == undefined)
+            {
+                $('#cid').val("");
+                $('#name').val("");
+                $('#dzongkhag').val("");
+                $('#gewog').val("");
+                $('#village').val("");
+                $('#cidErrorMsg').html("Invalid CID.Try With Another one");
+                $('#cidErrorMsg').show();
+                $('#cidErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else
+            {
+                var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+                var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+                var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+                if (middleName == null) {
+                        middleName = "";
+                    }
+                var CitizenName = firstName + " " + middleName + " " + lastName;
+
+                var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
+                var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
+                var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
+                $('#name').val(CitizenName);
+                $('#dzongkhag').val(dzongkhagName);
+                $('#gewog').val(gewogName);
+                $('#village').val(villageName);
+            }
         }
     });
 }
@@ -881,5 +956,18 @@ function save_details_form()
 {
     $('#pills-tab a:last').tab('show');
 }
+
+function populateDetails(Record_Id, Commodity, Quantity, Unit, Remarks, application_no)
+{
+    $('#movement_record_id').val(Record_Id);
+    $('#edit_commodity').val(Commodity);
+    $('#edit_qty').val(Quantity);
+    $('#edit_unit').val(Unit);
+    $('#edit_remarks').val(Remarks);
+    $('#edit_app_No').val(application_no);
+    $('#edit_details').modal('show');
+
+}
+
 </script>
 {% endblock %}

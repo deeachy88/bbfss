@@ -19,6 +19,14 @@ form, input, select, textarea{
     height: auto;
     color: #121111;
 }
+#loader img
+{
+  left: 50%;
+  margin-left: -32px;
+  margin-top: -32px;
+  position: absolute;
+  top: 50%;
+}
 </style>
 <div class="accordion" role="tablist">
         <div class="card">
@@ -227,32 +235,21 @@ form, input, select, textarea{
                                     <div class="form-group">
                                         <label class="form-label">Place Of Entry</label>
                                         <select class="form-control" disabled>
-                                            <option value="">--SELECT--</option>
-                                            {% for location in location %}
-                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
+                                            {% for location in location_details %}
+                                                    <option value="{{ location.Field_Office_Id }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
                                             {% endfor %}
                                          </select>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="form-label">Place of Entry</label>
-                                        <select class="form-control"disabled>
-                                            {% for location in location %}
-                                                <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
-                                            {% endfor %}
-                                         </select>
+                                        <label class="form-label">Final Destination</label>
+                                         <input type="text" class="form-control" value="{{application_details.Final_Destination }}" disabled>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Final Destination</label>
-                                         <input type="text" class="form-control" value="{{application_details.Final_Destination }}">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-label">Expected Date for Arrival</label>
                                          <input type="text" class="form-control" value="{{application_details.Expected_Arrival_Date }}" disabled>
@@ -311,32 +308,21 @@ form, input, select, textarea{
                                     <div class="form-group">
                                         <label class="form-label">Place Of Entry</label>
                                         <select class="form-control" disabled>
-                                            <option value="">--SELECT--</option>
-                                            {% for location in location %}
-                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
+                                            {% for location in location_details %}
+                                                    <option value="{{ location.Field_Office_Id }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
                                             {% endfor %}
                                          </select>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="form-label">Place of Entry</label>
-                                        <select class="form-control"disabled>
-                                            {% for location in location %}
-                                                <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
-                                            {% endfor %}
-                                         </select>
+                                        <label class="form-label">Final Destination</label>
+                                         <input type="text" class="form-control" value="{{application_details.Final_Destination }}" disabled>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Final Destination</label>
-                                         <input type="text" class="form-control" value="{{application_details.Final_Destination }}">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-label">Expected Date for Arrival</label>
                                          <input type="text" class="form-control" value="{{application_details.Expected_Arrival_Date }}" disabled>
@@ -395,32 +381,21 @@ form, input, select, textarea{
                                     <div class="form-group">
                                         <label class="form-label">Place Of Entry</label>
                                         <select class="form-control" disabled>
-                                            <option value="">--SELECT--</option>
-                                            {% for location in location %}
-                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
+                                            {% for location in location_details %}
+                                                    <option value="{{ location.Field_Office_Id }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
                                             {% endfor %}
                                          </select>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="form-label">Place of Entry</label>
-                                        <select class="form-control"disabled>
-                                            {% for location in location %}
-                                                <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
-                                            {% endfor %}
-                                         </select>
+                                        <label class="form-label">Final Destination</label>
+                                         <input type="text" class="form-control" value="{{application_details.Final_Destination }}" disabled>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Final Destination</label>
-                                         <input type="text" class="form-control" value="{{application_details.Final_Destination }}">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-label">Expected Date for Arrival</label>
                                          <input type="text" class="form-control" value="{{application_details.Expected_Arrival_Date }}" disabled>
@@ -472,7 +447,6 @@ form, input, select, textarea{
             <div id="collapseThree" class="active" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion" style="">
                 <div class="card-body">
                     <br>
-                    <hr>
                     <div class="card-tools">
                         <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="openDecisionModal()">
                             <span class="btn-label">
@@ -513,6 +487,46 @@ form, input, select, textarea{
                                {% endfor %}
                             </tbody>
                         </table>
+                    </div>
+                    <br>
+                    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Client</span>
+                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Details</span>
+                        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                    </div>
+                    {% for application_details in application_details %}
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Actual Point Of Entry</label>
+                                    <select class="form-control" disabled>
+                                        {% for location in location_details %}
+                                                <option value="{{ location.Field_Office_Id }}" {% if application_details.Actual_Point_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                            </div>
+                             <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Requested Inspection Date</label>
+                                    <input type="text" class="form-control" value="{{application_details.Proposed_Inspection_Date}}" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Remarks</label>
+                                    <textarea class="form-control" rows="2" disabled>{{application_details.Inspection_Request_Remarks }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <br>
+                    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Consignment</span>
+                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Details</span>
+                        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
                     </div>
                     <div id="import-details">
                         <table id="details-table" class="table table-bordered">
@@ -558,8 +572,7 @@ form, input, select, textarea{
                             </tbody>
                         </table>
                     </div>
-
-
+                     <br>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -605,15 +618,16 @@ form, input, select, textarea{
                     </div>
                     <div class="alert alert-info" id="approve_Msg" style="display:none"></div>
                     <hr>
+                    <div id="loader" style="display:none">
+                        <img src="{% static 'assets/img/ajax-loader.gif' %}" alt="processing..." />
+                    </div>
                     <div class="card-action text-center">
+                        {% for application_details in application_details %}
                         <button type="button" class="btn btn-flat btn-primary" onclick="submit_details('{{application_details.Application_No}}')">
-                            <i class="ace-icon fa fa-times"></i>
+                            <i class="ace-icon fa fa-check"></i>
                             &nbsp;&nbsp;Submit
                         </button>
-                        <button type="button" class="btn btn-flat btn-danger">
-                            <i class="ace-icon fa fa-times"></i>
-                            &nbsp;&nbsp;Cancel
-                        </button>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
@@ -623,7 +637,7 @@ form, input, select, textarea{
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title"></h5>
-                        <button type="button" class="close" onclick="closeModal()">
+                        <button type="button" class="close" data-dismiss="modal">
                             <span aria-hidden="true">&times;</span>
                         </button>
 
@@ -648,10 +662,10 @@ form, input, select, textarea{
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-flat btn-primary" onclick="add_details_ins('{{ application_details.Application_No }}')">
-                            <i class="ace-icon fa fa-times"></i>
+                            <i class="ace-icon fa fa-check"></i>
                             &nbsp;&nbsp;Add
                         </button>
-                        <button type="button" class="btn btn-primary" onclick="closeModal()">Close Modal</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close Modal</button>
                      </div>
                      <div id="messageDiv" style="display:none"></div>
                   </div>
@@ -712,8 +726,8 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <div class="form-group">
-                                            <label class="form-label">Quantity Released</label>
-                                            <input type="number" class="form-control" id="number_released" name="number_released" onchange="get_balance_import()">
+                                            <label class="form-label">Quantity Released <font color="red">*</font></font> </label>
+                                            <input type="text" class="form-control" id="number_released" name="number_released" onchange="get_balance_import()" onkeypress="return isNumberKey(event)">
                                         </div>
                                         <div class="alert alert-danger" id="number_releasedErrorMsg" style="display:none"></div>
                                     </div>
@@ -726,7 +740,7 @@ form, input, select, textarea{
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Remarks</label>
+                                        <label class="form-label">Remarks(If Any)</label>
                                         <textarea name="import_Remarks" class="form-control" id="import_Remarks" rows="3"></textarea>
                                     </div>
                                 </div>
@@ -751,11 +765,22 @@ form, input, select, textarea{
     </div>
 </div>
 <script src="{% static 'assets/bower_components/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'assets/bower_components/popper.js/dist/umd/popper.min.js' %}"></script>
 <script src="{% static 'assets/bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'assets/bower_components/jquery.scrollbar/jquery.scrollbar.min.js' %}"></script>
+<script src="{% static 'assets/bower_components/jquery-scrollLock/jquery-scrollLock.min.js' %}"></script>
 <script src="{% static 'assets/bower_components/flatpickr/dist/flatpickr.min.js' %}"></script>
 <script src="{% static 'assets/js/app.min.js' %}"></script>
 <script src="{% static 'assets/js/inspector.js' %}"></script>
 <script>
+function isNumberKey(evt)
+    {
+     var charCode = (evt.which) ? evt.which : event.keyCode
+     if (charCode > 31 && (charCode < 48 || charCode > 57))
+        return false;
+
+     return true;
+    }
 $(function(){
     var today = new Date().toISOString().split('T')[0];
     $('#dateOfInspection')[0].setAttribute('min', today);
@@ -843,11 +868,13 @@ function submit_details(application_id)
     }
     else
     {
+        $("#loader").show();
         $.ajax({
             type : "GET",
             url : "{% url 'submit_lp_application' %}",
             data :{'application_no':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks , 'dateOfInspection':dateOfInspection,'timeOfInspection':timeOfInspection},
             success : function(data) {
+                $("#loader").hide();
                 $('#approve_Msg').html("Application Approved.");
                 $('#approve_Msg').show();
                 $('#approve_Msg').delay(2000).fadeOut('slow');
@@ -896,15 +923,26 @@ function get_balance_import(qty)
 
 function update_permit_details_form()
 {
-    $.ajax({
-        type : "POST",
-        url : "{% url 'update_details_lp' %}",
-        data : $('#permit_details_form').serialize(),
-        success : function(response) {
-            $('#import-details').html(response);
-            $('#permit_details_model').modal('hide');
-            $('.modal-backdrop').remove();
-        }
-    });
+    var number_released = $('#number_released').val();
+    if(number_released = "")
+    {
+        $('#number_releasedErrorMsg').html("Enter Quantity Released.");
+        $('#number_releasedErrorMsg').show();
+        $('#number_releasedErrorMsg').delay(2000).fadeOut('slow');
+        $('#number_released').val("");
+    }
+    else
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'update_details_lp' %}",
+            data : $('#permit_details_form').serialize(),
+            success : function(response) {
+                $('#import-details').html(response);
+                $('#permit_details_model').modal('hide');
+                $('.modal-backdrop').remove();
+            }
+        });
+    }
 }
 </script>

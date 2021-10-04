@@ -8,7 +8,30 @@
 form, input, select, textarea{
     color: black !important;
 }
-
+#loader img
+{
+  left: 50%;
+  margin-left: -32px;
+  margin-top: -32px;
+  position: absolute;
+  top: 50%;
+}
+.flatpickr-calendar {
+    border-radius: 2px;
+    border: 0;
+    box-shadow: 0 4px 18px rgb(0 0 0 / 50%);
+    width: auto;
+    margin-top: -4px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-color: rgb(240 237 237 / 96%);
+}
+.flatpickr-time .flatpickr-am-pm, .flatpickr-time .numInputWrapper {
+    height: auto;
+    color: #121111;
+}
 </style>
         <div class="card">
             <div class="card-header" role="tab" id="headingOne">
@@ -253,7 +276,7 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="presentAddress">Present Address</label>
+                                            <label class="form-label">Present Address</label>
                                             <textarea class="form-control" rows="3" disabled>{{ application_details.Present_Address }}</textarea>
                                         </div>
                                     </div>
@@ -273,13 +296,13 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="regNo">License Number</label>
+                                            <label class="form-label">License Number</label>
                                             <input type="text" class="form-control" id="regNo" name="regNo" value="{{application_details.License_No}}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="business_name">Business Name</label>
+                                            <label class="form-label">Business Name</label>
                                             <input type="text" class="form-control" id="business_name" name="companyName" value="{{application_details.Business_Name }}" disabled>
                                         </div>
                                     </div>
@@ -321,16 +344,16 @@ form, input, select, textarea{
                                              </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Expected Date for Export</label>
                                              <input type="text" class="form-control" value="{{application_details.Export_Expected_Date }}" disabled>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Propose Date for Inspection</label>
-                                             <input type="text" class="form-control" value="{{application_details.Final_Destination }}">
+                                             <input type="text" class="form-control" value="{{application_details.Proposed_Inspection_Date }}" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -338,19 +361,19 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="cid">Passport No</label>
+                                            <label class="form-label">Passport No</label>
                                             <input type="number" class="form-control" value="{{ application_details.Passport_No }}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="name">Name</label>
+                                            <label class="form-label">Name</label>
                                             <input type="text" class="form-control" value="{{ application_details.Applicant_Name }}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="presentAddress">Present Address</label>
+                                            <label class="form-label">Present Address</label>
                                             <textarea class="form-control" rows="3" disabled>{{ application_details.Present_Address }}</textarea>
                                         </div>
                                     </div>
@@ -415,72 +438,76 @@ form, input, select, textarea{
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="form-label">Propose Date for Inspection</label>
-                                             <input type="text" class="form-control" value="{{application_details.Final_Destination }}">
+                                             <input type="text" class="form-control" value="{{application_details.Proposed_Inspection_Date }}" disabled>
                                         </div>
                                     </div>
                                 </div>
                             {% endif %}
-                    {% if application_details.PermitType == A %}
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Species</th>
-                                    <th scope="col">Breed</th>
-                                    <th scope="col">Age</th>
-                                    <th scope="col">Sex</th>
-                                    <th scope="col">Description</th>
-                                    <th scope="col">Quantity</th>
-                                    <th scope="col">Unit</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for import in import %}
-                                    <tr>
-                                        <td>{{ forloop.counter }}</td>
-                                        <td>{{import.Import_Category}}</td>
-                                        <td>{{import.Pesticide_Id}}</td>
-                                        <td>{{import.Description}}</td>
-                                        <td>{{import.Unit}}</td>
-                                        <td>{{import.Quantity}}</td>
-                                    </tr>
-                                    {% empty %}
-                                    <tr>
-                                      <td colspan="8" class="text-center">No Data</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                        {% else %}
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Particulars</th>
-                                    <th scope="col">Company_Name</th>
-                                    <th scope="col">Description</th>
-                                    <th scope="col">Quantity</th>
-                                    <th scope="col">Unit</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for import in import %}
-                                    <tr>
-                                        <td>{{ forloop.counter }}</td>
-                                        <td>{{import.Import_Category}}</td>
-                                        <td>{{import.Pesticide_Id}}</td>
-                                        <td>{{import.Description}}</td>
-                                        <td>{{import.Unit}}</td>
-                                        <td>{{import.Quantity}}</td>
-                                    </tr>
-                                    {% empty %}
-                                    <tr>
-                                      <td colspan="6" class="text-center">No Data</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                        {% endif%}
+                    {% if application_details.Application_Type == 'AP' %}
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Particulars</th>
+                                            <th scope="col">Company Name</th>
+                                            <th scope="col">Description</th>
+                                            <th scope="col">Quantity</th>
+                                            <th scope="col">Unit</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for import in details %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td>{{details.Particulars}}</td>
+                                                <td>{{details.Company_Name}}</td>
+                                                <td>{{details.Description}}</td>
+                                                <td>{{details.Unit}}</td>
+                                                <td>{{details.Quantity}}</td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                              <td colspan="6" class="text-center">No Data</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                <br>
+                            {% else %}
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Species</th>
+                                            <th scope="col">Breed</th>
+                                            <th scope="col">Age</th>
+                                            <th scope="col">Sex</th>
+                                            <th scope="col">Description</th>
+                                            <th scope="col">No of Animals</th>
+                                            <th scope="col">Remarks</th>
+                                            <th scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for details in details %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td>{{details.Species}}</td>
+                                                <td>{{details.Breed}}</td>
+                                                <td>{{details.Age}}</td>
+                                                <td>{{details.Sex}}</td>
+                                                <td>{{details.Description}}</td>
+                                                <td>{{details.No_Of_Animal}}</td>
+                                                <td>{{details.Remarks}}</td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                              <td colspan="8" class="text-center">No Data</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% endif %}
                     {% endfor %}
                 </div>
             </div>
@@ -561,7 +588,7 @@ form, input, select, textarea{
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Inspection Team Leader</label>
+                                <label>Inspection Team Leader <font color="red">*</font></label>
                                 <select class="form-control" name="teamLeader"  id="teamLeader">
                                     <option value="">--SELECT TEAM LEADER--</option>
                                     {% for inspector_list in inspector_list %}
@@ -573,7 +600,7 @@ form, input, select, textarea{
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="insTeam">Inspection Team </label>
+                                <label for="insTeam">Inspection Team <font color="red">*</font></label>
                                 <textarea class="form-control" id="insTeam" rows="2"></textarea>
                             </div>
                             <div class="alert alert-danger" id="insTeamErrorMsg" style="display:none"></div>
@@ -582,14 +609,14 @@ form, input, select, textarea{
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Date Of Inspection</label>
-                                <input type="text" class="form-control date-picker flatpickr-input active" id="dateOfInspection" name="date"  placeholder="Pick a date" readonly="readonly">
+                                <label>Date Of Inspection <font color="red">*</font></label>
+                                <input type="date" class="form-control" id="dateOfInspection" name="date">
                             </div>
                              <div class="alert alert-danger" id="dateOfInspectionErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Inspection Time</label>
+                                <label>Inspection Time <font color="red">*</font></label>
                                 <input type="text" class="form-control time-picker flatpickr-input active" id="insTime" name="insTime" readonly="readonly">
                             </div>
                             <div class="alert alert-danger" id="insTimeErrorMsg" style="display:none"></div>
@@ -598,14 +625,14 @@ form, input, select, textarea{
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Validity Of Permit</label>
-                                <input type="number" class="form-control" id="validity" name="validity">
+                                <label>Validity Of Permit(No Of Days) <font color="red">*</font></label>
+                                <input type="text" class="form-control" id="validity" name="validity" onkeypress="return isNumberKey(event)">
                             </div>
                             <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Remarks(Mandatory If Reject)</label>
+                                <label>Remarks(Mandatory If Reject) <font color="red">*</font></label>
                                 <textarea class="form-control" id="remarks" rows="2"></textarea>
                             </div>
                             <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
@@ -613,6 +640,9 @@ form, input, select, textarea{
                     </div>
                     <div class="alert alert-info" id="approve_Msg" style="display:none"></div>
                     <hr>
+                    <div id="loader" style="display:none">
+                        <img src="{% static 'assets/img/ajax-loader.gif' %}" alt="processing..." />
+                    </div>
                     {% for application_details in application_details %}
                         <div class="card-action text-center">
                             <button type="button" class="btn btn-flat btn-primary" onclick="approve_details('{{application_details.Application_No}}')">
@@ -622,10 +652,6 @@ form, input, select, textarea{
                             <button type="button" class="btn btn-flat btn-primary" onclick="reject_details('{{application_details.Application_No}}')">
                                 <i class="ace-icon fa fa-times"></i>
                                 &nbsp;&nbsp;Reject
-                            </button>
-                            <button type="button" class="btn btn-flat btn-danger">
-                                <i class="ace-icon fa fa-times"></i>
-                                &nbsp;&nbsp;Cancel
                             </button>
                         </div>
                     {% endfor %}
@@ -637,7 +663,7 @@ form, input, select, textarea{
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title"></h5>
-                        <button type="button" class="close" onclick="closeModal()">
+                        <button type="button" class="close" data-dismiss="modal">
                             <span aria-hidden="true">&times;</span>
                         </button>
 
@@ -668,7 +694,7 @@ form, input, select, textarea{
                             &nbsp;&nbsp;Add
                         </button>
                         {% endfor %}
-                        <button type="button" class="btn btn-primary" onclick="closeModal()">Close Modal</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close Modal</button>
                      </div>
 
                   </div>
@@ -688,8 +714,27 @@ form, input, select, textarea{
           </div>
         </div>
     </div>
+<script src="{% static 'assets/bower_components/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'assets/bower_components/popper.js/dist/umd/popper.min.js' %}"></script>
+<script src="{% static 'assets/bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'assets/bower_components/jquery.scrollbar/jquery.scrollbar.min.js' %}"></script>
+<script src="{% static 'assets/bower_components/jquery-scrollLock/jquery-scrollLock.min.js' %}"></script>
+<script src="{% static 'assets/bower_components/flatpickr/dist/flatpickr.min.js' %}"></script>
 <script src="{% static 'assets/js/app.min.js' %}"></script>
 <script>
+$(function()
+{
+    var today = new Date().toISOString().split('T')[0];
+    $('#inspectionDate')[0].setAttribute('min', today);
+});
+function isNumberKey(evt)
+{
+ var charCode = (evt.which) ? evt.which : event.keyCode
+ if (charCode > 31 && (charCode < 48 || charCode > 57))
+    return false;
+
+ return true;
+}
 function openDecisionModal()
 {
     $('#addModal').modal('show');
@@ -745,69 +790,6 @@ function approve_details(application_id)
 
     if(Inspection_Leader == "")
     {
-        $('#teamLeaderErrorMsg').html("Enter Validity.");
-        $('#teamLeaderErrorMsg').show();
-        $('#teamLeaderErrorMsg').delay(2000).fadeOut('slow');
-        $('#teamLeader').focus();
-    }
-    else if(Inspection_Team == "")
-    {
-        $('#insTeamErrorMsg').html("Enter Validity.");
-        $('#insTeamErrorMsg').show();
-        $('#insTeamErrorMsg').delay(2000).fadeOut('slow');
-        $('#insTeam').focus();
-    }
-    else if(dateOfInspection == "")
-    {
-        $('#dateOfInspectionErrorMsg').html("Select Date Of Inspection.");
-        $('#dateOfInspectionErrorMsg').show();
-        $('#dateOfInspectionErrorMsg').delay(2000).fadeOut('slow');
-        $('#dateOfInspection').focus();
-    }
-    else if(validity == "")
-    {
-        $('#validityErrorMsg').html("Select Inspection Time.");
-        $('#validityErrorMsg').show();
-        $('#validityErrorMsg').delay(2000).fadeOut('slow');
-        $('#validity').focus();
-    }
-    else if(insTime == "")
-    {
-        $('#insTimeErrorMsg').html("Select Inspection Time.");
-        $('#insTimeErrorMsg').show();
-        $('#insTimeErrorMsg').delay(2000).fadeOut('slow');
-        $('#insTime').focus();
-    }
-    else
-    {
-        $.ajax({
-            type : "GET",
-            url : "{% url 'approve_application_export' %}",
-            data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks ,
-            'dateOfInspection':dateOfInspection, 'validity':validity, 'insTime':insTime},
-            success : function(data) {
-                $('#approve_Msg').html("Application Approved.");
-                $('#approve_Msg').show();
-                $('#approve_Msg').delay(2000).fadeOut('slow');
-                setTimeout(function() {
-                    window.location.href = '{% url 'dashboard' %}';
-                }, 3000);
-            }
-        });
-    }
-}
-
-function reject_details(application_id)
-{
-
-    Inspection_Leader = $('#teamLeader').val();
-    Inspection_Team = $('#insTeam').val();
-    remarks = $('#remarks').val();
-    dateOfInspection = $('#dateOfInspection').val();
-    insTime = $('#insTime').val();
-
-    if(Inspection_Leader == "")
-    {
         $('#teamLeaderErrorMsg').html("Select Team Leader.");
         $('#teamLeaderErrorMsg').show();
         $('#teamLeaderErrorMsg').delay(2000).fadeOut('slow');
@@ -827,6 +809,13 @@ function reject_details(application_id)
         $('#dateOfInspectionErrorMsg').delay(2000).fadeOut('slow');
         $('#dateOfInspection').focus();
     }
+    else if(validity == "")
+    {
+        $('#validityErrorMsg').html("Enter Validity.");
+        $('#validityErrorMsg').show();
+        $('#validityErrorMsg').delay(2000).fadeOut('slow');
+        $('#validity').focus();
+    }
     else if(insTime == "")
     {
         $('#insTimeErrorMsg').html("Select Inspection Time.");
@@ -834,21 +823,49 @@ function reject_details(application_id)
         $('#insTimeErrorMsg').delay(2000).fadeOut('slow');
         $('#insTime').focus();
     }
-    else if(remarks == "")
+    else
     {
-        $('#remarksErrorMsg').html("Select Inspection Time.");
+        $("#loader").show();
+        $.ajax({
+            type : "GET",
+            url : "{% url 'approve_application_export' %}",
+            data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks ,
+            'dateOfInspection':dateOfInspection, 'validity':validity, 'insTime':insTime},
+            success : function(data) {
+                $("#loader").hide();
+                $('#approve_Msg').html("Application Approved.");
+                $('#approve_Msg').show();
+                $('#approve_Msg').delay(2000).fadeOut('slow');
+                setTimeout(function() {
+                    window.location.href = '{% url 'dashboard' %}';
+                }, 3000);
+            }
+        });
+    }
+}
+
+function reject_details(application_id)
+{
+
+
+    remarks = $('#remarks').val();
+
+    if(remarks == "")
+    {
+        $('#remarksErrorMsg').html("Enter Remarks.");
         $('#remarksErrorMsg').show();
         $('#remarksErrorMsg').delay(2000).fadeOut('slow');
         $('#remarks').focus();
     }
     else
     {
+        $("#loader").show();
         $.ajax({
             type : "GET",
             url : "{% url 'reject_application_export' %}",
-            data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks ,
-            'dateOfInspection':dateOfInspection, 'insTime':insTime},
+            data :{'application_id':application_id ,'remarks':remarks},
             success : function(data) {
+                $("#loader").hide();
                 $('#approve_Msg').html("Application Rejected.");
                 $('#approve_Msg').show();
                 $('#approve_Msg').delay(2000).fadeOut('slow');

@@ -3,6 +3,14 @@
 form, input, select, textarea{
     color: black !important;
 }
+#loader img
+{
+  left: 50%;
+  margin-left: -32px;
+  margin-top: -32px;
+  position: absolute;
+  top: 50%;
+}
 </style>
 <form method="post" id="inspection_call_form">
 {% csrf_token %}
@@ -209,31 +217,21 @@ form, input, select, textarea{
                                             <label class="form-label">Place Of Entry</label>
                                             <select class="form-control" disabled>
                                                 <option value="">--SELECT--</option>
-                                                {% for location in location %}
-                                                        <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
+                                                {% for location in location_details %}
+                                                        <option value="{{ location.Field_Office_Id }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
                                                 {% endfor %}
                                              </select>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Place of Entry</label>
-                                            <select class="form-control"disabled>
-                                                {% for location in location %}
-                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
-                                                {% endfor %}
-                                             </select>
+                                            <label class="form-label">Final Destination</label>
+                                             <input type="text" class="form-control" value="{{application_details.Place_Of_Entry }}" disabled>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label class="form-label">Final Destination</label>
-                                             <input type="text" class="form-control" value="{{application_details.Final_Destination }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="form-label">Expected Date for Arrival</label>
                                              <input type="text" class="form-control" value="{{application_details.Expected_Arrival_Date }}" disabled>
@@ -293,31 +291,21 @@ form, input, select, textarea{
                                             <label class="form-label">Place Of Entry</label>
                                             <select class="form-control" disabled>
                                                 <option value="">--SELECT--</option>
-                                                {% for location in location %}
-                                                        <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
+                                                {% for location in location_details %}
+                                                    <option value="{{ location.Field_Office_Id }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
                                                 {% endfor %}
                                              </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label class="form-label">Place of Entry</label>
-                                            <select class="form-control"disabled>
-                                                {% for location in location %}
-                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
-                                                {% endfor %}
-                                             </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Final Destination</label>
                                              <input type="text" class="form-control" value="{{application_details.Final_Destination }}">
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Expected Date for Arrival</label>
                                              <input type="text" class="form-control" value="{{application_details.Expected_Arrival_Date }}" disabled>
@@ -328,7 +316,7 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="presentAddress">Present Address</label>
+                                            <label class="form-label">Present Address</label>
                                             <textarea class="form-control" rows="3" disabled>{{ application_details.Present_Address }}</textarea>
                                         </div>
                                     </div>
@@ -377,30 +365,20 @@ form, input, select, textarea{
                                             <label class="form-label">Place Of Entry</label>
                                             <select class="form-control" disabled>
                                                 <option value="">--SELECT--</option>
-                                                {% for location in location %}
-                                                        <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
+                                                {% for location in location_details %}
+                                                        <option value="{{ location.Field_Office_Id }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
                                                 {% endfor %}
                                              </select>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Place of Entry</label>
-                                            <select class="form-control"disabled>
-                                                {% for location in location %}
-                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
-                                                {% endfor %}
-                                             </select>
+                                            <label class="form-label">Final Destination</label>
+                                             <input type="text" class="form-control" value="{{application_details.Final_Destination }}" disabled>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label class="form-label">Final Destination</label>
-                                             <input type="text" class="form-control" value="{{application_details.Final_Destination }}">
-                                        </div>
-                                    </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="form-label">Expected Date for Arrival</label>
@@ -412,7 +390,7 @@ form, input, select, textarea{
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="entryPlace">Actual Point Of Entry</label>
+                                    <label class="form-label">Actual Point Of Entry <font color="red">*</font></label>
                                     <select class="form-control" name="entry_point"  id="entryPlace">
                                         <option value="">--SELECT--</option>
                                         {% for location in location_details %}
@@ -420,24 +398,29 @@ form, input, select, textarea{
                                         {% endfor %}
                                     </select>
                                 </div>
+                                <div class="alert alert-danger" id="entryPlaceErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-sm-4">
-                                <label class="form-label">Date For Inspection</label>
-                                <input type="date" name="date" id="date" class="form-control date-picker flatpickr-input active">
+                                <div class="form-group">
+                                    <label class="form-label">Date For Inspection <font color="red">*</font></label>
+                                    <input type="date" name="date" id="date" class="form-control date-picker flatpickr-input active">
+                                </div>
+                                <div class="alert alert-danger" id="dateErrorMsg" style="display:none"></div>
                             </div>
                              <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="remarks">Remarks</label>
+                                    <label class="form-label">Remarks(If Any)</label>
                                     <textarea class="form-control" rows="3" id="remarks" name="remarks"></textarea>
                                 </div>
                             </div>
                          </div>
                         {% endfor %}
-                        <div id="messageDiv" class="alert alert-info" role="alert" style="display:none;">
-                            Application Approved
+                        <hr>
+                        <div id="loader" style="display:none">
+                            <img src="{% static 'assets/img/ajax-loader.gif' %}" alt="processing..." />
                         </div>
-                        <div id="rejectMsg" class="alert alert-info" role="alert" style="display:none;">
-                            Application Rejected
+                        <div id="messageDiv" class="alert alert-info" role="alert" style="display:none;">
+                            Application Submitted
                         </div>
                         {% for application_details in application_details %}
                             <input type="hidden" name="application_No" value="{{application_details.Application_No}}">
@@ -464,24 +447,47 @@ $(function(){
     var today = new Date().toISOString().split('T')[0];
     $('#date')[0].setAttribute('min', today);
 });
+
     function update_details()
     {
-        $.ajax({
-            type : "POST",
-            url : "{% url 'update_inspection_call_details' %}",
-            data : $('#inspection_call_form').serialize(),
-            success : function(response) {
-                $('#messageDiv').show();
-                setTimeout(function() {
-                    $("#messageDiv").hide('blind', {}, 500)
-                }, 2000);
-                setTimeout(function() {
-                    $('#import_detailsModal').modal('hide');
-                }, 3000);
-                setTimeout(function() {
-                    location.reload();
-                }, 3000);
-            }
-        });
+        var entryPlace = $('#entryPlace').val();
+        var date = $('#date').val();
+
+        if(entryPlace == "")
+        {
+            $('#entryPlaceErrorMsg').html("Select Point Of Entry.");
+            $('#entryPlaceErrorMsg').show();
+            $('#entryPlaceErrorMsg').delay(2000).fadeOut('slow');
+            $('#entryPlace').focus();
+        }
+        else if(date == "")
+        {
+            $('#dateErrorMsg').html("Select Date.");
+            $('#dateErrorMsg').show();
+            $('#dateErrorMsg').delay(2000).fadeOut('slow');
+            $('#date').focus();
+        }
+        else
+        {
+            $("#loader").show();
+            $.ajax({
+                type : "POST",
+                url : "{% url 'update_inspection_call_details' %}",
+                data : $('#inspection_call_form').serialize(),
+                success : function(response) {
+                    $("#loader").hide();
+                    $('#messageDiv').show();
+                    setTimeout(function() {
+                        $("#messageDiv").hide('blind', {}, 500)
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#import_detailsModal').modal('hide');
+                    }, 3000);
+                    setTimeout(function() {
+                        window.location.href = '{% url 'dashboard' %}';
+                    }, 3000);
+                }
+            });
+        }
     }
 </script>

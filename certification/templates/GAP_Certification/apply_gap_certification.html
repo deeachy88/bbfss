@@ -96,7 +96,7 @@ form, input, select, textarea{
                         <div class="col-md-4 farmer_group_details" style="display:none">
                             <div class="form-group">
                                 <label class="form-label">Number Of Members In Group <font color="red">*</font></label>
-                                <input type="number" class="form-control" id="farmers_group_number" name="farmers_group_number">
+                                <input type="text" class="form-control" id="farmers_group_number" name="farmers_group_number" onkeypress="return isNumberKey(event)">
                             </div>
                             <div class="alert alert-danger" id="farmers_group_numberErrorMsg" style="display:none"></div>
                         </div>
@@ -253,7 +253,7 @@ form, input, select, textarea{
                         </div>
                         <div class="card-body">
                             <div id="details_crop_production">
-
+                                {% include 'GAP_Certification/crop_production_details.html' %}
                             </div>
                         </div>
                     </div>
@@ -272,7 +272,7 @@ form, input, select, textarea{
                         </div>
                         <div class="card-body">
                             <div id="pack_house">
-
+                                {% include 'GAP_Certification/pack_house_details.html' %}
                             </div>
                         </div>
                     </div>
@@ -821,6 +821,399 @@ form, input, select, textarea{
         </div>
     </div>
 </form>
+
+<form method="post" id="edit_farmers_group_form">
+    {% csrf_token %}
+    <input type="hidden" id="edit_farmers_group_application_no" name="edit_farmers_group_application_no">
+    <div class="modal fade" id="edit_farmers_group_model" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <input type="hidden" id="farmers_group_record_id" name="farmers_group_record_id">
+                                <input type="hidden" name="identifier" value="GAP-FG"/>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">CID <font color="red">*</font></label>
+                                            <input type="text" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="edit_farmers_group_cid" name="edit_farmers_group_cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="get_farmers_name(this.value)">
+                                        </div>
+                                        <div class="alert alert-danger" id="edit_farmers_group_cidErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Name <font color="red">*</font></label>
+                                            <input type="text" class="form-control" id="edit_farmers_group_fullname" name="edit_farmers_group_fullname" readonly="readonly">
+                                        </div>
+                                        <div class="alert alert-danger" id="edit_farmers_group_fullnameErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="update_edit_details('GAP-FG')">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form method="post" id="edit_crop_production_form">
+    {% csrf_token %}
+    <input type="hidden" id="edit_crop_production_app_no" name="edit_crop_production_app_no">
+    <div class="modal fade" id="edit_crop_production_modal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <input type="hidden" id="crop_record_id" name="crop_record_id">
+                                <input type="hidden" name="identifier" value="GAP-CP"/>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Name Of Crop <font color="red">*</font></label>
+                                        <input type="text" name="edit_crop_name" class="form-control" id="edit_crop_name" required>
+                                        <div class="alert alert-danger" id="edit_crop_nameErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Cultivated Area <font color="red">*</font></label>
+                                        <input type="text" name="edit_area" class="form-control" id="edit_area" onkeypress="return isNumberKey(event)">
+                                        <div class="alert alert-danger" id="edit_areaErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Area Unit <font color="red">*</font></label>
+                                        <select class="form-control" id="edit_area_unit" name="edit_area_unit">
+                                            <option value="">--SELECT--</option>
+                                            <option value="Decimal">Decimal</option>
+                                            <option value="Acre">Acre</option>
+                                        </select>
+                                        <div class="alert alert-danger" id="edit_area_unitErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">For</span>
+                                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">The</span>
+                                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Previous</span>
+                                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Year</span>
+                                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">From date <font color="red">*</font></label>
+                                             <input type="text" name="edit_prev_year" id="edit_prev_year" class="form-control date-picker flatpickr-input active">
+                                        </div>
+                                        <div class="alert alert-danger" id="edit_prev_yearErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">To date <font color="red">*</font></label>
+                                             <input type="text" name="edit_to_year" id="edit_to_year" class="form-control date-picker flatpickr-input active" onchange="get_month()">
+                                        </div>
+                                        <div class="alert alert-danger" id="edit_to_yearErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Yield <font color="red">*</font></label>
+                                             <input type="text" name="edit_yield" id="edit_yield" class="form-control" onkeypress="return isNumberKey(event)">
+                                        </div>
+                                        <div class="alert alert-danger" id="edit_yieldErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Yield Unit <font color="red">*</font></label>
+                                        <select class="form-control" name="edit_Yield_Unit"  id="edit_Yield_Unit">
+                                            <option value="">--SELECT UNIT--</option>
+                                            {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="alert alert-danger" id="edit_Yield_UnitErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Harvest Month <font color="red">*</font></label>
+                                        <select class="form-control" name="edit_harvest_month"  id="edit_harvest_month">
+                                            <option value="">--SELECT--</option>
+                                        </select>
+                                        <div class="alert alert-danger" id="edit_harvest_monthErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Sold <font color="red">*</font></label>
+                                        <input type="text" name="edit_sold" class="form-control" id="edit_sold" onkeypress="return isNumberKey(event)" onchange="getBalance(this.value)">
+                                        <div class="alert alert-danger" id="edit_soldErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <!--<div class="form-group col-md-4">
+                                        <label>Sold Unit</label>
+                                        <input type="text" name="sold_unit" class="form-control" id="sold_unit" required>
+                                        <div class="alert alert-danger" id="sold_unitErrorMsg" style="display:none"></div>
+                                    </div>-->
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Balance Stock <font color="red">*</font></label>
+                                        <input type="text" name="edit_balance_stock" class="form-control" id="edit_balance_stock" readonly="readonly">
+                                        <div class="alert alert-danger" id="edit_balance_stockErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <!--<div class="form-group col-md-4">
+                                        <label>Balance Stock Unit</label>
+                                        <input type="text" name="balance_stock_unit" class="form-control" id="balance_stock_unit" required>
+                                        <div class="alert alert-danger" id="balance_stock_unitErrorMsg" style="display:none"></div>
+                                    </div>-->
+                                </div>
+                                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">For</span>
+                                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">The</span>
+                                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Current</span>
+                                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Year</span>
+                                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">From date <font color="red">*</font></label>
+                                             <input type="text" name="edit_current_year" id="edit_current_year" class="form-control date-picker flatpickr-input active">
+                                        </div>
+                                        <div class="alert alert-danger" id="edit_current_yearErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">To date <font color="red">*</font></label>
+                                             <input type="text" name="edit_to_current_year" id="edit_to_current_year" class="form-control date-picker flatpickr-input active" onchange="get_current_month()">
+                                        </div>
+                                        <div class="alert alert-danger" id="edit_to_current_yearErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Estimated Yield <font color="red">*</font></label>
+                                             <input type="text" name="edit_estimated_yield" id="edit_estimated_yield" class="form-control" onkeypress="return isNumberKey(event)">
+                                        </div>
+                                        <div class="alert alert-danger" id="edit_estimated_yieldErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Yield Unit <font color="red">*</font></label>
+                                        <select class="form-control" name="edit_estimated_Yield_Unit"  id="edit_estimated_Yield_Unit">
+                                            <option value="">--SELECT UNIT--</option>
+                                            {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="alert alert-danger" id="edit_estimated_Yield_UnitErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Harvest Month <font color="red">*</font></label>
+                                        <select class="form-control" name="edit_estimated_harvest_month"  id="edit_estimated_harvest_month">
+                                            <option value="">--SELECT--</option>
+                                        </select>
+                                        <div class="alert alert-danger" id="edit_estimated_harvest_monthErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="update_edit_details('GAP-CP')">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form method="post" id="edit_pack_house_form">
+    {% csrf_token %}
+    <input type="hidden" id="edit_pack_house_application_no" name="edit_pack_house_application_no">
+    <div class="modal fade" id="edit_pack_house_model" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <input type="hidden" id="pack_house_record_id" name="pack_house_record_id">
+                                <input type="hidden" name="identifier" value="GAP-PH"/>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Name <font color="red">*</font></label>
+                                        <input type="text" name="edit_pack_house_name" class="form-control" id="edit_pack_house_name" required>
+                                        <div class="alert alert-danger" id="edit_pack_house_nameErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Address Of Pack House <font color="red">*</font></label>
+                                        <textarea name="edit_pack_house_address" id="edit_pack_house_address" class="form-control"></textarea>
+                                        <div class="alert alert-danger" id="edit_pack_house_addressErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">For</span>
+                                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">The</span>
+                                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Previous</span>
+                                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Year</span>
+                                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">From date <font color="red">*</font></label>
+                                        <input type="text" class="form-control date-picker flatpickr-input active" id="edit_previous_from_date" name="edit_previous_from_date"  placeholder="Pick a date" readonly="readonly">
+                                        <div class="alert alert-danger" id="edit_previous_from_dateErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">To date <font color="red">*</font></label>
+                                        <input type="text" class="form-control date-picker flatpickr-input active" id="edit_previous_to_date" name="edit_previous_to_date"  placeholder="Pick a date" readonly="readonly">
+                                        <div class="alert alert-danger" id="edit_previous_to_dateErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Production <font color="red">*</font></label>
+                                        <input type="text" name="edit_production" class="form-control" id="edit_production" onkeypress="return isNumberKey(event)">
+                                        <div class="alert alert-danger" id="edit_productionErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Production Unit <font color="red">*</font></label>
+                                        <select class="form-control" name="edit_production_unit"  id="edit_production_unit">
+                                            <option value="">--SELECT UNIT--</option>
+                                            {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="alert alert-danger" id="edit_production_unitErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Sold <font color="red">*</font></label>
+                                        <input type="text" name="edit_previous_sold" class="form-control" id="edit_previous_sold"  onkeypress="return isNumberKey(event)" onchange="getBalanceStock(this.value)">
+                                        <div class="alert alert-danger" id="edit_previous_soldErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Sold Unit <font color="red">*</font></label>
+                                        <select class="form-control" name="edit_previous_sold_unit"  id="edit_previous_sold_unit">
+                                            <option value="">--SELECT UNIT--</option>
+                                            {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="alert alert-danger" id="edit_previous_sold_unitErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Balance Stock <font color="red">*</font></label>
+                                        <input type="number" name="edit_stock_balance" class="form-control" id="edit_stock_balance" readonly="readonly">
+                                        <div class="alert alert-danger" id="edit_stock_balanceErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Balance Stock Unit <font color="red">*</font></label>
+                                        <select class="form-control" name="edit_stock_balance_unit"  id="edit_stock_balance_unit">
+                                            <option value="">--SELECT UNIT--</option>
+                                            {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="alert alert-danger" id="edit_stock_balance_unitErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">For</span>
+                                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">The</span>
+                                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Current</span>
+                                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Year</span>
+                                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">From date <font color="red">*</font></label>
+                                        <input type="text" class="form-control date-picker flatpickr-input active" id="edit_current_from_date" name="edit_current_from_date"  placeholder="Pick a date" readonly="readonly">
+                                        <div class="alert alert-danger" id="edit_current_from_dateErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">To date <font color="red">*</font></label>
+                                        <input type="text" class="form-control date-picker flatpickr-input active" id="edit_current_to_date" name="current_to_date"  placeholder="Pick a date" readonly="readonly">
+                                        <div class="alert alert-danger" id="edit_current_to_dateErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Production <font color="red">*</font></label>
+                                        <input type="text" name="edit_current_Production" class="form-control" id="edit_current_Production" onkeypress="return isNumberKey(event)">
+                                        <div class="alert alert-danger" id="edit_current_ProductionErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Sold <font color="red">*</font></label>
+                                        <input type="number" name="edit_current_sold" class="form-control" id="edit_current_sold" onkeypress="return isNumberKey(event)" onchange="get_current_stock_bal(this.value)">
+                                        <div class="alert alert-danger" id="edit_current_soldErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Sold Unit <font color="red">*</font></label>
+                                        <select class="form-control" name="edit_current_sold_unit"  id="edit_current_sold_unit">
+                                            <option value="">--SELECT UNIT--</option>
+                                            {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="alert alert-danger" id="edit_current_sold_unitErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Balance Stock <font color="red">*</font></label>
+                                        <input type="number" name="current_stock_balance" class="form-control" id="edit_current_stock_balance" readonly="readonly">
+                                        <div class="alert alert-danger" id="edit_current_stock_balanceErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Balance Stock Unit <font color="red">*</font></label>
+                                        <select class="form-control" name="edit_current_stock_unit"  id="edit_current_stock_unit">
+                                            <option value="">--SELECT UNIT--</option>
+                                            {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="alert alert-danger" id="edit_current_stock_unitErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="update_edit_details('GAP-PH')">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
 <script>
 function isNumberKey(evt)
       {
@@ -1160,7 +1553,7 @@ function save_farmer_group_details()
 {
         var cid = $('#farmers_group_cid').val();
         var name = $('#farmers_group_fullname').val();
-        var cidCount = $('#cid').val().length;
+        var cidCount = $('#farmers_group_cid').val().length;
         if(cid == "")
         {
             $('#farmers_group_cidErrorMsg').html("Enter CID.");
@@ -1567,6 +1960,64 @@ function checkStandardsRadio(value)
     {
         $('#button_submit').hide();
     }
+}
+
+function farmer_group_details(Record_Id, CID, Name, Application_No)
+{
+    $('#farmers_group_record_id').val(Record_Id);
+    $('#edit_farmers_group_cid').val(CID);
+    $('#edit_farmers_group_fullname').val(Name);
+    $('#edit_farmers_group_application_no').val(Application_No);
+    $('#edit_farmers_group_model').modal('show');
+}
+
+function populate_crop_details(Record_Id,crop_name,area,area_unit,prev_year,to_year,yield,Yield_Unit,harvest_month,sold,balance_stock,current_year,to_current_year,estimated_yield,estimated_Yield_Unit,estimated_harvest_month,Application_No)
+{
+    alert(balance_stock);
+    $('#crop_record_id').val(Record_Id);
+    $('#edit_crop_name').val(crop_name);
+    $('#edit_area').val(area);
+    $('#edit_area_unit').val(area_unit);
+    $('#edit_prev_year').val(prev_year);
+    $('#edit_to_year').val(to_year);
+    $('#edit_yield').val(yield);
+    $('#edit_Yield_Unit').val(Yield_Unit);
+    $('#edit_harvest_month').val(harvest_month);
+    $('#edit_sold').val(sold);
+    $('#edit_balance_stock').val(balance_stock);
+    $('#edit_current_year').val(current_year);
+    $('#edit_to_current_year').val(to_current_year);
+    $('#edit_estimated_yield').val(estimated_yield);
+    $('#edit_estimated_Yield_Unit').val(estimated_Yield_Unit);
+    $('#edit_estimated_harvest_month').val(estimated_harvest_month);
+    $('#edit_crop_production_app_no').val(Application_No);
+    $('#edit_crop_production_modal').modal('show');
+
+}
+
+function populate_pack_details(Record_Id,pack_house_name,pack_house_address,previous_from_date,previous_to_date,
+ production,production_unit,previous_sold,previous_sold_unit,stock_balance,current_from_date,current_to_date,
+ current_Production,current_sold,current_sold_unit,current_stock_balance,current_stock_unit,Application_No)
+{
+    $('#pack_house_record_id').val(Record_Id);
+    $('#edit_pack_house_name').val(pack_house_name);
+    $('#edit_pack_house_address').val(pack_house_address);
+    $('#edit_previous_from_date').val(previous_from_date);
+    $('#edit_previous_to_date').val(previous_to_date);
+    $('#edit_production').val(production);
+    $('#edit_production_unit').val(production_unit);
+    $('#edit_previous_sold').val(previous_sold);
+    $('#edit_previous_sold_unit').val(previous_sold_unit);
+    $('#edit_stock_balance').val(stock_balance);
+    $('#edit_current_from_date').val(current_from_date);
+    $('#edit_current_to_date').val(current_to_date);
+    $('#edit_current_Production').val(current_Production);
+    $('#edit_current_sold').val(current_sold);
+    $('#edit_current_sold_unit').val(current_sold_unit);
+    $('#edit_current_stock_balance').val(current_stock_balance);
+    $('#edit_current_stock_unit').val(current_stock_unit);
+    $('#edit_pack_house_application_no').val(Application_No);
+    $('#edit_pack_house_model').modal('show');
 }
 </script>
 {% endblock %}

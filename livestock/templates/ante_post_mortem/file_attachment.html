@@ -50,10 +50,8 @@ function submit_mortem_details()
     var applicationNo = $('#applicationNo').val();
 	$.ajax({
 			type : "POST",
-			url : "{% url 'save_details' %}",
+			url : "{% url 'submit_mortem_details' %}",
 			data : $('#ante_post_mortem_form').serialize(),
-			cache : false,
-			dataType : "html",
 			success : function(responseText)
 			{
                 swal("Application Submitted Successfully. Your Application No :" + applicationNo, {
@@ -70,7 +68,7 @@ function submit_mortem_details()
 
 function DeleteAttachment(id)
 {
-    var appNo = $('#attachment_appNo').val();
+    var appNo = $('#applicationNo').val();
     $.ajax({
         type : "GET",
         url : "{% url 'delete_mortem_file' %}",

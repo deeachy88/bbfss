@@ -3,11 +3,20 @@
 form, input, select, textarea{
     color: black !important;
 }
+#loader img
+{
+  left: 50%;
+  margin-left: -32px;
+  margin-top: -32px;
+  position: absolute;
+  top: 50%;
+}
 </style>
+<div class="accordion" role="tablist">
         <div class="card">
             <div class="card-header" role="tab" id="headingOne">
                 <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed">
-                    Collapsible Group Item #1
+                    Application Details
                 </a>
             </div>
 
@@ -19,210 +28,429 @@ form, input, select, textarea{
                             <div class="col-sm-2">
                                 <label class="form-label">Permit Type</label>
                             </div>
-                            <div class="col-sm-10 justify-content-center">
-                                <div class="form-check">
-                                    <label class="form-radio-label">
-                                        <input class="form-radio-input" type="radio" checked>
-                                        <span class="form-radio-sign">Animal</span>
-                                    </label>
-                                    <label class="form-radio-label ml-3">
-                                        <input class="form-radio-input" type="radio" disabled>
-                                        <span class="form-radio-sign">Animal Products</span>
-                                    </label>
-                                </div>
+                            <div class="col-sm-4 justify-content-center">
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" name="Permit_Type" class="custom-control-input" checked>
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Animal</span>
+                                </label>
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" name="Permit_Type" class="custom-control-input" disabled>
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Animal Product</span>
+                                </label>
                             </div>
-                        </div>
+                        </div><br>
                         {% else %}
                         <div class="row">
                             <div class="col-sm-2">
                                 <label class="form-label">Permit Type</label>
                             </div>
-                            <div class="col-sm-10 justify-content-center">
-                                <div class="form-check">
-                                    <label class="form-radio-label">
-                                        <input class="form-radio-input" type="radio" disabled>
-                                        <span class="form-radio-sign">Animal</span>
+                            <div class="col-sm-4 justify-content-center">
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" name="Permit_Type" class="custom-control-input" disabled>
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Animal</span>
+                                </label>
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" name="Permit_Type" class="custom-control-input" checked>
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Animal Product</span>
+                                </label>
+                            </div>
+                        </div><br>
+                        {% endif%}
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label class="form-label">Import Type</label>
+                            </div>
+                            {% if application_details.Import_Type == 'Individual' %}
+                                <div class="col-sm-4 justify-content-center">
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input" checked>
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Individual</span>
                                     </label>
-                                    <label class="form-radio-label ml-3">
-                                        <input class="form-radio-input" type="radio" disabled>
-                                        <span class="form-radio-sign">Animal Products</span>
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input" disabled>
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Commercial</span>
                                     </label>
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input" disabled>
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Institution</span>
+                                    </label>
+                                </div>
+                            {% elif application_details.Import_Type == 'Commercial' %}
+                                <div class="col-sm-4 justify-content-center">
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input" disabled>
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Individual</span>
+                                    </label>
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input" checked>
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Commercial</span>
+                                    </label>
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input" disabled>
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Institution</span>
+                                    </label>
+                                </div>
+                            {% else %}
+                                <div class="col-sm-4 justify-content-center">
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input" disabled>
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Individual</span>
+                                    </label>
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input" disabled>
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Commercial</span>
+                                    </label>
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input" checked>
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Institution</span>
+                                    </label>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <br>
+                        {% if application_details.Import_Type == 'Individual' %}
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Applicant CID</label>
+                                        <input type="number" class="form-control" value="{{application_details.CID}}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Applicant Name</label>
+                                        <input type="text" class="form-control" value="{{application_details.Applicant_Name}}" readonly="readonly">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Dzongkhag &nbsp;<font color='red'>*</font></label>
+                                        <input type="text" class="form-control" value="{{application_details.Dzongkhag_Code}}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Gewog &nbsp;<font color='red'>*</font></label>
+                                    <input type="text" class="form-control" value="{{application_details.Gewog_Code}}" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Village &nbsp;<font color='red'>*</font></label>
+                                    <input type="text" class="form-control" value="{{application_details.Village_Code}}" disabled>
+                                </div>
+                            </div>
+                             <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Contact Number</label>
+                                    <input type="number" class="form-control" value="{{application_details.Contact_No}}" readonly="readonly">
                                 </div>
                             </div>
                         </div>
-                        {% endif%}
-                        <br>
                         <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">Applicant CID</label>
-                                <input type="number" class="form-control" value="{{application_details.CID}}" disabled>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" value="{{application_details.Email}}" readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">License Number</label>
+                                    <input type="text" class="form-control" value="{{application_details.License_No}}" readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Business Name</label>
+                                    <input type="text" class="form-control" value="{{application_details.Business_Name}}" readonly="readonly">
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">Applicant Name</label>
-                                <input type="text" class="form-control" value="{{application_details.Applicant_Name}}" readonly="readonly">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">From Dzongkhag</label>
+                                    <select class="form-control" disabled>
+                                        {% for dzongkhag in dzongkhag %}
+                                            <option value="{{ dzongkhag.Dzongkhag_Code }}" {% if application_details.From_Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>{{ dzongkhag.Dzongkhag_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">From Gewog</label>
+                                    <select class="form-control" disabled>
+                                        {% for location in location %}
+                                            <option value="{{ location.Location_Code }}" {% if application_details.From_Gewog_Code == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">From Location</label>
+                                    <input type="text" class="form-control" value="{{ application_details.From_Location }}" readonly="readonly">
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">Dzongkhag &nbsp;<font color='red'>*</font></label>
-                                <input type="text" class="form-control" value="{{application_details.Dzongkhag_Code}}" disabled>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">To Dzongkhag</label>
+                                    <select class="form-control" disabled>
+                                        {% for dzongkhag in dzongkhag %}
+                                            <option value="{{ dzongkhag.Dzongkhag_Code }}" {% if application_details.To_Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>{{ dzongkhag.Dzongkhag_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">To Gewog</label>
+                                    <select class="form-control" disabled>
+                                        {% for location in location %}
+                                            <option value="{{ location.Location_Code }}" {% if application_details.To_Gewog_Code == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">To Location</label>
+                                    <input type="text" class="form-control" value="{{ application_details.To_Location }}" readonly="readonly">
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">Gewog &nbsp;<font color='red'>*</font></label>
-                                <input type="text" class="form-control" value="{{application_details.Gewog_Code}}" disabled>
+                        <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Authorized Route</label>
+                                        <input type="text" class="form-control" value="{{ application_details.Authorized_Route }}" readonly="readonly">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Means of Conveyance </label>
+                                        <select class="form-control form-control" id="conveyanceMeans" name="conveyanceMeans" disabled>
+                                            <option value="">-SELECT-</option>
+                                            {% if application_details.Conveyance_Means == "Air" %}
+                                            <option value="Air" selected>Air</option>
+                                             <option value="Vehicular">Vehicular</option>
+                                            {% else %}
+                                             <option value="Air">Air</option>
+                                            <option value="Vehicular" selected>Vehicular</option>
+                                            {% endif%}
+                                        </select>
+                                    </div>
+                                </div>
+                                {% if application_details.Conveyance_Means == "Vehicular" %}
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Vehicle No</label>
+                                            <input type="text" class="form-control" value="{{ application_details.Authorized_Route }}" readonly="readonly">
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Purpose Of Movement</label>
+                                            <input type="text" class="form-control" value="{{ application_details.Movement_Purpose }}" readonly="readonly">
+                                        </div>
+                                    </div>
+                                {% endif%}
+                            </div>
+                             <div class="row">
+                                 {% if application_details.Conveyance_Means == "Vehicular" %}
+                                     <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Purpose Of Movement</label>
+                                            <input type="text" class="form-control" value="{{ application_details.Movement_Purpose }}" readonly="readonly">
+                                        </div>
+                                    </div>
+                                 {% endif%}
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Expected Date of Movement</label>
+                                        <input type="text" class="form-control date-picker flatpickr-input active" value="{{ application_details.Movement_Date }}" readonly="readonly">
+                                    </div>
+                                </div>
+                            </div>
+                         <br><br>
+                    {% else %}
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Applicant Name</label>
+                                    <input type="text" class="form-control" value="{{application_details.Applicant_Name}}" readonly="readonly">
+                                </div>
+                            </div>
+                             <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Contact Number</label>
+                                    <input type="number" class="form-control" value="{{application_details.Contact_No}}" readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" value="{{application_details.Email}}" readonly="readonly">
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">Village &nbsp;<font color='red'>*</font></label>
-                                <input type="text" class="form-control" value="{{application_details.Village_Code}}" disabled>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">License Number</label>
+                                    <input type="text" class="form-control" value="{{application_details.License_No}}" readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Business Name</label>
+                                    <input type="text" class="form-control" value="{{application_details.Business_Name}}" readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">From Dzongkhag</label>
+                                    <select class="form-control" disabled>
+                                        {% for dzongkhag in dzongkhag %}
+                                            <option value="{{ dzongkhag.Dzongkhag_Code }}" {% if application_details.From_Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>{{ dzongkhag.Dzongkhag_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
                             </div>
                         </div>
-                         <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">Contact Number</label>
-                                <input type="number" class="form-control" value="{{application_details.Contact_No}}" readonly="readonly">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">From Gewog</label>
+                                    <select class="form-control" disabled>
+                                        {% for location in location %}
+                                            <option value="{{ location.Location_Code }}" {% if application_details.From_Gewog_Code == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">From Location</label>
+                                    <input type="text" class="form-control" value="{{ application_details.From_Location }}" readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">To Dzongkhag</label>
+                                    <select class="form-control" disabled>
+                                        {% for dzongkhag in dzongkhag %}
+                                            <option value="{{ dzongkhag.Dzongkhag_Code }}" {% if application_details.To_Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>{{ dzongkhag.Dzongkhag_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">Email</label>
-                                <input type="email" class="form-control" value="{{application_details.Email}}" readonly="readonly">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">To Gewog</label>
+                                    <select class="form-control" disabled>
+                                        {% for location in location %}
+                                            <option value="{{ location.Location_Code }}" {% if application_details.To_Gewog_Code == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">License Number</label>
-                                <input type="text" class="form-control" value="{{application_details.License_No}}" readonly="readonly">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">To Location</label>
+                                    <input type="text" class="form-control" value="{{ application_details.To_Location }}" readonly="readonly">
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">Business Name</label>
-                                <input type="text" class="form-control" value="{{application_details.Business_Name}}" readonly="readonly">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">From Dzongkhag</label>
-                                <select class="form-control" disabled>
-                                    {% for dzongkhag in dzongkhag %}
-                                        <option value="{{ dzongkhag.Dzongkhag_Code }}" {% if application_details.From_Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>{{ dzongkhag.Dzongkhag_Name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">From Gewog</label>
-                                <select class="form-control" disabled>
-                                    {% for location in location %}
-                                        <option value="{{ location.Location_Code }}" {% if application_details.From_Gewog_Code == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">From Location</label>
-                                <input type="text" class="form-control" value="{{ application_details.From_Location }}" readonly="readonly">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">To Dzongkhag</label>
-                                <select class="form-control" disabled>
-                                    {% for dzongkhag in dzongkhag %}
-                                        <option value="{{ dzongkhag.Dzongkhag_Code }}" {% if application_details.To_Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>{{ dzongkhag.Dzongkhag_Name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">To Gewog</label>
-                                <select class="form-control" disabled>
-                                    {% for location in location %}
-                                        <option value="{{ location.Location_Code }}" {% if application_details.To_Gewog_Code == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="form-label">To Location</label>
-                                <input type="text" class="form-control" value="{{ application_details.To_Location }}" readonly="readonly">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Authorized Route</label>
                                     <input type="text" class="form-control" value="{{ application_details.Authorized_Route }}" readonly="readonly">
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Means of Conveyance </label>
-                                    <select class="form-control form-control" id="conveyanceMeans" name="conveyanceMeans" disabled>
-                                        <option value="">-SELECT-</option>
-                                        {% if application_details.Conveyance_Means == "Air" %}
-                                        <option value="Air" selected>Air</option>
-                                         <option value="Vehicular">Vehicular</option>
-                                        {% else %}
-                                         <option value="Air">Air</option>
-                                        <option value="Vehicular" selected>Vehicular</option>
-                                        {% endif%}
-                                    </select>
-                                </div>
-                            </div>
-                            {% if application_details.Conveyance_Means == "Vehicular" %}
+                        </div>
+                        <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="form-label">Vehicle No</label>
-                                        <input type="text" class="form-control" value="{{ application_details.Authorized_Route }}" readonly="readonly">
+                                        <label class="form-label">Means of Conveyance </label>
+                                        <select class="form-control form-control" disabled>
+                                            <option value="">-SELECT-</option>
+                                            {% if application_details.Conveyance_Means == "Air" %}
+                                            <option value="Air" selected>Air</option>
+                                             <option value="Vehicular">Vehicular</option>
+                                            {% else %}
+                                             <option value="Air">Air</option>
+                                            <option value="Vehicular" selected>Vehicular</option>
+                                            {% endif%}
+                                        </select>
                                     </div>
                                 </div>
-                            {% else %}
+                                {% if application_details.Conveyance_Means == "Vehicular" %}
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Vehicle No</label>
+                                            <input type="text" class="form-control" value="{{ application_details.Authorized_Route }}" readonly="readonly">
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Purpose Of Movement</label>
+                                            <input type="text" class="form-control" value="{{ application_details.Movement_Purpose }}" readonly="readonly">
+                                        </div>
+                                    </div>
+                                {% endif%}
+                                 {% if application_details.Conveyance_Means == "Vehicular" %}
+                                     <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Purpose Of Movement</label>
+                                            <input type="text" class="form-control" value="{{ application_details.Movement_Purpose }}" readonly="readonly">
+                                        </div>
+                                    </div>
+                                 {% endif%}
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="form-label">Purpose Of Movement</label>
-                                        <input type="text" class="form-control" value="{{ application_details.Movement_Purpose }}" readonly="readonly">
+                                        <label class="form-label">Expected Date of Movement</label>
+                                        <input type="text" class="form-control date-picker flatpickr-input active" value="{{ application_details.Movement_Date }}" readonly="readonly">
                                     </div>
-                                </div>
-                            {% endif%}
-                        </div>
-                         <div class="row">
-                             {% if application_details.Conveyance_Means == "Vehicular" %}
-                                 <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Purpose Of Movement</label>
-                                        <input type="text" class="form-control" value="{{ application_details.Movement_Purpose }}" readonly="readonly">
-                                    </div>
-                                </div>
-                             {% endif%}
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Expected Date of Movement</label>
-                                    <input type="text" class="form-control date-picker flatpickr-input active" value="{{ application_details.Movement_Date }}" readonly="readonly">
                                 </div>
                             </div>
-                        </div>
-                     <br><br>
+                         <br><br>
+                    {% endif %}
+
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header" role="tab" id="details_movement">
+                <a class="collapsed" data-toggle="collapse" href="#collapse_details_movement" aria-expanded="false" aria-controls="collapseTwo">
+                    Details
+                </a>
+            </div>
+            <div id="collapse_details_movement" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+                <div class="card-body">
                     {% if application_details.PermitType == A %}
                         <table class="table table-bordered">
                             <thead>
@@ -283,8 +511,7 @@ form, input, select, textarea{
                                 {% endfor %}
                             </tbody>
                         </table>
-                        {% endif%}
-                    {% endfor %}
+                    {% endif%}
                 </div>
             </div>
         </div>
@@ -364,7 +591,7 @@ form, input, select, textarea{
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Inspection Team Leader</label>
+                                <label>Inspection Team Leader <font color="red">*</font></label>
                                 <select class="form-control" name="teamLeader"  id="teamLeader">
                                     <option value="">--SELECT TEAM LEADER--</option>
                                     {% for inspector_list in inspector_list %}
@@ -372,57 +599,56 @@ form, input, select, textarea{
                                     {% endfor %}
                                 </select>
                             </div>
+                            <div class="alert alert-danger" id="teamLeaderErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="insTeam">Inspection Team </label>
+                                <label for="insTeam">Inspection Team <font color="red">*</font></label>
                                 <textarea class="form-control" id="insTeam" rows="2"></textarea>
                             </div>
+                            <div class="alert alert-danger" id="insTeamErrorMsg" style="display:none"></div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Date Of Inspection</label>
-                                <input type="text" class="form-control date-picker flatpickr-input active" id="dateOfInspection" name="date"  placeholder="Pick a date" readonly="readonly">
+                                <label>Date Of Inspection <font color="red">*</font></label>
+                                <input type="date" class="form-control" id="dateOfInspection" name="date">
                             </div>
+                            <div class="alert alert-danger" id="dateOfInspectionErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Validity Of Permit</label>
-                                <input type="number" class="form-control" id="validity" name="validity">
+                                <label>Validity Of Permit(No Of Days) <font color="red">*</font></label>
+                                <input type="text" class="form-control" id="validity" name="validity" onkeypress="return isNumberKey(event)">
                             </div>
+                            <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Remarks</label>
+                                <label>Remarks(Mandatory If Reject)</label>
                                 <textarea class="form-control" id="remarks" rows="2"></textarea>
                             </div>
+                            <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
                         </div>
 
                     </div>
-                    <div class="alert alert-info" id="messageDiv" style="display:none">
-                        Application Approved
-                    </div>
-                    <div class="alert alert-info" id="reject_messageDiv" style="display:none">
-                        Application Rejected
-                    </div>
+                    <div class="alert alert-info" id="approve_Msg" style="display:none"></div>
                     <hr>
+                    <div id="loader" style="display:none">
+                        <img src="{% static 'assets/img/ajax-loader.gif' %}" alt="processing..." />
+                    </div>
                     {% for application_details in application_details %}
                         <div class="card-action text-center">
                             <button type="button" class="btn btn-flat btn-primary" onclick="approve_details('{{application_details.Application_No}}')">
-                                <i class="ace-icon fa fa-times"></i>
+                                <i class="ace-icon fa fa-check"></i>
                                 &nbsp;&nbsp;Approve
                             </button>
                             <button type="button" class="btn btn-flat btn-primary" onclick="reject_details('{{application_details.Application_No}}')">
                                 <i class="ace-icon fa fa-times"></i>
                                 &nbsp;&nbsp;Reject
-                            </button>
-                            <button type="button" class="btn btn-flat btn-danger">
-                                <i class="ace-icon fa fa-times"></i>
-                                &nbsp;&nbsp;Cancel
                             </button>
                         </div>
                     {% endfor %}
@@ -434,7 +660,7 @@ form, input, select, textarea{
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title"></h5>
-                        <button type="button" class="close" onclick="closeModal()">
+                        <button type="button" class="close" data-dismiss="modal">
                             <span aria-hidden="true">&times;</span>
                         </button>
 
@@ -443,14 +669,14 @@ form, input, select, textarea{
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Observation</label>
+                                    <label class="form-label">Observation <font color="red">*</font></label>
                                     <textarea class="form-control" id="currentObservation" rows="2"></textarea>
                                 </div>
                                 <div class="alert alert-danger" id="currentObservationErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Decision Conformity Statement</label>
+                                    <label class="form-label">Decision Conformity Statement <font color="red">*</font></label>
                                     <textarea class="form-control" id="decisionConform" rows="2"></textarea>
                                 </div>
                                 <div class="alert alert-danger" id="decisionConformErrorMsg" style="display:none"></div>
@@ -465,12 +691,13 @@ form, input, select, textarea{
                             &nbsp;&nbsp;Add
                         </button>
                         {% endfor %}
-                        <button type="button" class="btn btn-primary" onclick="closeModal()">Close Modal</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close Modal</button>
                      </div>
 
                   </div>
             </div>
         </div>
+</div>
     <div class="modal fade" id="modal-common">
         <div class="modal-dialog modal-lg">
           <div class="modal-content edit">
@@ -487,99 +714,160 @@ form, input, select, textarea{
     </div>
 <script src="{% static 'assets/js/app.min.js' %}"></script>
 <script>
-function openDecisionModal()
-{
-    $('#addModal').modal('show');
-}
-
-function closeModal()
-{
-    $("#addModal").modal('hide');
-}
-
-function add_details_ins(application_id)
-{
-    currentObservation = $('#currentObservation').val();
-    decisionConform = $('#decisionConform').val();
-
-    if(currentObservation == "")
+    function isNumberKey(evt)
     {
-        $('#currentObservationErrorMsg').html("Enter Current Observation.");
-        $('#currentObservationErrorMsg').show();
-        $('#currentObservationErrorMsg').delay(2000).fadeOut('slow');
-        $('#currentObservation').focus();
-    }
-    else if(decisionConform == "")
-    {
-        $('#decisionConformErrorMsg').html("Enter Decision Conformity Statement.");
-        $('#decisionConformErrorMsg').show();
-        $('#decisionConformErrorMsg').delay(2000).fadeOut('slow');
-        $('#decisionConform').focus();
-    }
-    else
-    {
-        $.ajax({
-            type : "GET",
-            url : "{% url 'details_ins_lmp' %}",
-            data :{'application_id':application_id,'currentObservation':currentObservation,'decisionConform':decisionConform},
-            success : function(data) {
-                $('#details').html(data);
-                $('#details').show();
-                $('#addModal').modal('hide');
-            }
-        });
-    }
-}
+     var charCode = (evt.which) ? evt.which : event.keyCode
+     if (charCode > 31 && (charCode < 48 || charCode > 57))
+        return false;
 
-function approve_details(application_id)
-{
-    Inspection_Leader = $('#teamLeader').val();
-    Inspection_Team = $('#insTeam').val();
-    remarks = $('#remarks').val();
-    dateOfInspection = $('#dateOfInspection').val();
-    validity = $('#validity').val();
-
-   $.ajax({
-        type : "GET",
-        url : "{% url 'approve_application_lmp' %}",
-        data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks ,
-        'dateOfInspection':dateOfInspection, 'validity':validity},
-        success : function(data) {
-            $('#messageDiv').show();
-            setTimeout(function() {
-                $("#messageDiv").hide('blind', {}, 500)
-            }, 2000);
-            setTimeout(function() {
-                location.reload();
-            }, 3000);
-        }
+     return true;
+    }
+    $(function(){
+        var today = new Date().toISOString().split('T')[0];
+        $('#dateOfInspection')[0].setAttribute('min', today);
     });
-}
+    function openDecisionModal()
+    {
+        $('#addModal').modal('show');
+    }
 
-function reject_details(application_id)
-{
+    function closeModal()
+    {
+        $("#addModal").modal('hide');
+    }
 
-    Inspection_Leader = $('#teamLeader').val();
-    Inspection_Team = $('#insTeam').val();
-    remarks = $('#remarks').val();
-    dateOfInspection = $('#dateOfInspection').val();
+    function add_details_ins(application_id)
+    {
+        currentObservation = $('#currentObservation').val();
+        decisionConform = $('#decisionConform').val();
 
-   $.ajax({
-        type : "GET",
-        url : "{% url 'reject_application_lmp' %}",
-        data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks ,
-        'dateOfInspection':dateOfInspection},
-        success : function(data) {
-            $('#messageDiv').show();
-            setTimeout(function() {
-                $("#reject_messageDiv").hide('blind', {}, 500)
-            }, 2000);
-             setTimeout(function() {
-                location.reload();
-            }, 3000);
+        if(currentObservation == "")
+        {
+            $('#currentObservationErrorMsg').html("Enter Current Observation.");
+            $('#currentObservationErrorMsg').show();
+            $('#currentObservationErrorMsg').delay(2000).fadeOut('slow');
+            $('#currentObservation').focus();
         }
-    });
-}
+        else if(decisionConform == "")
+        {
+            $('#decisionConformErrorMsg').html("Enter Decision Conformity Statement.");
+            $('#decisionConformErrorMsg').show();
+            $('#decisionConformErrorMsg').delay(2000).fadeOut('slow');
+            $('#decisionConform').focus();
+        }
+        else
+        {
+            $.ajax({
+                type : "GET",
+                url : "{% url 'details_ins_lmp' %}",
+                data :{'application_id':application_id,'currentObservation':currentObservation,'decisionConform':decisionConform},
+                success : function(data) {
+                    $('#details').html(data);
+                    $('#details').show();
+                    $('#addModal').modal('hide');
+                }
+            });
+        }
+    }
+
+    function approve_details(application_id)
+    {
+        Inspection_Leader = $('#teamLeader').val();
+        Inspection_Team = $('#insTeam').val();
+        dateOfInspection = $('#dateOfInspection').val();
+        validity = $('#validity').val();
+        remarks = $('#remarks').val();
+
+        if(Inspection_Leader == "")
+        {
+            $('#teamLeaderErrorMsg').html("Select Team Leader.");
+            $('#teamLeaderErrorMsg').show();
+            $('#teamLeaderErrorMsg').delay(2000).fadeOut('slow');
+            $('#teamLeader').focus();
+        }
+        else if(Inspection_Team == "")
+        {
+            $('#insTeamErrorMsg').html("Enter Inspection Team.");
+            $('#insTeamErrorMsg').show();
+            $('#insTeamErrorMsg').delay(2000).fadeOut('slow');
+            $('#insTeam').focus();
+        }
+        else if(dateOfInspection == "")
+        {
+            $('#dateOfInspectionErrorMsg').html("Select Date Of Inspection.");
+            $('#dateOfInspectionErrorMsg').show();
+            $('#dateOfInspectionErrorMsg').delay(2000).fadeOut('slow');
+            $('#dateOfInspection').focus();
+        }
+        else if(validity == "")
+        {
+            $('#validityErrorMsg').html("Enter Validity.");
+            $('#validityErrorMsg').show();
+            $('#validityErrorMsg').delay(2000).fadeOut('slow');
+            $('#validity').focus();
+        }
+        else
+        {
+            $("#loader").show();
+            $.ajax({
+                type : "GET",
+                url : "{% url 'approve_application_lmp' %}",
+                data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks ,
+                'dateOfInspection':dateOfInspection, 'validity':validity},
+                success : function(data) {
+                    $("#loader").hide();
+                    $('#approve_Msg').html("Application Approved.");
+                    $('#approve_Msg').show();
+                    $('#approve_Msg').delay(2000).fadeOut('slow');
+                    setTimeout(function() {
+                        location.reload();
+                    }, 3000);
+                    setTimeout(function() {
+                        window.location.href = '{% url 'dashboard' %}';
+                    }, 3000);
+                }
+            });
+        }
+    }
+
+    function reject_details(application_id)
+    {
+        Inspection_Leader = $('#teamLeader').val();
+        Inspection_Team = $('#insTeam').val();
+        dateOfInspection = $('#dateOfInspection').val();
+        validity = $('#validity').val();
+        remarks = $('#remarks').val();
+
+        if(remarks == "")
+        {
+            $('#remarksErrorMsg').html("Enter Remarks.");
+            $('#remarksErrorMsg').show();
+            $('#remarksErrorMsg').delay(2000).fadeOut('slow');
+            $('#remarks').focus();
+        }
+        else
+        {
+            $("#loader").show();
+            $.ajax({
+                type : "GET",
+                url : "{% url 'reject_application_lmp' %}",
+                data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks ,
+                'dateOfInspection':dateOfInspection},
+                success : function(data) {
+                    $("#loader").hide();
+                    $('#approve_Msg').html("Application Rejected.");
+                    $('#approve_Msg').show();
+                    $('#approve_Msg').delay(2000).fadeOut('slow');
+                    setTimeout(function() {
+                        $("#reject_messageDiv").hide('blind', {}, 500)
+                    }, 2000);
+                     setTimeout(function() {
+                        window.location.href = '{% url 'dashboard' %}';
+                    }, 3000);
+                }
+            });
+        }
+    }
 
 
 </script>

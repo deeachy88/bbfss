@@ -8,7 +8,14 @@
 form, input, select, textarea{
     color: black !important;
 }
-
+#loader img
+{
+  left: 50%;
+  margin-left: -32px;
+  margin-top: -32px;
+  position: absolute;
+  top: 50%;
+}
 </style>
         <div class="card">
             <div class="card-header" role="tab" id="headingOne">
@@ -414,7 +421,7 @@ form, input, select, textarea{
                    Focal Officer Details
                 </a>
             </div>
-            <div id="focal_details_collapse" class="collapse" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion" style="">
+            <div id="focal_details_collapse" class="active" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion" style="">
                 <div class="card-body">
                     <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
                         <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
@@ -442,9 +449,11 @@ form, input, select, textarea{
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Inspection Team Leader</label>
-                                    <select class="form-control" name="teamLeader"  id="teamLeader">
+                                    <select class="form-control" name="teamLeader"  id="teamLeader" disabled>
                                         {% for inspector_list in inspector_list %}
-                                                <option value="{{ inspector_list.Login_Id }}">{{ inspector_list.Name }}</option>
+                                            <option value="{{inspector_list.Login_Id}}"{% if application_details.Dzongkhag_Code == inspector_list.Login_Id %}selected{% endif %}>
+                                                {{ inspector_list.Name }}
+                                            </option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -499,7 +508,9 @@ form, input, select, textarea{
                                     <label class="form-label">Inspection Team Leader</label>
                                     <select class="form-control" disabled>
                                         {% for inspector_list in inspector_list %}
-                                                <option value="{{ inspector_list.Login_Id }}">{{ inspector_list.Name }}</option>
+                                            <option value="{{inspector_list.Login_Id}}"{% if application_details.Dzongkhag_Code == inspector_list.Login_Id %}selected{% endif %}>
+                                                {{ inspector_list.Name }}
+                                            </option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -530,7 +541,7 @@ form, input, select, textarea{
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">Validity Of License</label>
+                                <label class="form-label">Validity Of License (No Of Days)<font color="red">*</font></label>
                                 <input type="number" class="form-control" id="validity" name="validity">
                             </div>
                             <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>
@@ -545,6 +556,9 @@ form, input, select, textarea{
                     <br>
                     <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
                         Application Approved
+                    </div>
+                    <div id="loader" style="display:none">
+                        <img src="{% static 'assets/img/ajax-loader.gif' %}" alt="processing..." />
                     </div>
                     <div class="modal-footer justify-content-center">
                         {% for application_details in application_details %}
@@ -577,11 +591,13 @@ form, input, select, textarea{
         }
         else
         {
+            $("#loader").show();
             $.ajax({
                 type : "GET",
                 url : "{% url 'meat_shop_submit' %}",
                 data :{'application_id':application_id , 'remarks':remarks , 'validity':validity},
                 success : function(data) {
+                    $("#loader").hide();
                     $('#submitMsg').show();
                     setTimeout(function()
                     {

@@ -312,16 +312,16 @@ form, input, select, textarea{
                                              </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Expected Date for Export</label>
                                              <input type="text" class="form-control" value="{{application_details.Export_Expected_Date }}" disabled>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Propose Date for Inspection</label>
-                                             <input type="text" class="form-control" value="{{application_details.Final_Destination }}">
+                                             <input type="text" class="form-control" value="{{application_details.Proposed_Inspection_Date }}" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -406,12 +406,12 @@ form, input, select, textarea{
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="form-label">Propose Date for Inspection</label>
-                                             <input type="text" class="form-control" value="{{application_details.Final_Destination }}">
+                                             <input type="text" class="form-control" value="{{application_details.Proposed_Inspection_Date }}">
                                         </div>
                                     </div>
                                 </div>
                             {% endif %}
-                        {% endfor %}
+
                                 <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
                                     <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
                                         <span class="px-2 small text-muted font-weight-bold text-muted form-label">Product</span>
@@ -419,6 +419,7 @@ form, input, select, textarea{
                                     <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
                                 </div>
                                 <br>
+                            {% if application_details.Application_Type == 'AP' %}
                                 <table class="table table-bordered">
                                     <thead>
                                         <tr>
@@ -431,14 +432,14 @@ form, input, select, textarea{
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for import in import %}
+                                        {% for import in details %}
                                             <tr>
                                                 <td>{{ forloop.counter }}</td>
-                                                <td>{{import.Particulars}}</td>
-                                                <td>{{import.Company_Name}}</td>
-                                                <td>{{import.Description}}</td>
-                                                <td>{{import.Unit}}</td>
-                                                <td>{{import.Quantity}}</td>
+                                                <td>{{details.Particulars}}</td>
+                                                <td>{{details.Company_Name}}</td>
+                                                <td>{{details.Description}}</td>
+                                                <td>{{details.Unit}}</td>
+                                                <td>{{details.Quantity}}</td>
                                             </tr>
                                             {% empty %}
                                             <tr>
@@ -447,6 +448,42 @@ form, input, select, textarea{
                                         {% endfor %}
                                     </tbody>
                                 </table>
+                                <br>
+                            {% else %}
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Species</th>
+                                            <th scope="col">Breed</th>
+                                            <th scope="col">Age</th>
+                                            <th scope="col">Sex</th>
+                                            <th scope="col">Description</th>
+                                            <th scope="col">No of Animals</th>
+                                            <th scope="col">Remarks</th>
+                                            <th scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for details in details %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td>{{details.Species}}</td>
+                                                <td>{{details.Breed}}</td>
+                                                <td>{{details.Age}}</td>
+                                                <td>{{details.Sex}}</td>
+                                                <td>{{details.Description}}</td>
+                                                <td>{{details.No_Of_Animal}}</td>
+                                                <td>{{details.Remarks}}</td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                              <td colspan="8" class="text-center">No Data</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% endif %}
                                 <br>
                                 <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
                                     <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
@@ -474,8 +511,10 @@ form, input, select, textarea{
                                            {% endfor %}
                                         </tbody>
                                     </table>
+
                             </div>
                         <br>
+                    {% endfor %}
                         <div class="modal-footer justify-content-between">
                             <div class="col-md-6">
                                 <select class="form-control" name="forwardTo"  id="forwardTo">
