@@ -195,7 +195,22 @@ def organic_certificate_file_name(request):
                                          Attachment=fileName)
 
         file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
-    return render(request, 'GAP_Certification/file_attachment.html', {'file_attach': file_attach})
+    return render(request, 'organic_certification/file_attachment.html', {'file_attach': file_attach})
+
+
+def delete_oc_file(request):
+    File_Id = request.GET.get('file_id')
+    Application_No = request.GET.get('appNo')
+
+    file = t_file_attachment.objects.filter(pk=File_Id)
+    for file in file:
+        fileName = file.Attachment
+        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/certification/organic_certificate")
+        fs.delete(str(fileName))
+    file.delete()
+
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+    return render(request, 'organic_certification/file_attachment.html', {'file_attach': file_attach})
 
 
 def save_farmers_group_details(request):
@@ -310,7 +325,7 @@ def save_aquaculture_details(request):
     aqua_Sold = request.POST.get('aqua_Sold')
     aqua_Sold_unit = request.POST.get('aqua_Sold')
     stock_balance = request.POST.get('stock_balance')
-    stock_balance_unit = request.POST.get('stock_balance')
+    stock_balance_unit = request.POST.get('stock_balance_unit')
 
     t_certification_organic_t8.objects.create(
         Application_No=application_no,
@@ -392,6 +407,61 @@ def save_processing_unit_details(request):
     processing_details = t_certification_organic_t5.objects.filter(Application_No=application_no)
     return render(request, 'organic_certification/processing_unit_details.html',
                   {'processing_details': processing_details})
+
+
+def oc_fg_details(request):
+    application_no = request.GET.get('appNo')
+    farmers_group_details = t_certification_organic_t2.objects.filter(Application_No=application_no)
+    return render(request, 'organic_certification/farmer_group_details.html',
+                  {'farmers_group_details': farmers_group_details})
+
+
+def oc_cp_details(request):
+    application_no = request.GET.get('appNo')
+    crop_details = t_certification_organic_t4.objects.filter(Application_No=application_no)
+    return render(request, 'organic_certification/crop_production_details.html',
+                  {'crop_details': crop_details})
+
+
+def wild_details(request):
+    application_no = request.GET.get('appNo')
+    wild_collection = t_certification_organic_t6.objects.filter(Application_No=application_no)
+    return render(request, 'organic_certification/wild_collection_details.html',
+                  {'wild_collection': wild_collection})
+
+
+def animal_husbandry_details(request):
+    application_no = request.GET.get('appNo')
+    animal_husbandry = t_certification_organic_t7.objects.filter(Application_No=application_no)
+    return render(request, 'organic_certification/animal_husbandry_details.html',
+                  {'animal_husbandry': animal_husbandry})
+
+
+def aquaculture_details(request):
+    application_no = request.GET.get('appNo')
+    aqua_culture_details = t_certification_organic_t8.objects.filter(Application_No=application_no)
+    return render(request, 'organic_certification/aquaculture_details.html',
+                  {'aquaculture_details': aqua_culture_details})
+
+
+def api_details(request):
+    application_no = request.GET.get('appNo')
+    processing_details = t_certification_organic_t5.objects.filter(Application_No=application_no)
+    return render(request, 'organic_certification/processing_unit_details.html',
+                  {'processing_details': processing_details})
+
+
+def oc_attachment_details(request):
+    application_no = request.GET.get('appNo')
+    file_attach = t_file_attachment.objects.filter(Application_No=application_no)
+    return render(request, 'organic_Certification/file_attachment.html', {'file_attach': file_attach})
+
+
+def processing_details(request):
+    application_no = request.GET.get('appNo')
+    apiculture_details = t_certification_organic_t9.objects.filter(Application_No=application_no)
+    return render(request, 'organic_certification/api_culture_details.html',
+                  {'apiculture_details': apiculture_details})
 
 
 def submit_organic_certificate(request):
@@ -690,7 +760,7 @@ def approve_oc_application(request):
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='A')
-    #update_payment(application_id, Certificate_No, 'OC', validity_date)
+    # update_payment(application_id, Certificate_No, 'OC', validity_date)
     for email_id in details:
         emailId = email_id.Email
         send_oc_approve_email(Certificate_No, emailId, validity_date)
@@ -1033,6 +1103,21 @@ def gap_certificate_file_name(request):
     return render(request, 'GAP_Certification/file_attachment.html', {'file_attach': file_attach})
 
 
+def delete_gap_file(request):
+    File_Id = request.GET.get('file_id')
+    Application_No = request.GET.get('appNo')
+
+    file = t_file_attachment.objects.filter(pk=File_Id)
+    for file in file:
+        fileName = file.Attachment
+        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/certification/gap_certificate")
+        fs.delete(str(fileName))
+    file.delete()
+
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+    return render(request, 'GAP_Certification/file_attachment.html', {'file_attach': file_attach})
+
+
 def save_gap_audit_plan(request):
     data = dict()
     myFile = request.FILES['document']
@@ -1141,14 +1226,15 @@ def add_pack_house_details(request):
     production = request.GET.get('production')
     production_unit = request.GET.get('production_unit')
     previous_sold = request.GET.get('previous_sold')
-    # previous_sold_unit = request.GET.get('previous_sold_unit')
+    previous_sold_unit = request.GET.get('previous_sold_unit')
     stock_balance = request.GET.get('stock_balance')
-    # stock_balance_unit = request.GET.get('stock_balance_unit')
+    stock_balance_unit = request.GET.get('stock_balance_unit')
     current_from_date = request.GET.get('current_from_date')
     current_to_date = request.GET.get('current_to_date')
     current_Production = request.GET.get('current_Production')
+    current_Production_Unit = request.GET.get('C_Production_Unit')
     current_sold = request.GET.get('current_sold')
-    # current_sold_unit = request.GET.get('current_sold_unit')
+    current_sold_unit = request.GET.get('current_sold_unit')
     current_stock_balance = request.GET.get('current_stock_balance')
     current_stock_unit = request.GET.get('current_stock_unit')
     p_from = datetime.strptime(prev_year, '%d-%m-%Y').date()
@@ -1165,11 +1251,15 @@ def add_pack_house_details(request):
         P_Production=production,
         P_Production_Unit=production_unit,
         P_Sold=previous_sold,
+        P_Sold_Unit=previous_sold_unit,
         P_Balance_Stock=stock_balance,
+        P_Balance_Stock_Unit=stock_balance_unit,
         C_From_Date=c_from,
         C_To_Date=c_to,
         C_Production=current_Production,
+        C_Production_Unit=current_Production_Unit,
         C_Sold=current_sold,
+        C_Sold_Unit=current_sold_unit,
         C_Balance_Stock=current_stock_balance,
         C_Balance_Stock_Unit=current_stock_unit
     )
@@ -1177,6 +1267,33 @@ def add_pack_house_details(request):
     pack_house_details = t_certification_gap_t5.objects.filter(Application_No=application_no)
     return render(request, 'GAP_Certification/pack_house_details.html',
                   {'pack_house_details': pack_house_details})
+
+
+def load_fg_details(request):
+    application_no = request.GET.get('appNo')
+    farmers_group_details = t_certification_gap_t2.objects.filter(Application_No=application_no)
+    return render(request, 'GAP_Certification/farmer_group_details.html',
+                  {'farmers_group_details': farmers_group_details})
+
+
+def gap_cp_details(request):
+    application_no = request.GET.get('appNo')
+    crop_production_details = t_certification_gap_t4.objects.filter(Application_No=application_no)
+    return render(request, 'GAP_Certification/crop_production_details.html',
+                  {'crop_production_details': crop_production_details})
+
+
+def gap_ph_details(request):
+    application_no = request.GET.get('appNo')
+    pack_house_details = t_certification_gap_t5.objects.filter(Application_No=application_no)
+    return render(request, 'GAP_Certification/pack_house_details.html',
+                  {'pack_house_details': pack_house_details})
+
+
+def gap_attachment(request):
+    application_no = request.GET.get('appNo')
+    file_attach = t_file_attachment.objects.filter(Application_No=application_no)
+    return render(request, 'GAP_Certification/file_attachment.html', {'file_attach': file_attach})
 
 
 def gap_audit_team_details(request):
@@ -1797,6 +1914,28 @@ def food_product_certificate_file_name(request):
     return render(request, 'food_product_certification/file_attachment.html', {'file_attach': file_attach})
 
 
+def fpc_attachment_details(request):
+    Application_No = request.GET.get('appNo')
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+    return render(request, 'food_product_certification/file_attachment.html', {'file_attach': file_attach})
+
+
+def delete_fpc_file(request):
+    File_Id = request.GET.get('file_id')
+    Application_No = request.GET.get('appNo')
+
+    file = t_file_attachment.objects.filter(pk=File_Id)
+    for file in file:
+        fileName = file.Attachment
+        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/certification "
+                                                                                "/food_product_certificate")
+        fs.delete(str(fileName))
+    file.delete()
+
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+    return render(request, 'food_product_certification/file_attachment.html', {'file_attach': file_attach})
+
+
 def submit_food_product_certificate(request):
     application_no = request.POST.get('application_no')
     Terms_Bafra_Certification = request.POST.get('Terms_Bafra_Certification')
@@ -1977,7 +2116,7 @@ def approve_fpc_application(request):
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='A')
-    #update_payment(application_id, Export_Permit_No, 'GAP', validity_date)
+    # update_payment(application_id, Export_Permit_No, 'GAP', validity_date)
     for email_id in details:
         emailId = email_id.Firm_Email
         send_fpc_approve_email(Export_Permit_No, emailId, validity_date)
@@ -2573,6 +2712,17 @@ def update_payment(application_no, permit_no, service_code, validity_date):
                                      Updated_On=None)
 
 
+def get_prev_crop_mont(request):
+    data = dict()
+    date1 = request.GET.get('from_date')
+    date2 = request.GET.get('to_date')
+    d1 = datetime.strptime(date1, "%d-%m-%Y").date()
+    d2 = datetime.strptime(date2, "%d-%m-%Y").date()
+    month_list = [i.strftime("%B") for i in pd.date_range(start=d1, end=d2, freq='MS')]
+    data['month_list'] = month_list
+    return JsonResponse(data)
+
+
 def date_month(request):
     date1 = request.GET.get('from_date')
     date2 = request.GET.get('to_date')
@@ -2582,10 +2732,22 @@ def date_month(request):
     return render(request, 'GAP_Certification/month_list.html', {'month_list': month_list})
 
 
+def check_difference(request):
+    data = dict()
+    date1 = request.GET.get('from_date')
+    date2 = request.GET.get('to_date')
+    d1 = datetime.strptime(date1, "%d-%m-%Y").date()
+    d2 = datetime.strptime(date2, "%d-%m-%Y").date()
+    delta = d2 - d1
+    print(delta.days)
+    data['no_of_days'] = delta.days
+    return JsonResponse(data)
+
+
 def delete_audit_team(request):
     application_no = request.GET.get('Application_No')
     record_id = request.GET.get('Record_Id')
-    identification_type= request.GET.get('identification_type')
+    identification_type = request.GET.get('identification_type')
 
     if identification_type == 'GAP':
         details = t_certification_gap_t3.objects.filter(Record_Id=record_id)
@@ -2663,6 +2825,7 @@ def delete_farmers_group(request):
         details.delete()
         farmer_group = t_certification_organic_t2.objects.filter(Application_No=application_no)
         return render(request, 'organic_certification/farmer_group_details.html', {'farmer_group': farmer_group})
+
 
 def load_fpc_details_page(request):
     dzongkhag = t_dzongkhag_master.objects.all()

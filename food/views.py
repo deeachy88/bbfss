@@ -129,6 +129,103 @@ def save_food_business_registration(request):
     return JsonResponse(data)
 
 
+def update_food_business_registration(request):
+    data = dict()
+    service_code = "FBR"
+    new_food_business_registration_application = request.POST.get('application_no')
+    Business_Name = request.POST.get('Business_Name')
+    CID = request.POST.get('cid')
+    name = request.POST.get('Name')
+    Contact_No = request.POST.get('contactNumber')
+    Email = request.POST.get('email')
+    address = request.POST.get('address')
+    current_status = request.POST.get('current_status')
+    name_manager = request.POST.get('name_manager')
+    license_criteria = request.POST.get('license_criteria')
+    product_category = request.POST.get('product_category')
+    product_proposed = request.POST.get('product_proposed')
+    identified_water_source = request.POST.get('identified_water_source')
+    no_of_years = request.POST.get('no_of_years')
+    production_volume = request.POST.get('production_volume')
+    volume_unit = request.POST.get('volume_unit')
+    history = request.POST.get('history')
+    previous_business = request.POST.get('previous_business')
+    outsourced_process = request.POST.get('outsourced_process')
+    legal_status = request.POST.get('legal_status')
+    larger_corporation = request.POST.get('larger_corporation')
+    relationship = request.POST.get('relationship')
+    licensed_before = request.POST.get('relationship')
+    license_number = request.POST.get('license_number')
+    reason = request.POST.get('license_number')
+    judicial_proceedings = request.POST.get('judicial_proceedings')
+    provided_details = request.POST.get('provided_details')
+    regulatory_proceedings_details = request.POST.get('regulatory_proceedings_details')
+    project_proposal = request.POST.get('project_proposal')
+    regulatory_proceedings = request.POST.get('regulatory_proceedings')
+    dzongkhag = request.POST.get('dzongkhag')
+    gewog = request.POST.get('gewog')
+    village = request.POST.get('village')
+
+    food_business_details = t_food_business_registration_licensing_t1.objects.filter(
+        Application_No=new_food_business_registration_application)
+
+    food_business_details.update(
+        Application_Date=date.today(),
+        Applicant_Id=request.session['email'],
+        Business_Name=Business_Name,
+        CID=CID,
+        Name_Owner=name,
+        Contact_No=Contact_No,
+        Email=Email,
+        Address=address,
+        Name_Manager=name_manager,
+        License_Criteria=license_criteria,
+        Product_Category=product_category,
+        Product=product_proposed,
+        Current_Status=current_status,
+        Years_In_Production=no_of_years,
+        Volume_Last_Year=production_volume,
+        Volume_Unit=volume_unit,
+        Project_Proposal=project_proposal,
+        Water_Source=identified_water_source,
+        Site_History=history,
+        Previous_Business=previous_business,
+        Process_Outsource=outsourced_process,
+        Legal_Entity=legal_status,
+        Large_Corporation=larger_corporation,
+        Large_Corporation_Relation=relationship,
+        FBO_License_Status=licensed_before,
+        FBO_License_No=license_number,
+        Invalid_Reason=reason,
+        FBO_Judicial_Proceedings=judicial_proceedings,
+        Judicial_Proceedings_Details=provided_details,
+        FBO_Regulatory_Proceedings=regulatory_proceedings_details,
+        Regulatory_Proceedings_Details=regulatory_proceedings,
+        Inspection_Type=None,
+        FB_License_No=None,
+        FI_Inspection_Date=None,
+        FI_Inspection_Leader=None,
+        FI_Recommendation=None,
+        FR_Inspection_Date=None,
+        FR_Inspection_Leader=None,
+        FR_Inspection_Team=None,
+        Dzongkhag_Code=dzongkhag,
+        Gewog_Code=gewog,
+        Village_Code=village
+
+    )
+
+    work_details = t_workflow_details.objects.filter(Application_No=new_food_business_registration_application)
+    work_details.update(
+        Applicant_Id=request.session['email'],
+        Assigned_To=None, Field_Office_Id=None, Section='Food',
+        Assigned_Role_Id='2', Action_Date=None, Application_Status='P',
+        Service_Code=service_code)
+    data['applNo'] = new_food_business_registration_application
+    data['outsourced_process'] = outsourced_process
+    return JsonResponse(data)
+
+
 def food_business_registration_application_no(service_code):
     last_application_no = t_food_business_registration_licensing_t1.objects.aggregate(Max('Application_No'))
     lastAppNo = last_application_no['Application_No__max']
@@ -215,6 +312,24 @@ def save_fh_details(request):
     return render(request, 'registration_licensing/food_handler_details.html', {'fh_details': fh_details})
 
 
+def load_outsourced_details(request):
+    Application_No = request.GET.get('appNo')
+    fh_details = t_food_business_registration_licensing_t2.objects.filter(Application_No=Application_No)
+    return render(request, 'registration_licensing/details.html', {'fh_details': fh_details})
+
+
+def food_handler_details(request):
+    Application_No = request.GET.get('appNo')
+    fh_details = t_food_business_registration_licensing_t3.objects.filter(Application_No=Application_No)
+    return render(request, 'registration_licensing/food_handler_details.html', {'fh_details': fh_details})
+
+
+def load_fbr_attachment(request):
+    Application_No = request.GET.get('appNo')
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+    return render(request, 'registration_licensing/file_attachment.html', {'file_attach': file_attach})
+
+
 def submit_food_business_application(request):
     application_no = request.POST.get('application_no')
     workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
@@ -243,7 +358,7 @@ def fbr_fo_approve(request):
 
 
 def fbr_fo_reject(request):
-    application_no = request.GET.get('application_id')
+    application_no = request.POST.get('application_id')
     remarks = request.POST.get('remarks')
     workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
     workflow_details.update(Action_Date=date.today())
@@ -253,6 +368,7 @@ def fbr_fo_reject(request):
     for email_id in details:
         email = email_id.Email
         send_fbr_reject_email(email, remarks)
+    return redirect(focal_officer_application)
 
 
 def send_fbr_approve_email(new_import_permit, Email, validity_date):
@@ -846,6 +962,91 @@ def save_food_export_details(request):
     return JsonResponse(data)
 
 
+def update_food_export_details(request):
+    data = dict()
+    service_code = "FEC"
+    food_export_application = request.POST.get('application_no')
+    License_No = request.POST.get('license_no')
+    CID = request.POST.get('cid')
+    Exporters_Name = request.POST.get('name')
+    Dzongkhag_Code = request.POST.get('dzongkhag')
+    Gewog_Code = request.POST.get('gewog')
+    Village_Code = request.POST.get('village')
+    Exporters_Address = request.POST.get('Exporter_Address')
+    Contact_No = request.POST.get('contactNumber')
+    Email = request.POST.get('email')
+    Importer_Name = request.POST.get('importers_name')
+    Importer_Address = request.POST.get('Importers_Address')
+    Importing_Country = request.POST.get('importing_country')
+    Product_Name = request.POST.get('Product_name')
+    No_Of_Packages = request.POST.get('no_of_packages')
+    Description_Of_Packages = request.POST.get('description_of_packages')
+    Quantity = request.POST.get('quantity')
+    Unit = request.POST.get('unit')
+    Declared_Point_of_Exit = request.POST.get('Place_of_Exit')
+    Export_Expected_Date = request.POST.get('Export_Expected_Date')
+    Proposed_Inspection_Date = request.POST.get('inspectionDate')
+    Purpose_Of_Export = request.POST.get('export_purpose')
+    Consignment_Location_Dzongkhag = request.POST.get('consignment_location_dzongkhag')
+    Consignment_Location_Gewog = request.POST.get('consignment_location_gewog')
+    Consignment_Location = request.POST.get('consignment_location')
+    date_format_ins = datetime.strptime(Proposed_Inspection_Date, '%d-%m-%Y').date()
+    date_of_export = datetime.strptime(Export_Expected_Date, '%d-%m-%Y').date()
+    additional_info = request.POST.get('additional_info')
+
+    food_export_details = t_food_export_certificate_t1.objects.filter(Application_No=food_export_application)
+
+    food_export_details.update(
+        Application_Date=date.today(),
+        License_No=License_No,
+        CID=CID,
+        Exporters_Name=Exporters_Name,
+        Dzongkhag_Code=Dzongkhag_Code,
+        Gewog_Code=Gewog_Code,
+        Village_Code=Village_Code,
+        Exporters_Address=Exporters_Address,
+        Contact_No=Contact_No,
+        Email=Email,
+        Importer_Name=Importer_Name,
+        Importer_Address=Importer_Address,
+        Product_Name=Product_Name,
+        No_Of_Packages=No_Of_Packages,
+        Description_Of_Packages=Description_Of_Packages,
+        Quantity=Quantity,
+        Unit=Unit,
+        Declared_Point_of_Exit=Declared_Point_of_Exit,
+        Export_Expected_Date=date_of_export,
+        Proposed_Inspection_Date=date_format_ins,
+        Purpose_Of_Export=Purpose_Of_Export,
+        Consignment_Location_Dzongkhag=Consignment_Location_Dzongkhag,
+        Consignment_Location_Gewog=Consignment_Location_Gewog,
+        Consignment_Location=Consignment_Location,
+        Inspection_Date=None,
+        Inspection_Leader=None,
+        Inspection_Team=None,
+        Inspection_Remarks=None,
+        Export_Permit_No=None,
+        Approved_Date=None,
+        Validity_Period=None,
+        Validity=None,
+        Applicant_Id=request.session['email'],
+        Importing_Country=Importing_Country,
+        Additional_Information=additional_info,
+        Rejection_Reason=None,
+        Terms=None
+    )
+    field = t_location_field_office_mapping.objects.filter(Location_Code=Consignment_Location_Gewog)
+    for field_office in field:
+        field_office_id = field_office.Field_Office_Id_id
+        work_details = t_workflow_details.objects.filter(Application_No=food_export_application)
+        work_details.update(Application_No=food_export_application, Applicant_Id=request.session['email'],
+                            Assigned_To=None, Field_Office_Id=field_office_id, Section='Food',
+                            Assigned_Role_Id='4', Action_Date=None, Application_Status='P',
+                            Service_Code=service_code)
+    data['applNo'] = food_export_application
+    return JsonResponse(data)
+
+
 def food_export_file(request):
     data = dict()
     myFile = request.FILES['document']
@@ -872,6 +1073,12 @@ def food_export_file_name(request):
                                          Attachment=fileName)
 
         file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+    return render(request, 'export_certificate_food/file_attachment.html', {'file_attach': file_attach})
+
+
+def load_fec_attachment(request):
+    Application_No = request.GET.get('appNo')
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
     return render(request, 'export_certificate_food/file_attachment.html', {'file_attach': file_attach})
 
 
@@ -1110,6 +1317,83 @@ def save_food_handler_details(request):
     return JsonResponse(data)
 
 
+def update_food_handler_details(request):
+    data = dict()
+    service_code = "FHC"
+    application_no = request.POST.get('application_no')
+    Nationality = request.POST.get('Nationality')
+    if Nationality == "Bhutanese":
+        CID = request.POST.get('cid')
+        Permit_No = None
+    else:
+        CID = None
+        Permit_No = request.POST.get('Permit_No')
+    Applicant_Name = request.POST.get('name')
+    Contact_No = request.POST.get('contactNumber')
+    if Nationality == "Bhutanese":
+        Email = request.POST.get('email')
+        Country_Code = None
+        Dzongkhag_Code = request.POST.get('dzongkhag')
+        Gewog_Code = request.POST.get('gewog')
+        Village_Code = request.POST.get('village')
+    else:
+        Email = request.POST.get('f_email')
+        Country_Code = request.POST.get('country')
+        Dzongkhag_Code = None
+        Gewog_Code = None
+        Village_Code = None
+    Training_Request = request.POST.get('Training_Type')
+    Preferred_Place = request.POST.get('preferred_place')
+    Proposed_Inspection_Date = request.POST.get('preferred_Date')
+    Associated_Food_Establishment = request.POST.get('associated_establishment')
+    date_format_ins = datetime.strptime(Proposed_Inspection_Date, '%d-%m-%Y').date()
+
+    food_handler_details = t_food_licensing_food_handler_t1.objects.filter(Application_No=application_no)
+
+    food_handler_details.update(
+        Application_Date=None,
+        Nationality=Nationality,
+        CID=CID,
+        Permit_No=Permit_No,
+        Applicant_Name=Applicant_Name,
+        Dzongkhag_Code=Dzongkhag_Code,
+        Gewog_Code=Gewog_Code,
+        Village_Code=Village_Code,
+        Country_Code=Country_Code,
+        Contact_No=Contact_No,
+        Email=Email,
+        Training_Request=Training_Request,
+        Preferred_Inspection_Place=Preferred_Place,
+        Proposed_Inspection_Date=date_format_ins,
+        Associated_Food_Establishment=Associated_Food_Establishment,
+        Training_Batch_No=None,
+        Training_From_Date=None,
+        Training_To_Date=None,
+        License_Status=None,
+        Assessment_Score=None,
+        Minimum_Score=None,
+        Trainer=None,
+        FH_License_No=None,
+        Approved_Date=None,
+        FH_License_Validity_Period=None,
+        FH_License_Validity=None,
+        Applicant_Id=request.session['email'],
+        OIC_Remarks=None,
+        Inspection_Remarks=None,
+        Attendance=None,
+        Training_Venue=None,
+        Training_Batch=None,
+        App_Status='P'
+    )
+    workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
+    workflow_details.update(Applicant_Id=request.session['email'],
+                            Assigned_To=None, Field_Office_Id=Preferred_Place, Section='Food',
+                            Assigned_Role_Id='4', Action_Date=None, Application_Status='P',
+                            Service_Code=service_code)
+    data['applNo'] = application_no
+    return JsonResponse(data)
+
+
 def food_handler_application_no(service_code):
     last_application_no = t_food_licensing_food_handler_t1.objects.aggregate(Max('Application_No'))
     lastAppNo = last_application_no['Application_No__max']
@@ -1151,6 +1435,12 @@ def food_handler_file_name(request):
                                          Attachment=fileName)
 
         file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+    return render(request, 'food_handler/file_attachment.html', {'file_attach': file_attach})
+
+
+def load_fh_attachment(request):
+    Application_No = request.GET.get('appNo')
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
     return render(request, 'food_handler/file_attachment.html', {'file_attach': file_attach})
 
 
@@ -1528,6 +1818,99 @@ def save_food_import(request):
     return JsonResponse(data)
 
 
+def update_food_import(request):
+    data = dict()
+    service_code = "FIP"
+    application_no = request.POST.get('application_no')
+    Import_Type = request.POST.get('Import_Type')
+    cid = request.POST.get('cid')
+    Name = request.POST.get('Name')
+    present_address = request.POST.get('present_address')
+    dzongkhag = request.POST.get('dzongkhag')
+    gewog = request.POST.get('gewog')
+    village = request.POST.get('village')
+    contact_number = request.POST.get('contactNumber')
+    email = request.POST.get('email')
+    license_no = request.POST.get('license_no')
+    Operation = request.POST.get('Operation')
+    Country_Of_Origin = request.POST.get('Country_Of_Origin')
+    country_of_transit = request.POST.get('country_of_transit')
+    Country_Name = request.POST.get('Country_Name')
+    conveyanceMeans = request.POST.get('conveyanceMeans')
+    Place_of_Entry = request.POST.get('Place_of_Entry')
+    Final_Destination = request.POST.get('Final_Destination')
+    date_format_ins = request.POST.get('expectedArrivalDate')
+
+    if Import_Type == "Individual":
+        fip_details = t_food_import_permit_t1.objects.filter(Application_No=application_no)
+        fip_details.update(
+            Import_Type=Import_Type,
+            License_No=license_no,
+            CID=cid,
+            Applicant_Name=Name,
+            Dzongkhag_Code=dzongkhag,
+            Gewog_Code=gewog,
+            Village_Code=village,
+            Present_Address=present_address,
+            Contact_No=contact_number,
+            Email=email,
+            Operation_Type=Operation,
+            Origin_Country_Food=Country_Of_Origin,
+            Transit_Country=country_of_transit,
+            Country_Of_Transit=Country_Name,
+            Means_of_Conveyance=conveyanceMeans,
+            Place_Of_Entry=Place_of_Entry,
+            Final_Destination=Final_Destination,
+            Expected_Arrival_Date=date_format_ins,
+            FO_Remarks=None,
+            Application_Date=date.today(),
+            Approve_Date=None,
+            Validity_Period=None,
+            Validity=None,
+            Import_Permit_No=None,
+            Applicant_Id=request.session['email'],
+            Terms=None
+        )
+    else:
+        fip_details = t_food_import_permit_t1.objects.filter(Application_No=application_no)
+        fip_details.update(
+            Application_No=application_no,
+            Import_Type=Import_Type,
+            License_No=license_no,
+            CID=None,
+            Applicant_Name=Name,
+            Dzongkhag_Code=None,
+            Gewog_Code=None,
+            Village_Code=None,
+            Present_Address=present_address,
+            Contact_No=contact_number,
+            Email=email,
+            Operation_Type=Operation,
+            Origin_Country_Food=Country_Of_Origin,
+            Transit_Country=country_of_transit,
+            Country_Of_Transit=Country_Name,
+            Means_of_Conveyance=conveyanceMeans,
+            Place_Of_Entry=Place_of_Entry,
+            Final_Destination=Final_Destination,
+            Expected_Arrival_Date=date_format_ins,
+            FO_Remarks=None,
+            Application_Date=date.today(),
+            Approve_Date=None,
+            Validity_Period=None,
+            Validity=None,
+            Import_Permit_No=None,
+            Applicant_Id=request.session['email'],
+            Terms=None
+        )
+    work_details = t_workflow_details.objects.filter(Application_No=application_no)
+    work_details.update(Application_No=application_no, Applicant_Id=request.session['email'],
+                        Assigned_To=None, Field_Office_Id=Place_of_Entry, Section='Food',
+                        Assigned_Role_Id='2', Action_Date=None, Application_Status='P',
+                        Service_Code=service_code)
+    data['applNo'] = application_no
+    return JsonResponse(data)
+
+
 def generate_food_import_app_no(service_code):
     last_application_no = t_food_import_permit_t1.objects.aggregate(Max('Application_No'))
     lastAppNo = last_application_no['Application_No__max']
@@ -1559,6 +1942,18 @@ def save_food_import_details(request):
                                            Quantity_Balance=quantity, Remarks=None)
     import_details = t_food_import_permit_t2.objects.filter(Application_No=application_no)
     return render(request, 'import_certificate_food/food_permit_details.html', {'import': import_details})
+
+
+def load_fip_details(request):
+    application_no = request.GET.get('appNo')
+    import_details = t_food_import_permit_t2.objects.filter(Application_No=application_no)
+    return render(request, 'import_certificate_food/food_permit_details.html', {'import': import_details})
+
+
+def load_fip_attachment(request):
+    application_no = request.GET.get('appNo')
+    file_attach = t_file_attachment.objects.filter(Application_No=application_no)
+    return render(request, 'import_certificate_food/file_attachment.html', {'file_attach': file_attach})
 
 
 def food_import_file(request):

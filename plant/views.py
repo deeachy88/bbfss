@@ -156,8 +156,7 @@ def save_movement_permit(request):
     Movement_Purpose = request.POST.get('movementPurpose')
     Conveyance_Means = request.POST.get('conveyanceMeans')
     Vehicle_No = request.POST.get('vehicleNo')
-    date_of_movement = request.POST.get('date')
-    Movement_Date = datetime.strptime(date_of_movement, '%d-%m-%Y').date()
+    Movement_Date = request.POST.get('date')
     t_plant_movement_permit_t1.objects.create(
         Application_No=last_application_no,
         Permit_Type=Permit_Type,
@@ -561,7 +560,7 @@ def view_application_details(request):
         return render(request, 'Livestock_Import/inspector_details.html',
                       {'application_details': application_details, 'file': file, 'dzongkhag': dzongkhag,
                        'village': village, 'location': location, 'import': details,
-                       'inspector_list': user_role_list, 'location_details':location_details})
+                       'inspector_list': user_role_list, 'location_details': location_details})
     elif service_code == 'IAF':
         dzongkhag = t_dzongkhag_master.objects.all()
         village = t_village_master.objects.all()
@@ -581,7 +580,7 @@ def view_application_details(request):
                       {'application_details': application_details, 'file': file, 'dzongkhag': dzongkhag,
                        'village': village, 'location': location, 'import': details,
                        'inspector_list': user_role_list, 'species': species, 'breed': breed,
-                       'location_details':location_details})
+                       'location_details': location_details})
     elif service_code == 'FEC':
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
@@ -962,45 +961,104 @@ def delete_file(request):
     return render(request, 'movement_permit/file_attachment_page.html', {'file_attach': file_attach})
 
 
-def update_movement_details(request):
+def update_movement_permit(request):
     data = dict()
-    Application_No = request.GET.get('application_id')
-    mfdUnit_regNo = request.POST.get('mfdUnit_regNo')
-    appcid = request.POST.get('appcid')
-    appName = request.POST.get('appName')
-    phoneNumber = request.POST.get('phoneNumber')
-    emailId = request.POST.get('emailId')
-    location = request.POST.get('location')
-    from_Dzongkhag = request.POST.get('from_Dzongkhag')
-    Dzongkhag_to = request.POST.get('Dzongkhag_to')
-    auth_route = request.POST.get('auth_route')
-    Origin = request.POST.get('Origin')
-    Purpose = request.POST.get('Purpose')
-    convMeans = request.POST.get('convMeans')
-    agroName = request.POST.get('agroName')
-    vehicleNo = request.POST.get('vehicleNo')
-    mov_date = request.POST.get('date')
+    service_code = "MPP"
+    last_application_no = request.POST.get('applicationNo')
+    Applicant_Id = request.session['email']
+    Permit_Type = request.POST.get('permitType')
+    License_No = request.POST.get('regNo')
+    Nursery_Name = request.POST.get('companyName')
+    CID = request.POST.get('cid')
+    Applicant_Name = request.POST.get('Name')
+    Contact_No = request.POST.get('contactNumber')
+    Email = request.POST.get('email')
+    Dzongkhag_Code = request.POST.get('dzongkhag')
+    Gewog_Code = request.POST.get('gewog')
+    Village_Code = request.POST.get('village')
+    From_Dzongkhag_Code = request.POST.get('from_dzongkhag')
+    From_Gewog_Code = request.POST.get('from_gewog')
+    From_Location = request.POST.get('from_location')
+    To_Dzongkhag_Code = request.POST.get('to_dzongkhag')
+    To_Gewog_Code = request.POST.get('to_gewog')
+    To_Location = request.POST.get('to_exact_location')
+    Authorized_Route = request.POST.get('route')
+    Movement_Purpose = request.POST.get('movementPurpose')
+    Conveyance_Means = request.POST.get('conveyanceMeans')
+    Vehicle_No = request.POST.get('vehicleNo')
+    date_of_movement = request.POST.get('date')
+    Movement_Date = datetime.strptime(date_of_movement, '%d-%m-%Y').date()
 
-    movement_details = t_plant_movement_permit_t1.objects.filter(Application_No=Application_No)
-    movement_details.update(
-        License_No=mfdUnit_regNo,
-        CID=appcid,
-        Applicant_Name=appName,
-        Contact_No=phoneNumber,
-        Email=emailId,
-        Location_Code=location,
-        From_Dzongkhag_Code=from_Dzongkhag,
-        To_Dzongkhag_Code=Dzongkhag_to,
-        Authorized_Route=auth_route,
-        Source_Of_Product=Origin,
-        Movement_Purpose=Purpose,
-        Conveyance_Means=convMeans,
-        Name_And_Description=agroName,
-        Vehicle_No=vehicleNo,
-        Movement_Date=mov_date,
+    movement_permit_details = t_plant_movement_permit_t1.objects.filter(Application_No=last_application_no)
+
+    movement_permit_details.update(
+        Permit_Type=Permit_Type,
+        License_No=License_No,
+        Nursery_Name=Nursery_Name,
+        CID=CID,
+        Applicant_Name=Applicant_Name,
+        Contact_No=Contact_No,
+        Email=Email,
+        Dzongkhag=Dzongkhag_Code,
+        Gewog=Gewog_Code,
+        Village=Village_Code,
+        From_Dzongkhag_Code=From_Dzongkhag_Code,
+        From_Gewog_Code=From_Gewog_Code,
+        From_Location=From_Location,
+        To_Dzongkhag_Code=To_Dzongkhag_Code,
+        To_Gewog_Code=To_Gewog_Code,
+        To_Location=To_Location,
+        Authorized_Route=Authorized_Route,
+        Movement_Purpose=Movement_Purpose,
+        Conveyance_Means=Conveyance_Means,
+        Qty=None,
+        Unit=None,
+        Movement_Date=Movement_Date,
+        Inspection_Date=None,
+        Inspection_Leader=None,
+        Inspection_Team=None,
+        Application_Status=None,
+        Movement_Permit_No=None,
+        Remarks=None,
+        Application_Date=date.today(),
+        Applicant_Id=Applicant_Id,
+        Approved_Date=None,
+        Validity_Period=None,
+        Validity=None
     )
-    data['success'] = "Success"
+    plant_details = t_plant_movement_permit_t1.objects.filter(Application_No=last_application_no)
+    if Conveyance_Means == "Air":
+        plant_details.update(Vehicle_No=Vehicle_No)
+    field_id = t_location_field_office_mapping.objects.filter(pk=From_Gewog_Code)
+    for field_office in field_id:
+        field_office_id = field_office.Field_Office_Id_id
+    t_workflow_details.objects.create(Application_No=last_application_no, Applicant_Id=request.session['email'],
+                                      Assigned_To=None, Field_Office_Id=field_office_id, Section='Plant',
+                                      Assigned_Role_Id='4',
+                                      Action_Date=None, Application_Status='P',
+                                      Service_Code=service_code)
+    data['applicationNo'] = last_application_no
     return JsonResponse(data)
+
+
+def load_plant_import_details(request):
+    application_no = request.GET.get('appNo')
+    import_type = request.GET.get('import_type')
+
+    import_details = t_plant_import_permit_t2.objects.filter(Application_No=application_no)
+
+    if import_type == 'P':
+        return render(request, 'import_permit/import_page_plant.html',
+                      {'import': import_details})
+    else:
+        return render(request, 'import_permit/import_page_agro.html',
+                      {'import': import_details})
+
+def load_plant_import_attachment(request):
+    application_no = request.GET.get('appNo')
+
+    file_attach = t_file_attachment.objects.filter(Application_No=application_no)
+    return render(request, 'import_permit/plant_attachment_page.html', {'file_attach': file_attach})
 
 
 def mov_plant_details(request):
@@ -1090,8 +1148,7 @@ def save_import_permit(request):
         com_entry_point = request.POST.get('com_entry_point')
         com_movementPurpose = request.POST.get('com_movementPurpose')
         com_final_Destination = request.POST.get('com_final_Destination')
-        arrival_date = request.POST.get('com_expected_arrival_date')
-        com_expected_arrival_date = datetime.strptime(arrival_date, '%d-%m-%Y').date()
+        com_expected_arrival_date = request.POST.get('com_expected_arrival_date')
         t_plant_import_permit_t1.objects.create(
             Application_No=last_application_no,
             Import_Type=importType,
@@ -1150,8 +1207,7 @@ def save_import_permit(request):
             entry_point = request.POST.get('entry_point')
             B_movementPurpose = request.POST.get('B_movementPurpose')
             B_finalDestination = request.POST.get('B_final_Destination')
-            Date_expected = request.POST.get('date_expected')
-            B_expectedDate = datetime.strptime(Date_expected, '%d-%m-%Y').date()
+            B_expectedDate = request.POST.get('B_expectedDate')
 
             t_plant_import_permit_t1.objects.create(
                 Application_No=last_application_no,
@@ -1207,9 +1263,7 @@ def save_import_permit(request):
             p_entry_point = request.POST.get('p_entry_point')
             p_movementPurpose = request.POST.get('p_movementPurpose')
             p_finalDestination = request.POST.get('p_finalDestination')
-            passport_date = request.POST.get('expected_date')
-            print(passport_date)
-            p_expectedDate = datetime.strptime(passport_date, '%d-%m-%Y').date()
+            p_expectedDate = request.POST.get('p_expectedDate')
             passport = request.POST.get('passport')
             nationality = request.POST.get('nationality')
             t_plant_import_permit_t1.objects.create(
@@ -1851,7 +1905,7 @@ def view_oic_details(request):
         return render(request, 'Animal_Fish_Import/oic_details.html',
                       {'application_details': application_details, 'file': file, 'dzongkhag': dzongkhag,
                        'village': village, 'location': location, 'import': details,
-                       'inspector_list': user_role_list, 'location_details':location_details})
+                       'inspector_list': user_role_list, 'location_details': location_details})
     elif service_code == 'ILP':
         dzongkhag = t_dzongkhag_master.objects.all()
         village = t_village_master.objects.all()
@@ -1868,7 +1922,7 @@ def view_oic_details(request):
         return render(request, 'Livestock_Import/oic_details.html',
                       {'application_details': application_details, 'file': file, 'dzongkhag': dzongkhag,
                        'village': village, 'location': location, 'import': details,
-                       'inspector_list': user_role_list,'location_details':location_details})
+                       'inspector_list': user_role_list, 'location_details': location_details})
     elif service_code == 'FEC':
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
@@ -3013,6 +3067,204 @@ def update_details_agro(request):
                                                                'pesticide': pesticide})
 
 
+def update_import_permit(request):
+    data = dict()
+    service_code = "IPP"
+    last_application_no = request.POST.get('applicationNo')
+
+    Applicant_Id = request.session['email']
+    importType = request.POST.get('Import_Type')
+    Applicant_Type = request.POST.get('Application_Type')
+    Nationality = request.POST.get('Nationality_Type')
+    if Applicant_Type == "Commercial":
+        regNo = request.POST.get('regNo')
+        business_name = request.POST.get('business_name')
+        commercial_presentAddress = request.POST.get('commercial_presentAddress')
+        com_contactNumber = request.POST.get('com_contactNumber')
+        com_email = request.POST.get('com_email')
+        com_supplier = request.POST.get('com_email')
+        Com_Country_Of_Origin = request.POST.get('Com_Country_Of_Origin')
+        com_conveyanceMeans = request.POST.get('Com_Country_Of_Origin')
+        com_entry_point = request.POST.get('com_entry_point')
+        com_movementPurpose = request.POST.get('com_movementPurpose')
+        com_final_Destination = request.POST.get('com_final_Destination')
+        arrival_date = request.POST.get('com_expected_arrival_date')
+        com_expected_arrival_date = datetime.strptime(arrival_date, '%d-%m-%Y').date()
+
+        import_details = t_plant_import_permit_t1.objects.filter(Application_No=last_application_no)
+        import_details.update(
+            Import_Type=importType,
+            License_No=regNo,
+            Business_Name=business_name,
+            CID=None,
+            Applicant_Name=None,
+            Present_Address=commercial_presentAddress,
+            Contact_No=com_contactNumber,
+            Email=com_email,
+            Name_And_Address_Supplier=com_supplier,
+            Means_of_Conveyance=com_conveyanceMeans,
+            Place_Of_Entry=com_entry_point,
+            Purpose=com_movementPurpose,
+            Final_Destination=com_final_Destination,
+            Import_Inspection_Submit_Date=None,
+            Proposed_Inspection_Date=None,
+            Actual_Point_Of_Entry=None,
+            Inspection_Request_Remarks=None,
+            Import_Permit_No=None,
+            Inspection_Date=None,
+            Inspection_Type=None,
+            Inspection_Time=None,
+            Inspection_Leader=None,
+            Inspection_Team=None,
+            Clearance_Ref_No=None,
+            Expected_Arrival_Date=com_expected_arrival_date,
+            FO_Remarks=None,
+            Inspection_Remarks=None,
+            Country_Of_Origin=Com_Country_Of_Origin,
+            Application_Date=date.today(),
+            Applicant_Id=Applicant_Id,
+            Approved_Date=date.today(),
+            Validity_Period=None,
+            Validity=None,
+            Application_Type=Applicant_Type,
+            Nationality=None,
+            Dzongkhag=None,
+            Gewog=None,
+            Nationality_Type=None,
+            Village=None,
+            Passport_Number=None
+        )
+    else:
+        if Nationality == "Bhutanese":
+            cid = request.POST.get('p_cid_number')
+            Name = request.POST.get('name')
+            dzongkhag = request.POST.get('dzongkhag')
+            gewog = request.POST.get('gewog')
+            village = request.POST.get('village')
+            contactNumber = request.POST.get('contactNumber')
+            email = request.POST.get('email')
+            supplier = request.POST.get('supplier')
+            Country_Of_Origin = request.POST.get('Country_Of_Origin')
+            conveyanceMeans = request.POST.get('conveyanceMeans')
+            entry_point = request.POST.get('entry_point')
+            B_movementPurpose = request.POST.get('B_movementPurpose')
+            B_finalDestination = request.POST.get('B_final_Destination')
+            Date_expected = request.POST.get('date_expected')
+            B_expectedDate = datetime.strptime(Date_expected, '%d-%m-%Y').date()
+
+            import_details = t_plant_import_permit_t1.objects.filter(Application_No=last_application_no)
+            import_details.update(
+                Application_No=last_application_no,
+                Import_Type=importType,
+                License_No=None,
+                Business_Name=None,
+                CID=cid,
+                Applicant_Name=Name,
+                Present_Address=None,
+                Contact_No=contactNumber,
+                Email=email,
+                Name_And_Address_Supplier=supplier,
+                Means_of_Conveyance=conveyanceMeans,
+                Place_Of_Entry=entry_point,
+                Purpose=B_movementPurpose,
+                Final_Destination=B_finalDestination,
+                Import_Inspection_Submit_Date=None,
+                Proposed_Inspection_Date=None,
+                Actual_Point_Of_Entry=None,
+                Inspection_Request_Remarks=None,
+                Import_Permit_No=None,
+                Inspection_Date=None,
+                Inspection_Type=None,
+                Inspection_Time=None,
+                Inspection_Leader=None,
+                Inspection_Team=None,
+                Clearance_Ref_No=None,
+                Expected_Arrival_Date=B_expectedDate,
+                FO_Remarks=None,
+                Inspection_Remarks=None,
+                Country_Of_Origin=Country_Of_Origin,
+                Application_Date=None,
+                Applicant_Id=Applicant_Id,
+                Approved_Date=date.today(),
+                Validity_Period=None,
+                Validity=None,
+                Application_Type=Applicant_Type,
+                Nationality=None,
+                Dzongkhag=dzongkhag,
+                Gewog=gewog,
+                Nationality_Type=Nationality,
+                Village=village,
+                Passport_Number=None
+            )
+        else:
+            passport_name = request.POST.get('passport_name')
+            Address = request.POST.get('Address')
+            p_email = request.POST.get('p_email')
+            p_contactNumber = request.POST.get('p_contactNumber')
+            name_supplier = request.POST.get('name_supplier')
+            Origin = request.POST.get('Origin')
+            p_conveyanceMeans = request.POST.get('p_conveyanceMeans')
+            p_entry_point = request.POST.get('p_entry_point')
+            p_movementPurpose = request.POST.get('p_movementPurpose')
+            p_finalDestination = request.POST.get('p_finalDestination')
+            passport_date = request.POST.get('expected_date')
+            p_expectedDate = datetime.strptime(passport_date, '%d-%m-%Y').date()
+            passport = request.POST.get('passport')
+            nationality = request.POST.get('nationality')
+
+            import_details = t_plant_import_permit_t1.objects.filter(Application_No=last_application_no)
+            import_details.update(
+                Application_No=last_application_no,
+                Import_Type=importType,
+                License_No=None,
+                Business_Name=None,
+                CID=None,
+                Applicant_Name=passport_name,
+                Present_Address=Address,
+                Contact_No=p_contactNumber,
+                Email=p_email,
+                Name_And_Address_Supplier=name_supplier,
+                Means_of_Conveyance=p_conveyanceMeans,
+                Place_Of_Entry=p_entry_point,
+                Purpose=p_movementPurpose,
+                Final_Destination=p_finalDestination,
+                Import_Inspection_Submit_Date=None,
+                Proposed_Inspection_Date=None,
+                Actual_Point_Of_Entry=None,
+                Inspection_Request_Remarks=None,
+                Import_Permit_No=None,
+                Inspection_Date=None,
+                Inspection_Type=None,
+                Inspection_Time=None,
+                Inspection_Leader=None,
+                Inspection_Team=None,
+                Clearance_Ref_No=None,
+                Expected_Arrival_Date=p_expectedDate,
+                FO_Remarks=None,
+                Inspection_Remarks=None,
+                Country_Of_Origin=Origin,
+                Application_Date=date.today(),
+                Applicant_Id=Applicant_Id,
+                Approved_Date=None,
+                Validity_Period=None,
+                Validity=None,
+                Application_Type=Applicant_Type,
+                Nationality=nationality,
+                Dzongkhag=None,
+                Gewog=None,
+                Nationality_Type=Nationality,
+                Village=None,
+                Passport_Number=passport
+            )
+    t_workflow_details.objects.create(Application_No=last_application_no, Applicant_Id=request.session['email'],
+                                      Assigned_To=None, Field_Office_Id=None, Section='Plant',
+                                      Assigned_Role_Id='2', Action_Date=None, Application_Status='P',
+                                      Service_Code=service_code)
+    data['applNo'] = last_application_no
+    data['importType'] = importType
+    return JsonResponse(data)
+
+
 # Export Permit
 def apply_export_permit(request):
     dzongkhag = t_dzongkhag_master.objects.all()
@@ -3519,6 +3771,373 @@ def get_export_permit_no(request):
     return new_export_permit
 
 
+def update_export(request):
+    data = dict()
+    serviceCode = "EPP"
+    lastExportApplication = request.POST.get('applicationNo')
+    Applicant_Type = request.POST.get('Applicant_Type')
+    Certificate_Type = request.POST.get('Import_Type')
+    License_No = request.POST.get('p_License_No')
+    CID = request.POST.get('p_cid')
+    Exporter_Name = request.POST.get('p_Exporter_Name')
+    Exporter_Address = request.POST.get('p_Exporter_Address')
+    Contact_No = request.POST.get('p_Contact_No')
+    Email = request.POST.get('p_Email')
+    Dzongkhag_Code = request.POST.get('p_Dzongkhag_Code')
+    Locatipn_Code = request.POST.get('p_Location_Code')
+    Consingee_Name_Address = request.POST.get('p_Name_Address')
+    Botanical_Name = request.POST.get('p_Botanical_Name')
+    common_name = request.POST.get('p_Common_Name')
+    Description = request.POST.get('p_Description')
+    Qty_Gross = request.POST.get('p_Qty_Gross')
+    Unit_Gross = request.POST.get('p_Unit_Gross')
+    Qty_Net = request.POST.get('p_Qty_Net')
+    Unit_Net = request.POST.get('p_Unit_Net')
+    Importing_Country = request.POST.get('p_Country_Code')
+    Entry_Point = request.POST.get('p_Entry_Point')
+    Packages_No = request.POST.get('p_Package_number')
+    Packages_Description = request.POST.get('p_Package_description')
+    Distinguishing_Marks = request.POST.get('p_Distinguish_Marks')
+    Purpose_End_Use = request.POST.get('p_purpose')
+    Mode_Of_Conveyance = request.POST.get('p_conveyanceMeans')
+    Name_Of_Conveyance = request.POST.get('p_Conveyance_Name')
+    Desired_Inspection_Date = request.POST.get('date_for_Inspection')
+    Desired_Inspection_Place = request.POST.get('requested_place')
+    Additional_Declaring = request.POST.get('p_additional_declaration')
+    Pre_Application_Treatment = request.POST.get('treatmentType')
+    Chemical_Name_Pre = request.POST.get('p_chemcial_name')
+    Treatment_Pre = request.POST.get('p_treatment')
+    Concentration_Pre = request.POST.get('p_Concentration')
+    Duration_Temperature_Pre = request.POST.get('p_Duration_Temperature')
+    Treated_By_Pre = request.POST.get('p_treated_by')
+    Treated_Supervised_By_Pre = request.POST.get('p_treatment_supervised')
+    Additional_Information_Pre = request.POST.get('p_additional_Info')
+    Other_Pre = request.POST.get('p_others_treatment')
+    Other_Treatment = request.POST.get('p_others')
+
+    C_CID = request.POST.get('c_cid')
+    C_Exporter_Name = request.POST.get('c_Exporter_Name')
+    C_Contact_No = request.POST.get('c_Contact_No')
+    C_Email = request.POST.get('c_Email')
+    C_Dzongkhag_Code = request.POST.get('c_Dzongkhag_Code')
+    C_Locatipn_Code = request.POST.get('c_Location_Code')
+    c_current_address = request.POST.get('c_current_address')
+    c_permanent_address = request.POST.get('c_permanent_address')
+    c_License_No = request.POST.get('c_License_No')
+    gross_weight_gms = request.POST.get('gross_weight_gms')
+    gross_weight_pieces = request.POST.get('gross_weight_pieces')
+    net_weight_gms = request.POST.get('net_weight_gms')
+    net_weight_pieces = request.POST.get('net_weight_pieces')
+    c_package = request.POST.get('c_package')
+    c_country = request.POST.get('c_country')
+    c_Name_Address = request.POST.get('c_Name_Address')
+    c_conveyanceMeans = request.POST.get('c_conveyanceMeans')
+    Applicant_Id = request.session['email']
+    retail_gross_weight_gms = request.POST.get('retail_gross_weight_gms')
+    retail_gross_weight_pieces = request.POST.get('retail_gross_weight_pieces')
+    retail_net_weight_gms = request.POST.get('retail_net_weight_gms')
+    retail_net_weight_pieces = request.POST.get('retail_net_weight_pieces')
+    c_retail_package = request.POST.get('c_retail_package')
+    c_outlet_name = request.POST.get('c_outlet_name')
+    c_phoneNumber = request.POST.get('c_phoneNumber')
+    c_address = request.POST.get('c_address')
+    if Certificate_Type == 'P':
+        export_details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(Application_No=lastExportApplication)
+        export_details.update(
+            Applicant_Type=None,
+            Certificate_Type=Certificate_Type,
+            License_No=License_No,
+            CID=CID,
+            Exporter_Name=Exporter_Name,
+            Exporter_Address=Exporter_Address,
+            Permanent_Address=None,
+            Contact_No=Contact_No,
+            Email=Email,
+            Dzongkhag_Code=Dzongkhag_Code,
+            Locatipn_Code=Locatipn_Code,
+            Consingee_Name_Address=Consingee_Name_Address,
+            Botanical_Name=Botanical_Name,
+            Description=Description,
+            Qty_Gross=Qty_Gross,
+            Unit_Gross=Unit_Gross,
+            Pieces_Gross=None,
+            Qty_Net=Qty_Net,
+            Unit_Net=Unit_Net,
+            Pieces_Net=None,
+            Importing_Country=Importing_Country,
+            Entry_Point=Entry_Point,
+            Packages_No=Packages_No,
+            Packages_Description=Packages_Description,
+            Distinguishing_Marks=Distinguishing_Marks,
+            Purpose_End_Use=Purpose_End_Use,
+            Mode_Of_Conveyance=Mode_Of_Conveyance,
+            Name_Of_Conveyance=Name_Of_Conveyance,
+            Departure_Date=None,
+            Desired_Inspection_Date=None,
+            Desired_Inspection_Place=None,
+            Additional_Declaring=Additional_Declaring,
+            Outlet_name=None,
+            Outlet_Contact_No=None,
+            Outlet_Address=None,
+            Inspection_Date=None,
+            Sample_Drawn_By=None,
+            Sample_Inspected_By=None,
+            Sample_Drawn=None,
+            Sample_Size=None,
+            Inspection_Method=None,
+            Inspection_Method_Other=None,
+            Pest_Detected=None,
+            Pest_Insect=None,
+            Pest_Mite=None,
+            Pest_Fungi=None,
+            Pest_Bacteria=None,
+            Pest_Virus=None,
+            Pest_Nematode=None,
+            Pest_Weed=None,
+            Pest_Scientific_Name=None,
+            Infestation_Level=None,
+            Pest_Status=None,
+            Pest_Risk_Category=None,
+            Pest_QR_Detected=None,
+            Pest_QR_Comment=None,
+            Treatment_Possible=None,
+            Treatment_Comment=None,
+            Phytosanitary_Measures=None,
+            Phytosanitary_Measures_Comment=None,
+            Treatment_Chemical_Name=None,
+            Treatment_Chemical_Fumigation=None,
+            Treatment_Chemical_Spray=None,
+            Treatment_Chemical_Seed=None,
+            Treatment_Chemical_Other=None,
+            Treatment_Chemical_Other_Specific=None,
+            Treatment_Chemical_Concentration=None,
+            Treatment_Chemical_Duration=None,
+            Treatment_Chemical_Treated_By=None,
+            Treatment_Chemical_Additional_Info=None,
+            Treatment_Irradiation=None,
+            Treatment_Hot_Water=None,
+            Treatment_Dry_Heat=None,
+            Treatment_Vapour_Heat=None,
+            Treatment_Cold_Treatment=None,
+            Feasibility_Status=None,
+            Export_Permit=None,
+            Additional_Information_Pre=Additional_Information_Pre,
+            Chemical_Name_Pre=Chemical_Name_Pre,
+            Concentration_Pre=Concentration_Pre,
+            Duration_Temperature_Pre=Duration_Temperature_Pre,
+            Pre_Application_Treatment=Pre_Application_Treatment,
+            Treated_By_Pre=Treated_By_Pre,
+            Treated_Supervised_By_Pre=Treated_Supervised_By_Pre,
+            Treatment_Pre=Treatment_Pre,
+            Other_Pre=Other_Pre,
+            Other_Treatment=Other_Treatment,
+            Application_Date=date.today(),
+            Applicant_Id=Applicant_Id,
+            Common_Name=common_name
+        )
+        field_office_id = Entry_Point
+    else:
+        if Applicant_Type == "":
+            export_details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(
+                Application_No=lastExportApplication)
+            export_details.update(
+                Applicant_Type=Applicant_Type,
+                Certificate_Type=Certificate_Type,
+                License_No=c_License_No,
+                CID=C_CID,
+                Exporter_Name=C_Exporter_Name,
+                Exporter_Address=c_current_address,
+                Permanent_Address=c_permanent_address,
+                Contact_No=C_Contact_No,
+                Email=C_Email,
+                Dzongkhag_Code=C_Dzongkhag_Code,
+                Locatipn_Code=C_Locatipn_Code,
+                Consingee_Name_Address=c_Name_Address,
+                Botanical_Name=None,
+                Description=None,
+                Qty_Gross=gross_weight_gms,
+                Unit_Gross="Gm(s)",
+                Pieces_Gross=gross_weight_pieces,
+                Qty_Net=net_weight_gms,
+                Unit_Net="Gm(s)",
+                Pieces_Net=net_weight_pieces,
+                Importing_Country=c_country,
+                Entry_Point=None,
+                Packages_No=c_package,
+                Packages_Description=None,
+                Distinguishing_Marks=None,
+                Purpose_End_Use=None,
+                Mode_Of_Conveyance=c_conveyanceMeans,
+                Name_Of_Conveyance=None,
+                Departure_Date=None,
+                Desired_Inspection_Date=None,
+                Desired_Inspection_Place=None,
+                Additional_Declaring=None,
+                Outlet_name=None,
+                Outlet_Contact_No=None,
+                Outlet_Address=None,
+                Inspection_Date=None,
+                Sample_Drawn_By=None,
+                Sample_Inspected_By=None,
+                Sample_Drawn=None,
+                Sample_Size=None,
+                Inspection_Method=None,
+                Inspection_Method_Other=None,
+                Pest_Detected=None,
+                Pest_Insect=None,
+                Pest_Mite=None,
+                Pest_Fungi=None,
+                Pest_Bacteria=None,
+                Pest_Virus=None,
+                Pest_Nematode=None,
+                Pest_Weed=None,
+                Pest_Scientific_Name=None,
+                Infestation_Level=None,
+                Pest_Status=None,
+                Pest_Risk_Category=None,
+                Pest_QR_Detected=None,
+                Pest_QR_Comment=None,
+                Treatment_Possible=None,
+                Treatment_Comment=None,
+                Phytosanitary_Measures=None,
+                Phytosanitary_Measures_Comment=None,
+                Treatment_Chemical_Name=None,
+                Treatment_Chemical_Fumigation=None,
+                Treatment_Chemical_Spray=None,
+                Treatment_Chemical_Seed=None,
+                Treatment_Chemical_Other=None,
+                Treatment_Chemical_Other_Specific=None,
+                Treatment_Chemical_Concentration=None,
+                Treatment_Chemical_Duration=None,
+                Treatment_Chemical_Treated_By=None,
+                Treatment_Chemical_Additional_Info=None,
+                Treatment_Irradiation=None,
+                Treatment_Hot_Water=None,
+                Treatment_Dry_Heat=None,
+                Treatment_Vapour_Heat=None,
+                Treatment_Cold_Treatment=None,
+                Feasibility_Status=None,
+                Export_Permit=None,
+                Additional_Information_Pre=None,
+                Chemical_Name_Pre=None,
+                Concentration_Pre=None,
+                Duration_Temperature_Pre=None,
+                Pre_Application_Treatment=None,
+                Treated_By_Pre=None,
+                Treated_Supervised_By_Pre=None,
+                Treatment_Pre=None,
+                Other_Pre=None,
+                Other_Treatment=None,
+                Application_Date=date.today(),
+                Applicant_Id=Applicant_Id,
+                Common_Name=None
+            )
+        else:
+            export_details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(
+                Application_No=lastExportApplication)
+            export_details.update(
+                Applicant_Type=Applicant_Type,
+                Certificate_Type=Certificate_Type,
+                License_No=c_License_No,
+                CID=C_CID,
+                Exporter_Name=C_Exporter_Name,
+                Exporter_Address=c_current_address,
+                Permanent_Address=c_permanent_address,
+                Contact_No=C_Contact_No,
+                Email=C_Email,
+                Dzongkhag_Code=C_Dzongkhag_Code,
+                Locatipn_Code=C_Locatipn_Code,
+                Consingee_Name_Address=c_Name_Address,
+                Botanical_Name=None,
+                Description=None,
+                Qty_Gross=retail_gross_weight_gms,
+                Unit_Gross="Gm(s)",
+                Pieces_Gross=retail_gross_weight_pieces,
+                Qty_Net=retail_net_weight_gms,
+                Unit_Net="Gm(s)",
+                Pieces_Net=retail_net_weight_pieces,
+                Importing_Country=None,
+                Entry_Point=None,
+                Packages_No=c_retail_package,
+                Packages_Description=None,
+                Distinguishing_Marks=None,
+                Purpose_End_Use=None,
+                Mode_Of_Conveyance=None,
+                Name_Of_Conveyance=None,
+                Departure_Date=None,
+                Desired_Inspection_Date=None,
+                Desired_Inspection_Place=None,
+                Additional_Declaring=None,
+                Outlet_name=c_outlet_name,
+                Outlet_Contact_No=c_phoneNumber,
+                Outlet_Address=c_address,
+                Inspection_Date=None,
+                Sample_Drawn_By=None,
+                Sample_Inspected_By=None,
+                Sample_Drawn=None,
+                Sample_Size=None,
+                Inspection_Method=None,
+                Inspection_Method_Other=None,
+                Pest_Detected=None,
+                Pest_Insect=None,
+                Pest_Mite=None,
+                Pest_Fungi=None,
+                Pest_Bacteria=None,
+                Pest_Virus=None,
+                Pest_Nematode=None,
+                Pest_Weed=None,
+                Pest_Scientific_Name=None,
+                Infestation_Level=None,
+                Pest_Status=None,
+                Pest_Risk_Category=None,
+                Pest_QR_Detected=None,
+                Pest_QR_Comment=None,
+                Treatment_Possible=None,
+                Treatment_Comment=None,
+                Phytosanitary_Measures=None,
+                Phytosanitary_Measures_Comment=None,
+                Treatment_Chemical_Name=None,
+                Treatment_Chemical_Fumigation=None,
+                Treatment_Chemical_Spray=None,
+                Treatment_Chemical_Seed=None,
+                Treatment_Chemical_Other=None,
+                Treatment_Chemical_Other_Specific=None,
+                Treatment_Chemical_Concentration=None,
+                Treatment_Chemical_Duration=None,
+                Treatment_Chemical_Treated_By=None,
+                Treatment_Chemical_Additional_Info=None,
+                Treatment_Irradiation=None,
+                Treatment_Hot_Water=None,
+                Treatment_Dry_Heat=None,
+                Treatment_Vapour_Heat=None,
+                Treatment_Cold_Treatment=None,
+                Feasibility_Status=None,
+                Export_Permit=None,
+                Additional_Information_Pre=None,
+                Chemical_Name_Pre=None,
+                Concentration_Pre=None,
+                Duration_Temperature_Pre=None,
+                Pre_Application_Treatment=None,
+                Treated_By_Pre=None,
+                Treated_Supervised_By_Pre=None,
+                Treatment_Pre=None,
+                Other_Pre=None,
+                Other_Treatment=None,
+                Application_Date=date.today(),
+                Applicant_Id=Applicant_Id,
+                Common_Name=None
+            )
+        field_id = t_location_field_office_mapping.objects.filter(pk=C_Locatipn_Code)
+        for field_office in field_id:
+            field_office_id = field_office.Field_Office_Id_id
+    t_workflow_details.objects.create(Application_No=lastExportApplication, Applicant_Id=request.session['email'],
+                                      Assigned_To=None, Field_Office_Id=field_office_id, Section='Plant',
+                                      Assigned_Role_Id='4', Action_Date=None, Application_Status='P',
+                                      Service_Code=serviceCode)
+    data['applicationNo'] = lastExportApplication
+    return JsonResponse(data)
+
+
 def export_complete(request):
     export_permit = get_export_permit_no(request)
     Application_No = request.POST.get('appNo')
@@ -3887,9 +4506,78 @@ def delete_file_nursery(request):
     return render(request, 'nursery_registration/file_attachment_page.html', {'file_attach': file_attach})
 
 
+def update_nursery_reg(request):
+    data = dict()
+    service_code = "RNS"
+    nursery_app_no = request.POST.get('applicationNo')
+    Nursery_Category = request.POST.get('Nursery_Category')
+    License_No = request.POST.get('Nursery_Category')
+    Company_Name = request.POST.get('License_No')
+    Company_Address = request.POST.get('Company_Address')
+    CID = request.POST.get('CID')
+    Owner_Name = request.POST.get('Owner_Name')
+    contactNo = request.POST.get('contactNo')
+    email = request.POST.get('email')
+    Unit_Area = request.POST.get('Unit_Area')
+    Area = request.POST.get('Area')
+    dzongkhag = request.POST.get('dzongkhag')
+    gewog = request.POST.get('gewog')
+    village = request.POST.get('village')
+    location_code = request.POST.get('location')
+    Nursery_Type = request.POST.get('Nursery_Type')
+    Applicant_Id = request.session['email']
+
+    nursery_details = t_plant_clearence_nursery_seed_grower_t1.objects.filter(Application_No=nursery_app_no)
+
+    nursery_details.update(
+        Nursery_Category=Nursery_Category,
+        License_No=License_No,
+        Company_Name=Company_Name,
+        Company_Address=Company_Address,
+        CID=CID,
+        Owner_Name=Owner_Name,
+        Contact_No=contactNo,
+        Email=email,
+        Unit_Area=Unit_Area,
+        Area=Area,
+        Dzongkhag=dzongkhag,
+        Gewog=gewog,
+        Village=village,
+        Location_Code=location_code,
+        Nursery_Type=Nursery_Type,
+        Inspection_Date=None,
+        Inspection_Leader=None,
+        Inspection_Team=None,
+        Facilities_Land=None,
+        Facilities_Nursery_House=None,
+        Facilities_Irrigation=None,
+        Facilities_Tools=None,
+        Facilities_Store=None,
+        Manpower=None,
+        Seed_Type=None,
+        Technical_Clearance=None,
+        Recommendation=None,
+        Resubmit_Remarks=None,
+        Resubmit_Date=None,
+        Desired_Inspection_Date=None,
+        Clearance_Number=None,
+        Application_Date=date.today(),
+        Applicant_Id=Applicant_Id
+    )
+    field_id = t_location_field_office_mapping.objects.filter(pk=location_code)
+    for field_office in field_id:
+        field_office_id = field_office.Field_Office_Id_id
+    t_workflow_details.objects.create(Application_No=nursery_app_no, Applicant_Id=request.session['email'],
+                                      Assigned_To=None, Field_Office_Id=field_office_id, Section='Plant',
+                                      Assigned_Role_Id='4',
+                                      Action_Date=None, Application_Status='P',
+                                      Service_Code=service_code)
+    data['applicationNo'] = nursery_app_no
+    return JsonResponse(data)
+
+
 def add_reg_details(request):
     Application_No = request.POST.get('nursery_appNo')
-    print(Application_No)
     crop_id = request.POST.get('crop_id')
     crop_category_id = request.POST.get('crop_category_id')
     crop_variety_id = request.POST.get('crop_variety_id')
@@ -4093,7 +4781,6 @@ def nursery_client_resubmit(request):
 
 def add_details_nursery(request):
     application_id = request.GET.get('application_id')
-    print(application_id)
     currentObservation = request.GET.get('currentObservation')
     decisionConform = request.GET.get('decisionConform')
     app_details = t_plant_clearence_nursery_seed_grower_t1.objects.filter(Application_No=application_id)
@@ -4125,15 +4812,14 @@ def get_nursery_clearnace_no(request):
 
 
 def load_nursery_details(request):
-    dzongkhag = t_dzongkhag_master.objects.all()
-    gewog = t_gewog_master.objects.all()
-    village = t_village_master.objects.all()
-    location = t_location_field_office_mapping.objects.all()
-    application_id = request.GET.get('application_id')
-    application_details = t_plant_clearence_nursery_seed_grower_t1.objects.filter(Application_No=application_id)
-    return render(request, 'nursery_registration/nursery_details.html',
-                  {'application_details': application_details, 'dzongkhag': dzongkhag, 'gewog': gewog,
-                   'village': village, 'location': location})
+    Application_No = request.GET.get('appNo')
+    seed_details = t_plant_clearence_nursery_seed_grower_t2.objects.filter(Application_No=Application_No)
+    return render(request, 'nursery_registration/seed_details_page.html', {'seed_details': seed_details})
+
+def load_nursery_attachment(request):
+    Application_No = request.GET.get('appNo')
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+    return render(request, 'nursery_registration/file_attachment_page.html', {'file_attach': file_attach})
 
 
 def update_nursery_details(request):
@@ -4312,6 +4998,57 @@ def delete_file_seed(request):
     file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
     return render(request, 'seed_certification/file_attachment_page.html', {'file_attach': file_attach})
 
+
+def update_seed_certificate(request):
+    data = dict()
+    serviceCode = "RSC"
+    application_No = request.POST.get('applicationNo')
+    Nursery_Category = request.POST.get('Nursery_Category')
+    License_No = request.POST.get('Nursery_Category')
+    Company_Name = request.POST.get('License_No')
+    Company_Address = request.POST.get('Company_Address')
+    CID = request.POST.get('CID')
+    Owner_Name = request.POST.get('Owner_Name')
+    contactNo = request.POST.get('contactNo')
+    email = request.POST.get('email')
+    dzongkhag = request.POST.get('dzongkhag')
+    gewog = request.POST.get('gewog')
+    village = request.POST.get('village')
+    Applicant_Id = request.session['email']
+    location = request.POST.get('location')
+
+    seed_details = t_plant_seed_certification_t1.objects.filter(Application_No=application_No)
+
+    seed_details.update(
+        Nursery_Category=Nursery_Category,
+        License_No=License_No,
+        Company_Name=Company_Name,
+        Company_Address=Company_Address,
+        CID=CID,
+        Owner_Name=Owner_Name,
+        Contact_No=contactNo,
+        Email=email,
+        Dzongkhag_Code=dzongkhag,
+        Gewog_Code=None,
+        Village_Code=None,
+        Inspection_Date=None,
+        Inspection_Leader=None,
+        Inspection_Team=None,
+        Seed_Certificate=None,
+        Application_Date=date.today(),
+        Applicant_Id=Applicant_Id,
+        Location_Code=location
+    )
+    field_id = t_location_field_office_mapping.objects.filter(Dzongkhag_Code=dzongkhag)
+    for field_office in field_id:
+        field_office_id = field_office.Field_Office_Id_id
+    t_workflow_details.objects.create(Application_No=application_No, Applicant_Id=request.session['email'],
+                                      Assigned_To=None, Field_Office_Id=field_office_id, Section='Plant',
+                                      Assigned_Role_Id='4',
+                                      Action_Date=None, Application_Status='P',
+                                      Service_Code=serviceCode)
+    data['applicationNo'] = application_No
+    return JsonResponse(data)
 
 def get_seed_cerficate_no(request):
     global Field_Code
@@ -6116,4 +6853,310 @@ def update_edit_details(request):
         import_details = t_food_import_permit_t2.objects.filter(Application_No=application_no)
         return render(request, 'import_certificate_food/food_permit_details.html', {'import': import_details})
 
-    # Certification Section Edit
+    # certification
+    elif identification_type == 'GAP-FG':
+        application_no = request.GET.get('edit_farmers_group_application_no')
+        record_id = request.POST.get('farmers_group_record_id')
+        cid = request.GET.get('edit_farmers_group_cid')
+        name = request.GET.get('edit_farmers_group_fullname')
+        details = t_certification_gap_t2.objects.filter(Record_Id=record_id)
+        details.update(CID=cid, Name=name)
+        farmers_group_details = t_certification_gap_t2.objects.filter(Application_No=application_no)
+        return render(request, 'GAP_Certification/farmer_group_details.html',
+                      {'farmers_group_details': farmers_group_details})
+    elif identification_type == 'GAP-CP':
+        application_no = request.POST.get('edit_crop_production_app_no')
+        record_id = request.POST.get('crop_record_id')
+        crop_name = request.POST.get('edit_crop_name')
+        area = request.POST.get('edit_area')
+        area_unit = request.POST.get('edit_area_unit')
+        prev_year = request.POST.get('edit_prev_year')
+        to_year = request.POST.get('edit_to_year')
+        yields = request.POST.get('edit_yield')
+        Yield_Unit = request.POST.get('edit_Yield_Unit')
+        harvest_month = request.POST.get('edit_harvest_month')
+        sold = request.POST.get('edit_sold')
+        balance_stock = request.POST.get('edit_balance_stock')
+        current_year = request.POST.get('edit_current_year')
+        to_current_year = request.POST.get('edit_to_current_year')
+        estimated_yield = request.POST.get('edit_estimated_yield')
+        estimated_Yield_Unit = request.POST.get('edit_estimated_Yield_Unit')
+        estimated_harvest_month = request.POST.get('edit_estimated_harvest_month')
+        p_from = datetime.strptime(prev_year, '%d-%m-%Y').date()
+        p_to = datetime.strptime(to_year, '%d-%m-%Y').date()
+        c_from = datetime.strptime(current_year, '%d-%m-%Y').date()
+        c_to = datetime.strptime(to_current_year, '%d-%m-%Y').date()
+        details = t_certification_gap_t4.objects.filter(Record_Id=record_id)
+        details.update(
+            Crop_Name=crop_name,
+            Area_Cultivated=area,
+            Unit=area_unit,
+            P_From_Date=p_from,
+            P_To_Date=p_to,
+            P_Yield=yields,
+            P_Yield_Unit=Yield_Unit,
+            P_Harvest_Month=harvest_month,
+            P_Sold=sold,
+            P_Balance_Stock=balance_stock,
+            C_From_Date=c_from,
+            C_To_Date=c_to,
+            C_Estimated_Yield=estimated_yield,
+            C_Yield_Unit=estimated_Yield_Unit,
+            C_Harvest_Month=estimated_harvest_month)
+
+        crop_production_details = t_certification_gap_t4.objects.filter(Application_No=application_no)
+        return render(request, 'GAP_Certification/crop_production_details.html',
+                      {'crop_production_details': crop_production_details})
+    elif identification_type == 'GAP-PH':
+        application_no = request.POST.get('edit_pack_house_application_no')
+        record_id = request.POST.get('pack_house_record_id')
+        pack_house_name = request.POST.get('edit_pack_house_name')
+        pack_house_address = request.POST.get('edit_pack_house_address')
+        prev_year = request.POST.get('edit_previous_from_date')
+        to_year = request.POST.get('edit_previous_to_date')
+        production = request.POST.get('edit_production')
+        production_unit = request.POST.get('edit_production_unit')
+        previous_sold = request.POST.get('edit_previous_sold')
+        previous_sold_unit = request.POST.get('edit_previous_sold_unit')
+        stock_balance = request.POST.get('edit_stock_balance')
+        stock_balance_unit = request.POST.get('edit_stock_balance_unit')
+        current_from_date = request.POST.get('edit_current_from_date')
+        current_to_date = request.POST.get('edit_current_to_date')
+        current_Production = request.POST.get('edit_current_Production')
+        current_Production_Unit = request.POST.get('edit_current_Production_unit')
+        current_sold = request.POST.get('edit_current_sold')
+        current_sold_unit = request.POST.get('edit_current_sold_unit')
+        current_stock_balance = request.POST.get('edit_current_stock_balance')
+        current_stock_unit = request.POST.get('edit_current_stock_unit')
+        p_from = datetime.strptime(prev_year, '%d-%m-%Y').date()
+        p_to = datetime.strptime(to_year, '%d-%m-%Y').date()
+        c_from = datetime.strptime(current_from_date, '%d-%m-%Y').date()
+        c_to = datetime.strptime(current_to_date, '%d-%m-%Y').date()
+
+        details = t_certification_gap_t5.objects.filter(Record_Id=record_id)
+        details.update(
+            Pack_House_Name=pack_house_name,
+            Pack_House_Address=pack_house_address,
+            P_From_Date=p_from,
+            P_To_Date=p_to,
+            P_Production=production,
+            P_Production_Unit=production_unit,
+            P_Sold=previous_sold,
+            P_Sold_Unit=previous_sold_unit,
+            P_Balance_Stock=stock_balance,
+            P_Balance_Stock_Unit=stock_balance_unit,
+            C_From_Date=c_from,
+            C_To_Date=c_to,
+            C_Production=current_Production,
+            C_Production_Unit=current_Production_Unit,
+            C_Sold=current_sold,
+            C_Sold_Unit=current_sold_unit,
+            C_Balance_Stock=current_stock_balance,
+            C_Balance_Stock_Unit=current_stock_unit
+        )
+
+        pack_house_details = t_certification_gap_t5.objects.filter(Application_No=application_no)
+        return render(request, 'GAP_Certification/pack_house_details.html',
+                      {'pack_house_details': pack_house_details})
+
+    elif identification_type == 'OC-CP':
+        application_no = request.POST.get('edit_crop_production_app_no')
+        record_id = request.POST.get('crop_record_id')
+        crop_name = request.POST.get('edit_crop_name')
+        area = request.POST.get('edit_area')
+        area_unit = request.POST.get('edit_area_unit')
+        prev_year = request.POST.get('edit_prev_year')
+        to_year = request.POST.get('edit_to_year')
+        yields = request.POST.get('edit_yield')
+        Yield_Unit = request.POST.get('edit_Yield_Unit')
+        harvest_month = request.POST.get('edit_harvest_month')
+        sold = request.POST.get('edit_sold')
+        balance_stock = request.POST.get('edit_balance_stock')
+        current_year = request.POST.get('edit_current_year')
+        to_current_year = request.POST.get('edit_to_current_year')
+        estimated_yield = request.POST.get('edit_estimated_yield')
+        estimated_Yield_Unit = request.POST.get('edit_estimated_Yield_Unit')
+        estimated_harvest_month = request.POST.get('edit_estimated_harvest_month')
+
+        p_from = datetime.strptime(prev_year, '%d-%m-%Y').date()
+        p_to = datetime.strptime(to_year, '%d-%m-%Y').date()
+        c_from = datetime.strptime(current_year, '%d-%m-%Y').date()
+        c_to = datetime.strptime(to_current_year, '%d-%m-%Y').date()
+
+        details = t_certification_organic_t4.objects.filter(Record_Id=record_id)
+        details.update(
+            Crop_Name=crop_name,
+            Area_Cultivated=area,
+            Unit=area_unit,
+            P_From_Date=p_from,
+            P_To_Date=p_to,
+            P_Yield=yields,
+            P_Yield_Unit=Yield_Unit,
+            P_Harvest_Month=harvest_month,
+            P_Sold=sold,
+            P_Balance_Stock=balance_stock,
+            C_From_Date=c_from,
+            C_To_Date=c_to,
+            C_Estimated_Yield=estimated_yield,
+            C_Yield_Unit=estimated_Yield_Unit,
+            C_Harvest_Month=estimated_harvest_month)
+        crop_details = t_certification_organic_t4.objects.filter(Application_No=application_no)
+        return render(request, 'organic_certification/crop_production_details.html',
+                      {'crop_details': crop_details})
+    elif identification_type == 'OC-WC':
+        application_no = request.POST.get('edit_wild_collection_appNo')
+        record_id = request.POST.get('wild_record_id')
+        print(application_no)
+        print(record_id)
+        common_name = request.POST.get('edit_common_name')
+        botanical_name = request.POST.get('edit_botanical_name')
+        part_of_plant = request.POST.get('edit_part_of_plant')
+        estimated_harvest = request.POST.get('edit_estimated_harvest')
+        estimated_harvest_Yield_Unit = request.POST.get('edit_estimated_harvest_Yield_Unit')
+        harvest_season = request.POST.get('edit_harvest_season')
+        harvest_acreage = request.POST.get('edit_harvest_acreage')
+        harvest_Unit = request.POST.get('edit_harvest_Unit')
+
+        wild_collection_details = t_certification_organic_t6.objects.filter(Record_Id=record_id)
+        wild_collection_details.update(
+            Common_Name=common_name,
+            Botanical_Name=botanical_name,
+            Plant_Part=part_of_plant,
+            Estimated_Harvest=estimated_harvest,
+            Harvest_Unit=estimated_harvest_Yield_Unit,
+            Harvest_Season=harvest_season,
+            Harvest_Acreage=harvest_acreage,
+            Acreage_Unit=harvest_Unit)
+        wild_collection = t_certification_organic_t6.objects.filter(Application_No=application_no)
+        return render(request, 'organic_certification/wild_collection_details.html',
+                      {'wild_collection': wild_collection})
+
+    elif identification_type == 'OC-AH':
+        application_no = request.POST.get('edit_animal_husbandry_application_no')
+        print(application_no)
+        record_id = request.POST.get('animal_record_id')
+        print(record_id)
+        livestock_type = request.POST.get('edit_livestock_type')
+        male = request.POST.get('edit_male')
+        female = request.POST.get('edit_female')
+        estimated_production = request.POST.get('edit_estimated_production')
+        estimated_production_Unit = request.POST.get('edit_estimated_production_Unit')
+        product_sold = request.POST.get('edit_product_sold')
+
+        animal_husbandry_details = t_certification_organic_t7.objects.filter(Record_Id=record_id)
+        animal_husbandry_details.update(
+            Livestock_Type=livestock_type,
+            Male_no=male,
+            Female_no=female,
+            Estimated_Production=estimated_production,
+            Production_Unit=estimated_production_Unit,
+            Production_Sold=product_sold)
+        animal_husbandry = t_certification_organic_t7.objects.filter(Application_No=application_no)
+        return render(request, 'organic_certification/animal_husbandry_details.html',
+                      {'animal_husbandry': animal_husbandry})
+
+    elif identification_type == 'OC-AQUA':
+        application_no = request.POST.get('edit_aquaculture_application_no')
+        record_id = request.POST.get('aqua_record_id')
+        Aquaculture_type = request.POST.get('edit_Aquaculture_type')
+        Aquaculture_Yield = request.POST.get('edit_Aquaculture_Yield')
+        Aquaculture_Yield_Unit = request.POST.get('edit_Aquaculture_Yield_Unit')
+        aqua_harvest_month = request.POST.get('edit_aqua_harvest_month')
+        aqua_Sold = request.POST.get('edit_aqua_Sold')
+        aqua_Sold_unit = request.POST.get('edit_aqua_Sold')
+        stock_balance = request.POST.get('edit_stock_balance')
+        stock_balance_unit = request.POST.get('edit_stock_balance_unit')
+
+        aquaculture = t_certification_organic_t8.objects.filter(Record_Id=record_id)
+
+        aquaculture.update(
+            Aquaculture_Type=Aquaculture_type,
+            Estimated_Yield=Aquaculture_Yield,
+            Estimated_Yield_Unit=Aquaculture_Yield_Unit,
+            Harvest_Month=aqua_harvest_month,
+            Sold=aqua_Sold,
+            Sold_Unit=aqua_Sold_unit,
+            Balance_Stock=stock_balance,
+            Balance_Stock_Unit=stock_balance_unit)
+        aquaculture_details = t_certification_organic_t8.objects.filter(Application_No=application_no)
+        return render(request, 'organic_certification/aquaculture_details.html',
+                      {'aquaculture_details': aquaculture_details})
+
+    elif identification_type == 'OC-API':
+        application_no = request.POST.get('edit_api_culture_application_no')
+        record_id = request.POST.get('api_record_id')
+        api_common_name = request.POST.get('edit_api_common_name')
+        api_botanical_name = request.POST.get('edit_api_botanical_name')
+        api_estimated_harvest = request.POST.get('edit_api_estimated_harvest')
+        api_estimated_harvest_Yield_Unit = request.POST.get('edit_api_estimated_harvest_Yield_Unit')
+        api_harvest_acreage = request.POST.get('edit_api_harvest_acreage')
+        api_Unit = request.POST.get('edit_api_Unit')
+
+        apiculture = t_certification_organic_t9.objects.filter(Record_Id=record_id)
+
+        apiculture.update(
+            Common_Name=api_common_name,
+            Botanical_Name=api_botanical_name,
+            Estimated_Harvest=api_estimated_harvest,
+            Harvest_Unit=api_estimated_harvest_Yield_Unit,
+            Harvest_Acreage=api_harvest_acreage,
+            Acreage_Unit=api_Unit)
+        apiculture_details = t_certification_organic_t9.objects.filter(Application_No=application_no)
+        return render(request, 'organic_certification/api_culture_details.html',
+                      {'apiculture_details': apiculture_details})
+
+    elif identification_type == 'OC-PU':
+        application_no = request.POST.get('edit_processing_application_no')
+        record_id = request.POST.get('processing_record_id')
+        processing_name = request.POST.get('edit_processing_name')
+        address_of_Operation = request.POST.get('edit_address_of_Operation')
+        processing_type = request.POST.get('edit_processing_type')
+        from_date = request.POST.get('edit_from_date')
+        to_date = request.POST.get('edit_to_date')
+        production = request.POST.get('edit_production')
+        production_unit = request.POST.get('edit_production_unit')
+        processing_Sold = request.POST.get('edit_processing_Sold')
+        processing_balance = request.POST.get('edit_processing_balance')
+        current_from_date = request.POST.get('edit_current_from_date')
+        current_to_date = request.POST.get('edit_current_to_date')
+        current_production = request.POST.get('edit_current_production')
+        current_production_unit = request.POST.get('edit_current_production_unit')
+        current_processing_Sold = request.POST.get('edit_current_processing_Sold')
+        current_processing_balance = request.POST.get('edit_current_processing_balance')
+
+        p_from = datetime.strptime(from_date, '%d-%m-%Y').date()
+        p_to = datetime.strptime(to_date, '%d-%m-%Y').date()
+        c_from = datetime.strptime(current_from_date, '%d-%m-%Y').date()
+        c_to = datetime.strptime(current_to_date, '%d-%m-%Y').date()
+
+        processing = t_certification_organic_t5.objects.filter(Record_Id=record_id)
+
+        processing.update(
+            Production_House_Name=processing_name,
+            Production_House_Address=address_of_Operation,
+            Processing_Type=processing_type,
+            P_From_Date=p_from,
+            P_To_Date=p_to,
+            P_Production=production,
+            P_Production_Unit=production_unit,
+            P_Sold=processing_Sold,
+            P_Balance_Stock=processing_balance,
+            C_From_Date=c_from,
+            C_To_Date=c_to,
+            C_Production=current_production,
+            C_Production_Unit=current_production_unit,
+            C_Sold=current_processing_Sold,
+            C_Balance_Stock=current_processing_balance)
+        processing_details = t_certification_organic_t5.objects.filter(Application_No=application_no)
+        return render(request, 'organic_certification/processing_unit_details.html',
+                      {'processing_details': processing_details})
+    elif identification_type == 'OC-FG':
+        application_no = request.POST.get('edit_farmers_group_application_no')
+        record_id = request.POST.get('farmers_group_record_id')
+        cid = request.POST.get('edit_farmers_group_cid')
+        name = request.POST.get('edit_farmers_group_fullname')
+        farmers_group = t_certification_organic_t2.objects.filter(Record_Id=record_id)
+        farmers_group.update(CID=cid, Name=name)
+        farmers_group_details = t_certification_organic_t2.objects.filter(Application_No=application_no)
+        return render(request, 'organic_certification/farmer_group_details.html',
+                      {'farmers_group_details': farmers_group_details})

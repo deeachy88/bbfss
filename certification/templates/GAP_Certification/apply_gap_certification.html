@@ -26,19 +26,19 @@ form, input, select, textarea{
             <div class="row justify-content-left">
                 <ul class="nav nav-pills nav-secondary" id="pills-mortem" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Application Form</a>
+                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="load_form()">Application Form</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-farmers-group" data-toggle="pill" href="#farmers_group_details" role="tab" aria-controls="pills-farmers-group" aria-selected="false">Farmer Group Details</a>
+                        <a class="nav-link" id="pills-farmers-group" data-toggle="pill" href="#farmers_group_details" role="tab" aria-controls="pills-farmers-group" aria-selected="false" onclick="load_fg_details()">Farmer Group Details</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-crop-production" data-toggle="pill" href="#crop_production_details" role="tab" aria-controls="pills-crop-production" aria-selected="false">Crop Production (If Applicable) </a>
+                        <a class="nav-link" id="pills-crop-production" data-toggle="pill" href="#crop_production_details" role="tab" aria-controls="pills-crop-production" aria-selected="false" onclick="load_cp_details()">Crop Production (If Applicable) </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-pack-house" data-toggle="pill" href="#pack_house_details" role="tab" aria-controls="pills-pack-house" aria-selected="false">Pack House Details (If Applicable)</a>
+                        <a class="nav-link" id="pills-pack-house" data-toggle="pill" href="#pack_house_details" role="tab" aria-controls="pills-pack-house" aria-selected="false" onclick="load_ph_details()">Pack House Details (If Applicable)</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="file-attach" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false">File Attachment</a>
+                        <a class="nav-link" id="file-attach" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="gap_attachment_details()">File Attachment</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="certification_standards" data-toggle="pill" href="#certification-standards" role="tab" aria-controls="pills-profile" aria-selected="false">Standards</a>
@@ -220,7 +220,7 @@ form, input, select, textarea{
                         Save SuccessFul
                     </div>
                     <div class="card-action">
-                        <button type="button" class="btn btn-primary" onclick="save_gap_certification()">Save</button>
+                        <button type="button" class="btn btn-primary" id="gap_button" onclick="save_gap_certification()">Save</button>
                     </div>
                 </div>
                 <div class="tab-pane fade" id="farmers_group_details" role="tabpanel" aria-labelledby="pills-farmers-group">
@@ -281,7 +281,7 @@ form, input, select, textarea{
                     </div>
                 </div>
                 <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="mortem-file-attach">
-                    <div id="file-attachment-mortem">
+                    <div id="file-attachment-gap">
                         {% include 'GAP_Certification/file_attachment.html' %}
                     </div>
                     <div class="card-action">
@@ -449,7 +449,7 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">From date <font color="red">*</font></label>
-                                             <input type="text" name="prev_year" id="prev_year" class="form-control date-picker flatpickr-input active">
+                                             <input type="text" name="prev_year" id="prev_year" class="form-control date-picker flatpickr-input active" onchange="get_month()">
                                         </div>
                                         <div class="alert alert-danger" id="prev_yearErrorMsg" style="display:none"></div>
                                     </div>
@@ -463,7 +463,7 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Yield <font color="red">*</font></label>
-                                             <input type="text" name="yield" id="yield" class="form-control" onkeypress="return isNumberKey(event)">
+                                             <input type="text" name="yield" id="yield" class="form-control" onkeypress="return isNumberKey(event)" onchange="getBalance()">
                                         </div>
                                         <div class="alert alert-danger" id="yieldErrorMsg" style="display:none"></div>
                                     </div>
@@ -488,7 +488,7 @@ form, input, select, textarea{
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Sold <font color="red">*</font></label>
-                                        <input type="text" name="sold" class="form-control" id="sold" onkeypress="return isNumberKey(event)" onchange="getBalance(this.value)">
+                                        <input type="text" name="sold" class="form-control" id="sold" onkeypress="return isNumberKey(event)" onchange="getBalance()">
                                         <div class="alert alert-danger" id="soldErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
@@ -521,7 +521,7 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">From date <font color="red">*</font></label>
-                                             <input type="text" name="current_year" id="current_year" class="form-control date-picker flatpickr-input active">
+                                             <input type="text" name="current_year" id="current_year" class="form-control date-picker flatpickr-input active" onchange="get_current_month()">
                                         </div>
                                         <div class="alert alert-danger" id="current_yearErrorMsg" style="display:none"></div>
                                     </div>
@@ -611,17 +611,17 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="form-label">From date <font color="red">*</font></label>
-                                        <input type="text" class="form-control date-picker flatpickr-input active" id="previous_from_date" name="previous_from_date"  placeholder="Pick a date" readonly="readonly">
+                                        <input type="text" class="form-control date-picker flatpickr-input active" id="previous_from_date" name="previous_from_date"  placeholder="Pick a date" readonly="readonly" onchange="ph_previous_month()">
                                         <div class="alert alert-danger" id="previous_from_dateErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">To date <font color="red">*</font></label>
-                                        <input type="text" class="form-control date-picker flatpickr-input active" id="previous_to_date" name="previous_to_date"  placeholder="Pick a date" readonly="readonly">
+                                        <input type="text" class="form-control date-picker flatpickr-input active" id="previous_to_date" name="previous_to_date"  placeholder="Pick a date" readonly="readonly" onchange="ph_previous_month()">
                                         <div class="alert alert-danger" id="previous_to_dateErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Production <font color="red">*</font></label>
-                                        <input type="text" name="production" class="form-control" id="production" onkeypress="return isNumberKey(event)">
+                                        <input type="text" name="production" class="form-control" id="production" onkeypress="return isNumberKey(event)" onchange="getBalanceStock()">
                                         <div class="alert alert-danger" id="productionErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
@@ -638,7 +638,7 @@ form, input, select, textarea{
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Sold <font color="red">*</font></label>
-                                        <input type="text" name="previous_sold" class="form-control" id="previous_sold"  onkeypress="return isNumberKey(event)" onchange="getBalanceStock(this.value)">
+                                        <input type="text" name="previous_sold" class="form-control" id="previous_sold"  onkeypress="return isNumberKey(event)" onchange="getBalanceStock()">
                                         <div class="alert alert-danger" id="previous_soldErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -680,24 +680,34 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="form-label">From date <font color="red">*</font></label>
-                                        <input type="text" class="form-control date-picker flatpickr-input active" id="current_from_date" name="current_from_date"  placeholder="Pick a date" readonly="readonly">
+                                        <input type="text" class="form-control date-picker flatpickr-input active" id="current_from_date" name="current_from_date"  placeholder="Pick a date" readonly="readonly" onchange="ph_current_month()">
                                         <div class="alert alert-danger" id="current_from_dateErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">To date <font color="red">*</font></label>
-                                        <input type="text" class="form-control date-picker flatpickr-input active" id="current_to_date" name="current_to_date"  placeholder="Pick a date" readonly="readonly">
+                                        <input type="text" class="form-control date-picker flatpickr-input active" id="current_to_date" name="current_to_date"  placeholder="Pick a date" readonly="readonly" onchange="ph_current_month()">
                                         <div class="alert alert-danger" id="current_to_dateErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Production <font color="red">*</font></label>
-                                        <input type="text" name="current_Production" class="form-control" id="current_Production" onkeypress="return isNumberKey(event)">
+                                        <input type="text" name="current_Production" class="form-control" id="current_Production" onkeypress="return isNumberKey(event)" onchange="get_current_stock_bal(this.value)">
                                         <div class="alert alert-danger" id="current_ProductionErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-4">
+                                        <label class="form-label">Production Unit <font color="red">*</font></label>
+                                        <select class="form-control" name="C_Production_Unit"  id="C_Production_Unit">
+                                            <option value="">--SELECT UNIT--</option>
+                                            {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="alert alert-danger" id="C_Production_UnitErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
                                         <label class="form-label">Sold <font color="red">*</font></label>
-                                        <input type="number" name="current_sold" class="form-control" id="current_sold" onkeypress="return isNumberKey(event)" onchange="get_current_stock_bal(this.value)">
+                                        <input type="text" name="current_sold" class="form-control" id="current_sold" onkeypress="return isNumberKey(event)" onchange="get_current_stock_bal(this.value)" onkeypress="return isNumberKey(event)">
                                         <div class="alert alert-danger" id="current_soldErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -710,13 +720,13 @@ form, input, select, textarea{
                                         </select>
                                         <div class="alert alert-danger" id="current_sold_unitErrorMsg" style="display:none"></div>
                                     </div>
+                                </div>
+                                <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Balance Stock <font color="red">*</font></label>
                                         <input type="number" name="current_stock_balance" class="form-control" id="current_stock_balance" readonly="readonly">
                                         <div class="alert alert-danger" id="current_stock_balanceErrorMsg" style="display:none"></div>
                                     </div>
-                                </div>
-                                <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Balance Stock Unit <font color="red">*</font></label>
                                         <select class="form-control" name="current_stock_unit"  id="current_stock_unit">
@@ -844,7 +854,7 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">CID <font color="red">*</font></label>
-                                            <input type="text" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="edit_farmers_group_cid" name="edit_farmers_group_cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="get_farmers_name(this.value)">
+                                            <input type="text" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="edit_farmers_group_cid" name="edit_farmers_group_cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="get_edit_farmers_name(this.value)">
                                         </div>
                                         <div class="alert alert-danger" id="edit_farmers_group_cidErrorMsg" style="display:none"></div>
                                     </div>
@@ -919,22 +929,22 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">From date <font color="red">*</font></label>
-                                             <input type="text" name="edit_prev_year" id="edit_prev_year" class="form-control date-picker flatpickr-input active">
+                                            <label class="form-label">From Date <font color="red">*</font></label>
+                                             <input type="text" name="edit_prev_year" id="edit_prev_year" class="form-control date-picker flatpickr-input active" onchange="get_edit_month()">
                                         </div>
                                         <div class="alert alert-danger" id="edit_prev_yearErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">To date <font color="red">*</font></label>
-                                             <input type="text" name="edit_to_year" id="edit_to_year" class="form-control date-picker flatpickr-input active" onchange="get_month()">
+                                            <label class="form-label">To Date <font color="red">*</font></label>
+                                             <input type="text" name="edit_to_year" id="edit_to_year" class="form-control date-picker flatpickr-input active" onchange="get_edit_month()">
                                         </div>
                                         <div class="alert alert-danger" id="edit_to_yearErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Yield <font color="red">*</font></label>
-                                             <input type="text" name="edit_yield" id="edit_yield" class="form-control" onkeypress="return isNumberKey(event)">
+                                             <input type="text" name="edit_yield" id="edit_yield" class="form-control" onkeypress="return isNumberKey(event)" onchange="getEditBalance()">
                                         </div>
                                         <div class="alert alert-danger" id="edit_yieldErrorMsg" style="display:none"></div>
                                     </div>
@@ -954,12 +964,24 @@ form, input, select, textarea{
                                         <label class="form-label">Harvest Month <font color="red">*</font></label>
                                         <select class="form-control" name="edit_harvest_month"  id="edit_harvest_month">
                                             <option value="">--SELECT--</option>
+                                            <option value="January">January</option>
+                                            <option value="February">February</option>
+                                            <option value="March">March</option>
+                                            <option value="April">April</option>
+                                            <option value="May">May</option>
+                                            <option value="June">June</option>
+                                            <option value="July">July</option>
+                                            <option value="August">August</option>
+                                            <option value="September">September</option>
+                                            <option value="October">October</option>
+                                            <option value="November">November</option>
+                                            <option value="December">December</option>
                                         </select>
                                         <div class="alert alert-danger" id="edit_harvest_monthErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Sold <font color="red">*</font></label>
-                                        <input type="text" name="edit_sold" class="form-control" id="edit_sold" onkeypress="return isNumberKey(event)" onchange="getBalance(this.value)">
+                                        <input type="text" name="edit_sold" class="form-control" id="edit_sold" onkeypress="return isNumberKey(event)" onchange="getEditBalance()">
                                         <div class="alert alert-danger" id="edit_soldErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
@@ -992,14 +1014,14 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">From date <font color="red">*</font></label>
-                                             <input type="text" name="edit_current_year" id="edit_current_year" class="form-control date-picker flatpickr-input active">
+                                             <input type="text" name="edit_current_year" id="edit_current_year" class="form-control date-picker flatpickr-input active" onchange="get_edit_current_month()">
                                         </div>
                                         <div class="alert alert-danger" id="edit_current_yearErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">To date <font color="red">*</font></label>
-                                             <input type="text" name="edit_to_current_year" id="edit_to_current_year" class="form-control date-picker flatpickr-input active" onchange="get_current_month()">
+                                             <input type="text" name="edit_to_current_year" id="edit_to_current_year" class="form-control date-picker flatpickr-input active" onchange="get_edit_current_month()">
                                         </div>
                                         <div class="alert alert-danger" id="edit_to_current_yearErrorMsg" style="display:none"></div>
                                     </div>
@@ -1026,6 +1048,18 @@ form, input, select, textarea{
                                         <label class="form-label">Harvest Month <font color="red">*</font></label>
                                         <select class="form-control" name="edit_estimated_harvest_month"  id="edit_estimated_harvest_month">
                                             <option value="">--SELECT--</option>
+                                            <option value="January">January</option>
+                                            <option value="February">February</option>
+                                            <option value="March">March</option>
+                                            <option value="April">April</option>
+                                            <option value="May">May</option>
+                                            <option value="June">June</option>
+                                            <option value="July">July</option>
+                                            <option value="August">August</option>
+                                            <option value="September">September</option>
+                                            <option value="October">October</option>
+                                            <option value="November">November</option>
+                                            <option value="December">December</option>
                                         </select>
                                         <div class="alert alert-danger" id="edit_estimated_harvest_monthErrorMsg" style="display:none"></div>
                                     </div>
@@ -1084,17 +1118,17 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="form-label">From date <font color="red">*</font></label>
-                                        <input type="text" class="form-control date-picker flatpickr-input active" id="edit_previous_from_date" name="edit_previous_from_date"  placeholder="Pick a date" readonly="readonly">
+                                        <input type="text" class="form-control date-picker flatpickr-input active" id="edit_previous_from_date" name="edit_previous_from_date"  placeholder="Pick a date" readonly="readonly" onchange="ph_edit_current_month()">
                                         <div class="alert alert-danger" id="edit_previous_from_dateErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">To date <font color="red">*</font></label>
-                                        <input type="text" class="form-control date-picker flatpickr-input active" id="edit_previous_to_date" name="edit_previous_to_date"  placeholder="Pick a date" readonly="readonly">
+                                        <input type="text" class="form-control date-picker flatpickr-input active" id="edit_previous_to_date" name="edit_previous_to_date"  placeholder="Pick a date" readonly="readonly" onchange="ph_edit_current_month()">
                                         <div class="alert alert-danger" id="edit_previous_to_dateErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Production <font color="red">*</font></label>
-                                        <input type="text" name="edit_production" class="form-control" id="edit_production" onkeypress="return isNumberKey(event)">
+                                        <input type="text" name="edit_production" class="form-control" id="edit_production" onkeypress="return isNumberKey(event)" onchange="getEditBalanceStock()">
                                         <div class="alert alert-danger" id="edit_productionErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
@@ -1111,7 +1145,7 @@ form, input, select, textarea{
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Sold <font color="red">*</font></label>
-                                        <input type="text" name="edit_previous_sold" class="form-control" id="edit_previous_sold"  onkeypress="return isNumberKey(event)" onchange="getBalanceStock(this.value)">
+                                        <input type="text" name="edit_previous_sold" class="form-control" id="edit_previous_sold"  onkeypress="return isNumberKey(event)" onchange="getEditBalanceStock()">
                                         <div class="alert alert-danger" id="edit_previous_soldErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -1153,24 +1187,34 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="form-label">From date <font color="red">*</font></label>
-                                        <input type="text" class="form-control date-picker flatpickr-input active" id="edit_current_from_date" name="edit_current_from_date"  placeholder="Pick a date" readonly="readonly">
+                                        <input type="text" class="form-control date-picker flatpickr-input active" id="edit_current_from_date" name="edit_current_from_date"  placeholder="Pick a date" readonly="readonly" onchange="check_ph_current_month()">
                                         <div class="alert alert-danger" id="edit_current_from_dateErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">To date <font color="red">*</font></label>
-                                        <input type="text" class="form-control date-picker flatpickr-input active" id="edit_current_to_date" name="current_to_date"  placeholder="Pick a date" readonly="readonly">
+                                        <input type="text" class="form-control date-picker flatpickr-input active" id="edit_current_to_date" name="edit_current_to_date"  placeholder="Pick a date" readonly="readonly" onchange="check_ph_current_month()">
                                         <div class="alert alert-danger" id="edit_current_to_dateErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Production <font color="red">*</font></label>
-                                        <input type="text" name="edit_current_Production" class="form-control" id="edit_current_Production" onkeypress="return isNumberKey(event)">
+                                        <input type="text" name="edit_current_Production" class="form-control" id="edit_current_Production" onkeypress="return isNumberKey(event)" onchange="get_edit_current_stock_bal()">
                                         <div class="alert alert-danger" id="edit_current_ProductionErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-4">
+                                        <label class="form-label">Production Unit <font color="red">*</font></label>
+                                        <select class="form-control" name="edit_current_Production_unit"  id="edit_current_Production_unit">
+                                            <option value="">--SELECT UNIT--</option>
+                                            {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="alert alert-danger" id="edit_current_Production_unitErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
                                         <label class="form-label">Sold <font color="red">*</font></label>
-                                        <input type="number" name="edit_current_sold" class="form-control" id="edit_current_sold" onkeypress="return isNumberKey(event)" onchange="get_current_stock_bal(this.value)">
+                                        <input type="number" name="edit_current_sold" class="form-control" id="edit_current_sold" onkeypress="return isNumberKey(event)" onchange="get_edit_current_stock_bal()">
                                         <div class="alert alert-danger" id="edit_current_soldErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -1185,12 +1229,10 @@ form, input, select, textarea{
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Balance Stock <font color="red">*</font></label>
-                                        <input type="number" name="current_stock_balance" class="form-control" id="edit_current_stock_balance" readonly="readonly">
+                                        <input type="number" name="edit_current_stock_balance" class="form-control" id="edit_current_stock_balance" readonly="readonly">
                                         <div class="alert alert-danger" id="edit_current_stock_balanceErrorMsg" style="display:none"></div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="form-group col-md-4">
+                                     <div class="form-group col-md-4">
                                         <label class="form-label">Balance Stock Unit <font color="red">*</font></label>
                                         <select class="form-control" name="edit_current_stock_unit"  id="edit_current_stock_unit">
                                             <option value="">--SELECT UNIT--</option>
@@ -1216,16 +1258,17 @@ form, input, select, textarea{
 
 <script>
 function isNumberKey(evt)
-      {
-         var charCode = (evt.which) ? evt.which : event.keyCode
-         if (charCode > 31 && (charCode < 48 || charCode > 57))
-            return false;
+{
+ var charCode = (evt.which) ? evt.which : event.keyCode
+ if (charCode > 31 && (charCode < 48 || charCode > 57))
+    return false;
 
-         return true;
-      }
+ return true;
+}
 
 function save_gap_certification()
 {
+    var applicationNo = $('#applicationNo').val();
     var cid = $('#cid').val();
     var name = $('#name').val();
     var dzongkhag = $('#dzongkhag').val();
@@ -1341,12 +1384,45 @@ function save_gap_certification()
         $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
         $("#contactNumber").focus();
     }
-
-    else
+    else if(applicationNo == "")
     {
         $.ajax({
             type : "POST",
             url : "{% url 'save_gap_certificate' %}",
+            data : $('#gap_certificate_form').serialize(),
+            success : function(data)
+            {
+                $('#applicationNo').val(data.applNo);
+                $('#farmers_group_application_no').val(data.applNo);
+                $('#crop_production_app_no').val(data.applNo);
+                $('#pack_house_application_no').val(data.applNo);
+                $('#attachment_appNo').val(data.applNo);
+
+                $('#submitMsg').show();
+                setTimeout(function() {
+                    $("#submitMsg").hide('blind', {}, 500)
+                }, 2000);
+                if(data.Applicant_Type == 'I')
+                {
+                    setTimeout(function() {
+                        $('#pills-crop-production').tab('show');
+                    }, 3000);
+                }
+                else
+                {
+                    setTimeout(function() {
+                        $('#pills-farmers-group').tab('show');
+                    }, 3000);
+                }
+                $("#gap_button").html('Update');
+            }
+        });
+    }
+    else if(applicationNo != "")
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'update_gap_form' %}",
             data : $('#gap_certificate_form').serialize(),
             success : function(data)
             {
@@ -1414,7 +1490,7 @@ function save_gap_attachment()
                 success : function(responseText)
                 {
                     $('#attachmentModal').modal('hide');
-                    $('#file-attachment-mortem').html(responseText);
+                    $('#file-attachment-gap').html(responseText);
                     $('.modal-backdrop').remove();
                     $('#attachment_form')[0].reset();
                 }
@@ -1858,20 +1934,35 @@ function getCitizenDetails(cidNo)
         success : function(data)
         {
             const myObj =data.response;
-            var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
-            var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
-            var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
-            if (middleName == null) {
-                    middleName = "";
-                }
-            var CitizenName = firstName + " " + middleName + " " + lastName;
-            var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
-            var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
-            var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
-            $('#name').val(CitizenName);
-            $('#dzongkhag_code').val(dzongkhagName);
-            $('#gewog_code').val(gewogName);
-            $('#village_code').val(villageName);
+            if(myObj.citizenDetailsResponse.citizenDetail == undefined)
+            {
+                $('#cid').val("");
+                $('#name').val("");
+                $('#dzongkhag_code').val("");
+                $('#gewog_code').val("");
+                $('#village_code').val("");
+                $('#cidErrorMsg').html("Invalid CID.Try With Another one");
+                $('#cidErrorMsg').show();
+                $('#cidErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else
+            {
+                var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+                var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+                var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+                if (middleName == null) {
+                        middleName = "";
+                    }
+                var CitizenName = firstName + " " + middleName + " " + lastName;
+
+                var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
+                var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
+                var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
+                $('#name').val(CitizenName);
+                $('#dzongkhag_code').val(dzongkhagName);
+                $('#gewog_code').val(gewogName);
+                $('#village_code').val(villageName);
+            }
         }
     });
 }
@@ -1880,51 +1971,365 @@ function get_month()
 {
     var from_date = $('#prev_year').val();
     var  to_date = $('#to_year').val();
+
     $.ajax({
         type : "GET",
-        url : "{% url 'date_month' %}",
+        url : "{% url 'check_difference' %}",
         data :{'from_date':from_date, 'to_date':to_date},
         success : function(data)
         {
-            $('#harvest_month').html(data);
+            if(data.no_of_days <= 0)
+            {
+                $('#to_yearErrorMsg').html("Cannot Be Less Than From Date");
+                $('#to_yearErrorMsg').show();
+                $('#to_yearErrorMsg').delay(2000).fadeOut('slow');
+                $('#to_year').val("");
+            }
+            else
+            {
+                $.ajax({
+                    type : "GET",
+                    url : "{% url 'date_month' %}",
+                    data :{'from_date':from_date, 'to_date':to_date},
+                    success : function(data)
+                    {
+                        $('#harvest_month').html(data);
+                    }
+                });
+            }
         }
     });
+
 }
 
 function get_current_month()
 {
     var from_date = $('#current_year').val();
     var  to_date = $('#to_current_year').val();
+
     $.ajax({
         type : "GET",
-        url : "{% url 'date_month' %}",
+        url : "{% url 'check_difference' %}",
         data :{'from_date':from_date, 'to_date':to_date},
         success : function(data)
         {
-            $('#estimated_harvest_month').html(data);
+            if(data.no_of_days <= 0)
+            {
+                $('#to_current_yearErrorMsg').html("Cannot Be Less Than From Date");
+                $('#to_current_yearErrorMsg').show();
+                $('#to_current_yearErrorMsg').delay(2000).fadeOut('slow');
+                $('#to_current_year').val("");
+            }
+            else
+            {
+                $.ajax({
+                    type : "GET",
+                    url : "{% url 'date_month' %}",
+                    data :{'from_date':from_date, 'to_date':to_date},
+                    success : function(data)
+                    {
+                        $('#estimated_harvest_month').html(data);
+                    }
+                });
+            }
+        }
+    });
+
+}
+
+function get_edit_month()
+{
+    var from_date = $('#edit_prev_year').val();
+    var  to_date = $('#edit_to_year').val();
+
+    $.ajax({
+        type : "GET",
+        url : "{% url 'check_difference' %}",
+        data :{'from_date':from_date, 'to_date':to_date},
+        success : function(data)
+        {
+            if(data.no_of_days <= 0)
+            {
+                $('#edit_to_yearErrorMsg').html("Cannot Be Less Than From Date");
+                $('#edit_to_yearErrorMsg').show();
+                $('#edit_to_yearErrorMsg').delay(2000).fadeOut('slow');
+                $('#edit_to_year').val("");
+            }
+            else
+            {
+                $.ajax({
+                    type : "GET",
+                    url : "{% url 'date_month' %}",
+                    data :{'from_date':from_date, 'to_date':to_date},
+                    success : function(data)
+                    {
+                        $('#edit_harvest_month').html(data);
+                    }
+                });
+            }
+        }
+    });
+
+}
+
+function get_edit_current_month()
+{
+    var from_date = $('#edit_current_year').val();
+    var  to_date = $('#edit_to_current_year').val();
+
+    $.ajax({
+        type : "GET",
+        url : "{% url 'check_difference' %}",
+        data :{'from_date':from_date, 'to_date':to_date},
+        success : function(data)
+        {
+            if(data.no_of_days <= 0)
+            {
+                $('#edit_to_yearErrorMsg').html("Cannot Be Less Than From Date");
+                $('#edit_to_yearErrorMsg').show();
+                $('#edit_to_yearErrorMsg').delay(2000).fadeOut('slow');
+                $('#edit_to_current_year').val("");
+            }
+            else
+            {
+                $.ajax({
+                    type : "GET",
+                    url : "{% url 'date_month' %}",
+                    data :{'from_date':from_date, 'to_date':to_date},
+                    success : function(data)
+                    {
+                        $('#edit_estimated_harvest_month').html(data);
+                    }
+                });
+            }
+        }
+    });
+
+}
+
+function ph_previous_month()
+{
+    var from_date = $('#previous_from_date').val();
+    var  to_date = $('#previous_to_date').val();
+
+    $.ajax({
+        type : "GET",
+        url : "{% url 'check_difference' %}",
+        data :{'from_date':from_date, 'to_date':to_date},
+        success : function(data)
+        {
+            if(data.no_of_days <= 0)
+            {
+                $('#previous_to_dateErrorMsg').html("Cannot Be Less Than From Date");
+                $('#previous_to_dateErrorMsg').show();
+                $('#previous_to_dateErrorMsg').delay(2000).fadeOut('slow');
+                $('#previous_to_date').val("");
+            }
+            else
+            {
+                $('#previous_to_dateErrorMsg').hide();
+            }
         }
     });
 }
 
-function getBalance(sold)
+function ph_current_month()
+{
+    var from_date = $('#current_from_date').val();
+    var  to_date = $('#current_to_date').val();
+
+    $.ajax({
+        type : "GET",
+        url : "{% url 'check_difference' %}",
+        data :{'from_date':from_date, 'to_date':to_date},
+        success : function(data)
+        {
+            if(data.no_of_days <= 0)
+            {
+                $('#current_to_dateErrorMsg').html("Cannot Be Less Than From Date");
+                $('#current_to_dateErrorMsg').show();
+                $('#current_to_dateErrorMsg').delay(2000).fadeOut('slow');
+                $('#current_to_date').val("");
+            }
+            else
+            {
+                $('#current_to_dateErrorMsg').hide();
+            }
+        }
+    });
+}
+
+function ph_edit_current_month()
+{
+    var from_date = $('#edit_previous_from_date').val();
+    var  to_date = $('#edit_previous_to_date').val();
+
+    $.ajax({
+        type : "GET",
+        url : "{% url 'check_difference' %}",
+        data :{'from_date':from_date, 'to_date':to_date},
+        success : function(data)
+        {
+            if(data.no_of_days <= 0)
+            {
+                $('#edit_previous_to_dateErrorMsg').html("Cannot Be Less Than From Date");
+                $('#edit_previous_to_dateErrorMsg').show();
+                $('#edit_previous_to_dateErrorMsg').delay(2000).fadeOut('slow');
+                $('#edit_previous_to_date').val("");
+            }
+            else
+            {
+                $('#edit_previous_to_dateErrorMsg').hide();
+            }
+        }
+    });
+}
+
+function check_ph_current_month()
+{
+    var from_date = $('#edit_current_from_date').val();
+    var  to_date = $('#edit_current_to_date').val();
+
+    $.ajax({
+        type : "GET",
+        url : "{% url 'check_difference' %}",
+        data :{'from_date':from_date, 'to_date':to_date},
+        success : function(data)
+        {
+            if(data.no_of_days <= 0)
+            {
+                $('#edit_current_to_dateErrorMsg').html("Cannot Be Less Than From Date");
+                $('#edit_current_to_dateErrorMsg').show();
+                $('#edit_current_to_dateErrorMsg').delay(2000).fadeOut('slow');
+                $('#edit_current_to_date').val("");
+            }
+            else
+            {
+                $('#edit_current_to_dateErrorMsg').hide();
+            }
+        }
+    });
+}
+
+function getBalance()
 {
     var yield = $('#yield').val();
-    var balance = yield - sold;
-    $('#balance_stock').val(balance);
+    var sold = $('#sold').val();
+
+    if(sold > yield)
+    {
+        $('#soldErrorMsg').html("Cannot Be More Than Yield");
+        $('#soldErrorMsg').show();
+        $('#soldErrorMsg').delay(2000).fadeOut('slow');
+        $('#sold').val("");
+        $('#balance_stock').val("");
+    }
+    else
+    {
+        var balance = yield - sold;
+        $('#balance_stock').val(balance);
+    }
+
 }
 
-function getBalanceStock(sold)
+function getEditBalance()
+{
+    var yield = $('#edit_yield').val();
+    var sold = $('#edit_sold').val();
+
+    if(sold > yield)
+    {
+        $('#edit_soldErrorMsg').html("Cannot Be More Than Yield");
+        $('#edit_soldErrorMsg').show();
+        $('#edit_soldErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_previous_sold').val("");
+        $('#edit_balance_stock').val("");
+    }
+    else
+    {
+        var balance = yield - sold;
+        $('#edit_balance_stock').val(balance);
+    }
+
+}
+
+function getBalanceStock()
 {
     var production = $('#production').val();
-    balance_production = production - sold
-    $('#stock_balance').val(balance_production);
+    var sold = $('#previous_sold').val();
+    if(sold > production)
+    {
+        $('#previous_soldErrorMsg').html("Cannot Be More Than Production");
+        $('#previous_soldErrorMsg').show();
+        $('#previous_soldErrorMsg').delay(2000).fadeOut('slow');
+        $('#previous_sold').val("");
+        $('#stock_balance').val("");
+    }
+    else
+    {
+        var balance = production - sold;
+        $('#stock_balance').val(balance);
+    }
 }
 
-function get_current_stock_bal(sold)
+function getEditBalanceStock()
+{
+    var production = $('#edit_production').val();
+    var sold = $('#edit_previous_sold').val();
+    if(sold > production)
+    {
+        $('#edit_previous_soldErrorMsg').html("Cannot Be More Than Production");
+        $('#edit_previous_soldErrorMsg').show();
+        $('#edit_previous_soldErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_previous_sold').val("");
+        $('#edit_stock_balance').val("");
+    }
+    else
+    {
+        var balance = production - sold;
+        $('#edit_stock_balance').val(balance);
+    }
+}
+
+function get_current_stock_bal()
 {
     var production = $('#current_Production').val();
-    balance_production = production - sold
-    $('#current_stock_balance').val(balance_production);
+    var sold = $('#current_sold').val();
+
+    if(sold > production)
+    {
+        $('#current_soldErrorMsg').html("Cannot Be More Than Production");
+        $('#current_soldErrorMsg').show();
+        $('#current_soldErrorMsg').delay(2000).fadeOut('slow');
+        $('#current_sold').val("");
+        $('#current_stock_balance').val("");
+    }
+    else
+    {
+       balance_production = production - sold
+       $('#current_stock_balance').val(balance_production);
+    }
+
+}
+
+function get_edit_current_stock_bal()
+{
+    var production = $('#edit_current_Production').val();
+    var sold = $('#edit_current_sold').val();
+
+    if(sold > production)
+    {
+        $('#edit_current_soldErrorMsg').html("Cannot Be More Than Production");
+        $('#edit_current_soldErrorMsg').show();
+        $('#edit_current_soldErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_current_sold').val("");
+        $('#edit_current_stock_balance').val("");
+    }
+    else
+    {
+       balance_production = production - sold
+       $('#edit_current_stock_balance').val(balance_production);
+    }
 }
 
 function get_farmers_name(cidNo)
@@ -1936,15 +2341,62 @@ function get_farmers_name(cidNo)
         success : function(data)
         {
             const myObj =data.response;
-            var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
-            var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
-            var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
-            if (middleName == null) {
-                    middleName = "";
-                }
-            var CitizenName = firstName + " " + middleName + " " + lastName;
+            if(myObj.citizenDetailsResponse.citizenDetail == undefined)
+            {
+                $('#farmers_group_cid').val("");
+                $('#farmers_group_fullname').val("");
+                $('#farmers_group_cidErrorMsg').html("Invalid CID.Try With Another one");
+                $('#farmers_group_cidErrorMsg').show();
+                $('#farmers_group_cidErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else
+            {
+                var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+                var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+                var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+                if (middleName == null) {
+                        middleName = "";
+                    }
+                var CitizenName = firstName + " " + middleName + " " + lastName;
 
-            $('#farmers_group_fullname').val(CitizenName);
+                $('#farmers_group_fullname').val(CitizenName);
+            }
+
+
+        }
+    });
+}
+
+function get_edit_farmers_name(cidNo)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'get_citizen_details' %}",
+        data :{'cidNo':cidNo},
+        success : function(data)
+        {
+            const myObj =data.response;
+            if(myObj.citizenDetailsResponse.citizenDetail == undefined)
+            {
+                $('#edit_farmers_group_cid').val("");
+                $('#edit_farmers_group_fullname').val("");
+                $('#edit_farmers_group_fullnameErrorMsg').html("Invalid CID.Try With Another one");
+                $('#edit_farmers_group_fullnameErrorMsg').show();
+                $('#edit_farmers_group_fullnameErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else
+            {
+                var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+                var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+                var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+                if (middleName == null) {
+                        middleName = "";
+                    }
+                var CitizenName = firstName + " " + middleName + " " + lastName;
+
+                $('#edit_farmers_group_fullname').val(CitizenName);
+            }
+
 
         }
     });
@@ -1971,9 +2423,8 @@ function farmer_group_details(Record_Id, CID, Name, Application_No)
     $('#edit_farmers_group_model').modal('show');
 }
 
-function populate_crop_details(Record_Id,crop_name,area,area_unit,prev_year,to_year,yield,Yield_Unit,harvest_month,sold,balance_stock,current_year,to_current_year,estimated_yield,estimated_Yield_Unit,estimated_harvest_month,Application_No)
+function populate_crop_details(Record_Id,crop_name,area,area_unit,prev_year,to_year,yield,Yield_Unit,harvest_month,sold,P_Balance_Stock,current_year,to_current_year,estimated_yield,estimated_Yield_Unit,estimated_harvest_month,Application_No)
 {
-    alert(balance_stock);
     $('#crop_record_id').val(Record_Id);
     $('#edit_crop_name').val(crop_name);
     $('#edit_area').val(area);
@@ -1984,7 +2435,7 @@ function populate_crop_details(Record_Id,crop_name,area,area_unit,prev_year,to_y
     $('#edit_Yield_Unit').val(Yield_Unit);
     $('#edit_harvest_month').val(harvest_month);
     $('#edit_sold').val(sold);
-    $('#edit_balance_stock').val(balance_stock);
+    $('#edit_balance_stock').val(P_Balance_Stock);
     $('#edit_current_year').val(current_year);
     $('#edit_to_current_year').val(to_current_year);
     $('#edit_estimated_yield').val(estimated_yield);
@@ -1996,8 +2447,8 @@ function populate_crop_details(Record_Id,crop_name,area,area_unit,prev_year,to_y
 }
 
 function populate_pack_details(Record_Id,pack_house_name,pack_house_address,previous_from_date,previous_to_date,
- production,production_unit,previous_sold,previous_sold_unit,stock_balance,current_from_date,current_to_date,
- current_Production,current_sold,current_sold_unit,current_stock_balance,current_stock_unit,Application_No)
+ production,production_unit,previous_sold,previous_sold_unit,P_Balance_Stock,stock_balance_unit,current_from_date,current_to_date,
+ current_Production,current_Production_unit, current_sold,current_sold_unit,current_stock_balance,current_stock_unit,Application_No)
 {
     $('#pack_house_record_id').val(Record_Id);
     $('#edit_pack_house_name').val(pack_house_name);
@@ -2008,10 +2459,12 @@ function populate_pack_details(Record_Id,pack_house_name,pack_house_address,prev
     $('#edit_production_unit').val(production_unit);
     $('#edit_previous_sold').val(previous_sold);
     $('#edit_previous_sold_unit').val(previous_sold_unit);
-    $('#edit_stock_balance').val(stock_balance);
+    $('#edit_stock_balance').val(P_Balance_Stock);
+    $('#edit_stock_balance_unit').val(stock_balance_unit);
     $('#edit_current_from_date').val(current_from_date);
     $('#edit_current_to_date').val(current_to_date);
     $('#edit_current_Production').val(current_Production);
+    $('#edit_current_Production_unit').val(current_Production_unit);
     $('#edit_current_sold').val(current_sold);
     $('#edit_current_sold_unit').val(current_sold_unit);
     $('#edit_current_stock_balance').val(current_stock_balance);
@@ -2019,5 +2472,102 @@ function populate_pack_details(Record_Id,pack_house_name,pack_house_address,prev
     $('#edit_pack_house_application_no').val(Application_No);
     $('#edit_pack_house_model').modal('show');
 }
+
+function load_form()
+{
+    var applicationNo = $('#applicationNo').val();
+    var Applicant_Type = $("input[name=Applicant_Type]:checked").val();
+    if(applicationNo == "")
+    {
+        $("#pills-farmers-group").prop('disabled', true);
+        $("#pills-crop-production").prop('disabled', true);
+        $("#pills-pack-house").prop('disabled', true);
+        $("#file-attach").prop('disabled', true);
+        $("#certification_standards").prop('disabled', true);
+    }
+    else if(applicationNo != "" && Applicant_Type == 'I')
+    {
+        $("#pills-farmers-group").prop('disabled', true);
+        $("#pills-crop-production").prop('disabled', false);
+        $("#pills-pack-house").prop('disabled', false);
+        $("#file-attach").prop('disabled', false);
+        $("#certification_standards").prop('disabled', false);
+    }
+    else if(applicationNo != "" && Applicant_Type == 'F')
+    {
+        $("#pills-farmers-group").prop('disabled', false);
+        $("#pills-crop-production").prop('disabled', false);
+        $("#pills-pack-house").prop('disabled', false);
+        $("#file-attach").prop('disabled', false);
+        $("#certification_standards").prop('disabled', false);
+    }
+}
+
+function load_fg_details()
+{
+    var appNo = $('#applicationNo').val();
+    var Applicant_Type = $("input[name=Applicant_Type]:checked").val();
+
+    if(Applicant_Type == 'F')
+    {
+            $.ajax({
+            type : "GET",
+            url : "{% url 'load_fg_details' %}",
+            data :{'appNo':appNo},
+            success : function(response)
+            {
+                $('#farmer_details').html(response);
+            }
+        });
+    }
+    else
+    {
+        $("#pills-farmers-group").prop('disabled', true);
+    }
+
+}
+
+function load_cp_details()
+{
+    var appNo = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'gap_cp_details' %}",
+        data :{'appNo':appNo},
+        success : function(response)
+        {
+            $('#details_crop_production').html(response);
+        }
+    });
+}
+
+function load_ph_details()
+{
+    var appNo = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'gap_ph_details' %}",
+        data :{'appNo':appNo},
+        success : function(response)
+        {
+            $('#pack_house').html(response);
+        }
+    });
+}
+
+function gap_attachment_details()
+{
+    var appNo = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'gap_attachment' %}",
+        data :{'appNo':appNo},
+        success : function(response)
+        {
+            $('#file-attachment-gap').html(response);
+        }
+    });
+}
 </script>
 {% endblock %}
+

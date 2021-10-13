@@ -1,6 +1,7 @@
 {% extends 'common_dashboard.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+{% load static %}
 <style>
 option {
     background-color: white !important;
@@ -19,7 +20,6 @@ form, input, select, textarea{
     color: black !important;
 }
 </style>
-
 <div class="card">
     <div class="card-header">
         <h4 class="card-title">Import Permit For Plant And Plant Products</h4>
@@ -31,16 +31,13 @@ form, input, select, textarea{
             <div class="row justify-content-left">
                 <ul class="nav nav-pills nav-secondary" id="import-tab" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadAppDetails()">Home</a>
-                    </li>
-                    <li class="nav-item" id="plant_details">
-                        <a class="nav-link" id="import-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="loadDetails()">Import Details</a>
-                    </li>
-                    <li class="nav-item" id="agro_details" style="display:none">
-                        <a class="nav-link" id="agro-profile-tab" data-toggle="pill" href="#agro-details" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_details()">Import Details</a>
+                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="checkDetails()">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-import-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment()">Attach File</a>
+                        <a class="nav-link" id="import-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="loadDetails()">Import Details</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="pills-import-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">Attach File</a>
                     </li>
                 </ul>
             </div>
@@ -205,7 +202,7 @@ form, input, select, textarea{
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Expected Arrival Date <font color="red">*</font></label>
-                                    <input type="text" class="form-control date-picker flatpickr-input active" id="expectedDate" name="com_expected_arrival_date"  placeholder="Pick a date" readonly="readonly">
+                                    <input type="date" class="form-control" id="com_expected_arrival_date" name="com_expected_arrival_date">
                                 </div>
                                 <div class="alert alert-danger" id="dateErrorMsg" style="display:none"></div>
                             </div>
@@ -345,7 +342,7 @@ form, input, select, textarea{
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Expected Arrival Date <font color="red">*</font></label>
-                                    <input type="text" class="form-control date-picker flatpickr-input active" id="B_expectedDate" name="date_expected"  placeholder="Pick a date" readonly="readonly">
+                                    <input type="date" class="form-control" id="B_expectedDate" name="B_expectedDate">
                                 </div>
                                 <div class="alert alert-danger" id="B_expectedDateErrorMsg" style="display:none"></div>
                             </div>
@@ -478,7 +475,7 @@ form, input, select, textarea{
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Expected Arrival Date <font color="red">*</font></label>
-                                    <input type="text" class="form-control date-picker flatpickr-input active" id="p_expectedDate" name="expected_date"  placeholder="Pick a date" readonly="readonly">
+                                    <input type="date" class="form-control" id="p_expectedDate" name="p_expectedDate">
                                 </div>
                                 <div class="alert alert-danger" id="p_expectedDateErrorMsg" style="display:none"></div>
                             </div>
@@ -505,7 +502,7 @@ form, input, select, textarea{
                     </div>
                 </div>
                 <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="import-profile-tab">
-                    <div class="card">
+                    <div class="card" id="plant-card" style="display:none">
                         <div class="card-header">
                             <div class="card-head-row">
                                 <div class="card-tools pull-right">
@@ -522,9 +519,7 @@ form, input, select, textarea{
                             <button type="button" class="btn btn-success" onclick="plant_import_save()">Save</button>
                         </div>
                     </div>
-                </div>
-                <div class="tab-pane fade" id="agro-details" role="tabpanel" aria-labelledby="import-profile-tab">
-                    <div class="card">
+                    <div class="card" id="agro-card" style="display:none">
                         <div class="card-header">
                             <div class="card-head-row">
                                 <div class="card-tools pull-right">
@@ -543,7 +538,7 @@ form, input, select, textarea{
                     </div>
                 </div>
                 <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="pills-import-file">
-                    <div id="fileAttachPlant">
+                    <div id="file-attachment-import">
                         {% include 'import_permit/plant_attachment_page.html' %}
                     </div>
                 </div>
@@ -551,6 +546,7 @@ form, input, select, textarea{
         </form>
     </div>
 </div>
+
 <form method="post" id="save_plant_form">
     {% csrf_token %}
     <input type="hidden" name="appNo" id="plant_applicationNo">
@@ -954,8 +950,16 @@ form, input, select, textarea{
         </div>
     </div>
 </form>
-
+<script src="{% static 'assets/bower_components/jquery/dist/jquery.min.js' %}"></script>
 <script>
+    $(function()
+    {
+        var today = new Date().toISOString().split('T')[0];
+        $('#B_expectedDate')[0].setAttribute('min', today);
+        $('#com_expected_arrival_date')[0].setAttribute('min', today);
+        $('#p_expectedDate')[0].setAttribute('min', today);
+    });
+
     function isNumberKey(evt)
     {
      var charCode = (evt.which) ? evt.which : event.keyCode
@@ -1013,6 +1017,7 @@ form, input, select, textarea{
 
     function import_save()
     {
+        var applicationNo = $('#applicationNo').val();
         var Import_Type = $("input[name=Import_Type]:checked").length;
         var Application_Type = $("input[name=Application_Type]:checked").length;
         var Nationality = $("input[name=Nationality_Type]:checked").length;
@@ -1060,7 +1065,10 @@ form, input, select, textarea{
         var cid_Count = $('#cid').val().length;
         var number_count = $('#contactNumber').val().length;
         var com_number_count = $('#com_contactNumber').val().length;
-        var p_number_count = $('#p_contactNumber').val().length;
+        if(p_contactNumber != undefined)
+        {
+            var p_number_count = $('#p_contactNumber').val().length;
+        }
         var Import_Type = $("input[name=Import_Type]:checked").length;
         var Application_Type = $("input[name=Application_Type]:checked").length;
         var Nationality = $("input[name=Nationality]:checked").length;
@@ -1374,8 +1382,7 @@ form, input, select, textarea{
             $('#P_GMOErrorMsg').delay(2000).fadeOut('slow');
              $("input[name=P_GMO]").focus();
         }
-
-        else
+        else if(applicationNo == "")
         {
             $.ajax({
                 type : "POST",
@@ -1390,16 +1397,61 @@ form, input, select, textarea{
                     if(data.importType == "P")
                     {
                         $('#import-profile-tab').tab('show');
+                        $('#plant-card').show();
                     }
                     else
                     {
-
-                         $('#agro-profile-tab').tab('show');
+                         $('#import-profile-tab').tab('show');
+                         $('#agro-card').show();
+                    }
+                    $("#save_details_button").html('Update');
+                }
+            });
+        }
+        else if(applicationNo != "")
+        {
+            $.ajax({
+                type : "POST",
+                url : "{% url 'update_import_permit' %}",
+                data : $('#importForm').serialize(),
+                success : function(data) {
+                    $('#applicationNo').val(data.applNo);
+                    $('#plant_applicationNo').val(data.applNo);
+                    $('#agro_applicationNo').val(data.applNo);
+                    $('#agro_attachment_applicationNo').val(data.applNo);
+                    $('#plant_attachment_applicationNo').val(data.applNo);
+                    if(data.importType == "P")
+                    {
+                        $('#import-profile-tab').tab('show');
+                        $('#plant-card').show();
+                    }
+                    else
+                    {
+                         $('#import-profile-tab').tab('show');
+                         $('#agro-card').show();
                     }
                 }
             });
         }
     }
+
+    function checkDetails()
+    {
+        var applicationNo = $('#applicationNo').val();
+        $('#agro-card').hide();
+        $('#plant-card').hide();
+        if(applicationNo == "")
+        {
+            $("#import-profile-tab").prop('disabled', true);
+            $("#pills-import-file").prop('disabled', true);
+        }
+        else if(applicationNo != "")
+        {
+            $("#import-profile-tab").prop('disabled', false);
+            $("#pills-import-file").prop('disabled', false);
+        }
+    }
+
 
 
     function show_plant_modal()
@@ -1482,50 +1534,50 @@ form, input, select, textarea{
         var agro_qty = $('#agro_qty').val();
 
         if(agro_import_category == "")
-            {
-                $('#agro_import_categoryErrorMsg').html("Select Import Category.");
-                $('#agro_import_categoryErrorMsg').show();
-                $('#agro_import_categoryErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(pesticide_id == "")
-            {
-                $('#pesticide_idErrorMsg').html("Select Pesticides.");
-                $('#pesticide_idErrorMsg').show();
-                $('#pesticide_idErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(description == "")
-            {
-                $('#descriptionErrorMsg').html("Enter Description.");
-                $('#descriptionErrorMsg').show();
-                $('#descriptionErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(agro_qty == "")
-            {
-                $('#agro_qtyErrorMsg').html("Enter Quantity.");
-                $('#agro_qtyErrorMsg').show();
-                $('#agro_qtyErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(agro_unit == "")
-            {
-                $('#agro_unitErrorMsg').html("Enter Unit.");
-                $('#agro_unitErrorMsg').show();
-                $('#agro_unitErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else
-            {
-                $.ajax({
-                    type : "POST",
-                    url : "{% url 'save_import_agro' %}",
-                    data : $('#save_agro_form').serialize(),
-                    success : function(responseText) {
-                       $('#add_agro_details').modal('hide');
-                       $('#AgroDetails').html(responseText);
-                       $('#agro-profile-tab').tab('show');
-                       $('.modal-backdrop').remove();
-                       $('#save_agro_form')[0].reset();
-                    }
-                });
-            }
+        {
+            $('#agro_import_categoryErrorMsg').html("Select Import Category.");
+            $('#agro_import_categoryErrorMsg').show();
+            $('#agro_import_categoryErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(pesticide_id == "")
+        {
+            $('#pesticide_idErrorMsg').html("Select Pesticides.");
+            $('#pesticide_idErrorMsg').show();
+            $('#pesticide_idErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(description == "")
+        {
+            $('#descriptionErrorMsg').html("Enter Description.");
+            $('#descriptionErrorMsg').show();
+            $('#descriptionErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(agro_qty == "")
+        {
+            $('#agro_qtyErrorMsg').html("Enter Quantity.");
+            $('#agro_qtyErrorMsg').show();
+            $('#agro_qtyErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(agro_unit == "")
+        {
+            $('#agro_unitErrorMsg').html("Enter Unit.");
+            $('#agro_unitErrorMsg').show();
+            $('#agro_unitErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            $.ajax({
+                type : "POST",
+                url : "{% url 'save_import_agro' %}",
+                data : $('#save_agro_form').serialize(),
+                success : function(responseText) {
+                   $('#add_agro_details').modal('hide');
+                   $('#AgroDetails').html(responseText);
+                   $('#agro-profile-tab').tab('show');
+                   $('.modal-backdrop').remove();
+                   $('#save_agro_form')[0].reset();
+                }
+            });
+        }
     }
 
     function save_plant_attachment()
@@ -1563,7 +1615,7 @@ form, input, select, textarea{
                         success : function(responseText)
                         {
                             $('#plant_attachmentModal').modal('hide');
-                            $('#file-attachment').html(responseText);
+                            $('#file-attachment-import').html(responseText);
                             $('.modal-backdrop').remove();
                             $('#plant_attachment_form')[0].reset();
                         }
@@ -1872,6 +1924,45 @@ function populateAgroDetails(Record_Id, Import_Category, Pesticide_Id, Descripti
     $('#edit_agro_details').modal('show');
 }
 
+
+function loadDetails()
+{
+    var appNo = $('#applicationNo').val();
+    var import_type = $("input[name=Import_Type]:checked").val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_plant_import_details' %}",
+        data :{'appNo':appNo, 'import_type': import_type},
+        success : function(response)
+        {
+            if(import_type == 'P')
+            {
+
+                $('#plant-card').show();
+                $('#Details').html(response);
+            }
+            else
+            {
+                $('#agro-card').show();
+                $('#AgroDetails').html(response);
+            }
+        }
+    });
+}
+
+function load_attachment_details()
+{
+    var appNo = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_plant_import_attachment' %}",
+        data :{'appNo':appNo},
+        success : function(response)
+        {
+            $('#fileAttach').html(response);
+        }
+    });
+}
 
 </script>
 {% endblock %}

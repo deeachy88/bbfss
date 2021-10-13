@@ -21,13 +21,13 @@
             <div class="row align-left">
                 <ul class="nav nav-pills nav-secondary" id="pills-tab-seed" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="pills-seed-tab" data-toggle="pill" href="#seed-home" role="tab" aria-controls="pills-home" aria-selected="true">Home</a>
+                        <a class="nav-link active" id="pills-seed-tab" data-toggle="pill" href="#seed-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="checkDetails()">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#seed-reg-details" role="tab" aria-controls="pills-profile-tab" aria-selected="false">Details</a>
+                        <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#seed-reg-details" role="tab" aria-controls="pills-profile-tab" aria-selected="false" onclick="nursery_Details()">Details</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-profile-file" data-toggle="pill" href="#seed-file-attachment" role="tab" aria-controls="pills-profile-file" aria-selected="false">Attach File</a>
+                        <a class="nav-link" id="pills-profile-file" data-toggle="pill" href="#seed-file-attachment" role="tab" aria-controls="pills-profile-file" aria-selected="false" onclick="nursery_attachment()">Attach File</a>
                     </li>
                 </ul>
             </div>
@@ -190,7 +190,7 @@
                             </div>
                         </div>
                         <div class="card-action">
-                            <button type="button" class="btn btn-primary" onclick="save_nursery_form()">Save</button>
+                            <button type="button" class="btn btn-primary" id="nursery_save_button" onclick="save_nursery_form()">Save</button>
                         </div>
                     </div>
                 </div>
@@ -408,9 +408,11 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="form-group col-md-4">
-                                        <label class="form-label">Source <font color="red">*</font></label>
-                                        <input type="text" name="edit_Source" class="form-control" id="edit_Source" required>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Source <font color="red">*</font></label>
+                                            <input type="text" name="edit_Source" class="form-control" id="edit_Source" required>
+                                        </div>
                                         <div class="alert alert-danger" id="edit_SourceErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -502,6 +504,7 @@ function getLocation(dzongkhag_id)
 
 function save_nursery_form()
 {
+    var applicationNo = $('#applicationNo').val();
     var License_No = $('#License_No').val();
     var Company_Name = $('#Company_Name').val();
     var Company_Address =  $('#Company_Address').val();
@@ -631,11 +634,26 @@ function save_nursery_form()
         $('#locationErrorMsg').delay(2000).fadeOut('slow');
         $('#location').focus();
     }
-    else
+    else if(applicationNo == "")
     {
         $.ajax({
             type : "POST",
             url : "{% url 'save_nursery_reg' %}",
+            data : $('#seedForm').serialize(),
+            success : function(data) {
+                $('#applicationNo').val(data.applicationNo);
+                $('#appNo').val(data.applicationNo);
+                $('#nursery_applicationNo').val(data.applicationNo);
+                $('#pills-profile-tab').tab('show');
+                $("#nursery_save_button").html('Update');
+            }
+        });
+    }
+    else if(applicationNo != "")
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'update_nursery_reg' %}",
             data : $('#seedForm').serialize(),
             success : function(data) {
                 $('#applicationNo').val(data.applicationNo);
@@ -958,6 +976,47 @@ function checkContact(value)
 
     }
 
+    function checkDetails()
+    {
+        var applicationNo = $('#applicationNo').val();
+        if(applicationNo == "")
+        {
+            $("#pills-profile-tab").prop('disabled', true);
+            $("#pills-profile-file").prop('disabled', true);
+        }
+        else if(applicationNo != "")
+        {
+            $("#pills-profile-tab").prop('disabled', false);
+            $("#pills-profile-file").prop('disabled', false);
+        }
+    }
 
+    function nursery_Details()
+    {
+        var appNo = $('#applicationNo').val();
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_nursery_details' %}",
+            data :{'appNo':appNo},
+            success : function(response)
+            {
+                $('#seed-details').html(response);
+            }
+        });
+    }
+
+    function nursery_attachment()
+    {
+        var appNo = $('#applicationNo').val();
+        $.ajax({
+            type :"GET",
+            url : "{% url 'load_nursery_attachment' %}",
+            data :{'appNo':appNo},
+            success : function(response)
+            {
+                $('#seedAttach').html(response);
+            }
+        });
+    }
 </script>
 {% endblock %}

@@ -10,6 +10,8 @@ urlpatterns = [
          name='food_business_registration_licensing'),
     path('save_food_business_registration', views.save_food_business_registration,
          name='save_food_business_registration'),
+    path('update_food_business_registration', views.update_food_business_registration,
+         name='update_food_business_registration'),
     path('food_business_file', views.food_business_file, name='food_business_file'),
     path('food_business_file_name', views.food_business_file_name, name='food_business_file_name'),
     path('submit_food_business_application', views.submit_food_business_application,
@@ -45,21 +47,29 @@ urlpatterns = [
     path('forward_factory_application', views.forward_factory_application, name='forward_factory_application'),
     path('send_acknowledge', views.send_acknowledge, name='send_acknowledge'),
     path('fbr_submit', views.fbr_submit, name='fbr_submit'),
+    path('load_outsourced_details', views.load_outsourced_details, name='load_outsourced_details'),
+    path('food_handler_details', views.food_handler_details, name='food_handler_details'),
+    path('load_fbr_attachment', views.load_fbr_attachment, name='load_fbr_attachment'),
+
 
     # Export Of Food
     path('food_export_certificate_application', views.food_export_certificate_application,
          name='food_export_certificate_application'),
     path('save_food_export_details', views.save_food_export_details, name='save_food_export_details'),
+    path('update_food_export_details', views.update_food_export_details, name='update_food_export_details'),
     path('submit_food_export_application', views.submit_food_export_application, name='submit_food_export_application'),
     path('food_export_file', views.food_export_file, name='food_export_file'),
     path('food_export_file_name', views.food_export_file_name, name='food_export_file_name'),
     path('approve_food_export', views.approve_food_export, name='approve_food_export'),
     path('reject_food_export', views.reject_food_export, name='reject_food_export'),
+    path('load_fec_attachment', views.load_fec_attachment, name='load_fec_attachment'),
+
 
     # Licensing of Food Handler
     path('food_handler_licensing', views.food_handler_licensing,
          name='food_handler_licensing'),
     path('save_food_handler_details', views.save_food_handler_details, name='save_food_handler_details'),
+    path('update_food_handler_details', views.update_food_handler_details, name='update_food_handler_details'),
     path('food_handler_file', views.food_handler_file, name='food_handler_file'),
     path('food_handler_file_name', views.food_handler_file_name, name='food_handler_file_name'),
     path('submit_food_handler_application', views.submit_food_handler_application,
@@ -74,10 +84,12 @@ urlpatterns = [
     path('food_handler_image_name_update', views.food_handler_image_name_update,
          name='food_handler_image_name_update'),
     path('food_handler_update', views.food_handler_update, name='food_handler_update'),
+    path('load_fh_attachment', views.load_fh_attachment, name='load_fh_attachment'),
 
     # import permit
     path('food_import_application', views.food_import_application, name='food_import_application'),
     path('save_food_import', views.save_food_import, name='save_food_import'),
+    path('update_food_import', views.update_food_import, name='update_food_import'),
     path('save_food_import_details', views.save_food_import_details, name='save_food_import_details'),
     path('food_import_file', views.food_import_file, name='food_import_file'),
     path('food_import_file_name', views.food_import_file_name, name='food_import_file_name'),
@@ -90,6 +102,10 @@ urlpatterns = [
     path('food_details_ins_import', views.food_details_ins_import, name='food_details_ins_import'),
     path('submit_fip_application', views.submit_fip_application, name='submit_fip_application'),
     path('update_import_details_food', views.update_import_details_food, name='update_import_details_food'),
+    path('load_fip_details', views.load_fip_details, name='load_fip_details'),
+    path('load_fip_attachment', views.load_fip_attachment, name='load_fip_attachment'),
+
+
     # Common
     path('food_handler_application', views.food_handler_application, name='food_handler_application'),
     path('update_batch_no', views.update_batch_no, name='update_batch_no'),
@@ -103,6 +119,7 @@ urlpatterns = [
     path('delete_food_handler_photo', views.delete_food_handler_photo, name='delete_food_handler_photo'),
     path('food_handler', views.food_handler, name='food_handler'),
     path('update_food_handler_status', views.update_food_handler_status, name='update_food_handler_status'),
+
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

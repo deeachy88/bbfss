@@ -632,7 +632,7 @@ color: black !important;
                         </div>
                     </div>
                     <div class="card-action">
-                        <button type="button" class="btn btn-primary" onclick="save_export_permit()">Save</button>
+                        <button type="button" class="btn btn-primary" id="plant_export" onclick="save_export_permit()">Save</button>
                     </div>
                 </div>
                 <div class="tab-pane fade" id="phyto-file-attachment" role="tabpanel" aria-labelledby="pills-phyto-file">
@@ -793,6 +793,7 @@ function isNumberKey(evt)
     {
         if($('#phytoRadio').prop('checked'))
         {
+            var applicationNo = $('#applicationNo').val();
             var p_License_No = $('#p_License_No').val();
             var p_cid = $('#p_cid').val();
             var p_Exporter_Address = $('#p_Exporter_Address').val();
@@ -936,11 +937,25 @@ function isNumberKey(evt)
                 $('#p_Conveyance_NameErrorMsg').show();
                 $('#p_Conveyance_NameErrorMsg').delay(2000).fadeOut('slow');
             }
-            else
+            else if(applicationNo == "")
             {
                 $.ajax({
                     type : "POST",
                     url : "{% url 'submit_export' %}",
+                    data : $('#permitForm').serialize(),
+                    success : function(data)
+                    {
+                        $('#applicationNo').val(data.applicationNo);
+                        $('#pills-tab-phyto a:last').tab('show');
+                        $("#plant_export").html('Update');
+                    }
+                });
+            }
+            else if(applicationNo != "")
+            {
+                $.ajax({
+                    type : "POST",
+                    url : "{% url 'update_export' %}",
                     data : $('#permitForm').serialize(),
                     success : function(data)
                     {
@@ -952,6 +967,7 @@ function isNumberKey(evt)
         }
         else
         {
+            var applicationNo = $('#applicationNo').val();
             var ApplicantType = $("input[name=Applicant_Type]:checked").length;
             var ApplicantTypeVal = $("input[name=Applicant_Type]:checked").val();
             var c_cid = $('#c_cid').val();
@@ -1132,11 +1148,24 @@ function isNumberKey(evt)
                 $('#c_addressErrorMsg').show();
                 $('#c_addressErrorMsg').delay(2000).fadeOut('slow');
             }
-            else
+            else if(applicationNo == "")
             {
                 $.ajax({
                         type : "POST",
                         url : "{% url 'submit_export' %}",
+                        data : $('#permitForm').serialize(),
+                        success : function(data)
+                        {
+                            $('#applicationNo').val(data.applicationNo);
+                            $('#pills-tab-phyto a:last').tab('show');
+                        }
+                });
+            }
+            else if(applicationNo != "")
+            {
+                $.ajax({
+                        type : "POST",
+                        url : "{% url 'update_export' %}",
                         data : $('#permitForm').serialize(),
                         success : function(data)
                         {
@@ -1252,44 +1281,15 @@ function isNumberKey(evt)
 
     function load_details()
     {
-        var appNo = $('#applicationNo').val();
-        $.ajax({
-            type : "GET",
-            url : "{% url 'permit_plant_details' %}",
-            data :{'application_id':appNo},
-            success : function(response)
-            {
-                $('#plant-details').html(response);
-            }
-        });
-    }
-
-    function load_agro_details()
-    {
-        var appNo = $('#applicationNo').val();
-        $.ajax({
-            type : "GET",
-            url : "{% url 'permit_agro_details' %}",
-            data :{'application_id':appNo},
-            success : function(response)
-            {
-                $('#cordyceps-details').html(response);
-            }
-        });
-    }
-
-    function load_agro_attachment()
-    {
-        var appNo = $('#applicationNo').val();
-        $.ajax({
-            type : "GET",
-            url : "{% url 'cordyceps_file_details' %}",
-            data :{'application_id':appNo},
-            success : function(response)
-            {
-                $('#cordycepsAttach').html(response);
-            }
-        });
+        var applicationNo = $('#applicationNo').val();
+        if(applicationNo == "")
+        {
+            $("#pills-phyto-file").prop('disabled', true);
+        }
+        else if(applicationNo != "")
+        {
+            $("#pills-phyto-file").prop('disabled', false);
+        }
     }
 
     function load_plant_attachment()

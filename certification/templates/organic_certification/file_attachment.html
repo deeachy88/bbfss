@@ -41,22 +41,14 @@
 <script>
 function DeleteAttachment(id)
 {
-    var applicationNo = $('#applicationNo').val();
-    var appNo = $('#appNo').val();
+    var appNo = $('#applicationNo').val();
     $.ajax({
         type : "GET",
-        url : "{% url 'delete_agro_file' %}",
+        url : "{% url 'delete_oc_file' %}",
         data :{'appNo':appNo , 'file_id': id},
-        success : function(responseText)
+        success : function(response)
         {
-            swal("Application Submitted Successfully. Your Application No :" + applicationNo, {
-                buttons: false,
-                timer: 4000,
-            });
-            setTimeout(function()
-            {
-                location.reload();
-            }, 4000);
+            $('#file-attachment-oc').html(response);
         }
     });
 }

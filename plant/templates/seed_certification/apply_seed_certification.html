@@ -21,13 +21,13 @@
             <div class="row align-left">
                 <ul class="nav nav-pills nav-secondary" id="pills-tab-seed-certification" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="pills-seed-certification-tab" data-toggle="pill" href="#seed-certification-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadPageDetails()">Home</a>
+                        <a class="nav-link active" id="pills-seed-certification-tab" data-toggle="pill" href="#seed-certification-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="check_seed_details()">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="pills-seed-certification-details" data-toggle="pill" href="#seed-certification-details" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_details()">Details</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-seed-certification-file" data-toggle="pill" href="#seed-certification-file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_details()">Attach File</a>
+                        <a class="nav-link" id="pills-seed-certification-file" data-toggle="pill" href="#seed-certification-file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment()">Attach File</a>
                     </li>
                 </ul>
             </div>
@@ -130,7 +130,7 @@
                         </div>
                     </div>
                     <div class="card-action">
-                        <button type="button" class="btn btn-primary" onclick="save_certificate_details()">Save</button>
+                        <button type="button" class="btn btn-primary" id="seed_details_button"  onclick="save_certificate_details()">Save</button>
                     </div>
                 </div>
                 <div class="tab-pane fade" id="seed-certification-details" role="tabpanel" aria-labelledby="pills-seed-certification-details">
@@ -369,454 +369,456 @@
 </form>
 
 <script>
-function isNumberKey(evt)
-{
- var charCode = (evt.which) ? evt.which : event.keyCode
- if (charCode > 31 && (charCode < 48 || charCode > 57))
-    return false;
+    function isNumberKey(evt)
+    {
+     var charCode = (evt.which) ? evt.which : event.keyCode
+     if (charCode > 31 && (charCode < 48 || charCode > 57))
+        return false;
 
- return true;
-}
+     return true;
+    }
 
-function show_modal()
-{
-    $('#add_details').modal('show');
-}
+    function show_modal()
+    {
+        $('#add_details').modal('show');
+    }
 
-function getGewog(dzongkhag_id)
-{
-    $.ajax({
-        type : "GET",
-        url : "{% url 'load_gewog' %}",
-        data :{'dzongkhag_id':dzongkhag_id},
-        success : function(data)
-        {
-            $('#gewog').html(data);
-        }
-    });
-}
-
-function getVillage(gewog_id)
-{
-    $.ajax({
-        type : "GET",
-        url : "{% url 'load_village' %}",
-        data :{'gewog_id':gewog_id},
-        success : function(data)
-        {
-            $('#village').html(data);
-        }
-    });
-}
-
-function getLocation(dzongkhag_id)
-{
-    $.ajax({
-        type : "GET",
-        url : "{% url 'load_location' %}",
-        data :{'dzongkhag_id':dzongkhag_id},
-        success : function(data) {
-            $('#location').html(data);
-        }
-    });
-}
-
-function save_certificate_attachment()
-{
-    var fileName = document.getElementById('document').files[0].name;
-    var fd = new FormData();
-    var file = document.getElementById('document').files[0];
-    fd.append('document', file);
-    token_value=$("input[name=csrfmiddlewaretoken]").val();
-    $.ajaxSetup
-    ({
-        beforeSend: function(xhr, settings)
-        {
-            xhr.setRequestHeader("X-CSRFToken", token_value);
-        }
-    });
+    function getGewog(dzongkhag_id)
+    {
         $.ajax({
-        type : "POST",
-        url : "{% url 'add_file_certificate' %}",
-        data : fd,
-        dataType: 'json',
-        contentType: false,
-        processData: false,
-        success : function(data)
-        {
-            if (data.form_is_valid)
+            type : "GET",
+            url : "{% url 'load_gewog' %}",
+            data :{'dzongkhag_id':dzongkhag_id},
+            success : function(data)
             {
-                var appNo = $('#applicationNo').val();
-                var file_url = data.file_url
-                $.ajax
-                ({
-                    type : "POST",
-                    url : "{% url 'add_file_name_certificate' %}",
-                    data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
-                    success : function(responseText)
-                    {
-                        $('#attachmentModal').modal('hide');
-                        $('#seedCertificationAttach').html(responseText);
-                        $('.modal-backdrop').remove();
-                        $('#attachmentModal')[0].reset();
-                    }
-                });
-            }else
-            {
-                $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-                $('#fileErrorMsg').show();
-                $('#fileErrorMsg').delay(2000).fadeOut('slow');
+                $('#gewog').html(data);
             }
-        }
-    });
-}
+        });
+    }
 
-function save_certificate_details()
-{
-    var License_No = $('#License_No').val();
-    var Company_Name = $('#Company_Name').val();
-    var Company_Address =  $('#Company_Address').val();
-    var CID = $('#CID').val();
-    var contactNumber = $('#contactNumber').val();
-    var email = $('#email').val();
-    var Nursery_Category = $('#Nursery_Category').val();
-    var dzongkhag = $('#dzongkhag').val();
-    var location = $('#location').val();
-    var count = $('#contactNumber').val().length;
-    var cidCount = $('#CID').val().length;
+    function getVillage(gewog_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_village' %}",
+            data :{'gewog_id':gewog_id},
+            success : function(data)
+            {
+                $('#village').html(data);
+            }
+        });
+    }
 
-    if(License_No == "")
+    function getLocation(dzongkhag_id)
     {
-        $('#License_NoErrorMsg').html("Enter License Number.");
-        $('#License_NoErrorMsg').show();
-        $('#License_NoErrorMsg').delay(2000).fadeOut('slow');
-        $('#License_No').focus();
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_location' %}",
+            data :{'dzongkhag_id':dzongkhag_id},
+            success : function(data) {
+                $('#location').html(data);
+            }
+        });
     }
-    else if(Company_Name == "")
+
+    function save_certificate_attachment()
     {
-        $('#Company_NameErrorMsg').html("Enter Company Name.");
-        $('#Company_NameErrorMsg').show();
-        $('#Company_NameErrorMsg').delay(2000).fadeOut('slow');
-        $('#Company_Name').focus();
-    }
-    else if(Company_Address == "")
-    {
-        $('#Company_AddressErrorMsg').html("Enter Company Address.");
-        $('#Company_AddressErrorMsg').show();
-        $('#Company_AddressErrorMsg').delay(2000).fadeOut('slow');
-        $('#Company_Address').focus();
-    }
-    else if(CID == "")
-    {
-        $('#CIDErrorMsg').html("Enter CID.");
-        $('#CIDErrorMsg').show();
-        $('#CIDErrorMsg').delay(2000).fadeOut('slow');
-        $('#CID').focus();
-    }
-    else if(cidCount < 11)
-    {
-        $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits.");
-        $('#cidErrorMsg').show();
-        $('#cidErrorMsg').delay(2000).fadeOut('slow');
-        $('#CID').focus();
-    }
-    else if(contactNumber == "")
-    {
-        $('#contactNumberErrorMsg').html("Enter Contact Number.");
-        $('#contactNumberErrorMsg').show();
-        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
-        $('#contactNumber').focus();
-    }
-    else if(count < 8)
-    {
-        $('#contactNumberErrorMsg').html("Cannot Be Less Than Eight Digits.");
-        $('#contactNumberErrorMsg').show();
-        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
-        $('#contactNumber').focus();
-    }
-    else if(email == "")
-    {
-        $('#emailErrorMsg').html("Enter Email.");
-        $('#emailErrorMsg').show();
-        $('#emailErrorMsg').delay(2000).fadeOut('slow');
-        $('#email').focus();
-    }
-    else if(Nursery_Category == "")
-    {
-        $('#Nursery_CategoryErrorMsg').html("Select Nursery Category.");
-        $('#Nursery_CategoryErrorMsg').show();
-        $('#Nursery_CategoryErrorMsg').delay(2000).fadeOut('slow');
-        $('#Nursery_Category').focus();
-    }
-    else if(dzongkhag == "")
-    {
-        $('#dzongkhagErrorMsg').html("Select Dzongkhag.");
-        $('#dzongkhagErrorMsg').show();
-        $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
-        $('#dzongkhag').focus();
-    }
-    else if(location == "")
-    {
-        $('#locationErrorMsg').html("Select Location.");
-        $('#locationErrorMsg').show();
-        $('#locationErrorMsg').delay(2000).fadeOut('slow');
-        $('#location').focus();
-    }
-    else
-    {
-        $.ajax
+        var fileName = document.getElementById('document').files[0].name;
+        var fd = new FormData();
+        var file = document.getElementById('document').files[0];
+        fd.append('document', file);
+        token_value=$("input[name=csrfmiddlewaretoken]").val();
+        $.ajaxSetup
         ({
+            beforeSend: function(xhr, settings)
+            {
+                xhr.setRequestHeader("X-CSRFToken", token_value);
+            }
+        });
+            $.ajax({
             type : "POST",
-            url : "{% url 'save_certificate' %}",
+            url : "{% url 'add_file_certificate' %}",
+            data : fd,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            success : function(data)
+            {
+                if (data.form_is_valid)
+                {
+                    var appNo = $('#applicationNo').val();
+                    var file_url = data.file_url
+                    $.ajax
+                    ({
+                        type : "POST",
+                        url : "{% url 'add_file_name_certificate' %}",
+                        data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
+                        success : function(responseText)
+                        {
+                            $('#attachmentModal').modal('hide');
+                            $('#seedCertificationAttach').html(responseText);
+                            $('.modal-backdrop').remove();
+                            $('#attachmentModal')[0].reset();
+                        }
+                    });
+                }else
+                {
+                    $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                    $('#fileErrorMsg').show();
+                    $('#fileErrorMsg').delay(2000).fadeOut('slow');
+                }
+            }
+        });
+    }
+
+    function save_certificate_details()
+    {
+        var applicationNo = $('#applicationNo').val();
+        var License_No = $('#License_No').val();
+        var Company_Name = $('#Company_Name').val();
+        var Company_Address =  $('#Company_Address').val();
+        var CID = $('#CID').val();
+        var contactNumber = $('#contactNumber').val();
+        var email = $('#email').val();
+        var Nursery_Category = $('#Nursery_Category').val();
+        var dzongkhag = $('#dzongkhag').val();
+        var location = $('#location').val();
+        var count = $('#contactNumber').val().length;
+        var cidCount = $('#CID').val().length;
+
+        if(License_No == "")
+        {
+            $('#License_NoErrorMsg').html("Enter License Number.");
+            $('#License_NoErrorMsg').show();
+            $('#License_NoErrorMsg').delay(2000).fadeOut('slow');
+            $('#License_No').focus();
+        }
+        else if(Company_Name == "")
+        {
+            $('#Company_NameErrorMsg').html("Enter Company Name.");
+            $('#Company_NameErrorMsg').show();
+            $('#Company_NameErrorMsg').delay(2000).fadeOut('slow');
+            $('#Company_Name').focus();
+        }
+        else if(Company_Address == "")
+        {
+            $('#Company_AddressErrorMsg').html("Enter Company Address.");
+            $('#Company_AddressErrorMsg').show();
+            $('#Company_AddressErrorMsg').delay(2000).fadeOut('slow');
+            $('#Company_Address').focus();
+        }
+        else if(CID == "")
+        {
+            $('#CIDErrorMsg').html("Enter CID.");
+            $('#CIDErrorMsg').show();
+            $('#CIDErrorMsg').delay(2000).fadeOut('slow');
+            $('#CID').focus();
+        }
+        else if(cidCount < 11)
+        {
+            $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits.");
+            $('#cidErrorMsg').show();
+            $('#cidErrorMsg').delay(2000).fadeOut('slow');
+            $('#CID').focus();
+        }
+        else if(contactNumber == "")
+        {
+            $('#contactNumberErrorMsg').html("Enter Contact Number.");
+            $('#contactNumberErrorMsg').show();
+            $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+            $('#contactNumber').focus();
+        }
+        else if(count < 8)
+        {
+            $('#contactNumberErrorMsg').html("Cannot Be Less Than Eight Digits.");
+            $('#contactNumberErrorMsg').show();
+            $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+            $('#contactNumber').focus();
+        }
+        else if(email == "")
+        {
+            $('#emailErrorMsg').html("Enter Email.");
+            $('#emailErrorMsg').show();
+            $('#emailErrorMsg').delay(2000).fadeOut('slow');
+            $('#email').focus();
+        }
+        else if(Nursery_Category == "")
+        {
+            $('#Nursery_CategoryErrorMsg').html("Select Nursery Category.");
+            $('#Nursery_CategoryErrorMsg').show();
+            $('#Nursery_CategoryErrorMsg').delay(2000).fadeOut('slow');
+            $('#Nursery_Category').focus();
+        }
+        else if(dzongkhag == "")
+        {
+            $('#dzongkhagErrorMsg').html("Select Dzongkhag.");
+            $('#dzongkhagErrorMsg').show();
+            $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
+            $('#dzongkhag').focus();
+        }
+        else if(location == "")
+        {
+            $('#locationErrorMsg').html("Select Location.");
+            $('#locationErrorMsg').show();
+            $('#locationErrorMsg').delay(2000).fadeOut('slow');
+            $('#location').focus();
+        }
+        else if(applicationNo == "")
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'save_certificate' %}",
+                data : $('#certificateForm').serialize(),
+                success : function(data)
+                {
+                        $('#applicationNo').val(data.applicationNo);
+                        $('#appNo').val(data.applicationNo);
+                        $('#applNo').val(data.applicationNo);
+                        $('#pills-seed-certification-details').tab('show');
+                        $("#seed_details_button").html('Update');
+                }
+            });
+        }
+        else if(applicationNo != "")
+        {
+            $.ajax
+            ({
+                type : "POST",
+                url : "{% url 'update_seed_certificate' %}",
+                data : $('#certificateForm').serialize(),
+                success : function(data)
+                {
+                        $('#applicationNo').val(data.applicationNo);
+                        $('#appNo').val(data.applicationNo);
+                        $('#applNo').val(data.applicationNo);
+                        $('#pills-seed-certification-details').tab('show');
+                }
+            });
+        }
+    }
+
+    function save_certificate()
+    {
+        var Crop = $('#crop_id').val();
+        var Variety = $('#crop_variety').val();
+        var Source =  $('#Source').val();
+        var Quantity = $('#qty').val();
+        var Unit = $('#Unit').val();
+        var Purpose = $('#purpose').val();
+
+        if(Crop == "")
+        {
+            $('#crop_idErrorMsg').html("Select Crop.");
+            $('#crop_idErrorMsg').show();
+            $('#crop_idErrorMsg').delay(2000).fadeOut('slow');
+            $('#crop_id').focus();
+        }
+        else if(Variety == "")
+        {
+            $('#crop_varietyErrorMsg').html("Select Crop Variety.");
+            $('#crop_varietyErrorMsg').show();
+            $('#crop_varietyErrorMsg').delay(2000).fadeOut('slow');
+            $('#crop_variety').focus();
+        }
+        else if(Source == "")
+        {
+            $('#SourceErrorMsg').html("Enter Source.");
+            $('#SourceErrorMsg').show();
+            $('#SourceErrorMsg').delay(2000).fadeOut('slow');
+            $('#Source').focus();
+        }
+        else if(Quantity == "")
+        {
+            $('#qtyErrorMsg').html("Enter Quantity.");
+            $('#qtyErrorMsg').show();
+            $('#qtyErrorMsg').delay(2000).fadeOut('slow');
+            $('#qty').focus();
+        }
+        else if(Unit == "")
+        {
+            $('#UnitErrorMsg').html("Select Unit.");
+            $('#UnitErrorMsg').show();
+            $('#UnitErrorMsg').delay(2000).fadeOut('slow');
+            $('#Unit').focus();
+        }
+        else if(Purpose == "")
+        {
+            $('#purposeErrorMsg').html("Enter Purpose.");
+            $('#purposeErrorMsg').show();
+            $('#purposeErrorMsg').delay(2000).fadeOut('slow');
+            $('#purpose').focus();
+        }
+        else
+        {
+            $.ajax({
+                type : "POST",
+                url : "{% url 'add_certificate_details' %}",
+                data : $('#save_certificate_form').serialize(),
+                success : function(responseText) {
+                   $('#add_details').modal('hide');
+                   $('#certification-details').html(responseText);
+                   $('#pills-seed-certification-details').tab('show');
+                   $('.modal-backdrop').remove();
+                   $('#save_certificate_form')[0].reset();
+                }
+            });
+        }
+    }
+
+    function save_details_form_certificate()
+    {
+        $('#pills-tab-seed-certification a:last').tab('show');
+    }
+
+    function load_details()
+    {
+        var appNo = $('#applicationNo').val();
+        $.ajax({
+            type : "GET",
+            url : "{% url 'certificate_details' %}",
+            data :{'application_id':appNo},
+            success : function(response)
+            {
+                $('#certificate-details').html(response);
+            }
+        });
+    }
+
+    function load_attachment()
+    {
+        var appNo = $('#applicationNo').val();
+        $.ajax({
+            type : "GET",
+            url : "{% url 'certificate_file_details' %}",
+            data :{'application_id':appNo},
+            success : function(response)
+            {
+                $('#certificate-details').html(response);
+            }
+        });
+    }
+
+    function update_certificate_details()
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'update_certificate_details' %}",
             data : $('#certificateForm').serialize(),
             success : function(data)
             {
-                    $('#applicationNo').val(data.applicationNo);
-                    $('#appNo').val(data.applicationNo);
-                    $('#applNo').val(data.applicationNo);
-                    $('#pills-seed-certification-details').tab('show');
+                $('#pills-seed-certification-details').tab('show');
             }
         });
     }
-}
 
-function save_certificate()
-{
-    var Crop = $('#crop_id').val();
-    var Variety = $('#crop_variety').val();
-    var Source =  $('#Source').val();
-    var Quantity = $('#qty').val();
-    var Unit = $('#Unit').val();
-    var Purpose = $('#purpose').val();
-
-    if(Crop == "")
-    {
-        $('#crop_idErrorMsg').html("Select Crop.");
-        $('#crop_idErrorMsg').show();
-        $('#crop_idErrorMsg').delay(2000).fadeOut('slow');
-        $('#crop_id').focus();
-    }
-    else if(Variety == "")
-    {
-        $('#crop_varietyErrorMsg').html("Select Crop Variety.");
-        $('#crop_varietyErrorMsg').show();
-        $('#crop_varietyErrorMsg').delay(2000).fadeOut('slow');
-        $('#crop_variety').focus();
-    }
-    else if(Source == "")
-    {
-        $('#SourceErrorMsg').html("Enter Source.");
-        $('#SourceErrorMsg').show();
-        $('#SourceErrorMsg').delay(2000).fadeOut('slow');
-        $('#Source').focus();
-    }
-    else if(Quantity == "")
-    {
-        $('#qtyErrorMsg').html("Enter Quantity.");
-        $('#qtyErrorMsg').show();
-        $('#qtyErrorMsg').delay(2000).fadeOut('slow');
-        $('#qty').focus();
-    }
-    else if(Unit == "")
-    {
-        $('#UnitErrorMsg').html("Select Unit.");
-        $('#UnitErrorMsg').show();
-        $('#UnitErrorMsg').delay(2000).fadeOut('slow');
-        $('#Unit').focus();
-    }
-    else if(Purpose == "")
-    {
-        $('#purposeErrorMsg').html("Enter Purpose.");
-        $('#purposeErrorMsg').show();
-        $('#purposeErrorMsg').delay(2000).fadeOut('slow');
-        $('#purpose').focus();
-    }
-    else
+    function getCitizenDetails(cidNo)
     {
         $.ajax({
-            type : "POST",
-            url : "{% url 'add_certificate_details' %}",
-            data : $('#save_certificate_form').serialize(),
-            success : function(responseText) {
-               $('#add_details').modal('hide');
-               $('#certification-details').html(responseText);
-               $('#pills-seed-certification-details').tab('show');
-               $('.modal-backdrop').remove();
-               $('#save_certificate_form')[0].reset();
+            type : "GET",
+            url : "{% url 'get_citizen_details' %}",
+            data :{'cidNo':cidNo},
+            success : function(data)
+            {
+                const myObj =data.response;
+                if(myObj.citizenDetailsResponse.citizenDetail == undefined)
+                {
+                    $('#CID').val("");
+                    $('#Owner_Name').val();
+                    $('#CIDErrorMsg').html("Invalid CID.Try With Another one");
+                    $('#CIDErrorMsg').show();
+                    $('#CIDErrorMsg').delay(2000).fadeOut('slow');
+                }
+                else
+                {
+                    var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+                    var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+                    var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+                    if (middleName == null) {
+                            middleName = "";
+                        }
+                    var CitizenName = firstName + " " + middleName + " " + lastName;
+
+                    var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
+                    var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
+                    var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
+                    $('#Owner_Name').val(CitizenName);
+                }
             }
         });
     }
-}
 
-function save_details_form_certificate()
-{
-    $('#pills-tab-seed-certification a:last').tab('show');
-}
-
-function loadPageDetails()
-{
-    var appNo = $('#applicationNo').val();
-    $.ajax({
-        type : "GET",
-        url : "{% url 'load_certificate_details' %}",
-        data :{'application_id':appNo},
-        success : function(response)
-        {
-            $('#certificate-details').html(response);
-            $("#pills-seed-certification-details").prop('disabled', false);
-            $("#pills-seed-certification-file").prop('disabled', false);
-        }
-    });
-}
-
-function load_details()
-{
-    var appNo = $('#applicationNo').val();
-    $.ajax({
-        type : "GET",
-        url : "{% url 'certificate_details' %}",
-        data :{'application_id':appNo},
-        success : function(response)
-        {
-            $('#certificate-details').html(response);
-        }
-    });
-}
-
-function load_attachment()
-{
-    var appNo = $('#applicationNo').val();
-    $.ajax({
-        type : "GET",
-        url : "{% url 'certificate_file_details' %}",
-        data :{'application_id':appNo},
-        success : function(response)
-        {
-            $('#certificate-details').html(response);
-        }
-    });
-}
-
-function update_certificate_details()
-{
-    $.ajax({
-        type : "POST",
-        url : "{% url 'update_certificate_details' %}",
-        data : $('#certificateForm').serialize(),
-        success : function(data)
-        {
-            $('#pills-seed-certification-details').tab('show');
-        }
-    });
-}
-
-function getCitizenDetails(cidNo)
-{
-    $.ajax({
-        type : "GET",
-        url : "{% url 'get_citizen_details' %}",
-        data :{'cidNo':cidNo},
-        success : function(data)
-        {
-            const myObj =data.response;
-            if(myObj.citizenDetailsResponse.citizenDetail == undefined)
-            {
-                $('#CID').val("");
-                $('#Owner_Name').val();
-                $('#CIDErrorMsg').html("Invalid CID.Try With Another one");
-                $('#CIDErrorMsg').show();
-                $('#CIDErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else
-            {
-                var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
-                var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
-                var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
-                if (middleName == null) {
-                        middleName = "";
-                    }
-                var CitizenName = firstName + " " + middleName + " " + lastName;
-
-                var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
-                var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
-                var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
-                $('#Owner_Name').val(CitizenName);
-            }
-        }
-    });
-}
-
-function validateemailId(emailId)
-{
-    var pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
-    var no=emailId.match(pattern);
-
-    if(no==null)
+    function validateemailId(emailId)
     {
-        $('#emailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
-        $('#email').val("");
-        $('#emailErrorMsg').show();
-        $('#emailErrorMsg').delay(2000).fadeOut('slow');
-    }else{
-     $('#emailErrorMsg').hide();
+        var pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+        var no=emailId.match(pattern);
+
+        if(no==null)
+        {
+            $('#emailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
+            $('#email').val("");
+            $('#emailErrorMsg').show();
+            $('#emailErrorMsg').delay(2000).fadeOut('slow');
+        }else{
+         $('#emailErrorMsg').hide();
+        }
+
     }
 
-}
+    function checkContact(value)
+    {
+        var firstDigit = value.charAt(0);
+        var secondDigit = value.charAt(1);
 
-function checkContact(value)
-{
-    var firstDigit = value.charAt(0);
-    var secondDigit = value.charAt(1);
+        if(firstDigit != 7 && firstDigit != 1){
+            $('#contactNumberErrorMsg').html("Must Start with either 1 or 7.");
+            $('#contactNumberErrorMsg').show();
+            $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+            $('#contactNumber').val("");
+        }else if(firstDigit == 1 && secondDigit != 6 && secondDigit != 7){
+            $('#contactNumberErrorMsg').html("Second Digit Must Start with either 6 or 7.");
+            $('#contactNumberErrorMsg').show();
+            $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+            $('#contactNumber').val("");
+        }else if(firstDigit == 7 && secondDigit == 6){
+            $('#contactNumberErrorMsg').html("Second Digit Cannot be 6.");
+            $('#contactNumberErrorMsg').show();
+            $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+            $('#contactNumber').val("");
+        }else if(firstDigit == 7 && secondDigit != 7){
+            $('#contactNumberErrorMsg').html("Second Digit Must Start with 7.");
+            $('#contactNumberErrorMsg').show();
+            $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+            $('#contactNumber').val("");
+        }
 
-    if(firstDigit != 7 && firstDigit != 1){
-        $('#contactNumberErrorMsg').html("Must Start with either 1 or 7.");
-        $('#contactNumberErrorMsg').show();
-        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
-        $('#contactNumber').val("");
-    }else if(firstDigit == 1 && secondDigit != 6 && secondDigit != 7){
-        $('#contactNumberErrorMsg').html("Second Digit Must Start with either 6 or 7.");
-        $('#contactNumberErrorMsg').show();
-        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
-        $('#contactNumber').val("");
-    }else if(firstDigit == 7 && secondDigit == 6){
-        $('#contactNumberErrorMsg').html("Second Digit Cannot be 6.");
-        $('#contactNumberErrorMsg').show();
-        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
-        $('#contactNumber').val("");
-    }else if(firstDigit == 7 && secondDigit != 7){
-        $('#contactNumberErrorMsg').html("Second Digit Must Start with 7.");
-        $('#contactNumberErrorMsg').show();
-        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
-        $('#contactNumber').val("");
     }
 
-}
+    function getVariety(crop_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_seed_variety' %}",
+            data :{'crop_id':crop_id},
+            success : function(data) {
+                $('#crop_variety').html(data);
+            }
+        });
+    }
 
-function getVariety(crop_id)
-{
-    $.ajax({
-        type : "GET",
-        url : "{% url 'load_seed_variety' %}",
-        data :{'crop_id':crop_id},
-        success : function(data) {
-            $('#crop_variety').html(data);
-        }
-    });
-}
+    function getEditVariety(crop_id)
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_seed_variety' %}",
+            data :{'crop_id':crop_id},
+            success : function(data) {
+                $('#edit_crop_variety').html(data);
+            }
+        });
+    }
 
-function getEditVariety(crop_id)
-{
-    $.ajax({
-        type : "GET",
-        url : "{% url 'load_seed_variety' %}",
-        data :{'crop_id':crop_id},
-        success : function(data) {
-            $('#edit_crop_variety').html(data);
-        }
-    });
-}
-
-function populateSeedDetails(Record_Id,Crop, Variety,Seed_Source, Quantity, Unit, Purpose, application_no)
+    function populateSeedDetails(Record_Id,Crop, Variety,Seed_Source, Quantity, Unit, Purpose, application_no)
     {
         $('#seed_record_id').val(Record_Id);
         $('#edit_crop_id').val(Crop);
@@ -829,5 +831,21 @@ function populateSeedDetails(Record_Id,Crop, Variety,Seed_Source, Quantity, Unit
         $('#edit_seed_details').modal('show');
 
     }
+
+    function check_seed_details()
+    {
+        var applicationNo = $('#applicationNo').val();
+        if(applicationNo == "")
+        {
+            $("#pills-seed-certification-details").prop('disabled', true);
+            $("#pills-seed-certification-file").prop('disabled', true);
+        }
+        else if(applicationNo != "")
+        {
+            $("#pills-seed-certification-details").prop('disabled', false);
+            $("#pills-seed-certification-file").prop('disabled', false);
+        }
+    }
+
 </script>
 {% endblock %}

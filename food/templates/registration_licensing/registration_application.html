@@ -25,16 +25,16 @@ form, input, select, textarea{
             <div class="row justify-content-left">
                 <ul class="nav nav-pills nav-secondary" id="pills-mortem" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadDetails()">Application Form</a>
+                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="check_fbr_details()">Application Form</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-outsourced-details" data-toggle="pill" href="#details" role="tab" aria-controls="pills-outsourced-details" aria-selected="false" onclick="load_details()">Outsourced Process</a>
+                        <a class="nav-link" id="pills-outsourced-details" data-toggle="pill" href="#details" role="tab" aria-controls="pills-outsourced-details" aria-selected="false" onclick="load_outsourced_details()">Outsourced Process</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-food-handler" data-toggle="pill" href="#food-handler" role="tab" aria-controls="pills-food-handler" aria-selected="false" onclick="load_details()">Food Handlers</a>
+                        <a class="nav-link" id="pills-food-handler" data-toggle="pill" href="#food-handler" role="tab" aria-controls="pills-food-handler" aria-selected="false" onclick="food_handler_details()">Food Handlers</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="fbr-file-attach" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
+                        <a class="nav-link" id="fbr-file-attach" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_fbr_attachment()">File Attachment</a>
                     </li>
                 </ul>
             </div>
@@ -101,7 +101,7 @@ form, input, select, textarea{
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Dzongkhag</label>
+                                    <label class="form-label">Dzongkhag <font color="red">*</font></label>
                                     <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
                                         <option value="">--SELECT DZONGKHAG--</option>
                                         {% for dzongkhag in dzongkhag %}
@@ -115,7 +115,7 @@ form, input, select, textarea{
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Gewog</label>
+                                    <label class="form-label">Gewog <font color="red">*</font></label>
                                     <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
                                         <option value="">--SELECT GEWOG--</option>
                                         {% for gewog in gewog %}
@@ -123,11 +123,11 @@ form, input, select, textarea{
                                         {% endfor %}
                                     </select>
                                 </div>
-                                <div class="alert alert-danger" id="to_gewogErrorMsg" style="display:none"></div>
+                                <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Village</label>
+                                    <label class="form-label">Village <font color="red">*</font></label>
                                      <select class="form-control" name="village" id="village">
                                         <option value="">--SELECT VILLAGE--</option>
                                         {% for village in village %}
@@ -180,21 +180,21 @@ form, input, select, textarea{
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Identified water source </label>
+                                    <label class="form-label">Identified water source <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="identified_water_source" name="identified_water_source">
                                 </div>
                                 <div class="alert alert-danger" id="identified_water_sourceErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Number of years in production</label>
-                                    <input type="number" class="form-control" id="no_of_years" name="no_of_years">
+                                    <label class="form-label">Number of years in production <font color="red">*</font></label>
+                                    <input type="text" class="form-control" id="no_of_years" name="no_of_years" onkeypress="return isNumberKey(event)">
                                 </div>
                                 <div class="alert alert-danger" id="no_of_yearsErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Production Volume(Last Calender Year)</label>
+                                    <label class="form-label">Production Volume(Last Calender Year) <font color="red">*</font></label>
                                     <input type="number" class="form-control" id="production_volume" name="production_volume">
                                 </div>
                                 <div class="alert alert-danger" id="production_volumeErrorMsg" style="display:none"></div>
@@ -202,7 +202,7 @@ form, input, select, textarea{
                         </div>
                         <div class="row">
                             <div class="form-group col-md-4">
-                                <label class="form-label">Volume Unit</label>
+                                <label class="form-label">Volume Unit <font color="red">*</font></label>
                                 <select class="form-control" name="volume_unit"  id="volume_unit">
                                     <option value="">--SELECT--</option>
                                     {% for unit in unit %}
@@ -212,7 +212,7 @@ form, input, select, textarea{
                                 <div class="alert alert-danger" id="volume_unitErrorMsg" style="display:none"></div>
                             </div>
                             <div class="form-group col-md-4">
-                                <label class="form-label">Site History Details</label>
+                                <label class="form-label">Site History Details <font color="red">*</font></label>
                                 <select class="form-control" name="history" id="history" onchange="checkSiteHistory(this.value)">
                                     <option value="">--SELECT--</option>
                                     <option value="Fresh land">Fresh land</option>
@@ -222,7 +222,7 @@ form, input, select, textarea{
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">What was the previous business conducted there?</label>
+                                    <label class="form-label">What was the previous business conducted there? <font color="red">*</font></label>
                                     <textarea class="form-control" id="previous_business" name="previous_business"></textarea>
                                 </div>
                                 <div class="alert alert-danger" id="previous_businessErrorMsg" style="display:none"></div>
@@ -231,7 +231,7 @@ form, input, select, textarea{
                         <div class="row">
                             <div class="form-group col-md-4">
                                 <div class="form-check">
-                                    <label class="form-label">Any processes outsourced by the FB?</label><br>
+                                    <label class="form-label">Any processes outsourced by the FB? <font color="red">*</font></label><br>
                                     <br><div class="form-group text-center">
                                         <div class="form-check">
                                             <label class="custom-control custom-radio">
@@ -245,11 +245,12 @@ form, input, select, textarea{
                                                 <span class="custom-control-description">No</span>
                                             </label>
                                         </div>
+                                        <div class="alert alert-danger" id="outsourced_processErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group col-md-4">
-                                <label class="form-label">Legal Entity Status</label>
+                                <label class="form-label">Legal Entity Status <font color="red">*</font></label>
                                 <select class="form-control" name="legal_status"  id="legal_status">
                                     <option value="">--SELECT--</option>
                                     <option value="Private Ltd">Private Ltd</option>
@@ -260,7 +261,7 @@ form, input, select, textarea{
                             </div>
                             <div class="form-group col-md-4">
                                 <div class="form-check">
-                                    <label class="form-label">Are you a part of a larger Corporation?</label><br>
+                                    <label class="form-label">Are you a part of a larger Corporation? <font color="red">*</font></label><br>
                                     <br><div class="form-group">
                                         <div class="form-check">
                                             <label class="custom-control custom-radio">
@@ -273,6 +274,7 @@ form, input, select, textarea{
                                                 <span class="custom-control-indicator"></span>
                                                 <span class="custom-control-description">No</span>
                                             </label>
+                                            <div class="alert alert-danger" id="larger_corporationErrorMsg" style="display:none"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -281,13 +283,14 @@ form, input, select, textarea{
                         <div class="row">
                             <div class="form-group col-md-4">
                                 <div class="form-check">
-                                    <label class="form-label">Relationship</label><br>
+                                    <label class="form-label">Relationship <font color="red">*</font></label><br>
                                     <input type="text" class="form-control" id="relationship" name="relationship">
                                 </div>
+                                <div class="alert alert-danger" id="relationshipErrorMsg" style="display:none"></div>
                             </div>
                             <div class="form-group col-md-4">
                                 <div class="form-check">
-                                    <label class="form-label">Has the FBO been licensed before?</label><br><br>
+                                    <label class="form-label">Has the FBO been licensed before? <font color="red">*</font></label><br><br>
                                     <div class="form-group">
                                         <div class="form-check">
                                             <label class="custom-control custom-radio">
@@ -300,27 +303,30 @@ form, input, select, textarea{
                                                 <span class="custom-control-indicator"></span>
                                                 <span class="custom-control-description">No</span>
                                             </label>
+                                            <div class="alert alert-danger" id="licensed_beforeErrorMsg" style="display:none"></div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group col-md-4">
                                 <div class="form-check">
-                                    <label class="form-label">If Yes, provide details of License number</label><br>
+                                    <label class="form-label">If Yes, provide details of License number <font color="red">*</font></label><br>
                                     <input type="text" class="form-control" id="license_number" name="license_number">
                                 </div>
+                                <div class="alert alert-danger" id="license_numberErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group col-md-4">
                                 <div class="form-check">
-                                    <label class="form-label">Reasons why the License is no longer valid</label><br>
+                                    <label class="form-label">Reasons why the License is no longer valid <font color="red">*</font></label><br>
                                     <textarea class="form-control" id="reason" name="reason"></textarea>
                                 </div>
+                                <div class="alert alert-danger" id="reasonErrorMsg" style="display:none"></div>
                             </div>
                             <div class="form-group col-md-4">
                                 <div class="form-check">
-                                    <label class="form-label">Any judicial proceedings relating to the FBOs operations/product?</label><br>
+                                    <label class="form-label">Any judicial proceedings relating to the FBOs operations/product? <font color="red">*</font></label><br>
                                     <br><div class="form-group">
                                         <div class="form-check">
                                             <label class="custom-control custom-radio">
@@ -333,21 +339,23 @@ form, input, select, textarea{
                                                 <span class="custom-control-indicator"></span>
                                                 <span class="custom-control-description">No</span>
                                             </label>
+                                            <div class="alert alert-danger" id="judicial_proceedingsErrorMsg" style="display:none"></div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group col-md-4">
                                 <div class="form-check">
-                                    <label class="form-label">Please provide details</label><br>
+                                    <label class="form-label">Please provide details <font color="red">*</font></label><br>
                                     <textarea class="form-control" id="provided_details" name="provided_details"></textarea>
                                 </div>
+                                <div class="alert alert-danger" id="provided_detailsErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group col-md-4">
                                 <div class="form-check">
-                                    <label class="form-label">Any proceedings by any Regulatory body or suspension /cancellation /withdrawal of any relevant licensing/approvals under any Regulations </label><br>
+                                    <label class="form-label">Any proceedings by any Regulatory body or suspension /cancellation /withdrawal of any relevant licensing/approvals under any Regulations <font color="red">*</font></label><br>
                                     <br><div class="form-group">
                                         <div class="form-check">
                                             <label class="custom-control custom-radio">
@@ -360,19 +368,21 @@ form, input, select, textarea{
                                                 <span class="custom-control-indicator"></span>
                                                 <span class="custom-control-description">No</span>
                                             </label>
+                                            <div class="alert alert-danger" id="regulatory_proceedingsErrorMsg" style="display:none"></div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group col-md-4">
                                 <div class="form-check">
-                                    <label class="form-label">Please provide details</label><br>
+                                    <label class="form-label">Please provide details <font color="red">*</font></label><br>
                                     <textarea class="form-control" id="regulatory_proceedings_details" name="regulatory_proceedings_details"></textarea>
                                 </div>
+                                <div class="alert alert-danger" id="regulatory_proceedings_detailsErrorMsg" style="display:none"></div>
                             </div>
                             <div class="form-group col-md-4">
                                 <div class="form-check">
-                                    <label class="form-label">Has a Project Proposal been prepared  </label><br>
+                                    <label class="form-label">Has a Project Proposal been prepared  <font color="red">*</font></label><br>
                                     <br><div class="form-group">
                                         <div class="form-check">
                                             <label class="custom-control custom-radio">
@@ -385,6 +395,7 @@ form, input, select, textarea{
                                                 <span class="custom-control-indicator"></span>
                                                 <span class="custom-control-description">No</span>
                                             </label>
+                                             <div class="alert alert-danger" id="project_proposalErrorMsg" style="display:none"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -395,7 +406,7 @@ form, input, select, textarea{
                         Save Successful
                     </div>
                     <div class="card-action">
-                        <button type="button" class="btn btn-primary" onclick="save_fbr_form()">Save</button>
+                        <button type="button" class="btn btn-primary" id="registration_licensing_button" onclick="save_fbr_form()">Save</button>
                     </div>
                 </div>
 
@@ -465,7 +476,7 @@ form, input, select, textarea{
                             <div class="box-body">
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Name <font color="red">*</font></label>
+                                        <label class="form-label">Outsourced To <font color="red">*</font></label>
                                         <input type="text" name="details_name" class="form-control" id="details_name" required>
                                         <div class="alert alert-danger" id="details_nameErrorMsg" style="display:none"></div>
                                     </div>
@@ -640,7 +651,7 @@ form, input, select, textarea{
                                 <input type="hidden" name="identifier" value="FBR-OP"/>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Name <font color="red">*</font></label>
+                                        <label class="form-label">Outsourced To <font color="red">*</font></label>
                                         <input type="text" name="edit_name" class="form-control" id="edit_name" required>
                                         <div class="alert alert-danger" id="edit_nameErrorMsg" style="display:none"></div>
                                     </div>
@@ -678,6 +689,7 @@ form, input, select, textarea{
 
 function save_fbr_form()
 {
+    var applicationNo = $('#applicationNo').val();
     var Business_Name = $('#Business_Name').val();
     var cid = $('#cid').val();
     var name_manager = $('#name_manager').val();
@@ -709,6 +721,10 @@ function save_fbr_form()
     var regulatory_proceedings = $("input[name=regulatory_proceedings]:checked").length;
     var regulatory_proceedings_val = $("input[name=regulatory_proceedings]:checked").val();
     var project_proposal = $("input[name=project_proposal]:checked").length;
+    var dzongkhag = $('#dzongkhag').val();
+    var gewog = $('#gewog').val();
+    var village = $('#village').val();
+    var identified_water_source = $('#identified_water_source').val();
 
     if(Business_Name == "")
     {
@@ -731,13 +747,7 @@ function save_fbr_form()
         $('#cidErrorMsg').delay(2000).fadeOut('slow');
         $('#cid').focus();
     }
-    else if(license_criteria == "")
-    {
-        $('#license_criteriaErrorMsg').html("Select Licensing Criteria.");
-        $('#license_criteriaErrorMsg').show();
-        $('#license_criteriaErrorMsg').delay(2000).fadeOut('slow');
-        $('#license_criteria').focus();
-    }
+
     else if(contactNumber == "")
     {
         $('#contactNumberErrorMsg').html("Enter Contact Number.");
@@ -754,16 +764,51 @@ function save_fbr_form()
     }
     else if(email == "")
     {
-        $('#emailErrorMsg').html("Enter Contact Number.");
+        $('#emailErrorMsg').html("Enter Email.");
         $('#emailErrorMsg').show();
         $('#emailErrorMsg').delay(2000).fadeOut('slow');
         $('#email').focus();
     }
+    else if(name_manager == "")
+    {
+        $('#name_managerErrorMsg').html("Enter Name Of FB Representative.");
+        $('#name_managerErrorMsg').show();
+        $('#name_managerErrorMsg').delay(2000).fadeOut('slow');
+        $('#name_manager').focus();
+    }
+    else if(license_criteria == "")
+    {
+        $('#license_criteriaErrorMsg').html("Select Licensing Criteria.");
+        $('#license_criteriaErrorMsg').show();
+        $('#license_criteriaErrorMsg').delay(2000).fadeOut('slow');
+        $('#license_criteria').focus();
+    }
+    else if(dzongkhag == "")
+    {
+        $('#dzongkhagErrorMsg').html("Select Dzongkhag.");
+        $('#dzongkhagErrorMsg').show();
+        $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
+        $('#dzongkhag').focus();
+    }
+    else if(gewog == "")
+    {
+        $('#gewogErrorMsg').html("Select Gewog.");
+        $('#gewogErrorMsg').show();
+        $('#gewogErrorMsg').delay(2000).fadeOut('slow');
+        $('#gewog').focus();
+    }
+    else if(village == "")
+    {
+        $('#villageErrorMsg').html("Select Village.");
+        $('#villageErrorMsg').show();
+        $('#villageErrorMsg').delay(2000).fadeOut('slow');
+        $('#village').focus();
+    }
     else if(address == "")
     {
-        $('#addressErrorMsg').html("Enter Address.");
-        $('#addressErrorMsg').show();
-        $('#addressErrorMsg').delay(2000).fadeOut('slow');
+        $('#AddressErrorMsg').html("Enter Address.");
+        $('#AddressErrorMsg').show();
+        $('#AddressErrorMsg').delay(2000).fadeOut('slow');
         $('#address').focus();
     }
     else if(current_status == "")
@@ -848,7 +893,7 @@ function save_fbr_form()
         $('#larger_corporationErrorMsg').html("Please Select One.");
         $('#larger_corporationErrorMsg').show();
         $('#larger_corporationErrorMsg').delay(2000).fadeOut('slow');
-        $('#larger_corporation').focus();
+        $("input[name=larger_corporation]").focus();
     }
     else if(larger_corporation_val == "Yes" && relationship == "")
     {
@@ -913,11 +958,43 @@ function save_fbr_form()
         $('#project_proposalErrorMsg').delay(2000).fadeOut('slow');
         $("input[name=project_proposal]").focus();
     }
-    else
+    else if(applicationNo == "")
     {
         $.ajax({
             type : "POST",
             url : "{% url 'save_food_business_registration' %}",
+            data : $('#FBR_form').serialize(),
+            success : function(data)
+            {
+                $('#applicationNo').val(data.applNo);
+                $('#fh_application_no').val(data.applNo);
+                $('#fh_details_application_no').val(data.applNo);
+                $('#attachment_appNo').val(data.applNo);
+                $('#submitMsg').show();
+                setTimeout(function() {
+                    $("#submitMsg").hide('blind', {}, 500)
+                }, 2000);
+                if(data.outsourced_process == 'Yes')
+                {
+                    setTimeout(function() {
+                        $('#pills-outsourced-details').tab('show');
+                    }, 3000);
+                }
+                else
+                {
+                    setTimeout(function() {
+                        $('#pills-food-handler').tab('show');
+                    }, 3000);
+                }
+                $("#registration_licensing_button").html('Update');
+            }
+        });
+    }
+    else if(applicationNo != "")
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'update_food_business_registration' %}",
             data : $('#FBR_form').serialize(),
             success : function(data)
             {
@@ -1024,7 +1101,7 @@ function submit_fbr_details()
 
         if(BP_Outsourced_To == "")
         {
-            $('#details_nameErrorMsg').html("Enter Name.");
+            $('#details_nameErrorMsg').html("Enter Outsourced To.");
             $('#details_nameErrorMsg').show();
             $('#details_nameErrorMsg').delay(2000).fadeOut('slow');
         }
@@ -1040,7 +1117,8 @@ function submit_fbr_details()
             $('#contact_numberErrorMsg').show();
             $('#contact_numberErrorMsg').delay(2000).fadeOut('slow');
         }
-        else{
+        else
+        {
             $.ajax({
                 type : "POST",
                 url : "{% url 'save_fbr_details' %}",
@@ -1237,11 +1315,11 @@ function save_fh_details()
         $('#fh_nameErrorMsg').show();
         $('#fh_nameErrorMsg').delay(2000).fadeOut('slow');
     }
-    else if(fh_name == "")
+    else if(fh_license == "")
     {
-        $('#fh_nameErrorMsg').html("Enter License No.");
-        $('#fh_nameErrorMsg').show();
-        $('#fh_nameErrorMsg').delay(2000).fadeOut('slow');
+        $('#fh_licenseErrorMsg').html("Enter License No.");
+        $('#fh_licenseErrorMsg').show();
+        $('#fh_licenseErrorMsg').delay(2000).fadeOut('slow');
     }
     else
     {
@@ -1324,18 +1402,25 @@ function getCitizenDetails(cidNo)
         success : function(data)
         {
             const myObj =data.response;
-            var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
-            var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
-            var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
-            if (middleName == null) {
-                    middleName = "";
-                }
-            var CitizenName = firstName + " " + middleName + " " + lastName;
-            var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
-            var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
-            var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
-            $('#name').val(CitizenName);
-
+            if(myObj.citizenDetailsResponse.citizenDetail == undefined)
+            {
+                $('#cid').val("");
+                $('#name').val("");
+                $('#cidErrorMsg').html("Invalid CID.Try With Another one");
+                $('#cidErrorMsg').show();
+                $('#cidErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else
+            {
+                var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+                var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+                var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+                if (middleName == null) {
+                        middleName = "";
+                    }
+                var CitizenName = firstName + " " + middleName + " " + lastName;
+                $('#name').val(CitizenName);
+            }
         }
     });
 }
@@ -1360,5 +1445,82 @@ function populateDetails(Record_Id,BP_Outsourced_To,Address,Contact_No,BAFRA_Lic
     $('#edit_op_model').modal('show');
 }
 
+function check_fbr_details()
+{
+    var applicationNo = $('#applicationNo').val();
+    var outsourced_process = $("input[name=outsourced_process]:checked").val();
+
+    if(applicationNo == "")
+    {
+        $("#pills-outsourced-details").prop('disabled', true);
+        $("#pills-food-handler").prop('disabled', true);
+        $("#fbr-file-attach").prop('disabled', true);
+    }
+    else if(applicationNo != "" && outsourced_process == "Yes")
+    {
+        $("#pills-outsourced-details").prop('disabled', false);
+        $("#pills-food-handler").prop('disabled', false);
+        $("#fbr-file-attach").prop('disabled', false);
+    }
+    else if(applicationNo != "" && outsourced_process == "No")
+    {
+        $("#pills-outsourced-details").prop('disabled', true);
+        $("#pills-food-handler").prop('disabled', false);
+        $("#fbr-file-attach").prop('disabled', false);
+    }
+
+}
+
+function load_outsourced_details()
+{
+    var appNo = $('#applicationNo').val();
+    var outsourced_process = $("input[name=outsourced_process]:checked").val();
+
+    if(outsourced_process == "Yes")
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_outsourced_details' %}",
+            data :{'appNo':appNo'},
+            success : function(response)
+            {
+                $('#fbr_details').html(response);
+            }
+        });
+    }
+    else if(outsourced_process == "No")
+    {
+        $("#pills-outsourced-details").prop('disabled', true);
+    }
+
+}
+
+function food_handler_details()
+{
+    var appNo = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'food_handler_details' %}",
+        data :{'appNo':appNo},
+        success : function(response)
+        {
+            $('#food_handler_details').html(response);
+        }
+    });
+}
+
+function load_fbr_attachment()
+{
+    var appNo = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_fbr_attachment' %}",
+        data :{'appNo':appNo},
+        success : function(response)
+        {
+            $('#file-attachment-fbr').html(response);
+        }
+    });
+}
 </script>
 {% endblock %}

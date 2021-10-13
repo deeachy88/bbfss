@@ -24,7 +24,7 @@ form, input, select, textarea{
             <div class="row justify-content-left">
                 <ul class="nav nav-pills nav-secondary" id="pills-tab" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadDetails()">Application Form</a>
+                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="check_details()">Application Form</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="pills-training-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
@@ -199,7 +199,7 @@ form, input, select, textarea{
                         </div>
                     <br><br>
                         <div class="card-action" style="display:none">
-                            <button type="button" class="btn btn-primary" value="Submit" onclick="save_application_form()">Submit</button>
+                            <button type="button" class="btn btn-primary" id="food_handler_button" onclick="save_application_form()">Submit</button>
                         </div>
                     </div>
 
@@ -253,6 +253,7 @@ function save_application_form()
 {
     if($('#B_Inspection_Type').prop('checked'))
     {
+        var applicationNo = $('#applicationNo').val();
         var cid = $('#cid').val();
         var name = $('#name').val();
         var dzongkhag = $('#dzongkhag').val();
@@ -330,7 +331,7 @@ function save_application_form()
             $('#associated_establishmentErrorMsg').delay(2000).fadeOut('slow');
             $('#associated_establishment').focus();
         }
-        else
+        else if(applicationNo == "")
         {
             $.ajax({
                 type : "POST",
@@ -348,12 +349,36 @@ function save_application_form()
                     setTimeout(function() {
                         $('#pills-training-file').tab('show');
                     }, 3000);
+                    $("#food_handler_button").html('Update');
                 }
-                });
+            });
+        }
+        else if(applicationNo != "")
+        {
+            $.ajax({
+                type : "POST",
+                url : "{% url 'update_food_handler_details' %}",
+                data : $('#foodHandlerForm').serialize(),
+                success : function(data)
+                {
+                    $('#applicationNo').val(data.applNo);
+                    $('#appNo').val(data.applNo);
+                    $('#submitMsg').show();
+                    setTimeout(function()
+                    {
+                        $("#submitMsg").hide('blind', {}, 500)
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#pills-training-file').tab('show');
+                    }, 3000);
+                    $("#food_handler_button").html('Update');
+                }
+            });
         }
     }
     else
     {
+        var applicationNo = $('#applicationNo').val();
         var cid = $('#cid').val();
         var name = $('#name').val();
         var country = $('#dzongkhag').val();
@@ -428,7 +453,7 @@ function save_application_form()
             $('#associated_establishmentErrorMsg').delay(2000).fadeOut('slow');
             $('#associated_establishment').focus();
         }
-        else
+        else if(applicationNo == "")
         {
             $.ajax({
                 type : "POST",
@@ -446,8 +471,30 @@ function save_application_form()
                     setTimeout(function() {
                         $('#pills-training-file').tab('show');
                     }, 3000);
+                    $("#food_handler_button").html('Update');
                 }
-                });
+            });
+        }
+        else if(applicationNo != "")
+        {
+            $.ajax({
+                type : "POST",
+                url : "{% url 'update_food_handler_details' %}",
+                data : $('#foodHandlerForm').serialize(),
+                success : function(data)
+                {
+                    $('#applicationNo').val(data.applNo);
+                    $('#appNo').val(data.applNo);
+                    $('#submitMsg').show();
+                    setTimeout(function()
+                    {
+                        $("#submitMsg").hide('blind', {}, 500)
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#pills-training-file').tab('show');
+                    }, 3000);
+                }
+            });
         }
     }
 }
@@ -673,20 +720,61 @@ function getCitizenDetails(cidNo)
         success : function(data)
         {
             const myObj =data.response;
-            var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
-            var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
-            var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
-            if (middleName == null) {
-                    middleName = "";
-                }
-            var CitizenName = firstName + " " + middleName + " " + lastName;
-            var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
-            var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
-            var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
-            $('#name').val(CitizenName);
-            $('#dzongkhag').val(dzongkhagName);
-            $('#gewog').val(gewogName);
-            $('#village').val(villageName);
+            if(myObj.citizenDetailsResponse.citizenDetail == undefined)
+            {
+                $('#cid').val("");
+                $('#name').val("");
+                $('#dzongkhag').val("");
+                $('#gewog').val("");
+                $('#village').val("");
+                $('#cidErrorMsg').html("Invalid CID.Try With Another one");
+                $('#cidErrorMsg').show();
+                $('#cidErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else
+            {
+                var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+                var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+                var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+                if (middleName == null) {
+                        middleName = "";
+                    }
+                var CitizenName = firstName + " " + middleName + " " + lastName;
+                var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
+                var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
+                var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
+                $('#name').val(CitizenName);
+                $('#dzongkhag').val(dzongkhagName);
+                $('#gewog').val(gewogName);
+                $('#village').val(villageName);
+            }
+        }
+    });
+}
+
+function check_details()
+{
+    var applicationNo = $('#applicationNo').val();
+    if(applicationNo == "")
+    {
+        $("#pills-training-file").prop('disabled', true);
+    }
+    else if(applicationNo != "")
+    {
+        $("#pills-training-file").prop('disabled', false);
+    }
+}
+
+function load_attachment_details()
+{
+    var appNo = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_fh_attachment' %}",
+        data :{'appNo':appNo},
+        success : function(response)
+        {
+            $('#fileAttach').html(response);
         }
     });
 }

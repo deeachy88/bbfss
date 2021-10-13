@@ -384,12 +384,12 @@ form, input, select, textarea{
                             Save SuccessFul
                         </div>
                         <div class="card-action">
-                            <button type="button" class="btn btn-primary" onclick="save_food_product_form()">Save</button>
+                            <button type="button" class="btn btn-primary" id="fpc_button" onclick="save_food_product_form()">Save</button>
                         </div>
                 </div>
 
                 <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="fpc_file-attach">
-                    <div id="file-attachment-mortem">
+                    <div id="file-attachment-fpc">
                         {% include 'food_product_certification/file_attachment.html' %}
                     </div>
                     <div class="card-action">
@@ -740,6 +740,7 @@ function save_food_product_form()
                 setTimeout(function() {
                     $('#fpc_file-attach').tab('show');
                 }, 3000);
+                $("#fpc_button").html('Update');
             }
         });
     }
@@ -992,18 +993,29 @@ function getVillage(gewog_id)
 
 function load_fpc_details()
 {
-    var refNo = $('#applicationNo').val();
-    $('#file-attachment').hide();
+    var applicationNo = $('#applicationNo').val();
+    if(applicationNo == "")
+    {
+        $("#fpc_file-attach").prop('disabled', true);
+        $("#no_tab").prop('disabled', true);
+    }
+    else if(applicationNo != "")
+    {
+        $("#fpc_file-attach").prop('disabled', false);
+        $("#no_tab").prop('disabled', false);
+    }
+}
+
+function fpc_attachment_details()
+{
+    var appNo = $('#applicationNo').val();
     $.ajax({
         type : "GET",
-        url : "{% url 'load_commodity_application_details' %}",
-        data :{'refNo':refNo},
-        data :{'application_id':appNo},
+        url : "{% url 'fpc_attachment_details' %}",
+        data :{'appNo':appNo},
         success : function(response)
         {
-            $('#fpc_application_details').html(response);
-            $("#fpc_file-attach").prop('disabled', false);
-            $('#no_tab').prop('disabled', false);
+            $('#file-attachment-fpc').html(response);
         }
     });
 }

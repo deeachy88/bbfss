@@ -33,6 +33,11 @@ urlpatterns = [
     path('resubmit_nc_details', views.resubmit_nc_details, name='resubmit_nc_details'),
     path('edit_nc_details/<int:Record_Id>', views.edit_nc_details, name='edit_nc_details'),
     path('gap_nc_response', views.gap_nc_response, name='gap_nc_response'),
+    path('load_fg_details', views.load_fg_details, name='load_fg_details'),
+    path('gap_cp_details', views.gap_cp_details, name='gap_cp_details'),
+    path('gap_ph_details', views.gap_ph_details, name='gap_ph_details'),
+    path('gap_attachment', views.gap_attachment, name='gap_attachment'),
+    path('delete_gap_file', views.delete_gap_file, name='delete_gap_file'),
 
 
     # Organic certificate
@@ -67,6 +72,15 @@ urlpatterns = [
     path('resubmit_oc_nc_details', views.resubmit_oc_nc_details, name='resubmit_oc_nc_details'),
     path('edit_oc_nc_details/<int:Record_Id>', views.edit_oc_nc_details, name='edit_oc_nc_details'),
     path('oc_nc_response', views.oc_nc_response, name='oc_nc_response'),
+    path('oc_fg_details', views.oc_fg_details, name='oc_fg_details'),
+    path('oc_cp_details', views.oc_cp_details, name='oc_cp_details'),
+    path('wild_details', views.wild_details, name='wild_details'),
+    path('animal_husbandry_details', views.animal_husbandry_details, name='animal_husbandry_details'),
+    path('aquaculture_details', views.aquaculture_details, name='aquaculture_details'),
+    path('api_details', views.api_details, name='api_details'),
+    path('processing_details', views.processing_details, name='processing_details'),
+    path('oc_attachment_details', views.oc_attachment_details, name='oc_attachment_details'),
+    path('delete_oc_file', views.delete_oc_file, name='delete_oc_file'),
 
 
     # Food Product certificate
@@ -93,6 +107,8 @@ urlpatterns = [
     path('resubmit_fpc_nc_details', views.resubmit_fpc_nc_details, name='resubmit_fpc_nc_details'),
     path('edit_fpc_nc_details/<int:Record_Id>', views.edit_fpc_nc_details, name='edit_fpc_nc_details'),
     path('fpc_nc_response', views.fpc_nc_response, name='fpc_nc_response'),
+    path('fpc_attachment_details', views.fpc_attachment_details, name='fpc_attachment_details'),
+    path('delete_fpc_file', views.delete_fpc_file, name='delete_fpc_file'),
 
 
     # Common
@@ -107,7 +123,9 @@ urlpatterns = [
     path('update_nc_response', views.update_nc_response, name='update_nc_response'),
     path('delete_farmers_group', views.delete_farmers_group, name='delete_farmers_group'),
     path('load_fpc_details_page', views.load_fpc_details_page, name='load_fpc_details_page'),
-    path('update_fpc_details', views.update_fpc_details, name='update_fpc_details')
+    path('get_prev_crop_mont', views.get_prev_crop_mont, name='get_prev_crop_mont'),
+    path('update_fpc_details', views.update_fpc_details, name='update_fpc_details'),
+    path('check_difference', views.check_difference, name='check_difference')
 
 ]
 if settings.DEBUG:

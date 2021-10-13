@@ -22,13 +22,13 @@
             <div class="row justify-content-left">
                 <ul class="nav nav-pills nav-secondary" id="pills-tab" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadDetails()">Application Form</a>
+                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="load_details()">Application Form</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-details" data-toggle="pill" href="#details" role="tab" aria-controls="pills-details" aria-selected="false" onclick="load_details()">Details</a>
+                        <a class="nav-link" id="pills-details" data-toggle="pill" href="#details" role="tab" aria-controls="pills-details" aria-selected="false" onclick="load_export_details()">Details</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-profile-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
+                        <a class="nav-link" id="pills-profile-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_export_attachment()">File Attachment</a>
                     </li>
                 </ul>
             </div>
@@ -241,7 +241,7 @@
                         Save SuccessFul
                     </div>
                     <div class="card-action">
-                        <button type="button" class="btn btn-primary" value="Submit" onclick="saveExportForm()">Save</button>
+                        <button type="button" class="btn btn-primary" id="lec_button" onclick="saveExportForm()">Save</button>
                     </div>
                 </div>
                 <div class="tab-pane fade" id="details" role="tabpanel" aria-labelledby="pills-details">
@@ -306,24 +306,24 @@
                             <div class="box-body">
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Particulars</label>
+                                        <label class="form-label">Particulars <font color="red">*</font></label>
                                         <input type="text" name="Particulars" class="form-control" id="Particulars" required>
                                         <div class="alert alert-danger" id="ParticularsErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Company/Producer</label>
+                                        <label class="form-label">Company/Producer <font color="red">*</font></label>
                                         <input type="text" name="Company_Name" class="form-control" id="Company_Name" required>
                                         <div class="alert alert-danger" id="Company_NameErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Quantity</label>
+                                        <label class="form-label">Quantity <font color="red">*</font></label>
                                         <input type="text" name="qty" class="form-control" id="qty" onkeypress="return isNumberKey(event)">
                                         <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Unit</label>
+                                        <label class="form-label">Unit <font color="red">*</font></label>
                                         <select class="form-control" name="unit"  id="unit">
                                             <option value="">--SELECT UNIT--</option>
                                             {% for unit in unit %}
@@ -367,7 +367,7 @@
                                 <input type="hidden" id="permit_type" name="permit_type">
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Species</label>
+                                        <label class="form-label">Species <font color="red">*</font></label>
                                         <select class="form-control" name="Species" id="Species">
                                             <option value="">--SELECT--</option>
                                             {% for species in species %}
@@ -377,7 +377,7 @@
                                         <div class="alert alert-danger" id="SpeciesErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Breed</label>
+                                        <label class="form-label">Breed <font color="red">*</font></label>
                                         <select class="form-control" name="Breed" id="Breed">
                                             <option value="">--SELECT--</option>
                                             {% for breed in breed %}
@@ -389,12 +389,12 @@
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Age</label>
+                                        <label class="form-label">Age <font color="red">*</font></label>
                                         <input type="text" name="Age" class="form-control" id="Age" required>
                                         <div class="alert alert-danger" id="AgeErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Sex</label>
+                                        <label class="form-label">Sex <font color="red">*</font></label>
                                         <select name="Sex" class="form-control" id="Sex">
                                             <option value="">-SELECT-</option>
                                             <option value="Male">Male</option>
@@ -405,12 +405,12 @@
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Description/Identification No</label>
+                                        <label class="form-label">Description/Identification No <font color="red">*</font></label>
                                         <textarea name="animal_Description" class="form-control" id="animal_Description" rows="3"></textarea>
                                         <div class="alert alert-danger" id="animal_DescriptionErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">No Of Animals</label>
+                                        <label class="form-label">No Of Animals <font color="red">*</font></label>
                                         <input type="text" name="no" class="form-control" id="no" onkeypress="return isNumberKey(event)">
                                         <div class="alert alert-danger" id="noErrorMsg" style="display:none"></div>
                                     </div>
@@ -491,24 +491,24 @@
                                 <input type="hidden" name="identifier" value="APLEC"/>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Particulars</label>
+                                        <label class="form-label">Particulars <font color="red">*</font></label>
                                         <input type="text" name="edit_Particulars" class="form-control" id="edit_Particulars" required>
                                         <div class="alert alert-danger" id="edit_ParticularsErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Company/Producer</label>
+                                        <label class="form-label">Company/Producer <font color="red">*</font></label>
                                         <input type="text" name="edit_Company_Name" class="form-control" id="edit_Company_Name" required>
                                         <div class="alert alert-danger" id="edit_Company_NameErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Quantity</label>
+                                        <label class="form-label">Quantity <font color="red">*</font></label>
                                         <input type="text" name="edit_qty" class="form-control" id="edit_qty" onkeypress="return isNumberKey(event)">
                                         <div class="alert alert-danger" id="edit_qtyErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Unit</label>
+                                        <label class="form-label">Unit <font color="red">*</font></label>
                                         <select class="form-control" name="edit_unit"  id="edit_unit">
                                             <option value="">--SELECT UNIT--</option>
                                             {% for unit in unit %}
@@ -558,7 +558,7 @@
                                 <input type="hidden" name="identifier" value="ALEC"/>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Species</label>
+                                        <label class="form-label">Species <font color="red">*</font></label>
                                         <select class="form-control" name="edit_Species" id="edit_Species">
                                             <option value="">--SELECT--</option>
                                             {% for species in species %}
@@ -568,7 +568,7 @@
                                         <div class="alert alert-danger" id="edit_SpeciesErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Breed</label>
+                                        <label class="form-label">Breed <font color="red">*</font></label>
                                         <select class="form-control" name="edit_Breed" id="edit_Breed">
                                             <option value="">--SELECT--</option>
                                             {% for breed in breed %}
@@ -580,12 +580,12 @@
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Age</label>
+                                        <label class="form-label">Age <font color="red">*</font></label>
                                         <input type="text" name="edit_Age" class="form-control" id="edit_Age" required>
                                         <div class="alert alert-danger" id="edit_AgeErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Sex</label>
+                                        <label class="form-label">Sex <font color="red">*</font></label>
                                         <select name="edit_Sex" class="form-control" id="edit_Sex">
                                             <option value="">-SELECT-</option>
                                             <option value="Male">Male</option>
@@ -596,12 +596,12 @@
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Description/Identification No</label>
+                                        <label class="form-label">Description/Identification No <font color="red">*</font></label>
                                         <textarea name="edit_animal_Description" class="form-control" id="edit_animal_Description" rows="3"></textarea>
                                         <div class="alert alert-danger" id="edit_animal_DescriptionErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">No Of Animals</label>
+                                        <label class="form-label">No Of Animals <font color="red">*</font></label>
                                         <input type="text" name="edit_no" class="form-control" id="edit_no" onkeypress="return isNumberKey(event)">
                                         <div class="alert alert-danger" id="edit_noErrorMsg" style="display:none"></div>
                                     </div>
@@ -635,6 +635,7 @@ $(function()
 });
 function saveExportForm()
 {
+    var applicationNo = $('#applicationNo').val();
     var Application_Type = $("input[name=Application_Type]:checked").length;
     var Exporter_Type = $("input[name=Exporter_Type]:checked").length;
     var Nationality = $("input[name=Nationality]:checked").length;
@@ -815,11 +816,47 @@ function saveExportForm()
         $('#inspectionDateErrorMsg').delay(2000).fadeOut('slow');
         $('#inspectionDate').focus();
     }
-    else
+    else if(applicationNo == "")
     {
         $.ajax({
         type : "POST",
         url : "{% url 'save_livestock_export' %}",
+        data : $('#exportCertificateForm').serialize(),
+        success : function(data)
+        {
+            $('#applicationNo').val(data.applNo);
+            $('#applNo').val(data.applNo);
+            $('#animal_application_no').val(data.applNo);
+            $('#appNo').val(data.applNo);
+            $('#permit_type_product').val(data.Application_Type);
+            $('#submitMsg').show();
+            setTimeout(function()
+            {
+                $("#submitMsg").hide('blind', {}, 500)
+            }, 2000);
+            setTimeout(function() {
+                $('#pills-details').tab('show');
+
+                if(data.Application_Type == 'A')
+                {
+                     $('#animal_details_card').show();
+                     $('#animal_product_card').hide();
+                }
+                else
+                {
+                    $('#animal_product_card').show();
+                    $('#animal_details_card').hide();
+                }
+            }, 3000);
+            $("#lec_button").html('Update');
+        }
+        });
+    }
+    else if(applicationNo != "")
+    {
+        $.ajax({
+        type : "POST",
+        url : "{% url 'update_livestock_export' %}",
         data : $('#exportCertificateForm').serialize(),
         success : function(data)
         {
@@ -1013,13 +1050,13 @@ function save_export_details_form(identifier)
 
         if(Particulars == "")
         {
-            $('#ParticularsErrorMsg').html("Select Particulars.");
+            $('#ParticularsErrorMsg').html("Enter Particulars.");
             $('#ParticularsErrorMsg').show();
             $('#ParticularsErrorMsg').delay(2000).fadeOut('slow');
         }
         else if(Company_Name == "")
         {
-            $('#Company_NameErrorMsg').html("Select Company Name.");
+            $('#Company_NameErrorMsg').html("Enter Company/Producer.");
             $('#Company_NameErrorMsg').show();
             $('#Company_NameErrorMsg').delay(2000).fadeOut('slow');
         }
@@ -1058,17 +1095,16 @@ function save_export_details_form(identifier)
         var Sex = $('#Sex').val();
         var Description = $('#Description').val();
         var No_Of_Animal = $('#no').val();
-        var remarks = $('#AP_Remarks').val();
 
         if(Species == "")
         {
-            $('#SpeciesErrorMsg').html("Species cannot Be Empty.");
+            $('#SpeciesErrorMsg').html("Select Species.");
             $('#SpeciesErrorMsg').show();
             $('#SpeciesErrorMsg').delay(2000).fadeOut('slow');
         }
         else if(Breed == "")
         {
-            $('#BreedErrorMsg').html("Breed cannot Be Empty.");
+            $('#BreedErrorMsg').html("Select Breed.");
             $('#BreedErrorMsg').show();
             $('#BreedErrorMsg').delay(2000).fadeOut('slow');
         }
@@ -1096,13 +1132,8 @@ function save_export_details_form(identifier)
             $('#noErrorMsg').show();
             $('#noErrorMsg').delay(2000).fadeOut('slow');
         }
-        else if(remarks == "")
+        else
         {
-            $('#Animal_Remarks_ErrorMsg').html("Enter Remarks.");
-            $('#Animal_Remarks_ErrorMsg').show();
-            $('#Animal_Remarks_ErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else{
             $.ajax({
                 type : "POST",
                 url : "{% url 'save_liv_export_details' %}",
@@ -1265,5 +1296,57 @@ function populate_productDetails(Record_Id, Particulars, Company_Name, Quantity,
     $('#edit_animal_products_model').modal('show');
 }
 
+function load_details()
+{
+    var applicationNo = $('#applicationNo').val();
+    if(applicationNo == "")
+    {
+        $("#pills-details").prop('disabled', true);
+        $("#pills-profile-file").prop('disabled', true);
+    }
+    else if(applicationNo != "")
+    {
+        $("#pills-details").prop('disabled', false);
+        $("#pills-profile-file").prop('disabled', false);
+    }
+}
+
+function load_export_details()
+{
+    var appNo = $('#applicationNo').val();
+    var app_type = $("input[name=Application_Type]:checked").val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'livestock_export_details' %}",
+        data :{'appNo':appNo, 'app_type': app_type},
+        success : function(response)
+        {
+            if(app_type == 'A')
+            {
+                 $('#animal_details_card').show();
+                 $('#animal_product_card').hide();
+            }
+            else
+            {
+                $('#animal_product_card').show();
+                $('#animal_details_card').hide();
+            }
+        }
+    });
+}
+
+function load_export_attachment()
+{
+    var appNo = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'livestock_attachment_details' %}",
+        data :{'appNo':appNo},
+        success : function(response)
+        {
+            $('#fileAttach').html(response);
+        }
+    });
+}
 </script>
 {% endblock %}

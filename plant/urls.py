@@ -31,12 +31,14 @@ urlpatterns = [
     path('save_movement_file', views.save_movement_file, name="save_movement_file"),
     path('movement_agro_file_name', views.movement_agro_file_name, name='movement_agro_file_name'),
     path('delete_file', views.delete_file, name='delete_file'),
-    path('update_movement_details', views.update_movement_details, name='update_movement_details'),
+    path('update_movement_details', views.update_movement_permit, name='update_movement_details'),
     path('mov_plant_details', views.mov_plant_details, name='mov_plant_details'),
     path('mov_plant_attachment', views.mov_plant_attachment, name='mov_plant_attachment'),
     path('mov_agro_attachment', views.mov_agro_attachment, name='mov_agro_attachment'),
     path('get_unit_master', views.get_unit_master, name='get_unit_master'),
     path('load_to_location', views.load_to_location, name='load_to_location'),
+    path('update_movement_permit', views.update_movement_permit, name='update_movement_permit'),
+
 
     # for import of plant and plant products
     path('apply_import_permit', views.apply_import_permit, name='apply_import_permit'),
@@ -75,6 +77,9 @@ urlpatterns = [
     path('agro_import_update', views.agro_import_update, name='agro_import_update'),
     path('update_details_plant', views.update_details_plant, name='update_details_plant'),
     path('update_details_agro', views.update_details_agro, name='update_details_agro'),
+    path('update_import_permit', views.update_import_permit, name='update_import_permit'),
+    path('load_plant_import_details', views.load_plant_import_details, name='load_plant_import_details'),
+    path('load_plant_import_attachment', views.load_plant_import_attachment, name='load_plant_import_attachment'),
 
     # certificate Printing
     path('certificate_print', views.certificate_print, name='certificate_print'),
@@ -97,6 +102,7 @@ urlpatterns = [
     path('save_export_permit', views.save_export_permit, name='save_export_permit'),
     path('delete_file_export', views.delete_file_export, name='delete_file_export'),
     path('delete_file_phyto', views.delete_file_phyto, name='delete_file_phyto'),
+    path('update_export', views.update_export, name='update_export'),
 
     # Registration Of Nursery/Seed Growers
     path('registration_application', views.registration_application, name='registration_application'),
@@ -116,6 +122,8 @@ urlpatterns = [
     path('load_location_nursery', views.load_location_nursery, name='load_location_nursery'),
     path('nursery_client_resubmit', views.nursery_client_resubmit, name='nursery_client_resubmit'),
     path('delete_file_nursery', views.delete_file_nursery, name='delete_file_nursery'),
+    path('update_nursery_reg', views.update_nursery_reg, name='update_nursery_reg'),
+    path('load_nursery_attachment', views.load_nursery_attachment, name='load_nursery_attachment'),
 
     # Seed Certification
     path('seed_certificate_application', views.seed_certificate_application, name='seed_certificate_application'),
@@ -137,6 +145,7 @@ urlpatterns = [
     path('seed_certification_client_resubmit', views.seed_certification_client_resubmit,
          name='seed_certification_client_resubmit'),
     path('delete_file_seed', views.delete_file_seed, name='delete_file_seed'),
+    path('update_seed_certificate', views.update_seed_certificate, name='update_seed_certificate'),
 
     # Common Details
     path('application_status', views.application_status, name='application_status'),

@@ -127,6 +127,70 @@ def save_meat_shop_registration(request):
     return JsonResponse(data)
 
 
+def update_meat_shop_registration(request):
+    data = dict()
+    service_code = "CMS"
+    new_meat_shop_application = request.POST.get('application_no')
+    Meat_Shop_Name = request.POST.get('Business_Name')
+    CID = request.POST.get('cid')
+    name = request.POST.get('Name')
+    name_manager = request.POST.get('name_manager')
+    License_Criteria = request.POST.get('license_criteria')
+    Contact_No = request.POST.get('contactNumber')
+    Email = request.POST.get('email')
+    dzongkhag = request.POST.get('dzongkhag')
+    gewog = request.POST.get('gewog')
+    village = request.POST.get('village')
+    address = request.POST.get('address')
+    meat_shop = t_livestock_clearance_meat_shop_t1.objects.filter(Application_No=new_meat_shop_application)
+    meat_shop.update(
+        Application_Date=None,
+        Applicant_Id=request.session['email'],
+        CID=CID,
+        Name_Owner=name,
+        Contact_No=Contact_No,
+        Email=Email,
+        Address=address,
+        License_Criteria=License_Criteria,
+        Inspection_Type=None,
+        Desired_FI_Inspection_Date=None,
+        Desired_FR_Inspection_Date=None,
+        Meat_Shop_Clearance_No=None,
+        FI_Inspection_Date=None,
+        FI_Inspection_Leader=None,
+        FI_Response=None,
+        FI_Recommendation=None,
+        FR_Inspection_Date=None,
+        FR_Inspection_Leader=None,
+        FR_Response=None,
+        FR_Recommendation=None,
+        Field_Office_Id=None,
+        Conditional_Clearance_No=None,
+        Clearance_Approve_Date=None,
+        Clearance_Validity_Period=None,
+        Clearance_Validity=None,
+        Approve_Date=None,
+        Validity_Period=None,
+        Validity=None,
+        FR_Inspection_Team=None,
+        FI_Inspection_Team=None,
+        Dzongkhag_Code=dzongkhag,
+        Gewog_Code=gewog,
+        FO_Remarks=None,
+        Representative=name_manager,
+        Village_Code=village,
+        Meat_Shop_Name=Meat_Shop_Name,
+        Location_Code=None
+    )
+    work_details = t_workflow_details.objects.filter(Application_No=new_meat_shop_application)
+    work_details.update(Applicant_Id=request.session['email'],
+                        Assigned_To=None, Field_Office_Id=None, Section='Livestock',
+                        Assigned_Role_Id='2', Action_Date=None, Application_Status='P',
+                        Service_Code=service_code)
+    data['applNo'] = new_meat_shop_application
+    return JsonResponse(data)
+
+
 def meat_shop_registration_application_no(service_code):
     last_application_no = t_livestock_clearance_meat_shop_t1.objects.aggregate(Max('Application_No'))
     lastAppNo = last_application_no['Application_No__max']
@@ -694,6 +758,17 @@ def save_meat_shop_details(request):
     return render(request, 'meat_shop_registration/details.html', {'meat_details': meat_details})
 
 
+def load_meat_details(request):
+    Application_No = request.GET.get('appNo')
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+    return render(request, 'meat_shop_registration/file_attachment.html', {'file_attach': file_attach})
+
+
+def load_meat_attachment(request):
+    Application_No = request.GET.get('appNo')
+    meat_details = t_file_attachment.objects.filter(Application_No=Application_No)
+    return render(request, 'meat_shop_registration/details.html', {'meat_details': meat_details})
+
 def save_meat_shop_fh_details(request):
     Application_No = request.POST.get('fh_application_no')
 
@@ -842,6 +917,110 @@ def save_import_la_fish(request):
     return JsonResponse(data)
 
 
+def update_import_la_fish(request):
+    data = dict()
+    service_code = "IAF"
+    application_no = request.POST.get('application_no')
+    # applicant_Id = request.session['email']
+    Application_Type = request.POST.get('Application_Type')
+    Import_Type = request.POST.get('Import_Type')
+    Nationality = request.POST.get('nationality')
+    Country = request.POST.get('Country')
+    cid = request.POST.get('cid')
+    Name = request.POST.get('Name')
+    present_address = request.POST.get('present_address')
+    dzongkhag = request.POST.get('dzongkhag')
+    gewog = request.POST.get('gewog')
+    village = request.POST.get('village')
+    contact_number = request.POST.get('contactNumber')
+    email = request.POST.get('email')
+    license_no = request.POST.get('license_no')
+    business_name = request.POST.get('business_name')
+    purpose = request.POST.get('purpose')
+    Origin_Source_Products = request.POST.get('Origin_Source_Products')
+    Exporter_Address = request.POST.get('Exporter_Address')
+    Final_Destination = request.POST.get('Final_Destination')
+    expected_date = request.POST.get('Expected_Arrival_Date')
+    conveyanceMeans = request.POST.get('p_conveyanceMeans')
+    point_of_entry = request.POST.get('Actual_Point_Of_Entry')
+    QF = request.POST.get('QF')
+    passport = request.POST.get('passport')
+
+    if Nationality == 'Bhutanese':
+        la_details = t_livestock_import_permit_animal_t1.objects.filter(Application_No=application_no)
+        la_details.update(
+            Application_Type=Application_Type,
+            Import_Type=Import_Type,
+            License_No=license_no,
+            Business_Name=business_name,
+            Nationality=Nationality,
+            Country=Country,
+            CID=cid,
+            Applicant_Name=Name,
+            Dzongkhag_Code=dzongkhag,
+            Gewog_Code=gewog,
+            Village_Code=village,
+            Present_Address=present_address,
+            Contact_No=contact_number,
+            Email=email,
+            Origin_Source_Products=Origin_Source_Products,
+            Name_And_Address_Supplier=Exporter_Address,
+            Purpose=purpose,
+            Means_of_Conveyance=conveyanceMeans,
+            Place_Of_Entry=point_of_entry,
+            Final_Destination=Final_Destination,
+            Expected_Arrival_Date=expected_date,
+            FO_Remarks=None,
+            Application_Date=date.today(),
+            Approve_Date=None,
+            Validity_Period=None,
+            Validity=None,
+            Quarantine_Facilities=QF,
+            Applicant_Id=request.session['email'],
+            Passport_Number=None
+        )
+    else:
+        la_details = t_livestock_import_permit_animal_t1.objects.filter(Application_No=application_no)
+        la_details.update(
+            Application_Type=Application_Type,
+            Import_Type=Import_Type,
+            License_No=license_no,
+            Business_Name=business_name,
+            Nationality=Nationality,
+            Country=Country,
+            CID=None,
+            Applicant_Name=Name,
+            Dzongkhag_Code=None,
+            Gewog_Code=None,
+            Village_Code=None,
+            Present_Address=present_address,
+            Contact_No=contact_number,
+            Email=email,
+            Origin_Source_Products=Origin_Source_Products,
+            Name_And_Address_Supplier=Exporter_Address,
+            Purpose=purpose,
+            Means_of_Conveyance=conveyanceMeans,
+            Place_Of_Entry=point_of_entry,
+            Final_Destination=Final_Destination,
+            Expected_Arrival_Date=expected_date,
+            FO_Remarks=None,
+            Application_Date=date.today(),
+            Approve_Date=None,
+            Validity_Period=None,
+            Validity=None,
+            Quarantine_Facilities=QF,
+            Applicant_Id=request.session['email'],
+            Passport_Number=passport
+        )
+    details_workflow = t_workflow_details.objects.filter(Application_No=application_no)
+    details_workflow.update(Applicant_Id=request.session['email'],
+                            Assigned_To=None, Field_Office_Id=None, Section='Livestock',
+                            Assigned_Role_Id='2', Action_Date=None, Application_Status='P',
+                            Service_Code=service_code)
+    data['applNo'] = application_no
+    return JsonResponse(data)
+
+
 def import_permit_la_details(request):
     application_no = request.POST.get('applNo')
     Species = request.POST.get('Species')
@@ -864,6 +1043,18 @@ def import_permit_la_details(request):
                                                        )
     import_details = t_livestock_import_permit_animal_t2.objects.filter(Application_No=application_no)
     return render(request, 'Animal_Fish_Import/animal_details.html', {'import': import_details})
+
+
+def load_af_import_details(request):
+    application_no = request.GET.get('appNo')
+    import_details = t_livestock_import_permit_animal_t2.objects.filter(Application_No=application_no)
+    return render(request, 'Animal_Fish_Import/animal_details.html', {'import': import_details})
+
+
+def load_af_attachment(request):
+    application_no = request.GET.get('appNo')
+    file_attach = t_file_attachment.objects.filter(Application_No=application_no)
+    return render(request, 'Animal_Fish_Import/file_attachment.html', {'file_attach': file_attach})
 
 
 def add_la_permit_file(request):
@@ -1251,6 +1442,104 @@ def save_import_lp(request):
     return JsonResponse(data)
 
 
+def update_import_lp(request):
+    data = dict()
+    service_code = "ILP"
+    application_no = request.POST.get('application_no')
+    Application_Type = request.POST.get('Application_Type')
+    Import_Type = request.POST.get('Import_Type')
+    Nationality = request.POST.get('nationality')
+    Country = request.POST.get('Country')
+    cid = request.POST.get('cid')
+    Name = request.POST.get('Name')
+    present_address = request.POST.get('present_address')
+    dzongkhag = request.POST.get('dzongkhag')
+    gewog = request.POST.get('gewog')
+    village = request.POST.get('village')
+    contact_number = request.POST.get('contactNumber')
+    email = request.POST.get('email')
+    license_no = request.POST.get('license_no')
+    business_name = request.POST.get('business_name')
+    Origin_Source_Products = request.POST.get('Origin_Source_Products')
+    Name_And_Address_Supplier = request.POST.get('Exporter_Address')
+    Final_Destination = request.POST.get('Final_Destination')
+    expected_date = request.POST.get('Expected_Arrival_Date')
+    conveyanceMeans = request.POST.get('p_conveyanceMeans')
+    point_of_entry = request.POST.get('Place_of_Exit')
+    passport = request.POST.get('passport')
+    if Nationality == 'Bhutanese':
+        livestock_import = t_livestock_import_permit_product_t1.objects.filter(Application_No=application_no)
+        livestock_import.update(
+            Application_Type=Application_Type,
+            Import_Type=Import_Type,
+            License_No=license_no,
+            Business_Name=business_name,
+            Nationality=Nationality,
+            Country=Country,
+            CID=cid,
+            Applicant_Name=Name,
+            Dzongkhag_Code=dzongkhag,
+            Gewog_Code=gewog,
+            Village_Code=village,
+            Present_Address=present_address,
+            Contact_No=contact_number,
+            Email=email,
+            Origin_Source_Products=Origin_Source_Products,
+            Name_And_Address_Supplier=Name_And_Address_Supplier,
+            Means_of_Conveyance=conveyanceMeans,
+            Place_Of_Entry=point_of_entry,
+            Final_Destination=Final_Destination,
+            Expected_Arrival_Date=expected_date,
+            FO_Remarks=None,
+            Application_Date=None,
+            Approve_Date=None,
+            Validity_Period=None,
+            Validity=None,
+            Import_Permit_No=None,
+            Applicant_Id=request.session['email'],
+            Passport_Number=None
+        )
+    else:
+        livestock_import = t_livestock_import_permit_product_t1.objects.filter(Application_No=application_no)
+        livestock_import.update(
+            Application_Type=Application_Type,
+            Import_Type=Import_Type,
+            License_No=license_no,
+            Business_Name=business_name,
+            Nationality=Nationality,
+            Country=Country,
+            CID=None,
+            Applicant_Name=Name,
+            Dzongkhag_Code=None,
+            Gewog_Code=None,
+            Village_Code=None,
+            Present_Address=present_address,
+            Contact_No=contact_number,
+            Email=email,
+            Origin_Source_Products=Origin_Source_Products,
+            Name_And_Address_Supplier=Name_And_Address_Supplier,
+            Means_of_Conveyance=conveyanceMeans,
+            Place_Of_Entry=point_of_entry,
+            Final_Destination=Final_Destination,
+            Expected_Arrival_Date=expected_date,
+            FO_Remarks=None,
+            Application_Date=None,
+            Approve_Date=None,
+            Validity_Period=None,
+            Validity=None,
+            Import_Permit_No=None,
+            Applicant_Id=request.session['email'],
+            Passport_Number=passport
+        )
+    work_details = t_workflow_details.objects.filter(Application_No=application_no)
+    work_details.update(Application_No=application_no, Applicant_Id=request.session['email'],
+                        Assigned_To=None, Field_Office_Id=None, Section='Livestock',
+                        Assigned_Role_Id='2', Action_Date=None, Application_Status='P',
+                        Service_Code=service_code)
+    data['applNo'] = application_no
+    return JsonResponse(data)
+
+
 def livestock_product_application_no(service_code):
     last_application_no = t_livestock_import_permit_product_t1.objects.aggregate(Max('Application_No'))
     lastAppNo = last_application_no['Application_No__max']
@@ -1278,6 +1567,18 @@ def import_livestock_product_details(request):
                                                         Quantity=Quantity, Quantity_Balance=Quantity, Unit=Unit)
     import_details = t_livestock_import_permit_product_t2.objects.filter(Application_No=application_id)
     return render(request, 'Livestock_Import/permit_details.html', {'import': import_details})
+
+
+def load_lp_import_details(request):
+    application_id = request.GET.get('appNo')
+    import_details = t_livestock_import_permit_product_t2.objects.filter(Application_No=application_id)
+    return render(request, 'Livestock_Import/permit_details.html', {'import': import_details})
+
+
+def load_lp_import_attachment(request):
+    Application_No = request.GET.get('appNo')
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+    return render(request, 'Livestock_Import/file_attachment.html', {'file_attach': file_attach})
 
 
 def add_livestock_product_file(request):
@@ -1640,6 +1941,124 @@ def save_livestock_export(request):
     return JsonResponse(data)
 
 
+def update_livestock_export(request):
+    data = dict()
+    service_code = "LEC"
+    application_no = request.POST.get('application_no')
+
+    applicant_Id = request.session['email']
+    Application_Type = request.POST.get('Application_Type')
+    Exporter_Type = request.POST.get('Exporter_Type')
+    Nationality = request.POST.get('Nationality')
+    Country = request.POST.get('Country')
+    cid = request.POST.get('cid')
+    Name = request.POST.get('name')
+    present_address = request.POST.get('present_address')
+    dzongkhag = request.POST.get('dzongkhag')
+    gewog = request.POST.get('gewog')
+    village = request.POST.get('village')
+    contact_number = request.POST.get('contactNumber')
+    email = request.POST.get('email')
+    license_no = request.POST.get('license_no')
+    business_name = request.POST.get('business_name')
+    purpose = request.POST.get('Purpose')
+    Origin_Source_Products = request.POST.get('Origin_Source_Products')
+    Importer_Name_Address = request.POST.get('Importer_Name_Address')
+    Final_Destination = request.POST.get('Final_Destination')
+    Place_of_Exit = request.POST.get('Place_of_Exit')
+    export_date = request.POST.get('Export_Expected_Date')
+    date_format_ins = request.POST.get('inspectionDate')
+    passport = request.POST.get('passport')
+
+    if Nationality == "Bhutanese":
+        livestock_export = t_livestock_export_certificate_t1.objects.filter(Application_No=application_no)
+        livestock_export.update(
+            Application_Date=date.today(),
+            Application_Type=Application_Type,
+            Exporter_Type=Exporter_Type,
+            Nationality=Nationality,
+            Country=Country,
+            CID=cid,
+            Applicant_Name=Name,
+            Dzongkhag_Code=dzongkhag,
+            Gewog_Code=gewog,
+            Village_Code=village,
+            License_No=license_no,
+            Business_Name=business_name,
+            Present_Address=present_address,
+            Contact_No=contact_number,
+            Email=email,
+            Origin_Source_Products=Origin_Source_Products,
+            Importer_Name_Address=Importer_Name_Address,
+            Purpose=purpose,
+            Place_of_Exit=Place_of_Exit,
+            Final_Destination=Final_Destination,
+            Export_Expected_Date=export_date,
+            Proposed_Inspection_Date=date_format_ins,
+            Inspection_Date=None,
+            Inspection_Type=None,
+            Inspection_Time=None,
+            Inspection_Leader=None,
+            Inspection_Team=None,
+            Inspection_Remarks=None,
+            Export_Permit_No=None,
+            Approve_Date=None,
+            Validity_Period=None,
+            Validity=None,
+            Applicant_Id=applicant_Id,
+            Passport_No=None
+        )
+    else:
+        livestock_export = t_livestock_export_certificate_t1.objects.filter(Application_No=application_no)
+        livestock_export.update(
+            Application_Date=date.today(),
+            Application_Type=Application_Type,
+            Exporter_Type=Exporter_Type,
+            Nationality=Nationality,
+            Country=Country,
+            CID=None,
+            Applicant_Name=Name,
+            Dzongkhag_Code=None,
+            Gewog_Code=None,
+            Village_Code=None,
+            License_No=license_no,
+            Business_Name=business_name,
+            Present_Address=present_address,
+            Contact_No=contact_number,
+            Email=email,
+            Origin_Source_Products=Origin_Source_Products,
+            Importer_Name_Address=Importer_Name_Address,
+            Purpose=purpose,
+            Place_of_Exit=Place_of_Exit,
+            Final_Destination=Final_Destination,
+            Export_Expected_Date=export_date,
+            Proposed_Inspection_Date=date_format_ins,
+            Inspection_Date=None,
+            Inspection_Type=None,
+            Inspection_Time=None,
+            Inspection_Leader=None,
+            Inspection_Team=None,
+            Inspection_Remarks=None,
+            Export_Permit_No=None,
+            Approve_Date=None,
+            Validity_Period=None,
+            Validity=None,
+            Applicant_Id=applicant_Id,
+            Passport_No=passport
+        )
+    field = t_location_field_office_mapping.objects.filter(Location_Code=Place_of_Exit)
+    for field_office in field:
+        field_office_id = field_office.Field_Office_Id_id
+        workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
+        workflow_details.update(Applicant_Id=request.session['email'],
+                                Assigned_To=None, Field_Office_Id=field_office_id, Section='Livestock',
+                                Assigned_Role_Id='4', Action_Date=None, Application_Status='P',
+                                Service_Code=service_code)
+    data['applNo'] = application_no
+    data['Application_Type'] = Application_Type
+    return JsonResponse(data)
+
+
 def livestock_export_application_no(service_code):
     last_application_no = t_livestock_export_certificate_t1.objects.aggregate(Max('Application_No'))
     lastAppNo = last_application_no['Application_No__max']
@@ -1711,6 +2130,24 @@ def save_liv_export_details(request):
             )
             export_details = t_livestock_export_certificate_t2.objects.filter(Application_No=application_no)
             return render(request, 'Export_Certificate/animal_product_details.html', {'export_details': export_details})
+
+
+def livestock_export_details(request):
+    app_type = request.POST.get('app_type')
+    if app_type == 'A':
+        application_no = request.POST.get('appNo')
+        export_details = t_livestock_export_certificate_t2.objects.filter(Application_No=application_no)
+        return render(request, 'Export_Certificate/animal_details.html', {'export_details': export_details})
+    else:
+        application_no = request.POST.get('appNo')
+        export_details = t_livestock_export_certificate_t2.objects.filter(Application_No=application_no)
+        return render(request, 'Export_Certificate/animal_product_details.html', {'export_details': export_details})
+
+
+def livestock_attachment_details(request):
+    application_no = request.POST.get('appNo')
+    file_attach = t_file_attachment.objects.filter(Application_No=application_no)
+    return render(request, 'Export_Certificate/EC_file_attachment.html', {'file_attach': file_attach})
 
 
 def add_liv_export_file(request):
@@ -2002,6 +2439,121 @@ def save_movement_permit_application(request):
     return JsonResponse(data)
 
 
+def update_movement_permit_application(request):
+    data = dict()
+    service_code = "LMP"
+    application_no = request.POST.get('application_no')
+    Permit_Type = request.POST.get('Permit_Type')
+    Application_Type = request.POST.get('Application_Type')
+    CID = request.POST.get('cid')
+    Name = request.POST.get('Name')
+    Dzongkhag = request.POST.get('dzongkhag')
+    Gewog = request.POST.get('gewog')
+    Village = request.POST.get('village')
+    contact_no = request.POST.get('contactNumber')
+    Email = request.POST.get('email')
+    license_no = request.POST.get('license_no')
+    business_name = request.POST.get('business_name')
+    from_dzongkhag = request.POST.get('from_dzongkhag')
+    from_gewog = request.POST.get('from_gewog')
+    from_location = request.POST.get('from_location')
+    to_dzongkhag = request.POST.get('to_dzongkhag')
+    to_gewog = request.POST.get('to_dzongkhag')
+    to_exact_location = request.POST.get('to_exact_location')
+    route = request.POST.get('route')
+    conveyanceMeans = request.POST.get('conveyanceMeans')
+    vehicleNo = request.POST.get('vehicleNo')
+    movementPurpose = request.POST.get('movementPurpose')
+    movement_date = request.POST.get('date')
+
+    if Application_Type == "Individual":
+        movement_details = t_livestock_movement_permit_t1.objects.filter(Application_No=application_no)
+        movement_details.update(
+            Permit_Type=Permit_Type,
+            Application_Type=Application_Type,
+            CID=CID,
+            Applicant_Name=Name,
+            Dzongkhag_Code=Dzongkhag,
+            Gewog_Code=Gewog,
+            Village_Code=Village,
+            Contact_No=contact_no,
+            Email=Email,
+            License_No=license_no,
+            Business_Name=business_name,
+            From_Dzongkhag_Code=from_dzongkhag,
+            From_Gewog_Code=from_gewog,
+            From_Location=from_location,
+            To_Dzongkhag_Code=to_dzongkhag,
+            To_Gewog_Code=to_gewog,
+            To_Location=to_exact_location,
+            Authorized_Route=route,
+            Movement_Purpose=movementPurpose,
+            Conveyance_Means=conveyanceMeans,
+            Vehicle_No=vehicleNo,
+            Movement_Date=movement_date,
+            Inspection_Date=None,
+            Inspection_Leader=None,
+            Inspection_Team=None,
+            Application_Status=None,
+            Movement_Permit_No=None,
+            Remarks=None,
+            Application_Date=date.today(),
+            Applicant_Id=request.session['email'],
+            Approved_Date=None,
+            Validity_Period=None,
+            Validity=None
+        )
+    else:
+        movement_details = t_livestock_movement_permit_t1.objects.filter(Application_No=application_no)
+        movement_details.update(
+            Application_No=application_no,
+            Permit_Type=Permit_Type,
+            Application_Type=Application_Type,
+            CID=None,
+            Applicant_Name=Name,
+            Dzongkhag_Code=None,
+            Gewog_Code=None,
+            Village_Code=None,
+            Contact_No=contact_no,
+            Email=Email,
+            License_No=license_no,
+            Business_Name=business_name,
+            From_Dzongkhag_Code=from_dzongkhag,
+            From_Gewog_Code=from_gewog,
+            From_Location=from_location,
+            To_Dzongkhag_Code=to_dzongkhag,
+            To_Gewog_Code=to_gewog,
+            To_Location=to_exact_location,
+            Authorized_Route=route,
+            Movement_Purpose=movementPurpose,
+            Conveyance_Means=conveyanceMeans,
+            Vehicle_No=vehicleNo,
+            Movement_Date=movement_date,
+            Inspection_Date=None,
+            Inspection_Leader=None,
+            Inspection_Team=None,
+            Application_Status=None,
+            Movement_Permit_No=None,
+            Remarks=None,
+            Application_Date=date.today(),
+            Applicant_Id=request.session['email'],
+            Approved_Date=None,
+            Validity_Period=None,
+            Validity=None
+        )
+    field = t_location_field_office_mapping.objects.filter(Location_Code=from_gewog)
+    for field_office in field:
+        field_office_id = field_office.Field_Office_Id_id
+        work_details = t_workflow_details.objects.filter(Application_No=application_no)
+        work_details.update(Applicant_Id=request.session['email'],
+                            Assigned_To=None, Field_Office_Id=field_office_id, Section='Livestock',
+                            Assigned_Role_Id='4', Action_Date=None, Application_Status='P',
+                            Service_Code=service_code)
+    data['applNo'] = application_no
+    data['Permit_Type'] = Permit_Type
+    return JsonResponse(data)
+
+
 def livestock_movement_permit_application_no(service_code):
     last_application_no = t_livestock_movement_permit_t1.objects.aggregate(Max('Application_No'))
     lastAppNo = last_application_no['Application_No__max']
@@ -2066,6 +2618,21 @@ def save_movement_permit_details(request):
             mortem_details = t_livestock_movement_permit_t2.objects.filter(Application_No=application_no)
             return render(request, 'Movement_Permit_Livestock/animal_product_details.html', {'import': mortem_details})
 
+
+def liv_mov_details(request):
+    application_no = request.GET.get('appNo')
+    Permit_Type = request.GET.get('permit_type')
+    if Permit_Type == 'A':
+        mortem_details = t_livestock_movement_permit_t2.objects.filter(Application_No=application_no)
+        return render(request, 'Movement_Permit_Livestock/animal_details.html', {'import': mortem_details})
+    else:
+        mortem_details = t_livestock_movement_permit_t2.objects.filter(Application_No=application_no)
+        return render(request, 'Movement_Permit_Livestock/animal_product_details.html', {'import': mortem_details})
+
+def liv_mov_attachment(request):
+    application_no = request.GET.get('appNo')
+    file_attach = t_file_attachment.objects.filter(Application_No=application_no)
+    return render(request, 'Movement_Permit_Livestock/file_attachment.html', {'file_attach': file_attach})
 
 def add_lmp_file(request):
     data = dict()
@@ -2265,7 +2832,7 @@ def application_form(request):
 def save_application_form(request):
     data = dict()
     service_code = "APM"
-    application_no = get_mortem_application_no(service_code)
+    application_no = request.POST.get('application_no')
     Inspection_Type = request.POST.get('Inspection_Type')
     CID = request.POST.get('cid')
     Name = request.POST.get('Name')
@@ -2331,6 +2898,77 @@ def save_application_form(request):
     return JsonResponse(data)
 
 
+def update_application_form(request):
+    data = dict()
+    service_code = "APM"
+    application_no = get_mortem_application_no(service_code)
+    Inspection_Type = request.POST.get('Inspection_Type')
+    CID = request.POST.get('cid')
+    Name = request.POST.get('Name')
+    Dzongkhag = request.POST.get('dzongkhag')
+    Gewog = request.POST.get('gewog')
+    Village = request.POST.get('village')
+    Address = request.POST.get('present_address')
+    contact_no = request.POST.get('contactNumber')
+    Email = request.POST.get('email')
+    Location_Dzongkhag_Code = request.POST.get('Location_Dzongkhag_Code')
+    location_code = request.POST.get('location_code')
+    exact_location = request.POST.get('exact_location')
+    date_format_ins = request.POST.get('inspectionDate')
+
+    t_livestock_ante_post_mortem_t1.objects.create(
+        Application_No=application_no,
+        Inspection_Type=Inspection_Type,
+        CID=CID,
+        Applicant_Name=Name,
+        Dzongkhag_Code=Dzongkhag,
+        Gewog_Code=Gewog,
+        Village_Code=Village,
+        Address=Address,
+        Contact_No=contact_no,
+        Email=Email,
+        Location_Dzongkhag_Code=Location_Dzongkhag_Code,
+        Location_Code=location_code,
+        Exact_Location=exact_location,
+        Inspection_Date=None,
+        Inspection_Leader=None,
+        Inspection_Team=None,
+        Application_Status='P',
+        Clearance_No=None,
+        Remarks=None,
+        Application_Date=None,
+        Applicant_Id=request.session['email'],
+        Approved_Date=None,
+        Validity_Period=None,
+        Validity=None,
+        Inspection_Date_Requested=date_format_ins,
+        Respiration_Abnormalities=None,
+        Behaviour_Abnormalities=None,
+        Structure_Abnormalities=None,
+        Abnormal_Gait=None,
+        Abnormal_Posture=None,
+        Discharge_Abnormalities=None,
+        Abnormal_Colour=None,
+        Abnormal_Odour=None,
+        No_Without_Restrictions=None,
+        No_Close_Supervision=None,
+        No_Withheld=None,
+        No_Emergency=None,
+        No_Unfit=None
+    )
+    field = t_location_field_office_mapping.objects.filter(Location_Code=location_code)
+    for field_office in field:
+        field_office_id = field_office.Field_Office_Id_id
+
+    workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
+    workflow_details.update(Applicant_Id=request.session['email'],
+                            Assigned_To=None, Field_Office_Id=field_office_id, Section='Livestock',
+                            Assigned_Role_Id='4', Action_Date=None, Application_Status='P',
+                            Service_Code=service_code)
+    data['applNo'] = application_no
+    return JsonResponse(data)
+
+
 def get_mortem_application_no(service_code):
     last_application_no = t_livestock_ante_post_mortem_t1.objects.aggregate(Max('Application_No'))
     lastAppNo = last_application_no['Application_No__max']
@@ -2356,6 +2994,12 @@ def save_mortem_details(request):
         t_livestock_ante_post_mortem_t2.objects.create(Application_No=application_no, Species=species,
                                                        Nos=Nos, Quantity=qty, Remarks=remarks)
         mortem_details = t_livestock_ante_post_mortem_t2.objects.filter(Application_No=application_no)
+    return render(request, 'ante_post_mortem/details.html', {'mortem': mortem_details})
+
+
+def ante_post_mortem_details(request):
+    application_no = request.GET.get('appNo')
+    mortem_details = t_livestock_ante_post_mortem_t2.objects.filter(Application_No=application_no)
     return render(request, 'ante_post_mortem/details.html', {'mortem': mortem_details})
 
 
@@ -2386,6 +3030,12 @@ def add_mortem_file_name(request):
 
         file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
         return render(request, 'ante_post_mortem/file_attachment.html', {'file_attach': file_attach})
+
+
+def ante_post_mortem_attachment(request):
+    Application_No = request.GET.get('appNo')
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+    return render(request, 'ante_post_mortem/file_attachment.html', {'file_attach': file_attach})
 
 
 def delete_mortem_file(request):

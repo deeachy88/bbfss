@@ -567,252 +567,1582 @@
             {
                 if(identifier == 'PIP')
                 {
-                    $.ajax({
-                        type : "POST",
-                        url : "{% url 'update_edit_details' %}",
-                        data : $('#edit_plant_form').serialize(),
-                        success : function(response) {
-                             $('#Details').html(response);
-                             $('#edit_plant_details').modal('hide');
-                             $('.modal-backdrop').remove();
-                        }
-                    });
+                    var plant_import_category = $('#edit_plant_import_category').val();
+                    var crop_id = $('#edit_crop_id').val();
+                    var crop_variety = $('#edit_crop_variety').val();
+                    var qty = $('#edit_qty').val();
+                    var unit = $('#edit_unit').val();
+
+                    if(plant_import_category == "")
+                    {
+                        $('#edit_plant_import_categoryErrorMsg').html("Select Import Category.");
+                        $('#edit_plant_import_categoryErrorMsg').show();
+                        $('#edit_plant_import_categoryErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(crop_id == "")
+                    {
+                        $('#edit_crop_idErrorMsg').html("Select Crop.");
+                        $('#edit_crop_idErrorMsg').show();
+                        $('#edit_crop_idErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(crop_variety == "")
+                    {
+                        $('#edit_crop_varietyErrorMsg').html("Select Crop Variety.");
+                        $('#edit_crop_varietyErrorMsg').show();
+                        $('#edit_crop_varietyErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(qty == "")
+                    {
+                        $('#edit_qtyErrorMsg').html("Enter Quantity.");
+                        $('#edit_qtyErrorMsg').show();
+                        $('#edit_qtyErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(unit == "")
+                    {
+                        $('#edit_unitErrorMsg').html("Enter Unit.");
+                        $('#edit_unitErrorMsg').show();
+                        $('#edit_unitErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else
+                    {
+                        $.ajax({
+                            type : "POST",
+                            url : "{% url 'update_edit_details' %}",
+                            data : $('#edit_plant_form').serialize(),
+                            success : function(response) {
+                                 $('#Details').html(response);
+                                 $('#edit_plant_details').modal('hide');
+                                 $('.modal-backdrop').remove();
+                            }
+                        });
+                    }
                 }
                 else if(identifier == 'AIP')
                 {
-                    $.ajax({
-                        type : "POST",
-                        url : "{% url 'update_edit_details' %}",
-                        data : $('#edit_agro_form').serialize(),
-                        success : function(response) {
-                             $('#AgroDetails').html(response);
-                             $('#edit_agro_details').modal('hide');
-                             $('.modal-backdrop').remove();
-                        }
-                    });
+                    var agro_import_category = $('#edit_agro_category').val();
+                    var pesticide_id = $('#edit_pesticide_id').val();
+                    var description = $('#edit_description').val();
+                    var agro_qty = $('#edit_agro_qty').val();
+                    var agro_unit = $('#edit_agro_unit').val();
+
+                    if(agro_import_category == "")
+                    {
+                        $('#edit_agro_categoryErrorMsg').html("Select Import Category.");
+                        $('#edit_agro_categoryErrorMsg').show();
+                        $('#edit_agro_categoryErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(pesticide_id == "")
+                    {
+                        $('#edit_pesticide_idErrorMsg').html("Select Pesticides.");
+                        $('#edit_pesticide_idErrorMsg').show();
+                        $('#edit_pesticide_idErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(description == "")
+                    {
+                        $('#edit_descriptionErrorMsg').html("Enter Description.");
+                        $('#edit_descriptionErrorMsg').show();
+                        $('#edit_descriptionErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(agro_qty == "")
+                    {
+                        $('#edit_agro_qtyErrorMsg').html("Enter Quantity.");
+                        $('#edit_agro_qtyErrorMsg').show();
+                        $('#edit_agro_qtyErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(agro_unit == "")
+                    {
+                        $('#edit_agro_unitErrorMsg').html("Enter Unit.");
+                        $('#edit_agro_unitErrorMsg').show();
+                        $('#edit_agro_unitErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else
+                    {
+                        $.ajax({
+                            type : "POST",
+                            url : "{% url 'update_edit_details' %}",
+                            data : $('#edit_agro_form').serialize(),
+                            success : function(response) {
+                                 $('#AgroDetails').html(response);
+                                 $('#edit_agro_details').modal('hide');
+                                 $('.modal-backdrop').remove();
+                            }
+                        });
+                    }
                 }
                 else if(identifier == 'RNS')
                 {
-                    $.ajax({
-                        type : "POST",
-                        url : "{% url 'update_edit_details' %}",
-                        data : $('#edit_nursery_form').serialize(),
-                        success : function(response) {
-                             $('#seed-details').html(response);
-                             $('#edit_details').modal('hide');
-                             $('.modal-backdrop').remove();
-                        }
-                    });
+                    var crop_category_id = $('#edit_crop_category_id').val();
+                    var crop_id =  $('#edit_crop_id').val();
+                    var crop_variety_id = $('#edit_crop_variety').val();
+                    var Source = $('#edit_Source').val();
+                    var qty = $('#edit_qty').val();
+                    var unit = $('#edit_unit').val();
+
+                    if(crop_category_id == "")
+                    {
+                        $('#edit_crop_category_idErrorMsg').html("Select Crop Category.");
+                        $('#edit_crop_category_idErrorMsg').show();
+                        $('#edit_crop_category_idErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(crop_id == "")
+                    {
+                        $('#edit_crop_idErrorMsg').html("Select Crop.");
+                        $('#edit_crop_idErrorMsg').show();
+                        $('#edit_crop_idErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(crop_variety_id == "")
+                    {
+                        $('#edit_crop_varietyErrorMsg').html("Select Crop Variety.");
+                        $('#edit_crop_varietyErrorMsg').show();
+                        $('#edit_crop_varietyErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(Source == "")
+                    {
+                        $('#edit_SourceErrorMsg').html("Enter Source.");
+                        $('#edit_SourceErrorMsg').show();
+                        $('#edit_SourceErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(qty == "")
+                    {
+                        $('#edit_qtyErrorMsg').html("Enter Quantity.");
+                        $('#edit_qtyErrorMsg').show();
+                        $('#edit_qtyErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(unit == "")
+                    {
+                        $('#edit_unitErrorMsg').html("Select Unit.");
+                        $('#edit_unitErrorMsg').show();
+                        $('#edit_unitErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else
+                    {
+                        $.ajax({
+                            type : "POST",
+                            url : "{% url 'update_edit_details' %}",
+                            data : $('#edit_nursery_form').serialize(),
+                            success : function(response) {
+                                 $('#seed-details').html(response);
+                                 $('#edit_details').modal('hide');
+                                 $('.modal-backdrop').remove();
+                            }
+                        });
+                    }
                 }
                 else if(identifier == 'RSC')
                 {
-                    $.ajax({
-                        type : "POST",
-                        url : "{% url 'update_edit_details' %}",
-                        data : $('#edit_certificate_form').serialize(),
-                        success : function(response) {
-                             $('#certification-details').html(response);
-                             $('#edit_seed_details').modal('hide');
-                             $('.modal-backdrop').remove();
-                        }
-                    });
+                    var Crop = $('#edit_crop_id').val();
+                    var Variety = $('#edit_crop_variety').val();
+                    var Source =  $('#edit_Source').val();
+                    var Quantity = $('#edit_qty').val();
+                    var Unit = $('#edit_Unit').val();
+                    var Purpose = $('#edit_purpose').val();
+
+                    if(Crop == "")
+                    {
+                        $('#edit_crop_idErrorMsg').html("Select Crop.");
+                        $('#edit_crop_idErrorMsg').show();
+                        $('#edit_crop_idErrorMsg').delay(2000).fadeOut('slow');
+                        $('#edit_crop_id').focus();
+                    }
+                    else if(Variety == "")
+                    {
+                        $('#edit_crop_varietyErrorMsg').html("Select Crop Variety.");
+                        $('#edit_crop_varietyErrorMsg').show();
+                        $('#edit_crop_varietyErrorMsg').delay(2000).fadeOut('slow');
+                        $('#edit_crop_variety').focus();
+                    }
+                    else if(Source == "")
+                    {
+                        $('#edit_SourceErrorMsg').html("Enter Source.");
+                        $('#edit_SourceErrorMsg').show();
+                        $('#edit_SourceErrorMsg').delay(2000).fadeOut('slow');
+                        $('#edit_Source').focus();
+                    }
+                    else if(Quantity == "")
+                    {
+                        $('#edit_qtyErrorMsg').html("Enter Quantity.");
+                        $('#edit_qtyErrorMsg').show();
+                        $('#edit_qtyErrorMsg').delay(2000).fadeOut('slow');
+                        $('#edit_qty').focus();
+                    }
+                    else if(Unit == "")
+                    {
+                        $('#edit_UnitErrorMsg').html("Select Unit.");
+                        $('#edit_UnitErrorMsg').show();
+                        $('#edit_UnitErrorMsg').delay(2000).fadeOut('slow');
+                        $('#edit_Unit').focus();
+                    }
+                    else if(Purpose == "")
+                    {
+                        $('#edit_purposeErrorMsg').html("Enter Purpose.");
+                        $('#edit_purposeErrorMsg').show();
+                        $('#edit_purposeErrorMsg').delay(2000).fadeOut('slow');
+                        $('#edit_purpose').focus();
+                    }
+                    else
+                    {
+                        $.ajax({
+                            type : "POST",
+                            url : "{% url 'update_edit_details' %}",
+                            data : $('#edit_certificate_form').serialize(),
+                            success : function(response) {
+                                 $('#certification-details').html(response);
+                                 $('#edit_seed_details').modal('hide');
+                                 $('.modal-backdrop').remove();
+                            }
+                        });
+                    }
                 }
                 else if(identifier == 'MPP')
                 {
-                    $.ajax({
-                        type : "POST",
-                        url : "{% url 'update_edit_details' %}",
-                        data : $('#edit_movement_form').serialize(),
-                        success : function(response) {
-                             $('#Details').html(response);
-                             $('#edit_details').modal('hide');
-                             $('.modal-backdrop').remove();
-                        }
-                    });
+                    var commodity = $('#edit_commodity').val();
+                    var qty = $('#edit_qty').val();
+                    var unit = $('#edit_unit').val();
+
+                    if(commodity == "")
+                    {
+                        $('#edit_commodityErrorMsg').html("Enter Commodity.");
+                        $('#edit_commodityErrorMsg').show();
+                        $('#edit_commodityErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(qty == "")
+                    {
+                        $('#edit_qtyErrorMsg').html("Enter Quantity.");
+                        $('#edit_qtyErrorMsg').show();
+                        $('#edit_qtyErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(unit == "")
+                    {
+                        $('#edit_unitErrorMsg').html("Select Unit.");
+                        $('#edit_unitErrorMsg').show();
+                        $('#edit_unitErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else
+                    {
+                        $.ajax({
+                            type : "POST",
+                            url : "{% url 'update_edit_details' %}",
+                            data : $('#edit_movement_form').serialize(),
+                            success : function(response) {
+                                 $('#Details').html(response);
+                                 $('#edit_details').modal('hide');
+                                 $('.modal-backdrop').remove();
+                            }
+                        });
+                    }
                 }
                 else if(identifier == 'CMS')
                 {
-                    $.ajax({
-                        type : "POST",
-                        url : "{% url 'update_edit_details' %}",
-                        data : $('#meat_item_form').serialize(),
-                        success : function(response) {
-                             $('#meat_item_details').html(response);
-                             $('#meat_item_modal').modal('hide');
-                             $('.modal-backdrop').remove();
-                        }
-                    });
+                    var meat_name = $('#edit_meat_name').val();
+
+                    if(meat_name == "")
+                    {
+                        $('#edit_meat_nameErrorMsg').html("Select Meat Item.");
+                        $('#edit_meat_nameErrorMsg').show();
+                        $('#edit_meat_nameErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else
+                    {
+                        $.ajax({
+                            type : "POST",
+                            url : "{% url 'update_edit_details' %}",
+                            data : $('#meat_item_form').serialize(),
+                            success : function(response) {
+                                 $('#meat_item_details').html(response);
+                                 $('#meat_item_modal').modal('hide');
+                                 $('.modal-backdrop').remove();
+                            }
+                        });
+                    }
                 }
                 else if(identifier == 'AFIP')
                 {
-                    $.ajax({
-                        type : "POST",
-                        url : "{% url 'update_edit_details' %}",
-                        data : $('#edit_details_form').serialize(),
-                        success : function(response) {
-                             $('#permit_details').html(response);
-                             $('#edit_model').modal('hide');
-                             $('.modal-backdrop').remove();
-                        }
-                    });
+                    var Species = $('#edit_Species').val();
+                    var Breed = $('#edit_Breed').val();
+                    var Age = $('#edit_Age').val();
+                    var Sex = $('#edit_Sex').val();
+                    var Description = $('#edit_animal_Description').val();
+                    var No_Of_Animal = $('#edit_no').val();
+
+                    if(Species == "")
+                    {
+                        $('#edit_SpeciesErrorMsg').html("Species cannot Be Empty.");
+                        $('#edit_SpeciesErrorMsg').show();
+                        $('#edit_SpeciesErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(Breed == "")
+                    {
+                        $('#edit_BreedErrorMsg').html("Breed cannot Be Empty.");
+                        $('#edit_BreedErrorMsg').show();
+                        $('#edit_BreedErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(Age == "")
+                    {
+                        $('#edit_AgeErrorMsg').html("Enter Age.");
+                        $('#edit_AgeErrorMsg').show();
+                        $('#edit_AgeErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(Sex == "")
+                    {
+                        $('#edit_SexErrorMsg').html("Enter Sex.");
+                        $('#edit_SexErrorMsg').show();
+                        $('#edit_SexErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(Description == "")
+                    {
+                        $('#edit_animal_DescriptionErrorMsg').html("Enter Description.");
+                        $('#edit_animal_DescriptionErrorMsg').show();
+                        $('#edit_animal_DescriptionErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(No_Of_Animal == "")
+                    {
+                        $('#edit_noErrorMsg').html("Enter No Of Animal.");
+                        $('#edit_noErrorMsg').show();
+                        $('#edit_noErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else
+                    {
+                        $.ajax({
+                            type : "POST",
+                            url : "{% url 'update_edit_details' %}",
+                            data : $('#edit_details_form').serialize(),
+                            success : function(response) {
+                                 $('#permit_details').html(response);
+                                 $('#edit_model').modal('hide');
+                                 $('.modal-backdrop').remove();
+                            }
+                        });
+                    }
                 }
                 else if(identifier == 'APLEC')
                 {
-                    $.ajax({
-                        type : "POST",
-                        url : "{% url 'update_edit_details' %}",
-                        data : $('#edit_animal_product_form').serialize(),
-                        success : function(response) {
-                             $('#animal_product_details').html(response);
-                             $('#edit_animal_products_model').modal('hide');
-                             $('.modal-backdrop').remove();
-                        }
-                    });
+                    var Particulars = $('#edit_Particulars').val();
+                    var Company_Name = $('#edit_Company_Name').val();
+                    var qty = $('#edit_qty').val();
+                    var unit = $('#edit_unit').val();
+
+                    if(Particulars == "")
+                    {
+                        $('#edit_ParticularsErrorMsg').html("Enter Particulars.");
+                        $('#edit_ParticularsErrorMsg').show();
+                        $('#edit_ParticularsErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(Company_Name == "")
+                    {
+                        $('#edit_Company_NameErrorMsg').html("Enter Company/Producer.");
+                        $('#edit_Company_NameErrorMsg').show();
+                        $('#edit_Company_NameErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(qty == "")
+                    {
+                        $('#edit_qtyErrorMsg').html("Enter Quantity.");
+                        $('#edit_qtyErrorMsg').show();
+                        $('#edit_qtyErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(unit == "")
+                    {
+                        $('#edit_unitErrorMsg').html("Select Unit.");
+                        $('#edit_unitErrorMsg').show();
+                        $('#edit_unitErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else
+                    {
+                        $.ajax({
+                            type : "POST",
+                            url : "{% url 'update_edit_details' %}",
+                            data : $('#edit_animal_product_form').serialize(),
+                            success : function(response) {
+                                 $('#animal_product_details').html(response);
+                                 $('#edit_animal_products_model').modal('hide');
+                                 $('.modal-backdrop').remove();
+                            }
+                        });
+                    }
                 }
                 else if(identifier == 'ALEC')
                 {
-                    $.ajax({
-                        type : "POST",
-                        url : "{% url 'update_edit_details' %}",
-                        data : $('#edit_animal_details_form').serialize(),
-                        success : function(response) {
-                             $('#animal_details').html(response);
-                             $('#edit_animal_model').modal('hide');
-                             $('.modal-backdrop').remove();
-                        }
-                    });
+                    var Species = $('#edit_Species').val();
+                    var Breed = $('#edit_Breed').val();
+                    var Age = $('#edit_Age').val();
+                    var Sex = $('#edit_Sex').val();
+                    var Description = $('#edit_animal_Description').val();
+                    var No_Of_Animal = $('#edit_no').val();
+                    var remarks = $('#AP_Remarks').val();
+
+                    if(Species == "")
+                    {
+                        $('#edit_SpeciesErrorMsg').html("Select Species.");
+                        $('#edit_SpeciesErrorMsg').show();
+                        $('#edit_SpeciesErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(Breed == "")
+                    {
+                        $('#edit_BreedErrorMsg').html("Select Breed.");
+                        $('#edit_BreedErrorMsg').show();
+                        $('#edit_BreedErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(Age == "")
+                    {
+                        $('#edit_AgeErrorMsg').html("Enter Age.");
+                        $('#edit_AgeErrorMsg').show();
+                        $('#edit_AgeErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(Sex == "")
+                    {
+                        $('#edit_SexErrorMsg').html("Enter Sex.");
+                        $('#edit_SexErrorMsg').show();
+                        $('#edit_SexErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(Description == "")
+                    {
+                        $('#edit_animal_DescriptionErrorMsg').html("Enter Description.");
+                        $('#edit_animal_DescriptionErrorMsg').show();
+                        $('#edit_animal_DescriptionErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(No_Of_Animal == "")
+                    {
+                        $('#edit_noErrorMsg').html("Enter No Of Animal.");
+                        $('#edit_noErrorMsg').show();
+                        $('#edit_noErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else
+                    {
+                        $.ajax({
+                            type : "POST",
+                            url : "{% url 'update_edit_details' %}",
+                            data : $('#edit_animal_details_form').serialize(),
+                            success : function(response) {
+                                 $('#animal_details').html(response);
+                                 $('#edit_animal_model').modal('hide');
+                                 $('.modal-backdrop').remove();
+                            }
+                        });
+                    }
                 }
                 else if(identifier == 'LPIP')
                 {
-                    $.ajax({
-                        type : "POST",
-                        url : "{% url 'update_edit_details' %}",
-                        data : $('#edit_permit_details_form').serialize(),
-                        success : function(response) {
-                             $('#permit_details').html(response);
-                             $('#edit_permit_details_model').modal('hide');
-                             $('.modal-backdrop').remove();
-                        }
-                    });
+                    var Particulars = $('#edit_Particulars').val();
+                    var Company_Name = $('#edit_Company_Name').val();
+                    var Description = $('#edit_Description').val();
+                    var qty = $('#edit_qty').val();
+                    var unit = $('#edit_unit').val();
+
+                    if(Particulars == "")
+                    {
+                        $('#edit_ParticularsErrorMsg').html("Enter Particulars.");
+                        $('#edit_ParticularsErrorMsg').show();
+                        $('#edit_ParticularsErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(Company_Name == "")
+                    {
+                        $('#edit_Company_NameErrorMsg').html("Enter Company/Producer.");
+                        $('#edit_Company_NameErrorMsg').show();
+                        $('#edit_Company_NameErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(Description == "")
+                    {
+                        $('#edit_DescriptionErrorMsg').html("Enter Description.");
+                        $('#edit_DescriptionErrorMsg').show();
+                        $('#edit_DescriptionErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(qty == "")
+                    {
+                        $('#edit_qtyErrorMsg').html("Enter Quantity.");
+                        $('#edit_qtyErrorMsg').show();
+                        $('#edit_qtyErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(unit == "")
+                    {
+                        $('#edit_unitErrorMsg').html("Select Unit.");
+                        $('#edit_unitErrorMsg').show();
+                        $('#edit_unitErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else
+                    {
+                        $.ajax({
+                            type : "POST",
+                            url : "{% url 'update_edit_details' %}",
+                            data : $('#edit_permit_details_form').serialize(),
+                            success : function(response) {
+                                 $('#permit_details').html(response);
+                                 $('#edit_permit_details_model').modal('hide');
+                                 $('.modal-backdrop').remove();
+                            }
+                        });
+                    }
                 }
                 else if(identifier == 'APM')
                 {
-                    $.ajax({
-                        type : "POST",
-                        url : "{% url 'update_edit_details' %}",
-                        data : $('#edit_mortem_details_form').serialize(),
-                        success : function(response) {
-                             $('#mortem_details').html(response);
-                             $('#edit_mortem_details').modal('hide');
-                             $('.modal-backdrop').remove();
-                        }
-                    });
+                    var Species = $('#edit_Species').val();
+                    var Nos = $('#edit_Nos').val();
+                    var qty = $('#edit_qty').val();
+
+                    if(Species == "")
+                    {
+                        $('#edit_SpeciesErrorMsg').html("Select Species.");
+                        $('#edit_SpeciesErrorMsg').show();
+                        $('#edit_SpeciesErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(Nos == "")
+                    {
+                        $('#edit_NosErrorMsg').html("Enter Number.");
+                        $('#edit_NosErrorMsg').show();
+                        $('#edit_NosErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(qty == "")
+                    {
+                        $('#edit_qtyErrorMsg').html("Enter Quantity.");
+                        $('#edit_qtyErrorMsg').show();
+                        $('#edit_qtyErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else
+                    {
+                        $.ajax({
+                            type : "POST",
+                            url : "{% url 'update_edit_details' %}",
+                            data : $('#edit_mortem_details_form').serialize(),
+                            success : function(response) {
+                                 $('#mortem_details').html(response);
+                                 $('#edit_mortem_details').modal('hide');
+                                 $('.modal-backdrop').remove();
+                            }
+                        });
+                    }
                 }
                 else if(identifier == 'ALMP')
                 {
-                    $.ajax({
-                        type : "POST",
-                        url : "{% url 'update_edit_details' %}",
-                        data : $('#edit_animal_form').serialize(),
-                        success : function(response) {
-                             $('#animal_details').html(response);
-                             $('#edit_animal_model').modal('hide');
-                             $('.modal-backdrop').remove();
-                        }
-                    });
+                    var Common_Name = $('#edit_Common_Name').val();
+                    var Scientific_Name = $('#edit_Scientific_Name').val();
+                    var Age = $('#edit_Age').val();
+                    var No_Of_Animal = $('#edit_No_Of_Animal').val();
+
+                    if(Common_Name == "")
+                    {
+                        $('#edit_Common_NameErrorMsg').html("Enter Common Name.");
+                        $('#edit_Common_NameErrorMsg').show();
+                        $('#edit_Common_NameErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(Scientific_Name == "")
+                    {
+                        $('#edit_Scientific_NameErrorMsg').html("Enter Scientific name.");
+                        $('#edit_Scientific_NameErrorMsg').show();
+                        $('#edit_Scientific_NameErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(Age == "")
+                    {
+                        $('#edit_AgeErrorMsg').html("Enter Age.");
+                        $('#edit_AgeErrorMsg').show();
+                        $('#edit_AgeErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(No_Of_Animal == "")
+                    {
+                        $('#edit_No_Of_AnimalErrorMsg').html("Enter No Of Animal.");
+                        $('#edit_No_Of_AnimalErrorMsg').show();
+                        $('#edit_No_Of_AnimalErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else
+                    {
+                        $.ajax({
+                            type : "POST",
+                            url : "{% url 'update_edit_details' %}",
+                            data : $('#edit_animal_form').serialize(),
+                            success : function(response) {
+                                 $('#animal_details').html(response);
+                                 $('#edit_animal_model').modal('hide');
+                                 $('.modal-backdrop').remove();
+                            }
+                        });
+                    }
                 }
                 else if(identifier == 'APLMP')
                 {
-                    $.ajax({
-                        type : "POST",
-                        url : "{% url 'update_edit_details' %}",
-                        data : $('#edit_animal_product_form').serialize(),
-                        success : function(response) {
-                             $('#animal_product_details').html(response);
-                             $('#edit_animal_product_model').modal('hide');
-                             $('.modal-backdrop').remove();
-                        }
-                    });
+                    var Particulars = $('#edit_Particulars').val();
+                    var Company_Name = $('#edit_Company_Name').val();
+                    var qty = $('#edit_qty').val();
+                    var unit = $('#edit_unit').val();
+
+                    if(Particulars == "")
+                    {
+                        $('#edit_ParticularsErrorMsg').html("Enter Particulars.");
+                        $('#edit_ParticularsErrorMsg').show();
+                        $('#edit_ParticularsErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(Company_Name == "")
+                    {
+                        $('#edit_Company_NameErrorMsg').html("Enter Company/Producer.");
+                        $('#edit_Company_NameErrorMsg').show();
+                        $('#edit_Company_NameErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(qty == "")
+                    {
+                        $('#edit_qtyErrorMsg').html("Enter Quantity.");
+                        $('#edit_qtyErrorMsg').show();
+                        $('#edit_qtyErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(unit == "")
+                    {
+                        $('#edit_unitErrorMsg').html("Select Unit.");
+                        $('#edit_unitErrorMsg').show();
+                        $('#edit_unitErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else
+                    {
+                        $.ajax({
+                            type : "POST",
+                            url : "{% url 'update_edit_details' %}",
+                            data : $('#edit_animal_product_form').serialize(),
+                            success : function(response) {
+                                 $('#animal_product_details').html(response);
+                                 $('#edit_animal_product_model').modal('hide');
+                                 $('.modal-backdrop').remove();
+                            }
+                        });
+                    }
                 }
                 else if(identifier == 'FBR-OP')
                 {
-                    $.ajax({
-                        type : "POST",
-                        url : "{% url 'update_edit_details' %}",
-                        data : $('#edit_op_form').serialize(),
-                        success : function(response) {
-                             $('#fbr_details').html(response);
-                             $('#edit_op_model').modal('hide');
-                             $('.modal-backdrop').remove();
-                        }
-                    });
+                    var BP_Outsourced_To = $('#edit_name').val();
+                    var details_address = $('#edit_address').val();
+                    var contact_number = $('#edit_contact_number').val();
+                    var contact_number_length = $('#edit_contact_number').val().length;
+
+                    if(BP_Outsourced_To == "")
+                    {
+                        $('#edit_nameErrorMsg').html("Enter Outsourced To.");
+                        $('#edit_nameErrorMsg').show();
+                        $('#edit_nameErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(details_address == "")
+                    {
+                        $('#edit_addressErrorMsg').html("Enter Address.");
+                        $('#edit_addressErrorMsg').show();
+                        $('#edit_addressErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(contact_number == "")
+                    {
+                        $('#edit_contact_numberErrorMsg').html("Enter Contact Number.");
+                        $('#edit_contact_numberErrorMsg').show();
+                        $('#edit_contact_numberErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(contact_number_length < 8)
+                    {
+                        $('#edit_contact_numberErrorMsg').html("Cannot Be Less THan Eight Digits.");
+                        $('#edit_contact_numberErrorMsg').show();
+                        $('#edit_contact_numberErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else
+                    {
+                        $.ajax({
+                            type : "POST",
+                            url : "{% url 'update_edit_details' %}",
+                            data : $('#edit_op_form').serialize(),
+                            success : function(response) {
+                                 $('#fbr_details').html(response);
+                                 $('#edit_op_model').modal('hide');
+                                 $('.modal-backdrop').remove();
+                            }
+                        });
+                    }
                 }
                 else if(identifier == 'FBR-FH')
                 {
-                    $.ajax({
-                        type : "POST",
-                        url : "{% url 'update_edit_details' %}",
-                        data : $('#edit_fh_form').serialize(),
-                        success : function(response) {
-                             $('#food_handler_details').html(response);
-                             $('#edit_fh_details').modal('hide');
-                             $('.modal-backdrop').remove();
-                        }
-                    });
+                    var fh_name = $('#edit_fh_name').val();
+                    var fh_license = $('#edit_fh_license').val();
+
+                    if(fh_name == "")
+                    {
+                        $('#edit_fh_nameErrorMsg').html("Enter FH Name.");
+                        $('#edit_fh_nameErrorMsg').show();
+                        $('#edit_fh_nameErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(fh_license == "")
+                    {
+                        $('#edit_fh_licenseErrorMsg').html("Enter License No.");
+                        $('#edit_fh_licenseErrorMsg').show();
+                        $('#edit_fh_licenseErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else
+                    {
+                        $.ajax({
+                            type : "POST",
+                            url : "{% url 'update_edit_details' %}",
+                            data : $('#edit_fh_form').serialize(),
+                            success : function(response) {
+                                 $('#food_handler_details').html(response);
+                                 $('#edit_fh_details').modal('hide');
+                                 $('.modal-backdrop').remove();
+                            }
+                        });
+                    }
                 }
                 else if(identifier == 'FIP')
                 {
-                    $.ajax({
-                        type : "POST",
-                        url : "{% url 'update_edit_details' %}",
-                        data : $('#edit_import_form').serialize(),
-                        success : function(response) {
-                             $('#permit_details').html(response);
-                             $('#edit_import_model').modal('hide');
-                             $('.modal-backdrop').remove();
-                        }
-                    });
+                    var Common_Name = $('#edit_Common_Name').val();
+                    var Product_Category = $('#edit_Product_Category').val();
+                    var characteristics = $('#edit_characteristics').val();
+                    var qty = $('#edit_qty').val();
+                    var unit = $('#edit_unit').val();
+                    var Export_Type = $("input[name=Edit_Export_Type]:checked").length;
+
+                    if(Common_Name == "")
+                    {
+                        $('#edit_Common_NameErrorMsg').html("Enter Common Name.");
+                        $('#edit_Common_NameErrorMsg').show();
+                        $('#edit_Common_NameErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(Product_Category == "")
+                    {
+                        $('#edit_Product_CategoryErrorMsg').html("Select Product Category.");
+                        $('#edit_Product_CategoryErrorMsg').show();
+                        $('#edit_Product_CategoryErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(characteristics == "")
+                    {
+                        $('#edit_characteristicsErrorMsg').html("Enter Product Characteristics.");
+                        $('#edit_characteristicsErrorMsg').show();
+                        $('#edit_characteristicsErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(qty == "")
+                    {
+                        $('#edit_qtyErrorMsg').html("Enter Quantity.");
+                        $('#edit_qtyErrorMsg').show();
+                        $('#edit_qtyErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(unit == "")
+                    {
+                        $('#edit_unitErrorMsg').html("Select Unit.");
+                        $('#edit_unitErrorMsg').show();
+                        $('#edit_unitErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(Export_Type < 1)
+                    {
+                        $('#edit_Export_TypeErrorMsg').html("Select One Exporter Type.");
+                        $('#edit_Export_TypeErrorMsg').show();
+                        $('#edit_Export_TypeErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else
+                    {
+                        $.ajax({
+                            type : "POST",
+                            url : "{% url 'update_edit_details' %}",
+                            data : $('#edit_import_form').serialize(),
+                            success : function(response) {
+                                 $('#permit_details').html(response);
+                                 $('#edit_import_model').modal('hide');
+                                 $('.modal-backdrop').remove();
+                            }
+                        });
+                    }
                 }
                 else if(identifier == 'GAP-FG')
                 {
-                    $.ajax({
-                        type : "POST",
-                        url : "{% url 'update_edit_details' %}",
-                        data : $('#edit_farmers_group_form').serialize(),
-                        success : function(response) {
-                             $('#farmer_details').html(response);
-                             $('#edit_farmers_group_model').modal('hide');
-                             $('.modal-backdrop').remove();
-                        }
-                    });
+                    var cid = $('#edit_farmers_group_cid').val();
+                    var name = $('#edit_farmers_group_fullname').val();
+                    var cidCount = $('#edit_farmers_group_cid').val().length;
+
+                    if(cid == "")
+                    {
+                        $('#edit_farmers_group_cidErrorMsg').html("Enter CID.");
+                        $('#edit_farmers_group_cidErrorMsg').show();
+                        $('#edit_farmers_group_cidErrorMsg').delay(2000).fadeOut('slow');
+                        $("#edit_farmers_group_cid").focus();
+                    }
+                    else if(cidCount < 11)
+                    {
+                        $('#edit_farmers_group_cidErrorMsg').html("Cannot be Less Than Eleven Digits.");
+                        $('#farmers_group_cidErrorMsg').show();
+                        $('#farmers_group_cidErrorMsg').delay(2000).fadeOut('slow');
+                        $("#farmers_group_cid").focus();
+                    }
+                    else if(name == "")
+                    {
+                        $('#edit_farmers_group_fullnameErrorMsg').html("Enter Farmers Name.");
+                        $('#edit_farmers_group_fullnameErrorMsg').show();
+                        $('#edit_farmers_group_fullnameErrorMsg').delay(2000).fadeOut('slow');
+                        $("#edit_farmers_group_fullname").focus();
+                    }
+                    else
+                    {
+                        $.ajax({
+                            type : "POST",
+                            url : "{% url 'update_edit_details' %}",
+                            data : $('#edit_farmers_group_form').serialize(),
+                            success : function(response) {
+                                 $('#farmer_details').html(response);
+                                 $('#edit_farmers_group_model').modal('hide');
+                                 $('.modal-backdrop').remove();
+                            }
+                        });
+                    }
                 }
                 else if(identifier == 'GAP-CP')
                 {
-                    $.ajax({
-                        type : "POST",
-                        url : "{% url 'update_edit_details' %}",
-                        data : $('#edit_crop_production_form').serialize(),
-                        success : function(response) {
-                             $('#details_crop_production').html(response);
-                             $('#edit_crop_production_modal').modal('hide');
-                             $('.modal-backdrop').remove();
-                        }
-                    });
+                    var crop_name = $('#edit_crop_name').val();
+                    var area = $('#edit_area').val();
+                    var area_unit = $('#edit_area_unit').val();
+                    var prev_year = $('#edit_prev_year').val();
+                    var to_year = $('#edit_to_year').val();
+                    var yield = $('#edit_yield').val();
+                    var Yield_Unit = $('#edit_Yield_Unit').val();
+                    var harvest_month = $('#edit_harvest_month').val();
+                    var sold = $('#edit_sold').val();
+                    var balance_stock = $('#edit_balance_stock').val();
+                    var current_year = $('#edit_current_year').val();
+                    var to_current_year = $('#edit_to_current_year').val();
+                    var estimated_yield = $('#edit_estimated_yield').val();
+                    var estimated_Yield_Unit = $('#edit_estimated_Yield_Unit').val();
+                    var estimated_harvest_month = $('#edit_estimated_harvest_month').val();
+
+                    if(crop_name == "")
+                    {
+                        $('#edit_crop_nameErrorMsg').html("Enter Crop Name.");
+                        $('#edit_crop_nameErrorMsg').show();
+                        $('#edit_crop_nameErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(area == "")
+                    {
+                        $('#edit_areaErrorMsg').html("Enter Area.");
+                        $('#edit_areaErrorMsg').show();
+                        $('#edit_areaErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(area_unit == "")
+                    {
+                        $('#edit_area_unitErrorMsg').html("Select Area Unit.");
+                        $('#edit_area_unitErrorMsg').show();
+                        $('#edit_area_unitErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(prev_year == "")
+                    {
+                        $('#edit_prev_yearErrorMsg').html("Select From Date.");
+                        $('#edit_prev_yearErrorMsg').show();
+                        $('#edit_prev_yearErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(to_year == "")
+                    {
+                        $('#edit_to_yearErrorMsg').html("Select To Date.");
+                        $('#edit_to_yearErrorMsg').show();
+                        $('#edit_to_yearErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(yield == "")
+                    {
+                        $('#edit_yieldErrorMsg').html("Enter Yield.");
+                        $('#edit_yieldErrorMsg').show();
+                        $('#edit_yieldErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(Yield_Unit == "")
+                    {
+                        $('#edit_Yield_UnitErrorMsg').html("Select Yield Unit.");
+                        $('#edit_Yield_UnitErrorMsg').show();
+                        $('#edit_Yield_UnitErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(harvest_month == "")
+                    {
+                        $('#edit_harvest_monthErrorMsg').html("Select Harvest Month.");
+                        $('#edit_harvest_monthErrorMsg').show();
+                        $('#edit_harvest_monthErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(sold == "")
+                    {
+                        $('#edit_soldErrorMsg').html("Enter Sold.");
+                        $('#edit_soldErrorMsg').show();
+                        $('#edit_soldErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(balance_stock == "")
+                    {
+                        $('#edit_balance_stockErrorMsg').html("Cannot Be Empty.");
+                        $('#edit_balance_stockErrorMsg').show();
+                        $('#edit_balance_stockErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(current_year == "")
+                    {
+                        $('#edit_current_yearErrorMsg').html("Select From Date.");
+                        $('#edit_current_yearErrorMsg').show();
+                        $('#edit_current_yearErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(to_current_year == "")
+                    {
+                        $('#edit_to_current_yearErrorMsg').html("Select To Date.");
+                        $('#edit_to_current_yearErrorMsg').show();
+                        $('#edit_to_current_yearErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(estimated_yield == "")
+                    {
+                        $('#edit_estimated_yieldErrorMsg').html("Enter Estimated Yield.");
+                        $('#edit_estimated_yieldErrorMsg').show();
+                        $('#edit_estimated_yieldErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(estimated_Yield_Unit == "")
+                    {
+                        $('#edit_estimated_Yield_UnitErrorMsg').html("Select Yield Unit.");
+                        $('#edit_estimated_Yield_UnitErrorMsg').show();
+                        $('#edit_estimated_Yield_UnitErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(estimated_harvest_month == "")
+                    {
+                        $('#edit_estimated_harvest_monthErrorMsg').html("Select Harvest Month.");
+                        $('#edit_estimated_harvest_monthErrorMsg').show();
+                        $('#edit_estimated_harvest_monthErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else
+                    {
+                        $.ajax({
+                            type : "POST",
+                            url : "{% url 'update_edit_details' %}",
+                            data : $('#edit_crop_production_form').serialize(),
+                            success : function(response) {
+                                 $('#details_crop_production').html(response);
+                                 $('#edit_crop_production_modal').modal('hide');
+                                 $('.modal-backdrop').remove();
+                            }
+                        });
+                    }
                 }
                 else if(identifier == 'GAP-PH')
                 {
-                    $.ajax({
-                        type : "POST",
-                        url : "{% url 'update_edit_details' %}",
-                        data : $('#edit_pack_house_form').serialize(),
-                        success : function(response) {
-                             $('#pack_house').html(response);
-                             $('#edit_pack_house_model').modal('hide');
-                             $('.modal-backdrop').remove();
-                        }
-                    });
-                }
+                    var pack_house_name = $('#edit_pack_house_name').val();
+                    var pack_house_address = $('#edit_pack_house_address').val();
+                    var previous_from_date = $('#edit_previous_from_date').val();
+                    var previous_to_date = $('#edit_previous_to_date').val();
+                    var production = $('#edit_production').val();
+                    var production_unit = $('#edit_production_unit').val();
+                    var previous_sold = $('#edit_previous_sold').val();
+                    var previous_sold_unit = $('#edit_previous_sold_unit').val();
+                    var stock_balance = $('#edit_stock_balance').val();
+                    var current_from_date = $('#edit_current_from_date').val();
+                    var current_to_date = $('#edit_current_to_date').val();
+                    var current_Production = $('#edit_current_Production').val();
+                    var current_Production_unit = $('#edit_current_Production_unit').val();
+                    var current_sold = $('#edit_current_sold').val();
+                    var current_sold_unit = $('#edit_current_sold_unit').val();
+                    var current_stock_balance = $('#edit_current_stock_balance').val();
+                    var current_stock_unit = $('#edit_current_stock_unit').val();
 
+                    if(pack_house_name == "")
+                    {
+                        $('#edit_pack_house_nameErrorMsg').html("Enter Pack House Name.");
+                        $('#edit_pack_house_nameErrorMsg').show();
+                        $('#edit_pack_house_nameErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(pack_house_address == "")
+                    {
+                        $('#edit_pack_house_addressErrorMsg').html("Enter Pack House Address.");
+                        $('#edit_pack_house_addressErrorMsg').show();
+                        $('#edit_pack_house_addressErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(previous_from_date == "")
+                    {
+                        $('#edit_previous_from_dateErrorMsg').html("Select From Date.");
+                        $('#edit_previous_from_dateErrorMsg').show();
+                        $('#edit_previous_from_dateErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(previous_to_date == "")
+                    {
+                        $('#edit_previous_to_dateErrorMsg').html("Select To Date.");
+                        $('#edit_previous_to_dateErrorMsg').show();
+                        $('#edit_previous_to_dateErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(production == "")
+                    {
+                        $('#edit_productionErrorMsg').html("Enter Production.");
+                        $('#edit_productionErrorMsg').show();
+                        $('#edit_productionErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(production_unit == "")
+                    {
+                        $('#edit_production_unitErrorMsg').html("Select Production Unit.");
+                        $('#edit_production_unitErrorMsg').show();
+                        $('#edit_production_unitErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(previous_sold == "")
+                    {
+                        $('#edit_previous_soldErrorMsg').html("Enter Sold.");
+                        $('#edit_previous_soldErrorMsg').show();
+                        $('#edit_previous_soldErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(previous_sold_unit == "")
+                    {
+                        $('#edit_previous_sold_unitErrorMsg').html("Select Sold Unit.");
+                        $('#edit_previous_sold_unitErrorMsg').show();
+                        $('#edit_previous_sold_unitErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(current_from_date == "")
+                    {
+                        $('#edit_current_from_dateErrorMsg').html("Select From Date.");
+                        $('#edit_current_from_dateErrorMsg').show();
+                        $('#edit_current_from_dateErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(current_to_date == "")
+                    {
+                        $('#edit_current_to_dateErrorMsg').html("Select To Date.");
+                        $('#edit_current_to_dateErrorMsg').show();
+                        $('#edit_current_to_dateErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(current_Production == "")
+                    {
+                        $('#edit_current_ProductionErrorMsg').html("Enter Current Production.");
+                        $('#edit_current_ProductionErrorMsg').show();
+                        $('#edit_current_ProductionErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(current_Production_unit == "")
+                    {
+                        $('#edit_current_Production_unitErrorMsg').html("Select Yield Unit.");
+                        $('#edit_current_Production_unitErrorMsg').show();
+                        $('#edit_current_Production_unitErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(current_sold == "")
+                    {
+                        $('#edit_current_soldErrorMsg').html("Enter Current Sold.");
+                        $('#edit_current_soldErrorMsg').show();
+                        $('#edit_current_soldErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(current_sold_unit == "")
+                    {
+                        $('#edit_current_sold_unitErrorMsg').html("Select Unit.");
+                        $('#edit_current_sold_unitErrorMsg').show();
+                        $('#edit_current_sold_unitErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(current_stock_unit == "")
+                    {
+                        $('#edit_current_stock_unit').html("Select Unit.");
+                        $('#edit_current_stock_unit').show();
+                        $('#edit_current_stock_unit').delay(2000).fadeOut('slow');
+                    }
+                    else
+                    {
+                        $.ajax({
+                            type : "POST",
+                            url : "{% url 'update_edit_details' %}",
+                            data : $('#edit_pack_house_form').serialize(),
+                            success : function(response) {
+                                 $('#pack_house').html(response);
+                                 $('#edit_pack_house_model').modal('hide');
+                                 $('.modal-backdrop').remove();
+                            }
+                        });
+                    }
+                }
+                else if(identifier == 'OC-FG')
+                {
+                    var cid = $('#edit_farmers_group_cid').val();
+                    var cidCount = $('#edit_farmers_group_cid').val().length;
+                    var name = $('#edit_farmers_group_fullname').val();
+
+                    if(cid == "")
+                    {
+                        $('#edit_farmers_group_cidErrorMsg').html("Enter CID.");
+                        $('#edit_farmers_group_cidErrorMsg').show();
+                        $('#edit_farmers_group_cidErrorMsg').delay(2000).fadeOut('slow');
+                        $("#edit_farmers_group_cid").focus();
+                    }
+                    else if(cidCount < 11)
+                    {
+                        $('#edit_farmers_group_cidErrorMsg').html("Cannot be Less Than Eleven Digits.");
+                        $('#edit_farmers_group_cidErrorMsg').show();
+                        $('#edit_farmers_group_cidErrorMsg').delay(2000).fadeOut('slow');
+                        $("#edit_farmers_group_cid").focus();
+                    }
+                    else if(name == "")
+                    {
+                        $('#edit_farmers_group_fullnameErrorMsg').html("Enter Farmers Name.");
+                        $('#edit_farmers_group_fullnameErrorMsg').show();
+                        $('#edit_farmers_group_fullnameErrorMsg').delay(2000).fadeOut('slow');
+                        $("#edit_farmers_group_fullname").focus();
+                    }
+                    else
+                    {
+                        $.ajax({
+                            type : "POST",
+                            url : "{% url 'update_edit_details' %}",
+                            data : $('#edit_farmers_group_form').serialize(),
+                            success : function(response) {
+                                 $('#farmer_details').html(response);
+                                 $('#edit_farmers_group_model').modal('hide');
+                                 $('.modal-backdrop').remove();
+                            }
+                        });
+                    }
+                }
+                else if(identifier == 'OC-CP')
+                {
+                    var crop_name = $('#edit_crop_name').val();
+                    var area = $('#edit_area').val();
+                    var area_unit = $('#edit_area_unit').val();
+                    var prev_year = $('#edit_prev_year').val();
+                    var to_year = $('#edit_to_year').val();
+                    var yield = $('#edit_yield').val();
+                    var Yield_Unit = $('#edit_Yield_Unit').val();
+                    var harvest_month = $('#edit_harvest_month').val();
+                    var sold = $('#edit_sold').val();
+                    var balance_stock = $('#edit_balance_stock').val();
+                    var current_year = $('#edit_current_year').val();
+                    var to_current_year = $('#edit_to_current_year').val();
+                    var estimated_yield = $('#edit_estimated_yield').val();
+                    var estimated_Yield_Unit = $('#edit_estimated_Yield_Unit').val();
+                    var estimated_harvest_month = $('#edit_estimated_harvest_month').val();
+
+                    if(crop_name == "")
+                    {
+                        $('#edit_crop_nameErrorMsg').html("Enter Crop Name.");
+                        $('#edit_crop_nameErrorMsg').show();
+                        $('#edit_crop_nameErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(area == "")
+                    {
+                        $('#edit_areaErrorMsg').html("Enter Area.");
+                        $('#edit_areaErrorMsg').show();
+                        $('#edit_areaErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(area_unit == "")
+                    {
+                        $('#edit_area_unitErrorMsg').html("Select Area Unit.");
+                        $('#edit_area_unitErrorMsg').show();
+                        $('#edit_area_unitErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(prev_year == "")
+                    {
+                        $('#edit_prev_yearErrorMsg').html("Select From Date.");
+                        $('#edit_prev_yearErrorMsg').show();
+                        $('#edit_prev_yearErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(to_year == "")
+                    {
+                        $('#edit_to_yearErrorMsg').html("Select To Date.");
+                        $('#edit_to_yearErrorMsg').show();
+                        $('#edit_to_yearErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(yield == "")
+                    {
+                        $('#edit_yieldErrorMsg').html("Enter Yield.");
+                        $('#edit_yieldErrorMsg').show();
+                        $('#edit_yieldErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(Yield_Unit == "")
+                    {
+                        $('#edit_Yield_UnitErrorMsg').html("Select Yield Unit.");
+                        $('#edit_Yield_UnitErrorMsg').show();
+                        $('#edit_Yield_UnitErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(harvest_month == "")
+                    {
+                        $('#edit_harvest_monthErrorMsg').html("Select Harvest Month.");
+                        $('#edit_harvest_monthErrorMsg').show();
+                        $('#edit_harvest_monthErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(sold == "")
+                    {
+                        $('#edit_soldErrorMsg').html("Enter Sold.");
+                        $('#edit_soldErrorMsg').show();
+                        $('#edit_soldErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(current_year == "")
+                    {
+                        $('#edit_current_yearErrorMsg').html("Select From Date.");
+                        $('#edit_current_yearErrorMsg').show();
+                        $('#edit_current_yearErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(to_current_year == "")
+                    {
+                        $('#edit_to_current_yearErrorMsg').html("Select To Date.");
+                        $('#edit_to_current_yearErrorMsg').show();
+                        $('#edit_to_current_yearErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(estimated_yield == "")
+                    {
+                        $('#edit_estimated_yieldErrorMsg').html("Enter Estimated Yield.");
+                        $('#edit_estimated_yieldErrorMsg').show();
+                        $('#edit_estimated_yieldErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(estimated_Yield_Unit == "")
+                    {
+                        $('#edit_estimated_Yield_UnitErrorMsg').html("Select Yield Unit.");
+                        $('#edit_estimated_Yield_UnitErrorMsg').show();
+                        $('#edit_estimated_Yield_UnitErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(estimated_harvest_month == "")
+                    {
+                        $('#edit_estimated_harvest_monthErrorMsg').html("Select Harvest Month.");
+                        $('#edit_estimated_harvest_monthErrorMsg').show();
+                        $('#edit_estimated_harvest_monthErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else
+                    {
+                        $.ajax({
+                            type : "POST",
+                            url : "{% url 'update_edit_details' %}",
+                            data : $('#edit_crop_production_form').serialize(),
+                            success : function(response) {
+                                 $('#crop_production').html(response);
+                                 $('#edit_crop_production_modal').modal('hide');
+                                 $('.modal-backdrop').remove();
+                            }
+                        });
+                    }
+                }
+                else if(identifier == 'OC-WC')
+                {
+                    var common_name = $('#edit_common_name').val();
+                    var botanical_name = $('#edit_botanical_name').val();
+                    var part_of_plant = $('#edit_part_of_plant').val();
+                    var estimated_harvest = $('#edit_estimated_harvest').val();
+                    var estimated_harvest_Yield_Unit = $('#edit_estimated_harvest_Yield_Unit').val();
+                    var harvest_season = $('#edit_harvest_season').val();
+                    var harvest_acreage = $('#edit_harvest_acreage').val();
+                    var harvest_Unit = $('#edit_harvest_Unit').val();
+
+                    if(common_name == "")
+                    {
+                        $('#edit_common_nameErrorMsg').html("Enter Common Name.");
+                        $('#edit_common_nameErrorMsg').show();
+                        $('#edit_common_nameErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(botanical_name == "")
+                    {
+                        $('#edit_botanical_nameErrorMsg').html("Enter Botanical Name.");
+                        $('#edit_botanical_nameErrorMsg').show();
+                        $('#edit_botanical_nameErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(part_of_plant == "")
+                    {
+                        $('#edit_part_of_plantErrorMsg').html("Enter Part of Plant Harvested.");
+                        $('#edit_part_of_plantErrorMsg').show();
+                        $('#edit_part_of_plantErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(estimated_harvest == "")
+                    {
+                        $('#edit_estimated_harvestErrorMsg').html("Enter Estimated Harvest/Yield.");
+                        $('#edit_estimated_harvestErrorMsg').show();
+                        $('#edit_estimated_harvestErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(estimated_harvest_Yield_Unit == "")
+                    {
+                        $('#edit_estimated_harvest_Yield_UnitErrorMsg').html("Select Estimated Harvest/Yield Unit.");
+                        $('#edit_estimated_harvest_Yield_UnitErrorMsg').show();
+                        $('#edit_estimated_harvest_Yield_UnitErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(harvest_season == "")
+                    {
+                        $('#edit_harvest_season').html("Enter Estimated Harvest Yield/Season.");
+                        $('#edit_harvest_season').show();
+                        $('#edit_harvest_season').delay(2000).fadeOut('slow');
+                    }
+                    else if(harvest_acreage == "")
+                    {
+                        $('#edit_harvest_acreageErrorMsg').html("Enter Harvest Acreage.");
+                        $('#edit_harvest_acreageErrorMsg').show();
+                        $('#edit_harvest_acreageErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(harvest_Unit == "")
+                    {
+                        $('#edit_harvest_UnitErrorMsg').html("Select Harvest Unit.");
+                        $('#edit_harvest_UnitErrorMsg').show();
+                        $('#edit_harvest_UnitErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else
+                    {
+                        $.ajax({
+                            type : "POST",
+                            url : "{% url 'update_edit_details' %}",
+                            data : $('#edit_wild_collection_form').serialize(),
+                            success : function(response) {
+                                 $('#wild_collection').html(response);
+                                 $('#edit_wild_collection_model').modal('hide');
+                                 $('.modal-backdrop').remove();
+                            }
+                        });
+                    }
+                }
+                else if(identifier == 'OC-AH')
+                {
+                    var livestock_type = $('#edit_livestock_type').val();
+                    var male = $('#edit_male').val();
+                    var female = $('#edit_female').val();
+                    var estimated_production = $('#edit_estimated_production').val();
+                    var estimated_production_Unit = $('#edit_estimated_production_Unit').val();
+                    var product_sold = $('#edit_product_sold').val();
+
+                    if(livestock_type == "")
+                    {
+                        $('#edit_livestock_typeErrorMsg').html("Enter Livestock Type.");
+                        $('#edit_livestock_typeErrorMsg').show();
+                        $('#edit_livestock_typeErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(male == "")
+                    {
+                        $('#edit_maleErrorMsg').html("Enter Number Of Male.");
+                        $('#edit_maleErrorMsg').show();
+                        $('#edit_maleErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(female == "")
+                    {
+                        $('#edit_femaleErrorMsg').html("Enter Number Of Female.");
+                        $('#edit_femaleErrorMsg').show();
+                        $('#edit_femaleErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(estimated_production == "")
+                    {
+                        $('#edit_estimated_productionErrorMsg').html("Enter Estimated Production.");
+                        $('#edit_estimated_productionErrorMsg').show();
+                        $('#edit_estimated_productionErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(estimated_production_Unit == "")
+                    {
+                        $('#edit_estimated_production_UnitErrorMsg').html("Select Estimated Production Unit.");
+                        $('#edit_estimated_production_UnitErrorMsg').show();
+                        $('#edit_estimated_production_UnitErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(product_sold == "")
+                    {
+                        $('#edit_product_soldErrorMsg').html("Enter Product Sold.");
+                        $('#edit_product_soldErrorMsg').show();
+                        $('#edit_product_soldErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else
+                    {
+                        $.ajax({
+                            type : "POST",
+                            url : "{% url 'update_edit_details' %}",
+                            data : $('#edit_animal_husbandry_form').serialize(),
+                            success : function(response) {
+                                 $('#animal_husbandry').html(response);
+                                 $('#edit_animal_husbandry_model').modal('hide');
+                                 $('.modal-backdrop').remove();
+                            }
+                        });
+                    }
+                }
+                else if(identifier == 'OC-AQUA')
+                {
+                    var Aquaculture_type = $('#edit_Aquaculture_type').val();
+                    var Aquaculture_Yield = $('#edit_Aquaculture_Yield').val();
+                    var Aquaculture_Yield_Unit = $('#edit_Aquaculture_Yield_Unit').val();
+                    var aqua_harvest_month = $('#edit_aqua_harvest_month').val();
+                    var aqua_Sold = $('#edit_aqua_Sold').val();
+                    var aqua_Sold_unit = $('#edit_aqua_Sold_unit').val();
+                    var stock_balance_unit = $('#edit_stock_balance_unit').val();
+
+                    if(Aquaculture_type == "")
+                    {
+                        $('#edit_Aquaculture_YieldErrorMsg').html("Enter Aquaculture Type.");
+                        $('#edit_Aquaculture_YieldErrorMsg').show();
+                        $('#edit_Aquaculture_YieldErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(Aquaculture_Yield == "")
+                    {
+                        $('#Aquaculture_YieldErrorMsg').html("Enter Estimated Yield.");
+                        $('#Aquaculture_YieldErrorMsg').show();
+                        $('#Aquaculture_YieldErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(Aquaculture_Yield_Unit == "")
+                    {
+                        $('#edit_Aquaculture_Yield_UnitErrorMsg').html("Select Estimated Yield Unit.");
+                        $('#edit_Aquaculture_Yield_UnitErrorMsg').show();
+                        $('#edit_Aquaculture_Yield_UnitErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(aqua_harvest_month == "")
+                    {
+                        $('#edit_aqua_harvest_monthErrorMsg').html("Enter Harvest Month.");
+                        $('#edit_aqua_harvest_monthErrorMsg').show();
+                        $('#edit_aqua_harvest_monthErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(aqua_Sold == "")
+                    {
+                        $('#edit_aqua_SoldErrorMsg').html("Enter Sold.");
+                        $('#edit_aqua_SoldErrorMsg').show();
+                        $('#edit_aqua_SoldErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(aqua_Sold_unit == "")
+                    {
+                        $('#edit_aqua_Sold_unitErrorMsg').html("Select Sold Unit.");
+                        $('#edit_aqua_Sold_unitErrorMsg').show();
+                        $('#edit_aqua_Sold_unitErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(stock_balance_unit == "")
+                    {
+                        $('#edit_stock_balance_unitErrorMsg').html("Select Balance Stock Unit.");
+                        $('#edit_stock_balance_unitErrorMsg').show();
+                        $('#edit_stock_balance_unitErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else
+                    {
+                        $.ajax({
+                            type : "POST",
+                            url : "{% url 'update_edit_details' %}",
+                            data : $('#edit_aquaculture_form').serialize(),
+                            success : function(response) {
+                                 $('#aquaculture').html(response);
+                                 $('#edit_aquaculture_model').modal('hide');
+                                 $('.modal-backdrop').remove();
+                            }
+                        });
+                    }
+                }
+                else if(identifier == 'OC-API')
+                {
+                    var api_common_name = $('#edit_api_common_name').val();
+                    var api_botanical_name = $('#api_botanical_name').val();
+                    var api_estimated_harvest = $('#api_estimated_harvest').val();
+                    var api_estimated_harvest_Yield_Unit = $('#api_estimated_harvest_Yield_Unit').val();
+                    var api_harvest_acreage = $('#api_harvest_acreage').val();
+                    var api_Unit = $('#api_Unit').val();
+
+                    if(api_common_name == "")
+                    {
+                        $('#edit_api_common_nameErrorMsg').html("Enter Common Name.");
+                        $('#edit_api_common_nameErrorMsg').show();
+                        $('#edit_api_common_nameErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(api_botanical_name == "")
+                    {
+                        $('#edit_api_botanical_nameErrorMsg').html("Enter Botanical Name.");
+                        $('#edit_api_botanical_nameErrorMsg').show();
+                        $('#edit_api_botanical_nameErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(api_estimated_harvest == "")
+                    {
+                        $('#edit_api_estimated_harvestErrorMsg').html("Enter Estimated Harvest/Yield.");
+                        $('#edit_api_estimated_harvestErrorMsg').show();
+                        $('#edit_api_estimated_harvestErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(api_estimated_harvest_Yield_Unit == "")
+                    {
+                        $('#edit_api_estimated_harvest_Yield_UnitErrorMsg').html("Select Estimated Harvest/Yield Unit.");
+                        $('#edit_api_estimated_harvest_Yield_UnitErrorMsg').show();
+                        $('#edit_api_estimated_harvest_Yield_UnitErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(api_harvest_acreage == "")
+                    {
+                        $('#edit_api_harvest_acreageErrorMsg').html("Select Harvest Acreage.");
+                        $('#edit_api_harvest_acreageErrorMsg').show();
+                        $('#edit_api_harvest_acreageErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(api_Unit == "")
+                    {
+                        $('#edit_api_UnitErrorMsg').html("Select Unit.");
+                        $('#edit_api_UnitErrorMsg').show();
+                        $('#edit_api_UnitErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else
+                    {
+                        $.ajax({
+                            type : "POST",
+                            url : "{% url 'update_edit_details' %}",
+                            data : $('#edit_api_culture_form').serialize(),
+                            success : function(response) {
+                                 $('#api_culture').html(response);
+                                 $('#edit_api_culture_model').modal('hide');
+                                 $('.modal-backdrop').remove();
+                            }
+                        });
+                    }
+                }
+                else if(identifier == 'OC-PU')
+                {
+                    var processing_name = $('#edit_processing_name').val();
+                    var address_of_Operation = $('#edit_address_of_Operation').val();
+                    var processing_type = $('#edit_processing_type').val();
+                    var from_date = $('#edit_from_date').val();
+                    var to_date = $('#edit_to_date').val();
+                    var production = $('#edit_production').val();
+                    var production_unit = $('#edit_production_unit').val();
+                    var processing_Sold = $('#edit_processing_Sold').val();
+                    var current_from_date = $('#edit_current_from_date').val();
+                    var current_to_date = $('#edit_current_to_date').val();
+                    var current_production = $('#edit_current_production').val();
+                    var current_production_unit = $('#edit_current_production_unit').val();
+                    var current_processing_Sold = $('#edit_current_processing_Sold').val();
+
+                    if(processing_name == "")
+                    {
+                        $('#edit_processing_nameErrorMsg').html("Enter Name.");
+                        $('#edit_processing_nameErrorMsg').show();
+                        $('#edit_processing_nameErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(address_of_Operation == "")
+                    {
+                        $('#edit_address_of_OperationErrorMsg').html("Enter Address.");
+                        $('#edit_address_of_OperationErrorMsg').show();
+                        $('#edit_address_of_OperationErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(processing_type == "")
+                    {
+                        $('#edit_processing_typeErrorMsg').html("Enter Processing Type.");
+                        $('#edit_processing_typeErrorMsg').show();
+                        $('#edit_processing_typeErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(from_date == "")
+                    {
+                        $('#edit_from_dateErrorMsg').html("Select From Date.");
+                        $('#edit_from_dateErrorMsg').show();
+                        $('#edit_from_dateErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(to_date == "")
+                    {
+                        $('#edit_to_dateErrorMsg').html("Select To Date.");
+                        $('#edit_to_dateErrorMsg').show();
+                        $('#edit_to_dateErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(production == "")
+                    {
+                        $('#edit_productionErrorMsg').html("Enter Production.");
+                        $('#edit_productionErrorMsg').show();
+                        $('#edit_productionErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(production_unit == "")
+                    {
+                        $('#edit_production_unitErrorMsg').html("Select Production Unit.");
+                        $('#edit_production_unitErrorMsg').show();
+                        $('#edit_production_unitErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(processing_Sold == "")
+                    {
+                        $('#edit_processing_SoldErrorMsg').html("Enter Sold.");
+                        $('#edit_processing_SoldErrorMsg').show();
+                        $('#edit_processing_SoldErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(current_from_date == "")
+                    {
+                        $('#edit_current_from_dateErrorMsg').html("Select From Date.");
+                        $('#edit_current_from_dateErrorMsg').show();
+                        $('#edit_current_from_dateErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(current_to_date == "")
+                    {
+                        $('#edit_current_productionErrorMsg').html("Select To Date.");
+                        $('#edit_current_productionErrorMsg').show();
+                        $('#edit_current_productionErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(current_production == "")
+                    {
+                        $('#edit_current_productionErrorMsg').html("Select From Date.");
+                        $('#edit_current_productionErrorMsg').show();
+                        $('#edit_current_productionErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(current_production_unit == "")
+                    {
+                        $('#edit_current_production_unitErrorMsg').html("Select Production Unit.");
+                        $('#edit_current_production_unitErrorMsg').show();
+                        $('#edit_current_production_unitErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else if(current_processing_Sold == "")
+                    {
+                        $('#edit_current_processing_SoldErrorMsg').html("Enter Sold.");
+                        $('#edit_current_processing_SoldErrorMsg').show();
+                        $('#edit_current_processing_SoldErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                    else
+                    {
+                        $.ajax({
+                            type : "POST",
+                            url : "{% url 'update_edit_details' %}",
+                            data : $('#edit_processing_form').serialize(),
+                            success : function(response) {
+                                 $('#processing_details').html(response);
+                                 $('#edit_processing_model').modal('hide');
+                                 $('.modal-backdrop').remove();
+                            }
+                        });
+                    }
+                }
             }
         </script>
     </body>

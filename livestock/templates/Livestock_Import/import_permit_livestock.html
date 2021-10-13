@@ -26,13 +26,13 @@ form, input, select, textarea{
             <div class="row justify-content-left">
                 <ul class="nav nav-pills nav-secondary" id="pills-tab" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadDetails()">Application Form</a>
+                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="checkDetails()">Application Form</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-lp-details" data-toggle="pill" href="#details" role="tab" aria-controls="pills-lp-details" aria-selected="false" onclick="load_details()">Details</a>
+                        <a class="nav-link" id="pills-lp-details" data-toggle="pill" href="#details" role="tab" aria-controls="pills-lp-details" aria-selected="false" onclick="load_lp_details()">Details</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-lp-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
+                        <a class="nav-link" id="pills-lp-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_lp_attachment()">File Attachment</a>
                     </li>
                 </ul>
             </div>
@@ -230,7 +230,7 @@ form, input, select, textarea{
                         Save SuccessFul
                     </div>
                     <div class="card-action">
-                        <button type="button" class="btn btn-primary" onclick="permit_save_details()">Save</button>
+                        <button type="button" class="btn btn-primary" id="lp_button" onclick="permit_save_details()">Save</button>
                     </div>
                 </div>
                 <div class="tab-pane fade" id="details" role="tabpanel" aria-labelledby="pills-lp-details">
@@ -280,31 +280,31 @@ form, input, select, textarea{
                             <div class="box-body">
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Particulars</label>
+                                        <label class="form-label">Particulars <font color="red">*</font></label>
                                         <input type="text" name="Particulars" class="form-control" id="Particulars" required>
                                         <div class="alert alert-danger" id="ParticularsErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Company/Producer</label>
+                                        <label class="form-label">Company/Producer <font color="red">*</font></label>
                                         <input type="text" name="Company_Name" class="form-control" id="Company_Name" required>
                                         <div class="alert alert-danger" id="Company_NameErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Description</label>
+                                        <label class="form-label">Description <font color="red">*</font></label>
                                         <textarea class="form-control" name="Description" id="Description"></textarea>
                                         <div class="alert alert-danger" id="remarksMeansErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Quantity</label>
+                                        <label class="form-label">Quantity <font color="red">*</font></label>
                                         <input type="text" name="qty" class="form-control" id="qty" onkeypress="return isNumberKey(event)">
                                         <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Unit</label>
+                                        <label class="form-label">Unit <font color="red">*</font></label>
                                         <select class="form-control" name="unit"  id="unit">
                                             <option value="">--SELECT UNIT--</option>
                                             {% for unit in unit %}
@@ -385,31 +385,31 @@ form, input, select, textarea{
                                 <input type="hidden" name="identifier" value="LPIP"/>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Particulars</label>
+                                        <label class="form-label">Particulars <font color="red">*</font></label>
                                         <input type="text" name="edit_Particulars" class="form-control" id="edit_Particulars" required>
                                         <div class="alert alert-danger" id="edit_ParticularsErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Company/Producer</label>
+                                        <label class="form-label">Company/Producer <font color="red">*</font></label>
                                         <input type="text" name="edit_Company_Name" class="form-control" id="edit_Company_Name" required>
                                         <div class="alert alert-danger" id="edit_Company_NameErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Description</label>
+                                        <label class="form-label">Description <font color="red">*</font></label>
                                         <textarea class="form-control" name="edit_Description" id="edit_Description"></textarea>
                                         <div class="alert alert-danger" id="edit_DescriptionErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Quantity</label>
+                                        <label class="form-label">Quantity <font color="red">*</font></label>
                                         <input type="text" name="edit_qty" class="form-control" id="edit_qty" onkeypress="return isNumberKey(event)">
                                         <div class="alert alert-danger" id="edit_qtyErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Unit</label>
+                                        <label class="form-label">Unit <font color="red">*</font></label>
                                         <select class="form-control" name="edit_unit"  id="edit_unit">
                                             <option value="">--SELECT UNIT--</option>
                                             {% for unit in unit %}
@@ -449,7 +449,7 @@ $(function()
 });
 function permit_save_details()
 {
-
+    var applicationNo = $('#applicationNo').val();
     var cid = $('#cid').val();
     var passport = $('#passport').val();
     var name = $('#name').val();
@@ -602,12 +602,37 @@ function permit_save_details()
         $('#Expected_Arrival_DateErrorMsg').delay(2000).fadeOut('slow');
         $('#Expected_Arrival_Date').focus();
     }
-    else
+    else if(applicationNo == "")
     {
         $.ajax
         ({
             type : "POST",
             url : "{% url 'save_import_lp' %}",
+            data : $('#Livestock_Products_Animal_Feeds_form').serialize(),
+            success : function(data)
+            {
+                $('#applicationNo').val(data.applNo);
+                $('#applNo').val(data.applNo);
+                $('#appNo').val(data.applNo);
+                $('#submitMsg').show();
+                setTimeout(function()
+                {
+                    $("#submitMsg").hide('blind', {}, 500)
+                }, 2000);
+                setTimeout(function()
+                {
+                    $('#pills-lp-details').tab('show');
+                }, 3000);
+                $("#lp_button").html('Update');
+            }
+        });
+    }
+    else if(applicationNo != "")
+    {
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'update_import_lp' %}",
             data : $('#Livestock_Products_Animal_Feeds_form').serialize(),
             success : function(data)
             {
@@ -745,13 +770,13 @@ function save_permit_details_form()
 
     if(Particulars == "")
     {
-        $('#ParticularsErrorMsg').html("Select Particulars.");
+        $('#ParticularsErrorMsg').html("Enter Particulars.");
         $('#ParticularsErrorMsg').show();
         $('#ParticularsErrorMsg').delay(2000).fadeOut('slow');
     }
     else if(Company_Name == "")
     {
-        $('#Company_NameErrorMsg').html("Enter Company Name.");
+        $('#Company_NameErrorMsg').html("Enter Company/Producer.");
         $('#Company_NameErrorMsg').show();
         $('#Company_NameErrorMsg').delay(2000).fadeOut('slow');
     }
@@ -773,8 +798,8 @@ function save_permit_details_form()
         $('#unitErrorMsg').show();
         $('#unitErrorMsg').delay(2000).fadeOut('slow');
     }
-
-    else{
+    else
+    {
         $.ajax({
             type : "POST",
             url : "{% url 'import_livestock_product_details' %}",
@@ -960,6 +985,49 @@ function populateDetails(Record_Id, Particulars, Company_Name, Description, Quan
     $('#edit_unit').val(Unit);
     $('#edit_applNo').val(Application_No);
     $('#edit_permit_details_model').modal('show');
+}
+
+function checkDetails()
+{
+    var applicationNo = $('#applicationNo').val();
+    if(applicationNo == "")
+    {
+        $("#pills-lp-details").prop('disabled', true);
+        $("#pills-lp-file").prop('disabled', true);
+    }
+    else if(applicationNo != "")
+    {
+        $("#pills-lp-details").prop('disabled', true);
+        $("#pills-lp-file").prop('disabled', true);
+    }
+}
+
+function load_lp_details()
+{
+    var appNo = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_lp_import_details' %}",
+        data :{'appNo':appNo},
+        success : function(response)
+        {
+            $('#Details').html(response);
+        }
+    });
+}
+
+function load_lp_attachment()
+{
+    var appNo = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_lp_import_attachment' %}",
+        data :{'appNo':appNo},
+        success : function(response)
+        {
+            $('#fileAttach').html(response);
+        }
+    });
 }
 </script>
 {% endblock %}

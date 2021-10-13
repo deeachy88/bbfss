@@ -25,13 +25,13 @@ form, input, select, textarea{
             <div class="row justify-content-left">
                 <ul class="nav nav-pills nav-secondary" id="pills-mortem" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadDetails()">Application Form</a>
+                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="check_meat_details()">Application Form</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-details" data-toggle="pill" href="#details" role="tab" aria-controls="pills-details" aria-selected="false" onclick="load_details()">Meat Items</a>
+                        <a class="nav-link" id="pills-details" data-toggle="pill" href="#details" role="tab" aria-controls="pills-details" aria-selected="false" onclick="load_meat_details()">Meat Items</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="fbr-file-attach" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
+                        <a class="nav-link" id="fbr-file-attach" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_meat_attachment()">File Attachment</a>
                     </li>
                 </ul>
             </div>
@@ -160,7 +160,7 @@ form, input, select, textarea{
                         Save SuccessFul
                     </div>
                     <div class="card-action">
-                        <button type="button" class="btn btn-primary" onclick="save_fbr_form()">Save</button>
+                        <button type="button" class="btn btn-primary" id="fbr_button" onclick="save_fbr_form()">Save</button>
                     </div>
                 </div>
             <div class="tab-pane fade" id="details" role="tabpanel" aria-labelledby="pills-details">
@@ -323,6 +323,7 @@ function isNumberKey(evt)
 }
 function save_fbr_form()
 {
+    var applicationNo = $('#applicationNo').val();
     var Business_Name = $('#Business_Name').val();
     var cid = $('#cid').val();
     var name_manager = $('#name_manager').val();
@@ -430,11 +431,33 @@ function save_fbr_form()
         $('#location_codeErrorMsg').delay(2000).fadeOut('slow');
         $('#location').focus();
     }
-    else
+    else if(applicationNo == "")
     {
         $.ajax({
         type : "POST",
         url : "{% url 'save_meat_shop_registration' %}",
+        data : $('#FBR_form').serialize(),
+        success : function(data)
+        {
+            $('#applicationNo').val(data.applNo);
+            $('#fh_application_no').val(data.applNo);
+            $('#attachment_appNo').val(data.applNo);
+            $('#submitMsg').show();
+            setTimeout(function() {
+                $("#submitMsg").hide('blind', {}, 500)
+            }, 2000);
+            setTimeout(function() {
+                $('#pills-details').tab('show');
+            }, 3000);
+            $("#fbr_button").html('Update');
+        }
+        });
+    }
+    else if(applicationNo != "")
+    {
+        $.ajax({
+        type : "POST",
+        url : "{% url 'update_meat_shop_registration' %}",
         data : $('#FBR_form').serialize(),
         success : function(data)
         {
@@ -582,7 +605,7 @@ function save_meat_item_details()
 
     if(meat_name == "")
     {
-        $('#meat_nameErrorMsg').html("Cannot Leave Empty.");
+        $('#meat_nameErrorMsg').html("Select Meat Item.");
         $('#meat_nameErrorMsg').show();
         $('#meat_nameErrorMsg').delay(2000).fadeOut('slow');
     }
@@ -690,6 +713,49 @@ function populateMeatDetails(Record_Id, Meat_Item, application_no)
     $('#edit_meat_name').val(Meat_Item);
     $('#meat_item_application_no').val(application_no);
     $('#meat_item_modal').modal('show');
+}
+
+function check_meat_details()
+{
+    var applicationNo = $('#applicationNo').val();
+    if(applicationNo == "")
+    {
+        $("#pills-details").prop('disabled', true);
+        $("#fbr-file-attach").prop('disabled', true);
+    }
+    else if(applicationNo != "")
+    {
+        $("#pills-details").prop('disabled', false);
+        $("#fbr-file-attach").prop('disabled', false);
+    }
+}
+
+function load_meat_details()
+{
+    var appNo = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_meat_details' %}",
+        data :{'appNo':appNo},
+        success : function(response)
+        {
+            $('#meat_item_details').html(response);
+        }
+    });
+}
+
+function load_meat_attachment()
+{
+    var appNo = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_meat_attachment' %}",
+        data :{'appNo':appNo},
+        success : function(response)
+        {
+            $('#file-attachment-mortem').html(response);
+        }
+    });
 }
 </script>
 {% endblock %}

@@ -26,34 +26,34 @@ form, input, select, textarea{
             <div class="row justify-content-left">
                 <ul class="nav nav-pills nav-secondary" id="pills-mortem" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadDetails()">Application Form</a>
+                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="load_form()">Application Form</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-farmers-group" data-toggle="pill" href="#details" role="tab" aria-controls="pills-farmers-group" aria-selected="false" onclick="load_details()">Farmer Group Details</a>
+                        <a class="nav-link" id="pills-farmers-group" data-toggle="pill" href="#details" role="tab" aria-controls="pills-farmers-group" aria-selected="false" onclick="oc_fg_details()">Farmer Group Details</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-crop-production" data-toggle="pill" href="#crop_production_details" role="tab" aria-controls="pills-crop-production" aria-selected="false" onclick="load_details()">Crop production(If Applicable)</a>
+                        <a class="nav-link" id="pills-crop-production" data-toggle="pill" href="#crop_production_details" role="tab" aria-controls="pills-crop-production" aria-selected="false" onclick="oc_cp_details()">Crop production(If Applicable)</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-wild-collection" data-toggle="pill" href="#wild_collection_details" role="tab" aria-controls="pills-wild-collection" aria-selected="false" onclick="load_details()">Wild Collection(If Applicable)</a>
+                        <a class="nav-link" id="pills-wild-collection" data-toggle="pill" href="#wild_collection_details" role="tab" aria-controls="pills-wild-collection" aria-selected="false" onclick="wild_details()">Wild Collection(If Applicable)</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-animal-husbandry" data-toggle="pill" href="#animal_husbandry_details" role="tab" aria-controls="pills-animal-husbandry" aria-selected="false" onclick="load_details()">Animal Husbandry(If Applicable)</a>
+                        <a class="nav-link" id="pills-animal-husbandry" data-toggle="pill" href="#animal_husbandry_details" role="tab" aria-controls="pills-animal-husbandry" aria-selected="false" onclick="animal_husbandry_details()">Animal Husbandry(If Applicable)</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-aquaculture" data-toggle="pill" href="#aquaculture_details" role="tab" aria-controls="pills-aquaculture" aria-selected="false" onclick="load_details()">Aquaculture(If Applicable)</a>
+                        <a class="nav-link" id="pills-aquaculture" data-toggle="pill" href="#aquaculture_details" role="tab" aria-controls="pills-aquaculture" aria-selected="false" onclick="aquaculture_details()">Aquaculture(If Applicable)</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-apiculture" data-toggle="pill" href="#apiculture_details" role="tab" aria-controls="pills-apiculture" aria-selected="false" onclick="load_details()">Apiculture(If Applicable)</a>
+                        <a class="nav-link" id="pills-apiculture" data-toggle="pill" href="#apiculture_details" role="tab" aria-controls="pills-apiculture" aria-selected="false" onclick="api_details()">Apiculture(If Applicable)</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-processing-unit" data-toggle="pill" href="#processing_unit_details" role="tab" aria-controls="pills-processing-unit" aria-selected="false" onclick="load_details()">Processing unit(If Applicable) </a>
+                        <a class="nav-link" id="pills-processing-unit" data-toggle="pill" href="#processing_unit_details" role="tab" aria-controls="pills-processing-unit" aria-selected="false" onclick="processing_details()">Processing unit(If Applicable) </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="organic-file-attach" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
+                        <a class="nav-link" id="organic-file-attach" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="oc_attachment_details()">File Attachment</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="certification_standards" data-toggle="pill" href="#certification-standards" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">Standards</a>
+                        <a class="nav-link" id="certification_standards" data-toggle="pill" href="#certification-standards" role="tab" aria-controls="pills-profile" aria-selected="false">Standards</a>
                     </li>
                 </ul>
             </div>
@@ -232,7 +232,7 @@ form, input, select, textarea{
                         Save SuccessFul
                     </div>
                     <div class="card-action">
-                        <button type="button" class="btn btn-primary" onclick="save_organic_certificate()">Save</button>
+                        <button type="button" class="btn btn-primary" id="oc_button" onclick="save_organic_certificate()">Save</button>
                     </div>
                 </div>
 
@@ -370,7 +370,7 @@ form, input, select, textarea{
                 </div>
             </div>
             <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="mortem-file-attach">
-                <div id="file-attachment-mortem">
+                <div id="file-attachment-oc">
                     {% include 'organic_certification/file_attachment.html' %}
                 </div>
                 <div class="card-action">
@@ -583,7 +583,7 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">From date <font color="red">*</font></label>
-                                             <input type="text" name="prev_year" id="prev_year" class="form-control date-picker flatpickr-input active">
+                                             <input type="text" name="prev_year" id="prev_year" class="form-control date-picker flatpickr-input active" onchange="get_month()">
                                         </div>
                                         <div class="alert alert-danger" id="prev_yearErrorMsg" style="display:none"></div>
                                     </div>
@@ -597,7 +597,7 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Yield <font color="red">*</font></label>
-                                             <input type="text" name="yield" id="yield" class="form-control" onkeypress="return isNumberKey(event)">
+                                             <input type="text" name="yield" id="yield" class="form-control" onkeypress="return isNumberKey(event)" onchange="getBalance()">
                                         </div>
                                         <div class="alert alert-danger" id="yieldErrorMsg" style="display:none"></div>
                                     </div>
@@ -622,14 +622,14 @@ form, input, select, textarea{
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Sold <font color="red">*</font></label>
-                                        <input type="text" name="sold" class="form-control" id="sold" onchange="getBalance(this.value)">
+                                        <input type="text" name="sold" class="form-control" id="sold" onchange="getBalance()">
                                         <div class="alert alert-danger" id="soldErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Balance Stock <font color="red">*</font></label>
-                                        <input type="text" name="balance_stock" class="form-control" id="balance_stock" required>
+                                        <input type="text" name="balance_stock" class="form-control" id="balance_stock" readonly="readonly">
                                         <div class="alert alert-danger" id="balance_stockErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
@@ -645,7 +645,7 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">From date <font color="red">*</font></label>
-                                             <input type="text" name="current_year" id="current_year" class="form-control date-picker flatpickr-input active">
+                                             <input type="text" name="current_year" id="current_year" class="form-control date-picker flatpickr-input active" onchange="get_harvest_month()">
                                         </div>
                                         <div class="alert alert-danger" id="current_yearErrorMsg" style="display:none"></div>
                                     </div>
@@ -747,7 +747,7 @@ form, input, select, textarea{
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Estimated Harvest Yield/Season <font color="red">*</font></label>
-                                        <input type="text" name="harvest_season" class="form-control" id="harvest_season" required>
+                                        <input type="text" name="harvest_season" class="form-control" id="harvest_season" onkeypress="return isNumberKey(event)">
                                         <div class="alert alert-danger" id="harvest_seasonErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
@@ -832,7 +832,7 @@ form, input, select, textarea{
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Product Sold <font color="red">*</font></label>
-                                        <input type="text" name="product_sold" class="form-control" id="product_sold" onkeypress="return isNumberKey(event)">
+                                        <input type="text" name="product_sold" class="form-control" id="product_sold" onkeypress="return isNumberKey(event)" onchange="check_ah_sold(this.value)">
                                         <div class="alert alert-danger" id="product_soldErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
@@ -873,7 +873,7 @@ form, input, select, textarea{
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Estimated Yield <font color="red">*</font></label>
-                                        <input type="text" name="Aquaculture_Yield" class="form-control" id="Aquaculture_Yield" onkeypress="return isNumberKey(event)">
+                                        <input type="text" name="Aquaculture_Yield" class="form-control" id="Aquaculture_Yield" onkeypress="return isNumberKey(event)" onchange="getBalanceStock()">
                                         <div class="alert alert-danger" id="Aquaculture_YieldErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -895,7 +895,7 @@ form, input, select, textarea{
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Sold <font color="red">*</font></label>
-                                        <input type="text" name="aqua_Sold" class="form-control" id="aqua_Sold" onkeypress="return isNumberKey(event)" onchange="getBalanceStock(this.value)">
+                                        <input type="text" name="aqua_Sold" class="form-control" id="aqua_Sold" onkeypress="return isNumberKey(event)" onchange="getBalanceStock()">
                                         <div class="alert alert-danger" id="aqua_SoldErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -965,7 +965,7 @@ form, input, select, textarea{
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Botanical Name <font color="red">*</font></label>
                                         <input type="text" name="api_botanical_name" class="form-control" id="api_botanical_name" required>
-                                        <div class="alert alert-danger" id=api_"botanical_nameErrorMsg" style="display:none"></div>
+                                        <div class="alert alert-danger" id=api_botanical_nameErrorMsg" style="display:none"></div>
                                     </div>
                                    <div class="form-group col-md-4">
                                         <label class="form-label">Estimated Harvest Yield <font color="red">*</font></label>
@@ -1060,21 +1060,21 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">From Date <font color="red">*</font></label>
-                                             <input type="text" name="from_date" id="from_date" class="form-control date-picker flatpickr-input active">
+                                             <input type="text" name="from_date" id="from_date" class="form-control date-picker flatpickr-input active" onchange="check_processing_date()">
                                         </div>
                                         <div class="alert alert-danger" id="from_dateErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">To Date <font color="red">*</font></label>
-                                             <input type="text" name="to_date" id="to_date" class="form-control date-picker flatpickr-input active">
+                                             <input type="text" name="to_date" id="to_date" class="form-control date-picker flatpickr-input active" onchange="check_processing_date()">
                                         </div>
                                         <div class="alert alert-danger" id="to_dateErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Production <font color="red">*</font></label>
-                                             <input type="text" name="production" id="production" class="form-control" onkeypress="return isNumberKey(event)">
+                                             <input type="text" name="production" id="production" class="form-control" onkeypress="return isNumberKey(event)" onchange="getBalanceProcessing()">
                                         </div>
                                         <div class="alert alert-danger" id="productionErrorMsg" style="display:none"></div>
                                     </div>
@@ -1094,7 +1094,7 @@ form, input, select, textarea{
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Sold <font color="red">*</font></label>
-                                        <input type="text" name="processing_Sold" class="form-control" id="processing_Sold" onkeypress="return isNumberKey(event)" onchange="getBalanceProcessing(this.value)">
+                                        <input type="text" name="processing_Sold" class="form-control" id="processing_Sold" onkeypress="return isNumberKey(event)" onchange="getBalanceProcessing()">
                                         <div class="alert alert-danger" id="processing_SoldErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -1115,21 +1115,21 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">From Date <font color="red">*</font></label>
-                                             <input type="text" name="current_from_date" id="current_from_date" class="form-control date-picker flatpickr-input active">
+                                             <input type="text" name="current_from_date" id="current_from_date" class="form-control date-picker flatpickr-input active" onchange="current_processing_date()">
                                         </div>
                                         <div class="alert alert-danger" id="current_from_dateErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">To Date <font color="red">*</font></label>
-                                             <input type="text" name="current_to_date" id="current_to_date" class="form-control date-picker flatpickr-input active">
+                                             <input type="text" name="current_to_date" id="current_to_date" class="form-control date-picker flatpickr-input active" onchange="current_processing_date()">
                                         </div>
                                         <div class="alert alert-danger" id="current_to_dateErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Production <font color="red">*</font></label>
-                                             <input type="text" name="current_production" id="current_production" class="form-control" onkeypress="return isNumberKey(event)">
+                                             <input type="text" name="current_production" id="current_production" class="form-control" onkeypress="return isNumberKey(event)" onchange="getCurrentBalanceProcessing(this.value)">
                                         </div>
                                         <div class="alert alert-danger" id="current_productionErrorMsg" style="display:none"></div>
                                     </div>
@@ -1230,7 +1230,7 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">CID <font color="red">*</font></label>
-                                            <input type="text" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="edit_farmers_group_cid" name="edit_farmers_group_cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="get_farmers_name(this.value)">
+                                            <input type="text" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="edit_farmers_group_cid" name="edit_farmers_group_cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="get_edit_farmers_name(this.value)">
                                         </div>
                                         <div class="alert alert-danger" id="edit_farmers_group_cidErrorMsg" style="display:none"></div>
                                     </div>
@@ -1313,7 +1313,7 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">To date <font color="red">*</font></label>
-                                             <input type="text" name="edit_to_year" id="edit_to_year" class="form-control date-picker flatpickr-input active" onchange="get_month()">
+                                             <input type="text" name="edit_to_year" id="edit_to_year" class="form-control date-picker flatpickr-input active" onchange="get_edit_month()">
                                         </div>
                                         <div class="alert alert-danger" id="edit_to_yearErrorMsg" style="display:none"></div>
                                     </div>
@@ -1340,12 +1340,24 @@ form, input, select, textarea{
                                         <label class="form-label">Harvest Month <font color="red">*</font></label>
                                         <select class="form-control" name="edit_harvest_month"  id="edit_harvest_month">
                                             <option value="">--SELECT--</option>
+                                            <option value="January">January</option>
+                                            <option value="February">February</option>
+                                            <option value="March">March</option>
+                                            <option value="April">April</option>
+                                            <option value="May">May</option>
+                                            <option value="June">June</option>
+                                            <option value="July">July</option>
+                                            <option value="August">August</option>
+                                            <option value="September">September</option>
+                                            <option value="October">October</option>
+                                            <option value="November">November</option>
+                                            <option value="December">December</option>
                                         </select>
                                         <div class="alert alert-danger" id="edit_harvest_monthErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Sold <font color="red">*</font></label>
-                                        <input type="text" name="edit_sold" class="form-control" id="edit_sold" onkeypress="return isNumberKey(event)" onchange="getBalance(this.value)">
+                                        <input type="text" name="edit_sold" class="form-control" id="edit_sold" onkeypress="return isNumberKey(event)" onchange="getEditBalance(this.value)">
                                         <div class="alert alert-danger" id="edit_soldErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
@@ -1385,7 +1397,7 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">To date <font color="red">*</font></label>
-                                             <input type="text" name="edit_to_current_year" id="edit_to_current_year" class="form-control date-picker flatpickr-input active" onchange="get_current_month()">
+                                             <input type="text" name="edit_to_current_year" id="edit_to_current_year" class="form-control date-picker flatpickr-input active" onchange="get_edit_harvest_month()">
                                         </div>
                                         <div class="alert alert-danger" id="edit_to_current_yearErrorMsg" style="display:none"></div>
                                     </div>
@@ -1412,6 +1424,18 @@ form, input, select, textarea{
                                         <label class="form-label">Harvest Month <font color="red">*</font></label>
                                         <select class="form-control" name="edit_estimated_harvest_month"  id="edit_estimated_harvest_month">
                                             <option value="">--SELECT--</option>
+                                            <option value="January">January</option>
+                                            <option value="February">February</option>
+                                            <option value="March">March</option>
+                                            <option value="April">April</option>
+                                            <option value="May">May</option>
+                                            <option value="June">June</option>
+                                            <option value="July">July</option>
+                                            <option value="August">August</option>
+                                            <option value="September">September</option>
+                                            <option value="October">October</option>
+                                            <option value="November">November</option>
+                                            <option value="December">December</option>
                                         </select>
                                         <div class="alert alert-danger" id="edit_estimated_harvest_monthErrorMsg" style="display:none"></div>
                                     </div>
@@ -1429,6 +1453,491 @@ form, input, select, textarea{
     </div>
 </form>
 
+<form method="post" id="edit_wild_collection_form">
+    {% csrf_token %}
+    <input type="hidden" id="edit_wild_collection_appNo" name="edit_wild_collection_appNo">
+    <div class="modal fade" id="edit_wild_collection_model" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <input type="hidden" id="wild_record_id" name="wild_record_id">
+                                    <input type="hidden" name="identifier" value="OC-WC"/>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Common Name <font color="red">*</font></label>
+                                        <input type="text" name="edit_common_name" class="form-control" id="edit_common_name" required>
+                                        <div class="alert alert-danger" id="edit_common_nameErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Botanical Name <font color="red">*</font></label>
+                                        <input type="text" name="edit_botanical_name" class="form-control" id="edit_botanical_name" required>
+                                        <div class="alert alert-danger" id="edit_botanical_nameErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Part of Plant Harvested <font color="red">*</font></label>
+                                        <input type="text" name="edit_part_of_plant" class="form-control" id="edit_part_of_plant" required>
+                                        <div class="alert alert-danger" id="edit_part_of_plantErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Estimated Harvest/Yield <font color="red">*</font></label>
+                                        <input type="text" name="edit_estimated_harvest" class="form-control" id="edit_estimated_harvest" onkeypress="return isNumberKey(event)">
+                                        <div class="alert alert-danger" id="edit_estimated_harvestErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Estimated Harvest/Yield Unit <font color="red">*</font></label>
+                                        <select class="form-control" name="edit_estimated_harvest_Yield_Unit"  id="edit_estimated_harvest_Yield_Unit">
+                                            <option value="">--SELECT UNIT--</option>
+                                            {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="alert alert-danger" id="edit_estimated_harvest_Yield_UnitErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Estimated Harvest Yield/Season <font color="red">*</font></label>
+                                        <input type="text" name="edit_harvest_season" class="form-control" id="edit_harvest_season" onkeypress="return isNumberKey(event)">
+                                        <div class="alert alert-danger" id="edit_harvest_seasonErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Harvest Acreage <font color="red">*</font></label>
+                                        <input type="text" name="edit_harvest_acreage" class="form-control" id="edit_harvest_acreage" onkeypress="return isNumberKey(event)">
+                                        <div class="alert alert-danger" id="edit_harvest_acreageErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Unit <font color="red">*</font></label>
+                                        <select class="form-control" name="edit_harvest_Unit"  id="edit_harvest_Unit">
+                                            <option value="">--SELECT UNIT--</option>
+                                            {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="alert alert-danger" id="edit_harvest_UnitErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="update_edit_details('OC-WC')">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form method="post" id="edit_animal_husbandry_form">
+    {% csrf_token %}
+    <input type="hidden" id="edit_animal_husbandry_application_no" name="edit_animal_husbandry_application_no">
+    <div class="modal fade" id="edit_animal_husbandry_model" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <input type="hidden" id="animal_record_id" name="animal_record_id">
+                                    <input type="hidden" name="identifier" value="OC-AH"/>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Livestock Type <font color="red">*</font></label>
+                                        <input type="text" name="edit_livestock_type" class="form-control" id="edit_livestock_type" required>
+                                        <div class="alert alert-danger" id="edit_livestock_typeErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Number Of Male <font color="red">*</font></label>
+                                        <input type="text" name="edit_male" class="form-control" id="edit_male" onkeypress="return isNumberKey(event)">
+                                        <div class="alert alert-danger" id="edit_maleErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Number Of Female <font color="red">*</font></label>
+                                        <input type="text" name="edit_female" class="form-control" id="edit_female" onkeypress="return isNumberKey(event)">
+                                        <div class="alert alert-danger" id="edit_femaleErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Estimated Production <font color="red">*</font></label>
+                                        <input type="text" name="edit_estimated_production" class="form-control" id="edit_estimated_production" onkeypress="return isNumberKey(event)">
+                                        <div class="alert alert-danger" id="edit_estimated_productionErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Estimated Production Unit <font color="red">*</font></label>
+                                        <select class="form-control" name="edit_estimated_production_Unit"  id="edit_estimated_production_Unit">
+                                            <option value="">--SELECT UNIT--</option>
+                                            {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="alert alert-danger" id="edit_estimated_production_UnitErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Product Sold <font color="red">*</font></label>
+                                        <input type="text" name="edit_product_sold" class="form-control" id="edit_product_sold" onkeypress="return isNumberKey(event)" onchange="edit_check_ah_sold(this.value)">
+                                        <div class="alert alert-danger" id="edit_product_soldErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="update_edit_details('OC-AH')">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form method="post" id="edit_aquaculture_form">
+    {% csrf_token %}
+    <input type="hidden" id="edit_aquaculture_application_no" name="edit_aquaculture_application_no">
+    <div class="modal fade" id="edit_aquaculture_model" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <input type="hidden" id="aqua_record_id" name="aqua_record_id">
+                                <input type="hidden" name="identifier" value="OC-AQUA"/>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Aquaculture Type <font color="red">*</font></label>
+                                        <input type="text" name="edit_Aquaculture_type" class="form-control" id="edit_Aquaculture_type" required>
+                                        <div class="alert alert-danger" id="edit_Aquaculture_typeErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Estimated Yield <font color="red">*</font></label>
+                                        <input type="text" name="edit_Aquaculture_Yield" class="form-control" id="edit_Aquaculture_Yield" onkeypress="return isNumberKey(event)" onchange="getEditBalanceStock()">
+                                        <div class="alert alert-danger" id="edit_Aquaculture_YieldErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Estimated Yield Unit <font color="red">*</font></label>
+                                        <select class="form-control" name="edit_Aquaculture_Yield_Unit"  id="edit_Aquaculture_Yield_Unit">
+                                            <option value="">--SELECT UNIT--</option>
+                                            {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="alert alert-danger" id="edit_Aquaculture_Yield_UnitErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Harvest Month <font color="red">*</font></label>
+                                        <input type="text" name="edit_aqua_harvest_month" class="form-control" id="edit_aqua_harvest_month" required>
+                                        <div class="alert alert-danger" id="edit_aqua_harvest_monthErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Sold <font color="red">*</font></label>
+                                        <input type="text" name="edit_aqua_Sold" class="form-control" id="edit_aqua_Sold" onkeypress="return isNumberKey(event)" onchange="getEditBalanceStock()">
+                                        <div class="alert alert-danger" id="edit_aqua_SoldErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Sold Unit <font color="red">*</font></label>
+                                        <select class="form-control" name="edit_aqua_Sold_unit"  id="edit_aqua_Sold_unit">
+                                            <option value="">--SELECT UNIT--</option>
+                                            {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="alert alert-danger" id="edit_aqua_Sold_unitErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Balance Stock <font color="red">*</font></label>
+                                        <input type="number" name="edit_stock_balance" class="form-control" id="edit_stock_balance" readonly="readonly">
+                                        <div class="alert alert-danger" id="edit_stock_balanceErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Balance Stock Unit <font color="red">*</font></label>
+                                        <select class="form-control" name="edit_stock_balance_unit"  id="edit_stock_balance_unit">
+                                            <option value="">--SELECT UNIT--</option>
+                                            {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="alert alert-danger" id="edit_stock_balance_unitErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="update_edit_details('OC-AQUA')">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form method="post" id="edit_api_culture_form">
+    {% csrf_token %}
+    <input type="hidden" id="edit_api_culture_application_no" name="edit_api_culture_application_no">
+    <div class="modal fade" id="edit_api_culture_model" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box box-primary">
+                            <div class="box-body">
+                                <input type="hidden" id="api_record_id" name="api_record_id">
+                                <input type="hidden" name="identifier" value="OC-API"/>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Common Name <font color="red">*</font></label>
+                                        <input type="text" name="edit_api_common_name" class="form-control" id="edit_api_common_name" required>
+                                        <div class="alert alert-danger" id="edit_api_common_nameErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Botanical Name <font color="red">*</font></label>
+                                        <input type="text" name="edit_api_botanical_name" class="form-control" id="edit_api_botanical_name" required>
+                                        <div class="alert alert-danger" id=edit_api_botanical_nameErrorMsg" style="display:none"></div>
+                                    </div>
+                                   <div class="form-group col-md-4">
+                                        <label class="form-label">Estimated Harvest/Yield <font color="red">*</font></label>
+                                        <input type="text" name="edit_api_estimated_harvest" class="form-control" id="edit_api_estimated_harvest" onkeypress="return isNumberKey(event)">
+                                        <div class="alert alert-danger" id="edit_api_estimated_harvestErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Estimated Harvest/Yield Unit <font color="red">*</font></label>
+                                        <select class="form-control" name="edit_api_estimated_harvest_Yield_Unit"  id="edit_api_estimated_harvest_Yield_Unit">
+                                            <option value="">--SELECT UNIT--</option>
+                                            {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="alert alert-danger" id="edit_api_estimated_harvest_Yield_UnitErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Harvest Acreage <font color="red">*</font></label>
+                                        <input type="text" name="edit_api_harvest_acreage" class="form-control" id="edit_api_harvest_acreage" onkeypress="return isNumberKey(event)">
+                                        <div class="alert alert-danger" id="edit_api_harvest_acreageErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Unit <font color="red">*</font></label>
+                                        <select class="form-control" name="edit_api_Unit"  id="edit_api_Unit">
+                                            <option value="">--SELECT UNIT--</option>
+                                            {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="alert alert-danger" id="edit_api_UnitErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="update_edit_details('OC-API')">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form method="post" id="edit_processing_form">
+    {% csrf_token %}
+    <input type="hidden" id="edit_processing_application_no" name="edit_processing_application_no">
+    <div class="modal fade" id="edit_processing_model" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box box-primary">
+                            <div class="box-body">
+                                <input type="hidden" id="processing_record_id" name="processing_record_id">
+                                <input type="hidden" name="identifier" value="OC-PU"/>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Name <font color="red">*</font></label>
+                                        <input type="text" name="edit_processing_name" class="form-control" id="edit_processing_name" required>
+                                        <div class="alert alert-danger" id="edit_processing_nameErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Address Of Operation <font color="red">*</font></label>
+                                        <input type="text" name="edit_address_of_Operation" class="form-control" id="edit_address_of_Operation" required>
+                                        <div class="alert alert-danger" id=edit_address_of_OperationErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Type Of Processing <font color="red">*</font></label>
+                                        <input type="text" name="edit_processing_type" class="form-control" id="edit_processing_type" required>
+                                        <div class="alert alert-danger" id="edit_processing_typeErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">For</span>
+                                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">The</span>
+                                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Previous</span>
+                                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Year</span>
+                                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">From Date <font color="red">*</font></label>
+                                             <input type="text" name="edit_from_date" id="edit_from_date" class="form-control date-picker flatpickr-input active">
+                                        </div>
+                                        <div class="alert alert-danger" id="edit_from_dateErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">To Date <font color="red">*</font></label>
+                                             <input type="text" name="edit_to_date" id="edit_to_date" class="form-control date-picker flatpickr-input active">
+                                        </div>
+                                        <div class="alert alert-danger" id="edit_to_dateErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Production <font color="red">*</font></label>
+                                             <input type="text" name="edit_production" id="edit_production" class="form-control" onkeypress="return isNumberKey(event)" onchange="getEditBalanceProcessing(this.value)">
+                                        </div>
+                                        <div class="alert alert-danger" id="edit_productionErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Production Unit <font color="red">*</font></label>
+                                            <select class="form-control" name="edit_production_unit"  id="edit_production_unit">
+                                                <option value="">--SELECT UNIT--</option>
+                                                {% for unit in unit %}
+                                                        <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="alert alert-danger" id="edit_production_unitErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Sold <font color="red">*</font></label>
+                                        <input type="text" name="edit_processing_Sold" class="form-control" id="edit_processing_Sold" onkeypress="return isNumberKey(event)" onchange="getEditBalanceProcessing(this.value)">
+                                        <div class="alert alert-danger" id="edit_processing_SoldErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Balance Stock <font color="red">*</font></label>
+                                        <input type="text" name="edit_processing_balance" class="form-control" id="edit_processing_balance" readonly="readonly">
+                                        <div class="alert alert-danger" id="edit_processing_balanceErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">For</span>
+                                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">The</span>
+                                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Current</span>
+                                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Year</span>
+                                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">From Date <font color="red">*</font></label>
+                                             <input type="text" name="edit_current_from_date" id="edit_current_from_date" class="form-control date-picker flatpickr-input active">
+                                        </div>
+                                        <div class="alert alert-danger" id="edit_current_from_dateErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">To Date <font color="red">*</font></label>
+                                             <input type="text" name="edit_current_to_date" id="edit_current_to_date" class="form-control date-picker flatpickr-input active">
+                                        </div>
+                                        <div class="alert alert-danger" id="edit_current_to_dateErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Production <font color="red">*</font></label>
+                                             <input type="text" name="edit_current_production" id="edit_current_production" class="form-control" onkeypress="return isNumberKey(event)" onchange="getEditCurrentBalanceProcessing()">
+                                        </div>
+                                        <div class="alert alert-danger" id="edit_current_productionErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Production Unit <font color="red">*</font></label>
+                                            <select class="form-control" name="edit_current_production_unit"  id="edit_current_production_unit">
+                                                <option value="">--SELECT UNIT--</option>
+                                                {% for unit in unit %}
+                                                        <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="alert alert-danger" id="edit_current_production_unitErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Sold <font color="red">*</font></label>
+                                        <input type="text" name="edit_current_processing_Sold" class="form-control" id="edit_current_processing_Sold" onkeypress="return isNumberKey(event)" onchange="getEditCurrentBalanceProcessing()">
+                                        <div class="alert alert-danger" id="edit_current_processing_SoldErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="form-label">Balance Stock <font color="red">*</font></label>
+                                        <input type="text" name="edit_current_processing_balance" class="form-control" id="edit_current_processing_balance" readonly="readonly">
+                                        <div class="alert alert-danger" id="edit_current_processing_balanceErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="update_edit_details('OC-PU')">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
 <script>
 function isNumberKey(evt)
       {
@@ -1441,6 +1950,7 @@ function isNumberKey(evt)
 
 function save_organic_certificate()
 {
+        var applicationNo = $('#applicationNo').val();
         var cid = $('#cid').val();
         var name = $('#name').val();
         var dzongkhag = $('#dzongkhag').val();
@@ -1556,11 +2066,49 @@ function save_organic_certificate()
             setTimeout('hideStatus("contactNumberErrorMsg")',2000);
             $("#contactNumber").focus();
         }
-        else
+        else if(applicationNo == "")
         {
             $.ajax({
                 type : "POST",
                 url : "{% url 'save_organic_certificate' %}",
+                data : $('#organic_certificate_form').serialize(),
+                success : function(data)
+                {
+                    $('#applicationNo').val(data.applNo);
+                    $('#farmers_group_application_no').val(data.applNo);
+                    $('#crop_production_app_no').val(data.applNo);
+                    $('#wild_collection_appNo').val(data.applNo);
+                    $('#animal_husbandry_application_no').val(data.applNo);
+                    $('#aquaculture_application_no').val(data.applNo);
+                    $('#api_culture_application_no').val(data.applNo);
+                    $('#processing_application_no').val(data.applNo);
+                    $('#attachment_appNo').val(data.applNo);
+
+                    $('#submitMsg').show();
+                    setTimeout(function() {
+                        $("#submitMsg").hide('blind', {}, 500)
+                    }, 2000);
+                    if(data.Applicant_Type == 'I')
+                    {
+                        setTimeout(function() {
+                            $('#pills-crop-production').tab('show');
+                        }, 3000);
+                    }
+                    else
+                    {
+                        setTimeout(function() {
+                            $('#pills-farmers-group').tab('show');
+                        }, 3000);
+                    }
+                    $("#oc_button").html('Update');
+                }
+            });
+        }
+        else if(applicationNo != "")
+        {
+            $.ajax({
+                type : "POST",
+                url : "{% url 'update_oc_form' %}",
                 data : $('#organic_certificate_form').serialize(),
                 success : function(data)
                 {
@@ -1756,6 +2304,7 @@ function save_farmer_group_details()
     var cid = $('#farmers_group_cid').val();
     var name = $('#farmers_group_fullname').val();
     var cidCount = $('#farmers_group_cid').val().length;
+
     if(cid == "")
     {
         $('#farmers_group_cidErrorMsg').html("Enter CID.");
@@ -2129,44 +2678,44 @@ function save_api_culture_details()
     var api_harvest_acreage = $('#api_harvest_acreage').val();
     var api_Unit = $('#api_Unit').val();
 
-    if(livestock_type == "")
-    {
-        $('#livestock_typeErrorMsg').html("Enter Livestock Type.");
-        $('#livestock_typeErrorMsg').show();
-        $('#livestock_typeErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(male == "")
-    {
-        $('#maleErrorMsg').html("Enter Number Of Male.");
-        $('#maleErrorMsg').show();
-        $('#maleErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(female == "")
-    {
-        $('#femaleErrorMsg').html("Enter Number Of Female.");
-        $('#femaleErrorMsg').show();
-        $('#femaleErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(estimated_production == "")
-    {
-        $('#estimated_productionErrorMsg').html("Enter Estimated Production.");
-        $('#estimated_productionErrorMsg').show();
-        $('#estimated_productionErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(estimated_production_Unit == "")
-    {
-        $('#estimated_production_UnitErrorMsg').html("Select Estimated Production Unit.");
-        $('#estimated_production_UnitErrorMsg').show();
-        $('#estimated_production_UnitErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(product_sold == "")
-    {
-        $('#product_soldErrorMsg').html("Enter Product Sold.");
-        $('#product_soldErrorMsg').show();
-        $('#product_soldErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else
-    {
+    if(api_common_name == "")
+{
+    $('#livestock_typeErrorMsg').html("Enter Livestock Type.");
+    $('#livestock_typeErrorMsg').show();
+    $('#livestock_typeErrorMsg').delay(2000).fadeOut('slow');
+}
+else if(api_botanical_name == "")
+{
+    $('#maleErrorMsg').html("Enter Number Of Male.");
+    $('#maleErrorMsg').show();
+    $('#maleErrorMsg').delay(2000).fadeOut('slow');
+}
+else if(api_estimated_harvest == "")
+{
+    $('#femaleErrorMsg').html("Enter Number Of Female.");
+    $('#femaleErrorMsg').show();
+    $('#femaleErrorMsg').delay(2000).fadeOut('slow');
+}
+else if(api_estimated_harvest_Yield_Unit == "")
+{
+    $('#estimated_productionErrorMsg').html("Enter Estimated Production.");
+    $('#estimated_productionErrorMsg').show();
+    $('#estimated_productionErrorMsg').delay(2000).fadeOut('slow');
+}
+else if(api_harvest_acreage == "")
+{
+    $('#estimated_production_UnitErrorMsg').html("Select Estimated Production Unit.");
+    $('#estimated_production_UnitErrorMsg').show();
+    $('#estimated_production_UnitErrorMsg').delay(2000).fadeOut('slow');
+}
+else if(api_Unit == "")
+{
+    $('#edit_api_UnitErrorMsg').html("Select Unit.");
+    $('#edit_api_UnitErrorMsg').show();
+    $('#edit_api_UnitErrorMsg').delay(2000).fadeOut('slow');
+}
+else
+{
         $.ajax({
             type : "POST",
             url : "{% url 'save_api_culture_details' %}",
@@ -2373,20 +2922,35 @@ function getCitizenDetails(cidNo)
         success : function(data)
         {
             const myObj =data.response;
-            var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
-            var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
-            var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
-            if (middleName == null) {
-                    middleName = "";
-                }
-            var CitizenName = firstName + " " + middleName + " " + lastName;
-            var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
-            var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
-            var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
-            $('#name').val(CitizenName);
-            $('#dzongkhag_code').val(dzongkhagName);
-            $('#gewog_code').val(gewogName);
-            $('#village_code').val(villageName);
+            if(myObj.citizenDetailsResponse.citizenDetail == undefined)
+            {
+                $('#cid').val("");
+                $('#name').val("");
+                $('#dzongkhag_code').val("");
+                $('#gewog_code').val("");
+                $('#village_code').val("");
+                $('#cidErrorMsg').html("Invalid CID.Try With Another one");
+                $('#cidErrorMsg').show();
+                $('#cidErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else
+            {
+                var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+                var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+                var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+                if (middleName == null) {
+                        middleName = "";
+                    }
+                var CitizenName = firstName + " " + middleName + " " + lastName;
+
+                var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
+                var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
+                var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
+                $('#name').val(CitizenName);
+                $('#dzongkhag_code').val(dzongkhagName);
+                $('#gewog_code').val(gewogName);
+                $('#village_code').val(villageName);
+            }
         }
     });
 }
@@ -2395,13 +2959,66 @@ function get_month()
 {
     var from_date = $('#prev_year').val();
     var to_date = $('#to_year').val();
+
     $.ajax({
         type : "GET",
-        url : "{% url 'date_month' %}",
+        url : "{% url 'check_difference' %}",
         data :{'from_date':from_date, 'to_date':to_date},
         success : function(data)
         {
-            $('#harvest_month').html(data);
+            if(data.no_of_days <= 0)
+            {
+                $('#to_yearErrorMsg').html("Cannot Be Less Than From Date");
+                $('#to_yearErrorMsg').show();
+                $('#to_yearErrorMsg').delay(2000).fadeOut('slow');
+                $('#to_year').val("");
+            }
+            else
+            {
+                $.ajax({
+                    type : "GET",
+                    url : "{% url 'date_month' %}",
+                    data :{'from_date':from_date, 'to_date':to_date},
+                    success : function(data)
+                    {
+                        $('#harvest_month').html(data);
+                    }
+                });
+            }
+        }
+    });
+}
+
+function get_edit_month()
+{
+    var from_date = $('#edit_prev_year').val();
+    var to_date = $('#edit_to_year').val();
+
+    $.ajax({
+        type : "GET",
+        url : "{% url 'check_difference' %}",
+        data :{'from_date':from_date, 'to_date':to_date},
+        success : function(data)
+        {
+            if(data.no_of_days <= 0)
+            {
+                $('#edit_to_yearErrorMsg').html("Cannot Be Less Than From Date");
+                $('#edit_to_yearErrorMsg').show();
+                $('#edit_to_yearErrorMsg').delay(2000).fadeOut('slow');
+                $('#edit_to_year').val("");
+            }
+            else
+            {
+                $.ajax({
+                    type : "GET",
+                    url : "{% url 'date_month' %}",
+                    data :{'from_date':from_date, 'to_date':to_date},
+                    success : function(data)
+                    {
+                        $('#edit_harvest_month').html(data);
+                    }
+                });
+            }
         }
     });
 }
@@ -2410,30 +3027,197 @@ function get_harvest_month()
 {
     var from_date = $('#current_year').val();
     var to_date = $('#to_current_year').val();
+
     $.ajax({
         type : "GET",
-        url : "{% url 'date_month' %}",
+        url : "{% url 'check_difference' %}",
         data :{'from_date':from_date, 'to_date':to_date},
         success : function(data)
         {
-            $('#estimated_harvest_month').html(data);
+            if(data.no_of_days <= 0)
+            {
+                $('#to_current_yearErrorMsg').html("Cannot Be Less Than From Date");
+                $('#to_current_yearErrorMsg').show();
+                $('#to_current_yearErrorMsg').delay(2000).fadeOut('slow');
+                $('#to_current_year').val("");
+            }
+            else
+            {
+                $.ajax({
+                    type : "GET",
+                    url : "{% url 'date_month' %}",
+                    data :{'from_date':from_date, 'to_date':to_date},
+                    success : function(data)
+                    {
+                        $('#estimated_harvest_month').html(data);
+                    }
+                });
+            }
         }
     });
 }
 
-function getBalance(sold)
+function get_edit_harvest_month()
 {
-    var yield = $('#yield').val();
-    balance_yield = yield - sold
-    $('#balance_stock').val(balance_yield);
+    var from_date = $('#edit_current_year').val();
+    var to_date = $('#edit_to_current_year').val();
+
+    $.ajax({
+        type : "GET",
+        url : "{% url 'check_difference' %}",
+        data :{'from_date':from_date, 'to_date':to_date},
+        success : function(data)
+        {
+            if(data.no_of_days <= 0)
+            {
+                $('#edit_to_current_yearErrorMsg').html("Cannot Be Less Than From Date");
+                $('#edit_to_current_yearErrorMsg').show();
+                $('#edit_to_current_yearErrorMsg').delay(2000).fadeOut('slow');
+                $('#edit_to_current_year').val("");
+            }
+            else
+            {
+                $.ajax({
+                    type : "GET",
+                    url : "{% url 'date_month' %}",
+                    data :{'from_date':from_date, 'to_date':to_date},
+                    success : function(data)
+                    {
+                        $('#edit_estimated_harvest_month').html(data);
+                    }
+                });
+            }
+        }
+    });
 }
 
-function getBalanceStock(sold)
+function check_processing_date()
+{
+    var from_date = $('#from_date').val();
+    var to_date = $('#to_date').val();
+
+    $.ajax({
+        type : "GET",
+        url : "{% url 'check_difference' %}",
+        data :{'from_date':from_date, 'to_date':to_date},
+        success : function(data)
+        {
+            if(data.no_of_days <= 0)
+            {
+                $('#to_dateErrorMsg').html("Cannot Be Less Than From Date");
+                $('#to_dateErrorMsg').show();
+                $('#to_dateErrorMsg').delay(2000).fadeOut('slow');
+                $('#to_date').val("");
+            }
+            else
+            {
+                $('#to_dateErrorMsg').hide();
+            }
+        }
+    });
+}
+
+function current_processing_date()
+{
+    var from_date = $('#current_from_date').val();
+    var to_date = $('#current_to_date').val();
+
+    $.ajax({
+        type : "GET",
+        url : "{% url 'check_difference' %}",
+        data :{'from_date':from_date, 'to_date':to_date},
+        success : function(data)
+        {
+            if(data.no_of_days <= 0)
+            {
+                $('#current_to_dateErrorMsg').html("Cannot Be Less Than From Date");
+                $('#current_to_dateErrorMsg').show();
+                $('#current_to_dateErrorMsg').delay(2000).fadeOut('slow');
+                $('#current_to_date').val("");
+            }
+            else
+            {
+                $('#current_to_dateErrorMsg').hide();
+            }
+        }
+    });
+}
+
+function getBalance()
+{
+    var yield = $('#yield').val();
+    var sold = $('#sold').val();
+    if(sold > yield)
+    {
+        $('#soldErrorMsg').html("Cannot Be More Than Yie;d.");
+        $('#soldErrorMsg').show();
+        $('#soldErrorMsg').delay(2000).fadeOut('slow');
+        $('#sold').val("");
+        $('#balance_stock').val("");
+    }
+    else
+    {
+        balance_yield = yield - sold
+        $('#balance_stock').val(balance_yield);
+    }
+}
+
+function getEditBalance(sold)
+{
+    var yield = $('#edit_yield').val();
+    if(sold > yield)
+    {
+        $('#edit_soldErrorMsg').html("Cannot Be More Than Yie;d.");
+        $('#edit_soldErrorMsg').show();
+        $('#edit_soldErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_sold').val("");
+        $('#edit_balance_stock').val("");
+    }
+    else
+    {
+        balance_yield = yield - sold
+        $('#edit_balance_stock').val(balance_yield);
+    }
+}
+
+function getBalanceStock()
 {
     var production = $('#Aquaculture_Yield').val();
-    balance_production = production - sold
-    $('#stock_balance').val(balance_production);
+    var sold = $('#aqua_Sold').val();
+    if(sold > production)
+    {
+        $('#aqua_SoldErrorMsg').html("Cannot Be More Than Yie;d.");
+        $('#aqua_SoldErrorMsg').show();
+        $('#aqua_SoldErrorMsg').delay(2000).fadeOut('slow');
+        $('#aqua_Sold').val("");
+        $('#stock_balance').val("");
+    }
+    else
+    {
+        balance_production = production - sold
+        $('#stock_balance').val(balance_production);
+    }
 }
+
+function getEditBalanceStock()
+{
+    var production = $('#edit_Aquaculture_Yield').val();
+    var sold = $('#edit_aqua_Sold').val();
+    if(sold > production)
+    {
+        $('#edit_aqua_SoldErrorMsg').html("Cannot Be More Than Yie;d.");
+        $('#edit_aqua_SoldErrorMsg').show();
+        $('#edit_aqua_SoldErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_aqua_Sold').val("");
+        $('#edit_stock_balance').val("");
+    }
+    else
+    {
+        balance_production = production - sold
+        $('#edit_stock_balance').val(balance_production);
+    }
+}
+
 
 function get_farmers_name(cidNo)
 {
@@ -2444,16 +3228,61 @@ function get_farmers_name(cidNo)
         success : function(data)
         {
             const myObj =data.response;
-            var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
-            var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
-            var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
-            if (middleName == null) {
-                    middleName = "";
-                }
-            var CitizenName = firstName + " " + middleName + " " + lastName;
+            if(myObj.citizenDetailsResponse.citizenDetail == undefined)
+            {
+                $('#farmers_group_cid').val("");
+                $('#farmers_group_fullname').val("");
+                $('#farmers_group_cidErrorMsg').html("Invalid CID.Try With Another one");
+                $('#farmers_group_cidErrorMsg').show();
+                $('#farmers_group_cidErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else
+            {
+                var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+                var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+                var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+                if (middleName == null) {
+                        middleName = "";
+                    }
+                var CitizenName = firstName + " " + middleName + " " + lastName;
 
-            $('#farmers_group_fullname').val(CitizenName);
+                $('#farmers_group_fullname').val(CitizenName);
+            }
 
+
+        }
+    });
+}
+
+function get_edit_farmers_name(cidNo)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'get_citizen_details' %}",
+        data :{'cidNo':cidNo},
+        success : function(data)
+        {
+            const myObj =data.response;
+            if(myObj.citizenDetailsResponse.citizenDetail == undefined)
+            {
+                $('#edit_farmers_group_cid').val("");
+                $('#edit_farmers_group_fullname').val("");
+                $('#edit_farmers_group_fullnameErrorMsg').html("Invalid CID.Try With Another one");
+                $('#edit_farmers_group_fullnameErrorMsg').show();
+                $('#edit_farmers_group_fullnameErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else
+            {
+                var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+                var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+                var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+                if (middleName == null) {
+                        middleName = "";
+                    }
+                var CitizenName = firstName + " " + middleName + " " + lastName;
+
+                $('#edit_farmers_group_fullname').val(CitizenName);
+            }
         }
     });
 }
@@ -2470,18 +3299,79 @@ function checkStandardsRadio(value)
     }
 }
 
-function getBalanceProcessing(value)
+function getBalanceProcessing()
 {
     var production = $('#production').val();
-    balance = production - value;
-    $('#processing_balance').val(balance);
+    var value = $('#processing_Sold').val();
+    if(value > production)
+    {
+        $('#processing_SoldErrorMsg').html("Cannot Be More Than Production.");
+        $('#processing_SoldErrorMsg').show();
+        $('#processing_SoldErrorMsg').delay(2000).fadeOut('slow');
+        $('#processing_Sold').val("");
+    }
+    else
+    {
+        balance = production - value;
+        $('#processing_balance').val(balance);
+    }
 }
 
-function getCurrentBalanceProcessing(value)
+function getEditBalanceProcessing()
+{
+    var production = $('#edit_production').val();
+    var value = $('#edit_processing_Sold').val();
+    if(value > production)
+    {
+        $('#edit_processing_SoldErrorMsg').html("Cannot Be More Than Production.");
+        $('#edit_processing_SoldErrorMsg').show();
+        $('#edit_processing_SoldErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_processing_Sold').val("");
+    }
+    else
+    {
+        balance = production - value;
+        $('#edit_processing_balance').val(balance);
+    }
+}
+
+function getCurrentBalanceProcessing()
 {
     var production = $('#current_production').val();
-    balance = production - value;
-    $('#current_processing_balance').val(balance);
+    var value = $('#current_processing_Sold').val();
+    if(value > production)
+    {
+        $('#current_processing_SoldErrorMsg').html("Cannot Be More Than Production.");
+        $('#current_processing_SoldErrorMsg').show();
+        $('#current_processing_SoldErrorMsg').delay(2000).fadeOut('slow');
+        $('#current_processing_Sold').val("");
+    }
+    else
+    {
+        balance = production - value;
+        $('#current_processing_balance').val(balance);
+    }
+
+}
+
+function getEditCurrentBalanceProcessing()
+{
+    var production = $('#edit_current_production').val();
+    var value = $('#edit_current_processing_Sold').val();
+
+    if(value > production)
+    {
+        $('#edit_current_processing_SoldErrorMsg').html("Cannot Be More Than Production.");
+        $('#edit_current_processing_SoldErrorMsg').show();
+        $('#edit_current_processing_SoldErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_current_processing_Sold').val("");
+    }
+    else
+    {
+        balance = production - value;
+        $('#edit_current_processing_balance').val(balance);
+    }
+
 }
 
 function farmer_group_details(Record_Id, CID, Name, Application_No)
@@ -2515,6 +3405,284 @@ balance_stock,current_year,to_current_year,estimated_yield,estimated_Yield_Unit,
     $('#edit_crop_production_app_no').val(Application_No);
     $('#edit_crop_production_modal').modal('show');
 
+}
+
+
+function populate_animal_details(Record_Id, Livestock_Type, Male_no, Female_no, Estimated_Production, Production_Unit, Production_Sold, Application_No)
+{
+    $('#animal_record_id').val(Record_Id);
+    $('#edit_livestock_type').val(Livestock_Type);
+    $('#edit_male').val(Male_no);
+    $('#edit_female').val(Female_no);
+    $('#edit_estimated_production').val(Estimated_Production);
+    $('#edit_estimated_production_Unit').val(Production_Unit);
+    $('#edit_product_sold').val(Production_Sold);
+    $('#edit_animal_husbandry_application_no').val(Application_No);
+    $('#edit_animal_husbandry_model').modal('show');
+}
+
+function populate_aqua_details(Record_Id, Aquaculture_Type, Estimated_Yield, Estimated_Yield_Unit, Harvest_Month, Sold, Sold_Unit, Balance_Stock, Balance_Stock_Unit, Application_No)
+{
+
+    $('#aqua_record_id').val(Record_Id);
+    $('#edit_Aquaculture_type').val(Aquaculture_Type);
+    $('#edit_Aquaculture_Yield').val(Estimated_Yield);
+    $('#edit_Aquaculture_Yield_Unit').val(Estimated_Yield_Unit);
+    $('#edit_aqua_harvest_month').val(Harvest_Month);
+    $('#edit_aqua_Sold').val(Sold);
+    $('#edit_aqua_Sold_unit').val(Sold_Unit);
+    $('#edit_stock_balance').val(Balance_Stock);
+    $('#edit_stock_balance_unit').val(Balance_Stock_Unit);
+    $('#edit_aquaculture_application_no').val(Application_No);
+    $('#edit_aquaculture_model').modal('show');
+}
+
+function populate_api_details(Record_Id, Common_Name, Botanical_Name, Estimated_Harvest, Harvest_Unit, Harvest_Acreage, Acreage_Unit, Application_No)
+{
+    $('#api_record_id').val(Record_Id);
+    $('#edit_api_common_name').val(Common_Name);
+    $('#edit_api_botanical_name').val(Botanical_Name);
+    $('#edit_api_estimated_harvest').val(Estimated_Harvest);
+    $('#edit_api_estimated_harvest_Yield_Unit').val(Harvest_Unit);
+    $('#edit_api_harvest_acreage').val(Harvest_Acreage);
+    $('#edit_api_Unit').val(Acreage_Unit);
+    $('#edit_api_culture_application_no').val(Application_No);
+    $('#edit_api_culture_model').modal('show');
+}
+
+function populate_process_details(Record_Id, Production_House_Name, Production_House_Address, Processing_Type, P_From_Date, P_To_Date, P_Production, P_Production_Unit, P_Sold,
+P_Balance_Stock, C_From_Date, C_To_Date, C_Production, C_Production_Unit, C_Sold, C_Balance_Stock, Application_No)
+{
+    $('#processing_record_id').val(Record_Id);
+    $('#edit_processing_name').val(Production_House_Name);
+    $('#edit_address_of_Operation').val(Production_House_Address);
+    $('#edit_processing_type').val(Processing_Type);
+    $('#edit_from_date').val(P_From_Date);
+    $('#edit_to_date').val(P_To_Date);
+    $('#edit_production').val(P_Production);
+    $('#edit_production_unit').val(P_Production_Unit);
+    $('#edit_processing_Sold').val(P_Sold);
+    $('#edit_processing_balance').val(P_Balance_Stock);
+    $('#edit_current_from_date').val(C_From_Date);
+    $('#edit_current_to_date').val(C_To_Date);
+    $('#edit_current_production').val(C_Production);
+    $('#edit_current_production_unit').val(C_Production_Unit);
+    $('#edit_current_processing_Sold').val(C_Sold);
+    $('#edit_current_processing_balance').val(C_Balance_Stock);
+    $('#edit_processing_application_no').val(Application_No);
+    $('#edit_processing_model').modal('show');
+}
+
+function populate_wild_details(Record_Id, Common_Name, Botanical_Name, Plant_Part, Estimated_Harvest, Harvest_Unit, Harvest_Season, Acreage_Unit, Application_No)
+{
+    $('#wild_record_id').val(Record_Id);
+    $('#edit_common_name').val(Common_Name);
+    $('#edit_botanical_name').val(Botanical_Name);
+    $('#edit_part_of_plant').val(Plant_Part);
+    $('#edit_estimated_harvest').val(Estimated_Harvest);
+    $('#edit_estimated_harvest_Yield_Unit').val(Harvest_Unit);
+    $('#edit_harvest_season').val(Harvest_Season);
+    $('#edit_harvest_acreage').val(Harvest_Season);
+    $('#edit_harvest_Unit').val(Acreage_Unit);
+    $('#edit_wild_collection_appNo').val(Application_No);
+    $('#edit_wild_collection_model').modal('show');
+}
+
+function check_ah_sold(sold)
+{
+    var production = $('#estimated_production').val();
+    if(sold > production)
+    {
+        $('#product_soldErrorMsg').html("Cannot Be More Than Production.");
+        $('#product_soldErrorMsg').show();
+        $('#product_soldErrorMsg').delay(2000).fadeOut('slow');
+        $('#product_sold').val("");
+    }
+    else
+    {
+        $('#product_soldErrorMsg').hide();
+    }
+}
+
+function edit_check_ah_sold(sold)
+{
+    var production = $('#edit_estimated_production').val();
+    if(sold > production)
+    {
+        $('#edit_product_soldErrorMsg').html("Cannot Be More Than Production.");
+        $('#edit_product_soldErrorMsg').show();
+        $('#edit_product_soldErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_product_sold').val("");
+    }
+    else
+    {
+        $('#edit_product_soldErrorMsg').hide();
+    }
+}
+
+
+function load_form()
+{
+    var applicationNo = $('#applicationNo').val();
+    var Applicant_Type = $("input[name=Applicant_Type]:checked").val();
+    if(applicationNo == "")
+    {
+        $("#pills-farmers-group").prop('disabled', true);
+        $("#pills-crop-production").prop('disabled', true);
+        $("#pills-wild-collection").prop('disabled', true);
+        $("#pills-animal-husbandry").prop('disabled', true);
+        $("#pills-aquaculture").prop('disabled', true);
+        $("#pills-apiculture").prop('disabled', true);
+        $("#pills-processing-unit").prop('disabled', true);
+        $("#organic-file-attach").prop('disabled', true);
+        $("#certification_standards").prop('disabled', true);
+    }
+    else if(applicationNo != "" && Applicant_Type == 'I')
+    {
+        $("#pills-farmers-group").prop('disabled', true);
+        $("#pills-crop-production").prop('disabled', false);
+        $("#pills-wild-collection").prop('disabled', false);
+        $("#pills-animal-husbandry").prop('disabled', false);
+        $("#pills-aquaculture").prop('disabled', false);
+        $("#pills-apiculture").prop('disabled', false);
+        $("#pills-processing-unit").prop('disabled', false);
+        $("#organic-file-attach").prop('disabled', false);
+        $("#certification_standards").prop('disabled', false);
+    }
+    else if(applicationNo != "" && Applicant_Type == 'F')
+    {
+        $("#pills-farmers-group").prop('disabled', false);
+        $("#pills-crop-production").prop('disabled', false);
+        $("#pills-wild-collection").prop('disabled', false);
+        $("#pills-animal-husbandry").prop('disabled', false);
+        $("#pills-aquaculture").prop('disabled', false);
+        $("#pills-apiculture").prop('disabled', false);
+        $("#pills-processing-unit").prop('disabled', false);
+        $("#organic-file-attach").prop('disabled', false);
+        $("#certification_standards").prop('disabled', false);
+    }
+}
+
+function oc_fg_details()
+{
+    var appNo = $('#applicationNo').val();
+    var Applicant_Type = $("input[name=Applicant_Type]:checked").val();
+
+    if(Applicant_Type == 'F')
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'oc_fg_details' %}",
+            data :{'appNo':appNo},
+            success : function(response)
+            {
+                $('#farmer_details').html(response);
+            }
+        });
+    }
+    else
+    {
+        $("#pills-farmers-group").prop('disabled', true);
+    }
+
+}
+
+function oc_cp_details()
+{
+    var appNo = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'oc_cp_details' %}",
+        data :{'appNo':appNo},
+        success : function(response)
+        {
+            $('#crop_production').html(response);
+        }
+    });
+}
+
+function wild_details()
+{
+    var appNo = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'wild_details' %}",
+        data :{'appNo':appNo},
+        success : function(response)
+        {
+            $('#wild_collection').html(response);
+        }
+    });
+}
+
+function animal_husbandry_details()
+{
+    var appNo = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'animal_husbandry_details' %}",
+        data :{'appNo':appNo},
+        success : function(response)
+        {
+            $('#animal_husbandry').html(response);
+        }
+    });
+}
+
+function aquaculture_details()
+{
+    var appNo = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'aquaculture_details' %}",
+        data :{'appNo':appNo},
+        success : function(response)
+        {
+            $('#aquaculture').html(response);
+        }
+    });
+}
+
+function api_details()
+{
+    var appNo = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'api_details' %}",
+        data :{'appNo':appNo},
+        success : function(response)
+        {
+            $('#api_culture').html(response);
+        }
+    });
+}
+
+function processing_details()
+{
+    var appNo = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'processing_details' %}",
+        data :{'appNo':appNo},
+        success : function(response)
+        {
+            $('#processing_details').html(response);
+        }
+    });
+}
+
+function oc_attachment_details()
+{
+    var appNo = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'oc_attachment_details' %}",
+        data :{'appNo':appNo},
+        success : function(response)
+        {
+            $('#file-attachment-oc').html(response);
+        }
+    });
 }
 </script>
 {% endblock %}

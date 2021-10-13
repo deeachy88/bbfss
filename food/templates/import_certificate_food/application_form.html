@@ -26,13 +26,13 @@ form, input, select, textarea{
             <div class="row justify-content-left">
                 <ul class="nav nav-pills nav-secondary" id="pills-tab" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadDetails()">Application Form</a>
+                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="check_fip_details()">Application Form</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-food-import-details" data-toggle="pill" href="#details" role="tab" aria-controls="pills-food-import-details" aria-selected="false" onclick="load_details()">Import Details</a>
+                        <a class="nav-link" id="pills-food-import-details" data-toggle="pill" href="#details" role="tab" aria-controls="pills-food-import-details" aria-selected="false" onclick="load_fip_details()">Import Details</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-food-import-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
+                        <a class="nav-link" id="pills-food-import-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_fip_attachment()">File Attachment</a>
                     </li>
                 </ul>
             </div>
@@ -231,7 +231,7 @@ form, input, select, textarea{
                         Save SuccessFul
                     </div>
                     <div class="card-action">
-                        <button type="button" class="btn btn-primary" onclick="save_food_permit_details()">Save</button>
+                        <button type="button" class="btn btn-primary" id="fip_button" onclick="save_food_permit_details()">Save</button>
                     </div>
                 </div>
                 <div class="tab-pane fade" id="details" role="tabpanel" aria-labelledby="pills-food-import-details">
@@ -431,7 +431,7 @@ form, input, select, textarea{
                                         <div class="alert alert-danger" id="edit_qtyErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Unit</label>
+                                        <label class="form-label">Unit <font color="red">*</font></label>
                                         <select class="form-control" name="edit_unit"  id="edit_unit">
                                             <option value="">--SELECT UNIT--</option>
                                             {% for unit in unit %}
@@ -478,6 +478,7 @@ $(function()
 });
 function save_food_permit_details()
 {
+    var applicationNo = $('#applicationNo').val();
     var cid = $('#cid').val();
     var name = $('#name').val();
     var present_address = $('#present_address').val();
@@ -617,19 +618,43 @@ function save_food_permit_details()
         $('#Place_of_ExitErrorMsg').show();
         $('#Place_of_ExitErrorMsg').delay(2000).fadeOut('slow');
     }
-
     else if(number_count < 8)
     {
         $('#contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
         $('#contactNumberErrorMsg').show();
         setTimeout('hideStatus("contactNumberErrorMsg")',2000);
     }
-    else
+    else if(applicationNo == "")
     {
         $.ajax
         ({
             type : "POST",
             url : "{% url 'save_food_import' %}",
+            data : $('#food_import_form').serialize(),
+            success : function(data)
+            {
+                $('#applicationNo').val(data.applNo);
+                $('#applNo').val(data.applNo);
+                $('#appNo').val(data.applNo);
+                $('#submitMsg').show();
+                setTimeout(function()
+                {
+                    $("#submitMsg").hide('blind', {}, 500)
+                }, 2000);
+                setTimeout(function()
+                {
+                    $('#pills-food-import-details').tab('show');
+                }, 3000);
+                $("#fip_button").html('Update');
+            }
+        });
+    }
+    else if(applicationNo != "")
+    {
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'update_food_import' %}",
             data : $('#food_import_form').serialize(),
             success : function(data)
             {
@@ -764,7 +789,7 @@ function save_food_import_permit_details()
     var characteristics = $('#characteristics').val();
     var qty = $('#qty').val();
     var unit = $('#unit').val();
-    var Export_Type = $("input[name=Export_Type]:checked").val();
+    var Export_Type = $("input[name=Export_Type]:checked").length;
 
     if(Common_Name == "")
     {
@@ -870,20 +895,34 @@ function getCitizenDetails(cidNo)
         success : function(data)
         {
             const myObj =data.response;
-            var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
-            var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
-            var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
-            if (middleName == null) {
-                    middleName = "";
-                }
-            var CitizenName = firstName + " " + middleName + " " + lastName;
-            var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
-            var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
-            var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
-            $('#name').val(CitizenName);
-            $('#dzongkhag').val(dzongkhagName);
-            $('#gewog').val(gewogName);
-            $('#village').val(villageName);
+            if(myObj.citizenDetailsResponse.citizenDetail == undefined)
+            {
+                $('#cid').val("");
+                $('#name').val("");
+                $('#dzongkhag').val("");
+                $('#gewog').val("");
+                $('#village').val("");
+                $('#cidErrorMsg').html("Invalid CID.Try With Another one");
+                $('#cidErrorMsg').show();
+                $('#cidErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else
+            {
+                var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+                var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+                var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+                if (middleName == null) {
+                        middleName = "";
+                    }
+                var CitizenName = firstName + " " + middleName + " " + lastName;
+                var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
+                var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
+                var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
+                $('#name').val(CitizenName);
+                $('#dzongkhag').val(dzongkhagName);
+                $('#gewog').val(gewogName);
+                $('#village').val(villageName);
+            }
         }
     });
 }
@@ -956,7 +995,51 @@ function validateemailId(emailId)
     }else{
      $('#emailErrorMsg').hide();
     }
+}
 
+function check_fip_details()
+{
+    var applicationNo = $('#applicationNo').val();
+    $('#agro-card').hide();
+    $('#plant-card').hide();
+    if(applicationNo == "")
+    {
+        $("#import-profile-tab").prop('disabled', true);
+        $("#pills-import-file").prop('disabled', true);
+    }
+    else if(applicationNo != "")
+    {
+        $("#import-profile-tab").prop('disabled', false);
+        $("#pills-import-file").prop('disabled', false);
+    }
+}
+
+function load_fip_details()
+{
+    var appNo = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_fip_details' %}",
+        data :{'appNo':appNo},
+        success : function(response)
+        {
+            $('#permit_details').html(response);
+        }
+    });
+}
+
+function load_fip_attachment()
+{
+    var appNo = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_fip_attachment' %}",
+        data :{'appNo':appNo},
+        success : function(response)
+        {
+            $('#fileAttach').html(response);
+        }
+    });
 }
 </script>
 {% endblock %}

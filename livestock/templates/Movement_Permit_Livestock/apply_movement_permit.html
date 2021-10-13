@@ -21,13 +21,13 @@
             <div class="row justify-content-left">
                 <ul class="nav nav-pills nav-secondary" id="pills-tab" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadDetails()">Application Form</a>
+                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="check_mov_details()">Application Form</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-details" data-toggle="pill" href="#details" role="tab" aria-controls="pills-details" aria-selected="false" onclick="load_details()">Details</a>
+                        <a class="nav-link" id="pills-details" data-toggle="pill" href="#details" role="tab" aria-controls="pills-details" aria-selected="false" onclick="liv_mov_details()">Details</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-profile-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
+                        <a class="nav-link" id="pills-profile-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="liv_mov_attachment()">File Attachment</a>
                     </li>
                 </ul>
             </div>
@@ -267,7 +267,7 @@
                             Save SuccessFul
                         </div>
                         <div class="card-action">
-                                <button type="button" class="btn btn-primary" onclick="save_movement_permit()">Save</button>
+                                <button type="button" class="btn btn-primary" id="livestock_movement_button" onclick="save_movement_permit()">Save</button>
                         </div>
                     </div>
                 </div>
@@ -332,26 +332,25 @@
                         <div class="box box-primary">
                             <div class="box-body">
                                 <div class="row">
-
                                     <div class="form-group col-md-6">
-                                        <label for="Particulars">Particulars</label>
+                                        <label class="form-label">Particulars <font color="red">*</font></label>
                                         <input type="text" name="Particulars" class="form-control" id="Particulars" required>
                                         <div class="alert alert-danger" id="ParticularsErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label for="Company_Name">Company/Producer</label>
+                                        <label class="form-label">Company/Producer <font color="red">*</font></label>
                                         <input type="text" name="Company_Name" class="form-control" id="Company_Name" required>
                                         <div class="alert alert-danger" id="Company_NameErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label for="qty">Quantity</label>
+                                        <label class="form-label">Quantity <font color="red">*</font></label>
                                         <input type="text" name="qty" class="form-control" id="qty" onkeypress="return isNumberKey(event)">
                                         <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label >Unit</label>
+                                        <label class="form-label">Unit <font color="red">*</font></label>
                                         <select class="form-control" name="unit"  id="unit">
                                             <option value="">--SELECT UNIT--</option>
                                             {% for unit in unit %}
@@ -363,7 +362,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label for="remarks">Remarks</label>
+                                        <label class="form-label">Remarks</label>
                                         <textarea rows="3" name="remarks" class="form-control" id="remarks"></textarea>
                                         <div class="alert alert-danger" id="remarksMeansErrorMsg" style="display:none"></div>
                                     </div>
@@ -394,31 +393,31 @@
                             <div class="box-body">
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label for="Particulars">Common Name</label>
+                                        <label class="form-label">Common Name <font color="red">*</font></label>
                                         <input type="text" name="Common_Name" class="form-control" id="Common_Name" required>
                                         <div class="alert alert-danger" id="Common_NameErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label for="Company_Name">Scientific Name</label>
+                                        <label class="form-label">Scientific Name <font color="red">*</font></label>
                                         <input type="text" name="Scientific_Name" class="form-control" id="Scientific_Name" required>
                                         <div class="alert alert-danger" id="Scientific_NameErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label for="Particulars">Age</label>
+                                        <label class="form-label">Age <font color="red">*</font></label>
                                         <input type="text" name="Age" class="form-control" id="Age" required>
                                         <div class="alert alert-danger" id="AgeErrorMsg" style="display:none"></div>
                                     </div>
                                    <div class="form-group col-md-6">
-                                        <label for="qty">No Of Animals</label>
+                                        <label class="form-label">No Of Animals <font color="red">*</font></label>
                                         <input type="text" name="No_Of_Animal" class="form-control" id="No_Of_Animal" onkeypress="return isNumberKey(event)">
                                         <div class="alert alert-danger" id="No_Of_AnimalErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label for="remarks">Remarks</label>
+                                        <label class="form-label">Remarks</label>
                                         <textarea rows="3" name="Animal_Remarks" class="form-control" id="Animal_Remarks"></textarea>
                                         <div class="alert alert-danger" id="Animal_Remarks_ErrorMsg" style="display:none"></div>
                                     </div>
@@ -492,24 +491,24 @@
                                     <input type="hidden" name="edit_product_record_id" id="edit_product_record_id"/>
                                     <input type="hidden" name="identifier" value="APLMP"/>
                                     <div class="form-group col-md-6">
-                                        <label for="Particulars">Particulars</label>
+                                        <label class="form-label">Particulars <font color="red">*</font></label>
                                         <input type="text" name="edit_Particulars" class="form-control" id="edit_Particulars" required>
                                         <div class="alert alert-danger" id="edit_ParticularsErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label for="Company_Name">Company/Producer</label>
+                                        <label class="form-label">Company/Producer <font color="red">*</font></label>
                                         <input type="text" name="edit_Company_Name" class="form-control" id="edit_Company_Name" required>
                                         <div class="alert alert-danger" id="edit_Company_NameErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label for="qty">Quantity</label>
+                                        <label class="form-label">Quantity <font color="red">*</font></label>
                                         <input type="text" name="edit_qty" class="form-control" id="edit_qty" onkeypress="return isNumberKey(event)">
                                         <div class="alert alert-danger" id="edit_qtyErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label >Unit</label>
+                                        <label class="form-label">Unit <font color="red">*</font></label>
                                         <select class="form-control" name="edit_unit"  id="edit_unit">
                                             <option value="">--SELECT UNIT--</option>
                                             {% for unit in unit %}
@@ -521,7 +520,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label for="remarks">Remarks</label>
+                                        <label class="form-label">Remarks</label>
                                         <textarea rows="3" name="edit_remarks" class="form-control" id="edit_remarks"></textarea>
                                         <div class="alert alert-danger" id="edit_remarksErrorMsg" style="display:none"></div>
                                     </div>
@@ -559,31 +558,31 @@
                                 <input type="hidden" name="identifier" value="ALMP"/>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label for="Particulars">Common Name</label>
+                                        <label class="form-label">Common Name <font color="red">*</font></label>
                                         <input type="text" name="edit_Common_Name" class="form-control" id="edit_Common_Name" required>
                                         <div class="alert alert-danger" id="edit_Common_NameErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label for="Company_Name">Scientific Name</label>
+                                        <label class="form-label">Scientific Name <font color="red">*</font></label>
                                         <input type="text" name="edit_Scientific_Name" class="form-control" id="edit_Scientific_Name" required>
-                                        <div class="alert alert-danger" id="edit_BreedErrorMsg" style="display:none"></div>
+                                        <div class="alert alert-danger" id="edit_Scientific_NameErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label for="Particulars">Age</label>
-                                        <input type="text" name="edit_Age" class="form-control" id="edit_Age" required>
+                                        <label class="form-label">Age <font color="red">*</font></label>
+                                        <input type="text" name="edit_Age" class="form-control" id="edit_Age" onkeypress="return isNumberKey(event)">
                                         <div class="alert alert-danger" id="edit_AgeErrorMsg" style="display:none"></div>
                                     </div>
                                    <div class="form-group col-md-6">
-                                        <label for="qty">No Of Animals</label>
+                                        <label class="form-label">No Of Animals <font color="red">*</font></label>
                                         <input type="text" name="edit_No_Of_Animal" class="form-control" id="edit_No_Of_Animal" onkeypress="return isNumberKey(event)">
                                         <div class="alert alert-danger" id="edit_No_Of_AnimalErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label for="remarks">Remarks</label>
+                                        <label class="form-label">Remarks</label>
                                         <textarea rows="3" name="edit_Animal_Remarks" class="form-control" id="edit_Animal_Remarks"></textarea>
                                         <div class="alert alert-danger" id="edit_Animal_Remarks_ErrorMsg" style="display:none"></div>
                                     </div>
@@ -609,6 +608,7 @@ $(function()
 
 function save_movement_permit()
 {
+    var applicationNo = $('#applicationNo').val();
     var Permit_Type = $("input[name=Permit_Type]:checked").length;
     var Application_Type = $("input[name=Application_Type]:checked").length;
     var Application_Type_Value = $("input[name=Application_Type]:checked").val();
@@ -789,11 +789,46 @@ function save_movement_permit()
         $('#dateErrorMsg').delay(2000).fadeOut('slow');
         $("#date").focus();
     }
-    else
+    else if(applicationNo == "")
     {
         $.ajax({
             type : "POST",
             url : "{% url 'save_movement_permit_application' %}",
+            data : $('#livestock_movement_form').serialize(),
+            success : function(data)
+            {
+                $('#applicationNo').val(data.applNo);
+                $('#applNo').val(data.applNo);
+                $('#attachment_appNo').val(data.applNo);
+                $('#submitMsg').show();
+                setTimeout(function() {
+                    $("#submitMsg").hide('blind', {}, 500)
+                }, 2000);
+                setTimeout(function() {
+                    $('#pills-details').tab('show');
+                    $('#permit_type_product').val(data.Permit_Type);
+                    if(data.Permit_Type == 'A')
+                    {
+
+                         $('#animal_details_card').show();
+                         $('#animal_product_card').hide();
+                    }
+                    else
+                    {
+
+                        $('#animal_product_card').show();
+                        $('#animal_details_card').hide();
+                    }
+                }, 3000);
+                $("#livestock_movement_button").html('Update');
+            }
+        });
+    }
+    else if(applicationNo != "")
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'update_movement_permit_application' %}",
             data : $('#livestock_movement_form').serialize(),
             success : function(data)
             {
@@ -1016,13 +1051,13 @@ function save_animal_product_details()
 
     if(Particulars == "")
     {
-        $('#ParticularsErrorMsg').html("Select Particulars.");
+        $('#ParticularsErrorMsg').html("Enter Particulars.");
         $('#ParticularsErrorMsg').show();
         $('#ParticularsErrorMsg').delay(2000).fadeOut('slow');
     }
     else if(Company_Name == "")
     {
-        $('#Company_NameErrorMsg').html("Select Company Name.");
+        $('#Company_NameErrorMsg').html("Enter Company/Producer.");
         $('#Company_NameErrorMsg').show();
         $('#Company_NameErrorMsg').delay(2000).fadeOut('slow');
     }
@@ -1038,7 +1073,8 @@ function save_animal_product_details()
         $('#unitErrorMsg').show();
         $('#unitErrorMsg').delay(2000).fadeOut('slow');
     }
-    else{
+    else
+    {
         $.ajax({
             type : "POST",
             url : "{% url 'save_movement_permit_details' %}",
@@ -1173,6 +1209,60 @@ function populateProductDetails(Record_Id, Particulars, Company_Name, Descriptio
     $('#edit_app_No').val(application_no);
     $('#edit_animal_product_model').modal('show');
 
+}
+
+function check_mov_details()
+{
+    var applicationNo = $('#applicationNo').val();
+    if(applicationNo == "")
+    {
+        $("#pills-details").prop('disabled', true);
+        $("#pills-profile-file").prop('disabled', true);
+    }
+    else if(applicationNo != "")
+    {
+        $("#pills-details").prop('disabled', true);
+        $("#pills-profile-file").prop('disabled', true);
+    }
+}
+
+function liv_mov_details()
+{
+    var appNo = $('#applicationNo').val();
+    var permit_type = $("input[name=Permit_Type]:checked").val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'liv_mov_details' %}",
+        data :{'appNo':appNo, 'permit_type': permit_type},
+        success : function(response)
+        {
+            if(permit_type == 'A')
+            {
+                 $('#animal_details_card').show();
+                 $('#animal_details').html(response);
+            }
+            else
+            {
+                $('#animal_product_card').show();
+                $('#animal_product_details').html(response);
+            }
+        }
+    });
+}
+
+
+function liv_mov_attachment()
+{
+    var appNo = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'liv_mov_attachment' %}",
+        data :{'appNo':appNo},
+        success : function(response)
+        {
+            $('#fileAttach').html(response);
+        }
+    });
 }
 </script>
 {% endblock %}

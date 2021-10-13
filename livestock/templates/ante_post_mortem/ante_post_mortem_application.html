@@ -26,7 +26,7 @@ form, input, select, textarea{
             <div class="row justify-content-left">
                 <ul class="nav nav-pills nav-secondary" id="pills-mortem" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadDetails()">Application Form</a>
+                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="load_mortem_details()">Application Form</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="pills-details" data-toggle="pill" href="#details" role="tab" aria-controls="pills-details" aria-selected="false" onclick="load_details()">Details</a>
@@ -165,7 +165,7 @@ form, input, select, textarea{
                         Save SuccessFul
                     </div>
                     <div class="card-action">
-                        <button type="button" class="btn btn-primary" onclick="save_mortem_form()">Save</button>
+                        <button type="button" class="btn btn-primary" id="ante_post_button" onclick="save_mortem_form()">Save</button>
                     </div>
                 </div>
 
@@ -226,14 +226,14 @@ form, input, select, textarea{
                                         <div class="alert alert-danger" id="SpeciesErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Nos</label>
+                                        <label class="form-label">Number <font color="red">*</font></label>
                                         <input type="text" name="Nos" class="form-control" id="Nos" onkeypress="return isNumberKey(event)">
                                         <div class="alert alert-danger" id="NosErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Quantity</label>
+                                        <label class="form-label">Quantity <font color="red">*</font></label>
                                         <input type="text" name="qty" class="form-control" id="qty" onkeypress="return isNumberKey(event)">
                                         <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
                                     </div>
@@ -312,7 +312,7 @@ form, input, select, textarea{
                                 <input type="hidden" name="identifier" value="APM"/>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Species</label>
+                                        <label class="form-label">Species <font color="red">*</font></label>
                                         <select class="form-control" name="edit_Species" id="edit_Species">
                                             <option value="">--SELECT--</option>
                                             {% for species in species %}
@@ -322,14 +322,14 @@ form, input, select, textarea{
                                         <div class="alert alert-danger" id="edit_SpeciesErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Nos</label>
+                                        <label class="form-label">Number <font color="red">*</font></label>
                                         <input type="text" name="edit_Nos" class="form-control" id="edit_Nos" onkeypress="return isNumberKey(event)">
                                         <div class="alert alert-danger" id="edit_NosErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Quantity</label>
+                                        <label class="form-label">Quantity <font color="red">*</font></label>
                                         <input type="text" name="edit_qty" class="form-control" id="edit_qty" onkeypress="return isNumberKey(event)">
                                         <div class="alert alert-danger" id="edit_qtyErrorMsg" style="display:none"></div>
                                     </div>
@@ -368,6 +368,7 @@ function isNumberKey(evt)
     }
 function save_mortem_form()
 {
+    var applicationNo = $('#applicationNo').val();
     var Inspection_Type = $("input[name=Inspection_Type]:checked").length;
     var cid = $('#cid').val();
     var address = $('#present_address').val();
@@ -452,11 +453,33 @@ function save_mortem_form()
         $('#inspectionDateErrorMsg').show();
         $('#inspectionDateErrorMsg').delay(2000).fadeOut('slow');
     }
-    else
+    else if(applicationNo == "")
     {
         $.ajax({
             type : "POST",
             url : "{% url 'save_application_form' %}",
+            data : $('#ante_post_mortem_form').serialize(),
+            success : function(data)
+            {
+                $('#applicationNo').val(data.applNo);
+                $('#application_no_details').val(data.applNo);
+                $('#attachment_appNo').val(data.applNo);
+                $('#submitMsg').show();
+                setTimeout(function() {
+                    $("#submitMsg").hide('blind', {}, 500)
+                }, 2000);
+                setTimeout(function() {
+                    $('#pills-details').tab('show');
+                }, 3000);
+                $("#ante_post_button").html('Update');
+            }
+        });
+    }
+    else if(applicationNo != "")
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'update_application_form' %}",
             data : $('#ante_post_mortem_form').serialize(),
             success : function(data)
             {
@@ -545,7 +568,6 @@ function save_mortem_details()
         var Species = $('#Species').val();
         var Nos = $('#Nos').val();
         var qty = $('#qty').val();
-        var remarks = $('#remarks').val();
 
         if(Species == "")
         {
@@ -555,7 +577,7 @@ function save_mortem_details()
         }
         else if(Nos == "")
         {
-            $('#NosErrorMsg').html("Enter Nos.");
+            $('#NosErrorMsg').html("Enter Number.");
             $('#NosErrorMsg').show();
             $('#NosErrorMsg').delay(2000).fadeOut('slow');
         }
@@ -565,13 +587,8 @@ function save_mortem_details()
             $('#qtyErrorMsg').show();
             $('#qtyErrorMsg').delay(2000).fadeOut('slow');
         }
-        else if(remarks == "")
+        else
         {
-            $('#remarksErrorMsg').html("Enter Remarks.");
-            $('#remarksErrorMsg').show();
-            $('#remarksErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else{
             $.ajax({
                 type : "POST",
                 url : "{% url 'save_mortem_details' %}",
@@ -699,6 +716,49 @@ function getLocation(dzongkhag_id)
         data :{'dzongkhag_id':dzongkhag_id},
         success : function(data) {
             $('#location_code').html(data);
+        }
+    });
+}
+
+function load_mortem_details()
+{
+    var applicationNo = $('#applicationNo').val();
+    if(applicationNo == "")
+    {
+        $("#pills-details").prop('disabled', true);
+        $("#mortem-file-attach").prop('disabled', true);
+    }
+    else if(applicationNo != "")
+    {
+        $("#pills-details").prop('disabled', false);
+        $("#mortem-file-attach").prop('disabled', false);
+    }
+}
+
+function load_details()
+{
+    var appNo = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'ante_post_mortem_details' %}",
+        data :{'appNo':appNo},
+        success : function(response)
+        {
+            $('#mortem_details').html(response);
+        }
+    });
+}
+
+function load_attachment_details()
+{
+    var appNo = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'ante_post_mortem_attachment' %}",
+        data :{'appNo':appNo},
+        success : function(response)
+        {
+            $('#file-attachment-mortem').html(response);
         }
     });
 }

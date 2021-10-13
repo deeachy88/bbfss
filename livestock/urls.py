@@ -51,6 +51,10 @@ urlpatterns = [
          name='forward_meat_shop_factory_application'),
     path('send_meat_shop_acknowledge', views.send_meat_shop_acknowledge, name='send_meat_shop_acknowledge'),
     path('meat_shop_submit', views.meat_shop_submit, name='meat_shop_submit'),
+    path('update_meat_shop_registration', views.update_meat_shop_registration, name='update_meat_shop_registration'),
+    path('load_meat_details', views.load_meat_details, name='load_meat_details'),
+    path('load_meat_attachment', views.load_meat_attachment, name='load_meat_attachment'),
+
 
     # import permit for live animal and fish
     path('import_permit', views.import_permit, name='import_permit'),
@@ -66,6 +70,9 @@ urlpatterns = [
     path('approve_fo_la_import', views.approve_fo_la_import, name='approve_fo_la_import'),
     path('reject_fo_la_import', views.reject_fo_la_import, name='reject_fo_la_import'),
     path('update_details_la', views.update_details_la, name='update_details_la'),
+    path('update_import_la_fish', views.update_import_la_fish, name='update_import_la_fish'),
+    path('load_af_import_details', views.load_af_import_details, name='load_af_import_details'),
+    path('load_af_attachment', views.load_af_attachment, name='load_af_attachment'),
 
     # import permit for livestock products and animal feed
     path('import_permit_application', views.import_permit_application, name='import_permit_application'),
@@ -81,6 +88,7 @@ urlpatterns = [
     path('reject_fo_lp_import', views.reject_fo_lp_import, name='reject_fo_lp_import'),
     path('update_details_lp', views.update_details_lp, name='update_details_lp'),
     path('submit_lp_application', views.submit_lp_application, name='submit_lp_application'),
+    path('update_import_lp', views.update_import_lp, name='update_import_lp'),
 
     # export certificate for animal and animal products
     path('export_certificate_application', views.export_certificate_application, name='export_certificate_application'),
@@ -92,6 +100,12 @@ urlpatterns = [
     path('approve_application_export', views.approve_application_export, name='approve_application_export'),
     path('reject_application_export', views.reject_application_export, name='reject_application_export'),
     path('delete_ec_file', views.delete_ec_file, name='delete_ec_file'),
+    path('update_livestock_export', views.update_livestock_export, name='update_livestock_export'),
+    path('livestock_export_details', views.livestock_export_details, name='livestock_export_details'),
+    path('livestock_attachment_details', views.livestock_attachment_details, name='livestock_attachment_details'),
+    path('load_lp_import_details', views.load_lp_import_details, name='load_lp_import_details'),
+    path('load_lp_import_attachment', views.load_lp_import_attachment, name='load_lp_import_attachment'),
+
 
     # movement permit for animal, animal products and animal feed apply_movement_permit
     path('movement_permit_application', views.movement_permit_application, name='movement_permit_application'),
@@ -105,6 +119,9 @@ urlpatterns = [
     path('details_ins_lmp', views.details_ins_lmp, name='details_ins_lmp'),
     path('approve_application_lmp', views.approve_application_lmp, name='approve_application_lmp'),
     path('reject_application_lmp', views.reject_application_lmp, name='reject_application_lmp'),
+    path('liv_mov_details', views.liv_mov_details, name='liv_mov_details'),
+    path('liv_mov_details', views.liv_mov_attachment, name='liv_mov_details'),
+
 
     # Ante Mortem And Post Mortem
     path('application_form', views.application_form, name='application_form'),
@@ -119,6 +136,9 @@ urlpatterns = [
     path('load_gewog', views.load_gewog, name='load_gewog'),
     path('load_village', views.load_village, name='load_village'),
     path('load_location', views.load_location, name='load_location'),
+    path('update_application_form', views.update_application_form, name='update_application_form'),
+    path('ante_post_mortem_details', views.ante_post_mortem_details, name='ante_post_mortem_details'),
+    path('ante_post_mortem_attachment', views.ante_post_mortem_attachment, name='ante_post_mortem_attachment')
 
 ]
 if settings.DEBUG:

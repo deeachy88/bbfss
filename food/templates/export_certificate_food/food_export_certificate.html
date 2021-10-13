@@ -22,7 +22,7 @@
             <div class="row justify-content-left">
                 <ul class="nav nav-pills nav-secondary" id="pills-tab" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadDetails()">Application Form</a>
+                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="check_details()">Application Form</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="pills-export-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
@@ -269,7 +269,7 @@
                         Save SuccessFul
                     </div>
                     <div class="card-action">
-                        <button type="button" class="btn btn-primary" value="Submit" onclick="save_food_export()">Save</button>
+                        <button type="button" class="btn btn-primary" id="food_export_button" onclick="save_food_export()">Save</button>
                     </div>
                 </div>
                 <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="pills-export-file">
@@ -327,6 +327,7 @@ $(function()
 });
 function save_food_export()
 {
+    var applicationNo = $('#applicationNo').val();
     var license_no = $('#license_no').val();
     var cid = $('#cid').val();
     var name = $('#name').val();
@@ -508,11 +509,36 @@ function save_food_export()
         $('#consignment_locationErrorMsg').delay(2000).fadeOut('slow');
         $('#consignment_location').focus();
     }
-    else
+    else if(applicationNo == "")
     {
-    $.ajax({
+        $.ajax({
         type : "POST",
         url : "{% url 'save_food_export_details' %}",
+        data : $('#exportCertificateForm').serialize(),
+        success : function(data)
+        {
+            $('#applicationNo').val(data.applNo);
+            $('#applNo').val(data.applNo);
+            $('#animal_application_no').val(data.applNo);
+            $('#appNo').val(data.applNo);
+            $('#permit_type_product').val(data.Application_Type);
+            $('#submitMsg').show();
+            setTimeout(function()
+            {
+                $("#submitMsg").hide('blind', {}, 500)
+            }, 2000);
+            setTimeout(function() {
+                $('#pills-export-file').tab('show');
+            }, 3000);
+            $("#food_export_button").html('Update');
+        }
+        });
+    }
+    else if(applicationNo != "")
+    {
+        $.ajax({
+        type : "POST",
+        url : "{% url 'update_food_export_details' %}",
         data : $('#exportCertificateForm').serialize(),
         success : function(data)
         {
@@ -699,20 +725,74 @@ function getCitizenDetails(cidNo)
         success : function(data)
         {
             const myObj =data.response;
-            var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
-            var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
-            var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
-            if (middleName == null) {
-                    middleName = "";
-                }
-            var CitizenName = firstName + " " + middleName + " " + lastName;
-            var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
-            var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
-            var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
-            $('#name').val(CitizenName);
-            $('#dzongkhag').val(dzongkhagName);
-            $('#gewog').val(gewogName);
-            $('#village').val(villageName);
+            if(myObj.citizenDetailsResponse.citizenDetail == undefined)
+            {
+                $('#cid').val("");
+                $('#name').val("");
+                $('#dzongkhag').val("");
+                $('#gewog').val("");
+                $('#village').val("");
+                $('#cidErrorMsg').html("Invalid CID.Try With Another one");
+                $('#cidErrorMsg').show();
+                $('#cidErrorMsg').delay(2000).fadeOut('slow');
+            }
+            else
+            {
+                var firstName = myObj.citizenDetailsResponse.citizenDetail[0].firstName
+                var middleName = myObj.citizenDetailsResponse.citizenDetail[0].middleName
+                var lastName = myObj.citizenDetailsResponse.citizenDetail[0].lastName
+                if (middleName == null) {
+                        middleName = "";
+                    }
+                var CitizenName = firstName + " " + middleName + " " + lastName;
+                var dzongkhagName = myObj.citizenDetailsResponse.citizenDetail[0].dzongkhagName
+                var villageName = myObj.citizenDetailsResponse.citizenDetail[0].gewogName
+                var gewogName = myObj.citizenDetailsResponse.citizenDetail[0].villageName
+                $('#name').val(CitizenName);
+                $('#dzongkhag').val(dzongkhagName);
+                $('#gewog').val(gewogName);
+                $('#village').val(villageName);
+            }
+        }
+    });
+}
+
+function getFromGewog(dzongkhag_id)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'to_gewog_list' %}",
+        data :{'dzongkhag_id':dzongkhag_id},
+        success : function(data)
+        {
+            $('#consignment_location_gewog').html(data);
+        }
+    });
+}
+
+function check_details()
+{
+    var applicationNo = $('#applicationNo').val();
+    if(applicationNo == "")
+    {
+        $("#pills-export-file").prop('disabled', true);
+    }
+    else if(applicationNo != "")
+    {
+        $("#pills-export-file").prop('disabled', false);
+    }
+}
+
+function load_attachment_details()
+{
+    var appNo = $('#applicationNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_fec_attachment' %}",
+        data :{'appNo':appNo},
+        success : function(response)
+        {
+            $('#fileAttach').html(response);
         }
     });
 }

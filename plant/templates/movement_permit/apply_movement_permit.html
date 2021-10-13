@@ -1,6 +1,7 @@
 {% extends 'common_dashboard.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+{% load static %}
 <style>
 option {
     background-color: white !important;
@@ -16,7 +17,7 @@ option {
     <div class="card-body">
          <form method="post" id="permitForm">
              {% csrf_token %}
-            <input type="hidden" id="applicationNo" name="applicationNo" value="{{ applicationNo }}">
+            <input type="hidden" id="applicationNo" name="applicationNo">
 
             <div id="plant">
                 <div class="row align-left">
@@ -233,7 +234,7 @@ option {
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Expected Date of Movement &nbsp;<font color='red'>*</font></label>
-                                        <input type="text" class="form-control date-picker flatpickr-input active" id="date" name="date"  placeholder="Pick a date" readonly="readonly">
+                                        <input type="date" class="form-control" id="date" name="date">
                                     </div>
                                     <div class="alert alert-danger" id="dateErrorMsg" style="display:none"></div>
                                 </div>
@@ -242,7 +243,7 @@ option {
                                 Save SuccessFul
                             </div>
                             <div class="card-action">
-                                    <button type="button" class="btn btn-primary" onclick="save()">Save</button>
+                                    <button type="button" class="btn btn-primary" id="movement_button" onclick="save()">Save</button>
                             </div>
                         </div>
                     </div>
@@ -428,7 +429,13 @@ option {
         </div>
     </div>
 </form>
+<script src="{% static 'assets/bower_components/jquery/dist/jquery.min.js' %}"></script>
 <script>
+    $(function()
+    {
+        var today = new Date().toISOString().split('T')[0];
+        $('#date')[0].setAttribute('min', today);
+    });
 function isNumberKey(evt)
 {
  var charCode = (evt.which) ? evt.which : event.keyCode
@@ -440,6 +447,7 @@ function isNumberKey(evt)
 
 function save()
 {
+    var applicationNo = $('#applicationNo').val();
     var companyName = $('#companyName').val();
     var cid = $('#cid').val();
     var name = $('#name').val();
@@ -582,11 +590,32 @@ function save()
         $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
         $('#contactNumber').focus();
     }
-    else
+    else if(applicationNo == "")
     {
         $.ajax({
             type : "POST",
             url : "{% url 'save_movement_permit' %}",
+            data : $('#permitForm').serialize(),
+            success : function(data) {
+                $('#applicationNo').val(data.applicationNo);
+                $('#applNo').val(data.applicationNo);
+                $('#appNo').val(data.applicationNo);
+                $('#submitMsg').show();
+                setTimeout(function() {
+                    $("#submitMsg").hide('blind', {}, 500)
+                }, 2000);
+                 setTimeout(function() {
+                    $('#movement-profile-tab').tab('show');
+                }, 3000);
+                $("#movement_button").html('Update');
+            }
+        });
+    }
+    else if(applicationNo != "")
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'update_movement_permit' %}",
             data : $('#permitForm').serialize(),
             success : function(data) {
                 $('#applicationNo').val(data.applicationNo);
@@ -619,18 +648,17 @@ function loadPage(appId)
 
 function loadPageDetails()
 {
-    var appNo = $('#applicationNo').val();
-    $.ajax({
-        type : "GET",
-        url : "{% url 'load_details_page' %}",
-        data :{'application_id':appNo},
-        success : function(response)
-        {
-            $('#plant_details').html(response);
-            $("#movement-profile-tab").prop('disabled', false);
-            $("#movement-profile-file").prop('disabled', false);
-        }
-    });
+    var applicationNo = $('#applicationNo').val();
+    if(applicationNo == "")
+    {
+        $("#movement-profile-tab").prop('disabled', true);
+        $("#movement-profile-file").prop('disabled', true);
+    }
+    else if(applicationNo != "")
+    {
+        $("#movement-profile-tab").prop('disabled', false);
+        $("#movement-profile-file").prop('disabled', false);
+    }
 }
 
 function getGewog(dzongkhag_id)
