@@ -7,6 +7,14 @@
 form, input, select, textarea{
     color: black !important;
 }
+#loader img
+{
+  left: 50%;
+  margin-left: -32px;
+  margin-top: -32px;
+  position: absolute;
+  top: 50%;
+}
 </style>
 <div class="card">
     <div class="card-header" role="tab" id="headingOne">
@@ -560,7 +568,7 @@ form, input, select, textarea{
                     </tr>
                 </thead>
                 <tbody>
-                    {% for import in feasibility_inspection_team_details %}
+                    {% for import in inspection_team_details %}
                         <tr>
                             <td>{{ forloop.counter }}</td>
                             <td>{{import.Name}}</td>
@@ -595,7 +603,7 @@ form, input, select, textarea{
                     </tr>
                 </thead>
                 <tbody>
-                    {% for import in feasibility_team_details %}
+                    {% for import in team_details %}
                         <tr>
                             <td>{{ forloop.counter }}</td>
                             <td>{{import.Name}}</td>
@@ -738,7 +746,7 @@ form, input, select, textarea{
                         <th scope="col">#</th>
                         <th scope="col">Requirement</th>
                         <th scope="col">Clause No</th>
-                        <th scope="col">Concern</th>
+                        <th scope="col">NC</th>
                         <th scope="col">Date</th>
                         <th scope="col">Observations/ Findings</th>
                         <th scope="col">Response/Actions Proposed By FBO</th>
@@ -750,7 +758,7 @@ form, input, select, textarea{
                             <td>{{ forloop.counter }}</td>
                             <td>{{import.Requirement}}</td>
                             <td>{{import.Clause_No}}</td>
-                            <td>{{import.Concern}}</td>
+                            <td>{{import.NC}}</td>
                             <td>{{import.Date|date:"d-m-Y"}}</td>
                             <td>{{import.Observation}}</td>
                             <th scope="col">{{import.FBO_Response}}</th>
@@ -899,6 +907,9 @@ form, input, select, textarea{
                     </div>
                 </div>
             </div>
+            <div id="loader" style="display:none">
+                <img src="{% static 'assets/img/ajax-loader.gif' %}" alt="processing..." />
+            </div>
             <br>
             <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
                 Application Approved
@@ -933,11 +944,13 @@ form, input, select, textarea{
         }
         else
         {
+            $("#loader").show();
             $.ajax({
                 type : "GET",
                 url : "{% url 'fbr_submit' %}",
                 data :{'application_id':application_id , 'remarks':remarks , 'validity':validity},
                 success : function(data) {
+                    $("#loader").hide();
                     $('#submitMsg').show();
                     setTimeout(function()
                     {

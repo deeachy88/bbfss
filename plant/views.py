@@ -1435,7 +1435,7 @@ def fo_app_details(request):
         return render(request, 'import_certificate_food/fo_details.html',
                       {'application_details': application_details, 'details': details, 'file': file,
                        'dzongkhag': dzongkhag, 'gewog': gewog,
-                       'village': village, 'location': field_list, 'country': country_list})
+                       'village': village, 'location': field_list, 'country_list': country_list})
     elif service_code == 'FBR':
         new_import_app = t_workflow_details.objects.filter(Application_No=Application_No, Application_Status='FRA')
         if new_import_app.exists():
@@ -1449,10 +1449,10 @@ def fo_app_details(request):
             inspector_list = t_user_master.objects.filter(Role_Id='5')
             inspection_team_details = t_food_business_registration_licensing_t6.objects.filter(
                 Application_No=Application_No, Meeting_Type='Feasibility Inspection')
-            team_details = t_food_business_registration_licensing_t4.objects.filter(Application_No=Application_No,
-                                                                                    Meeting_Type='Feasibility Inspection')
-            inspection_details = t_food_business_registration_licensing_t5.objects.filter(Application_No=Application_No,
-                                                                                          Inspection_Type='Feasibility Inspection')
+            team_details = t_food_business_registration_licensing_t4.objects.filter(
+                Application_No=Application_No,Meeting_Type='Feasibility Inspection')
+            inspection_details = t_food_business_registration_licensing_t5.objects.filter(
+                Application_No=Application_No,Inspection_Type='Feasibility Inspection')
             factory_inspection_team_details = t_food_business_registration_licensing_t6.objects.filter(
                 Application_No=Application_No, Meeting_Type='Factory Inspection')
             factory_team_details = t_food_business_registration_licensing_t4.objects.filter(
@@ -5480,8 +5480,9 @@ def view_certificate_details(request):
 
         elif service_code == 'FSL':  # Food Safety License
             application_details = t_food_business_registration_licensing_t1.objects.filter(FB_License_No__isnull=False)
+            payment_details = t_payment_details.objects.all()
             return render(request, 'food_certificates/safety_license_food_list.html',
-                          {'application_details': application_details})
+                          {'application_details': application_details, 'payment_details':payment_details})
 
         elif service_code == 'FHL':  # Food Handler License
             role = request.session['Role_Id']
@@ -5645,8 +5646,9 @@ def view_certificate_details(request):
         elif service_code == 'FSL':  # Food Safety License
             application_details = t_food_business_registration_licensing_t1.objects.filter(Applicant_Id=login_id,
                                                                                            FB_License_No__isnull=False)
+            payment_details = t_payment_details.objects.all()
             return render(request, 'food_certificates/safety_license_food_list.html',
-                          {'application_details': application_details})
+                          {'application_details': application_details, 'payment_details':payment_details})
 
         elif service_code == 'FHL':  # Food Handler License
             application_details = t_food_licensing_food_handler_t1.objects.filter(Applicant_Id=login_id,
@@ -5956,12 +5958,10 @@ def get_certificate_details(request, t_livestock_import_permit_product_inspectio
         details = t_food_import_permit_t1.objects.filter(Application_No=application_No)
         details_permit = t_food_import_permit_t2.objects.filter(Application_No=application_No)
         for import_details in details:
-            country_id = import_details.Origin_Country_Food
             field_id = import_details.Place_Of_Entry
-            country_list = t_country_master.objects.filter(Country_Code=country_id)
             entry_point = t_field_office_master.objects.filter(Field_Office_Id=field_id)
             return render(request, 'food_certificates/import_permit_food.html',
-                          {'certificate_details': details, 'import': details_permit, 'country_list': country_list,
+                          {'certificate_details': details, 'import': details_permit,
                            'entry_point': entry_point})
 
     elif service_code == 'RFF':

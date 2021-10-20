@@ -345,27 +345,42 @@ form, input, select, textarea{
                     </div>
                     <br>
                      {% for application_details in application_details %}
-                        {% if application_details.FR_Response %}
-                        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
-                            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
-                                <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Client </span>&nbsp;&nbsp;&nbsp;
-                                <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Details</span>
-                            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">Desired Inspection Date</label>
-                                    <input type="text" class="form-control" value="{{ application_details.Desired_FR_Inspection_Date }}" readonly="readonly">
+                        {% if application_details.FR_Response and application_details.Desired_FR_Inspection_Date %}
+                            <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                                <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                    <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Client </span>&nbsp;&nbsp;&nbsp;
+                                    <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Details</span>
+                                <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Desired Inspection Date</label>
+                                        <input type="text" class="form-control" value="{{ application_details.Desired_FR_Inspection_Date }}" readonly="readonly">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Response From Client</label>
+                                        <input type="text" class="form-control" value="{{ application_details.FR_Response }}" readonly="readonly">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">Response From Client</label>
-                                    <input type="text" class="form-control" value="{{ application_details.FR_Response }}" readonly="readonly">
+                        {% elif application_details.Desired_FR_Inspection_Date %}
+                            <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                                <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                    <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Client </span>&nbsp;&nbsp;&nbsp;
+                                    <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Details</span>
+                                <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Desired Inspection Date</label>
+                                        <input type="text" class="form-control" value="{{ application_details.Desired_FR_Inspection_Date }}" readonly="readonly">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                         {% endif %}
                      {% endfor %}
                     <br>
@@ -406,7 +421,7 @@ form, input, select, textarea{
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">Recommendation</label>
+                                <label class="form-label">Recommendation(Required If Resubmitting)</label>
                                 <textarea class="form-control" id="remarks" rows="2"></textarea>
                             </div>
                             <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>

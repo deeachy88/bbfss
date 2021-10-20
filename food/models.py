@@ -96,8 +96,8 @@ class t_food_import_permit_t1(models.Model):
     Present_Address = models.CharField(max_length=250, blank=True, null=True)
     Contact_No = models.IntegerField(blank=True, null=True)
     Email = models.EmailField(blank=True, null=True)
-    Operation_Type = models.CharField(max_length=100, blank=True, null=True)
-    Origin_Country_Food = models.TextField(blank=True, null=True)
+    Operation_Type = models.CharField(max_length=100,blank=True, null=True)
+    Origin_Country_Food = models.CharField(max_length=250, blank=True, null=True)
     Transit_Country = models.CharField(max_length=5)
     Country_Of_Transit = models.CharField(max_length=100)
     Means_of_Conveyance = models.TextField(blank=True, null=True)
@@ -165,6 +165,7 @@ class t_food_import_permit_inspection_t1(models.Model):
     Inspection_Remarks = models.TextField(blank=True, null=True)
     Applicant_Id = models.CharField(max_length=100, default=None, blank=True, null=True)
     Terms = models.TextField(blank=True, null=True)
+
 
 
 class t_food_import_permit_inspection_t2(models.Model):
@@ -282,7 +283,7 @@ class t_food_business_registration_licensing_t5(models.Model):
     Application_No = models.CharField(max_length=30)
     Inspection_Type = models.CharField(max_length=100)
     Requirement = models.TextField()
-    Observation = models.TextField()
+    Observation = models.TextField(default=None, blank=True, null=True)
     Clause_No = models.CharField(max_length=100, default=None, blank=True, null=True)
     Concern = models.CharField(max_length=10, default=None, blank=True, null=True)
     Date = models.DateField(default=None, blank=True, null=True)

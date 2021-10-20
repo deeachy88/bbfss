@@ -7,6 +7,7 @@
             <th scope="col">Concern</th>
             <th scope="col">Date</th>
             <th scope="col">Observations/ Findings</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -15,9 +16,15 @@
                 <td>{{ forloop.counter }}</td>
                 <td>{{import.Requirement}}</td>
                 <td>{{import.Clause_No}}</td>
-                <td id="my_cell">{{import.Concern}}</td>
+                <td>{{import.Concern}}</td>
                 <td>{{import.Date|date:"d-m-Y"}}</td>
                 <td>{{import.Observation}}</td>
+                <td>
+                    <button type="button" class="btn btn-primary btn--icon btn-sm" onclick="populateForm('{{import.Record_Id}}','{{import.Requirement}}',
+                    '{{import.Clause_No}}','{{import.Concern}}', '{{import.Observation}}', '{{import.FBO_Response}}', '{{import.Application_No}}')">
+                    <i class="zmdi zmdi-edit"></i>
+                    </button>
+                </td>
             </tr>
             {% empty %}
             <tr>

@@ -118,6 +118,7 @@ class t_livestock_import_permit_product_t1(models.Model):
     Applicant_Id = models.CharField(max_length=100, default=None, blank=True, null=True)
     Passport_Number = models.CharField(default=None, max_length=100, blank=True, null=True)
 
+
 class t_livestock_import_permit_product_t2(models.Model):
     Record_Id = models.AutoField(primary_key=True)
     Application_No = models.CharField(max_length=20)
@@ -170,6 +171,7 @@ class t_livestock_import_permit_product_inspection_t1(models.Model):
     Inspection_Remarks = models.TextField(blank=True, null=True)
     Applicant_Id = models.CharField(max_length=100, default=None, blank=True, null=True)
     Passport_Number = models.CharField(default=None, max_length=100, blank=True, null=True)
+
 
 class t_livestock_import_permit_product_inspection_t2(models.Model):
     Record_Id = models.AutoField(primary_key=True)
@@ -282,6 +284,7 @@ class t_livestock_import_permit_animal_inspection_t1(models.Model):
     Quarantine_Facilities = models.CharField(max_length=100, default=None, blank=True, null=True)
     Applicant_Id = models.CharField(max_length=100, default=None, blank=True, null=True)
     Passport_Number = models.CharField(default=None, max_length=100, blank=True, null=True)
+
 
 class t_livestock_import_permit_animal_inspection_t2(models.Model):
     Record_Id = models.AutoField(primary_key=True)

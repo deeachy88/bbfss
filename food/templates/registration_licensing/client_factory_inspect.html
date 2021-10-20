@@ -640,15 +640,14 @@ form, input, select, textarea{
                         <label class="form-label"> Proposed Factory Inspection Date</label>
                         <input type="date" class="form-control" id="date" name="date">
                     </div>
-                    <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
+                    <div class="alert alert-danger" id="dateErrorMsg" style="display:none"></div>
                 </div>
             </div>
             <br>
-            <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+            <div id="submitMsg" class="alert alert-info" style="display:none;">
                 Application Forwarded
             </div>
             <div class="modal-footer justify-content-center">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 {% for application_details in application_details %}
                     <button type="button" class="btn btn-primary" onclick="forward_factory_application('{{ application_details.Application_No }}')"> Forward </button>
                 {% endfor %}
@@ -666,26 +665,35 @@ $(function(){
     function forward_factory_application(application_id)
     {
         date = $('#date').val();
-
-        $.ajax({
-            type : "POST",
-            url : "{% url 'forward_factory_application' %}",
-            data :{'application_id':application_id ,'date':date, csrfmiddlewaretoken: '{{ csrf_token }}'},
-            success : function(data) {
-                $('#submitMsg').show();
-                setTimeout(function()
-                {
-                    $("#submitMsg").hide('blind', {}, 500)
-                }, 2000);
-                setTimeout(function()
-                {
-                    $('#import_detailsModal').modal('hide');
-                }, 3000);
-                setTimeout(function()
-                {
-                     location.reload();
-                }, 3000);
-            }
-        });
+        if(date == "")
+        {
+            $('#dateErrorMsg').html("Select Inspection Date.");
+            $('#dateErrorMsg').show();
+            $('#dateErrorMsg').delay(2000).fadeOut('slow');
+            $('#date').focus();
+        }
+        else
+        {
+            $.ajax({
+                type : "POST",
+                url : "{% url 'forward_factory_application' %}",
+                data :{'application_id':application_id ,'date':date, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(data) {
+                    $('#submitMsg').show();
+                    setTimeout(function()
+                    {
+                        $("#submitMsg").hide('blind', {}, 500)
+                    }, 2000);
+                    setTimeout(function()
+                    {
+                        $('#import_detailsModal').modal('hide');
+                    }, 3000);
+                    setTimeout(function()
+                    {
+                         location.reload();
+                    }, 3000);
+                }
+            });
+        }
     }
 </script>

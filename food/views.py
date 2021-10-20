@@ -14,6 +14,7 @@ from administrator.models import t_village_master, t_gewog_master, t_dzongkhag_m
     t_field_office_master, t_location_field_office_mapping, t_unit_master, t_service_master, t_user_master, \
     t_food_category_master
 from bbfss import settings
+from certification.models import t_certification_organic_t1, t_certification_food_t1, t_certification_gap_t1
 from food.forms import ImportFormFood, FeasibilityForm
 from food.models import t_food_export_certificate_t1, t_food_licensing_food_handler_t1, t_food_import_permit_t1, \
     t_food_import_permit_inspection_t2, t_food_import_permit_t2, t_food_import_permit_inspection_t1, \
@@ -363,7 +364,7 @@ def fbr_fo_reject(request):
     workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
     workflow_details.update(Action_Date=date.today())
     workflow_details.update(Application_Status='R')
-    details = t_food_import_permit_t1.objects.filter(Application_No=application_no)
+    details = t_food_business_registration_licensing_t1.objects.filter(Application_No=application_no)
     details.update(FO_Remarks=remarks)
     for email_id in details:
         email = email_id.Email
@@ -388,7 +389,7 @@ def send_fbr_reject_email(Email, remarks):
     message = "Dear Sir," \
               "" \
               "Your Application for Food Business Registration Has Been Rejected." \
-              " Reason: " + remarks + ""
+              " Because: " + remarks + ""
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
     send_mail(subject, message, email_from, recipient_list)
@@ -452,9 +453,8 @@ def approve_feasibility_inspection(request):
     remarks = request.GET.get('remarks')
     inspection_leader = request.GET.get('Inspection_Leader')
     inspection_team = request.GET.get('Inspection_Team')
-    dateOfInspection = request.GET.get('dateOfInspection')
+    date_format_ins = request.GET.get('dateOfInspection')
     Clearance_No = feasibility_clearance_no(request)
-    date_format_ins = datetime.strptime(dateOfInspection, '%d-%m-%Y').date()
     details = t_food_business_registration_licensing_t1.objects.filter(Application_No=application_id)
 
     if remarks is not None:
@@ -526,40 +526,31 @@ def send_feasibility_reject_email(remarks, Email):
 
 def reject_feasibility_inspection(request):
     application_id = request.GET.get('application_id')
-    Inspection_Leader = request.GET.get('Inspection_Leader')
-    Inspection_Team = request.GET.get('Inspection_Team')
     remarks = request.GET.get('remarks')
-    dateOfInspection = request.GET.get('dateOfInspection')
-    date_format_ins = datetime.strptime(dateOfInspection, '%d-%m-%Y').date()
     details = t_food_business_registration_licensing_t1.objects.filter(Application_No=application_id)
 
     details.update(FI_Recommendation=remarks)
-    details.update(FI_Inspection_Date=date_format_ins)
-    details.update(FI_Inspection_Leader=Inspection_Leader)
-    details.update(FI_Inspection_Team=Inspection_Team)
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='IRS')
     for email_id in application_details:
         email = email_id.Applicant_Id
         login_details = t_user_master.objects.filter(Email_Id=email)
-        login = login_details.Login_Id
-        application_details.update(Assigned_To=login)
-        application_details.update(Assigned_Role_Id=None)
+        for det_login in login_details:
+            login = det_login.Login_Id
+            application_details.update(Assigned_To=login)
+            application_details.update(Assigned_Role_Id=None)
     return redirect(inspector_application)
 
 
 def resubmit_feasibility_inspection(request):
     application_id = request.GET.get('application_id')
     remarks = request.GET.get('remarks')
-    dateOfInspection = request.GET.get('dateOfInspection')
-    Inspection_Team = request.GET.get('Inspection_Team')
-    date_format_ins = datetime.strptime(dateOfInspection, '%d-%m-%Y').date()
+    date_format_ins = request.GET.get('dateOfInspection')
     details = t_food_business_registration_licensing_t1.objects.filter(Application_No=application_id)
 
-    details.update(FI_Recommendation=remarks)
-    details.update(FI_Inspection_Date=date_format_ins)
-    details.update(FI_Inspection_Team=Inspection_Team)
+    details.update(FI_Response=remarks)
+    details.update(Desired_FI_Inspection_Date=date_format_ins)
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
     application_details.update(Assigned_Role_Id='4')
@@ -625,8 +616,7 @@ def approve_factory_inspection(request):
     remarks = request.GET.get('remarks')
     inspection_leader = request.GET.get('Inspection_Leader')
     inspection_team = request.GET.get('Inspection_Team')
-    dateOfInspection = request.GET.get('dateOfInspection')
-    date_format_ins = datetime.strptime(dateOfInspection, '%d-%m-%Y').date()
+    date_format_ins = request.GET.get('dateOfInspection')
     details = t_food_business_registration_licensing_t1.objects.filter(Application_No=application_id)
 
     if remarks is not None:
@@ -712,16 +702,9 @@ def send_factory_reject_email(remarks, Email):
 def reject_factory_inspection(request):
     application_id = request.GET.get('application_id')
     remarks = request.GET.get('remarks')
-    dateOfInspection = request.GET.get('dateOfInspection')
-    inspection_leader = request.GET.get('Inspection_Leader')
-    inspection_team = request.GET.get('Inspection_Team')
-    date_format_ins = datetime.strptime(dateOfInspection, '%d-%m-%Y').date()
     details = t_food_business_registration_licensing_t1.objects.filter(Application_No=application_id)
 
     details.update(FR_Recommendation=remarks)
-    details.update(FR_Inspection_Date=date_format_ins)
-    details.update(FR_Inspection_Leader=inspection_leader)
-    details.update(FR_Inspection_Team=inspection_team)
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='RS')
@@ -741,12 +724,11 @@ def reject_factory_inspection(request):
 def resubmit_factory_inspection(request):
     application_id = request.GET.get('application_id')
     remarks = request.GET.get('remarks')
-    dateOfInspection = request.GET.get('dateOfInspection')
-    date_format_ins = datetime.strptime(dateOfInspection, '%d-%m-%Y').date()
+    date_format_ins = request.GET.get('dateOfInspection')
     details = t_food_business_registration_licensing_t1.objects.filter(Application_No=application_id)
 
-    details.update(FR_Recommendation=remarks)
-    details.update(FR_Inspection_Date=date_format_ins)
+    details.update(FR_Response=remarks)
+    details.update(Desired_FR_Inspection_Date=date_format_ins)
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
     application_details.update(Assigned_To=None)
@@ -767,7 +749,7 @@ def edit_fbr_feasibility_details(request):
         app_details.update(FBO_Response=edit_response_fbo)
     else:
         app_details.update(FBO_Response=None)
-    application_details = t_livestock_clearance_meat_shop_t5.objects.filter(Application_No=application_id,
+    application_details = t_food_business_registration_licensing_t5.objects.filter(Application_No=application_id,
                                                                             Inspection_Type='Feasibility Inspection')
     message_count = t_food_business_registration_licensing_t5.objects.filter(
         Concern='Yes', Inspection_Type='Feasibility Inspection').count()
@@ -778,21 +760,29 @@ def edit_fbr_feasibility_details(request):
 def edit_fbr_factory_details(request):
     record_id = request.GET.get('record_id')
     application_id = request.GET.get('app_no')
+    print(record_id)
+    print(application_id)
     edit_Concern = request.GET.get('edit_Concern')
-    edit_response_fbo = request.GET.get('edit_response_fbo')
+    NC_Category = request.GET.get('edit_nc_category')
+    edit_Observations = request.GET.get('edit_Observations')
     app_details = t_food_business_registration_licensing_t5.objects.filter(Record_Id=record_id)
-    app_details.update(Concern=edit_Concern)
-    app_details.update(FBO_Response=edit_response_fbo)
-    if edit_response_fbo is not None:
-        app_details.update(FBO_Response=edit_response_fbo)
+    app_details.update(NC=edit_Concern)
+    app_details.update(Observation=edit_Observations)
+    if edit_Observations is not None:
+        app_details.update(Observation=edit_Observations)
     else:
-        app_details.update(FBO_Response=None)
+        app_details.update(Observation=None)
+    if NC_Category is not None:
+        app_details.update(NC_Category=NC_Category)
+    else:
+        app_details.update(NC_Category=None)
     application_details = t_food_business_registration_licensing_t5.objects.filter(Application_No=application_id,
                                                                                    Inspection_Type='Factory Inspection')
     message_count = t_food_business_registration_licensing_t5.objects.filter(
         NC='Yes', Inspection_Type='Factory Inspection').count()
     return render(request, 'registration_licensing/nc_details.html', {'application_details': application_details,
                                                                       'message_count': message_count})
+
 
 
 def forward_fbr_application(request):
@@ -851,7 +841,8 @@ def view_factory_inspection_application(request):
 def forward_factory_application(request):
     application_id = request.POST.get('application_id')
     Desired_FR_Inspection_Date = request.POST.get('date')
-    date_format_ins = datetime.strptime(Desired_FR_Inspection_Date, '%d-%m-%Y').date()
+    print(application_id)
+    print(Desired_FR_Inspection_Date)
 
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Assigned_To=None)
@@ -859,7 +850,7 @@ def forward_factory_application(request):
     application_details.update(Assigned_Role_Id='4')
 
     details = t_food_business_registration_licensing_t1.objects.filter(Application_No=application_id)
-    details.update(Desired_FR_Inspection_Date=date_format_ins)
+    details.update(Desired_FR_Inspection_Date=Desired_FR_Inspection_Date)
 
     return redirect(factory_inspection_list)
 
@@ -902,14 +893,12 @@ def save_food_export_details(request):
     Quantity = request.POST.get('quantity')
     Unit = request.POST.get('unit')
     Declared_Point_of_Exit = request.POST.get('Place_of_Exit')
-    Export_Expected_Date = request.POST.get('Export_Expected_Date')
-    Proposed_Inspection_Date = request.POST.get('inspectionDate')
+    date_of_export = request.POST.get('Export_Expected_Date')
+    date_format_ins = request.POST.get('inspectionDate')
     Purpose_Of_Export = request.POST.get('export_purpose')
     Consignment_Location_Dzongkhag = request.POST.get('consignment_location_dzongkhag')
     Consignment_Location_Gewog = request.POST.get('consignment_location_gewog')
     Consignment_Location = request.POST.get('consignment_location')
-    date_format_ins = datetime.strptime(Proposed_Inspection_Date, '%d-%m-%Y').date()
-    date_of_export = datetime.strptime(Export_Expected_Date, '%d-%m-%Y').date()
     additional_info = request.POST.get('additional_info')
     t_food_export_certificate_t1.objects.create(
         Application_No=food_export_application,
@@ -1490,18 +1479,75 @@ def reject_food_handler_application(request):
 
 def send_acknowledge(request):
     application_id = request.GET.get('application_id')
+    service_code = request.GET.get('Service_Code')
     work_details = t_workflow_details.objects.filter(Application_No=application_id)
     work_details.update(Application_Status='ACK')
-    application_details = t_food_business_registration_licensing_t1.objects.filter(Application_No=application_id)
-    for app in application_details:
-        mail_id = app.Email
-        send_fbr_acknowledgement_mail(mail_id)
+    if service_code == "FBR":
+        application_details = t_food_business_registration_licensing_t1.objects.filter(Application_No=application_id)
+        for app in application_details:
+            mail_id = app.Email
+            send_fbr_acknowledgement_mail(mail_id)
+    elif service_code == "OC":
+        application_details = t_certification_organic_t1.objects.filter(Application_No=application_id)
+        for app in application_details:
+            mail_id = app.Email
+            send_oc_acknowledgement_mail(mail_id)
+    elif service_code == "FPC":
+        application_details = t_certification_food_t1.objects.filter(Application_No=application_id)
+        for app in application_details:
+            mail_id = app.Email
+            send_fpc_acknowledgement_mail(mail_id)
+    elif service_code == "GAP":
+        application_details = t_certification_gap_t1.objects.filter(Application_No=application_id)
+        for app in application_details:
+            mail_id = app.Email
+            send_gap_acknowledgement_mail(mail_id)
+    elif service_code == "CMS":
+        application_details = t_livestock_clearance_meat_shop_t1.objects.filter(Application_No=application_id)
+        for app in application_details:
+            mail_id = app.Email
+            send_cms_acknowledgement_mail(mail_id)
     return redirect(focal_officer_application)
 
 
 def send_fbr_acknowledgement_mail(Email):
-    subject = 'APPLICATION ACKNOWLEGED'
-    message = "Dear Sir/Madam, Your Application for Food BUsiness Registration And Licensing Has Been Accepted. " \
+    subject = 'APPLICATION ACKNOWLEDGED'
+    message = "Dear Sir/Madam, Your Application for Food Business Registration And Licensing Has Been Accepted. " \
+              "You will Be Informed About The Inspection Later."
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = [Email]
+    send_mail(subject, message, email_from, recipient_list)
+
+
+def send_cms_acknowledgement_mail(Email):
+    subject = 'APPLICATION ACKNOWLEDGED'
+    message = "Dear Sir/Madam, Your Application for Meat ShopLicensing Has Been Accepted. " \
+              "You will Be Informed About The Inspection Later."
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = [Email]
+    send_mail(subject, message, email_from, recipient_list)
+
+
+def send_gap_acknowledgement_mail(Email):
+    subject = 'APPLICATION ACKNOWLEDGED'
+    message = "Dear Sir/Madam, Your Application for GAP Certification Has Been Accepted. " \
+              "You will Be Informed About The Inspection Later."
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = [Email]
+    send_mail(subject, message, email_from, recipient_list)
+
+def send_fpc_acknowledgement_mail(Email):
+    subject = 'APPLICATION ACKNOWLEDGED'
+    message = "Dear Sir/Madam, Your Application for Food Product Certification Has Been Accepted. " \
+              "You will Be Informed About The Inspection Later."
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = [Email]
+    send_mail(subject, message, email_from, recipient_list)
+
+
+def send_oc_acknowledgement_mail(Email):
+    subject = 'APPLICATION ACKNOWLEDGED'
+    message = "Dear Sir/Madam, Your Application for Organic Certification Has Been Accepted. " \
               "You will Be Informed About The Inspection Later."
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
@@ -1509,7 +1555,7 @@ def send_fbr_acknowledgement_mail(Email):
 
 
 def send_acknowledgement_mail(Email):
-    subject = 'APPLICATION ACKNOWLEGED'
+    subject = 'APPLICATION ACKNOWLEDGED'
     message = "Dear Sir/Madam, Your Application for Food Handler Certificate Has Been Accepted. " \
               "You will Be Informed About The Training Programme Later."
     email_from = settings.EMAIL_HOST_USER
@@ -2151,8 +2197,7 @@ def submit_fip_application(request):
     Inspection_Leader = request.GET.get('Inspection_Leader')
     Inspection_Team = request.GET.get('Inspection_Team')
     remarks = request.GET.get('remarks')
-    dateOfInspection = request.GET.get('dateOfInspection')
-    date_format_ins = datetime.strptime(dateOfInspection, '%d-%m-%Y').date()
+    date_format_ins = request.GET.get('dateOfInspection')
     clearnace_ref_no = fip_clearance_no(request)
 
     update_details = t_food_import_permit_inspection_t1.objects.filter(Application_No=application_no)

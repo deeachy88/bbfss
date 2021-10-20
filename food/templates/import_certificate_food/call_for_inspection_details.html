@@ -144,11 +144,7 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Country of origin of food</label>
-                                            <select class="form-control" disabled>
-                                                {% for country in country %}
-                                                    <option value="{{ country.Country_Code }}" {% if application_details.Origin_Country_Food == village.Country_Code %}selected{% endif %}>{{ country.Country_Name }}</option>
-                                                {% endfor %}
-                                            </select>
+                                            <input type="text" class="form-control" value="{{application_details.Origin_Country_Food}}" disabled>
                                         </div>
                                         <div class="alert alert-danger" id="Origin_Source_ProductsErrorMsg" style="display:none"></div>
                                     </div>
@@ -192,11 +188,7 @@ form, input, select, textarea{
                                         <div class="col-md-4" id="transit_country">
                                             <div class="form-group">
                                                 <label class="form-label">Name Of Country</label>
-                                                <select class="form-control" name="Country_Name" id="Country_Name">
-                                                    {% for country in country %}
-                                                        <option value="{{ country.Country_Code }}" {% if application_details.Transit_Country == village.Country_Code %}selected{% endif %}>{{ country.Country_Name }}</option>
-                                                    {% endfor %}
-                                                </select>
+                                                <input type="text" class="form-control" value="{{application_details.Country_Of_Transit}}" disabled>
                                             </div>
                                         </div>
                                     {% endif %}
@@ -233,14 +225,11 @@ form, input, select, textarea{
                                         </div>
                                         <div class="alert alert-danger" id="Final_DestinationErrorMsg" style="display:none"></div>
                                     </div>
-                                </div>
-                                <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>Expected Arrival Date</label>
                                             <input type="text" class="form-control date-picker flatpickr-input active" value="{{ application_details.Expected_Arrival_Date}}" disabled>
                                         </div>
-                                        <div class="alert alert-danger" id="dateErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                             </div>
@@ -310,18 +299,9 @@ form, input, select, textarea{
                                     </table>
                             </div>
                         <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label class="form-label">Special Terms And Conditions</label>
-                                    <textarea class="form-control" disabled rows="3" id="terms" name="terms">{{application_details.Terms}}</textarea>
-                                </div>
-                                <div class="alert alert-danger" id="termsErrorMsg" style="display:none"></div>
-                            </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Actual Point Of Entry</label>
+                                    <label class="form-label">Actual Point Of Entry <font color="red">*</font></label>
                                     <select class="form-control" name="entry_point"  id="entryPlace">
                                         <option value="">--SELECT--</option>
                                         {% for location in location_details %}
@@ -329,10 +309,14 @@ form, input, select, textarea{
                                         {% endfor %}
                                     </select>
                                 </div>
+                                <div class="alert alert-danger" id="entryPlaceErrorMsg" style="display:none"></div>
                             </div>
-                            <div class="col-sm-4">
-                                <label class="form-label">Date For Inspection</label>
-                                <input type="date" name="date" id="date" class="form-control date-picker flatpickr-input active">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Date For Inspection <font color="red">*</font></label>
+                                    <input type="date" name="date" id="date" class="form-control">
+                                </div>
+                                <div class="alert alert-danger" id="dateErrorMsg" style="display:none"></div>
                             </div>
                              <div class="col-md-4">
                                 <div class="form-group">
@@ -356,7 +340,7 @@ form, input, select, textarea{
                                     <i class="ace-icon fa fa-check"></i>
                                     &nbsp;&nbsp;Submit
                                 </button>
-                                <button type="button" class="btn btn-flat btn-danger">
+                                <button type="button" class="btn btn-flat btn-danger" data-dismiss="modal">
                                     <i class="ace-icon fa fa-times"></i>
                                     &nbsp;&nbsp;Cancel
                                 </button>
@@ -374,22 +358,42 @@ $(function(){
 });
     function update_details()
     {
-        $.ajax({
-            type : "POST",
-            url : "{% url 'update_inspection_call_details' %}",
-            data : $('#inspection_call_form').serialize(),
-            success : function(response) {
-                $('#messageDiv').show();
-                setTimeout(function() {
-                    $("#messageDiv").hide('blind', {}, 500)
-                }, 2000);
-                setTimeout(function() {
-                    $('#import_detailsModal').modal('hide');
-                }, 3000);
-                setTimeout(function() {
-                    location.reload();
-                }, 3000);
-            }
-        });
+        var entryPlace = $('#entryPlace').val();
+        var date = $('#date').val();
+
+        if(entryPlace == "")
+        {
+            $('#entryPlaceErrorMsg').html("Select Entry Point.");
+            $('#entryPlaceErrorMsg').show();
+            $('#entryPlaceErrorMsg').delay(2000).fadeOut('slow');
+            $('#entryPlace').focus();
+        }
+        else if(date == "")
+        {
+            $('#dateErrorMsg').html("Select Date For Inspection.");
+            $('#dateErrorMsg').show();
+            $('#dateErrorMsg').delay(2000).fadeOut('slow');
+            $('#date').focus();
+        }
+        else
+        {
+            $.ajax({
+                type : "POST",
+                url : "{% url 'update_inspection_call_details' %}",
+                data : $('#inspection_call_form').serialize(),
+                success : function(response) {
+                    $('#messageDiv').show();
+                    setTimeout(function() {
+                        $("#messageDiv").hide('blind', {}, 500)
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#import_detailsModal').modal('hide');
+                    }, 3000);
+                    setTimeout(function() {
+                        location.reload();
+                    }, 3000);
+                }
+            });
+        }
     }
 </script>

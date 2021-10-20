@@ -3,6 +3,14 @@
 form, input, select, textarea{
     color: black !important;
 }
+#loader img
+{
+  left: 50%;
+  margin-left: -32px;
+  margin-top: -32px;
+  position: absolute;
+  top: 50%;
+}
 </style>
 <form method="post" id="applicationForm">
     {% csrf_token %}
@@ -155,11 +163,7 @@ form, input, select, textarea{
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Country of origin of food</label>
-                                        <select class="form-control" disabled>
-                                            {% for country in country %}
-                                                <option value="{{ country.Country_Code }}" {% if application_details.Origin_Country_Food == village.Country_Code %}selected{% endif %}>{{ country.Country_Name }}</option>
-                                            {% endfor %}
-                                        </select>
+                                        <input type="text" class="form-control" value="{{application_details.Origin_Country_Food}}" disabled>
                                     </div>
                                     <div class="alert alert-danger" id="Origin_Source_ProductsErrorMsg" style="display:none"></div>
                                 </div>
@@ -193,20 +197,16 @@ form, input, select, textarea{
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
                                 {% if application_details.Transit_Country == "Yes" %}
                                     <div class="col-md-4" id="transit_country">
                                         <div class="form-group">
                                             <label class="form-label">Name Of Country</label>
-                                            <select class="form-control" name="Country_Name" id="Country_Name">
-                                                {% for country in country %}
-                                                    <option value="{{ country.Country_Code }}" {% if application_details.Transit_Country == village.Country_Code %}selected{% endif %}>{{ country.Country_Name }}</option>
-                                                {% endfor %}
-                                            </select>
+                                            <input type="text" class="form-control" value="{{application_details.Country_Of_Transit}}" disabled>
                                         </div>
                                     </div>
                                 {% endif %}
+                            </div>
+                            <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Means of Conveyance </label>
@@ -227,7 +227,7 @@ form, input, select, textarea{
                                         <label class="form-label">Place of Entry</label>
                                         <select class="form-control" disabled>
                                             {% for location in location %}
-                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
+                                                <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
                                             {% endfor %}
                                          </select>
                                     </div>
@@ -320,7 +320,7 @@ form, input, select, textarea{
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Validity Period (If Approve - No Of Days)<font color="red">*</font></label>
+                                    <label class="form-label">Validity Period (If Approve - No Of Days) <font color="red">*</font></label>
                                     <input type="number" class="form-control" name="validity" id="validity">
                                 </div>
                                 <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>
@@ -342,15 +342,14 @@ form, input, select, textarea{
                                 <div class="alert alert-danger" id="termsErrorMsg" style="display:none"></div>
                             </div>
                         </div>
-
+                        <div id="loader" style="display:none">
+                            <img src="{% static 'assets/img/ajax-loader.gif' %}" alt="processing..." />
+                        </div>
                         <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
                             Application Approved
                         </div>
                         <div id="rejectMsg" class="alert alert-info" role="alert" style="display:none;">
                             Application Rejected
-                        </div>
-                        <div id="loader" style="display:none">
-                            <img src="{% static 'assets/img/ajax-loader.gif' %}" alt="processing..." />
                         </div>
                         {% for application_details in application_details %}
                             <div class="card-action text-center">
@@ -423,6 +422,7 @@ form, input, select, textarea{
                     url : "{% url 'reject_fo_fip_import' %}",
                     data :{'application_id':application_id ,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
                     success : function(data) {
+                        $("#loader").hide();
                         $('#rejectMsg').show();
                         setTimeout(function()
                         {

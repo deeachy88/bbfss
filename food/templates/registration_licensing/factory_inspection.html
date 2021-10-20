@@ -7,6 +7,14 @@
 form, input, select, textarea{
     color: black !important;
 }
+#loader img
+{
+  left: 50%;
+  margin-left: -32px;
+  margin-top: -32px;
+  position: absolute;
+  top: 50%;
+}
 </style>
         <div class="card">
             <div class="card-header" role="tab" id="headingOne">
@@ -683,7 +691,7 @@ form, input, select, textarea{
                         </a>
                     </div>
                     <br>
-                    <div id="details">
+                    <div id="nc_details">
                         <table id="inspection-details-table" class="table table-bordered">
                             <thead>
                                 <tr>
@@ -711,7 +719,7 @@ form, input, select, textarea{
                                         <td>{{import.Observation}}</td>
                                         <td>
                                             <button type="button" class="btn btn-primary btn--icon btn-sm" onclick="populateForm('{{import.Record_Id}}','{{import.Requirement}}',
-                                            '{{import.Clause_No}}','{{import.Concern}}', '{{import.Observation}}', '{{import.FBO_Response}}', '{{import.Application_No}}')">
+                                            '{{import.Clause_No}}','{{import.NC}}', '{{import.NC_Category}}','{{import.Observation}}', '{{import.Application_No}}')">
                                             <i class="zmdi zmdi-edit"></i>
                                             </button>
                                         </td>
@@ -736,27 +744,42 @@ form, input, select, textarea{
             <div id="collapseThree" class="active" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion" style="">
                 <div class="card-body">
                      {% for application_details in application_details %}
-                        {% if application_details.FR_Response %}
-                        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
-                            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
-                                <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Client </span>&nbsp;&nbsp;&nbsp;
-                                <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Details</span>
-                            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">Desired Inspection Date</label>
-                                    <input type="text" class="form-control" value="{{ application_details.Desired_FR_Inspection_Date }}" readonly="readonly">
+                        {% if application_details.FR_Response and application_details.Desired_FR_Inspection_Date %}
+                            <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                                <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                    <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Client </span>&nbsp;&nbsp;&nbsp;
+                                    <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Details</span>
+                                <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Desired Inspection Date</label>
+                                        <input type="text" class="form-control" value="{{ application_details.Desired_FR_Inspection_Date }}" readonly="readonly">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Response From Client</label>
+                                        <input type="text" class="form-control" value="{{ application_details.FR_Response }}" readonly="readonly">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">Response From Client</label>
-                                    <input type="text" class="form-control" value="{{ application_details.FR_Response }}" readonly="readonly">
+                        {% elif application_details.Desired_FR_Inspection_Date %}
+                            <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                                <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                    <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Client </span>&nbsp;&nbsp;&nbsp;
+                                    <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Details</span>
+                                <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Desired Inspection Date</label>
+                                        <input type="text" class="form-control" value="{{ application_details.Desired_FR_Inspection_Date }}" readonly="readonly">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                         {% endif %}
                      {% endfor %}
                     <br>
@@ -812,7 +835,7 @@ form, input, select, textarea{
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">Inspection Team Leader</label>
+                                <label class="form-label">Inspection Team Leader <font color="red">*</font></label>
                                 <select class="form-control" name="teamLeader"  id="teamLeader">
                                     <option value="">--SELECT TEAM LEADER--</option>
                                     {% for inspector_list in inspector_list %}
@@ -824,7 +847,7 @@ form, input, select, textarea{
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">Inspection Team </label>
+                                <label class="form-label">Inspection Team <font color="red">*</font></label>
                                 <textarea class="form-control" id="insTeam" rows="2"></textarea>
                             </div>
                             <div class="alert alert-danger" id="insTeamErrorMsg" style="display:none"></div>
@@ -833,23 +856,27 @@ form, input, select, textarea{
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">Date Of Inspection</label>
+                                <label class="form-label">Date Of Inspection <font color="red">*</font></label>
                                 <input type="date" class="form-control" id="dateOfInspection" name="date">
                             </div>
                             <div class="alert alert-danger" id="dateOfInspectionErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">Recommendation</label>
+                                <label class="form-label">Recommendation(Required If Resubmitting)</label>
                                 <textarea class="form-control" id="remarks" rows="2"></textarea>
                             </div>
+                            <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
                         </div>
                     </div>
                     <div class="alert alert-info" id="messageDiv" style="display:none">
                         Application Approved
                     </div>
                     <div class="alert alert-info" id="client-message-div" style="display:none">
-                        Application Forwarded TO Client
+                        Application Forwarded To Client
+                    </div>
+                    <div id="loader" style="display:none">
+                        <img src="{% static 'assets/img/ajax-loader.gif' %}" alt="processing..." />
                     </div>
                     <hr>
                     {% for application_details in application_details %}
@@ -885,15 +912,17 @@ form, input, select, textarea{
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Requirement</label>
+                                    <label class="form-label">Requirement <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="Requirement">
                                 </div>
+                                <div class="alert alert-danger" id="RequirementErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Clause No</label>
+                                    <label class="form-label">Clause No <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="Clause_No">
                                 </div>
+                                <div class="alert alert-danger" id="Clause_NoErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                         <div class="row">
@@ -901,7 +930,7 @@ form, input, select, textarea{
                                 <div class="form-group">
                                     <div class="form-group col-md-6">
                                         <div class="form-check">
-                                           <label class="form-label">NC</label><br>
+                                           <label class="form-label">NC <font color="red">*</font></label><br>
                                             <label class="form-radio-label">
                                                 <input class="form-radio-input" type="radio" name="Concern" value="Yes" onclick="checkConcern(this.value)">
                                                 <span class="form-radio-sign">Yes</span>
@@ -910,27 +939,30 @@ form, input, select, textarea{
                                                 <input class="form-radio-input" type="radio" name="Concern" value="No" onclick="checkConcern(this.value)">
                                                 <span class="form-radio-sign">No</span>
                                             </label>
+                                            <div class="alert alert-danger" id="ConcernErrorMsg" style="display:none"></div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">NC Category</label>
+                                    <label class="form-label">NC Category <font color="red">*</font></label>
                                     <select class="form-control" name="nc_category" id="nc_category" disabled>
                                         <option value="">-SELECT-</option>
                                         <option value="Major">Major</option>
                                         <option value="Minor">Minor</option>
                                     </select>
                                 </div>
+                                <div class="alert alert-danger" id="nc_categoryErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Observations/Finding</label>
+                                    <label class="form-label">Observations/Finding <font color="red">*</font></label>
                                     <textarea class="form-control" id="Observations" rows="2"></textarea>
                                 </div>
+                                 <div class="alert alert-danger" id="ObservationsErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                     </div>
@@ -960,29 +992,33 @@ form, input, select, textarea{
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Name Of Key Personal</label>
+                                    <label class="form-label">Name Of Key Personal <font color="red">*</font></label>
                                     <input type="text" class="form-control" name="name" id="name">
                                 </div>
+                                <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Designation Of Key Personal</label>
+                                    <label class="form-label">Designation Of Key Personal <font color="red">*</font></label>
                                     <input type="text" class="form-control" name="designation" id="designation">
                                 </div>
+                                <div class="alert alert-danger" id="designationErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Opening Meeting(Date)</label>
+                                    <label class="form-label">Opening Meeting(Date) <font color="red">*</font></label>
                                     <input type="text" class="form-control date-picker flatpickr-input active" name="opening_date" id="opening_date" readonly>
                                 </div>
+                                <div class="alert alert-danger" id="opening_dateErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Closing Meeting(Date)</label>
+                                    <label class="form-label">Closing Meeting(Date) <font color="red">*</font></label>
                                     <input type="text" class="form-control date-picker flatpickr-input active" name="closing_date" id="closing_date" readonly>
                                 </div>
+                                <div class="alert alert-danger" id="closing_dateErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                     </div>
@@ -1014,15 +1050,17 @@ form, input, select, textarea{
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Name</label>
+                                    <label class="form-label">Name <font color="red">*</font></label>
                                     <input type="text" class="form-control" name="ins_name" id="ins_name">
                                 </div>
+                                <div class="alert alert-danger" id="ins_nameErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Designation</label>
+                                    <label class="form-label">Designation <font color="red">*</font></label>
                                     <input type="text" class="form-control" name="ins_designation" id="ins_designation">
                                 </div>
+                                <div class="alert alert-danger" id="ins_designationErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                     </div>
@@ -1045,54 +1083,62 @@ form, input, select, textarea{
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-body">
+                <input type="hidden" class="form-control" id="record_id" name="record_id">
+                <input type="hidden" class="form-control" id="app_no" name="app_no">
                 <div class="row">
-                    <input type="hidden" class="form-control" id="record_id" name="record_id">
-                    <input type="hidden" class="form-control" id="app_no" name="app_no">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="form-label">Requirement</label>
+                            <label class="form-label">Requirement <font color="red">*</font></label>
                             <input type="text" class="form-control" id="edit_Requirement" disabled>
                         </div>
+                        <div class="alert alert-danger" id="edit_RequirementErrorMsg" style="display:none"></div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="form-label">Clause No</label>
+                            <label class="form-label">Clause No <font color="red">*</font></label>
                             <input type="text" class="form-control" id="edit_Clause_No" disabled>
                         </div>
+                        <div class="alert alert-danger" id="edit_Clause_NoErrorMsg" style="display:none"></div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-
                             <div class="form-group col-md-6">
                                 <div class="form-check">
-                                   <label class="form-label">Concern</label><br>
+                                   <label class="form-label">NC <font color="red">*</font></label><br>
                                     <label class="form-radio-label">
-                                        <input class="form-radio-input" type="radio" name="edit_Concern" value="Yes" id="concern_yes" onclick="checkEditConcern(this.value)">
+                                        <input class="form-radio-input" type="radio" name="edit_Concern" value="Yes" onclick="checkEditConcern(this.value)" id="nc_yes">
                                         <span class="form-radio-sign">Yes</span>
                                     </label>
                                     <label class="form-radio-label ml-3">
-                                        <input class="form-radio-input" type="radio" name="edit_Concern" value="No" id="concern_no" onclick="checkEditConcern(this.value)">
+                                        <input class="form-radio-input" type="radio" name="edit_Concern" value="No" onclick="checkEditConcern(this.value)" id="nc_no">
                                         <span class="form-radio-sign">No</span>
                                     </label>
+                                    <div class="alert alert-danger" id="edit_ConcernErrorMsg" style="display:none"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="form-label">Observations/Finding</label>
-                            <textarea class="form-control" id="edit_Observations" rows="2" disabled></textarea>
+                            <label class="form-label">NC Category <font color="red">*</font></label>
+                            <select class="form-control" name="edit_nc_category" id="edit_nc_category" disabled>
+                                <option value="">-SELECT-</option>
+                                <option value="Major">Major</option>
+                                <option value="Minor">Minor</option>
+                            </select>
                         </div>
+                        <div class="alert alert-danger" id="edit_nc_categoryErrorMsg" style="display:none"></div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="form-label">Response or Actions proposed by FBO</label>
-                            <textarea class="form-control" id="edit_response_fbo" name="edit_response_fbo" rows="2" disabled></textarea>
+                            <label class="form-label">Observations/Finding <font color="red">*</font></label>
+                            <textarea class="form-control" name="edit_Observations" id="edit_Observations" rows="2"></textarea>
                         </div>
+                         <div class="alert alert-danger" id="edit_ObservationsErrorMsg" style="display:none"></div>
                     </div>
                 </div>
             </div>
@@ -1153,38 +1199,47 @@ function add_details_ins(application_id)
 
     if(Requirement == "")
     {
-        $('#RequirementErrorMsg').html("Please Enter Requirement.");
+        $('#RequirementErrorMsg').html("Enter Requirement.");
         $('#RequirementErrorMsg').show();
         $('#RequirementErrorMsg').delay(2000).fadeOut('slow');
     }
     else if(Clause_No == "")
     {
-        $('#Clause_NoErrorMsg').html("Please Enter Clause No.");
+        $('#Clause_NoErrorMsg').html("Enter Clause No.");
         $('#Clause_NoErrorMsg').show();
         $('#Clause_NoErrorMsg').delay(2000).fadeOut('slow');
     }
     else if(Concern < 1)
     {
-        $('#ConcernErrorMsg').html("Please Select One NC.");
+        $('#ConcernErrorMsg').html("Select One NC.");
         $('#ConcernErrorMsg').show();
         $('#ConcernErrorMsg').delay(2000).fadeOut('slow');
     }
-    else if(remarks == "")
+    else if(nc_category == "")
     {
-        $('#remarksErrorMsg').html("Please Enter Remarks.");
-        $('#remarksErrorMsg').show();
-        $('#remarksErrorMsg').delay(2000).fadeOut('slow');
+        $('#nc_categoryErrorMsg').html("Select NC Category.");
+        $('#nc_categoryErrorMsg').show();
+        $('#nc_categoryErrorMsg').delay(2000).fadeOut('slow');
     }
-    $.ajax({
-        type : "GET",
-        url : "{% url 'concern_details_factory_ins' %}",
-        data :{'application_id':application_id,'Requirement':Requirement,'Observations':Observations,'Clause_No':Clause_No,'Concern':Concern, 'NC_Category':nc_category},
-        success : function(data) {
-            $('#details').html(data);
-            $('#details').show();
-            $('#addModal').modal('hide');
-        }
-    });
+    else if(Observations == "")
+    {
+        $('#ObservationsErrorMsg').html("Enter Observations/Finding.");
+        $('#ObservationsErrorMsg').show();
+        $('#ObservationsErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'concern_details_factory_ins' %}",
+            data :{'application_id':application_id,'Requirement':Requirement,'Observations':Observations,'Clause_No':Clause_No,'Concern':Concern, 'NC_Category':nc_category},
+            success : function(data) {
+                $('#details').html(data);
+                $('#details').show();
+                $('#addModal').modal('hide');
+            }
+        });
+    }
 }
 
 
@@ -1194,17 +1249,47 @@ function add_team_details(application_id)
     designation = $('#designation').val();
     opening_date = $('#opening_date').val();
     closing_date = $('#closing_date').val();
-
-    $.ajax({
-        type : "GET",
-        url : "{% url 'team_details_factory_ins' %}",
-        data :{'application_id':application_id,'name':name,'designation':designation,'opening_date':opening_date,'closing_date':closing_date},
-        success : function(data) {
-            $('#team_details').html(data);
-            $('#team_details').show();
-            $('#teamModal').modal('hide');
-        }
-    });
+    if(name == "")
+    {
+        $('#nameErrorMsg').html("Enter Name.");
+        $('#nameErrorMsg').show();
+        $('#nameErrorMsg').delay(2000).fadeOut('slow');
+        $("#name").focus();
+    }
+    else if(designation == "")
+    {
+        $('#designationErrorMsg').html("Enter Designation.");
+        $('#designationErrorMsg').show();
+        $('#designationErrorMsg').delay(2000).fadeOut('slow');
+        $("#designation").focus();
+    }
+    else if(opening_date == "")
+    {
+        $('#opening_dateErrorMsg').html("Select Openeing Date.");
+        $('#opening_dateErrorMsg').show();
+        $('#opening_dateErrorMsg').delay(2000).fadeOut('slow');
+        $("#opening_date").focus();
+    }
+    else if(closing_date == "")
+    {
+        $('#closing_dateErrorMsg').html("Select Closing Date.");
+        $('#closing_dateErrorMsg').show();
+        $('#closing_dateErrorMsg').delay(2000).fadeOut('slow');
+        $("#closing_date").focus();
+    }
+    else
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'team_details_factory_ins' %}",
+            data :{'application_id':application_id,'name':name,'designation':designation,'opening_date':opening_date,'closing_date':closing_date},
+            success : function(data) {
+                $('#team_details').html(data);
+                $('#team_details').show();
+                $('#teamModal').modal('hide');
+            }
+        });
+    }
 }
 
 function approve_factory_inspection(application_id)
@@ -1214,72 +1299,98 @@ function approve_factory_inspection(application_id)
     remarks = $('#remarks').val();
     dateOfInspection = $('#dateOfInspection').val();
 
-    $.ajax({
-        type : "GET",
-        url : "{% url 'approve_factory_inspection' %}",
-       data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks ,
-        'dateOfInspection':dateOfInspection},
-        success : function(data) {
-            $('#messageDiv').show();
-            setTimeout(function() {
-                $("#messageDiv").hide('blind', {}, 500)
-            }, 2000);
-            setTimeout(function() {
-                location.reload();
-            }, 3000);
-        }
+    if(Inspection_Leader == "")
+    {
+        $('#teamLeaderErrorMsg').html("Select Team Leader.");
+        $('#teamLeaderErrorMsg').show();
+        $('#teamLeaderErrorMsg').delay(2000).fadeOut('slow');
+        $('#teamLeader').focus();
+    }
+    else if(Inspection_Team == "")
+    {
+        $('#insTeamErrorMsg').html("Enter Inspection Team.");
+        $('#insTeamErrorMsg').show();
+        $('#insTeamErrorMsg').delay(2000).fadeOut('slow');
+        $('#insTeam').focus();
+    }
+    else if(dateOfInspection == "")
+    {
+        $('#dateOfInspectionErrorMsg').html("Select Date of Inspection.");
+        $('#dateOfInspectionErrorMsg').show();
+        $('#dateOfInspectionErrorMsg').delay(2000).fadeOut('slow');
+        $('#dateOfInspection').focus();
+    }
+    else
+    {
+        $("#loader").show();
+        $.ajax({
+            type : "GET",
+            url : "{% url 'approve_factory_inspection' %}",
+            data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks ,
+            'dateOfInspection':dateOfInspection},
+            success : function(data) {
+                $("#loader").hide();
+                $('#messageDiv').show();
+                setTimeout(function() {
+                    $("#messageDiv").hide('blind', {}, 500)
+                }, 2000);
+                setTimeout(function() {
+                    location.reload();
+                }, 3000);
+            }
         });
-
-
+    }
 }
 
 function reject_factory_inspection(application_id)
 {
     remarks = $('#remarks').val();
-    dateOfInspection = $('#dateOfInspection').val();
     if(remarks == "")
     {
         $('#remarksErrorMsg').html("Please Enter Remarks.");
         $('#remarksErrorMsg').show();
         $('#remarksErrorMsg').delay(2000).fadeOut('slow');
-    }else
+    }
+    else
     {
+        $("#loader").show();
         $.ajax({
-        type : "GET",
-        url : "{% url 'reject_factory_inspection' %}",
-        data :{'application_id':application_id ,'remarks':remarks, 'dateOfInspection':dateOfInspection},
-        success : function(data) {
-            $('#client-message-div').show();
-            setTimeout(function() {
-                $("#client-message-div").hide('blind', {}, 500)
-            }, 2000);
-             setTimeout(function() {
-                location.reload();
-            }, 3000);
-        }
+            type : "GET",
+            url : "{% url 'reject_factory_inspection' %}",
+            data :{'application_id':application_id ,'remarks':remarks},
+            success : function(data) {
+                $("#loader").hide();
+                $('#client-message-div').show();
+                setTimeout(function() {
+                    $("#client-message-div").hide('blind', {}, 500)
+                }, 2000);
+                 setTimeout(function() {
+                    location.reload();
+                }, 3000);
+            }
         });
     }
 }
-function populateForm(Record_id, Requirement, clause_no, concern, observation, response, Application_No)
+function populateForm(Record_id, Requirement, clause_no, NC, NC_Category, observation, Application_No)
 {
     $('#record_id').val(Record_id);
     $('#edit_Requirement').val(Requirement);
     $('#edit_Clause_No').val(clause_no);
-    $('#edit_Observations').val(observation);
-
-    $('#app_no').val(Application_No);
-    if(concern == "Yes")
+    if(NC == "Yes")
     {
-        $('#concern_yes').attr('checked', true);
-        $('#edit_response_fbo').val(response);
-        $('#edit_response_fbo').removeAttr("disabled");
+        $('#nc_yes').attr('checked', true);
+        $('#edit_nc_category').removeAttr("disabled");
     }
     else
     {
-        $('#concern_no').attr('checked', true);
-        $('#edit_response_fbo').val("");
-        $('#edit_response_fbo').attr("disabled", "disabled");
+        $('#nc_no').attr('checked', true);
+        $('#edit_nc_category').attr("disabled", "disabled");
+        $('#edit_Observations').attr("disabled", "disabled");
+        $('#edit_Observations').val("");
     }
+    $('#edit_Observations').val(observation);
+    $('#app_no').val(Application_No);
+
     $('#edit_concern_model').modal('show');
 }
 
@@ -1289,9 +1400,8 @@ function update_concern()
         type : "GET",
         url : "{% url 'edit_fbr_factory_details' %}",
         data : $('#edit_concern_form').serialize(),
-        success : function(data) {
-            $('#details').html(data);
-            $('#details').show();
+        success : function(response) {
+            $('#nc_details').html(response);
             $('#edit_concern_model').modal('hide');
         }
     });
@@ -1302,12 +1412,14 @@ function checkConcern(value)
     if(value == "Yes")
     {
         $('#nc_category').removeAttr("disabled");
-
+        $('#Observations').removeAttr("disabled");
     }
     else
     {
         $('#nc_category').attr("disabled", "disabled");
+        $('#Observations').attr("disabled", "disabled");
         $('#nc_category').val("");
+        $('#Observations').val("");
     }
 }
 
@@ -1315,12 +1427,15 @@ function checkEditConcern(value)
 {
     if(value == "Yes")
     {
-        $('#edit_response_fbo').removeAttr("disabled");
+        $('#edit_nc_category').removeAttr("disabled");
+        $('#edit_Observations').removeAttr("disabled");
     }
     else
     {
-        $('#edit_response_fbo').attr("disabled", "disabled");
-        $('#edit_response_fbo').val("");
+        $('#edit_nc_category').attr("disabled", "disabled");
+        $('#edit_Observations').attr("disabled", "disabled");
+        $('#nc_category').val("");
+        $('#edit_Observations').val("");
     }
 }
 function openInspectionTeamModal()
@@ -1332,15 +1447,33 @@ function add_inspection_team_details(application_id)
 {
     name = $('#ins_name').val();
     designation = $('#ins_designation').val();
-    $.ajax({
-        type : "GET",
-        url : "{% url 'fbr_factory_team_details' %}",
-        data :{'application_id':application_id,'name':name,'designation':designation},
-        success : function(data) {
-            $('#inspection_team_details').html(data);
-            $('#inspection_team_details').show();
-            $('#InspectionTeamModal').modal('hide');
-        }
-    });
+
+    if(name == "")
+    {
+        $('#ins_nameErrorMsg').html("Enter Name.");
+        $('#ins_nameErrorMsg').show();
+        $('#ins_nameErrorMsg').delay(2000).fadeOut('slow');
+        $("#ins_name").focus();
+    }
+    else if(designation == "")
+    {
+        $('#ins_designationErrorMsg').html("Enter Designation.");
+        $('#ins_designationErrorMsg').show();
+        $('#ins_designationErrorMsg').delay(2000).fadeOut('slow');
+        $("#ins_designation").focus();
+    }
+    else
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'fbr_factory_team_details' %}",
+            data :{'application_id':application_id,'name':name,'designation':designation},
+            success : function(data) {
+                $('#inspection_team_details').html(data);
+                $('#inspection_team_details').show();
+                $('#InspectionTeamModal').modal('hide');
+            }
+        });
+    }
 }
 </script>

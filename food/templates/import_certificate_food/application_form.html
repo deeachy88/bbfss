@@ -150,7 +150,7 @@ form, input, select, textarea{
                                     <select class="form-control" name="Country_Of_Origin" id="Country_Of_Origin">
                                         <option value="">--SELECT--</option>
                                         {% for country in country %}
-                                            <option value="{{ country.Country_Code }}">{{ country.Country_Name }}</option>
+                                            <option value="{{ country.Country_Name }}">{{ country.Country_Name }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -161,12 +161,12 @@ form, input, select, textarea{
                                 <div class="form-group">
                                     <div class="form-check">
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="country_of_transit" class="custom-control-input" value="yes" onclick="checkTransit(this.value)">
+                                            <input type="radio" name="country_of_transit" class="custom-control-input" value="Yes" onclick="checkTransit(this.value)">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Yes</span>
                                         </label>&nbsp;
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="country_of_transit" class="custom-control-input" value="no" onclick="checkTransit(this.value)">
+                                            <input type="radio" name="country_of_transit" class="custom-control-input" value="No" onclick="checkTransit(this.value)">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">No</span>
                                         </label>
@@ -182,7 +182,7 @@ form, input, select, textarea{
                                     <select class="form-control" name="Country_Name" id="Country_Name">
                                         <option value="">--SELECT--</option>
                                         {% for country in country %}
-                                            <option value="{{ country.Country_Code }}">{{ country.Country_Name }}</option>
+                                            <option value="{{ country.Country_Name }}">{{ country.Country_Name }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -474,7 +474,7 @@ form, input, select, textarea{
 $(function()
 {
     var today = new Date().toISOString().split('T')[0];
-    $('#Expected_Arrival_Date')[0].setAttribute('min', today);
+    $('#expectedArrivalDate')[0].setAttribute('min', today);
 });
 function save_food_permit_details()
 {
@@ -487,20 +487,21 @@ function save_food_permit_details()
     var village = $('#village').val();
     var contactNumber = $('#contactNumber').val();
     var email = $('#email').val();
+    var Operation = $('#Operation').val();
     var license_no = $('#license_no').val();
     var business_name = $('#business_name').val();
-    var Origin_Source_Products = $('#Origin_Source_Products').val();
+    var Origin_Source_Products = $('#Country_Of_Origin').val();
     var Exporter_Address = $('#Exporter_Address').val();
     var Place_of_Exit = $('#Place_of_Exit').val();
     var Final_Destination = $('#Final_Destination').val();
-    var Expected_Arrival_Date = $('#Expected_Arrival_Date').val();
+    var Expected_Arrival_Date = $('#expectedArrivalDate').val();
     var cidCount = $('#cid').val().length;
     var number_count = $('#contactNumber').val().length;
     var Import_Type = $("input[name=Import_Type]:checked").length;
     var country_of_transit = $("input[name=country_of_transit]:checked").length;
     var Import_Type_value = $("input[name=Import_Type]:checked").val();
-    var country_of_transit = $("input[name=country_of_transit]:checked").val();
-    var Country_Name = $('#business_name').val();
+    var country_of_transit_value = $("input[name=country_of_transit]:checked").val();
+    var Country_Name = $('#Country_Name').val();
     var conveyanceMeans = $('#conveyanceMeans').val();
 
     if(Import_Type < 1)
@@ -510,7 +511,7 @@ function save_food_permit_details()
         $('#importTypeErrorMsg').delay(2000).fadeOut('slow');
         $("input[name=Import_Type]").focus();
     }
-    else if(Import_Type_value == "Indvidual" && cid == "")
+    else if(Import_Type_value == "Individual" && cid == "")
     {
         $('#cidErrorMsg').html("Enter CID Number.");
         $('#cidErrorMsg').show();
@@ -534,19 +535,19 @@ function save_food_permit_details()
         $('#presentAddressErrorMsg').show();
         $('#presentAddressErrorMsg').delay(2000).fadeOut('slow');
     }
-    else if(Import_Type_value == "Indvidual" && dzongkhag == "")
+    else if(Import_Type_value == "Individual" && dzongkhag == "")
     {
         $('#dzongkhagErrorMsg').html("Select Dzongkhag.");
         $('#dzongkhagErrorMsg').show();
         $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
     }
-    else if(Import_Type_value == "Indvidual" && gewog == "")
+    else if(Import_Type_value == "Individual" && gewog == "")
     {
         $('#gewogErrorMsg').html("Select Gewog.");
         $('#gewogErrorMsg').show();
         $('#gewogErrorMsg').delay(2000).fadeOut('slow');
     }
-    else if(Import_Type_value == "Indvidual" && village == "")
+    else if(Import_Type_value == "Individual" && village == "")
     {
         $('#villageErrorMsg').html("Select Village.");
         $('#villageErrorMsg').show();
@@ -594,7 +595,7 @@ function save_food_permit_details()
         $('#country_of_transitErrorMsg').show();
         $('#country_of_transitErrorMsg').delay(2000).fadeOut('slow');
     }
-    else if(country_of_transit == "Yes" && Country_Name == "")
+    else if(country_of_transit_value == "Yes" && Country_Name == "")
     {
         $('#Country_NameErrorMsg').html("Select Country.");
         $('#Country_NameErrorMsg').show();
@@ -617,6 +618,12 @@ function save_food_permit_details()
         $('#Place_of_ExitErrorMsg').html("Enter Final Destination.");
         $('#Place_of_ExitErrorMsg').show();
         $('#Place_of_ExitErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Expected_Arrival_Date == "")
+    {
+        $('#dateErrorMsg').html("Select Date.");
+        $('#dateErrorMsg').show();
+        $('#dateErrorMsg').delay(2000).fadeOut('slow');
     }
     else if(number_count < 8)
     {
@@ -856,7 +863,7 @@ function save_details_form()
 
 function checkTransit(value)
 {
-    if(value == 'yes')
+    if(value == 'Yes')
     {
         $('#transit_country').show();
     }
@@ -872,6 +879,7 @@ function checkForm(value)
     {
         $("#cid").removeAttr("disabled");
         $("#name").attr("readonly", "readonly");
+        $("#license_no").attr("disabled", "disabled");
     }
     else
     {

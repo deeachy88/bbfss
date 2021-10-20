@@ -568,10 +568,14 @@ form, input, select, textarea{
                                             {% endfor %}
                                         </select>
                                     </div>
+                                    <div class="alert alert-danger" id="entry_pointErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-sm-4">
-                                    <label class="form-label">Date For Inspection</label>
-                                    <input type="date" name="date" id="date" class="form-control date-picker flatpickr-input active">
+                                    <div class="form-group">
+                                        <label class="form-label">Date For Inspection</label>
+                                        <input type="date" name="date" id="date" class="form-control date-picker flatpickr-input active">
+                                    </div>
+                                    <div class="alert alert-danger" id="dateErrorMsg" style="display:none"></div>
                                 </div>
                                  <div class="col-md-4">
                                     <div class="form-group">
@@ -612,22 +616,42 @@ $(function(){
 });
     function update_details()
     {
-        $.ajax({
-            type : "POST",
-            url : "{% url 'update_inspection_call_details' %}",
-            data : $('#inspection_call_form').serialize(),
-            success : function(response) {
-                $('#messageDiv').show();
-                setTimeout(function() {
-                    $("#messageDiv").hide('blind', {}, 500)
-                }, 2000);
-                setTimeout(function() {
-                    $('#import_detailsModal').modal('hide');
-                }, 3000);
-                setTimeout(function() {
-                    location.reload();
-                }, 3000);
-            }
-        });
+        var entryPlace = $('#entryPlace').val();
+        var date = $('#date').val();
+
+        if(entryPlace == "")
+        {
+            $('#entry_pointErrorMsg').html("Select Entry Point.");
+            $('#entry_pointErrorMsg').show();
+            $('#entry_pointErrorMsg').delay(2000).fadeOut('slow');
+            $('#entryPlace').focus();
+        }
+        else if(date == "")
+        {
+            $('#dateErrorMsg').html("Select Date For Inspection.");
+            $('#dateErrorMsg').show();
+            $('#dateErrorMsg').delay(2000).fadeOut('slow');
+            $('#date').focus();
+        }
+        else
+        {
+            $.ajax({
+                type : "POST",
+                url : "{% url 'update_inspection_call_details' %}",
+                data : $('#inspection_call_form').serialize(),
+                success : function(response) {
+                    $('#messageDiv').show();
+                    setTimeout(function() {
+                        $("#messageDiv").hide('blind', {}, 500)
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#import_detailsModal').modal('hide');
+                    }, 3000);
+                    setTimeout(function() {
+                        location.reload();
+                    }, 3000);
+                }
+            });
+        }
     }
 </script>
