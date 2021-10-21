@@ -268,7 +268,7 @@ form, input, select, textarea{
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Address <font color="red">*</font></label>
-                                        <textarea class="form-control" disabled>{{application_details.Applicant_Name}}</textarea>
+                                        <textarea class="form-control" disabled>{{application_details.Present_Address}}</textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -677,18 +677,20 @@ form, input, select, textarea{
                             <label class="form-label">Requested Date For Inspection</label>
                             <input type="text"  class="form-control" value="{{application_details.Proposed_Inspection_Date}}" disabled>
                         </div>
+                        {% if application_details.Resubmit_Remarks %}
                         <div class="col-md-6">
                             <div class="from-label">
-                                <label class="from-label">Resubmit Remarks</label>
+                                <label class="form-label">Resubmit Remarks</label>
                                 <textarea class="form-control" rows="3" id="Resubmit_Remarks" disabled>{{application_details.Resubmit_Remarks}}</textarea>
                             </div>
                         </div>
+                        {% endif %}
                      </div>
                     <hr>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">Inspection Team Leader</label>
+                                <label class="form-label">Inspection Team Leader <font color="red">*</font></label>
                                 <select class="form-control" name="teamLeader"  id="teamLeader">
                                     <option value="">--SELECT TEAM LEADER--</option>
                                     {% for inspector_list in inspector_list %}
@@ -700,7 +702,7 @@ form, input, select, textarea{
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">Inspection Team </label>
+                                <label class="form-label">Inspection Team <font color="red">*</font></label>
                                 <textarea class="form-control" id="insTeam" rows="2"></textarea>
                             </div>
                             <div class="alert alert-danger" id="insTeamErrorMsg" style="display:none"></div>
@@ -709,14 +711,14 @@ form, input, select, textarea{
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">Date Of Inspection</label>
+                                <label class="form-label">Date Of Inspection <font color="red">*</font></label>
                                 <input type="text" class="form-control date-picker flatpickr-input active" id="dateOfInspection" name="date"  placeholder="Pick a date" readonly="readonly">
                             </div>
                             <div class="alert alert-danger" id="dateOfInspectionErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">Remarks</label>
+                                <label class="form-label">Remarks(If Any)</label>
                                 <textarea class="form-control" id="remarks" rows="2"></textarea>
                             </div>
                         </div>
@@ -864,7 +866,7 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="form-group col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Quantity Released</label>
+                                            <label class="form-label">Quantity Released <font color="red">*</font></label>
                                             <input type="text" class="form-control" id="qty_approved" name="qty_approved" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57" onchange="balance_plant(this.value)">
                                         </div>
                                         <div class="alert alert-danger" id="certified_qtyErrorMsg" style="display:none"></div>
@@ -964,7 +966,7 @@ form, input, select, textarea{
                                     </div>
                                     <div class="form-group col-md-6">
                                         <div class="form-group">
-                                            <label class="form-label">Quantity Released</label>
+                                            <label class="form-label">Quantity Released <font color="red">*</font></label>
                                             <input type="text" class="form-control" id="agro_qty_approved" name="agro_qty_approved" onchange="balance_agro(this.value)">
                                             <div class="alert alert-danger" id="agro_certified_qtyErrorMsg" style="display:none"></div>
                                         </div>
@@ -1109,7 +1111,6 @@ function populateDetails(Record_Id, Import_Category, Crop_Id, Variety_Id, Quanti
 
 function populateAgroDetails(Record_Id, Import_Category, Pesticide_Id, Description, Quantity, Unit, application_no,balance_quantity, balance_quantity_1)
 {
-    alert(balance_quantity_1);
     $('#agro_record_id').val(Record_Id);
     $('#agro_category').val(Import_Category);
     $('#pesticide_id').val(Pesticide_Id);
@@ -1124,30 +1125,52 @@ function populateAgroDetails(Record_Id, Import_Category, Pesticide_Id, Descripti
 
 function update_details_plant()
 {
-    $.ajax({
-        type : "POST",
-        url : "{% url 'update_details_plant' %}",
-        data : $('#edit_plant_form').serialize(),
-        success : function(response) {
-             $('#details-plant').html(response);
-             $('#add_plant_details').modal('hide');
-             $('.modal-backdrop').remove();
-        }
-    });
+    var qty_approved = $('#qty_approved').val();
+    if(qty_approved == "")
+    {
+        $('#certified_qtyErrorMsg').html("Enter Quantity Released.");
+        $('#certified_qtyErrorMsg').show();
+        $('#certified_qtyErrorMsg').delay(2000).fadeOut('slow');
+        $('#qty_approved').focus();
+    }
+    else
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'update_details_plant' %}",
+            data : $('#edit_plant_form').serialize(),
+            success : function(response) {
+                 $('#details-plant').html(response);
+                 $('#add_plant_details').modal('hide');
+                 $('.modal-backdrop').remove();
+            }
+        });
+    }
 }
 
 function update_details_agro()
 {
-    $.ajax({
-        type : "POST",
-        url : "{% url 'update_details_agro' %}",
-        data : $('#edit_agro_form').serialize(),
-        success : function(response) {
-            $('#details-agro').html(response);
-            $('#add_agro_details').modal('hide');
-            $('.modal-backdrop').remove();
-        }
-    });
+    var agro_qty_approved = $('#agro_qty_approved').val();
+    if(agro_qty_approved == "")
+    {
+        $('#agro_certified_qtyErrorMsg').html("Enter Quantity Released.");
+        $('#agro_certified_qtyErrorMsg').show();
+        $('#agro_certified_qtyErrorMsg').delay(2000).fadeOut('slow');
+        $('#agro_qty_approved').focus();
+    }
+    else
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'update_details_agro' %}",
+            data : $('#edit_agro_form').serialize(),
+            success : function(response) {
+                $('#details-agro').html(response);
+                $('#add_agro_details').modal('hide');
+                $('.modal-backdrop').remove();
+            }
+        });
+    }
 }
 
 

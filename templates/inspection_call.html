@@ -31,7 +31,13 @@
                                             {% endif %}
                                         {% endfor %}
                                         <td>{{application_details.Action_Date|date:"d-m-Y"}}</td>
-                                        <td><button  type="button" class="btn btn-primary btn--icon btn-sm" onclick="printImportDetails('{{application_details.Service_Code}}','{{application_details.Application_No}}')"  data-toggle="tooltip" title="Print" ><i class="zmdi zmdi-print"></i></button></td>
+                                        {% for payment_details in payment_details%}
+                                            {% if application_details.Application_No == payment_details.Application_No %}
+                                                {% if payment_details.Receipt_Date %}
+                                                    <td><button  type="button" class="btn btn-primary btn--icon btn-sm" onclick="printImportDetails('{{application_details.Service_Code}}','{{application_details.Application_No}}')"  data-toggle="tooltip" title="Print" ><i class="zmdi zmdi-print"></i></button></td>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endfor %}
                                     </tr>
                                     {% empty %}
                                     <tr>

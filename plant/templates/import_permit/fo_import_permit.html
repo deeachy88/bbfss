@@ -4,13 +4,13 @@ form, input, select, textarea{
     color: black !important;
 }
 #loader img
-{
-  left: 50%;
-  margin-left: -32px;
-  margin-top: -32px;
-  position: absolute;
-  top: 50%;
-}
+    {
+      left: 50%;
+      margin-left: -32px;
+      margin-top: -32px;
+      position: absolute;
+      top: 50%;
+    }
 </style>
 <form method="post" id="applicationForm">
     {% csrf_token %}
@@ -160,7 +160,7 @@ form, input, select, textarea{
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="form-label">Name And Address Supplier <font color="red">*</font></label>
-                                                <textarea class="form-control" rows="2" disabled>{{application_details.Email}}</textarea>
+                                                <textarea class="form-control" rows="2" disabled>{{application_details.Name_And_Address_Supplier}}</textarea>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
@@ -265,7 +265,7 @@ form, input, select, textarea{
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Address <font color="red">*</font></label>
-                                        <textarea class="form-control" disabled>{{application_details.Applicant_Name}}</textarea>
+                                        <textarea class="form-control" disabled>{{application_details.Present_Address}}</textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -570,13 +570,13 @@ form, input, select, textarea{
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-label">Validity Period (If Approve - No Of Days)<font color="red">*</font></label>
-                                        <input type="number" class="form-control" name="validity" id="validity">
+                                        <input type="text" class="form-control" name="validity" id="validity" onkeypress="return isNumberKey(event)">
                                     </div>
                                     <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>
                                 </div>
                                  <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="remarks">Remarks(If Reject Please Fill THe Remarks)</label>
+                                        <label class="form-label">Remarks(If Reject Please Fill THe Remarks)</label>
                                         <textarea class="form-control" rows="5" id="remarks" name="remarks"></textarea>
                                         <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
                                     </div>
@@ -585,8 +585,8 @@ form, input, select, textarea{
                             <div class="alert alert-success" id="fo_success_Msg" style="display:none"></div>
                             <div class="alert alert-danger" id="fo_reject_Msg" style="display:none"></div>
                             <hr>
-                        <div id="loader" style="display:none">
-                            <img src="{% static 'assets/img/ajax-loader.gif' %}" alt="processing..." />
+                        <div id="pageloader" style="display:none">
+                           <img src="{% static 'assets/img/ring-loader.gif' %}" style="height:50px; width:50px;margin-left: 400px;" alt="processing..." />
                         </div>
                         {% for application_details in application_details %}
                             <div class="card-action text-center">
@@ -612,6 +612,14 @@ form, input, select, textarea{
 </form>
 
 <script>
+    function isNumberKey(evt)
+    {
+     var charCode = (evt.which) ? evt.which : event.keyCode
+     if (charCode > 31 && (charCode < 48 || charCode > 57))
+        return false;
+
+     return true;
+    }
         function fo_approve(application_id)
         {
 
@@ -625,13 +633,13 @@ form, input, select, textarea{
             }
             else
             {
-                $("#loader").show();
+                $("#pageloader").show();
                 $.ajax({
                 type : "POST",
                 url : "{% url 'fo_approve' %}",
                 data :{'application_id':application_id ,'remarks':remarks,'validity': validity, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(data) {
-                    $("#loader").hide();
+                    $("#pageloader").hide();
                     $('#fo_success_Msg').html("Application Approved.");
                     $('#fo_success_Msg').show();
                     $('#fo_success_Msg').delay(2000).fadeOut('slow');
@@ -658,13 +666,13 @@ form, input, select, textarea{
             }
             else
             {
-                $("#loader").show();
+                $("#pageloader").show();
                 $.ajax({
                     type : "POST",
                     url : "{% url 'fo_reject' %}",
                     data :{'application_id':application_id ,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
                     success : function(data) {
-                        $("#loader").hide();
+                        $("#pageloader").hide();
                         $('#fo_reject_Msg').html("Application Rejected.");
                         $('#fo_reject_Msg').show();
                         $('#fo_reject_Msg').delay(2000).fadeOut('slow');

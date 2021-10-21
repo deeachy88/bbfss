@@ -456,15 +456,17 @@ form, input, select, textarea{
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Current Observation</label>
+                                    <label>Current Observation <font color="red">*</font></label>
                                     <textarea class="form-control" id="currentObservation" rows="2"></textarea>
                                 </div>
+                                <div class="alert alert-danger" id="currentObservationErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="conveyanceMeans">Decision Conformity Statement </label>
+                                    <label for="conveyanceMeans">Decision Conformity Statement <font color="red">*</font></label>
                                     <textarea class="form-control" id="decisionConform" rows="2"></textarea>
                                 </div>
+                                <div class="alert alert-danger" id="decisionConformErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                     </div>
@@ -474,7 +476,7 @@ form, input, select, textarea{
                             <i class="ace-icon fa fa-check"></i>
                             &nbsp;&nbsp;Add
                         </button>
-                        <button type="button" class="btn btn-primary" onclick="closeModal()">Close Modal</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close Modal</button>
                      </div>
                   </div>
             </div>
@@ -545,7 +547,7 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="form-group col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Quantity Released</label>
+                                            <label class="form-label">Quantity Released <font color="red">*</font></label>
                                             <input type="text" class="form-control" id="qty_approved" name="qty_approved" onchange="get_balance_import(this.value)">
                                         </div>
                                         <div class="alert alert-danger" id="certified_qtyErrorMsg" style="display:none"></div>
@@ -604,16 +606,33 @@ function add_details_ins(application_id)
     currentObservation = $('#currentObservation').val();
     decisionConform = $('#decisionConform').val();
 
-    $.ajax({
-        type : "GET",
-        url : "{% url 'food_details_ins_import' %}",
-        data :{'application_id':application_id,'currentObservation':currentObservation,'decisionConform':decisionConform},
-        success : function(data) {
-            $('#details').html(data);
-            $('#details').show();
-            $('#addModal').modal('hide');
-        }
-    });
+    if(currentObservation == "")
+    {
+        $('#currentObservationErrorMsg').html("Enter Current Observation.");
+        $('#currentObservationErrorMsg').show();
+        $('#currentObservationErrorMsg').delay(2000).fadeOut('slow');
+        $('#currentObservation').focus();
+    }
+    else if(decisionConform == "")
+    {
+        $('#decisionConformErrorMsg').html("Enter Decision Conformity Statement.");
+        $('#decisionConformErrorMsg').show();
+        $('#decisionConformErrorMsg').delay(2000).fadeOut('slow');
+        $('#decisionConform').focus();
+    }
+    else
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'food_details_ins_import' %}",
+            data :{'application_id':application_id,'currentObservation':currentObservation,'decisionConform':decisionConform},
+            success : function(data) {
+                $('#details').html(data);
+                $('#details').show();
+                $('#addModal').modal('hide');
+            }
+        });
+    }
 }
 
 function submit_details(application_id)
@@ -710,15 +729,26 @@ function get_balance_import(qty)
 
 function update_permit_details_form()
 {
-    $.ajax({
-        type : "POST",
-        url : "{% url 'update_import_details_food' %}",
-        data : $('#food_permit_details_form').serialize(),
-        success : function(response) {
-            $('#import-details').html(response);
-            $('#permit_details_model').modal('hide');
-            $('.modal-backdrop').remove();
-        }
-    });
+    var qty_approved = $('#qty_approved').val();
+    if(qty_approved == "")
+    {
+        $('#certified_qtyErrorMsg').html("Enter Quantity Released.");
+        $('#certified_qtyErrorMsg').show();
+        $('#certified_qtyErrorMsg').delay(2000).fadeOut('slow');
+        $('#qty_approved').focus();
+    }
+    else
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'update_import_details_food' %}",
+            data : $('#food_permit_details_form').serialize(),
+            success : function(response) {
+                $('#import-details').html(response);
+                $('#permit_details_model').modal('hide');
+                $('.modal-backdrop').remove();
+            }
+        });
+    }
 }
 </script>

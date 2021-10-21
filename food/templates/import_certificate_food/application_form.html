@@ -250,7 +250,7 @@ form, input, select, textarea{
                         </div>
                     </div>
                     <div class="card-action">
-                        <button type="button" class="btn btn-success" onclick="save_details_form()">Save</button>
+                        <button type="button" class="btn btn-success" onclick="save_details_form()" id="food_import_button" style="display:none">Save</button>
                     </div>
                 </div>
                 <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="pills-food-import-file">
@@ -492,7 +492,7 @@ function save_food_permit_details()
     var business_name = $('#business_name').val();
     var Origin_Source_Products = $('#Country_Of_Origin').val();
     var Exporter_Address = $('#Exporter_Address').val();
-    var Place_of_Exit = $('#Place_of_Exit').val();
+    var Place_of_Exit = $('#Place_of_Entry').val();
     var Final_Destination = $('#Final_Destination').val();
     var Expected_Arrival_Date = $('#expectedArrivalDate').val();
     var cidCount = $('#cid').val().length;
@@ -615,13 +615,13 @@ function save_food_permit_details()
     }
     else if(Final_Destination == "")
     {
-        $('#Place_of_ExitErrorMsg').html("Enter Final Destination.");
-        $('#Place_of_ExitErrorMsg').show();
-        $('#Place_of_ExitErrorMsg').delay(2000).fadeOut('slow');
+        $('#Final_DestinationErrorMsg').html("Enter Final Destination.");
+        $('#Final_DestinationErrorMsg').show();
+        $('#Final_DestinationErrorMsg').delay(2000).fadeOut('slow');
     }
     else if(Expected_Arrival_Date == "")
     {
-        $('#dateErrorMsg').html("Select Date.");
+        $('#dateErrorMsg').html("Select Expected Arrival Date.");
         $('#dateErrorMsg').show();
         $('#dateErrorMsg').delay(2000).fadeOut('slow');
     }

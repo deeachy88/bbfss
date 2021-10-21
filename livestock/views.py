@@ -1042,7 +1042,8 @@ def import_permit_la_details(request):
                                                        Remarks=Remarks
                                                        )
     import_details = t_livestock_import_permit_animal_t2.objects.filter(Application_No=application_no)
-    return render(request, 'Animal_Fish_Import/animal_details.html', {'import': import_details})
+    count = t_livestock_import_permit_animal_t2.objects.filter(Application_No=application_no).count()
+    return render(request, 'Animal_Fish_Import/animal_details.html', {'import': import_details, 'count':count})
 
 
 def load_af_import_details(request):
@@ -1139,6 +1140,7 @@ def approve_fo_la_import(request):
             workflow_details.update(Assigned_To=login_id)
     workflow_details.update(Action_Date=date.today())
     workflow_details.update(Assigned_Role_Id=None)
+    workflow_details.update(Application_Status='A')
     details = t_livestock_import_permit_animal_t1.objects.filter(Application_No=application_no)
     if remarks is not None:
         details.update(FO_Remarks=remarks)
@@ -1566,7 +1568,8 @@ def import_livestock_product_details(request):
                                                         Company_Name=Company_Name, Description=Description,
                                                         Quantity=Quantity, Quantity_Balance=Quantity, Unit=Unit)
     import_details = t_livestock_import_permit_product_t2.objects.filter(Application_No=application_id)
-    return render(request, 'Livestock_Import/permit_details.html', {'import': import_details})
+    count = t_livestock_import_permit_product_t2.objects.filter(Application_No=application_id).count()
+    return render(request, 'Livestock_Import/permit_details.html', {'import': import_details, 'count':count})
 
 
 def load_lp_import_details(request):
@@ -1650,6 +1653,7 @@ def approve_fo_lp_import(request):
             workflow_details.update(Assigned_To=login_id)
     workflow_details.update(Action_Date=date.today())
     workflow_details.update(Assigned_Role_Id=None)
+    workflow_details.update(Application_Status='A')
     details = t_livestock_import_permit_product_t1.objects.filter(Application_No=application_no)
     if remarks is not None:
         details.update(FO_Remarks=remarks)

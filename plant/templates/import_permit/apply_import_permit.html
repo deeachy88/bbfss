@@ -516,7 +516,7 @@ form, input, select, textarea{
                             </div>
                         </div>
                         <div class="card-action">
-                            <button type="button" class="btn btn-success" onclick="plant_import_save()">Save</button>
+                            <button type="button" class="btn btn-success" id="plant_import_button" onclick="plant_import_save()" style="display:none">Save</button>
                         </div>
                     </div>
                     <div class="card" id="agro-card" style="display:none">
@@ -533,7 +533,7 @@ form, input, select, textarea{
                             </div>
                         </div>
                         <div class="card-action">
-                            <button type="button" class="btn btn-success" onclick="agro_import_save()">Save</button>
+                            <button type="button" class="btn btn-success" id="agro_import_button" onclick="agro_import_save()" style="display:none">Save</button>
                         </div>
                     </div>
                 </div>
@@ -855,7 +855,12 @@ form, input, select, textarea{
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="form-label">Unit <font color="red">*</font></label>
-                                            <input type="text" class="form-control" name="edit_unit"  id="edit_unit">
+                                            <select class="form-control" name="edit_unit"  id="edit_unit">
+                                                <option value="">--SELECT--</option>
+                                                {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                                {% endfor %}
+                                             </select>
                                         </div>
                                         <div class="alert alert-danger" id="edit_unitErrorMsg" style="display:none"></div>
                                     </div>
@@ -933,7 +938,12 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Unit <font color="red">*</font></label>
-                                            <input type="text" class="form-control" name="edit_agro_unit"  id="edit_agro_unit">
+                                            <select class="form-control" name="edit_agro_unit"  id="edit_agro_unit">
+                                                <option value="">--SELECT--</option>
+                                                {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                                {% endfor %}
+                                             </select>
                                         </div>
                                         <div class="alert alert-danger" id="edit_agro_unitErrorMsg" style="display:none"></div>
                                     </div>
@@ -1035,7 +1045,7 @@ form, input, select, textarea{
         var com_entry_point = $('#com_entry_point').val();
         var movementPurpose = $('#movementPurpose').val();
         var finalDestination = $('#finalDestination').val();
-        var expectedDate = $('#expectedDate').val();
+        var expectedDate = $('#com_expected_arrival_date').val();
 
         var cid = $('#cid').val();
         var contactNumber = $('#contactNumber').val();
@@ -1180,7 +1190,7 @@ form, input, select, textarea{
         }
         else if(app_type == "Commercial" && COM_GMO < 1)
         {
-            $('#COM_GMOErrorMsg').html("Select One.");
+            $('#COM_GMOErrorMsg').html("Select One(Products are derived from GMO?).");
             $('#COM_GMOErrorMsg').show();
             $('#COM_GMOErrorMsg').delay(2000).fadeOut('slow');
             $("input[name=COM_GMO]").focus();
@@ -1271,7 +1281,7 @@ form, input, select, textarea{
         }
         else if(app_type == "Personal" && nationality_type == "Bhutanese" && GMO < 1)
         {
-            $('#GMOErrorMsg').html("Select One.");
+            $('#GMOErrorMsg').html("Select One(Products are derived from GMO?).");
             $('#GMOErrorMsg').show();
             $('#GMOErrorMsg').delay(2000).fadeOut('slow');
             $("input[name=GMO]").focus();
@@ -1377,7 +1387,7 @@ form, input, select, textarea{
         }
         else if(app_type == "Personal" && nationality_type == "Non-Bhutanese" && P_GMO < 1)
         {
-            $('#P_GMOErrorMsg').html("Select One.");
+            $('#P_GMOErrorMsg').html("Select One(Products are derived from GMO?)");
             $('#P_GMOErrorMsg').show();
             $('#P_GMOErrorMsg').delay(2000).fadeOut('slow');
              $("input[name=P_GMO]").focus();
@@ -1429,6 +1439,14 @@ form, input, select, textarea{
                     {
                          $('#import-profile-tab').tab('show');
                          $('#agro-card').show();
+                    }
+                    if(data.count > 0)
+                    {
+                        $("#pills-import-file").prop('disabled', false);
+                    }
+                    else
+                    {
+                        $("#pills-import-file").prop('disabled', true);
                     }
                 }
             });

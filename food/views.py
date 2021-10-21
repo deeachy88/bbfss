@@ -750,7 +750,7 @@ def edit_fbr_feasibility_details(request):
     else:
         app_details.update(FBO_Response=None)
     application_details = t_food_business_registration_licensing_t5.objects.filter(Application_No=application_id,
-                                                                            Inspection_Type='Feasibility Inspection')
+                                                                                   Inspection_Type='Feasibility Inspection')
     message_count = t_food_business_registration_licensing_t5.objects.filter(
         Concern='Yes', Inspection_Type='Feasibility Inspection').count()
     return render(request, 'registration_licensing/concern_details.html', {'application_details': application_details,
@@ -782,7 +782,6 @@ def edit_fbr_factory_details(request):
         NC='Yes', Inspection_Type='Factory Inspection').count()
     return render(request, 'registration_licensing/nc_details.html', {'application_details': application_details,
                                                                       'message_count': message_count})
-
 
 
 def forward_fbr_application(request):
@@ -1062,6 +1061,21 @@ def food_export_file_name(request):
                                          Attachment=fileName)
 
         file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+    return render(request, 'export_certificate_food/file_attachment.html', {'file_attach': file_attach})
+
+
+def delete_export_file(request):
+    File_Id = request.GET.get('file_id')
+    Application_No = request.GET.get('appNo')
+
+    file = t_file_attachment.objects.filter(pk=File_Id)
+    for file in file:
+        fileName = file.Attachment
+        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/food/export_certificate")
+        fs.delete(str(fileName))
+    file.delete()
+
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
     return render(request, 'export_certificate_food/file_attachment.html', {'file_attach': file_attach})
 
 
@@ -1536,6 +1550,7 @@ def send_gap_acknowledgement_mail(Email):
     recipient_list = [Email]
     send_mail(subject, message, email_from, recipient_list)
 
+
 def send_fpc_acknowledgement_mail(Email):
     subject = 'APPLICATION ACKNOWLEDGED'
     message = "Dear Sir/Madam, Your Application for Food Product Certification Has Been Accepted. " \
@@ -1987,7 +2002,8 @@ def save_food_import_details(request):
                                            Quantity=quantity, Unit=unit, Exporter_Type=exporter_type,
                                            Quantity_Balance=quantity, Remarks=None)
     import_details = t_food_import_permit_t2.objects.filter(Application_No=application_no)
-    return render(request, 'import_certificate_food/food_permit_details.html', {'import': import_details})
+    count = t_food_import_permit_t2.objects.filter(Application_No=application_no).count()
+    return render(request, 'import_certificate_food/food_permit_details.html', {'import': import_details,'count':count})
 
 
 def load_fip_details(request):

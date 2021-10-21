@@ -63,6 +63,7 @@ urlpatterns = [
     path('approve_food_export', views.approve_food_export, name='approve_food_export'),
     path('reject_food_export', views.reject_food_export, name='reject_food_export'),
     path('load_fec_attachment', views.load_fec_attachment, name='load_fec_attachment'),
+    path('delete_export_file', views.delete_export_file, name='delete_export_file'),
 
 
     # Licensing of Food Handler
