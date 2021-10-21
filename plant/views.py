@@ -2222,7 +2222,7 @@ def update_inspection_call_details(request):
             field_office_id = field_office.Field_Office_Id_id
         t_workflow_details.objects.create(Application_No=new_import_application_no,
                                           Applicant_Id=request.session['email'],
-                                          Assigned_To=None, Field_Office_Id=field_office_id, Section='Plant',
+                                          Assigned_To=None, Field_Office_Id=entry_point, Section='Plant',
                                           Assigned_Role_Id='4', Action_Date=date.today(), Application_Status='P',
                                           Service_Code=service_code)
         login_id = request.session['Login_Id']
@@ -2296,7 +2296,7 @@ def update_inspection_call_details(request):
             field_office_id = field_office.Field_Office_Id_id
         t_workflow_details.objects.create(Application_No=new_import_application_no,
                                           Applicant_Id=request.session['email'],
-                                          Assigned_To=None, Field_Office_Id=field_office_id, Section='Livestock',
+                                          Assigned_To=None, Field_Office_Id=entry_point, Section='Livestock',
                                           Assigned_Role_Id='4', Action_Date=date.today(), Application_Status='P',
                                           Service_Code=service_code)
         login_id = request.session['Login_Id']
@@ -2369,7 +2369,7 @@ def update_inspection_call_details(request):
             field_office_id = field_office.Field_Office_Id_id
         t_workflow_details.objects.create(Application_No=new_import_application_no,
                                           Applicant_Id=request.session['email'],
-                                          Assigned_To=None, Field_Office_Id=field_office_id, Section='Livestock',
+                                          Assigned_To=None, Field_Office_Id=entry_point, Section='Livestock',
                                           Assigned_Role_Id='4', Action_Date=date.today(), Application_Status='P',
                                           Service_Code=service_code)
         login_id = request.session['Login_Id']
