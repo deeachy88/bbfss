@@ -156,6 +156,7 @@
         <script src="{% static 'assets/bower_components/jszip/dist/jszip.min.js' %}"></script>
         <script src="{% static 'assets/bower_components/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
         <script src="{% static 'assets/js/sweetalert.min.js' %}"></script>
+        <script src="{% static 'assets/js/sweetalert2.all.min.js' %}"></script>
         <script src="{% static 'assets/js/app.min.js' %}"></script>
         <script src="{% static 'assets/js/user.js' %}"></script>
 	    <script src="{% static 'assets/js/division.js' %}"></script>
@@ -411,7 +412,6 @@
                         url : "{% url 'forward_application' %}",
                         data :{'application_id':application_id ,'forwardTo':forwardTo, csrfmiddlewaretoken: '{{ csrf_token }}'},
                         success : function(data) {
-                            $('#application-details-modal').modal('hide');
                             $('#submitMsg').show();
                             setTimeout(function() {
                                 $("#submitMsg").hide('blind', {}, 500)

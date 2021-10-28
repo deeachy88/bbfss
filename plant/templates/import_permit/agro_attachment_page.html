@@ -24,7 +24,7 @@
                    {% for file_attach in file_attach %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-                                <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                                <td><a href='{{file_attach.File_Path}}' target="_blank">{{file_attach.Attachment}}</a></td>
                                 <td>
                                     <button type="button"
 									    class="btn btn-danger btn-sm" onclick="DeleteAttachment('{{ file_attach.File_Id }}')">
@@ -56,14 +56,15 @@ function save_details()
 			dataType : "html",
 			success : function(responseText)
 			{
-                swal("Application Submitted Successfully. Your Application No :" + applicationNo, {
-                    buttons: false,
-                    timer: 4000,
-                });
-                setTimeout(function()
-                {
-                    location.reload();
-                }, 4000);
+                Swal.fire({
+                      text: "Application Submitted Successfully. Your Application No Is :" + applicationNo,
+                      confirmButtonText: 'Ok',
+                    }).then((result) => {
+                      /* Read more about isConfirmed, isDenied below */
+                      if (result.isConfirmed) {
+                        window.location.href = '{% url 'dashboard' %}';
+                      }
+                    })
 			}
 	});
 }

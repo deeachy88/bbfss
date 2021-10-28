@@ -337,7 +337,7 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Place of Exit</label>
-                                            <select class="form-control"disabled>
+                                            <select class="form-control" disabled>
                                                 {% for location in location %}
                                                     <option value="{{ location.Location_Code }}" {% if application_details.Place_of_Exit == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
                                                 {% endfor %}
@@ -422,7 +422,7 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Place of Exit</label>
-                                            <select class="form-control"disabled>
+                                            <select class="form-control" disabled>
                                                 {% for location in location %}
                                                     <option value="{{ location.Location_Code }}" {% if application_details.Place_of_Exit == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
                                                 {% endfor %}
@@ -443,71 +443,84 @@ form, input, select, textarea{
                                     </div>
                                 </div>
                             {% endif %}
-                    {% if application_details.Application_Type == 'AP' %}
-                                <table class="table table-bordered">
-                                    <thead>
+
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header" role="tab" id="headingFve">
+                <a class="collapsed" data-toggle="collapse" href="#collapseFive" aria-expanded="false" aria-controls="collapseTwo">
+                    Export Details
+                </a>
+            </div>
+            <div id="collapseFive" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+                <div class="card-body">
+                    {% for application_details in application_details %}
+                        {% if application_details.Application_Type == 'AP' %}
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Particulars</th>
+                                        <th scope="col">Company Name</th>
+                                        <th scope="col">Description</th>
+                                        <th scope="col">Quantity</th>
+                                        <th scope="col">Unit</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for import in details %}
                                         <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col">Particulars</th>
-                                            <th scope="col">Company Name</th>
-                                            <th scope="col">Description</th>
-                                            <th scope="col">Quantity</th>
-                                            <th scope="col">Unit</th>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{details.Particulars}}</td>
+                                            <td>{{details.Company_Name}}</td>
+                                            <td>{{details.Description}}</td>
+                                            <td>{{details.Unit}}</td>
+                                            <td>{{details.Quantity}}</td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for import in details %}
-                                            <tr>
-                                                <td>{{ forloop.counter }}</td>
-                                                <td>{{details.Particulars}}</td>
-                                                <td>{{details.Company_Name}}</td>
-                                                <td>{{details.Description}}</td>
-                                                <td>{{details.Unit}}</td>
-                                                <td>{{details.Quantity}}</td>
-                                            </tr>
-                                            {% empty %}
-                                            <tr>
-                                              <td colspan="6" class="text-center">No Data</td>
-                                            </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                                <br>
-                            {% else %}
-                                <table class="table table-bordered">
-                                    <thead>
+                                        {% empty %}
                                         <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col">Species</th>
-                                            <th scope="col">Breed</th>
-                                            <th scope="col">Age</th>
-                                            <th scope="col">Sex</th>
-                                            <th scope="col">Description</th>
-                                            <th scope="col">No of Animals</th>
-                                            <th scope="col">Remarks</th>
-                                            <th scope="col"></th>
+                                          <td colspan="6" class="text-center">No Data</td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for details in details %}
-                                            <tr>
-                                                <td>{{ forloop.counter }}</td>
-                                                <td>{{details.Species}}</td>
-                                                <td>{{details.Breed}}</td>
-                                                <td>{{details.Age}}</td>
-                                                <td>{{details.Sex}}</td>
-                                                <td>{{details.Description}}</td>
-                                                <td>{{details.No_Of_Animal}}</td>
-                                                <td>{{details.Remarks}}</td>
-                                            </tr>
-                                            {% empty %}
-                                            <tr>
-                                              <td colspan="8" class="text-center">No Data</td>
-                                            </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <br>
+                        {% else %}
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Species</th>
+                                        <th scope="col">Breed</th>
+                                        <th scope="col">Age</th>
+                                        <th scope="col">Sex</th>
+                                        <th scope="col">Description</th>
+                                        <th scope="col">No of Animals</th>
+                                        <th scope="col">Remarks</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for details in details %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{details.Species}}</td>
+                                            <td>{{details.Breed}}</td>
+                                            <td>{{details.Age}}</td>
+                                            <td>{{details.Sex}}</td>
+                                            <td>{{details.Description}}</td>
+                                            <td>{{details.No_Of_Animal}}</td>
+                                            <td>{{details.Remarks}}</td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                          <td colspan="8" class="text-center">No Data</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        {% endif %}
                     {% endfor %}
                 </div>
             </div>
@@ -626,7 +639,7 @@ form, input, select, textarea{
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Validity Of Permit(No Of Days) <font color="red">*</font></label>
-                                <input type="text" class="form-control" id="validity" name="validity" onkeypress="return isNumberKey(event)">
+                                <input type="text" class="form-control" id="validity" name="validity" onkeypress="return isNumberKey(event)" onchange="check_validity(this.value)">
                             </div>
                             <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>
                         </div>
@@ -714,18 +727,12 @@ form, input, select, textarea{
           </div>
         </div>
     </div>
-<script src="{% static 'assets/bower_components/jquery/dist/jquery.min.js' %}"></script>
-<script src="{% static 'assets/bower_components/popper.js/dist/umd/popper.min.js' %}"></script>
-<script src="{% static 'assets/bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
-<script src="{% static 'assets/bower_components/jquery.scrollbar/jquery.scrollbar.min.js' %}"></script>
-<script src="{% static 'assets/bower_components/jquery-scrollLock/jquery-scrollLock.min.js' %}"></script>
-<script src="{% static 'assets/bower_components/flatpickr/dist/flatpickr.min.js' %}"></script>
 <script src="{% static 'assets/js/app.min.js' %}"></script>
 <script>
 $(function()
 {
     var today = new Date().toISOString().split('T')[0];
-    $('#inspectionDate')[0].setAttribute('min', today);
+    $('#dateOfInspection')[0].setAttribute('min', today);
 });
 function isNumberKey(evt)
 {
@@ -877,5 +884,18 @@ function reject_details(application_id)
     }
 }
 
-
+function check_validity(validity)
+{
+    if(validity == 0)
+    {
+        $('#validityErrorMsg').html("Must Be Greater Than Zero.");
+        $('#validityErrorMsg').show();
+        $('#validityErrorMsg').delay(2000).fadeOut('slow');
+        $('#validity').val("");
+    }
+    else
+    {
+        $('#validityErrorMsg').hide();
+    }
+}
 </script>

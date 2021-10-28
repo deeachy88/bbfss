@@ -3,6 +3,12 @@
     .header-card {
     background-color: white;
 }
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
 </style>
 <div class="card">
     <div class="card-header header-card"><font color='black'>
@@ -26,158 +32,195 @@
     <div class="card-body">
         {% for certificate_details in certificate_details %}
         <div class="row d-flex justify-content-between details">
-
 			    <h6>PSC NO.&nbsp;&nbsp;{{certificate_details.Export_Permit}}</h6>
-
 		</div>
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label>From: Plant Protection Organization of</label>
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label>To:  Plant Protection Organization(s) of</label>
-                </div>
-            </div>
-        </div>
-        <div class="row justify-content-center">
-            <h2>I.DESCRIPTION OF CONSIGNMENT</h2>
-        </div>
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label>Name and Address of exporter</label>
+        <table class="tg">
+            <thead>
+              <tr>
+                <th class="tg-0pky" colspan="2">From: Plant Protection Organization Of BAFRA</th>
+                <th class="tg-0pky" colspan="2">To: Plant Protection Organization(s) Of {{certificate_details.Importing_Country}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="tg-c3ow" colspan="4" align="center">
+                    <h4>I.DESCRIPTION OF CONSIGNMENT</h4>
+                </td>
+              </tr>
+              <tr>
+                  <td class="tg-0pky" colspan="2"><b>Name and Address of exporter</b></td>
+                  <td class="tg-0pky" colspan="2"><b>Declared name and address of consignee</b></td>
+              </tr>
+              <tr>
+                <td class="tg-0pky" colspan="2">
                     {{certificate_details.Exporter_Name}}&nbsp;&nbsp;{{certificate_details.Exporter_Address}}
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label>Declared name and address of consignee</label>
+                </td>
+                <td class="tg-0pky" colspan="2">
                     {{certificate_details.Consingee_Name_Address}}
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label>Number and description of packages</label>
+                </td>
+              </tr>
+              <tr>
+                  <td class="tg-0pky" colspan="2"><b>Number and description of packages</b></td>
+                  <td class="tg-0pky" colspan="2"><b>Distinguishing marks</b></td>
+              </tr>
+              <tr>
+                <td class="tg-0pky" colspan="2">
                     {{certificate_details.Packages_No}}&nbsp;&nbsp;{{certificate_details.Packages_Description}}
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label>Distinguishing marks</label>
+                </td>
+                <td class="tg-0pky" colspan="2">
                     {{certificate_details.Distinguishing_Marks}}
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-4">
-                <div class="form-group">
-                    <label>Place Of Origin</label>
-                    {{certificate_details.Dzongkhag}}
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="form-group">
-                    <label>Declared means of conveyance</label>
-                    {{certificate_details.Consingee_Name_Address}}
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="form-group">
-                    <label>Declared point of entry</label>
+                </td>
+              </tr>
+              <tr>
+                  <td class="tg-0pky"><b>Place Of Origin</b></td>
+                  <td class="tg-0pky"><b>Declared Means Of Conveyance</b></td>
+                  <td class="tg-0pky" colspan="2"><b>Declared Point Of Entry</b></td>
+              </tr>
+              <tr>
+                <td class="tg-0pky">
+                    {% for dzongkhag in dzongkhag %}
+                        {% if dzongkhag.Dzongkhag_Code == certificate_details.Dzongkhag_Code %}
+                            {{ dzongkhag.Dzongkhag_Name }}
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td class="tg-0pky">
+                    {{certificate_details.Mode_Of_Conveyance}}
+                </td>
+                <td class="tg-0pky" colspan="2">
                     {{certificate_details.Entry_Point}}
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label>Name of produce and quantity declared</label>
+                </td>
+              </tr>
+              <tr>
+                  <td class="tg-0pky" colspan="2"><b>Name of produce and quantity declared</b></td>
+                  <td class="tg-0pky" colspan="2"><b>Botanical Name Of Plants</b></td>
+              </tr>
+              <tr>
+                <td class="tg-0pky" colspan="2">
                     {{certificate_details.Description}}
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label>Botanical name of plants</label>
+                </td>
+                <td class="tg-0pky" colspan="2">
                     {{certificate_details.Botanical_Name}}
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <p>
-                This is to certify that the plants and plant products or other regulated articles
-                described herein have been inspected and/ or tested according to appropriate official
-                procedures and are considered to be free from the quarantine pests specified by the
-                importing contracting party and to conform with the current phytosanitary requirements
-                of the importing contracting party, including those for regulated non-quarantine pests.
-            </p>
-        </div>
-        <div class="row justify-content-center">
-            <h4>II. ADDITIONAL DECLARATION</h4>
-        </div>
-        <div class="row justify-content-center">
-            <p>{{certificate_details.Additional_Declaring}}</p>
-        </div>
-        <div class="row justify-content-center">
-            <h4>III. DISINFESTATION AND/ OR DISINFECTION TREATMENT</h4>
-        </div>
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label>Treatment</label>
-                    {{certificate_details.Treatment_Pre}}
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label>Chemical (Active ingredients)</label>
-                    {{certificate_details.Chemical_Name_Pre}}
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label>Duration and Temperature</label>
-                    {{certificate_details.Duration_Temperature_Pre}}
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label>Concentration</label>
-                    {{certificate_details.Concentration_Pre}}
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label>Additional Information</label>
-                    {{certificate_details.Additional_Information_Pre}}
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-3">
-                <div class="form-group">
-                    <label>Date of Issue &nbsp;:&nbsp;{{certificate_details.Approve_Date}}</label>
-                </div>
-            </div>
-            <!--<div class="col-sm-4">
-                <div class="form-group">
-                    <label>Official seal</label>
-                </div>
-            </div>
-            <div class="col-sm-5">
-                <div class="form-group">
-                    <label>Name and Signature of Authorized Officer</label>
-                </div>
-            </div>-->
-        </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="tg-0pky" colspan="4">
+                    <p>
+                        This is to certify that the plants and plant products or other regulated articles
+                        described herein have been inspected and/ or tested according to appropriate official
+                        procedures and are considered to be free from the quarantine pests specified by the
+                        importing contracting party and to conform with the current phytosanitary requirements
+                        of the importing contracting party, including those for regulated non-quarantine pests.
+                    </p>
+                    <h4 class="text-center">II. ADDITIONAL DECLARATION</h4>
+                </td>
+              </tr>
+              <tr>
+                <td class="tg-0pky" colspan="4">
+                    {% if certificate_details.Additional_Declaring %}
+                        <p>{{certificate_details.Additional_Declaring}}</p>
+                    {% else %}
+                        <p class="text-center">NA</p>
+                    {% endif %}
+                </td>
+              </tr>
+              <tr>
+                <td class="tg-0pky" colspan="4">
+                    <h4 class="text-center">III. DISINFESTATION AND/ OR DISINFECTION TREATMENT</h4>
+                </td>
+              </tr>
+              <tr>
+                  <td class="tg-0pky" colspan="2"><b>Treatment Date</b></td>
+                  <td class="tg-0pky" colspan="2"><b>Treatment</b></td>
+              </tr>
+              <tr>
+                <td class="tg-0pky" colspan="2">
+                    NA
+                </td>
+                <td class="tg-0pky" colspan="2">
+                    {% if certificate_details.Treatment_Chemical %}
+                        {{certificate_details.Treatment_Chemical}}
+                    {% elif certificate_details.Treatment_Chemical_Fumigation %}
+                        {{certificate_details.Treatment_Chemical_Fumigation}}
+                    {% elif certificate_details.Treatment_Chemical_Spray %}
+                        {{certificate_details.Treatment_Chemical_Spray}}
+                    {% elif certificate_details.Treatment_Chemical_Seed %}
+                        {{certificate_details.Treatment_Chemical_Seed}}
+                    {% elif certificate_details.Treatment_Chemical_Other %}
+                        {{certificate_details.Treatment_Chemical_Other_Specific}}
+                    {% else %}
+                    NA
+                    {% endif %}
+                </td>
+              </tr>
+              <tr>
+                  <td class="tg-0pky" colspan="2"><b>Chemical (Active ingredients)</b></td>
+                  <td class="tg-0pky" colspan="2"><b>Duration and Temperature</b></td>
+              </tr>
+              <tr>
+                <td class="tg-0pky" colspan="2">
+                    {% if certificate_details.Treatment_Chemical_Name %}
+                        {{certificate_details.Treatment_Chemical_Name}}
+                    {% else %}
+                        NA
+                    {% endif %}
+                </td>
+                <td class="tg-0pky" colspan="2">
+                    {% if certificate_details.Treatment_Chemical_Duration %}
+                        {{certificate_details.Treatment_Chemical_Duration}}
+                    {% else %}
+                        NA
+                    {% endif %}
+                </td>
+              </tr>
+              <tr>
+                <td class="tg-0pky" colspan="2">
+                    <b>Concentration</b>
+                </td>
+                <td class="tg-0pky" colspan="2">
+                    <b>Additional Information</b>
+                </td>
+              </tr>
+              <tr>
+                <td class="tg-0pky" colspan="2">
+                    {% if certificate_details.Treatment_Chemical_Concentration %}
+                        {{certificate_details.Treatment_Chemical_Concentration}}
+                    {% else %}
+                        NA
+                    {% endif %}
+                </td>
+                <td class="tg-0pky" colspan="2">
+                    {% if certificate_details.Treatment_Chemical_Additional_Info %}
+                        {{certificate_details.Treatment_Chemical_Additional_Info}}
+                    {% else %}
+                        NA
+                    {% endif %}
+                </td>
+              </tr>
+              <tr>
+                <td class="tg-0pky" colspan="2">
+                    <b>Date of Issue</b> &nbsp;:&nbsp; {{certificate_details.Approved_Date}}
+                </td>
+                <td class="tg-0pky">
+                    Official seal
+                </td>
+                <td class="tg-0pky">
+                    <b>Name and Signature of Authorized Officer</b>
+                </td>
+              </tr>
+              <tr>
+                <td class="tg-0pky" colspan="2">
+                    <b>Place of Issue</b>
+                </td>
+                <td class="tg-0pky">
+
+                </td>
+                <td class="tg-0pky">
+
+                </td>
+              </tr>
+            </tbody>
+        </table>
         {% endfor %}
     </div>
         <div class="col-md-12" style="display:none;" id="print">
@@ -186,90 +229,77 @@
         <h6 class="text-center"><font color='black'><b>PHYTOSANITARY CERTIFICATE</b></font></h6>
 
             <div class="card-body">
-                {% for certificate_details in certificate_details %}
-                <div class="row d-flex justify-content-between details">
-
-                        <h6>PSC NO.&nbsp;&nbsp;{{certificate_details.Export_Permit}}</h6>
-
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>From: Plant Protection Organization of</label>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>To:  Plant Protection Organization(s) of</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row justify-content-center">
-                    <h2>I.DESCRIPTION OF CONSIGNMENT</h2>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>Name and Address of exporter</label>
-                            {{certificate_details.Exporter_Name}}&nbsp;&nbsp;{{certificate_details.Exporter_Address}}
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>Declared name and address of consignee</label>
-                            {{certificate_details.Consingee_Name_Address}}
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>Number and description of packages</label>
-                            {{certificate_details.Packages_No}}&nbsp;&nbsp;{{certificate_details.Packages_Description}}
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>Distinguishing marks</label>
-                            {{certificate_details.Distinguishing_Marks}}
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <label>Place Of Origin</label>
-                            {{certificate_details.Dzongkhag}}
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <label>Declared means of conveyance</label>
-                            {{certificate_details.Consingee_Name_Address}}
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <label>Declared point of entry</label>
-                            {{certificate_details.Entry_Point}}
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>Name of produce and quantity declared</label>
-                            {{certificate_details.Description}}
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>Botanical name of plants</label>
-                            {{certificate_details.Botanical_Name}}
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
+        {% for certificate_details in certificate_details %}
+        <div class="row d-flex justify-content-between details">
+			    <h6>PSC NO.&nbsp;&nbsp;{{certificate_details.Export_Permit}}</h6>
+		</div>
+        <table class="tg">
+            <thead>
+              <tr>
+                <th class="tg-0pky" colspan="2">From: Plant Protection Organization Of BAFRA</th>
+                <th class="tg-0pky" colspan="2">To: Plant Protection Organization(s) Of {{certificate_details.Importing_Country}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="tg-c3ow" colspan="4" align="center">
+                    <h4>I.DESCRIPTION OF CONSIGNMENT</h4>
+                </td>
+              </tr>
+              <tr>
+                <td class="tg-0pky" colspan="2">Name and Address of exporter</td>
+                <td class="tg-0pky" colspan="2">Declared name and address of consignee</td>
+              </tr>
+              <tr>
+                <td class="tg-0pky" colspan="2">
+                    {{certificate_details.Exporter_Name}}&nbsp;&nbsp;{{certificate_details.Exporter_Address}}
+                </td>
+                <td class="tg-0pky" colspan="2">
+                    {{certificate_details.Consingee_Name_Address}}
+                </td>
+              </tr>
+              <tr>
+                <td class="tg-0pky" colspan="2">Number and description of packages</td>
+                <td class="tg-0pky" colspan="2">Distinguishing marks</td>
+              </tr>
+              <tr>
+                <td class="tg-0pky" colspan="2">
+                    {{certificate_details.Packages_No}}&nbsp;&nbsp;{{certificate_details.Packages_Description}}
+                </td>
+                <td class="tg-0pky" colspan="2">
+                    {{certificate_details.Distinguishing_Marks}}
+                </td>
+              </tr>
+              <tr>
+                <td class="tg-0pky">Place Of Origin</td>
+                <td class="tg-0pky">Declared Means Of Conveyance</td>
+                <td class="tg-0pky" colspan="2">Declared Point Of Entry</td>
+              </tr>
+              <tr>
+                <td class="tg-0pky">
+                    {{certificate_details.Dzongkhag}}
+                </td>
+                <td class="tg-0pky">
+                    {{certificate_details.Mode_Of_Conveyance}}
+                </td>
+                <td class="tg-0pky" colspan="2">
+                    {{certificate_details.Entry_Point}}
+                </td>
+              </tr>
+              <tr>
+                <td class="tg-0pky" colspan="2">Name of produce and quantity declared</td>
+                <td class="tg-0pky" colspan="2">Botanical Name Of Plants</td>
+              </tr>
+              <tr>
+                <td class="tg-0pky" colspan="2">
+                    {{certificate_details.Description}}
+                </td>
+                <td class="tg-0pky" colspan="2">
+                    {{certificate_details.Botanical_Name}}
+                </td>
+              </tr>
+              <tr>
+                <td class="tg-0pky" colspan="4">
                     <p>
                         This is to certify that the plants and plant products or other regulated articles
                         described herein have been inspected and/ or tested according to appropriate official
@@ -277,70 +307,116 @@
                         importing contracting party and to conform with the current phytosanitary requirements
                         of the importing contracting party, including those for regulated non-quarantine pests.
                     </p>
-                </div>
-                <div class="row justify-content-center">
-                    <h4>II. ADDITIONAL DECLARATION</h4>
-                </div>
-                <div class="row justify-content-center">
-                    <p>{{certificate_details.Additional_Declaring}}</p>
-                </div>
-                <div class="row justify-content-center">
-                    <h4>III. DISINFESTATION AND/ OR DISINFECTION TREATMENT</h4>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>Treatment</label>
-                            {{certificate_details.Treatment_Pre}}
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>Chemical (Active ingredients)</label>
-                            {{certificate_details.Chemical_Name_Pre}}
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>Duration and Temperature</label>
-                            {{certificate_details.Duration_Temperature_Pre}}
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>Concentration</label>
-                            {{certificate_details.Concentration_Pre}}
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>Additional Information</label>
-                            {{certificate_details.Additional_Information_Pre}}
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label>Date of Issue &nbsp;:&nbsp;{{certificate_details.Approved_Date }}</label>
-                        </div>
-                    </div>
-                    <!--<div class="col-sm-4">
-                        <div class="form-group">
-                            <label>Official seal</label>
-                        </div>
-                    </div>
-                    <div class="col-sm-5">
-                        <div class="form-group">
-                            <label>Name and Signature of Authorized Officer</label>
-                        </div>
-                    </div>-->
-                </div>
-                {% endfor %}
+                    <h4 class="text-center">II. ADDITIONAL DECLARATION</h4>
+                </td>
+              </tr>
+              <tr>
+                <td class="tg-0pky" colspan="4">
+                    {% if certificate_details.Additional_Declaring %}
+                        <p>{{certificate_details.Additional_Declaring}}</p>
+                    {% else %}
+                        <p class="text-center">NA</p>
+                    {% endif %}
+                </td>
+              </tr>
+              <tr>
+                <td class="tg-0pky" colspan="4">
+                    <h4 class="text-center">III. DISINFESTATION AND/ OR DISINFECTION TREATMENT</h4>
+                </td>
+              </tr>
+              <tr>
+                <td class="tg-0pky" colspan="2">Treatment Date</td>
+                <td class="tg-0pky" colspan="2">Treatment</td>
+              </tr>
+              <tr>
+                <td class="tg-0pky" colspan="2">
+                    NA
+                </td>
+                <td class="tg-0pky" colspan="2">
+                    {% if certificate_details.Treatment_Chemical %}
+                        {{certificate_details.Treatment_Chemical}}
+                    {% elif certificate_details.Treatment_Chemical_Fumigation %}
+                        {{certificate_details.Treatment_Chemical_Fumigation}}
+                    {% elif certificate_details.Treatment_Chemical_Spray %}
+                        {{certificate_details.Treatment_Chemical_Spray}}
+                    {% elif certificate_details.Treatment_Chemical_Seed %}
+                        {{certificate_details.Treatment_Chemical_Seed}}
+                    {% elif certificate_details.Treatment_Chemical_Other %}
+                        {{certificate_details.Treatment_Chemical_Other_Specific}}
+                    {% else %}
+                    NA
+                    {% endif %}
+                </td>
+              </tr>
+              <tr>
+                <td class="tg-0pky" colspan="2">Chemical (Active ingredients)</td>
+                <td class="tg-0pky" colspan="2">Duration and Temperature</td>
+              </tr>
+              <tr>
+                <td class="tg-0pky" colspan="2">
+                    {% if certificate_details.Treatment_Chemical_Name %}
+                        {{certificate_details.Treatment_Chemical_Name}}
+                    {% else %}
+                        NA
+                    {% endif %}
+                </td>
+                <td class="tg-0pky" colspan="2">
+                    {% if certificate_details.Treatment_Chemical_Duration %}
+                        {{certificate_details.Treatment_Chemical_Duration}}
+                    {% else %}
+                        NA
+                    {% endif %}
+                </td>
+              </tr>
+              <tr>
+                <td class="tg-0pky" colspan="2">
+                    Concentration
+                </td>
+                <td class="tg-0pky" colspan="2">
+                    Additional Information
+                </td>
+              </tr>
+              <tr>
+                <td class="tg-0pky" colspan="2">
+                    {% if certificate_details.Treatment_Chemical_Concentration %}
+                        {{certificate_details.Treatment_Chemical_Concentration}}
+                    {% else %}
+                        NA
+                    {% endif %}
+                </td>
+                <td class="tg-0pky" colspan="2">
+                    {% if certificate_details.Treatment_Chemical_Additional_Info %}
+                        {{certificate_details.Treatment_Chemical_Additional_Info}}
+                    {% else %}
+                        NA
+                    {% endif %}
+                </td>
+              </tr>
+              <tr>
+                <td class="tg-0pky" colspan="2">
+                    Date of Issue &nbsp;:&nbsp; {{certificate_details.Approve_Date}}
+                </td>
+                <td class="tg-0pky">
+                    Official seal
+                </td>
+                <td class="tg-0pky">
+                    Name and Signature of Authorized Officer
+                </td>
+              </tr>
+              <tr>
+                <td class="tg-0pky" colspan="2">
+                    Place of Issue
+                </td>
+                <td class="tg-0pky">
+
+                </td>
+                <td class="tg-0pky">
+
+                </td>
+              </tr>
+            </tbody>
+        </table>
+        {% endfor %}
             </div>
             </div>
         </div>

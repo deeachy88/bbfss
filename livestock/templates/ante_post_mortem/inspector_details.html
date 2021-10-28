@@ -537,7 +537,7 @@ form, input, select, textarea{
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Validity(No Of Days) <font color="red">*</font></label>
-                                    <input type="text" class="form-control" id="validity" name="validity" onkeypress="return isNumberKey(event)">
+                                    <input type="text" class="form-control" id="validity" name="validity" onkeypress="return isNumberKey(event)" onchange="check_validity(this.value)">
                                 </div>
                                 <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>
                             </div>
@@ -796,6 +796,21 @@ function reject_details(application_id)
                 }, 3000);
             }
         });
+    }
+}
+
+function check_validity(validity)
+{
+    if(validity == 0)
+    {
+        $('#validityErrorMsg').html("Must Be Greater Than Zero.");
+        $('#validityErrorMsg').show();
+        $('#validityErrorMsg').delay(2000).fadeOut('slow');
+        $('#validity').val("");
+    }
+    else
+    {
+        $('#validityErrorMsg').hide();
     }
 }
 </script>

@@ -570,7 +570,7 @@ form, input, select, textarea{
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-label">Validity Period (If Approve - No Of Days)<font color="red">*</font></label>
-                                        <input type="text" class="form-control" name="validity" id="validity" onkeypress="return isNumberKey(event)">
+                                        <input type="text" class="form-control" name="validity" id="validity" onkeypress="return isNumberKey(event)" onchange="check_validity(this.value)">
                                     </div>
                                     <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>
                                 </div>
@@ -687,5 +687,18 @@ form, input, select, textarea{
             }
         }
 
-
+    function check_validity(validity)
+    {
+        if(validity == 0)
+        {
+            $('#validityErrorMsg').html("Must Be Greater Than Zero.");
+            $('#validityErrorMsg').show();
+            $('#validityErrorMsg').delay(2000).fadeOut('slow');
+            $('#validity').val("");
+        }
+        else
+        {
+            $('#validityErrorMsg').hide();
+        }
+    }
 </script>

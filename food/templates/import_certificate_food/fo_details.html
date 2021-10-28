@@ -321,7 +321,7 @@ form, input, select, textarea{
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Validity Period (If Approve - No Of Days) <font color="red">*</font></label>
-                                    <input type="number" class="form-control" name="validity" id="validity">
+                                    <input type="text" class="form-control" name="validity" id="validity" onkeypress="return isNumberKey(event)" onchange="check_validity(this.value)">
                                 </div>
                                 <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>
                             </div>
@@ -367,76 +367,91 @@ form, input, select, textarea{
 
 <script>
     function fo_fip_import_approve(application_id)
+    {
+        remarks = $('#remarks').val();
+        validity = $('#validity').val();
+        terms = $('#terms').val();
+        if(validity == "")
         {
-            remarks = $('#remarks').val();
-            validity = $('#validity').val();
-            terms = $('#terms').val();
-            if(validity == "")
-            {
-                $('#validityErrorMsg').html("Enter Validity.");
-                $('#validityErrorMsg').show();
-                $('#validityErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else
-            {
-                $("#loader").show();
-                $.ajax({
-                    type : "POST",
-                    url : "{% url 'approve_fo_fip_import' %}",
-                    data :{'application_id':application_id ,'remarks':remarks,'validity':validity,'terms':terms, csrfmiddlewaretoken: '{{ csrf_token }}'},
-                    success : function(data) {
-                        $("#loader").hide();
-                        $('#submitMsg').show();
-                        setTimeout(function()
-                        {
-                            $("#submitMsg").hide('blind', {}, 500)
-                        }, 2000);
-                        setTimeout(function()
-                        {
-                            $('#import_detailsModal').modal('hide');
-                        }, 3000);
-                        setTimeout(function() {
-                            window.location.href = '{% url 'dashboard' %}';
-                        }, 3000);
-
-                    }
-                });
-            }
+            $('#validityErrorMsg').html("Enter Validity.");
+            $('#validityErrorMsg').show();
+            $('#validityErrorMsg').delay(2000).fadeOut('slow');
         }
+        else
+        {
+            $("#loader").show();
+            $.ajax({
+                type : "POST",
+                url : "{% url 'approve_fo_fip_import' %}",
+                data :{'application_id':application_id ,'remarks':remarks,'validity':validity,'terms':terms, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(data) {
+                    $("#loader").hide();
+                    $('#submitMsg').show();
+                    setTimeout(function()
+                    {
+                        $("#submitMsg").hide('blind', {}, 500)
+                    }, 2000);
+                    setTimeout(function()
+                    {
+                        $('#import_detailsModal').modal('hide');
+                    }, 3000);
+                    setTimeout(function() {
+                        window.location.href = '{% url 'dashboard' %}';
+                    }, 3000);
+
+                }
+            });
+        }
+    }
     function fo_fip_import_reject(application_id)
+    {
+
+        remarks = $('#remarks').val();
+
+        if(remarks == "")
         {
-
-            remarks = $('#remarks').val();
-
-            if(remarks == "")
-            {
-                $('#remarksErrorMsg').html("Remarks Cannot Be Empty.");
-                $('#remarksErrorMsg').show();
-                $('#remarksErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else
-            {
-                $("#loader").show();
-                $.ajax({
-                    type : "POST",
-                    url : "{% url 'reject_fo_fip_import' %}",
-                    data :{'application_id':application_id ,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
-                    success : function(data) {
-                        $("#loader").hide();
-                        $('#rejectMsg').show();
-                        setTimeout(function()
-                        {
-                            $("#rejectMsg").hide('blind', {}, 500)
-                        }, 2000);
-                        setTimeout(function()
-                        {
-                            $('#import_detailsModal').modal('hide');
-                        }, 3000);
-                        setTimeout(function() {
-                            window.location.href = '{% url 'dashboard' %}';
-                        }, 3000);
-                    }
-                });
-            }
+            $('#remarksErrorMsg').html("Remarks Cannot Be Empty.");
+            $('#remarksErrorMsg').show();
+            $('#remarksErrorMsg').delay(2000).fadeOut('slow');
         }
+        else
+        {
+            $("#loader").show();
+            $.ajax({
+                type : "POST",
+                url : "{% url 'reject_fo_fip_import' %}",
+                data :{'application_id':application_id ,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(data) {
+                    $("#loader").hide();
+                    $('#rejectMsg').show();
+                    setTimeout(function()
+                    {
+                        $("#rejectMsg").hide('blind', {}, 500)
+                    }, 2000);
+                    setTimeout(function()
+                    {
+                        $('#import_detailsModal').modal('hide');
+                    }, 3000);
+                    setTimeout(function() {
+                        window.location.href = '{% url 'dashboard' %}';
+                    }, 3000);
+                }
+            });
+        }
+    }
+
+    function check_validity(validity)
+    {
+        if(validity == 0)
+        {
+            $('#validityErrorMsg').html("Must Be Greater Than Zero.");
+            $('#validityErrorMsg').show();
+            $('#validityErrorMsg').delay(2000).fadeOut('slow');
+            $('#validity').val("");
+        }
+        else
+        {
+            $('#validityErrorMsg').hide();
+        }
+    }
 </script>

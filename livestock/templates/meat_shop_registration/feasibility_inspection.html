@@ -510,7 +510,7 @@ form, input, select, textarea{
                             &nbsp;&nbsp;Add
                         </button>
                         {% endfor %}
-                        <button type="button" class="btn btn-primary" onclick="closeModal()">Close Modal</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close Modal</button>
                      </div>
 
                   </div>
@@ -554,7 +554,7 @@ form, input, select, textarea{
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Closing Meeting(Date) <font color="red">*</font></label>
-                                    <input type="text" class="form-control date-picker flatpickr-input active" name="closing_date" id="closing_date" readonly>
+                                    <input type="text" class="form-control date-picker flatpickr-input active" name="closing_date" id="closing_date" readonly  onchange="check_date()">
                                 </div>
                                 <div class="alert alert-danger" id="closing_dateErrorMsg" style="display:none"></div>
                             </div>
@@ -564,11 +564,11 @@ form, input, select, textarea{
                     <div class="modal-footer">
                         {% for application_details in application_details %}
                         <button type="button" class="btn btn-flat btn-primary" onclick="add_team_details('{{ application_details.Application_No }}')">
-                            <i class="ace-icon fa fa-times"></i>
+                            <i class="ace-icon fa fa-check"></i>
                             &nbsp;&nbsp;Add
                         </button>
                         {% endfor %}
-                        <button type="button" class="btn btn-primary" onclick="closeTeamModal()">Close Modal</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close Modal</button>
                      </div>
 
                   </div>
@@ -579,7 +579,7 @@ form, input, select, textarea{
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title"></h5>
-                        <button type="button" class="close" onclick="closeModal()">
+                        <button type="button" class="close" data-dismiss="modal">
                             <span aria-hidden="true">&times;</span>
                         </button>
 
@@ -606,11 +606,11 @@ form, input, select, textarea{
                     <div class="modal-footer">
                         {% for application_details in application_details %}
                         <button type="button" class="btn btn-flat btn-primary" onclick="add_inspection_team_details('{{ application_details.Application_No }}')">
-                            <i class="ace-icon fa fa-times"></i>
+                            <i class="ace-icon fa fa-check"></i>
                             &nbsp;&nbsp;Add
                         </button>
                         {% endfor %}
-                        <button type="button" class="btn btn-primary" onclick="closeTeamModal()">Close Modal</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close Modal</button>
                      </div>
 
                   </div>
@@ -772,6 +772,11 @@ function add_details_ins(application_id)
             success : function(response) {
                 $('#details').html(response);
                 $('#addModal').modal('hide');
+                $('#Requirement').val("");
+                $('#Clause_No').val("");
+                $('input[name="Concern"]:checked').val("");
+                $('#response_fbo').val("");
+                $('#Observations').val("");
             }
         });
     }
@@ -822,6 +827,10 @@ function add_team_details(application_id)
                 $('#team_details').html(data);
                 $('#team_details').show();
                 $('#teamModal').modal('hide');
+                $('#name').val("");
+                $('#designation').val("");
+                $('#opening_date').val("");
+                $('#closing_date').val("");
             }
         });
     }
@@ -857,6 +866,8 @@ function add_inspection_team_details(application_id)
                 $('#inspection_team_details').html(data);
                 $('#inspection_team_details').show();
                 $('#InspectionTeamModal').modal('hide');
+                $('#ins_name').val("");
+                $('#ins_designation').val("");
             }
         });
     }
@@ -1009,4 +1020,21 @@ function checkEditConcern(value)
     }
 }
 
+function check_date()
+{
+    opening_date = $('#opening_date').val();
+    closing_date = $('#closing_date').val();
+
+    if(closing_date <= opening_date)
+    {
+        $('#closing_dateErrorMsg').html("Cannot Be Less Than Or Equal To Opening Meeting(Date).");
+        $('#closing_dateErrorMsg').show();
+        $('#closing_dateErrorMsg').delay(2000).fadeOut('slow');
+        $('#closing_date').val("");
+    }
+    else
+    {
+        $('#closing_dateErrorMsg').hide();
+    }
+}
 </script>

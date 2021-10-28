@@ -77,6 +77,8 @@ class t_livestock_clearance_meat_shop_t5(models.Model):
     Concern = models.CharField(max_length=10, default=None, blank=True, null=True)
     Date = models.DateField(default=None, blank=True, null=True)
     FBO_Response = models.TextField(default=None, blank=True, null=True)
+    NC = models.CharField(max_length=10, default=None, blank=True, null=True)
+    NC_Category = models.CharField(max_length=10, default=None, blank=True, null=True)
 
 
 class t_livestock_clearance_meat_shop_t6(models.Model):

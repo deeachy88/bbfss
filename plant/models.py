@@ -8,8 +8,8 @@ fs = FileSystemStorage()
 class t_plant_movement_permit_t1(models.Model):
     Application_No = models.CharField(max_length=20, primary_key=True)
     Permit_Type = models.CharField(max_length=1, default=None)
-    License_No = models.CharField(max_length=100)
-    Nursery_Name = models.CharField(max_length=100, default=None, blank=True, null=True)
+    License_No = models.CharField(max_length=100,default='NA', blank=True, null=True)
+    Nursery_Name = models.CharField(max_length=100, default='NA', blank=True, null=True)
     CID = models.BigIntegerField()
     Applicant_Name = models.CharField(max_length=250)
     Contact_No = models.IntegerField()
@@ -71,6 +71,8 @@ class t_workflow_details(models.Model):
     Assigned_Role_Id = models.IntegerField(blank=True, null=True)
     Action_Date = models.DateField(blank=True, null=True)
     Application_Status = models.CharField(max_length=3, default=None, blank=True, null=True)
+    Application_Date = models.DateField(default=None, blank=True, null=True)
+    Applicant_Name = models.CharField(max_length=100, default=None, blank=True, null=True)
 
 
 class t_workflow_details_audit(models.Model):
@@ -85,6 +87,8 @@ class t_workflow_details_audit(models.Model):
     Assigned_Role_Id = models.CharField(max_length=20, blank=True, null=True)
     Action_Date = models.DateField(blank=True, null=True)
     Application_Status = models.CharField(max_length=3, default=None, blank=True, null=True)
+    Application_Date = models.DateField(default=None, blank=True, null=True)
+    Applicant_Name = models.CharField(max_length=100, default=None, blank=True, null=True)
 
 
 class t_file_attachment(models.Model):
@@ -250,7 +254,8 @@ class t_plant_export_certificate_plant_plant_products_t1(models.Model):
     Unit_Net = models.CharField(max_length=10, blank=True, null=True)
     Pieces_Net = models.CharField(max_length=100, default=None, blank=True, null=True)
     Importing_Country = models.CharField(max_length=100, blank=True, null=True)
-    Entry_Point = models.CharField(max_length=100, blank=True, null=True)
+    Entry_Point = models.CharField(max_length=250, blank=True, null=True)
+    Exit_Point = models.IntegerField(blank=True, null=True)
     Packages_No = models.CharField(max_length=10, blank=True, null=True)
     Packages_Description = models.TextField(blank=True, null=True)
     Distinguishing_Marks = models.CharField(max_length=250, default=None, blank=True, null=True)
@@ -339,10 +344,10 @@ class t_plant_clearence_nursery_seed_grower_t1(models.Model):
     Email = models.EmailField(default=None, blank=True, null=True)
     Unit_Area = models.CharField(max_length=20, default=None, blank=True, null=True)
     Area = models.DecimalField(decimal_places=2, max_digits=10, default=None, blank=True, null=True)
-    Dzongkhag = models.CharField(max_length=100, default=None, blank=True, null=True)
-    Gewog = models.CharField(max_length=100, default=None, blank=True, null=True)
-    Village = models.CharField(max_length=100, default=None, blank=True, null=True)
-    Location_Code = models.CharField(max_length=10, blank=True, null=True)
+    Dzongkhag = models.IntegerField(default=None, blank=True, null=True)
+    Gewog = models.IntegerField(default=None, blank=True, null=True)
+    Village = models.IntegerField(default=None, blank=True, null=True)
+    Location_Code = models.IntegerField(blank=True, null=True)
     Nursery_Type = models.CharField(max_length=10, blank=True, null=True)
     Inspection_Date = models.DateField(blank=True, null=True)
     Inspection_Leader = models.CharField(max_length=100, blank=True, null=True)
@@ -408,6 +413,7 @@ class t_plant_seed_certification_t1(models.Model):
     Validity = models.DateField(default=None, blank=True, null=True)
     Inspector_Remarks = models.CharField(max_length=250, default=None, blank=True, null=True)
     Client_Remarks = models.CharField(max_length=250, default=None, blank=True, null=True)
+    Resubmit_Date = models.DateField(blank=True, null=True)
 
 
 class t_plant_seed_certification_t2(models.Model):
@@ -442,7 +448,7 @@ class t_payment_details(models.Model):
     Applicant_Name = models.CharField(max_length=100, default=None, blank=True, null=True)
     Permit_No = models.CharField(max_length=100)
     Service_Id = models.CharField(max_length=5)
-    Validity = models.DateField()
+    Validity = models.DateField(default=None, blank=True, null=True)
     Payment_Type = models.CharField(max_length=30, default=None, blank=True, null=True)
     Instrument_No = models.CharField(max_length=50, default=None, blank=True, null=True)
     Amount = models.IntegerField(default=None, blank=True, null=True)
@@ -451,4 +457,4 @@ class t_payment_details(models.Model):
     Updated_By = models.CharField(max_length=100, default=None, blank=True, null=True)
     Updated_On = models.DateField(default=None, blank=True, null=True)
 
-#Remember to make changes in plant export permit models
+# Remember to make changes in plant export permit models

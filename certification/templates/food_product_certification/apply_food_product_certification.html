@@ -954,12 +954,21 @@ function fpc_attach()
 
 function submit_fpc_certificate()
 {
+    var applicationNo = $('#applicationNo').val();
     $.ajax({
         type : "POST",
         url : "{% url 'submit_food_product_certificate' %}",
         data : $('#food_product_form').serialize(),
         success : function(responseText) {
-           location.reload();
+           Swal.fire({
+              text: "Application Submitted Successfully. Your Application No Is :" + applicationNo,
+              confirmButtonText: 'Ok',
+            }).then((result) => {
+              /* Read more about isConfirmed, isDenied below */
+              if (result.isConfirmed) {
+                window.location.href = '{% url 'dashboard' %}';
+              }
+            })
         }
     });
 }

@@ -228,7 +228,7 @@ color: black !important;
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-sm-6">
+                            <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="form-label">Importing Country <font color="red">*</font></label>
                                     <select class="form-control" name="p_Country_Code"  id="p_Country_Code">
@@ -240,17 +240,24 @@ color: black !important;
                                 </div>
                                 <div class="alert alert-danger" id="p_Country_CodeErrorMsg" style="display:none"></div>
                             </div>
-                            <div class="col-sm-6">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="form-label">Declared point of Entry <font color="red">*</font></label>
+                                    <input type="text" class="form-control" name="p_Entry_Point"  id="p_Entry_Point">
+                                </div>
+                                <div class="alert alert-danger" id="p_Entry_PointErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-sm-4">
                                 <div class="form-group">
                                     <label class="form-label">Declared point of Exit <font color="red">*</font></label>
-                                    <select class="form-control" name="p_Entry_Point"  id="p_Entry_Point">
+                                    <select class="form-control" name="p_Exit_Point"  id="p_Exit_Point">
                                         <option value="">--SELECT--</option>
-                                        {% for entry_point in entry_point %}
-                                        <option value="{{ entry_point.Field_Office_Id }}">{{ entry_point.Field_Office }}</option>
+                                        {% for exit_point in entry_point %}
+                                            <option value="{{ exit_point.Field_Office_Id }}">{{ exit_point.Field_Office }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
-                                <div class="alert alert-danger" id="p_Entry_PointErrorMsg" style="display:none"></div>
+                                <div class="alert alert-danger" id="p_Exit_PointErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                         <div class="row">
@@ -270,7 +277,7 @@ color: black !important;
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label class="form-label">Distinguishing Marks</label>
+                                    <label class="form-label">Distinguishing Marks(If Any)</label>
                                     <input type="text" class="form-control" id="p_Distinguish_Marks" name="p_Distinguish_Marks">
                                 </div>
                                 <div class="alert alert-danger" id="p_Distinguish_MarksErrorMsg" style="display:none"></div>
@@ -458,7 +465,7 @@ color: black !important;
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="col-sm-4 col-form-label form-label">Gross Weight (Weight of Cordyceps and package)</label>
+                                <label class="col-sm-4 col-form-label form-label">Gross Weight (Weight of Cordyceps and package) <font color="red">*</font></label>
                                 <div class="col-sm-4">
                                     <div class="input-group">
                                         <div class="form-group">
@@ -467,6 +474,7 @@ color: black !important;
                                         </div>
                                         <span class="input-group-addon">Gm(s)</span>
                                     </div>
+                                    <div class="alert alert-danger" id="direct_gross_weight_gmsErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="input-group">
@@ -476,10 +484,11 @@ color: black !important;
                                         </div>
                                         <span class="input-group-addon">Pieces</span>
                                     </div>
+                                    <div class="alert alert-danger" id="direct_gross_weight_piecesErrorMsg" style="display:none"></div>
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="col-sm-4 col-form-label form-label">Net Weight (Weight of Cordycep only)</label>
+                                <label class="col-sm-4 col-form-label form-label">Net Weight (Weight of Cordycep only) <font color="red">*</font></label>
                                 <div class="col-sm-4">
                                     <div class="input-group">
                                         <div class="form-group">
@@ -488,6 +497,7 @@ color: black !important;
                                         </div>
                                         <span class="input-group-addon">Gm(s)</span>
                                     </div>
+                                    <div class="alert alert-danger" id="direct_net_weight_gmsErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="input-group">
@@ -497,18 +507,20 @@ color: black !important;
                                         </div>
                                         <span class="input-group-addon">Pieces</span>
                                     </div>
+                                    <div class="alert alert-danger" id="direct_net_weight_piecesErrorMsg" style="display:none"></div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-sm-4">
                                     <div class="form-group">
-                                        <label class="form-label">No Of Packages</label>
+                                        <label class="form-label">No Of Packages <font color="red">*</font></label>
                                         <input type="text" class="form-control" id="c_package" name="c_package" onkeypress="return isNumberKey(event)">
                                     </div>
+                                    <div class="alert alert-danger" id="c_packageErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="form-group">
-                                        <label class="form-label">Importing Country</label>
+                                        <label class="form-label">Importing Country <font color="red">*</font></label>
                                         <select class="form-control" name="c_country"  id="c_country">
                                             <option value="">--SELECT--</option>
                                             {% for country in country %}
@@ -516,18 +528,20 @@ color: black !important;
                                             {% endfor %}
                                          </select>
                                     </div>
+                                    <div class="alert alert-danger" id="c_countryErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="form-group">
-                                        <label class="form-label">Name & Address of Consignee</label>
+                                        <label class="form-label">Name & Address of Consignee <font color="red">*</font></label>
                                         <textarea class="form-control" id="c_Name_Address" name="c_Name_Address" rows="3"></textarea>
                                     </div>
+                                    <div class="alert alert-danger" id="c_Name_AddressErrorMsg" style="display:none"></div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-sm-4">
                                     <div class="form-group">
-                                        <label class="form-label">Mode of conveyance </label>
+                                        <label class="form-label">Mode of conveyance <font color="red">*</font></label>
                                         <select class="form-control form-control" id="c_conveyanceMeans" name="c_conveyanceMeans">
                                             <option value="">-SELECT-</option>
                                             <option value="Sea">Sea</option>
@@ -803,6 +817,7 @@ function isNumberKey(evt)
             var p_Location_Code = $('#p_Location_Code').val();
             var p_Name_Address = $('#p_Name_Address').val();
             var p_Botanical_Name = $('#p_Botanical_Name').val();
+            var p_Common_Name = $('#p_Common_Name').val();
             var p_Description = $('#p_Description').val();
             var p_Qty_Gross = $('#p_Qty_Gross').val();
             var p_Unit_Gross = $("input[name=p_Unit_Gross]:checked").length;
@@ -816,108 +831,140 @@ function isNumberKey(evt)
             var p_purpose = $("input[name=p_purpose]:checked").length;
             var p_conveyanceMeans = $('#p_conveyanceMeans').val();
             var p_Conveyance_Name = $('#p_Conveyance_Name').val();
+            var phoneNumber_length = $('#p_Contact_No').val().length;
 
             if(p_cid == "")
             {
                 $('#p_cidErrorMsg').html("Enter CID.");
                 $('#p_cidErrorMsg').show();
                 $('#p_cidErrorMsg').delay(2000).fadeOut('slow');
+                $('#p_cid').focus();
             }
             else if(p_Exporter_Address == "")
             {
                 $('#p_Exporter_AddressErrorMsg').html("Enter Address.");
                 $('#p_Exporter_AddressErrorMsg').show();
                 $('#p_Exporter_AddressErrorMsg').delay(2000).fadeOut('slow');
+                $('#p_Exporter_Address').focus();
             }
             else if(p_Contact_No == "")
             {
                 $('#p_Contact_NoErrorMsg').html("Enter Contact No.");
                 $('#p_Contact_NoErrorMsg').show();
                 $('#p_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
+                $('#p_Contact_No').focus();
+            }
+            else if(phoneNumber_length < 8)
+            {
+                $('#p_Contact_NoErrorMsg').html("Cannot Be Less THan Eight Digits.");
+                $('#p_Contact_NoErrorMsg').show();
+                $('#p_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
+                $('#p_Contact_No').focus();
             }
             else if(p_Email == "")
             {
                 $('#p_EmailErrorMsg').html("Enter Email.");
                 $('#p_EmailErrorMsg').show();
                 $('#p_EmailErrorMsg').delay(2000).fadeOut('slow');
+                $('#p_Email').focus();
             }
             else if(p_Dzongkhag_Code == "")
             {
                 $('#p_Dzongkhag_CodeErrorMsg').html("Select Dzongkhag.");
                 $('#p_Dzongkhag_CodeErrorMsg').show();
                 $('#p_Dzongkhag_CodeErrorMsg').delay(2000).fadeOut('slow');
+                $('#p_Dzongkhag_Code').focus();
             }
             else if(p_Location_Code == "")
             {
                 $('#p_Location_CodeErrorMsg').html("Select Location.");
                 $('#p_Location_CodeErrorMsg').show();
                 $('#p_Location_CodeErrorMsg').delay(2000).fadeOut('slow');
+                $('#p_Location_Code').focus();
             }
             else if(p_Name_Address == "")
             {
                 $('#p_Name_AddressErrorMsg').html("Enter Name & Address of Consignee.");
                 $('#p_Name_AddressErrorMsg').show();
                 $('#p_Name_AddressErrorMsg').delay(2000).fadeOut('slow');
+                $('#p_Name_Address').focus();
             }
             else if(p_Botanical_Name == "")
             {
                 $('#p_Botanical_NameErrorMsg').html("Enter Botanical Name Of the Commodity.");
                 $('#p_Botanical_NameErrorMsg').show();
                 $('#p_Botanical_NameErrorMsg').delay(2000).fadeOut('slow');
+                $('#p_Botanical_Name').focus();
+            }
+            else if(p_Common_Name == "")
+            {
+                $('#p_Common_NameErrorMsg').html("Enter Common Name Of the Commodity.");
+                $('#p_Common_NameErrorMsg').show();
+                $('#p_Common_NameErrorMsg').delay(2000).fadeOut('slow');
+                $('#p_Common_Name').focus();
             }
             else if(p_Description == "")
             {
                 $('#p_DescriptionErrorMsg').html("Description Of The Commodity.");
                 $('#p_DescriptionErrorMsg').show();
                 $('#p_DescriptionErrorMsg').delay(2000).fadeOut('slow');
+                $('#p_Description').focus();
             }
             else if(p_Qty_Gross == "")
             {
                 $('#p_Qty_GrossErrorMsg').html("Enter Quantity (Gross Weight).");
                 $('#p_Qty_GrossErrorMsg').show();
                 $('#p_Qty_GrossErrorMsg').delay(2000).fadeOut('slow');
+                $('#p_Qty_Gross').focus();
             }
             else if(p_Unit_Gross < 1)
             {
                 $('#p_Unit_GrossErrorMsg').html("Select One Unit.");
                 $('#p_Unit_GrossErrorMsg').show();
                 $('#p_Unit_GrossErrorMsg').delay(2000).fadeOut('slow');
+                $('#p_Unit_Gross').focus();
             }
             else if(p_Qty_Net == "")
             {
                 $('#p_Qty_NetErrorMsg').html("Enter Quantity (Net Weight).");
                 $('#p_Qty_NetErrorMsg').show();
                 $('#p_Qty_NetErrorMsg').delay(2000).fadeOut('slow');
+                $('#p_Qty_Net').focus();
             }
             else if(p_Unit_Net < 1)
             {
                 $('#p_Unit_NetErrorMsg').html("Select One Unit.");
                 $('#p_Unit_NetErrorMsg').show();
                 $('#p_Unit_NetErrorMsg').delay(2000).fadeOut('slow');
+                $('#p_Unit_Net').focus();
             }
             else if(p_Country_Code == "")
             {
-                $('#p_Country_CodeErrorMsg').html("Select Country.");
+                $('#p_Country_CodeErrorMsg').html("Select Importing Country.");
                 $('#p_Country_CodeErrorMsg').show();
                 $('#p_Country_CodeErrorMsg').delay(2000).fadeOut('slow');
+                $('#p_Country_Code').focus();
             }
             else if(p_Entry_Point == "")
             {
                 $('#p_Entry_PointErrorMsg').html("Select Entry Point.");
                 $('#p_Entry_PointErrorMsg').show();
                 $('#p_Entry_PointErrorMsg').delay(2000).fadeOut('slow');
+                $('#p_Entry_Point').focus();
             }
             else if(p_Package_number == "")
             {
                 $('#p_Package_numberErrorMsg').html("Enter Number Of Packages.");
                 $('#p_Package_numberErrorMsg').show();
                 $('#p_Package_numberErrorMsg').delay(2000).fadeOut('slow');
+                $('#p_Package_number').focus();
             }
             else if(p_Package_description == "")
             {
                 $('#p_Package_descriptionErrorMsg').html("Enter Description.");
                 $('#p_Package_descriptionErrorMsg').show();
                 $('#p_Package_descriptionErrorMsg').delay(2000).fadeOut('slow');
+                $('#p_Package_description').focus();
             }
             else if(p_purpose < 1)
             {
@@ -974,12 +1021,20 @@ function isNumberKey(evt)
             var c_Exporter_Name = $('#c_Exporter_Name').val();
             var c_Email = $('#c_Email').val();
             var c_Contact_No = $('#c_Contact_No').val();
+            var c_Contact_No_length = $('#c_Contact_No').val().length;
             var c_Dzongkhag_Code = $('#c_Dzongkhag_Code').val();
             var c_Location_Code = $('#c_Location_Code').val();
-
             var c_current_address = $('#c_current_address').val();
             var date_for_Inspection = $('#date_for_Inspection').val();
             var c_requested_place = $('#c_requested_place').val();
+            var gross_weight_gms = $('#gross_weight_gms').val();
+            var gross_weight_pieces = $('#gross_weight_pieces').val();
+            var net_weight_gms = $('#net_weight_gms').val();
+            var net_weight_pieces = $('#net_weight_pieces').val();
+            var c_package = $('#c_package').val();
+            var c_country = $('#c_country').val();
+            var c_Name_Address = $('#c_Name_Address').val();
+            var c_conveyanceMeans = $('#c_conveyanceMeans').val();
 
             var retail_gross_weight_gms = $('#retail_gross_weight_gms').val();
             var retail_gross_weight_pieces = $('#retail_gross_weight_pieces').val();
@@ -997,156 +1052,252 @@ function isNumberKey(evt)
                 $('#Applicant_TypeErrorMsg').html("Select One Applicant Type.");
                 $('#Applicant_TypeErrorMsg').show();
                 $('#Applicant_TypeErrorMsg').delay(2000).fadeOut('slow');
+                $("input[name=Applicant_Type]").focus();
             }
             else if(ApplicantTypeVal == "directRadio" && c_cid == "")
             {
                 $('#c_cidErrorMsg').html("Enter CID.");
                 $('#c_cidErrorMsg').show();
                 $('#c_cidErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else if(ApplicantTypeVal == "directRadio" && c_Contact_No == "")
-            {
-                $('#c_Contact_NoErrorMsg').html("Enter Contact No.");
-                $('#c_Contact_NoErrorMsg').show();
-                $('#c_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
+                $('#c_cid').focus();
             }
             else if(ApplicantTypeVal == "directRadio" && c_Email == "")
             {
                 $('#c_EmailErrorMsg').html("Enter Email.");
                 $('#c_EmailErrorMsg').show();
                 $('#c_EmailErrorMsg').delay(2000).fadeOut('slow');
+                $('#c_Email').focus();
+            }
+            else if(ApplicantTypeVal == "directRadio" && c_Contact_No == "")
+            {
+                $('#c_Contact_NoErrorMsg').html("Enter Contact No.");
+                $('#c_Contact_NoErrorMsg').show();
+                $('#c_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
+                $('#c_Contact_No').focus();
+            }
+            else if(ApplicantTypeVal == "directRadio" && c_Contact_No_length < 8)
+            {
+                $('#c_Contact_NoErrorMsg').html("Cannot Be Less Than Eight Digits.");
+                $('#c_Contact_NoErrorMsg').show();
+                $('#c_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
+                $('#c_Contact_No').focus();
             }
             else if(ApplicantTypeVal == "directRadio" && c_Dzongkhag_Code == "")
             {
                 $('#c_Dzongkhag_CodeErrorMsg').html("Select Dzongkhag.");
                 $('#c_Dzongkhag_CodeErrorMsg').show();
                 $('#c_Dzongkhag_CodeErrorMsg').delay(2000).fadeOut('slow');
+                $('#c_Dzongkhag_Code').focus();
             }
             else if(ApplicantTypeVal == "directRadio" && c_Location_Code == "")
             {
                 $('#c_Location_CodeErrorMsg').html("Select Location.");
                 $('#c_Location_CodeErrorMsg').show();
                 $('#c_Location_CodeErrorMsg').delay(2000).fadeOut('slow');
+                $('#c_Location_Code').focus();
             }
             else if(ApplicantTypeVal == "directRadio" && c_current_address == "")
             {
                 $('#c_current_addressErrorMsg').html("Enter Current Address.");
                 $('#c_current_addressErrorMsg').show();
                 $('#c_current_addressErrorMsg').delay(2000).fadeOut('slow');
+                $('#c_current_address').focus();
             }
             else if(ApplicantTypeVal == "directRadio" && date_for_Inspection == "")
             {
                 $('#date_for_InspectionErrorMsg').html("Select Date For Inspection");
                 $('#date_for_InspectionErrorMsg').show();
                 $('#date_for_InspectionErrorMsg').delay(2000).fadeOut('slow');
+                $('#date_for_Inspection').focus();
             }
             else if(ApplicantTypeVal == "directRadio" && c_requested_place == "")
             {
                 $('#c_requested_placeErrorMsg').html("Enter Place Of Inspection");
                 $('#c_requested_placeErrorMsg').show();
                 $('#c_requested_placeErrorMsg').delay(2000).fadeOut('slow');
+                $('#c_requested_place').focus();
+            }
+            else if(ApplicantTypeVal == "directRadio" && gross_weight_gms == "")
+            {
+                $('#direct_gross_weight_gmsErrorMsg').html("Enter Gross Weight(Gms)");
+                $('#direct_gross_weight_gmsErrorMsg').show();
+                $('#direct_gross_weight_gmsErrorMsg').delay(2000).fadeOut('slow');
+                $('#gross_weight_gms').focus();
+            }
+            else if(ApplicantTypeVal == "directRadio" && gross_weight_pieces == "")
+            {
+                $('#direct_gross_weight_piecesErrorMsg').html("Enter Gross Weight(Pieces)");
+                $('#direct_gross_weight_piecesErrorMsg').show();
+                $('#direct_gross_weight_piecesErrorMsg').delay(2000).fadeOut('slow');
+                $('#gross_weight_gms').focus();
+            }
+            else if(ApplicantTypeVal == "directRadio" && net_weight_gms == "")
+            {
+                $('#direct_net_weight_gmsErrorMsg').html("Enter Net Weight(Gms)");
+                $('#direct_net_weight_gmsErrorMsg').show();
+                $('#direct_net_weight_gmsErrorMsg').delay(2000).fadeOut('slow');
+                $('#net_weight_gms').focus();
+            }
+            else if(ApplicantTypeVal == "directRadio" && net_weight_pieces == "")
+            {
+                $('#direct_net_weight_piecesErrorMsg').html("Enter Net Weight(Pieces)");
+                $('#direct_net_weight_piecesErrorMsg').show();
+                $('#direct_net_weight_piecesErrorMsg').delay(2000).fadeOut('slow');
+                $('#net_weight_pieces').focus();
+            }
+            else if(ApplicantTypeVal == "directRadio" && c_package == "")
+            {
+                $('#c_packageErrorMsg').html("Enter No Of Packages");
+                $('#c_packageErrorMsg').show();
+                $('#c_packageErrorMsg').delay(2000).fadeOut('slow');
+                $('#c_package').focus();
+            }
+            else if(ApplicantTypeVal == "directRadio" && c_country == "")
+            {
+                $('#c_countryErrorMsg').html("Select Importing Country");
+                $('#c_countryErrorMsg').show();
+                $('#c_countryErrorMsg').delay(2000).fadeOut('slow');
+                $('#c_country').focus();
+            }
+            else if(ApplicantTypeVal == "directRadio" && c_Name_Address == "")
+            {
+                $('#c_Name_AddressErrorMsg').html("Enter Name & Address of Consignee");
+                $('#c_Name_AddressErrorMsg').show();
+                $('#c_Name_AddressErrorMsg').delay(2000).fadeOut('slow');
+                $('#c_Name_Address').focus();
+            }
+            else if(ApplicantTypeVal == "directRadio" && c_conveyanceMeans == "")
+            {
+                $('#c_conveyanceMeansErrorMsg').html("Select Mode Of Conveyance");
+                $('#c_conveyanceMeansErrorMsg').show();
+                $('#c_conveyanceMeansErrorMsg').delay(2000).fadeOut('slow');
+                $('#c_conveyanceMeans').focus();
             }
             else if(ApplicantTypeVal == "retailRadio" && c_cid == "")
             {
                 $('#c_cidErrorMsg').html("Enter CID.");
                 $('#c_cidErrorMsg').show();
                 $('#c_cidErrorMsg').delay(2000).fadeOut('slow');
+                $('#c_cid').focus();
             }
             else if(ApplicantTypeVal == "retailRadio" && c_Email == "")
             {
                 $('#c_EmailErrorMsg').html("Enter Email.");
                 $('#c_EmailErrorMsg').show();
                 $('#c_EmailErrorMsg').delay(2000).fadeOut('slow');
+                $('#c_Email').focus();
             }
             else if(ApplicantTypeVal == "retailRadio" && c_Contact_No == "")
             {
                 $('#c_Contact_NoErrorMsg').html("Enter Contact No.");
                 $('#c_Contact_NoErrorMsg').show();
                 $('#c_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
+                $('#c_Contact_No').focus();
+            }
+            else if(ApplicantTypeVal == "retailRadio" && c_Contact_No_length < 8)
+            {
+                $('#c_Contact_NoErrorMsg').html("Cannot Be Less Than 8 Digits");
+                $('#c_Contact_NoErrorMsg').show();
+                $('#c_Contact_NoErrorMsg').delay(2000).fadeOut('slow');
+                $('#c_Contact_No').focus();
             }
             else if(ApplicantTypeVal == "retailRadio" && c_Dzongkhag_Code == "")
             {
                 $('#c_Dzongkhag_CodeErrorMsg').html("Select Dzongkhag.");
                 $('#c_Dzongkhag_CodeErrorMsg').show();
                 $('#c_Dzongkhag_CodeErrorMsg').delay(2000).fadeOut('slow');
+                $('#c_Dzongkhag_Code').focus();
             }
             else if(ApplicantTypeVal == "retailRadio" && c_Location_Code == "")
             {
                 $('#c_Location_CodeErrorMsg').html("Select Location.");
                 $('#c_Location_CodeErrorMsg').show();
                 $('#c_Location_CodeErrorMsg').delay(2000).fadeOut('slow');
+                $('#c_Location_Code').focus();
             }
             else if(ApplicantTypeVal == "retailRadio" && c_current_address == "")
             {
                 $('#c_current_addressErrorMsg').html("Enter Current Address.");
                 $('#c_current_addressErrorMsg').show();
                 $('#c_current_addressErrorMsg').delay(2000).fadeOut('slow');
+                $('#c_current_address').focus();
             }
             else if(ApplicantTypeVal == "retailRadio" && date_for_Inspection == "")
             {
                 $('#date_for_InspectionErrorMsg').html("Select Date For Inspection");
                 $('#date_for_InspectionErrorMsg').show();
                 $('#date_for_InspectionErrorMsg').delay(2000).fadeOut('slow');
+                $('#date_for_Inspection').focus();
             }
             else if(ApplicantTypeVal == "retailRadio" && c_requested_place == "")
             {
                 $('#c_requested_placeErrorMsg').html("Enter Place Of Inspection");
                 $('#c_requested_placeErrorMsg').show();
                 $('#c_requested_placeErrorMsg').delay(2000).fadeOut('slow');
+                $('#c_requested_place').focus();
             }
             else if(ApplicantTypeVal == "retailRadio" && retail_gross_weight_gms == "")
             {
                 $('#retail_gross_weight_gmsErrorMsg').html("Enter Gross Weight Gm(s)");
                 $('#retail_gross_weight_gmsErrorMsg').show();
                 $('#retail_gross_weight_gmsErrorMsg').delay(2000).fadeOut('slow');
+                $('#retail_gross_weight_gms').focus();
             }
             else if(ApplicantTypeVal == "retailRadio" && retail_gross_weight_pieces == "")
             {
                 $('#retail_gross_weight_piecesErrorMsg').html("Enter Gross Weight Pieces");
                 $('#retail_gross_weight_piecesErrorMsg').show();
                 $('#retail_gross_weight_piecesErrorMsg').delay(2000).fadeOut('slow');
+                $('#retail_gross_weight_pieces').focus();
             }
             else if(ApplicantTypeVal == "retailRadio" && retail_net_weight_gms == "")
             {
                 $('#retail_net_weight_gmsErrorMsg').html("Enter Net Weight Gm(s)");
                 $('#retail_net_weight_gmsErrorMsg').show();
                 $('#retail_net_weight_gmsErrorMsg').delay(2000).fadeOut('slow');
+                $('#retail_net_weight_gms').focus();
             }
             else if(ApplicantTypeVal == "retailRadio" && retail_net_weight_pieces == "")
             {
                 $('#retail_net_weight_piecesErrorMsg').html("Enter Net Weight Pieces");
                 $('#retail_net_weight_piecesErrorMsg').show();
                 $('#retail_net_weight_piecesErrorMsg').delay(2000).fadeOut('slow');
+                $('#retail_net_weight_pieces').focus();
             }
             else if(ApplicantTypeVal == "retailRadio" && c_retail_package == "")
             {
                 $('#c_retail_packageErrorMsg').html("Enter Total No Of Packages");
                 $('#c_retail_packageErrorMsg').show();
                 $('#c_retail_packageErrorMsg').delay(2000).fadeOut('slow');
+                $('#c_retail_package').focus();
             }
             else if(ApplicantTypeVal == "retailRadio" && c_outlet_name == "")
             {
                 $('#c_outlet_nameErrorMsg').html("Enter Name Of The Outlet");
                 $('#c_outlet_nameErrorMsg').show();
                 $('#c_outlet_nameErrorMsg').delay(2000).fadeOut('slow');
+                $('#c_outlet_name').focus();
             }
             else if(ApplicantTypeVal == "retailRadio" && c_phoneNumber == "")
             {
                 $('#c_phoneNumberErrorMsg').html("Enter Contact No");
                 $('#c_phoneNumberErrorMsg').show();
                 $('#c_phoneNumberErrorMsg').delay(2000).fadeOut('slow');
+                $('#c_phoneNumber').focus();
             }
             else if(ApplicantTypeVal == "retailRadio" && c_phoneNumber_length < 8)
             {
                 $('#c_phoneNumberErrorMsg').html("Cannot Be Less Than 8 Digits");
                 $('#c_phoneNumberErrorMsg').show();
                 $('#c_phoneNumberErrorMsg').delay(2000).fadeOut('slow');
+                $('#c_phoneNumber').focus();
             }
             else if(ApplicantTypeVal == "retailRadio" && c_address == "")
             {
                 $('#c_addressErrorMsg').html("Enter Address");
                 $('#c_addressErrorMsg').show();
                 $('#c_addressErrorMsg').delay(2000).fadeOut('slow');
+                $('#c_address').focus();
             }
             else if(applicationNo == "")
             {
@@ -1444,7 +1595,7 @@ function validateemailId(emailId)
     if(no==null)
     {
         $('#emailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
-        $('#email').val("");
+        $('#p_Email').val("");
         $('#emailErrorMsg').show();
         $('#emailErrorMsg').delay(2000).fadeOut('slow');
     }else{

@@ -1454,10 +1454,9 @@ def update_payment_details(request):
     Amount = request.POST.get('Amount')
     Receipt_No = request.POST.get('Receipt_No')
     Receipt_Date = request.POST.get('Receipt_Date')
-    receipt_date = datetime.strptime(Receipt_Date, '%d-%m-%Y').date()
     application_details = t_payment_details.objects.filter(Application_No=Application_No)
     application_details.update(Payment_Type=Payment_Type, Instrument_No=Instrument_No, Amount=Amount,
-                               Receipt_No=Receipt_No, Receipt_Date=receipt_date,
+                               Receipt_No=Receipt_No, Receipt_Date=Receipt_Date,
                                Updated_By=request.session['email'], Updated_On=date.today())
     return redirect(payment_list)
 

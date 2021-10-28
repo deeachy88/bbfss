@@ -120,6 +120,7 @@ def apply_movement_permit(request):
 def save_details(request):
     appNo = request.POST.get('applicationNo')
     workflow_details = t_workflow_details.objects.filter(Application_No=appNo)
+    workflow_details.update(Application_Date=date.today())
     workflow_details.update(Action_Date=date.today())
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
@@ -137,8 +138,16 @@ def save_movement_permit(request):
     last_application_no = get_application_no(request, service_code)
     Applicant_Id = request.session['email']
     Permit_Type = request.POST.get('permitType')
-    License_No = request.POST.get('regNo')
-    Nursery_Name = request.POST.get('companyName')
+    reg_No = request.POST.get('regNo')
+    if reg_No is None:
+        License_No = 'NA'
+    else:
+        License_No = reg_No
+    companyName = request.POST.get('companyName')
+    if companyName is None:
+        Nursery_Name = 'NA'
+    else:
+        Nursery_Name = companyName
     CID = request.POST.get('cid')
     Applicant_Name = request.POST.get('Name')
     Contact_No = request.POST.get('contactNumber')
@@ -345,7 +354,9 @@ def save_details_movement(request):
     t_plant_movement_permit_t2.objects.create(Application_No=appNo, Commodity=commodity,
                                               Qty=qty, Unit=unit, Remarks=remarks)
     imports_plant = t_plant_movement_permit_t2.objects.filter(Application_No=appNo)
-    return render(request, 'movement_permit/movement_page.html', {'import': imports_plant})
+    movement_count = t_plant_movement_permit_t2.objects.filter(Application_No=appNo).count()
+    return render(request, 'movement_permit/movement_page.html', {'import': imports_plant,
+                                                                  'movement_count': movement_count})
 
 
 def forward_application(request):
@@ -449,10 +460,12 @@ def view_application_details(request):
         for application in workflow_details:
             Field_Office = application.Field_Office_Id
         user_role_list = t_user_master.objects.filter(Role_Id='5', Field_Office_Id_id=Field_Office)
+        decision = t_plant_seed_certification_t3.objects.filter(Application_No=application_id)
         return render(request, 'seed_certification/inspector_details.html',
                       {'application_details': application_details, 'dzongkhag': dzongkhag, 'gewog': gewog,
                        'village': village, 'location': location, 'details_list': details_list,
-                       'inspector_list': user_role_list, 'file': file, 'crop': crop, 'variety': variety, 'unit': unit})
+                       'inspector_list': user_role_list, 'file': file, 'crop': crop, 'variety': variety, 'unit': unit,
+                       'decision_details': decision})
     elif service_code == 'CMS':
         workflow_details = t_workflow_details.objects.filter(Application_No=application_id)
         for application in workflow_details:
@@ -789,9 +802,8 @@ def approve_application(request):
     Inspection_Leader = request.POST.get('Inspection_Leader')
     Inspection_Team = request.POST.get('Inspection_Team')
     remarks = request.POST.get('remarks')
-    Movement_Date = request.POST.get('dateOfInspection')
+    dateOfInspection = request.POST.get('dateOfInspection')
     validity_period = request.POST.get('validity_period')
-    dateOfInspection = datetime.strptime(Movement_Date, '%d-%m-%Y').date()
     permit_no = get_permit_no(request)
     details = t_plant_movement_permit_t1.objects.filter(Application_No=application_id)
     if remarks is not None:
@@ -812,7 +824,7 @@ def approve_application(request):
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='A')
     update_payment_details(application_id, permit_no, 'MPP', validity_date)
-    for email_id in application_details:
+    for email_id in details:
         emailId = email_id.Email
         send_mpp_approve_email(permit_no, emailId, validity_date)
     return redirect(inspector_application)
@@ -881,7 +893,7 @@ def get_permit_no(request):
         year = timezone.now().year
         newAppNo = Field_Code + "/" + "MPP" + "/" + str(year) + "/" + "0001"
     else:
-        substring = str(lastAppNo)[9:13]
+        substring = str(lastAppNo)[13:17]
         substring = int(substring) + 1
         AppNo = str(substring).zfill(4)
         year = timezone.now().year
@@ -1047,11 +1059,20 @@ def load_plant_import_details(request):
     import_details = t_plant_import_permit_t2.objects.filter(Application_No=application_no)
 
     if import_type == 'P':
+        count = t_plant_import_permit_t2.objects.filter(Application_No=application_no).count()
+        unit = t_unit_master.objects.all()
+        crop = t_plant_crop_master.objects.all()
+        variety = t_plant_crop_variety_master.objects.all()
         return render(request, 'import_permit/import_page_plant.html',
-                      {'import': import_details})
+                      {'import': import_details, 'count': count, 'unit': unit, 'crop': crop,
+                       'variety': variety})
     else:
+        count = t_plant_import_permit_t2.objects.filter(Application_No=application_no).count()
+        unit = t_unit_master.objects.all()
+        pesticide = t_plant_pesticide_master.objects.all()
         return render(request, 'import_permit/import_page_agro.html',
-                      {'import': import_details})
+                      {'import': import_details, 'count': count, 'unit': unit, 'pesticide': pesticide})
+
 
 def load_plant_import_attachment(request):
     application_no = request.GET.get('appNo')
@@ -1366,7 +1387,7 @@ def save_import_plant(request):
         variety = t_plant_crop_variety_master.objects.all()
         count = t_plant_import_permit_t2.objects.filter(Application_No=appNo).count()
         return render(request, 'import_permit/import_page_plant.html', {'import': imports_plant, 'crop': crop,
-                                                                        'variety': variety, 'count':count})
+                                                                        'variety': variety, 'count': count})
 
 
 def save_import_agro(request):
@@ -1386,7 +1407,7 @@ def save_import_agro(request):
         pesticide = t_plant_pesticide_master.objects.all()
         count = t_plant_import_permit_t2.objects.filter(Application_No=appNo).count()
         return render(request, 'import_permit/import_page_agro.html', {'import': imports_plant, 'pesticide': pesticide,
-                                                                       'count':count})
+                                                                       'agro_count': count})
 
 
 def fo_app_details(request):
@@ -1451,9 +1472,9 @@ def fo_app_details(request):
             inspection_team_details = t_food_business_registration_licensing_t6.objects.filter(
                 Application_No=Application_No, Meeting_Type='Feasibility Inspection')
             team_details = t_food_business_registration_licensing_t4.objects.filter(
-                Application_No=Application_No,Meeting_Type='Feasibility Inspection')
+                Application_No=Application_No, Meeting_Type='Feasibility Inspection')
             inspection_details = t_food_business_registration_licensing_t5.objects.filter(
-                Application_No=Application_No,Inspection_Type='Feasibility Inspection')
+                Application_No=Application_No, Inspection_Type='Feasibility Inspection')
             factory_inspection_team_details = t_food_business_registration_licensing_t6.objects.filter(
                 Application_No=Application_No, Meeting_Type='Factory Inspection')
             factory_team_details = t_food_business_registration_licensing_t4.objects.filter(
@@ -1540,7 +1561,7 @@ def fo_app_details(request):
                 aqua_details = t_certification_organic_t8.objects.filter(Application_No=Application_No)
                 api_details = t_certification_organic_t9.objects.filter(Application_No=Application_No)
                 file = t_file_attachment.objects.filter(Application_No=Application_No)
-                team_details = t_user_master.objects.filter(Login_Type='I')
+                team_details = t_user_master.objects.filter(Role_Id__in=['4', '5'])
                 return render(request, 'organic_certification/fo_details.html',
                               {'application_details': application_details, 'farmer_group': details, 'file': file,
                                'crop_production': crop_production, 'audit_team': audit_team,
@@ -1559,7 +1580,7 @@ def fo_app_details(request):
             file = t_file_attachment.objects.filter(Application_No=Application_No)
             audit_findings = t_certification_gap_t7.objects.filter(Application_No=Application_No)
             audit_observation = t_certification_gap_t8.objects.filter(Application_No=Application_No)
-            team_leader = t_user_master.objects.filter(Login_Type='I')
+            team_leader = t_user_master.objects.filter(Role_Id__in=['4', '5'])
             dzongkhag = t_dzongkhag_master.objects.all()
             gewog = t_gewog_master.objects.all()
             village = t_village_master.objects.all()
@@ -1582,7 +1603,7 @@ def fo_app_details(request):
                                                               Attachment_Type='Audit Plan')
                 farm_inputs = t_certification_gap_t7.objects.filter(Application_No=Application_No)
                 audit_observation = t_certification_gap_t8.objects.filter(Application_No=Application_No)
-                team_leader = t_user_master.objects.filter(Login_Type='I')
+                t_user_master.objects.filter(Role_Id__in=['4', '5'])
                 dzongkhag = t_dzongkhag_master.objects.all()
                 gewog = t_gewog_master.objects.all()
                 village = t_village_master.objects.all()
@@ -1603,7 +1624,7 @@ def fo_app_details(request):
                 file = t_file_attachment.objects.filter(Application_No=Application_No)
                 audit_findings = t_certification_gap_t7.objects.filter(Application_No=Application_No)
                 audit_observation = t_certification_gap_t8.objects.filter(Application_No=Application_No)
-                team_leader = t_user_master.objects.filter(Login_Type='I')
+                team_leader = t_user_master.objects.filter(Role_Id__in=['4', '5'])
                 dzongkhag = t_dzongkhag_master.objects.all()
                 gewog = t_gewog_master.objects.all()
                 village = t_village_master.objects.all()
@@ -1623,7 +1644,7 @@ def fo_app_details(request):
             file = t_file_attachment.objects.filter(Application_No=Application_No)
             audit_findings = t_certification_food_t4.objects.filter(Application_No=Application_No)
             audit_observation = t_certification_food_t4.objects.filter(Application_No=Application_No)
-            team_details = t_user_master.objects.filter(Login_Type='I').filter(Role_Id_id='4').filter(Role_Id_id='5')
+            team_details = t_user_master.objects.filter(Role_Id__in=['4', '5'])
             dzongkhag = t_dzongkhag_master.objects.all()
             gewog = t_gewog_master.objects.all()
             village = t_village_master.objects.all()
@@ -1644,7 +1665,7 @@ def fo_app_details(request):
                 file = t_file_attachment.objects.filter(Application_No=Application_No)
                 audit_findings = t_certification_food_t4.objects.filter(Application_No=Application_No)
                 audit_observation = t_certification_food_t5.objects.filter(Application_No=Application_No)
-                team_details = t_user_master.objects.filter(Login_Type='I')
+                team_details = t_user_master.objects.filter(Role_Id__in=['4', '5'])
                 dzongkhag = t_dzongkhag_master.objects.all()
                 gewog = t_gewog_master.objects.all()
                 village = t_village_master.objects.all()
@@ -1656,7 +1677,7 @@ def fo_app_details(request):
             else:
                 application_details = t_certification_food_t1.objects.filter(Application_No=Application_No)
                 file = t_file_attachment.objects.filter(Application_No=Application_No)
-                team_details = t_user_master.objects.filter(Login_Type='I')
+                team_details = t_user_master.objects.filter(Role_Id__in=['4', '5'])
                 dzongkhag = t_dzongkhag_master.objects.all()
                 gewog = t_gewog_master.objects.all()
                 village = t_village_master.objects.all()
@@ -1873,7 +1894,7 @@ def view_oic_details(request):
         user_role_list = t_user_master.objects.filter(Role_Id='5', Field_Office_Id_id=Field_Office)
         return render(request, 'Movement_Permit_Livestock/oic_movement_details.html',
                       {'application_details': application_details, 'file': file, 'dzongkhag': dzongkhag,
-                       'village': village, 'location': location, 'mortem': details,
+                       'village': village, 'location': location, 'details': details,
                        'inspector_list': user_role_list})
     elif service_code == 'LEC':
         dzongkhag = t_dzongkhag_master.objects.all()
@@ -2614,6 +2635,7 @@ def save_details_import(request):
     Application_No = request.POST.get('applicationNo')
     print(Application_No)
     details = t_workflow_details.objects.filter(Application_No=Application_No)
+    details.update(Application_Date=date.today())
     details.update(Action_Date=date.today())
 
     crop = t_plant_crop_master.objects.all()
@@ -3006,7 +3028,7 @@ def update_details_plant(request):
     record_id = request.POST.get('record_id')
     approved_quantity = request.POST.get('qty_approved')
     qty_balance = request.POST.get('qty_balance')
-    remarks = request.POST.get('import_remarks')
+    remarks = request.POST.get('import_Remarks')
 
     import_det = t_plant_import_permit_inspection_t2.objects.filter(pk=record_id)
     if remarks is not None:
@@ -3029,6 +3051,15 @@ def update_details_plant(request):
                 for la in la_details:
                     work_details = t_workflow_details.objects.filter(Application_No=la.Application_No)
                     work_details.update(Application_Status='C')
+        else:
+            import_details = t_plant_import_permit_inspection_t1.objects.filter(
+                Application_No=application_no)
+            for import_det in import_details:
+                la_details = t_plant_import_permit_t1.objects.filter(
+                    Import_Permit_No=import_det.Import_Permit_No)
+                for la in la_details:
+                    work_details = t_workflow_details.objects.filter(Application_No=la.Application_No)
+                    work_details.update(Application_Status='P')
     application_details = t_plant_import_permit_inspection_t2.objects.filter(Application_No=application_no)
     crop = t_plant_crop_master.objects.all()
     variety = t_plant_crop_variety_master.objects.all()
@@ -3041,7 +3072,7 @@ def update_details_agro(request):
     record_id = request.POST.get('agro_record_id')
     approved_quantity = request.POST.get('agro_qty_approved')
     agro_qty_balance = request.POST.get('agro_qty_balance')
-    remarks = request.POST.get('agro_import_remarks')
+    remarks = request.POST.get('agro_import_Remarks')
 
     import_det = t_plant_import_permit_inspection_t2.objects.filter(pk=record_id)
     if remarks is not None:
@@ -3064,6 +3095,15 @@ def update_details_agro(request):
                 for la in la_details:
                     work_details = t_workflow_details.objects.filter(Application_No=la.Application_No)
                     work_details.update(Application_Status='C')
+        else:
+            import_details = t_plant_import_permit_inspection_t1.objects.filter(
+                Application_No=application_no)
+            for import_det in import_details:
+                la_details = t_plant_import_permit_t1.objects.filter(
+                    Import_Permit_No=import_det.Import_Permit_No)
+                for la in la_details:
+                    work_details = t_workflow_details.objects.filter(Application_No=la.Application_No)
+                    work_details.update(Application_Status='P')
     application_details = t_plant_import_permit_inspection_t2.objects.filter(Application_No=application_no)
     pesticide = t_plant_pesticide_master.objects.all()
     return render(request, 'import_permit/agro_details.html', {'import': application_details,
@@ -3306,6 +3346,7 @@ def submit_export(request):
     Unit_Net = request.POST.get('p_Unit_Net')
     Importing_Country = request.POST.get('p_Country_Code')
     Entry_Point = request.POST.get('p_Entry_Point')
+    Exit_Point = request.POST.get('p_Exit_Point')
     Packages_No = request.POST.get('p_Package_number')
     Packages_Description = request.POST.get('p_Package_description')
     Distinguishing_Marks = request.POST.get('p_Distinguish_Marks')
@@ -3313,7 +3354,7 @@ def submit_export(request):
     Mode_Of_Conveyance = request.POST.get('p_conveyanceMeans')
     Name_Of_Conveyance = request.POST.get('p_Conveyance_Name')
     Desired_Inspection_Date = request.POST.get('date_for_Inspection')
-    Desired_Inspection_Place = request.POST.get('requested_place')
+    Desired_Inspection_Place = request.POST.get('Desired_Inspection_Place')
     Additional_Declaring = request.POST.get('p_additional_declaration')
     Pre_Application_Treatment = request.POST.get('treatmentType')
     Chemical_Name_Pre = request.POST.get('p_chemcial_name')
@@ -3377,6 +3418,7 @@ def submit_export(request):
             Pieces_Net=None,
             Importing_Country=Importing_Country,
             Entry_Point=Entry_Point,
+            Exit_Point=Exit_Point,
             Packages_No=Packages_No,
             Packages_Description=Packages_Description,
             Distinguishing_Marks=Distinguishing_Marks,
@@ -3446,9 +3488,15 @@ def submit_export(request):
             Applicant_Id=Applicant_Id,
             Common_Name=common_name
         )
-        field_office_id = Entry_Point
+        field_id = t_location_field_office_mapping.objects.filter(pk=Locatipn_Code)
+        for field_office in field_id:
+            field_office_id = field_office.Field_Office_Id_id
+        t_workflow_details.objects.create(Application_No=lastExportApplication, Applicant_Id=request.session['email'],
+                                          Assigned_To=None, Field_Office_Id=field_office_id, Section='Plant',
+                                          Assigned_Role_Id='4', Action_Date=None, Application_Status='P',
+                                          Service_Code=serviceCode)
     else:
-        if Applicant_Type == "":
+        if Applicant_Type == "directRadio":
             t_plant_export_certificate_plant_plant_products_t1.objects.create(
                 Application_No=lastExportApplication,
                 Applicant_Type=Applicant_Type,
@@ -3480,8 +3528,8 @@ def submit_export(request):
                 Mode_Of_Conveyance=c_conveyanceMeans,
                 Name_Of_Conveyance=None,
                 Departure_Date=None,
-                Desired_Inspection_Date=None,
-                Desired_Inspection_Place=None,
+                Desired_Inspection_Date=Desired_Inspection_Date,
+                Desired_Inspection_Place=Desired_Inspection_Place,
                 Additional_Declaring=None,
                 Outlet_name=None,
                 Outlet_Contact_No=None,
@@ -3574,8 +3622,8 @@ def submit_export(request):
                 Mode_Of_Conveyance=None,
                 Name_Of_Conveyance=None,
                 Departure_Date=None,
-                Desired_Inspection_Date=None,
-                Desired_Inspection_Place=None,
+                Desired_Inspection_Date=Desired_Inspection_Date,
+                Desired_Inspection_Place=Desired_Inspection_Place,
                 Additional_Declaring=None,
                 Outlet_name=c_outlet_name,
                 Outlet_Contact_No=c_phoneNumber,
@@ -3639,10 +3687,10 @@ def submit_export(request):
         field_id = t_location_field_office_mapping.objects.filter(pk=C_Locatipn_Code)
         for field_office in field_id:
             field_office_id = field_office.Field_Office_Id_id
-    t_workflow_details.objects.create(Application_No=lastExportApplication, Applicant_Id=request.session['email'],
-                                      Assigned_To=None, Field_Office_Id=field_office_id, Section='Plant',
-                                      Assigned_Role_Id='4', Action_Date=None, Application_Status='P',
-                                      Service_Code=serviceCode)
+        t_workflow_details.objects.create(Application_No=lastExportApplication, Applicant_Id=request.session['email'],
+                                          Assigned_To=None, Field_Office_Id=field_office_id, Section='Plant',
+                                          Assigned_Role_Id='4', Action_Date=None, Application_Status='P',
+                                          Service_Code=serviceCode)
     data['applicationNo'] = lastExportApplication
     return JsonResponse(data)
 
@@ -3845,7 +3893,8 @@ def update_export(request):
     c_phoneNumber = request.POST.get('c_phoneNumber')
     c_address = request.POST.get('c_address')
     if Certificate_Type == 'P':
-        export_details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(Application_No=lastExportApplication)
+        export_details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(
+            Application_No=lastExportApplication)
         export_details.update(
             Applicant_Type=None,
             Certificate_Type=Certificate_Type,
@@ -4226,11 +4275,11 @@ def export_complete(request):
                 if treatment == "Fumigation":
                     application_details.update(Treatment_Chemical_Fumigation=treatment)
                 elif treatment == "Spray":
-                    application_details.update(Treatment_Chemical_Fumigation=treatment)
+                    application_details.update(Treatment_Chemical_Spray=treatment)
                 elif treatment == "Seed treatment":
-                    application_details.update(Treatment_Chemical_Fumigation=treatment)
+                    application_details.update(Treatment_Chemical_Seed=treatment)
                 elif treatment == "others":
-                    application_details.update(Treatment_Chemical_Fumigation=treatment)
+                    application_details.update(Treatment_Chemical_Other=treatment)
                     application_details.update(Treatment_Chemical_Other_Specific=others_treatment)
                 application_details.update(Treatment_Chemical_Concentration=Concentration)
                 application_details.update(Treatment_Chemical_Duration=Duration_Temperature)
@@ -4353,6 +4402,7 @@ def cordyceps_file_details(request):
 def save_export_permit(request):
     appNo = request.POST.get('applicationNo')
     workflow_details = t_workflow_details.objects.filter(Application_No=appNo)
+    workflow_details.update(Application_Date=date.today())
     workflow_details.update(Action_Date=date.today())
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
@@ -4386,8 +4436,8 @@ def save_nursery_reg(request):
     service_code = "RNS"
     nursery_app_no = nursery_reg_app_no(service_code)
     Nursery_Category = request.POST.get('Nursery_Category')
-    License_No = request.POST.get('Nursery_Category')
-    Company_Name = request.POST.get('License_No')
+    License_No = request.POST.get('License_No')
+    Company_Name = request.POST.get('Company_Name')
     Company_Address = request.POST.get('Company_Address')
     CID = request.POST.get('CID')
     Owner_Name = request.POST.get('Owner_Name')
@@ -4600,12 +4650,15 @@ def add_reg_details(request):
         Remarks=remarks)
 
     seed_details = t_plant_clearence_nursery_seed_grower_t2.objects.filter(Application_No=Application_No)
-    return render(request, 'nursery_registration/seed_details_page.html', {'seed_details': seed_details})
+    seed_details_count = t_plant_clearence_nursery_seed_grower_t2.objects.filter(Application_No=Application_No).count()
+    return render(request, 'nursery_registration/seed_details_page.html', {'seed_details': seed_details,
+                                                                           'seed_details_count': seed_details_count})
 
 
 def submit_nursery_details(request):
     appNo = request.POST.get('applicationNo')
     workflow_details = t_workflow_details.objects.filter(Application_No=appNo)
+    workflow_details.update(Application_Date=date.today())
     workflow_details.update(Action_Date=date.today())
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
@@ -4661,7 +4714,7 @@ def approve_nursery_application(request):
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='A')
     # update_payment_details(application_id, clearance_ref_no, 'RNS', None)
-    for email_id in application_details:
+    for email_id in details:
         emailId = email_id.Email
         send_nursery_approve_email(clearance_ref_no, emailId)
     return redirect(inspector_application)
@@ -4675,6 +4728,17 @@ def send_nursery_approve_email(clearance_ref_no, Email):
               "Registration No is:" + clearance_ref_no + "."
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
+    send_mail(subject, message, email_from, recipient_list)
+
+
+def send_nursery_reject_email(remarks, email):
+    subject = 'APPLICATION REJECTED'
+    message = "Dear Sir," \
+              "" \
+              "Your Application for Nursery/Seed Growers Registration Has Been Rejected." \
+              "Because :" + remarks + "."
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = [email]
     send_mail(subject, message, email_from, recipient_list)
 
 
@@ -4717,6 +4781,9 @@ def reject_nursery_application(request):
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='R')
     application_details.update(Assigned_Role_Id=None)
+    for email_id in details:
+        emailId = email_id.Email
+        send_nursery_reject_email(Remarks, emailId)
     return redirect(inspector_application)
 
 
@@ -4819,6 +4886,7 @@ def load_nursery_details(request):
     seed_details = t_plant_clearence_nursery_seed_grower_t2.objects.filter(Application_No=Application_No)
     return render(request, 'nursery_registration/seed_details_page.html', {'seed_details': seed_details})
 
+
 def load_nursery_attachment(request):
     Application_No = request.GET.get('appNo')
     file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
@@ -4899,8 +4967,8 @@ def save_seed_cert(request):
     serviceCode = "RSC"
     application_No = certifcate_app_no(serviceCode)
     Nursery_Category = request.POST.get('Nursery_Category')
-    License_No = request.POST.get('Nursery_Category')
-    Company_Name = request.POST.get('License_No')
+    License_No = request.POST.get('License_No')
+    Company_Name = request.POST.get('Company_Name')
     Company_Address = request.POST.get('Company_Address')
     CID = request.POST.get('CID')
     Owner_Name = request.POST.get('Owner_Name')
@@ -4932,7 +5000,7 @@ def save_seed_cert(request):
         Applicant_Id=Applicant_Id,
         Location_Code=location
     )
-    field_id = t_location_field_office_mapping.objects.filter(Dzongkhag_Code=dzongkhag)
+    field_id = t_location_field_office_mapping.objects.filter(pk=location)
     for field_office in field_id:
         field_office_id = field_office.Field_Office_Id_id
     t_workflow_details.objects.create(Application_No=application_No, Applicant_Id=request.session['email'],
@@ -5053,6 +5121,7 @@ def update_seed_certificate(request):
     data['applicationNo'] = application_No
     return JsonResponse(data)
 
+
 def get_seed_cerficate_no(request):
     global Field_Code
     Field_Office_Id = request.session['field_office_id']
@@ -5098,13 +5167,15 @@ def add_certificate_details(request):
         Remarks=None
     )
     certification_details = t_plant_seed_certification_t2.objects.filter(Application_No=Application_No)
+    seed_details_count = t_plant_seed_certification_t2.objects.filter(Application_No=Application_No).count()
     return render(request, 'seed_certification/seed_certification_details_page.html',
-                  {'certification_details': certification_details})
+                  {'certification_details': certification_details, 'seed_details_count': seed_details_count})
 
 
 def submit_certificate_details(request):
     applicationNo = request.POST.get('applicationNo')
     workflow_details = t_workflow_details.objects.filter(Application_No=applicationNo)
+    workflow_details.update(Application_Date=date.today())
     workflow_details.update(Action_Date=date.today())
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
@@ -5124,7 +5195,7 @@ def approve_certificate_application(request):
     Inspection_Team = request.GET.get('Inspection_Team')
     remarks = request.GET.get('inspector_remarks')
     dateOfInspection = request.GET.get('dateOfInspection')
-    validity_period = request.POST.get('validity')
+    validity_period = request.GET.get('validity')
     certificate_no = get_seed_cerficate_no(request)
     details = t_plant_seed_certification_t1.objects.filter(Application_No=application_id)
     if remarks is not None:
@@ -5144,7 +5215,7 @@ def approve_certificate_application(request):
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='A')
     update_payment_details(application_id, certificate_no, 'RSC', validity_date)
-    for email_id in application_details:
+    for email_id in details:
         emailId = email_id.Email
         send_seed_approve_email(certificate_no, emailId, validity_date)
     return redirect(inspector_application)
@@ -5164,19 +5235,13 @@ def send_seed_approve_email(clearance_ref_no, Email, validity_date):
 
 def reject_certificate_application(request):
     application_id = request.GET.get('application_id')
-    Inspection_Leader = request.GET.get('Inspection_Leader')
-    Inspection_Team = request.GET.get('Inspection_Team')
     remarks = request.GET.get('inspector_remarks')
-    dateOfInspection = request.GET.get('dateOfInspection')
 
     details = t_plant_seed_certification_t1.objects.filter(Application_No=application_id)
     if remarks is not None:
         details.update(Inspector_Remarks=remarks)
     else:
         details.update(Inspector_Remarks=None)
-    details.update(Inspection_Leader=Inspection_Leader)
-    details.update(Inspection_Team=Inspection_Team)
-    details.update(Inspection_Date=dateOfInspection)
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='R')
@@ -5199,9 +5264,6 @@ def send_seed_reject_email(Email):
 
 def resubmit_seed_application(request):
     application_id = request.GET.get('application_id')
-    Inspection_Leader = request.GET.get('Inspection_Leader')
-    Inspection_Team = request.GET.get('Inspection_Team')
-    Inspection_Date = request.GET.get('dateOfInspection')
     Remarks = request.GET.get('inspector_remarks')
 
     details = t_plant_seed_certification_t1.objects.filter(Application_No=application_id)
@@ -5209,10 +5271,6 @@ def resubmit_seed_application(request):
         details.update(Inspector_Remarks=Remarks)
     else:
         details.update(Inspector_Remarks=None)
-
-    details.update(Inspection_Date=Inspection_Date)
-    details.update(Inspection_Leader=Inspection_Leader)
-    details.update(Inspection_Team=Inspection_Team)
 
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
@@ -5230,11 +5288,13 @@ def resubmit_seed_application(request):
 def seed_certification_client_resubmit(request):
     application_id = request.GET.get('application_id')
     Remarks = request.GET.get('Resubmit_Remarks')
+    inspection_date = request.GET.get('inspection_date')
     details = t_plant_seed_certification_t1.objects.filter(Application_No=application_id)
     if Remarks is not None:
-        details.update(Inspector_Remarks=Remarks)
+        details.update(Client_Remarks=Remarks)
     else:
-        details.update(Inspector_Remarks=None)
+        details.update(Client_Remarks=None)
+    details.update(Resubmit_Date=inspection_date)
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='P')
@@ -5485,7 +5545,7 @@ def view_certificate_details(request):
             application_details = t_food_business_registration_licensing_t1.objects.filter(FB_License_No__isnull=False)
             payment_details = t_payment_details.objects.all()
             return render(request, 'food_certificates/safety_license_food_list.html',
-                          {'application_details': application_details, 'payment_details':payment_details})
+                          {'application_details': application_details, 'payment_details': payment_details})
 
         elif service_code == 'FHL':  # Food Handler License
             role = request.session['Role_Id']
@@ -5651,7 +5711,7 @@ def view_certificate_details(request):
                                                                                            FB_License_No__isnull=False)
             payment_details = t_payment_details.objects.all()
             return render(request, 'food_certificates/safety_license_food_list.html',
-                          {'application_details': application_details, 'payment_details':payment_details})
+                          {'application_details': application_details, 'payment_details': payment_details})
 
         elif service_code == 'FHL':  # Food Handler License
             application_details = t_food_licensing_food_handler_t1.objects.filter(Applicant_Id=login_id,
@@ -5751,15 +5811,15 @@ def get_certificate_details(request, t_livestock_import_permit_product_inspectio
     elif service_code == 'EPP':
         details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(Application_No=application_No,
                                                                                     Certificate_Type='P')
-        application_details = t_workflow_details.objects.filter(Application_No=application_No)
+        dzongkhag = t_dzongkhag_master.objects.all()
         if details.exists():
             return render(request, 'certificates/phytosanitary_certificate.html',
-                          {'certificate_details': details})
+                          {'certificate_details': details,'dzongkhag': dzongkhag})
         else:
             details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(Application_No=application_No,
                                                                                         Certificate_Type='C')
             return render(request, 'certificates/cordyceps_certificate.html',
-                          {'certificate_details': details})
+                          {'certificate_details': details, 'dzongkhag': dzongkhag})
     elif service_code == 'IPP':
         details = t_plant_import_permit_t1.objects.filter(Application_No=application_No, Import_Type='P')
         application_details = t_workflow_details.objects.filter(Application_No=application_No)
@@ -6132,14 +6192,24 @@ def resubmit_app_details(request):
         application_details = t_plant_clearence_nursery_seed_grower_t1.objects.filter(Application_No=appNo)
         seed_details = t_plant_clearence_nursery_seed_grower_t2.objects.filter(Application_No=appNo)
         file = t_file_attachment.objects.filter(Application_No=appNo)
+        dzongkhag = t_dzongkhag_master.objects.all()
+        gewog = t_gewog_master.objects.all()
+        village = t_village_master.objects.all()
+        location = t_location_field_office_mapping.objects.all()
         return render(request, 'nursery_registration/resubmit_application.html',
-                      {'application_details': application_details, 'seed_details': seed_details, 'file': file})
+                      {'application_details': application_details, 'seed_details': seed_details, 'file': file,
+                       'dzongkhag': dzongkhag, 'village': village, 'gewog': gewog, 'location': location})
     elif service_code == 'RSC':
         application_details = t_plant_seed_certification_t1.objects.filter(Application_No=appNo)
         seed_details = t_plant_seed_certification_t2.objects.filter(Application_No=appNo)
         file = t_file_attachment.objects.filter(Application_No=appNo)
+        dzongkhag = t_dzongkhag_master.objects.all()
+        gewog = t_gewog_master.objects.all()
+        village = t_village_master.objects.all()
+        location = t_location_field_office_mapping.objects.all()
         return render(request, 'seed_certification/resubmit_application.html',
-                      {'application_details': application_details, 'details_list': seed_details, 'file': file})
+                      {'application_details': application_details, 'details_list': seed_details, 'file': file,
+                       'dzongkhag': dzongkhag, 'village': village, 'gewog': gewog, 'location': location})
     elif service_code == 'FBR':
         work_details = t_workflow_details.objects.filter(Application_No=appNo)
         for app_status in work_details:
@@ -6461,29 +6531,33 @@ def delete_details(request):
         pesticide = t_plant_pesticide_master.objects.all()
         count = t_plant_import_permit_t2.objects.filter(Application_No=application_no).count()
         return render(request, 'import_permit/import_page_agro.html', {'import': import_details, 'pesticide': pesticide,
-                                                                       'count':count})
+                                                                       'count': count})
     elif identification_type == 'RNS':
         application_no = request.GET.get('Application_No')
         record_id = request.GET.get('Record_Id')
         details = t_plant_clearence_nursery_seed_grower_t2.objects.filter(Record_Id=record_id)
         details.delete()
         seed_details = t_plant_clearence_nursery_seed_grower_t2.objects.filter(Application_No=application_no)
-        return render(request, 'nursery_registration/seed_details_page.html', {'seed_details': seed_details})
+        count = t_plant_clearence_nursery_seed_grower_t2.objects.filter(Application_No=application_no).count()
+        return render(request, 'nursery_registration/seed_details_page.html', {'seed_details': seed_details,
+                                                                               'seed_details_count': count})
     elif identification_type == 'RSC':
         application_no = request.GET.get('Application_No')
         record_id = request.GET.get('Record_Id')
         details = t_plant_seed_certification_t2.objects.filter(Record_Id=record_id)
         details.delete()
         certification_details = t_plant_seed_certification_t2.objects.filter(Application_No=application_no)
+        count = t_plant_seed_certification_t2.objects.filter(Application_No=application_no).count()
         return render(request, 'seed_certification/seed_certification_details_page.html',
-                      {'certification_details': certification_details})
+                      {'certification_details': certification_details, 'seed_details_count': count})
     elif identification_type == 'MPP':
         application_no = request.GET.get('Application_No')
         record_id = request.GET.get('Record_Id')
         details = t_plant_movement_permit_t2.objects.filter(Record_Id=record_id)
         details.delete()
         imports_plant = t_plant_movement_permit_t2.objects.filter(Application_No=application_no)
-        return render(request, 'movement_permit/movement_page.html', {'import': imports_plant})
+        count = t_plant_movement_permit_t2.objects.filter(Application_No=application_no).count()
+        return render(request, 'movement_permit/movement_page.html', {'import': imports_plant, 'movement_count': count})
 
     # Livestock Section Delete
 
@@ -6493,21 +6567,27 @@ def delete_details(request):
         details = t_livestock_clearance_meat_shop_t2.objects.filter(Record_Id=record_id)
         details.delete()
         meat_details = t_livestock_clearance_meat_shop_t2.objects.filter(Application_No=application_no)
-        return render(request, 'meat_shop_registration/details.html', {'meat_details': meat_details})
+        count = t_livestock_clearance_meat_shop_t2.objects.filter(Application_No=application_no).count()
+        return render(request, 'meat_shop_registration/details.html', {'meat_details': meat_details,
+                                                                       'count': count})
     elif identification_type == 'ALEC':
         application_no = request.GET.get('Application_No')
         record_id = request.GET.get('Record_Id')
         details = t_livestock_export_certificate_t2.objects.filter(Record_Id=record_id)
         details.delete()
         export_details = t_livestock_export_certificate_t2.objects.filter(Application_No=application_no)
-        return render(request, 'Export_Certificate/animal_details.html', {'export_details': export_details})
+        count = t_livestock_export_certificate_t2.objects.filter(Application_No=application_no).count()
+        return render(request, 'Export_Certificate/animal_details.html', {'export_details': export_details,
+                                                                          'count': count})
     elif identification_type == 'APLEC':
         application_no = request.GET.get('Application_No')
         record_id = request.GET.get('Record_Id')
         details = t_livestock_export_certificate_t2.objects.filter(Record_Id=record_id)
         details.delete()
         export_details = t_livestock_export_certificate_t2.objects.filter(Application_No=application_no)
-        return render(request, 'Export_Certificate/animal_product_details.html', {'export_details': export_details})
+        count = t_livestock_export_certificate_t2.objects.filter(Application_No=application_no).count()
+        return render(request, 'Export_Certificate/animal_product_details.html', {'export_details': export_details,
+                                                                                  'count': count})
     elif identification_type == 'LPIP':
         application_no = request.GET.get('Application_No')
         record_id = request.GET.get('Record_Id')
@@ -6515,7 +6595,7 @@ def delete_details(request):
         details.delete()
         import_details = t_livestock_import_permit_product_t2.objects.filter(Application_No=application_no)
         count = t_livestock_import_permit_product_t2.objects.filter(Application_No=application_no).count()
-        return render(request, 'Livestock_Import/permit_details.html', {'import': import_details, 'count':count})
+        return render(request, 'Livestock_Import/permit_details.html', {'import': import_details, 'count': count})
     elif identification_type == 'AFIP':
         application_no = request.GET.get('Application_No')
         record_id = request.GET.get('Record_Id')
@@ -6523,28 +6603,33 @@ def delete_details(request):
         details.delete()
         import_details = t_livestock_import_permit_animal_t2.objects.filter(Application_No=application_no)
         count = t_livestock_import_permit_animal_t2.objects.filter(Application_No=application_no).count()
-        return render(request, 'Animal_Fish_Import/animal_details.html', {'import': import_details, 'count':count})
+        return render(request, 'Animal_Fish_Import/animal_details.html', {'import': import_details, 'count': count})
     elif identification_type == 'APM':
         application_no = request.GET.get('Application_No')
         record_id = request.GET.get('Record_Id')
         details = t_livestock_ante_post_mortem_t2.objects.filter(Record_Id=record_id)
         details.delete()
         mortem_details = t_livestock_ante_post_mortem_t2.objects.filter(Application_No=application_no)
-        return render(request, 'ante_post_mortem/details.html', {'mortem': mortem_details})
+        count = t_livestock_ante_post_mortem_t2.objects.filter(Application_No=application_no).count()
+        return render(request, 'ante_post_mortem/details.html', {'mortem': mortem_details, 'count': count})
     elif identification_type == 'ALMP':
         application_no = request.GET.get('Application_No')
         record_id = request.GET.get('Record_Id')
         details = t_livestock_movement_permit_t2.objects.filter(Record_Id=record_id)
         details.delete()
         movement_details = t_livestock_movement_permit_t2.objects.filter(Application_No=application_no)
-        return render(request, 'Movement_Permit_Livestock/animal_details.html', {'import': movement_details})
+        count = t_livestock_movement_permit_t2.objects.filter(Application_No=application_no).count()
+        return render(request, 'Movement_Permit_Livestock/animal_details.html', {'import': movement_details,
+                                                                                 'count': count})
     elif identification_type == 'APLMP':
         application_no = request.GET.get('Application_No')
         record_id = request.GET.get('Record_Id')
         details = t_livestock_movement_permit_t2.objects.filter(Record_Id=record_id)
         details.delete()
         movement_details = t_livestock_movement_permit_t2.objects.filter(Application_No=application_no)
-        return render(request, 'Movement_Permit_Livestock/animal_details.html', {'import': movement_details})
+        count = t_livestock_movement_permit_t2.objects.filter(Application_No=application_no).count()
+        return render(request, 'Movement_Permit_Livestock/animal_details.html', {'import': movement_details,
+                                                                                 'count': count})
 
     # Food Section Delete
 
@@ -6554,14 +6639,18 @@ def delete_details(request):
         details = t_food_business_registration_licensing_t2.objects.filter(Record_Id=record_id)
         details.delete()
         fh_details = t_food_business_registration_licensing_t2.objects.filter(Application_No=application_no)
-        return render(request, 'registration_licensing/details.html', {'fh_details': fh_details})
+        count = t_food_business_registration_licensing_t2.objects.filter(Application_No=application_no).count()
+        return render(request, 'registration_licensing/details.html', {'fh_details': fh_details,
+                                                                       'count': count})
     elif identification_type == 'FBR-FH':
         application_no = request.GET.get('Application_No')
         record_id = request.GET.get('Record_Id')
         details = t_livestock_ante_post_mortem_t2.objects.filter(Record_Id=record_id)
         details.delete()
         fh_details = t_food_business_registration_licensing_t3.objects.filter(Application_No=application_no)
-        return render(request, 'registration_licensing/food_handler_details.html', {'fh_details': fh_details})
+        count = t_food_business_registration_licensing_t3.objects.filter(Application_No=application_no)
+        return render(request, 'registration_licensing/food_handler_details.html', {'fh_details': fh_details,
+                                                                                    'count': count})
     elif identification_type == 'FIP':
         application_no = request.GET.get('Application_No')
         record_id = request.GET.get('Record_Id')
@@ -6569,7 +6658,8 @@ def delete_details(request):
         details.delete()
         import_details = t_food_import_permit_t2.objects.filter(Application_No=application_no)
         count = t_food_import_permit_t2.objects.filter(Application_No=application_no).count()
-        return render(request, 'import_certificate_food/food_permit_details.html', {'import': import_details, 'count':count})
+        return render(request, 'import_certificate_food/food_permit_details.html',
+                      {'import': import_details, 'count': count})
 
 
 def update_edit_details(request):
@@ -6594,7 +6684,7 @@ def update_edit_details(request):
         import_details = t_plant_import_permit_t2.objects.filter(Application_No=application_no)
         count = t_plant_import_permit_t2.objects.filter(Application_No=application_no).count()
         return render(request, 'import_permit/import_page_plant.html', {'import': import_details, 'crop': crop,
-                                                                        'variety': variety, 'count':count})
+                                                                        'variety': variety, 'count': count})
     elif identification_type == 'AIP':
         application_no = request.POST['edit_agro_applicationNo']
         record_id = request.POST['edit_agro_record_id']
@@ -6612,7 +6702,7 @@ def update_edit_details(request):
         import_details = t_plant_import_permit_t2.objects.filter(Application_No=application_no)
         count = t_plant_import_permit_t2.objects.filter(Application_No=application_no).count()
         return render(request, 'import_permit/import_page_agro.html',
-                      {'import': import_details, 'pesticide': pesticide,'count':count})
+                      {'import': import_details, 'pesticide': pesticide, 'count': count})
     elif identification_type == 'RNS':
         application_no = request.POST.get('edit_nursery_appNo')
         record_id = request.POST.get('nursery_record_id')
@@ -6635,7 +6725,9 @@ def update_edit_details(request):
             Remarks=remarks)
 
         seed_details = t_plant_clearence_nursery_seed_grower_t2.objects.filter(Application_No=application_no)
-        return render(request, 'nursery_registration/seed_details_page.html', {'seed_details': seed_details})
+        count = t_plant_clearence_nursery_seed_grower_t2.objects.filter(Application_No=application_no).count()
+        return render(request, 'nursery_registration/seed_details_page.html', {'seed_details': seed_details,
+                                                                               'seed_details_count': count})
     elif identification_type == 'RSC':
         application_no = request.POST.get('edit_app_No')
         record_id = request.POST.get('seed_record_id')
@@ -6658,8 +6750,9 @@ def update_edit_details(request):
         )
 
         certification_details = t_plant_seed_certification_t2.objects.filter(Application_No=application_no)
+        count = t_plant_seed_certification_t2.objects.filter(Application_No=application_no).count()
         return render(request, 'seed_certification/seed_certification_details_page.html',
-                      {'certification_details': certification_details})
+                      {'certification_details': certification_details, 'seed_details_count': count})
     elif identification_type == 'MPP':
         application_no = request.POST.get('edit_app_No')
         record_id = request.POST.get('movement_record_id')
@@ -6672,7 +6765,9 @@ def update_edit_details(request):
         details.update(Commodity=commodity, Qty=qty, Unit=unit, Remarks=remarks)
 
         imports_plant = t_plant_movement_permit_t2.objects.filter(Application_No=application_no)
-        return render(request, 'movement_permit/movement_page.html', {'import': imports_plant})
+        count = t_plant_movement_permit_t2.objects.filter(Application_No=application_no).count()
+        return render(request, 'movement_permit/movement_page.html', {'import': imports_plant,
+                                                                      'movement_count': count})
 
     # Livestock Section Update
 
@@ -6685,7 +6780,9 @@ def update_edit_details(request):
         details.update(Meat_Item=meat_name)
 
         meat_details = t_livestock_clearance_meat_shop_t2.objects.filter(Application_No=application_no)
-        return render(request, 'meat_shop_registration/details.html', {'meat_details': meat_details})
+        count = t_livestock_clearance_meat_shop_t2.objects.filter(Application_No=application_no).count()
+        return render(request, 'meat_shop_registration/details.html', {'meat_details': meat_details,
+                                                                       'count': count})
     elif identification_type == 'ALEC':
         application_no = request.POST.get('animal_application_no')
         record_id = request.POST.get('edit_record_id')
@@ -6709,7 +6806,9 @@ def update_edit_details(request):
         )
 
         export_details = t_livestock_export_certificate_t2.objects.filter(Application_No=application_no)
-        return render(request, 'Export_Certificate/animal_details.html', {'export_details': export_details})
+        count = t_livestock_export_certificate_t2.objects.filter(Application_No=application_no).count()
+        return render(request, 'Export_Certificate/animal_details.html', {'export_details': export_details,
+                                                                          'count': count})
     elif identification_type == 'APLEC':
         application_no = request.POST.get('edit_application_no')
         record_id = request.POST.get('edit_product_record_id')
@@ -6729,7 +6828,9 @@ def update_edit_details(request):
         )
 
         export_details = t_livestock_export_certificate_t2.objects.filter(Application_No=application_no)
-        return render(request, 'Export_Certificate/animal_product_details.html', {'export_details': export_details})
+        count = t_livestock_export_certificate_t2.objects.filter(Application_No=application_no).count()
+        return render(request, 'Export_Certificate/animal_product_details.html', {'export_details': export_details,
+                                                                                  'count': count})
     elif identification_type == 'LPIP':
         application_no = request.POST.get('edit_applNo')
         record_id = request.POST.get('edit_product_record_id')
@@ -6747,7 +6848,7 @@ def update_edit_details(request):
 
         import_details = t_livestock_import_permit_product_t2.objects.filter(Application_No=application_no)
         count = t_livestock_import_permit_product_t2.objects.filter(Application_No=application_no).count()
-        return render(request, 'Livestock_Import/permit_details.html', {'import': import_details, 'count':count})
+        return render(request, 'Livestock_Import/permit_details.html', {'import': import_details, 'count': count})
     elif identification_type == 'AFIP':
         application_no = request.POST.get('edit_app_no')
         record_id = request.POST.get('edit_la_record_id')
@@ -6771,7 +6872,7 @@ def update_edit_details(request):
                        )
         import_details = t_livestock_import_permit_animal_t2.objects.filter(Application_No=application_no)
         count = t_livestock_import_permit_animal_t2.objects.filter(Application_No=application_no).count()
-        return render(request, 'Animal_Fish_Import/animal_details.html', {'import': import_details, 'count':count})
+        return render(request, 'Animal_Fish_Import/animal_details.html', {'import': import_details, 'count': count})
     elif identification_type == 'APM':
         application_no = request.POST.get('edit_application_no')
         record_id = request.POST.get('edit_mortem_record_id')
@@ -6784,7 +6885,9 @@ def update_edit_details(request):
         details.update(Species=species, Nos=Nos, Quantity=qty, Remarks=remarks)
 
         mortem_details = t_livestock_ante_post_mortem_t2.objects.filter(Application_No=application_no)
-        return render(request, 'ante_post_mortem/details.html', {'mortem': mortem_details})
+        count = t_livestock_ante_post_mortem_t2.objects.filter(Application_No=application_no).count()
+        return render(request, 'ante_post_mortem/details.html', {'mortem': mortem_details,
+                                                                 'count': count})
     elif identification_type == 'ALMP':
         application_no = request.POST.get('edit_animal_application_no')
         record_id = request.POST.get('edit_animal_record_id')
@@ -6804,7 +6907,9 @@ def update_edit_details(request):
             No_Of_Animal=No_Of_Animal)
 
         movement_details = t_livestock_movement_permit_t2.objects.filter(Application_No=application_no)
-        return render(request, 'Movement_Permit_Livestock/animal_details.html', {'import': movement_details})
+        count = t_livestock_movement_permit_t2.objects.filter(Application_No=application_no).count()
+        return render(request, 'Movement_Permit_Livestock/animal_details.html', {'import': movement_details,
+                                                                                 'count': count})
     elif identification_type == 'APLMP':
         application_no = request.POST.get('edit_app_No')
         record_id = request.POST.get('edit_product_record_id')
@@ -6824,7 +6929,9 @@ def update_edit_details(request):
             Remarks=Remarks)
 
         movement_details = t_livestock_movement_permit_t2.objects.filter(Application_No=application_no)
-        return render(request, 'Movement_Permit_Livestock/animal_product_details.html', {'import': movement_details})
+        count = t_livestock_movement_permit_t2.objects.filter(Application_No=application_no).count()
+        return render(request, 'Movement_Permit_Livestock/animal_product_details.html', {'import': movement_details,
+                                                                                         'count': count})
 
     # Food Section Edit
 
@@ -6841,7 +6948,9 @@ def update_edit_details(request):
         details.update(BP_Outsourced_To=BP_Outsourced_To, Contact_No=Contact_No,
                        Address=Address, BAFRA_License_No=BAFRA_License_No)
         fh_details = t_food_business_registration_licensing_t2.objects.filter(Application_No=application_no)
-        return render(request, 'registration_licensing/details.html', {'fh_details': fh_details})
+        count = t_food_business_registration_licensing_t2.objects.filter(Application_No=application_no).count()
+        return render(request, 'registration_licensing/details.html', {'fh_details': fh_details,
+                                                                       'count': count})
     elif identification_type == 'FBR-FH':
         application_no = request.POST.get('edit_fh_application_no')
         record_id = request.POST.get('fh_record_id')
@@ -6852,7 +6961,9 @@ def update_edit_details(request):
         details.update(FH_Name=fh_name, FH_License_No=fh_license)
 
         fh_details = t_food_business_registration_licensing_t3.objects.filter(Application_No=application_no)
-        return render(request, 'registration_licensing/food_handler_details.html', {'fh_details': fh_details})
+        count = t_food_business_registration_licensing_t3.objects.filter(Application_No=application_no).count()
+        return render(request, 'registration_licensing/food_handler_details.html', {'fh_details': fh_details,
+                                                                                    'count': count})
     elif identification_type == 'FIP':
         application_no = request.POST.get('edit_import_app_no')
         record_id = request.POST.get('import_record_id')
@@ -6872,7 +6983,7 @@ def update_edit_details(request):
         import_details = t_food_import_permit_t2.objects.filter(Application_No=application_no)
         count = t_food_import_permit_t2.objects.filter(Application_No=application_no).count()
         return render(request, 'import_certificate_food/food_permit_details.html', {'import': import_details,
-                                                                                    'count':count})
+                                                                                    'count': count})
 
     # certification
     elif identification_type == 'GAP-FG':

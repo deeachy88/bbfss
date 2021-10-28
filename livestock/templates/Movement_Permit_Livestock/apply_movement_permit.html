@@ -301,7 +301,7 @@
                         </div>
                     </div>
                     <div class="card-action">
-                        <button type="button" class="btn btn-success" onclick="save_movement_details()">Save</button>
+                        <button type="button" class="btn btn-success" onclick="save_movement_details()" id="lmp_details_button" style="display:none">Save</button>
                     </div>
                 </div>
                 <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="pills-profile-file">
@@ -346,7 +346,7 @@
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Quantity <font color="red">*</font></label>
-                                        <input type="text" name="qty" class="form-control" id="qty" onkeypress="return isNumberKey(event)">
+                                        <input type="text" name="qty" class="form-control" id="qty" onkeypress="return isNumberKey(event)" onchange="check_qty(this.value)">
                                         <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
@@ -411,7 +411,7 @@
                                     </div>
                                    <div class="form-group col-md-6">
                                         <label class="form-label">No Of Animals <font color="red">*</font></label>
-                                        <input type="text" name="No_Of_Animal" class="form-control" id="No_Of_Animal" onkeypress="return isNumberKey(event)">
+                                        <input type="text" name="No_Of_Animal" class="form-control" id="No_Of_Animal" onkeypress="return isNumberKey(event)" onchange="check_no(this.value)">
                                         <div class="alert alert-danger" id="No_Of_AnimalErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
@@ -504,7 +504,7 @@
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Quantity <font color="red">*</font></label>
-                                        <input type="text" name="edit_qty" class="form-control" id="edit_qty" onkeypress="return isNumberKey(event)">
+                                        <input type="text" name="edit_qty" class="form-control" id="edit_qty" onkeypress="return isNumberKey(event)" onchange="check_edit_qty(this.value)">
                                         <div class="alert alert-danger" id="edit_qtyErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
@@ -576,7 +576,7 @@
                                     </div>
                                    <div class="form-group col-md-6">
                                         <label class="form-label">No Of Animals <font color="red">*</font></label>
-                                        <input type="text" name="edit_No_Of_Animal" class="form-control" id="edit_No_Of_Animal" onkeypress="return isNumberKey(event)">
+                                        <input type="text" name="edit_No_Of_Animal" class="form-control" id="edit_No_Of_Animal" onkeypress="return isNumberKey(event)" onchange="check_edit_no(this.value)">
                                         <div class="alert alert-danger" id="edit_No_Of_AnimalErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
@@ -600,6 +600,15 @@
     </div>
 </form>
 <script>
+function isNumberKey(evt)
+{
+ var charCode = (evt.which) ? evt.which : event.keyCode
+ if (charCode > 31 && (charCode < 48 || charCode > 57))
+    return false;
+
+ return true;
+}
+
 $(function()
 {
     var today = new Date().toISOString().split('T')[0];
@@ -663,23 +672,79 @@ function save_movement_permit()
         $('#cidErrorMsg').delay(2000).fadeOut('slow');
         $("#cid").focus();
     }
-    else if(contactNumber == "")
+    else if(Application_Type_Value == "Individual" && contactNumber == "")
     {
         $('#contactNumberErrorMsg').html("Enter Contact Number.");
         $('#contactNumberErrorMsg').show();
         $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
         $("#contactNumber").focus();
     }
-    else if(number_count < 8)
+    else if(Application_Type_Value == "Individual" && number_count < 8)
     {
         $('#contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
         $('#contactNumberErrorMsg').show();
         $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
         $("#contactNumber").focus();
     }
-    else if(email == "")
+    else if(Application_Type_Value == "Individual" && email == "")
     {
-        $('#emailErrorMsg').html("Enter Contact Number.");
+        $('#emailErrorMsg').html("Enter Email.");
+        $('#emailErrorMsg').show();
+        $('#emailErrorMsg').delay(2000).fadeOut('slow');
+        $("#email").focus();
+    }
+    else if(Application_Type_Value == "Commercial" && name == "")
+    {
+        $('#nameErrorMsg').html("Enter Applicant Name.");
+        $('#nameErrorMsg').show();
+        $('#nameErrorMsg').delay(2000).fadeOut('slow');
+        $("#name").focus();
+    }
+    else if(Application_Type_Value == "Institution" && name == "")
+    {
+        $('#nameErrorMsg').html("Enter Applicant Name.");
+        $('#nameErrorMsg').show();
+        $('#nameErrorMsg').delay(2000).fadeOut('slow');
+        $("#name").focus();
+    }
+    else if(Application_Type_Value == "Commercial" && contactNumber == "")
+    {
+        $('#contactNumberErrorMsg').html("Enter Contact Number.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $("#contactNumber").focus();
+    }
+    else if(Application_Type_Value == "Institution" && contactNumber == "")
+    {
+        $('#contactNumberErrorMsg').html("Enter Contact Number.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $("#contactNumber").focus();
+    }
+    else if(Application_Type_Value == "Commercial" && number_count < 8)
+    {
+        $('#contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $("#contactNumber").focus();
+    }
+    else if(Application_Type_Value == "Commercial" && email == "")
+    {
+        $('#emailErrorMsg').html("Enter Email.");
+        $('#emailErrorMsg').show();
+        $('#emailErrorMsg').delay(2000).fadeOut('slow');
+        $("#email").focus();
+    }
+    else if(Application_Type_Value == "Institution" && number_count < 8)
+    {
+        $('#contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
+        $('#contactNumberErrorMsg').show();
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
+        $("#contactNumber").focus();
+    }
+    else if(Application_Type_Value == "Institution" && email == "")
+    {
+        $('#emailErrorMsg').html("Enter Email.");
         $('#emailErrorMsg').show();
         $('#emailErrorMsg').delay(2000).fadeOut('slow');
         $("#email").focus();
@@ -723,28 +788,28 @@ function save_movement_permit()
     {
         $('#from_gewogErrorMsg').html("Select From Gewog.");
         $('#from_gewogErrorMsg').show();
-        $('#from_gewog').delay(2000).fadeOut('slow');
+        $('#from_gewogErrorMsg').delay(2000).fadeOut('slow');
         $("#from_gewog").focus();
     }
     else if(from_location == "")
     {
-        $('#from_locationErrorMsg').html("Select From Location.");
+        $('#from_locationErrorMsg').html("Enter From Location.");
         $('#from_locationErrorMsg').show();
         $('#from_locationErrorMsg').delay(2000).fadeOut('slow');
         $("#from_location").focus();
     }
      else if(to_dzongkhag == "")
     {
-        $('#from_dzongkhagErrorMsg').html("Select To Dzongkhag.");
-        $('#from_dzongkhagErrorMsg').show();
-        $('#from_dzongkhagErrorMsg').delay(2000).fadeOut('slow');
+        $('#to_dzongkhagErrorMsg').html("Select To Dzongkhag.");
+        $('#to_dzongkhagErrorMsg').show();
+        $('#to_dzongkhagErrorMsg').delay(2000).fadeOut('slow');
         $("#to_dzongkhag").focus();
     }
     else if(to_gewog == "")
     {
-        $('#from_gewogErrorMsg').html("Select To Gewog.");
-        $('#from_gewogErrorMsg').show();
-        $('#from_gewogErrorMsg').delay(2000).fadeOut('slow');
+        $('#to_gewogErrorMsg').html("Select To Gewog.");
+        $('#to_gewogErrorMsg').show();
+        $('#to_gewogErrorMsg').delay(2000).fadeOut('slow');
         $("#to_gewog").focus();
     }
     else if(to_exact_location == "")
@@ -1263,6 +1328,66 @@ function liv_mov_attachment()
             $('#fileAttach').html(response);
         }
     });
+}
+
+function check_qty(qty)
+{
+    if(qty == 0)
+    {
+        $('#qtyErrorMsg').html("Must Be Greater Than Zero.");
+        $('#qtyErrorMsg').show();
+        $('#qtyErrorMsg').delay(2000).fadeOut('slow');
+        $('#qty').val("");
+    }
+    else
+    {
+        $('#qtyErrorMsg').hide();
+    }
+}
+
+function check_edit_qty(qty)
+{
+    if(qty == 0)
+    {
+        $('#edit_qtyErrorMsg').html("Must Be Greater Than Zero.");
+        $('#edit_qtyErrorMsg').show();
+        $('#edit_qtyErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_qty').val("");
+    }
+    else
+    {
+        $('#edit_qtyErrorMsg').hide();
+    }
+}
+
+function check_no(qty)
+{
+    if(qty == 0)
+    {
+        $('#No_Of_AnimalErrorMsg').html("Must Be Greater Than Zero.");
+        $('#No_Of_AnimalErrorMsg').show();
+        $('#No_Of_AnimalErrorMsg').delay(2000).fadeOut('slow');
+        $('#No_Of_Animal').val("");
+    }
+    else
+    {
+        $('#No_Of_AnimalErrorMsg').hide();
+    }
+}
+
+function check_edit_no(qty)
+{
+    if(qty == 0)
+    {
+        $('#edit_No_Of_AnimalErrorMsg').html("Must Be Greater Than Zero.");
+        $('#edit_No_Of_AnimalErrorMsg').show();
+        $('#edit_No_Of_AnimalErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_No_Of_Animal').val("");
+    }
+    else
+    {
+        $('#edit_No_Of_AnimalErrorMsg').hide();
+    }
 }
 </script>
 {% endblock %}

@@ -300,7 +300,7 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Quantity <font color="red">*</font></label>
-                                        <input type="text" name="qty" class="form-control" id="qty" onkeypress="return isNumberKey(event)">
+                                        <input type="text" name="qty" class="form-control" id="qty" onkeypress="return isNumberKey(event)" onchange="check_qty(this.value)">
                                         <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
@@ -405,7 +405,7 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Quantity <font color="red">*</font></label>
-                                        <input type="text" name="edit_qty" class="form-control" id="edit_qty" onkeypress="return isNumberKey(event)">
+                                        <input type="text" name="edit_qty" class="form-control" id="edit_qty" onkeypress="return isNumberKey(event)" onchange="check_edit_qty(this.value)">
                                         <div class="alert alert-danger" id="edit_qtyErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
@@ -553,14 +553,28 @@ function permit_save_details()
         $('#emailErrorMsg').delay(2000).fadeOut('slow');
         $('#email').focus();
     }
-    else if(app_type == "Commercial" || app_type == "Institution" && license_no == "")
+    else if(app_type == "Commercial" && license_no == "")
     {
         $('#license_noErrorMsg').html("Enter License No.");
         $('#license_noErrorMsg').show();
         $('#license_noErrorMsg').delay(2000).fadeOut('slow');
         $('#license_no').focus();
     }
-    else if(app_type == "Commercial" || app_type == "Institution" && business_name == "")
+    else if(app_type == "Institution" && license_no == "")
+    {
+        $('#license_noErrorMsg').html("Enter License No.");
+        $('#license_noErrorMsg').show();
+        $('#license_noErrorMsg').delay(2000).fadeOut('slow');
+        $('#license_no').focus();
+    }
+    else if(app_type == "Commercial" && business_name == "")
+    {
+        $('#business_nameErrorMsg').html("Enter Business Name.");
+        $('#business_nameErrorMsg').show();
+        $('#business_nameErrorMsg').delay(2000).fadeOut('slow');
+        $('#business_name').focus();
+    }
+    else if(app_type == "Institution" && business_name == "")
     {
         $('#business_nameErrorMsg').html("Enter Business Name.");
         $('#business_nameErrorMsg').show();
@@ -1028,6 +1042,36 @@ function load_lp_attachment()
             $('#fileAttach').html(response);
         }
     });
+}
+
+function check_qty(qty)
+{
+    if(qty == 0)
+    {
+        $('#qtyErrorMsg').html("Must Be Greater Than Zero.");
+        $('#qtyErrorMsg').show();
+        $('#qtyErrorMsg').delay(2000).fadeOut('slow');
+        $('#qty').val("");
+    }
+    else
+    {
+        $('#qtyErrorMsg').hide();
+    }
+}
+
+function check_edit_qty(qty)
+{
+    if(qty == 0)
+    {
+        $('#edit_qtyErrorMsg').html("Must Be Greater Than Zero.");
+        $('#edit_qtyErrorMsg').show();
+        $('#edit_qtyErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_qty').val("");
+    }
+    else
+    {
+        $('#edit_qtyErrorMsg').hide();
+    }
 }
 </script>
 {% endblock %}

@@ -483,6 +483,7 @@ def submit_organic_certificate(request):
     else:
         app_details.update(Others_Standards=None)
     workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
+    workflow_details.update(Application_Date=date.today())
     workflow_details.update(Action_Date=date.today())
     return redirect(organic_certificate)
 
@@ -1331,6 +1332,7 @@ def submit_gap_certificate(request):
     else:
         app_details.update(Others_Standards=None)
     workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
+    workflow_details.update(Application_Date=date.today())
     workflow_details.update(Action_Date=date.today())
     return redirect(gap_certificate)
 
@@ -1957,6 +1959,9 @@ def submit_food_product_certificate(request):
         app_details.update(Others_Standards=Others_Standards)
     else:
         app_details.update(Others_Standards=None)
+    workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
+    workflow_details.update(Application_Date=date.today())
+    workflow_details.update(Action_Date=date.today())
     return redirect(food_product_certificate)
 
 

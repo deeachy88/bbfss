@@ -529,6 +529,7 @@ form, input, select, textarea{
                                         <th scope="col">Unit</th>
                                         <th scope="col">Quantity Balance</th>
                                         <th scope="col">Quantity Released</th>
+                                        <th scope="col">Remarks</th>
                                         <th scope="col">Action</th>
 
                                     </tr>
@@ -552,11 +553,12 @@ form, input, select, textarea{
                                             <td>{{import.Unit}}</td>
                                             <td>{{import.Quantity_Balance}}</td>
                                             <td>{{import.Quantity_Released}}</td>
+                                            <td>{{import.Remarks}}</td>
                                             <td>
                                                 <button type="button" class="btn btn-info"
                                                 onclick="populateDetails('{{ import.Record_Id }}', '{{import.Import_Category}}', '{{import.Crop_Id}}',
                                                 '{{import.Variety_Id}}', '{{import.Quantity}}', '{{import.Unit}}', '{{import.Application_No}}','{{import.Quantity_Balance}}',
-                                                 '{{import.Quantity_Balance_1}}')">
+                                                 '{{import.Quantity_Balance_1}}','{{import.Quantity_Released}}','{{import.Remarks}}')">
                                                 <i class="zmdi zmdi-edit"></i>
                                                 </button>
                                             </td>
@@ -582,6 +584,7 @@ form, input, select, textarea{
                                         <th scope="col">Unit</th>
                                         <th scope="col">Quantity Balance</th>
                                         <th scope="col">Quantity Released</th>
+                                        <th scope="col">Remarks</th>
                                         <th scope="col">Action</th>
                                     </tr>
                                 </thead>
@@ -600,11 +603,12 @@ form, input, select, textarea{
                                                 <td>{{import.Unit}}</td>
                                                 <td>{{import.Quantity_Balance}}</td>
                                                 <td>{{import.Quantity_Released}}</td>
+                                                <td>{{import.Remarks}}</td>
                                                 <td>
                                                     <button type="button" class="btn btn-info"
                                                     onclick="populateAgroDetails('{{ import.Record_Id }}', '{{import.Import_Category}}', '{{import.Pesticide_Id}}',
                                                     '{{import.Description}}', '{{import.Quantity}}', '{{import.Unit}}', '{{import.Application_No}}','{{import.Quantity_Balance}}',
-                                                    '{{import.Quantity_Balance_1}}')">
+                                                    '{{import.Quantity_Balance_1}}','{{import.Quantity_Released}}','{{import.Remarks}}')">
                                                     <i class="zmdi zmdi-edit"></i>
                                                     </button>
                                                 </td>
@@ -671,7 +675,13 @@ form, input, select, textarea{
                     <div class="row">
                         <div class="col-sm-6">
                             <label class="form-label">Actual Point Of Entry</label>
-                            <input type="text" class="form-control" value="{{application_details.Actual_Point_Of_Entry}}" disabled>
+                            <select class="form-control" disabled>
+                                 {% for location in location %}
+                                    <option value="{{location.Field_Office_Id}}"{% if application_details.Actual_Point_Of_Entry == location.Field_Office_Id %}selected{% endif %}>
+                                        {{ location.Field_Office }}
+                                    </option>
+                                {% endfor %}
+                             </select>
                         </div>
                         <div class="col-sm-6">
                             <label class="form-label">Requested Date For Inspection</label>
@@ -757,14 +767,14 @@ form, input, select, textarea{
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Current Observation</label>
+                                    <label class="form-label">Current Observation <font color="red">*</font></label>
                                     <textarea class="form-control" id="currentObservation" rows="2"></textarea>
                                 </div>
                                 <div class="alert alert-danger" id="currentObservationErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Decision Conformity Statement </label>
+                                    <label class="form-label">Decision Conformity Statement <font color="red">*</font></label>
                                     <textarea class="form-control" id="decisionConform" rows="2"></textarea>
                                 </div>
                                 <div class="alert alert-danger" id="decisionConformErrorMsg" style="display:none"></div>
@@ -776,7 +786,7 @@ form, input, select, textarea{
                             <i class="ace-icon fa fa-times"></i>
                             &nbsp;&nbsp;Add
                         </button>
-                        <button type="button" class="btn btn-primary" onclick="closeModal()">Close Modal</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close Modal</button>
                      </div>
                      <div id="messageDiv" style="display:none"></div>
                   </div>
@@ -889,7 +899,7 @@ form, input, select, textarea{
                     </div>
                 </div>
                 <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" onclick="close_plant_modal()">Close</button>
                 <button type="button" class="btn btn-primary" onclick="update_details_plant()">Update</button>
             </div>
             </div>
@@ -985,7 +995,7 @@ form, input, select, textarea{
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" onclick="close_agro_modal()">Close</button>
                     <button type="button" class="btn btn-primary" onclick="update_details_agro()">Update</button>
                 </div>
             </div>
@@ -1037,6 +1047,8 @@ function add_details_ins(application_id)
                 $('#details').html(data);
                 $('#details').show();
                 $('#addModal').modal('hide');
+                $('#currentObservation').val("");
+                $('#decisionConform').val("");
             }
         });
     }
@@ -1095,7 +1107,7 @@ function submit_details(application_id)
     }
 }
 
-function populateDetails(Record_Id, Import_Category, Crop_Id, Variety_Id, Quantity, Unit, application_no,balance_quantity, balance_quantity_1)
+function populateDetails(Record_Id, Import_Category, Crop_Id, Variety_Id, Quantity, Unit, application_no,balance_quantity, balance_quantity_1, Quantity_Released, Remarks)
 {
     $('#record_id').val(Record_Id);
     $('#plant_import_category').val(Import_Category);
@@ -1106,10 +1118,12 @@ function populateDetails(Record_Id, Import_Category, Crop_Id, Variety_Id, Quanti
     $('#plant_applicationNo').val(application_no);
     $('#qty_balance').val(balance_quantity);
     $('#qty_balance_1').val(balance_quantity_1);
+    $('#qty_approved').val(Quantity_Released);
+    $('#import_Remarks').val(Remarks);
     $('#add_plant_details').modal('show');
 }
 
-function populateAgroDetails(Record_Id, Import_Category, Pesticide_Id, Description, Quantity, Unit, application_no,balance_quantity, balance_quantity_1)
+function populateAgroDetails(Record_Id, Import_Category, Pesticide_Id, Description, Quantity, Unit, application_no,balance_quantity, balance_quantity_1, Quantity_Released, Remarks)
 {
     $('#agro_record_id').val(Record_Id);
     $('#agro_category').val(Import_Category);
@@ -1120,6 +1134,8 @@ function populateAgroDetails(Record_Id, Import_Category, Pesticide_Id, Descripti
     $('#agro_applicationNo').val(application_no);
     $('#agro_qty_balance_1').val(balance_quantity_1);
     $('#agro_qty_balance').val(balance_quantity);
+    $('#agro_qty_approved').val(Quantity_Released);
+    $('#agro_import_Remarks').val(Remarks);
     $('#add_agro_details').modal('show');
 }
 
@@ -1146,6 +1162,22 @@ function update_details_plant()
             }
         });
     }
+}
+
+function close_plant_modal()
+{
+    $('#add_plant_details').modal('hide');
+    $('.modal-backdrop').remove();
+    $('#qty_approved').val("");
+    $('#import_Remarks').val("");
+}
+
+function close_agro_modal()
+{
+    $('#add_agro_details').modal('hide');
+    $('.modal-backdrop').remove();
+    $('#agro_qty_approved').val("");
+    $('#agro_import_Remarks').val("");
 }
 
 function update_details_agro()
@@ -1209,4 +1241,6 @@ function balance_agro(approved_qty)
         $('#agro_qty_balance').val(quantity);
     }
 }
+
+
 </script>

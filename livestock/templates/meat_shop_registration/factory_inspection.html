@@ -308,11 +308,11 @@ form, input, select, textarea{
                                 <tr>
                                     <th scope="col">#</th>
                                     <th scope="col">Requirement</th>
-                                    <th scope="col">Clause No</th>
-                                    <th scope="col">Concern</th>
+                                    <th scope="col">Clause Number</th>
+                                    <th scope="col">NC</th>
+                                    <th scope="col">NC Category</th>
                                     <th scope="col">Date</th>
-                                    <th scope="col">Observations/ Findings</th>
-                                    <th scope="col">Response/Actions Proposed By FBO</th>
+                                    <th scope="col">Observations/Findings</th>
                                     {% if inspection_details %}
                                         <th scope="col">Action</th>
                                     {% endif %}
@@ -324,13 +324,13 @@ form, input, select, textarea{
                                         <td>{{ forloop.counter }}</td>
                                         <td>{{import.Requirement}}</td>
                                         <td>{{import.Clause_No}}</td>
-                                        <td id="my_cell">{{import.Concern}}</td>
+                                        <td>{{import.NC}}</td>
+                                        <td>{{import.NC_Category}}</td>
                                         <td>{{import.Date|date:"d-m-Y"}}</td>
                                         <td>{{import.Observation}}</td>
-                                        <td>{{import.FBO_Response}}</td>
                                         <td>
                                             <button type="button" class="btn btn-primary btn--icon btn-sm" onclick="populateForm('{{import.Record_Id}}','{{import.Requirement}}',
-                                            '{{import.Clause_No}}','{{import.Concern}}', '{{import.Observation}}', '{{import.FBO_Response}}', '{{import.Application_No}}')">
+                                            '{{import.Clause_No}}','{{import.NC}}', '{{import.NC_Category}}','{{import.Observation}}', '{{import.Application_No}}')">
                                             <i class="zmdi zmdi-edit"></i>
                                             </button>
                                         </td>
@@ -484,7 +484,7 @@ form, input, select, textarea{
                                 <div class="form-group">
                                     <div class="form-group col-md-6">
                                         <div class="form-check">
-                                           <label class="form-label">Concern <font color="red">*</font></label><br>
+                                           <label class="form-label">NC <font color="red">*</font></label><br>
                                             <label class="form-radio-label">
                                                 <input class="form-radio-input" type="radio" name="Concern" value="Yes" onclick="checkConcern(this.value)">
                                                 <span class="form-radio-sign">Yes</span>
@@ -493,26 +493,30 @@ form, input, select, textarea{
                                                 <input class="form-radio-input" type="radio" name="Concern" value="No" onclick="checkConcern(this.value)">
                                                 <span class="form-radio-sign">No</span>
                                             </label>
+                                            <div class="alert alert-danger" id="ConcernErrorMsg" style="display:none"></div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="alert alert-danger" id="ConcernErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Observations/Finding <font color="red">*</font></label>
-                                    <textarea class="form-control" id="Observations" rows="2"></textarea>
+                                    <label class="form-label">NC Category <font color="red">*</font></label>
+                                    <select class="form-control" name="nc_category" id="nc_category" disabled>
+                                        <option value="">-SELECT-</option>
+                                        <option value="Major">Major</option>
+                                        <option value="Minor">Minor</option>
+                                    </select>
                                 </div>
-                                <div class="alert alert-danger" id="ObservationsErrorMsg" style="display:none"></div>
+                                <div class="alert alert-danger" id="nc_categoryErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Response or Actions proposed by FBO <font color="red">*</font></label>
-                                    <textarea class="form-control" id="response_fbo" rows="2"></textarea>
+                                    <label class="form-label">Observations/Finding <font color="red">*</font></label>
+                                    <textarea class="form-control" id="Observations" rows="2"></textarea>
                                 </div>
-                                <div class="alert alert-danger" id="response_fboErrorMsg" style="display:none"></div>
+                                 <div class="alert alert-danger" id="ObservationsErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                     </div>
@@ -566,7 +570,7 @@ form, input, select, textarea{
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Closing Meeting(Date) <font color="red">*</font></label>
-                                    <input type="text" class="form-control date-picker flatpickr-input active" name="closing_date" id="closing_date" readonly>
+                                    <input type="text" class="form-control date-picker flatpickr-input active" name="closing_date" id="closing_date" readonly onchange="check_date()">
                                 </div>
                                 <div class="alert alert-danger" id="closing_dateErrorMsg" style="display:none"></div>
                             </div>
@@ -633,54 +637,62 @@ form, input, select, textarea{
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-body">
+                <input type="hidden" class="form-control" id="record_id" name="record_id">
+                <input type="hidden" class="form-control" id="app_no" name="app_no">
                 <div class="row">
-                    <input type="hidden" class="form-control" id="record_id" name="record_id">
-                    <input type="hidden" class="form-control" id="app_no" name="app_no">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="form-label">Requirement</label>
+                            <label class="form-label">Requirement <font color="red">*</font></label>
                             <input type="text" class="form-control" id="edit_Requirement" disabled>
                         </div>
+                        <div class="alert alert-danger" id="edit_RequirementErrorMsg" style="display:none"></div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="form-label">Clause No</label>
+                            <label class="form-label">Clause No <font color="red">*</font></label>
                             <input type="text" class="form-control" id="edit_Clause_No" disabled>
                         </div>
+                        <div class="alert alert-danger" id="edit_Clause_NoErrorMsg" style="display:none"></div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-
                             <div class="form-group col-md-6">
                                 <div class="form-check">
-                                   <label class="form-label">Concern</label><br>
+                                   <label class="form-label">NC <font color="red">*</font></label><br>
                                     <label class="form-radio-label">
-                                        <input class="form-radio-input" type="radio" name="edit_Concern" value="Yes" id="concern_yes" onclick="checkEditConcern(this.value)">
+                                        <input class="form-radio-input" type="radio" name="edit_Concern" value="Yes" onclick="checkEditConcern(this.value)" id="nc_yes">
                                         <span class="form-radio-sign">Yes</span>
                                     </label>
                                     <label class="form-radio-label ml-3">
-                                        <input class="form-radio-input" type="radio" name="edit_Concern" value="No" id="concern_no" onclick="checkEditConcern(this.value)">
+                                        <input class="form-radio-input" type="radio" name="edit_Concern" value="No" onclick="checkEditConcern(this.value)" id="nc_no">
                                         <span class="form-radio-sign">No</span>
                                     </label>
+                                    <div class="alert alert-danger" id="edit_ConcernErrorMsg" style="display:none"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="form-label">Observations/Finding</label>
-                            <textarea class="form-control" id="edit_Observations" rows="2" disabled></textarea>
+                            <label class="form-label">NC Category <font color="red">*</font></label>
+                            <select class="form-control" name="edit_nc_category" id="edit_nc_category" disabled>
+                                <option value="">-SELECT-</option>
+                                <option value="Major">Major</option>
+                                <option value="Minor">Minor</option>
+                            </select>
                         </div>
+                        <div class="alert alert-danger" id="edit_nc_categoryErrorMsg" style="display:none"></div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="form-label">Response or Actions proposed by FBO</label>
-                            <textarea class="form-control" id="edit_response_fbo" name="edit_response_fbo" rows="2" disabled></textarea>
+                            <label class="form-label">Observations/Finding <font color="red">*</font></label>
+                            <textarea class="form-control" name="edit_Observations" id="edit_Observations" rows="2"></textarea>
                         </div>
+                         <div class="alert alert-danger" id="edit_ObservationsErrorMsg" style="display:none"></div>
                     </div>
                 </div>
             </div>
@@ -722,57 +734,58 @@ function closeTeamModal()
 
 function add_details_ins(application_id)
 {
-    var Requirement = $('#Requirement').val();
-    var Clause_No = $('#Clause_No').val();
-    var Concern = $('input[name="Concern"]:checked').val();
-    var response_fbo = $('#response_fbo').val();
-    var Observations = $('#Observations').val();
+    Requirement = $('#Requirement').val();
+    Clause_No = $('#Clause_No').val();
+    Concern = $('input[name="Concern"]:checked').length;
+    Concern_Val = $('input[name="Concern"]:checked').val();
+    Observations = $('#Observations').val();
+    nc_category = $('#nc_category').val();
 
     if(Requirement == "")
     {
         $('#RequirementErrorMsg').html("Enter Requirement.");
         $('#RequirementErrorMsg').show();
         $('#RequirementErrorMsg').delay(2000).fadeOut('slow');
-        $("#cid").focus();
     }
     else if(Clause_No == "")
     {
         $('#Clause_NoErrorMsg').html("Enter Clause No.");
         $('#Clause_NoErrorMsg').show();
         $('#Clause_NoErrorMsg').delay(2000).fadeOut('slow');
-        $("#Clause_No").focus();
     }
     else if(Concern < 1)
     {
-        $('#ConcernErrorMsg').html("Please Check One Concern.");
+        $('#ConcernErrorMsg').html("Select One NC.");
         $('#ConcernErrorMsg').show();
         $('#ConcernErrorMsg').delay(2000).fadeOut('slow');
-        $("input[name=Concern]").focus();
     }
-    else if(Observations == "")
+    else if(Concern_Val == "Yes" && nc_category == "")
     {
-        $('#ObservationsErrorMsg').html("Enter Observations.");
+        $('#nc_categoryErrorMsg').html("Select NC Category.");
+        $('#nc_categoryErrorMsg').show();
+        $('#nc_categoryErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Concern_Val == "Yes" && Observations == "")
+    {
+        $('#ObservationsErrorMsg').html("Enter Observations/Finding.");
         $('#ObservationsErrorMsg').show();
         $('#ObservationsErrorMsg').delay(2000).fadeOut('slow');
-        $("#Observations").focus();
-    }
-    else if(Concern == "Yes" && response_fbo == "")
-    {
-        $('#response_fboErrorMsg').html("Enter Response FBO.");
-        $('#response_fboErrorMsg').show();
-        $('#response_fboErrorMsg').delay(2000).fadeOut('slow');
-        $("#response_fbo").focus();
     }
     else
     {
         $.ajax({
             type : "GET",
             url : "{% url 'meat_shop_concern_details_factory_ins' %}",
-            data :{'application_id':application_id,'Requirement':Requirement,'Observations':Observations,'Clause_No':Clause_No,'response_fbo':response_fbo,'Concern':Concern},
+            data :{'application_id':application_id,'Requirement':Requirement,'Observations':Observations,'Clause_No':Clause_No,'Concern':Concern_Val, 'NC_Category':nc_category},
             success : function(data) {
                 $('#details').html(data);
                 $('#details').show();
                 $('#addModal').modal('hide');
+                $('#Requirement').val("");
+                $('#Clause_No').val("");
+                $('input[name="Concern"]:checked').val("");
+                $('#Observations').val("");
+                $('#nc_category').val("");
             }
         });
     }
@@ -823,6 +836,10 @@ function add_team_details(application_id)
                 $('#team_details').html(data);
                 $('#team_details').show();
                 $('#teamModal').modal('hide');
+                $('#name').val("");
+                $('#designation').val("");
+                $('#opening_date').val("");
+                $('#closing_date').val("");
             }
         });
     }
@@ -874,6 +891,7 @@ function approve_factory_inspection(application_id)
                 setTimeout(function() {
                     location.reload();
                 }, 3000);
+
             }
         });
     }
@@ -946,31 +964,33 @@ function add_inspection_team_details(application_id)
                 $('#inspection_team_details').html(data);
                 $('#inspection_team_details').show();
                 $('#InspectionTeamModal').modal('hide');
+                $('#ins_name').val("");
+                $('#ins_designation').val("");
             }
         });
     }
 }
 
-function populateForm(Record_id, Requirement, clause_no, concern, observation, response, Application_No)
+function populateForm(Record_id, Requirement, clause_no, NC, NC_Category, observation, Application_No)
 {
     $('#record_id').val(Record_id);
     $('#edit_Requirement').val(Requirement);
     $('#edit_Clause_No').val(clause_no);
-    $('#edit_Observations').val(observation);
-
-    $('#app_no').val(Application_No);
-    if(concern == "Yes")
+    if(NC == "Yes")
     {
-        $('#concern_yes').attr('checked', true);
-        $('#edit_response_fbo').val(response);
-        $('#edit_response_fbo').removeAttr("disabled");
+        $('#nc_yes').attr('checked', true);
+        $('#edit_nc_category').removeAttr("disabled");
     }
     else
     {
-        $('#concern_no').attr('checked', true);
-        $('#edit_response_fbo').val("");
-        $('#edit_response_fbo').attr("disabled", "disabled");
+        $('#nc_no').attr('checked', true);
+        $('#edit_nc_category').attr("disabled", "disabled");
+        $('#edit_Observations').attr("disabled", "disabled");
+        $('#edit_Observations').val("");
     }
+    $('#edit_Observations').val(observation);
+    $('#app_no').val(Application_No);
+
     $('#edit_concern_model').modal('show');
 }
 
@@ -1012,6 +1032,56 @@ function checkEditConcern(value)
     {
         $('#edit_response_fbo').attr("disabled", "disabled");
         $('#edit_response_fbo').val("");
+    }
+}
+
+function check_date()
+{
+    opening_date = $('#opening_date').val();
+    closing_date = $('#closing_date').val();
+
+    if(closing_date <= opening_date)
+    {
+        $('#closing_dateErrorMsg').html("Cannot Be Less Than Or Equal To Opening Meeting(Date).");
+        $('#closing_dateErrorMsg').show();
+        $('#closing_dateErrorMsg').delay(2000).fadeOut('slow');
+        $('#closing_date').val("");
+    }
+    else
+    {
+        $('#closing_dateErrorMsg').hide();
+    }
+}
+
+function checkConcern(value)
+{
+    if(value == "Yes")
+    {
+        $('#nc_category').removeAttr("disabled");
+        $('#Observations').removeAttr("disabled");
+    }
+    else
+    {
+        $('#nc_category').attr("disabled", "disabled");
+        $('#Observations').attr("disabled", "disabled");
+        $('#nc_category').val("");
+        $('#Observations').val("");
+    }
+}
+
+function checkEditConcern(value)
+{
+    if(value == "Yes")
+    {
+        $('#edit_nc_category').removeAttr("disabled");
+        $('#edit_Observations').removeAttr("disabled");
+    }
+    else
+    {
+        $('#edit_nc_category').attr("disabled", "disabled");
+        $('#edit_Observations').attr("disabled", "disabled");
+        $('#nc_category').val("");
+        $('#edit_Observations').val("");
     }
 }
 </script>

@@ -194,7 +194,7 @@
                                         <th scope="col">Owner Name</th>
                                         <th scope="col">Contact No</th>
                                         <th scope="col">Location</th>
-                                        <th scope="col">Nursery Type</th>
+                                        <th scope="col">Nursery Category</th>
                                         <th scope="col">Registration Number</th>
                                         <th scope="col">Approve Date</th>
                                     </tr>
@@ -207,11 +207,15 @@
                                             <td>{{permit_details.Company_Address}}</td>
                                             <td>{{permit_details.License_No}}</td>
                                             <td>{{permit_details.Owner_Name}}</td>
-                                            <td>{{permit_details.contactNo}}</td>
-                                            <td>{{permit_details.Dzongkhag_Code}},{{permit_details.Gewog_Code}},{{permit_details.Village_Code}}</td>
-                                            <td>{{permit_details.Nursery_Type}}</td>
+                                            <td>{{permit_details.Contact_No}}</td>
+                                            {% for location in location %}
+                                                {% if permit_details.Location_Code == location.Location_Code%}
+                                                    <td>{{location.Location_Name}}</td>
+                                                {% endif %}
+                                            {% endfor %}
+                                            <td>{{permit_details.Nursery_Category}}</td>
                                             <td>{{permit_details.Seed_Certificate}}</td>
-                                            <td>{{permit_details.Approve_Date}}</td>
+                                            <td>{{permit_details.Approved_Date}}</td>
                                         </tr>
                                         {% empty %}
                                         <tr>

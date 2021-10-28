@@ -3,14 +3,6 @@
 form, input, select, textarea{
     color: black !important;
 }
-#loader img
-{
-  left: 50%;
-  margin-left: -32px;
-  margin-top: -32px;
-  position: absolute;
-  top: 50%;
-}
 </style>
 <form method="post" id="applicationForm">
     {% csrf_token %}
@@ -19,7 +11,7 @@ form, input, select, textarea{
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
-                        {% for application_details in application_details %}
+                    {% for application_details in application_details %}
                             <div class="row">
                                 <div class="col-sm-2">
                                     <label class="form-label">Application Type</label>
@@ -27,27 +19,94 @@ form, input, select, textarea{
                                 {% if application_details.Application_Type == 'Animal' %}
                                     <div class="col-sm-4 justify-content-center">
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" class="custom-control-input" checked>
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Animal" checked>
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Animal</span>
                                         </label>
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" class="custom-control-input" disabled>
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Fish" disabled>
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Fish</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Poultry" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Poultry</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Semen" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Semen</span>
+                                        </label>
+                                        <div class="alert alert-danger" id="applicationTypeErrorMsg" style="display:none"></div>
+                                    </div>
+                                {% elif application_details.Application_Type == 'Fish' %}
+                                    <div class="col-sm-4 justify-content-center">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Animal" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Animal</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Fish" checked>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Fish</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Poultry" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Poultry</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Semen" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Semen</span>
+                                        </label>
+                                    </div>
+                                {% elif application_details.Application_Type == 'Poultry' %}
+                                    <div class="col-sm-4 justify-content-center">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Animal" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Animal</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Fish" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Fish</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Poultry" checked>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Poultry</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Semen" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Semen</span>
                                         </label>
                                     </div>
                                 {% else %}
                                     <div class="col-sm-4 justify-content-center">
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" class="custom-control-input" disabled>
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Animal" disabled>
                                             <span class="custom-control-indicator"></span>
-                                            <span class="custom-control-description">Livestock Product</span>
+                                            <span class="custom-control-description">Animal</span>
                                         </label>
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" class="custom-control-input" checked>
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Fish" disabled>
                                             <span class="custom-control-indicator"></span>
-                                            <span class="custom-control-description">Animal Feed</span>
+                                            <span class="custom-control-description">Fish</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Poultry" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Poultry</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Semen" checked>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Semen</span>
                                         </label>
                                     </div>
                                 {% endif %}
@@ -110,6 +169,7 @@ form, input, select, textarea{
                                     </div>
                                 {% endif %}
                             </div>
+                        <br>
                             <div class="row">
                                 <div class="col-sm-2">
                                     <label class="form-label">Nationality</label>
@@ -142,6 +202,7 @@ form, input, select, textarea{
                                     </div>
                                 {% endif %}
                             </div>
+                        <br>
                             {% if application_details.Import_Type == 'Individual' and application_details.Nationality == 'Bhutanese'%}
                                 <div class="row">
                                     <div class="col-md-4">
@@ -212,11 +273,10 @@ form, input, select, textarea{
                                     </div>
                                      <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Place Of Entry</label>
+                                            <label class="form-label">Place of Entry</label>
                                             <select class="form-control" disabled>
-                                                <option value="">--SELECT--</option>
                                                 {% for location in location %}
-                                                        <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
+                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
                                                 {% endfor %}
                                              </select>
                                         </div>
@@ -229,16 +289,6 @@ form, input, select, textarea{
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label class="form-label">Place of Entry</label>
-                                            <select class="form-control"disabled>
-                                                {% for location in location %}
-                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
-                                                {% endfor %}
-                                             </select>
-                                        </div>
-                                    </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Final Destination</label>
@@ -256,19 +306,19 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="cid">Passport No</label>
-                                            <input type="number" class="form-control" value="{{ application_details.Passport_No }}" disabled>
+                                            <label class="form-label">Passport No</label>
+                                            <input type="text" class="form-control" value="{{ application_details.Passport_Number }}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="name">Name</label>
+                                            <label class="form-label">Name</label>
                                             <input type="text" class="form-control" value="{{ application_details.Applicant_Name }}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="presentAddress">Present Address</label>
+                                            <label class="form-label">Present Address</label>
                                             <textarea class="form-control" rows="3" disabled>{{ application_details.Present_Address }}</textarea>
                                         </div>
                                     </div>
@@ -302,11 +352,10 @@ form, input, select, textarea{
                                     </div>
                                      <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Place Of Entry</label>
-                                            <select class="form-control" disabled>
-                                                <option value="">--SELECT--</option>
+                                            <label class="form-label">Place of Entry</label>
+                                            <select class="form-control"disabled>
                                                 {% for location in location %}
-                                                        <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
+                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
                                                 {% endfor %}
                                              </select>
                                         </div>
@@ -321,18 +370,8 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Place of Entry</label>
-                                            <select class="form-control"disabled>
-                                                {% for location in location %}
-                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
-                                                {% endfor %}
-                                             </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
                                             <label class="form-label">Final Destination</label>
-                                             <input type="text" class="form-control" value="{{application_details.Final_Destination }}">
+                                             <input type="text" class="form-control" value="{{application_details.Final_Destination }}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -433,106 +472,103 @@ form, input, select, textarea{
                                     </div>
                                 </div>
                             {% endif %}
-                                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
-                                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
-                                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">Product</span>
-                                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Details</span>
-                                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
-                                </div>
-                                <br>
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col">Species</th>
-                                            <th scope="col">Breed</th>
-                                            <th scope="col">Age</th>
-                                            <th scope="col">Sex</th>
-                                            <th scope="col">Description</th>
-                                            <th scope="col">Number</th>
-                                            <th scope="col">Remarks</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for import in details %}
-                                            <tr>
-                                                <td>{{ forloop.counter }}</td>
-                                                <td>{{import.Species}}</td>
-                                                <td>{{import.Breed}}</td>
-                                                <td>{{import.Age}}</td>
-                                                <td>{{import.Sex}}</td>
-                                                <td>{{import.Description}}</td>
-                                                <td>{{import.Quantity}}</td>
-                                                <td>{{import.Remarks}}</td>
-                                            </tr>
-                                            {% empty %}
-                                            <tr>
-                                              <td colspan="8" class="text-center">No Data</td>
-                                            </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                                <br>
-                                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
-                                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
-                                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">File</span>
-                                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Attachments</span>
-                                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
-                                </div>
-                                    <table class="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">#</th>
-                                                <th scope="col">File</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                           {% for file_attach in file %}
-                                                    <tr>
-                                                        <td>{{ forloop.counter }}</td>
-                                                        <td><a href='{{file_attach.File_Path}}' target="_blank">{{file_attach.Attachment}}</a></td>
-                                                    </tr>
-                                                    {% empty %}
-                                                    <tr>
-                                                      <td colspan="3" class="text-center">No Data</td>
-                                                    </tr>
-                                           {% endfor %}
-                                        </tbody>
-                                    </table>
+                    {% endfor %}
+                    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Product</span>
+                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Details</span>
+                        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                    </div>
+                    <br>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Particulars</th>
+                                <th scope="col">Company Name</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Unit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for import in details %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{import.Particulars}}</td>
+                                    <td>{{import.Company_Name}}</td>
+                                    <td>{{import.Description}}</td>
+                                    <td>{{import.Unit}}</td>
+                                    <td>{{import.Quantity}}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                  <td colspan="6" class="text-center">No Data</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <br>
+                    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">File</span>
+                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Attachments</span>
+                        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                    </div>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">File</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           {% for file_attach in file %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td><a href='{{file_attach.File_Path}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="3" class="text-center">No Data</td>
+                                    </tr>
+                           {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Validity Period (If Approve Please Fill The Validity Period) <font color="red">*</font></label>
+                                <input type="text" class="form-control" name="validity" id="validity" onkeypress="return isNumberKey(event)" onchange="check_validity(this.value)">
                             </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Validity Period (If Approve Please Fill The Validity Period)</label>
-                                    <input type="number" class="form-control" name="validity" id="validity">
-                                </div>
-                                <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>
+                            <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label class="form-label">Remarks(If Reject Please Fill THe Remarks) <font color="red">*</font></label>
+                                <textarea class="form-control" rows="3" id="remarks" name="remarks"></textarea>
                             </div>
-                            <div class="col-md-8">
-                                <div class="form-group">
-                                    <label class="form-label">Remarks(If Reject Please Fill THe Remarks)</label>
-                                    <textarea class="form-control" rows="3" id="remarks" name="remarks"></textarea>
-                                </div>
-                                <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
-                            </div>
+                            <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
                         </div>
-                        <br>
-                        <hr>
-                        <div id="loader" style="display:none">
-                            <img src="{% static 'assets/img/ajax-loader.gif' %}" alt="processing..." />
-                        </div>
-                        <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
-                            Application Approved
-                        </div>
-                        <div id="rejectMsg" class="alert alert-info" role="alert" style="display:none;">
-                            Application Rejected
-                        </div>
+                    </div>
+                    <br>
+                    <hr>
+                    <div id="loader" style="display:none">
+                        <img src="{% static 'assets/img/ring-loader.gif' %}"  alt="processing..." />
+                    </div>
+                    <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+                        Application Approved
+                    </div>
+                    <div id="rejectMsg" class="alert alert-info" role="alert" style="display:none;">
+                        Application Rejected
+                    </div>
+                    {% for application_details in application_details %}
                         <div class="text-center">
                             <button type="button" class="btn btn-primary" onclick="fo_approve('{{ application_details.Application_No }}')"> Approve </button>
                             <button type="button" class="btn btn-danger" onclick="fo_reject('{{ application_details.Application_No }}')"> Reject </button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         </div>
-                        {% endfor %}
+                    {% endfor %}
                     </div>
                 </div>
             </div>
@@ -541,13 +577,23 @@ form, input, select, textarea{
 </form>
 
 <script>
+    function isNumberKey(evt)
+    {
+     var charCode = (evt.which) ? evt.which : event.keyCode
+     if (charCode > 31 && (charCode < 48 || charCode > 57))
+        return false;
+
+     return true;
+    }
+
     function fo_approve(application_id)
         {
+
             remarks = $('#remarks').val();
             validity = $('#validity').val();
             if(validity == "")
             {
-                $('#validityErrorMsg').html("Remarks Cannot Be Empty.");
+                $('#validityErrorMsg').html("Enter Validity Period.");
                 $('#validityErrorMsg').show();
                 $('#validityErrorMsg').delay(2000).fadeOut('slow');
             }
@@ -560,42 +606,51 @@ form, input, select, textarea{
                     data :{'application_id':application_id ,'remarks':remarks,'validity':validity, csrfmiddlewaretoken: '{{ csrf_token }}'},
                     success : function(data) {
                         $("#loader").hide();
-                        $('#import_detailsModal').modal('hide');
                         $('#submitMsg').show();
                         setTimeout(function()
                         {
                             $("#submitMsg").hide('blind', {}, 500)
                         }, 2000);
+                        setTimeout(function()
+                        {
+                            $('#import_detailsModal').modal('hide');
+                        }, 2000);
                         setTimeout(function() {
                             window.location.href = '{% url 'dashboard' %}';
                         }, 3000);
+
                     }
                 });
             }
         }
     function fo_reject(application_id)
+    {
+
+        remarks = $('#remarks').val();
+
+        if(remarks == "")
         {
-
-            remarks = $('#remarks').val();
-
-            if(remarks == "")
-            {
-                $('#remarksErrorMsg').html("Remarks Cannot Be Empty.");
-                $('#remarksErrorMsg').show();
-                $('#remarksErrorMsg').delay(2000).fadeOut('slow');
-            }
+            $('#remarksErrorMsg').html("Remarks Cannot Be Empty.");
+            $('#remarksErrorMsg').show();
+            $('#remarksErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            $("#loader").show();
             $.ajax({
-                $("#loader").show();
                 type : "POST",
                 url : "{% url 'reject_fo_la_import' %}",
                 data :{'application_id':application_id ,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(data) {
                     $("#loader").hide();
-                    $('#import_detailsModal').modal('hide');
                     $('#rejectMsg').show();
                     setTimeout(function()
                     {
                         $("#rejectMsg").hide('blind', {}, 500)
+                    }, 2000);
+                    setTimeout(function()
+                    {
+                        $('#import_detailsModal').modal('hide');
                     }, 2000);
                     setTimeout(function() {
                         window.location.href = '{% url 'dashboard' %}';
@@ -603,4 +658,20 @@ form, input, select, textarea{
                 }
             });
         }
+    }
+
+    function check_validity(validity)
+    {
+        if(validity == 0)
+        {
+            $('#validityErrorMsg').html("Must Be Greater Than Zero.");
+            $('#validityErrorMsg').show();
+            $('#validityErrorMsg').delay(2000).fadeOut('slow');
+            $('#validity').val("");
+        }
+        else
+        {
+            $('#validityErrorMsg').hide();
+        }
+    }
 </script>

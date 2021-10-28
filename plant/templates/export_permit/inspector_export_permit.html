@@ -324,16 +324,22 @@ color: black !important;
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-sm-6">
-                                            <label class="form-label">Country</label>
+                                        <div class="col-sm-4">
+                                            <label class="form-label">Importing Country</label>
                                             <input type="text" class="form-control" value="{{application_details.Importing_Country}}" disabled>
                                         </div>
-                                        <div class="col-sm-6">
+                                        <div class="col-sm-4">
                                             <div class="form-group">
                                                 <label class="form-label">Declared point of Entry</label>
+                                                <input type="text" class="form-control"  value="{{application_details.Entry_Point}}" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Declared Point of Exit</label>
                                                 <select class="form-control" name="p_Entry_Point"  id="p_Entry_Point" disabled>
                                                     {% for entry_point in entry_point %}
-                                                        <option value="{{ entry_point.Field_Office_Id }}"{% if application_details.Entry_Point == entry_point.Field_Office_Id %}selected{% endif %}>
+                                                        <option value="{{ entry_point.Field_Office_Id }}"{% if application_details.Exit_Point == entry_point.Field_Office_Id %}selected{% endif %}>
                                                             {{ entry_point.Field_Office }}
                                                         </option>
                                                     {% endfor %}
@@ -527,13 +533,13 @@ color: black !important;
                                             <div class="form-group">
                                                 <label class="form-label">Mode of conveyance </label>
                                                 <select class="form-control form-control" disabled>
-                                                   {% if application_details.Mode_Of_Conveyance == 'Propagation' %}
+                                                   {% if application_details.Mode_Of_Conveyance == 'Sea' %}
                                                     <option value="Sea" selected>Sea</option>
-                                                    {% elif application_details.Mode_Of_Conveyance == 'Propagation' %}
+                                                    {% elif application_details.Mode_Of_Conveyance == 'Air' %}
                                                     <option value="Air" selected>Air</option>
-                                                    {% elif application_details.Mode_Of_Conveyance == 'Propagation' %}
+                                                    {% elif application_details.Mode_Of_Conveyance == 'Road' %}
                                                     <option value="Road" selected>Road</option>
-                                                    {% elif application_details.Mode_Of_Conveyance == 'Propagation' %}
+                                                    {% elif application_details.Mode_Of_Conveyance == 'Rail' %}
                                                     <option value="Rail" selected>Rail</option>
                                                     {% else %}
                                                     <option value="Passenger" selected>Passenger</option>
@@ -565,7 +571,7 @@ color: black !important;
                                                 <span class="form-radio-sign">Direct Export Only</span>
                                             </label>
                                             <label class="form-radio-label ml-3">
-                                                <input class="form-radio-input" type="radio">
+                                                <input class="form-radio-input" type="radio" disabled>
                                                 <span class="form-radio-sign">Retail Outlets Only</span>
                                             </label>
                                         </div>
@@ -575,7 +581,7 @@ color: black !important;
                                         <div class="form-check text-center">
                                             <label class="form-label">Applicant Type <font color="red">*</font></label><br>
                                             <label class="form-radio-label ml-3">
-                                                <input class="form-radio-input" type="radio">
+                                                <input class="form-radio-input" type="radio" disabled>
                                                 <span class="form-radio-sign">Direct Export Only</span>
                                             </label>
                                             <label class="form-radio-label ml-3">
@@ -635,6 +641,36 @@ color: black !important;
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Current Address <font color="red">*</font></label>
+                                            <textarea class="form-control" disabled rows="3">{{application_details.Exporter_Address}}</textarea>
+                                        </div>
+                                        <div class="alert alert-danger" id="c_current_addressErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Permanent Address(if different from the current address)</label>
+                                            <textarea class="form-control" disabled rows="3">{{application_details.Permanent_Address}}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                 <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Date Of Inspection Requested <font color="red">*</font></label>
+                                            <input type="text" class="form-control" value="{{application_details.Desired_Inspection_Date}}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Place Of Inspection Requested <font color="red">*</font></label>
+                                            <input type="text" class="form-control" value="{{application_details.Desired_Inspection_Place}}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% if "directRadio" == application_details.Applicant_Type%}
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <div class="form-group">
@@ -643,6 +679,7 @@ color: black !important;
                                             </div>
                                         </div>
                                     </div>
+                                {% endif %}
                                     <div class="form-group row">
                                         <label class="col-sm-4 col-form-label">Gross Weight (Weight of Cordyceps and package)</label>
                                         <div class="col-sm-4">
@@ -685,46 +722,77 @@ color: black !important;
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-sm-4">
-                                            <div class="form-group">
-                                                <label class="form-label">No Of Packages</label>
-                                                <input type="text" class="form-control" value="{{application_details.Packages_No}}" readonly="readonly">
+                                    {% if "directRadio" == application_details.Applicant_Type%}
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">No Of Packages</label>
+                                                    <input type="text" class="form-control" value="{{application_details.Packages_No}}" readonly="readonly">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">Importing Country</label>
+                                                    <input type="text" class="form-control" value="{{application_details.Importing_Country}}" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">Name & Address of Consignee</label>
+                                                    <textarea class="form-control" disabled rows="3">{{application_details.Consingee_Name_Address}}</textarea>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="col-sm-4">
-                                            <div class="form-group">
-                                                <label class="form-label">Importing Country</label>
-                                                <input type="text" class="form-control" value="{{application_details.Importing_Country}}" disabled>
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">Mode of conveyance </label>
+                                                    <select class="form-control form-control" disabled>
+                                                       {% if application_details.Mode_Of_Conveyance == 'Propagation' %}
+                                                        <option value="Sea" selected>Sea</option>
+                                                        {% elif application_details.Mode_Of_Conveyance == 'Propagation' %}
+                                                        <option value="Air" selected>Air</option>
+                                                        {% elif application_details.Mode_Of_Conveyance == 'Propagation' %}
+                                                        <option value="Road" selected>Road</option>
+                                                        {% elif application_details.Mode_Of_Conveyance == 'Propagation' %}
+                                                        <option value="Rail" selected>Rail</option>
+                                                        {% else %}
+                                                        <option value="Passenger" selected>Passenger</option>
+                                                        {% endif %}
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="col-sm-4">
-                                            <div class="form-group">
-                                                <label class="form-label">Name & Address of Consignee</label>
-                                                <textarea class="form-control" disabled rows="3">{{application_details.Consingee_Name_Address}}</textarea>
+                                        {% else %}
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Total No Of Packages <font color="red">*</font></label>
+                                                        <input type="text" class="form-control" value="{{application_details.Packages_No}}" disabled>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Name Of The Outlet <font color="red">*</font></label>
+                                                        <input type="text" class="form-control" value="{{application_details.Outlet_name}}" disabled>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Contact No of the outlet owner <font color="red">*</font></label>
+                                                        <input type="text" class="form-control" value="{{application_details.Outlet_Contact_No}}" disabled>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-4">
-                                            <div class="form-group">
-                                                <label class="form-label">Mode of conveyance </label>
-                                                <select class="form-control form-control" disabled>
-                                                   {% if application_details.Mode_Of_Conveyance == 'Propagation' %}
-                                                    <option value="Sea" selected>Sea</option>
-                                                    {% elif application_details.Mode_Of_Conveyance == 'Propagation' %}
-                                                    <option value="Air" selected>Air</option>
-                                                    {% elif application_details.Mode_Of_Conveyance == 'Propagation' %}
-                                                    <option value="Road" selected>Road</option>
-                                                    {% elif application_details.Mode_Of_Conveyance == 'Propagation' %}
-                                                    <option value="Rail" selected>Rail</option>
-                                                    {% else %}
-                                                    <option value="Passenger" selected>Passenger</option>
-                                                    {% endif %}
-                                                </select>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Address of the outlet <font color="red">*</font></label>
+                                                        <textarea class="form-control" rows="3" disabled>{{ application_details.Outlet_Address }}</textarea>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
+                                        {% endif %}
                                 {% endif %}
                             {% endfor %}
                         </div>
@@ -787,7 +855,7 @@ color: black !important;
                                     <div class="col-sm-4">
                                         <div class="form-group">
                                             <label class="form-label">No Of Sample Drawn <font color="red">*</font></label>
-                                            <input type="text" class="form-control" id="no_of_sample_drawn" name="no_of_sample_drawn" onkeypress="return isNumberKey(event)" onchange="calculate(this.value)">
+                                            <input type="text" class="form-control" id="no_of_sample_drawn" name="no_of_sample_drawn" onkeypress="return isNumberKey(event)" onchange="calculate()">
                                         </div>
                                         <div class="alert alert-danger" id="no_of_sample_drawnErrorMsg" style="display:none"></div>
                                     </div>
@@ -1080,7 +1148,7 @@ color: black !important;
                                         </div>
                                         <div class="col-sm-5">
                                             <div class="form-group">
-                                                <label class="form-label">Comments</label>
+                                                <label class="form-label">Comments <font id="analysis_Comment_box" color="red" style="display:none">*</font></label>
                                                 <textarea class="form-control" id="analysis_Comment" name="analysis_Comment" rows="3" disabled></textarea>
                                             </div>
                                             <div class="alert alert-danger" id="analysis_CommentErrorMsg" style="display:none"></div>
@@ -1107,7 +1175,7 @@ color: black !important;
                                         </div>
                                         <div class="col-sm-5">
                                             <div class="form-group">
-                                                <label class="form-label">Comments</label>
+                                                <label class="form-label">Comments <font id="phytosanitary_Comment_box" color="red" style="display:none">*</font></label>
                                                 <textarea class="form-control" id="phytosanitary_Comment" name="phytosanitary_Comment" rows="3" disabled></textarea>
                                             </div>
                                             <div class="alert alert-danger" id="phytosanitary_CommentErrorMsg" style="display:none"></div>
@@ -1134,7 +1202,7 @@ color: black !important;
                                         </div>
                                         <div class="col-sm-5" id="comment">
                                             <div class="form-group">
-                                                <label class="form-label">Comments</label>
+                                                <label class="form-label">Comments <font id="Treatment_Comment_box" color="red" style="display:none">*</font></label>
                                                 <textarea class="form-control" id="Treatment_Comment" name="Treatment_Comment" rows="3" disabled></textarea>
                                             </div>
                                             <div class="alert alert-danger" id="Treatment_CommentErrorMsg" style="display:none"></div>
@@ -1210,7 +1278,7 @@ color: black !important;
                                         <div class="row" id="others_div" style="display:none">
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label class="form-label">Others</label>
+                                                    <label class="form-label">Others <font color="red">*</font></label>
                                                     <input type="text" class="form-control" id="other_treatment" name="other_treatment">
                                                 </div>
                                                 <div class="alert alert-danger" id="other_treatmentErrorMsg" style="display:none"></div>
@@ -1291,7 +1359,6 @@ color: black !important;
                                         <button type="button" class="btn btn-primary" onclick="export_complete()">Complete</button>
                                     </div>
                                 </div>
-
                             {% endif %}
                         {% endfor%}
                     </div>
@@ -1515,9 +1582,9 @@ color: black !important;
                 $('#ConcentrationErrorMsg').delay(2000).fadeOut('slow');
                 $('#Concentration').focus();
             }
-            else if(treatment == "Yes" && other_treatment == "")
+            else if(treatment == "others" && other_treatment == "")
             {
-                $('#other_treatmentErrorMsg').html("Enter Comment.");
+                $('#other_treatmentErrorMsg').html("Enter Others Treatment.");
                 $('#other_treatmentErrorMsg').show();
                 $('#other_treatmentErrorMsg').delay(2000).fadeOut('slow');
                 $('#other_treatment').focus();
@@ -1569,7 +1636,7 @@ color: black !important;
             var c_dateOfInspection = $('#c_dateOfInspection').val()
             if(c_dateOfInspection == "")
             {
-                $('#c_dateOfInspectionErrorMsg').html("Enter Treatment Supervised By.");
+                $('#c_dateOfInspectionErrorMsg').html("Select Date Of Inspection.");
                 $('#c_dateOfInspectionErrorMsg').show();
                 $('#c_dateOfInspectionErrorMsg').delay(2000).fadeOut('slow');
                 $('#c_dateOfInspection').focus();
@@ -1651,11 +1718,13 @@ color: black !important;
         {
             $("#Treatment_Comment").removeAttr("disabled");
             $("#treatment_yes").show();
+            $("#Treatment_Comment_box").show();
         }
         else
         {
             $("#Treatment_Comment").attr("disabled", "disabled");
             $("#treatment_yes").hide();
+            $("#Treatment_Comment_box").hide();
         }
     }
 
@@ -1664,10 +1733,12 @@ color: black !important;
         if(value == "Yes")
         {
             $("#analysis_Comment").removeAttr("disabled");
+            $("#analysis_Comment_box").show();
         }
         else
         {
             $("#analysis_Comment").attr("disabled", "disabled");
+            $("#analysis_Comment_box").hide();
         }
     }
 
@@ -1676,10 +1747,12 @@ color: black !important;
         if(value == "Yes")
         {
             $("#phytosanitary_Comment").removeAttr("disabled");
+            $("#phytosanitary_Comment_box").show();
         }
         else
         {
             $("#phytosanitary_Comment").attr("disabled", "disabled");
+            $("#phytosanitary_Comment_box").hide();
         }
     }
 
@@ -1692,12 +1765,14 @@ color: black !important;
      return true;
     }
 
-    function calculate(value)
+    function calculate()
     {
         var total_sample_size = $("#total_sample_size").val();
-        if(value > total_sample_size)
+        var no_of_sample_drawn = $("#no_of_sample_drawn").val();
+        var diff = total_sample_size - no_of_sample_drawn
+        if(diff < 0)
         {
-            $('#no_of_sample_drawnErrorMsg').html("Cannot Be Less Than Total Sample.");
+            $('#no_of_sample_drawnErrorMsg').html("Cannot Be More Than Total Sample.");
             $('#no_of_sample_drawnErrorMsg').show();
             $('#no_of_sample_drawnErrorMsg').delay(2000).fadeOut('slow');
             $('#no_of_sample_drawn').val("");

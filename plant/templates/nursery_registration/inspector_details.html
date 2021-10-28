@@ -3,6 +3,14 @@
 form, input, select, textarea{
     color: black !important;
 }
+#loader img
+{
+  left: 50%;
+  margin-left: -32px;
+  margin-top: -32px;
+  position: absolute;
+  top: 50%;
+}
 </style>
 <div class="card">
     <div class="card-body">
@@ -106,9 +114,9 @@ form, input, select, textarea{
                                                 <select class="form-control form-control" id="Nursery_Type" name="Nursery_Type" disabled>
                                                     {% if application_details.Nursery_Type == "Bi-annual" %}
                                                     <option value="Bi-annual" selected>Bi-annual</option>
-                                                    {% elif application_details.Nursery_Category == "Annual" %}
+                                                    {% elif application_details.Nursery_Type == "Annual" %}
                                                     <option value="Annual"selected>Annual</option>
-                                                    {% elif application_details.Nursery_Category == "Perennial" %}
+                                                    {% elif application_details.Nursery_Type == "Perennial" %}
                                                     <option value="Perennial"selected>Perennial</option>
                                                     {% endif %}
                                                 </select>
@@ -120,7 +128,7 @@ form, input, select, textarea{
                                                 <label class="form-label">Dzongkhag</label>
                                                 <select class="form-control" disabled>
                                                     {% for dzongkhag in dzongkhag %}
-                                                        <option value="{{dzongkhag.Dzongkhag_Code}}"{% if application_details.Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>
+                                                        <option value="{{dzongkhag.Dzongkhag_Code}}"{% if application_details.Dzongkhag == dzongkhag.Dzongkhag_Code %}selected{% endif %}>
                                                             {{ dzongkhag.Dzongkhag_Name }}
                                                         </option>
                                                     {% endfor %}
@@ -132,7 +140,7 @@ form, input, select, textarea{
                                                 <label class="form-label">Gewog</label>
                                                 <select class="form-control" disabled>
                                                     {% for gewog in gewog %}
-                                                        <option value="{{ gewog.Gewog_Code }}"{% if application_details.Gewog_Code == gewog.Gewog_Code %}selected{% endif %}>{{ gewog.Gewog_Name }}</option>
+                                                        <option value="{{ gewog.Gewog_Code }}"{% if application_details.Gewog == gewog.Gewog_Code %}selected{% endif %}>{{ gewog.Gewog_Name }}</option>
                                                     {% endfor %}
                                                 </select>
                                             </div>
@@ -145,7 +153,7 @@ form, input, select, textarea{
                                             <label class="form-label">Village</label>
                                             <select class="form-control" disabled>
                                                 {% for village in village %}
-                                                    <option value="{{ village.Village_Code }}" {% if application_details.Village_Code == village.Village_Code %}selected{% endif %}>{{ village.Village_Name }}</option>
+                                                    <option value="{{ village.Village_Code }}" {% if application_details.Village == village.Village_Code %}selected{% endif %}>{{ village.Village_Name }}</option>
                                                 {% endfor %}
                                             </select>
                                         </div>
@@ -224,7 +232,7 @@ form, input, select, textarea{
                                        {% for file_attach in file %}
                                                 <tr>
                                                     <td>{{ forloop.counter }}</td>
-                                                    <td><a href='{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                                                    <td><a href='{{file_attach.File_Path}}' target="_blank">{{file_attach.Attachment}}</a></td>
                                                 </tr>
                                                 {% empty %}
                                                 <tr>
@@ -409,17 +417,24 @@ form, input, select, textarea{
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-6">
-                                            <label class="from-label">Requested Date For Inspection</label>
+                                            <label class="form-label">Requested Date For Inspection</label>
                                             <input type="text" name="date" id="inspection_date" class="form-control" value="{{application_details.Resubmit_Date}}" disabled>
                                         </div>
                                          <div class="col-md-6">
-                                            <div class="from-label">
+                                            <div class="form-label">
                                                 <label class="from-label">Resubmit Remarks</label>
                                                 <textarea class="form-control" rows="3" id="Resubmit_Remarks" disabled>{{application_details.Resubmit_Remarks}}</textarea>
                                             </div>
                                         </div>
                                      </div>
                                 {% endif %}
+                                <br>
+                                    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                                        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                            <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Inspection </span>&nbsp;&nbsp;&nbsp;
+                                            <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Details</span>
+                                        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                                    </div>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
@@ -457,20 +472,24 @@ form, input, select, textarea{
                                         <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
-                                <div class="alert alert-success" id="approve_Msg" style="display:none"></div>
-                                <div class="modal-footer">
-                                        <button type="button" class="btn btn-flat btn-primary" onclick="approve_application()">
-                                            <i class="ace-icon fa fa-check"></i>
-                                            &nbsp;&nbsp;Approve
-                                        </button>
-                                        <button type="button" class="btn btn-flat btn-primary" onclick="resubmit_application()">
-                                            <i class="ace-icon fa fa-reply-all"></i>
-                                            &nbsp;&nbsp;Resubmit
-                                        </button>
-                                        <button type="button" class="btn btn-flat btn-primary" onclick="reject_application()">
-                                            <i class="ace-icon fa fa-times"></i>
-                                            &nbsp;&nbsp;Reject
-                                        </button>
+                                <hr>
+                                <div id="loader" style="display:none">
+                                    <img src="{% static 'assets/img/ajax-loader.gif' %}" alt="processing..." />
+                                </div>
+                                 <div class="alert alert-success" id="approve_Msg" style="display:none"></div>
+                                <div class="card-action text-center">
+                                    <button type="button" class="btn btn-flat btn-primary" onclick="approve_application()">
+                                        <i class="ace-icon fa fa-check"></i>
+                                        &nbsp;&nbsp;Approve
+                                    </button>
+                                    <button type="button" class="btn btn-flat btn-primary" onclick="resubmit_application()">
+                                        <i class="ace-icon fa fa-reply-all"></i>
+                                        &nbsp;&nbsp;Resubmit
+                                    </button>
+                                    <button type="button" class="btn btn-flat btn-primary" onclick="reject_application()">
+                                        <i class="ace-icon fa fa-times"></i>
+                                        &nbsp;&nbsp;Reject
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -507,7 +526,8 @@ form, input, select, textarea{
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
+
+            <div class="card-action text-center">
                  {% for application_details in application_details %}
                     <button type="button" class="btn btn-flat btn-primary" onclick="add_details_ins('{{ application_details.Application_No }}')">
                         <i class="ace-icon fa fa-check"></i>
@@ -534,14 +554,14 @@ function add_details_ins(application_id)
 
     if(currentObservation == "")
     {
-        $('#currentObservationErrorMsg').html("Select Team Leader.");
+        $('#currentObservationErrorMsg').html("Enter Current Observation.");
         $('#currentObservationErrorMsg').show();
         $('#currentObservationErrorMsg').delay(2000).fadeOut('slow');
         $('#currentObservation').focus();
     }
     else if(decisionConform == "")
     {
-        $('#decisionConformErrorMsg').html("Enter Inspection Team.");
+        $('#decisionConformErrorMsg').html("Enter Decision Conformity Statement.");
         $('#decisionConformErrorMsg').show();
         $('#decisionConformErrorMsg').delay(2000).fadeOut('slow');
         $('#decisionConform').focus();
@@ -557,6 +577,8 @@ function add_details_ins(application_id)
                 $('#decision_details').html(data);
                 $('#decision_details').show();
                 $('#decision_details').focus();
+                $('#currentObservation').val("");
+                $('#decisionConform').val("");
             }
         });
     }
@@ -592,11 +614,13 @@ function approve_application()
     }
     else
     {
+        $("#loader").show();
         $.ajax({
             type : "GET",
             url : "{% url 'approve_nursery_application' %}",
             data :$('#nursery_inspector_form').serialize(),
             success : function(data) {
+                $("#loader").hide();
                 $('#approve_Msg').html("Application Approved.");
                 $('#approve_Msg').show();
                 $('#approve_Msg').delay(2000).fadeOut('slow');
@@ -615,30 +639,9 @@ function reject_application()
     dateOfInspection = $('#dateOfInspection').val();
     remarks = $('#remarks').val();
 
-    if(Inspection_Leader == "")
+    if(remarks == "")
     {
-        $('#teamLeaderErrorMsg').html("Select Team Leader.");
-        $('#teamLeaderErrorMsg').show();
-        $('#teamLeaderErrorMsg').delay(2000).fadeOut('slow');
-        $('#teamLeader').focus();
-    }
-    else if(Inspection_Team == "")
-    {
-        $('#insTeamErrorMsg').html("Enter Inspection Team.");
-        $('#insTeamErrorMsg').show();
-        $('#insTeamErrorMsg').delay(2000).fadeOut('slow');
-        $('#insTeam').focus();
-    }
-    else if(dateOfInspection == "")
-    {
-        $('#dateOfInspectionErrorMsg').html("Select Date Of Inspection.");
-        $('#dateOfInspectionErrorMsg').show();
-        $('#dateOfInspectionErrorMsg').delay(2000).fadeOut('slow');
-        $('#dateOfInspection').focus();
-    }
-    else if(remarks == "")
-    {
-        $('#remarksErrorMsg').html("SEnter Remarks.");
+        $('#remarksErrorMsg').html("Enter Remarks.");
         $('#remarksErrorMsg').show();
         $('#remarksErrorMsg').delay(2000).fadeOut('slow');
         $('#remarks').focus();
@@ -650,7 +653,7 @@ function reject_application()
             url : "{% url 'reject_nursery_application' %}",
             data :$('#nursery_inspector_form').serialize(),
             success : function(data) {
-                $('#approve_Msg').html("Application Sent For Resubmission.");
+                $('#approve_Msg').html("Application Rejected.");
                 $('#approve_Msg').show();
                 $('#approve_Msg').delay(2000).fadeOut('slow');
                 setTimeout(function() {
@@ -664,19 +667,32 @@ function reject_application()
 function resubmit_application()
 {
 
-   $.ajax({
-        type : "GET",
-        url : "{% url 'resubmit_nursery_application' %}",
-        data :$('#nursery_inspector_form').serialize(),
-        success : function(data) {
-            location.reload();
-        }
-    });
+    remarks = $('#remarks').val();
+
+    if(remarks == "")
+    {
+        $('#remarksErrorMsg').html("Enter Remarks.");
+        $('#remarksErrorMsg').show();
+        $('#remarksErrorMsg').delay(2000).fadeOut('slow');
+        $('#remarks').focus();
+    }
+    else
+    {
+       $.ajax({
+            type : "GET",
+            url : "{% url 'resubmit_nursery_application' %}",
+            data :$('#nursery_inspector_form').serialize(),
+            success : function(data) {
+                location.reload();
+            }
+        });
+    }
 }
 
 function openDecisionModal()
 {
     $('#addModal').modal('show');
 }
+
 
  </script>

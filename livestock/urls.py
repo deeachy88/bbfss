@@ -64,8 +64,6 @@ urlpatterns = [
     path('add_la_file_name', views.add_la_file_name, name='add_la_file_name'),
     path('delete_la_file', views.delete_la_file, name='delete_la_file'),
     path('submit_import_application', views.submit_import_application, name='submit_import_application'),
-    path('edit_la_inspector_details/<int:Record_Id>', views.edit_la_inspector_details,
-         name='edit_la_inspector_details'),
     path('submit_la_application', views.submit_la_application, name='submit_la_application'),
     path('approve_fo_la_import', views.approve_fo_la_import, name='approve_fo_la_import'),
     path('reject_fo_la_import', views.reject_fo_la_import, name='reject_fo_la_import'),
@@ -120,7 +118,9 @@ urlpatterns = [
     path('approve_application_lmp', views.approve_application_lmp, name='approve_application_lmp'),
     path('reject_application_lmp', views.reject_application_lmp, name='reject_application_lmp'),
     path('liv_mov_details', views.liv_mov_details, name='liv_mov_details'),
-    path('liv_mov_details', views.liv_mov_attachment, name='liv_mov_details'),
+    path('liv_mov_attachment', views.liv_mov_attachment, name='liv_mov_attachment'),
+    path('update_movement_permit_application', views.update_movement_permit_application,
+         name='update_movement_permit_application'),
 
 
     # Ante Mortem And Post Mortem

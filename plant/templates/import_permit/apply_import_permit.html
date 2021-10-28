@@ -533,7 +533,7 @@ form, input, select, textarea{
                             </div>
                         </div>
                         <div class="card-action">
-                            <button type="button" class="btn btn-success" id="agro_import_button" onclick="agro_import_save()" style="display:none">Save</button>
+                            <button type="button" class="btn btn-success" id="agro_details_button" onclick="agro_import_save()" style="display:none">Save</button>
                         </div>
                     </div>
                 </div>
@@ -606,7 +606,7 @@ form, input, select, textarea{
                                     <div class="form-group col-md-6">
                                         <div class="form-group">
                                             <label class="form-label">Quantity <font color="red">*</font></label>
-                                            <input type="text" class="form-control" id="qty" name="qty" onkeypress="return isNumberKey(event)">
+                                            <input type="text" class="form-control" id="qty" name="qty" onkeypress="return isNumberKey(event)" onchange="check_qty(this.value)">
                                         </div>
                                         <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
                                     </div>
@@ -690,7 +690,7 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Quantity <font color="red">*</font></label>
-                                            <input type="text" class="form-control" id="agro_qty" name="agro_qty" onkeypress="return isNumberKey(event)">
+                                            <input type="text" class="form-control" id="agro_qty" name="agro_qty" onkeypress="return isNumberKey(event)" onchange="check_agro_qty(this.value)">
                                         </div>
                                         <div class="alert alert-danger" id="agro_qtyErrorMsg" style="display:none"></div>
                                     </div>
@@ -848,7 +848,7 @@ form, input, select, textarea{
                                     <div class="form-group col-md-6">
                                         <div class="form-group">
                                             <label class="form-label">Quantity <font color="red">*</font></label>
-                                            <input type="text" class="form-control" id="edit_qty" name="edit_qty" onkeypress="return isNumberKey(event)">
+                                            <input type="text" class="form-control" id="edit_qty" name="edit_qty" onkeypress="return isNumberKey(event)" onchange="check_edit_qty(this.val)">
                                         </div>
                                         <div class="alert alert-danger" id="edit_qtyErrorMsg" style="display:none"></div>
                                     </div>
@@ -931,7 +931,7 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Quantity <font color="red">*</font></label>
-                                            <input type="text" class="form-control" id="edit_agro_qty" name="edit_agro_qty"  onkeypress="return isNumberKey(event)">
+                                            <input type="text" class="form-control" id="edit_agro_qty" name="edit_agro_qty"  onkeypress="return isNumberKey(event)" onchange="check_edit_agro_qty(this.value)">
                                         </div>
                                         <div class="alert alert-danger" id="edit_agro_qtyErrorMsg" style="display:none"></div>
                                     </div>
@@ -1538,6 +1538,7 @@ form, input, select, textarea{
                        $('#import-profile-tab').tab('show');
                        $('.modal-backdrop').remove();
                        $('#save_plant_form')[0].reset();
+                       $("#import-profile-tab").prop('disabled', false);
                     }
                 });
             }
@@ -1593,6 +1594,7 @@ form, input, select, textarea{
                    $('#agro-profile-tab').tab('show');
                    $('.modal-backdrop').remove();
                    $('#save_agro_form')[0].reset();
+                   $("#import-profile-tab").prop('disabled', false);
                 }
             });
         }
@@ -1947,6 +1949,7 @@ function loadDetails()
 {
     var appNo = $('#applicationNo').val();
     var import_type = $("input[name=Import_Type]:checked").val();
+
     $.ajax({
         type : "GET",
         url : "{% url 'load_plant_import_details' %}",
@@ -1955,7 +1958,6 @@ function loadDetails()
         {
             if(import_type == 'P')
             {
-
                 $('#plant-card').show();
                 $('#Details').html(response);
             }
@@ -1982,5 +1984,64 @@ function load_attachment_details()
     });
 }
 
+function check_agro_qty(agro_qty)
+{
+    if(agro_qty == 0)
+    {
+        $('#agro_qtyErrorMsg').html("Must Be Greater Than Zero.");
+        $('#agro_qtyErrorMsg').show();
+        $('#agro_qtyErrorMsg').delay(2000).fadeOut('slow');
+        $('#agro_qty').val("");
+    }
+    else
+    {
+        $('#agro_qtyErrorMsg').hide();
+    }
+}
+
+function check_qty(qty)
+{
+    if(qty == 0)
+    {
+        $('#qtyErrorMsg').html("Must Be Greater Than Zero.");
+        $('#qtyErrorMsg').show();
+        $('#qtyErrorMsg').delay(2000).fadeOut('slow');
+        $('#qty').val("");
+    }
+    else
+    {
+        $('#qtyErrorMsg').hide();
+    }
+}
+
+function check_edit_agro_qty(agro_qty)
+{
+    if(agro_qty == 0)
+    {
+        $('#edit_agro_qtyErrorMsg').html("Must Be Greater Than Zero.");
+        $('#edit_agro_qtyErrorMsg').show();
+        $('#edit_agro_qtyErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_agro_qty').val("");
+    }
+    else
+    {
+        $('#edit_agro_qtyErrorMsg').hide();
+    }
+}
+
+function check_edit_qty(qty)
+{
+    if(qty == 0)
+    {
+        $('#edit_qtyErrorMsg').html("Must Be Greater Than Zero.");
+        $('#edit_qtyErrorMsg').show();
+        $('#edit_qtyErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_qty').val("");
+    }
+    else
+    {
+        $('#edit_qtyErrorMsg').hide();
+    }
+}
 </script>
 {% endblock %}

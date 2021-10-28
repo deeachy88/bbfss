@@ -299,7 +299,8 @@ def save_fbr_details(request):
                                                              Contact_No=Contact_No,
                                                              Address=Address, BAFRA_License_No=BAFRA_License_No)
     fh_details = t_food_business_registration_licensing_t2.objects.filter(Application_No=Application_No)
-    return render(request, 'registration_licensing/details.html', {'fh_details': fh_details})
+    count = t_food_business_registration_licensing_t2.objects.filter(Application_No=Application_No).count()
+    return render(request, 'registration_licensing/details.html', {'fh_details': fh_details, 'count': count})
 
 
 def save_fh_details(request):
@@ -310,7 +311,9 @@ def save_fh_details(request):
     t_food_business_registration_licensing_t3.objects.create(Application_No=Application_No, FH_Name=fh_name,
                                                              FH_License_No=fh_license)
     fh_details = t_food_business_registration_licensing_t3.objects.filter(Application_No=Application_No)
-    return render(request, 'registration_licensing/food_handler_details.html', {'fh_details': fh_details})
+    fh_details_count = t_food_business_registration_licensing_t3.objects.filter(Application_No=Application_No).count()
+    return render(request, 'registration_licensing/food_handler_details.html', {'fh_details': fh_details,
+                                                                                'count': fh_details_count})
 
 
 def load_outsourced_details(request):
@@ -334,6 +337,7 @@ def load_fbr_attachment(request):
 def submit_food_business_application(request):
     application_no = request.POST.get('application_no')
     workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
+    workflow_details.update(Application_Date=date.today())
     workflow_details.update(Action_Date=date.today())
     return redirect(food_business_registration_licensing)
 
@@ -1088,6 +1092,7 @@ def load_fec_attachment(request):
 def submit_food_export_application(request):
     application_no = request.POST.get('application_no')
     workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
+    workflow_details.update(Application_Date=date.today())
     workflow_details.update(Action_Date=date.today())
     return redirect(food_business_registration_licensing)
 
@@ -1450,6 +1455,7 @@ def load_fh_attachment(request):
 def submit_food_handler_application(request):
     application_no = request.POST.get('application_no')
     workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
+    workflow_details.update(Application_Date=date.today())
     workflow_details.update(Action_Date=date.today())
     details = t_food_licensing_food_handler_t1.objects.filter(Application_No=application_no)
     details.update(Application_Date=date.today())
@@ -2065,6 +2071,7 @@ def delete_import_file(request):
 def submit_food_import(request):
     application_no = request.POST.get('application_no')
     workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
+    workflow_details.update(Application_Date=date.today())
     workflow_details.update(Action_Date=date.today())
     return redirect(food_import_application)
 
@@ -2261,6 +2268,15 @@ def update_import_details_food(request):
                 for la in la_details:
                     work_details = t_workflow_details.objects.filter(Application_No=la.Application_No)
                     work_details.update(Application_Status='C')
+        else:
+            import_details = t_food_import_permit_inspection_t1.objects.filter(
+                Application_No=application_no)
+            for import_det in import_details:
+                la_details = t_food_import_permit_t1.objects.filter(
+                    Import_Permit_No=import_det.Import_Permit_No)
+                for la in la_details:
+                    work_details = t_workflow_details.objects.filter(Application_No=la.Application_No)
+                    work_details.update(Application_Status='P')
     application_details = t_food_import_permit_inspection_t2.objects.filter(Application_No=application_no)
     return render(request, 'import_certificate_food/import_details.html', {'import': application_details})
 

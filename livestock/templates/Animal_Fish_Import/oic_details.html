@@ -18,27 +18,94 @@ form, input, select, textarea{
                                 {% if application_details.Application_Type == 'Animal' %}
                                     <div class="col-sm-4 justify-content-center">
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" class="custom-control-input" checked>
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Animal" checked>
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Animal</span>
                                         </label>
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" class="custom-control-input" disabled>
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Fish" disabled>
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Fish</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Poultry" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Poultry</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Semen" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Semen</span>
+                                        </label>
+                                        <div class="alert alert-danger" id="applicationTypeErrorMsg" style="display:none"></div>
+                                    </div>
+                                {% elif application_details.Application_Type == 'Fish' %}
+                                    <div class="col-sm-4 justify-content-center">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Animal" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Animal</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Fish" checked>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Fish</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Poultry" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Poultry</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Semen" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Semen</span>
+                                        </label>
+                                    </div>
+                                {% elif application_details.Application_Type == 'Poultry' %}
+                                    <div class="col-sm-4 justify-content-center">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Animal" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Animal</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Fish" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Fish</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Poultry" checked>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Poultry</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Semen" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Semen</span>
                                         </label>
                                     </div>
                                 {% else %}
                                     <div class="col-sm-4 justify-content-center">
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" class="custom-control-input" disabled>
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Animal" disabled>
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Animal</span>
                                         </label>
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" class="custom-control-input" checked>
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Fish" disabled>
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Fish</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Poultry" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Poultry</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Semen" checked>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Semen</span>
                                         </label>
                                     </div>
                                 {% endif %}
@@ -101,6 +168,7 @@ form, input, select, textarea{
                                     </div>
                                 {% endif %}
                             </div>
+                        <br>
                             <div class="row">
                                 <div class="col-sm-2">
                                     <label class="form-label">Nationality</label>
@@ -133,6 +201,7 @@ form, input, select, textarea{
                                     </div>
                                 {% endif %}
                             </div>
+                        <br>
                             {% if application_details.Import_Type == 'Individual' and application_details.Nationality == 'Bhutanese'%}
                                 <div class="row">
                                     <div class="col-md-4">
@@ -203,11 +272,10 @@ form, input, select, textarea{
                                     </div>
                                      <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Place Of Entry</label>
+                                            <label class="form-label">Place of Entry</label>
                                             <select class="form-control" disabled>
-                                                <option value="">--SELECT--</option>
                                                 {% for location in location %}
-                                                        <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
+                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
                                                 {% endfor %}
                                              </select>
                                         </div>
@@ -222,18 +290,8 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Place of Entry</label>
-                                            <select class="form-control"disabled>
-                                                {% for location in location %}
-                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
-                                                {% endfor %}
-                                             </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
                                             <label class="form-label">Final Destination</label>
-                                             <input type="text" class="form-control" value="{{application_details.Final_Destination }}">
+                                             <input type="text" class="form-control" value="{{application_details.Final_Destination }}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -247,19 +305,19 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="cid">Passport No</label>
-                                            <input type="number" class="form-control" value="{{ application_details.Passport_No }}" disabled>
+                                            <label class="form-label">Passport No</label>
+                                            <input type="text" class="form-control" value="{{ application_details.Passport_Number }}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="name">Name</label>
+                                            <label class="form-label">Name</label>
                                             <input type="text" class="form-control" value="{{ application_details.Applicant_Name }}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="presentAddress">Present Address</label>
+                                            <label class="form-label">Present Address</label>
                                             <textarea class="form-control" rows="3" disabled>{{ application_details.Present_Address }}</textarea>
                                         </div>
                                     </div>
@@ -293,11 +351,10 @@ form, input, select, textarea{
                                     </div>
                                      <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Place Of Entry</label>
-                                            <select class="form-control" disabled>
-                                                <option value="">--SELECT--</option>
+                                            <label class="form-label">Place of Entry</label>
+                                            <select class="form-control"disabled>
                                                 {% for location in location %}
-                                                        <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
+                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
                                                 {% endfor %}
                                              </select>
                                         </div>
@@ -312,18 +369,8 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Place of Entry</label>
-                                            <select class="form-control"disabled>
-                                                {% for location in location %}
-                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
-                                                {% endfor %}
-                                             </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
                                             <label class="form-label">Final Destination</label>
-                                             <input type="text" class="form-control" value="{{application_details.Final_Destination }}">
+                                             <input type="text" class="form-control" value="{{application_details.Final_Destination }}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -424,7 +471,7 @@ form, input, select, textarea{
                                     </div>
                                 </div>
                             {% endif %}
-                        {% endfor %}
+                    {% endfor %}
                             <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
                                 <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
                                     <span class="px-2 small text-muted font-weight-bold text-muted form-label">Product</span>
@@ -465,32 +512,6 @@ form, input, select, textarea{
                                 </tbody>
                             </table>
                             <br>
-                            <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
-                                <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
-                                    <span class="px-2 small text-muted font-weight-bold text-muted form-label">File</span>
-                                    <span class="px-1 small text-muted font-weight-bold text-muted form-label">Attachments</span>
-                                <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
-                            </div>
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col">File</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                       {% for file_attach in file %}
-                                                <tr>
-                                                    <td>{{ forloop.counter }}</td>
-                                                    <td><a href='{{file_attach.File_Path}}' target="_blank">{{file_attach.Attachment}}</a></td>
-                                                </tr>
-                                                {% empty %}
-                                                <tr>
-                                                  <td colspan="3" class="text-center">No Data</td>
-                                                </tr>
-                                       {% endfor %}
-                                    </tbody>
-                                </table>
                             </div>
                         <br>
                         <div class="modal-footer justify-content-between">

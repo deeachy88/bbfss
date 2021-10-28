@@ -11,7 +11,7 @@ form, input, select, textarea{
                 <div class="card">
                     <div class="card-body">
                         {% for application_details in application_details %}
-                            {% if application_details.PermitType == A %}
+                            {% if application_details.Permit_Type == 'A' %}
                             <div class="row">
                                 <div class="col-sm-2">
                                     <label class="form-label">Permit Type</label>
@@ -52,7 +52,7 @@ form, input, select, textarea{
                                 <div class="col-sm-2">
                                     <label class="form-label">Import Type</label>
                                 </div>
-                                {% if application_details.Import_Type == 'Individual' %}
+                                {% if application_details.Application_Type == 'Individual' %}
                                     <div class="col-sm-4 justify-content-center">
                                         <label class="custom-control custom-radio">
                                             <input type="radio" class="custom-control-input" checked>
@@ -70,7 +70,7 @@ form, input, select, textarea{
                                             <span class="custom-control-description">Institution</span>
                                         </label>
                                     </div>
-                                {% elif application_details.Import_Type == 'Commercial' %}
+                                {% elif application_details.Application_Type == 'Commercial' %}
                                     <div class="col-sm-4 justify-content-center">
                                         <label class="custom-control custom-radio">
                                             <input type="radio" class="custom-control-input" disabled>
@@ -109,7 +109,7 @@ form, input, select, textarea{
                                 {% endif %}
                             </div>
                             <br>
-                            {% if application_details.Import_Type == 'Individual' %}
+                            {% if application_details.Application_Type == 'Individual' %}
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
@@ -426,68 +426,68 @@ form, input, select, textarea{
                                 </div>
                              <br><br>
                         {% endif %}
-                        {% if application_details.PermitType == A %}
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Species</th>
-                                        <th scope="col">Breed</th>
-                                        <th scope="col">Age</th>
-                                        <th scope="col">Sex</th>
-                                        <th scope="col">Description</th>
-                                        <th scope="col">Quantity</th>
-                                        <th scope="col">Unit</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for import in import %}
-                                        <tr>
-                                            <td>{{ forloop.counter }}</td>
-                                            <td>{{import.Import_Category}}</td>
-                                            <td>{{import.Pesticide_Id}}</td>
-                                            <td>{{import.Description}}</td>
-                                            <td>{{import.Unit}}</td>
-                                            <td>{{import.Quantity}}</td>
-                                        </tr>
-                                        {% empty %}
-                                        <tr>
-                                          <td colspan="8" class="text-center">No Data</td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                            {% else %}
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Particulars</th>
-                                        <th scope="col">Company_Name</th>
-                                        <th scope="col">Description</th>
-                                        <th scope="col">Quantity</th>
-                                        <th scope="col">Unit</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for import in import %}
-                                        <tr>
-                                            <td>{{ forloop.counter }}</td>
-                                            <td>{{import.Import_Category}}</td>
-                                            <td>{{import.Pesticide_Id}}</td>
-                                            <td>{{import.Description}}</td>
-                                            <td>{{import.Unit}}</td>
-                                            <td>{{import.Quantity}}</td>
-                                        </tr>
-                                        {% empty %}
-                                        <tr>
-                                          <td colspan="6" class="text-center">No Data</td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                            {% endif%}
                         {% endfor %}
+                        {% for application_details in application_details %}
+                            {% if application_details.Permit_Type == 'A' %}
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Common Name</th>
+                                            <th scope="col">Scientific Name</th>
+                                            <th scope="col">Age</th>
+                                            <th scope="col">No Of Animals</th>
+                                            <th scope="col">Remarks</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for import in details %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td>{{import.Common_Name}}</td>
+                                                <td>{{import.Scientific_Name}}</td>
+                                                <td>{{import.Age}}</td>
+                                                <td>{{import.No_Of_Animal}}</td>
+                                                <td>{{import.Remarks}}</td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                              <td colspan="8" class="text-center">No Data</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                {% else %}
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Particulars</th>
+                                            <th scope="col">Company Name</th>
+                                            <th scope="col">Quantity</th>
+                                            <th scope="col">Unit</th>
+                                            <th scope="col">Remarks</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for import in details %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td>{{import.Particulars}}</td>
+                                                <td>{{import.Company_Name}}</td>
+                                                <td>{{import.Quantity}}</td>
+                                                <td>{{import.Unit}}</td>
+                                                <td>{{import.Remarks}}</td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                              <td colspan="6" class="text-center">No Data</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                {% endif%}
+                            {% endfor %}
                     </div>
                     <br>
                     <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
@@ -507,7 +507,7 @@ form, input, select, textarea{
                            {% for file_attach in file %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                   <td><a href='{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                                   <td><a href='{{file_attach.File_Path}}' target="_blank">{{file_attach.Attachment}}</a></td>
                                 </tr>
                                 {% empty %}
                                 <tr>

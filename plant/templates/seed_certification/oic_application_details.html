@@ -26,7 +26,7 @@ form, input, select, textarea{
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label class="form-label">Company_Address</label>
-                            <textarea disabled class="form-control" disabled rows="4">{{application_details.Company_Address}}</textarea>
+                            <textarea disabled class="form-control" rows="4">{{application_details.Company_Address}}</textarea>
                         </div>
                         <div class="alert alert-danger" id="Company_AddressErrorMsg" style="display:none"></div>
                     </div>
@@ -169,7 +169,7 @@ form, input, select, textarea{
                 </table>
                 <br>
                 <br>
-                {% if application_details.Resubmit_Remarks %}
+                {% if application_details.Client_Remarks %}
                     <br>
                     <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
                         <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
@@ -178,10 +178,14 @@ form, input, select, textarea{
                         <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
                     </div>
                     <div class="row">
+                        <div class="col-sm-6">
+                            <label class="form-label">Requested Date For Inspection</label>
+                            <input type="text" name="date" id="inspection_date" class="form-control" value="{{application_details.Resubmit_Date}}" disabled>
+                        </div>
                          <div class="col-md-6">
-                            <div class="from-label">
+                            <div class="form-label">
                                 <label class="from-label">Resubmit Remarks</label>
-                                <textarea class="form-control" rows="3" id="Resubmit_Remarks" disabled>{{application_details.Resubmit_Remarks}}</textarea>
+                                <textarea class="form-control" rows="3" id="Resubmit_Remarks" disabled>{{application_details.Client_Remarks}}</textarea>
                             </div>
                         </div>
                      </div>
@@ -201,6 +205,9 @@ form, input, select, textarea{
                     </button>
                 </div>
                 <div class="alert alert-danger" id="forwardToErrorMsg" style="display:none"></div>
+                <div id="submitMsg" class="alert alert-info"  style="display:none;">
+                    Application Forwarded Successfully
+                </div>
             </div>
     {% endfor %}
     </div>

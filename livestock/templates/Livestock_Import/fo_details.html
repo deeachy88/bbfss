@@ -155,7 +155,7 @@ form, input, select, textarea{
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Applicant Name</label>
-                                        <input type="text" class="form-control" id="name" name="Name" value="{{ application_details.Applicant_Name }}" disabled>
+                                        <input type="text" class="form-control"  value="{{ application_details.Applicant_Name }}" disabled>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -314,6 +314,12 @@ form, input, select, textarea{
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
+                                        <label class="form-label">Applicant Name</label>
+                                        <input type="text" class="form-control" id="name" name="Name" value="{{ application_details.Applicant_Name }}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
                                         <label for="presentAddress">Present Address</label>
                                         <textarea class="form-control" rows="3" disabled>{{ application_details.Present_Address }}</textarea>
                                     </div>
@@ -324,55 +330,46 @@ form, input, select, textarea{
                                         <input type="number" class="form-control" value="{{ application_details.Contact_No }}" disabled>
                                     </div>
                                 </div>
+
+                            </div>
+                            <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Email</label>
                                         <input type="email" class="form-control"  value="{{ application_details.Email }}" disabled>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="regNo">License Number</label>
+                                        <label class="form-label">License Number</label>
                                         <input type="text" class="form-control" id="regNo" name="regNo" value="{{application_details.License_No}}" disabled>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="business_name">Business Name</label>
+                                        <label class="form-label">Business Name</label>
                                         <input type="text" class="form-control" id="business_name" name="companyName" value="{{application_details.Business_Name }}" disabled>
                                     </div>
                                 </div>
+
+                            </div>
+                            <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Origin Of Source Of Products</label>
                                         <input type="text" class="form-control" value="{{application_details.Origin_Source_Products}}" disabled>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Exporter’s name and address</label>
                                         <textarea class="form-control" disabled>{{application_details.Name_And_Address_Supplier }}</textarea>
                                     </div>
                                 </div>
-                                 <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Place Of Entry</label>
-                                        <select class="form-control" disabled>
-                                            <option value="">--SELECT--</option>
-                                            {% for location in location %}
-                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
-                                            {% endfor %}
-                                         </select>
-                                    </div>
-                                </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Place of Entry</label>
-                                        <select class="form-control"disabled>
+                                        <select class="form-control" disabled>
                                             {% for location in location %}
                                                 <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
                                             {% endfor %}
@@ -384,7 +381,7 @@ form, input, select, textarea{
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Final Destination</label>
-                                         <input type="text" class="form-control" value="{{application_details.Final_Destination }}">
+                                         <input type="text" class="form-control" value="{{application_details.Final_Destination }}" disabled>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -461,14 +458,14 @@ form, input, select, textarea{
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="form-label">Validity Period (If Approve Please Fill The Validity Period)</label>
-                                <input type="number" class="form-control" name="validity" id="validity">
+                                <label class="form-label">Validity Period (If Approve Please Fill The Validity Period) <font color="red">*</font></label>
+                                <input type="text" class="form-control" name="validity" id="validity" onkeypress="return isNumberKey(event)" onchange="check_validity(this.value)">
                             </div>
                             <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-8">
                             <div class="form-group">
-                                <label class="form-label">Remarks(If Reject Please Fill THe Remarks)</label>
+                                <label class="form-label">Remarks(If Reject Please Fill THe Remarks) <font color="red">*</font></label>
                                 <textarea class="form-control" rows="3" id="remarks" name="remarks"></textarea>
                             </div>
                             <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
@@ -500,77 +497,101 @@ form, input, select, textarea{
 </form>
 
 <script>
+    function isNumberKey(evt)
+    {
+     var charCode = (evt.which) ? evt.which : event.keyCode
+     if (charCode > 31 && (charCode < 48 || charCode > 57))
+        return false;
+
+     return true;
+    }
+
     function fo_approve(application_id)
+    {
+
+        remarks = $('#remarks').val();
+        validity = $('#validity').val();
+        if(validity == "")
         {
-
-            remarks = $('#remarks').val();
-            validity = $('#validity').val();
-            if(validity == "")
-            {
-                $('#validityErrorMsg').html("Enter Validity Period.");
-                $('#validityErrorMsg').show();
-                $('#validityErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else
-            {
-                $("#loader").show();
-                $.ajax({
-                    type : "POST",
-                    url : "{% url 'approve_fo_lp_import' %}",
-                    data :{'application_id':application_id ,'remarks':remarks,'validity':validity, csrfmiddlewaretoken: '{{ csrf_token }}'},
-                    success : function(data) {
-                        $("#loader").hide();
-                        $('#submitMsg').show();
-                        setTimeout(function()
-                        {
-                            $("#submitMsg").hide('blind', {}, 500)
-                        }, 2000);
-                        setTimeout(function()
-                        {
-                            $('#import_detailsModal').modal('hide');
-                        }, 2000);
-                        setTimeout(function() {
-                            window.location.href = '{% url 'dashboard' %}';
-                        }, 3000);
-
-                    }
-                });
-            }
+            $('#validityErrorMsg').html("Enter Validity Period.");
+            $('#validityErrorMsg').show();
+            $('#validityErrorMsg').delay(2000).fadeOut('slow');
         }
+        else
+        {
+            $("#loader").show();
+            $.ajax({
+                type : "POST",
+                url : "{% url 'approve_fo_lp_import' %}",
+                data :{'application_id':application_id ,'remarks':remarks,'validity':validity, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(data) {
+                    $("#loader").hide();
+                    $('#submitMsg').show();
+                    setTimeout(function()
+                    {
+                        $("#submitMsg").hide('blind', {}, 500)
+                    }, 2000);
+                    setTimeout(function()
+                    {
+                        $('#import_detailsModal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        window.location.href = '{% url 'dashboard' %}';
+                    }, 3000);
+
+                }
+            });
+        }
+    }
     function fo_reject(application_id)
+    {
+
+        remarks = $('#remarks').val();
+
+        if(remarks == "")
         {
-
-            remarks = $('#remarks').val();
-
-            if(remarks == "")
-            {
-                $('#remarksErrorMsg').html("Remarks Cannot Be Empty.");
-                $('#remarksErrorMsg').show();
-                $('#remarksErrorMsg').delay(2000).fadeOut('slow');
-            }
-            else
-            {
-                $("#loader").show();
-                $.ajax({
-                    type : "POST",
-                    url : "{% url 'reject_fo_lp_import' %}",
-                    data :{'application_id':application_id ,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
-                    success : function(data) {
-                        $("#loader").hide();
-                        $('#rejectMsg').show();
-                        setTimeout(function()
-                        {
-                            $("#rejectMsg").hide('blind', {}, 500)
-                        }, 2000);
-                        setTimeout(function()
-                        {
-                            $('#import_detailsModal').modal('hide');
-                        }, 2000);
-                        setTimeout(function() {
-                            window.location.href = '{% url 'dashboard' %}';
-                        }, 3000);
-                    }
-                });
-            }
+            $('#remarksErrorMsg').html("Remarks Cannot Be Empty.");
+            $('#remarksErrorMsg').show();
+            $('#remarksErrorMsg').delay(2000).fadeOut('slow');
         }
+        else
+        {
+            $("#loader").show();
+            $.ajax({
+                type : "POST",
+                url : "{% url 'reject_fo_lp_import' %}",
+                data :{'application_id':application_id ,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success : function(data) {
+                    $("#loader").hide();
+                    $('#rejectMsg').show();
+                    setTimeout(function()
+                    {
+                        $("#rejectMsg").hide('blind', {}, 500)
+                    }, 2000);
+                    setTimeout(function()
+                    {
+                        $('#import_detailsModal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        window.location.href = '{% url 'dashboard' %}';
+                    }, 3000);
+                }
+            });
+        }
+    }
+
+    function check_validity(validity)
+    {
+        if(validity == 0)
+        {
+            $('#validityErrorMsg').html("Must Be Greater Than Zero.");
+            $('#validityErrorMsg').show();
+            $('#validityErrorMsg').delay(2000).fadeOut('slow');
+            $('#validity').val("");
+        }
+        else
+        {
+            $('#validityErrorMsg').hide();
+        }
+    }
 </script>

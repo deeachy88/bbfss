@@ -3,17 +3,6 @@
 form, input, select, textarea{
     color: black !important;
 }
-option {
-    background-color: white !important;
-}
-#loader img
-{
-  left: 50%;
-  margin-left: -32px;
-  margin-top: -32px;
-  position: absolute;
-  top: 50%;
-}
 .flatpickr-calendar {
     border-radius: 2px;
     border: 0;
@@ -30,9 +19,16 @@ option {
     height: auto;
     color: #121111;
 }
+#loader img
+{
+  left: 50%;
+  margin-left: -32px;
+  margin-top: -32px;
+  position: absolute;
+  top: 50%;
+}
 </style>
 <div class="accordion" role="tablist">
-    {% for application_details in application_details %}
         <div class="card">
             <div class="card-header" role="tab" id="headingOne">
                 <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed">
@@ -42,456 +38,471 @@ option {
 
             <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion" style="">
                 <div class="card-body">
-                    <div class="row justify-content-center">
-                        <div class="row">
-                            <div class="col-sm-2">
-                                <label class="form-label">Application Type</label>
+                    {% for application_details in application_details %}
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <label class="form-label">Application Type</label>
+                                </div>
+                                {% if application_details.Application_Type == 'Animal' %}
+                                    <div class="col-sm-4 justify-content-center">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Animal" checked>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Animal</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Fish" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Fish</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Poultry" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Poultry</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Semen" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Semen</span>
+                                        </label>
+                                        <div class="alert alert-danger" id="applicationTypeErrorMsg" style="display:none"></div>
+                                    </div>
+                                {% elif application_details.Application_Type == 'Fish' %}
+                                    <div class="col-sm-4 justify-content-center">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Animal" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Animal</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Fish" checked>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Fish</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Poultry" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Poultry</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Semen" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Semen</span>
+                                        </label>
+                                    </div>
+                                {% elif application_details.Application_Type == 'Poultry' %}
+                                    <div class="col-sm-4 justify-content-center">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Animal" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Animal</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Fish" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Fish</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Poultry" checked>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Poultry</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Semen" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Semen</span>
+                                        </label>
+                                    </div>
+                                {% else %}
+                                    <div class="col-sm-4 justify-content-center">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Animal" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Animal</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Fish" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Fish</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Poultry" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Poultry</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Application_Type" class="custom-control-input" value="Semen" checked>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Semen</span>
+                                        </label>
+                                    </div>
+                                {% endif %}
+                                <div class="col-sm-2">
+                                    <label class="form-label">Import Type</label>
+                                </div>
+                                {% if application_details.Import_Type == 'Individual' %}
+                                    <div class="col-sm-4 justify-content-center">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" class="custom-control-input" checked>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Individual</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" class="custom-control-input" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Commercial</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" class="custom-control-input" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Institution</span>
+                                        </label>
+                                    </div>
+                                {% elif application_details.Import_Type == 'Commercial' %}
+                                    <div class="col-sm-4 justify-content-center">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" class="custom-control-input" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Individual</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" class="custom-control-input" checked>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Commercial</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" class="custom-control-input" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Institution</span>
+                                        </label>
+                                    </div>
+                                {% else %}
+                                    <div class="col-sm-4 justify-content-center">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" class="custom-control-input" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Individual</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" class="custom-control-input" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Commercial</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" class="custom-control-input" checked>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Institution</span>
+                                        </label>
+                                    </div>
+                                {% endif %}
                             </div>
-                            {% if application_details.Application_Type == 'Animal' %}
-                                <div class="col-sm-4 justify-content-center">
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" class="custom-control-input" checked>
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Animal</span>
-                                    </label>
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" class="custom-control-input" disabled>
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Fish</span>
-                                    </label>
+                        <br>
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <label class="form-label">Nationality</label>
+                                </div>
+                                {% if application_details.Nationality == 'Bhutanese' %}
+                                    <div class="col-sm-4 justify-content-center">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" class="custom-control-input" checked>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Bhutanese</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" class="custom-control-input" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Non-Bhutanese</span>
+                                        </label>
+                                    </div>
+                                {% else %}
+                                    <div class="col-sm-4 justify-content-center">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" class="custom-control-input" disabled>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Bhutanese</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" class="custom-control-input" checked>
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Non-Bhutanese</span>
+                                        </label>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        <br>
+                            {% if application_details.Import_Type == 'Individual' and application_details.Nationality == 'Bhutanese'%}
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="cid">Applicant CID</label>
+                                            <input type="number"  class="form-control" id="cid" name="cid_number" value="{{ application_details.CID  }}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="name">Applicant Name</label>
+                                            <input type="text" class="form-control" id="name" name="Name" value="{{ application_details.Applicant_Name }}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="presentAddress">Present Address</label>
+                                            <textarea class="form-control" rows="3" id="presentAddress" name="presentAddress" disabled>{{ application_details.Present_Address }}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Dzongkhag &nbsp;<font color='red'>*</font></label>
+                                            <input type="text" class="form-control" value="{{ application_details.Dzongkhag_Code }}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Gewog &nbsp;<font color='red'>*</font></label>
+                                            <input type="text" class="form-control" value="{{ application_details.Gewog_Code }}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Village &nbsp;<font color='red'>*</font></label>
+                                            <input type="text" class="form-control" value="{{ application_details.Village_Code }}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Contact Number</label>
+                                            <input type="number" class="form-control" value="{{ application_details.Contact_No }}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Email</label>
+                                            <input type="email" class="form-control"  value="{{ application_details.Email }}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Farm Source</label>
+                                            <input type="text" class="form-control" value="{{application_details.Purpose }}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Exporter’s name and address</label>
+                                            <textarea class="form-control" disabled>{{application_details.Name_And_Address_Supplier }}</textarea>
+                                        </div>
+                                    </div>
+                                     <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Place of Entry</label>
+                                            <select class="form-control" disabled>
+                                                {% for location in location %}
+                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                                {% endfor %}
+                                             </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Quarantine Facility Requested</label>
+                                            <input type="text" class="form-control"  value="{{application_details.Quarantine_Facilities }}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Final Destination</label>
+                                             <input type="text" class="form-control" value="{{application_details.Final_Destination }}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Expected Date for Arrival</label>
+                                             <input type="text" class="form-control" value="{{application_details.Expected_Arrival_Date }}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% elif application_details.Import_Type == 'Individual' and application_details.Nationality == 'Non-Bhutanese' %}
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Passport No</label>
+                                            <input type="text" class="form-control" value="{{ application_details.Passport_Number }}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Name</label>
+                                            <input type="text" class="form-control" value="{{ application_details.Applicant_Name }}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Present Address</label>
+                                            <textarea class="form-control" rows="3" disabled>{{ application_details.Present_Address }}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Contact Number</label>
+                                            <input type="number" class="form-control" value="{{ application_details.Contact_No }}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Email</label>
+                                            <input type="email" class="form-control"  value="{{ application_details.Email }}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Farm Source</label>
+                                            <input type="text" class="form-control" value="{{application_details.Purpose }}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Exporter’s name and address</label>
+                                            <textarea class="form-control" disabled>{{application_details.Name_And_Address_Supplier }}</textarea>
+                                        </div>
+                                    </div>
+                                     <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Place of Entry</label>
+                                            <select class="form-control"disabled>
+                                                {% for location in location %}
+                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                                {% endfor %}
+                                             </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Quarantine Facility Requested</label>
+                                            <input type="text" class="form-control"  value="{{application_details.Quarantine_Facilities }}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Final Destination</label>
+                                             <input type="text" class="form-control" value="{{application_details.Final_Destination }}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Expected Date for Arrival</label>
+                                             <input type="text" class="form-control" value="{{application_details.Expected_Arrival_Date }}" disabled>
+                                        </div>
+                                    </div>
                                 </div>
                             {% else %}
-                                <div class="col-sm-4 justify-content-center">
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" class="custom-control-input" disabled>
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Livestock Product</span>
-                                    </label>
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" class="custom-control-input" checked>
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Animal Feed</span>
-                                    </label>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="presentAddress">Present Address</label>
+                                            <textarea class="form-control" rows="3" disabled>{{ application_details.Present_Address }}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Contact Number</label>
+                                            <input type="number" class="form-control" value="{{ application_details.Contact_No }}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Email</label>
+                                            <input type="email" class="form-control"  value="{{ application_details.Email }}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="regNo">License Number</label>
+                                            <input type="text" class="form-control" id="regNo" name="regNo" value="{{application_details.License_No}}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="business_name">Business Name</label>
+                                            <input type="text" class="form-control" id="business_name" name="companyName" value="{{application_details.Business_Name }}" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Farm Source</label>
+                                            <input type="text" class="form-control" value="{{application_details.Purpose }}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Exporter’s name and address</label>
+                                            <textarea class="form-control" disabled>{{application_details.Name_And_Address_Supplier }}</textarea>
+                                        </div>
+                                    </div>
+                                     <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Place Of Entry</label>
+                                            <select class="form-control" disabled>
+                                                <option value="">--SELECT--</option>
+                                                {% for location in location %}
+                                                        <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
+                                                {% endfor %}
+                                             </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Quarantine Facility Requested</label>
+                                            <input type="text" class="form-control"  value="{{application_details.Quarantine_Facilities }}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Place of Entry</label>
+                                            <select class="form-control"disabled>
+                                                {% for location in location %}
+                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                                {% endfor %}
+                                             </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Final Destination</label>
+                                             <input type="text" class="form-control" value="{{application_details.Final_Destination }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Expected Date for Arrival</label>
+                                             <input type="text" class="form-control" value="{{application_details.Expected_Arrival_Date }}" disabled>
+                                        </div>
+                                    </div>
                                 </div>
                             {% endif %}
-                            <div class="col-sm-2">
-                                <label class="form-label">Import Type</label>
-                            </div>
-                            {% if application_details.Import_Type == 'Individual' %}
-                                <div class="col-sm-4 justify-content-center">
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" class="custom-control-input" checked>
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Individual</span>
-                                    </label>
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" class="custom-control-input" disabled>
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Commercial</span>
-                                    </label>
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" class="custom-control-input" disabled>
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Institution</span>
-                                    </label>
-                                </div>
-                            {% elif application_details.Import_Type == 'Commercial' %}
-                                <div class="col-sm-4 justify-content-center">
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" class="custom-control-input" disabled>
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Individual</span>
-                                    </label>
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" class="custom-control-input" checked>
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Commercial</span>
-                                    </label>
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" class="custom-control-input" disabled>
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Institution</span>
-                                    </label>
-                                </div>
-                            {% else %}
-                                <div class="col-sm-4 justify-content-center">
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" class="custom-control-input" disabled>
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Individual</span>
-                                    </label>
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" class="custom-control-input" disabled>
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Commercial</span>
-                                    </label>
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" class="custom-control-input" checked>
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Institution</span>
-                                    </label>
-                                </div>
-                            {% endif %}
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-2">
-                                <label class="form-label">Nationality</label>
-                            </div>
-                            {% if application_details.Nationality == 'Bhutanese' %}
-                                <div class="col-sm-4 justify-content-center">
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" class="custom-control-input" checked>
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Bhutanese</span>
-                                    </label>
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" class="custom-control-input" disabled>
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Non-Bhutanese</span>
-                                    </label>
-                                </div>
-                            {% else %}
-                                <div class="col-sm-4 justify-content-center">
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" class="custom-control-input" disabled>
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Bhutanese</span>
-                                    </label>
-                                    <label class="custom-control custom-radio">
-                                        <input type="radio" class="custom-control-input" checked>
-                                        <span class="custom-control-indicator"></span>
-                                        <span class="custom-control-description">Non-Bhutanese</span>
-                                    </label>
-                                </div>
-                            {% endif %}
-                        </div>
-                        {% if application_details.Import_Type == 'Individual' and application_details.Nationality == 'Bhutanese'%}
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="cid">Applicant CID</label>
-                                        <input type="number"  class="form-control" id="cid" name="cid_number" value="{{ application_details.CID  }}" disabled>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="name">Applicant Name</label>
-                                        <input type="text" class="form-control" id="name" name="Name" value="{{ application_details.Applicant_Name }}" disabled>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="presentAddress">Present Address</label>
-                                        <textarea class="form-control" rows="3" id="presentAddress" name="presentAddress" disabled>{{ application_details.Present_Address }}</textarea>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Dzongkhag &nbsp;<font color='red'>*</font></label>
-                                        <input type="text" class="form-control" value="{{ application_details.Dzongkhag_Code }}" disabled>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Gewog &nbsp;<font color='red'>*</font></label>
-                                        <input type="text" class="form-control" value="{{ application_details.Gewog_Code }}" disabled>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Village &nbsp;<font color='red'>*</font></label>
-                                        <input type="text" class="form-control" value="{{ application_details.Village_Code }}" disabled>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Contact Number</label>
-                                        <input type="number" class="form-control" value="{{ application_details.Contact_No }}" disabled>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Email</label>
-                                        <input type="email" class="form-control"  value="{{ application_details.Email }}" disabled>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Farm Source</label>
-                                        <input type="text" class="form-control" value="{{application_details.Purpose }}" disabled>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Exporter’s name and address</label>
-                                        <textarea class="form-control" disabled>{{application_details.Name_And_Address_Supplier }}</textarea>
-                                    </div>
-                                </div>
-                                 <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Place Of Entry</label>
-                                        <select class="form-control" disabled>
-                                            <option value="">--SELECT--</option>
-                                            {% for location in location %}
-                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
-                                            {% endfor %}
-                                         </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Quarantine Facility Requested</label>
-                                        <input type="text" class="form-control"  value="{{application_details.Quarantine_Facilities }}" disabled>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Place of Entry</label>
-                                        <select class="form-control"disabled>
-                                            {% for location in location %}
-                                                <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
-                                            {% endfor %}
-                                         </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Final Destination</label>
-                                         <input type="text" class="form-control" value="{{application_details.Final_Destination }}">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Expected Date for Arrival</label>
-                                         <input type="text" class="form-control" value="{{application_details.Expected_Arrival_Date }}" disabled>
-                                    </div>
-                                </div>
-                            </div>
-                        {% elif application_details.Import_Type == 'Individual' and application_details.Nationality == 'Non-Bhutanese' %}
-
-
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="cid">Passport No</label>
-                                        <input type="number" class="form-control" value="{{ application_details.Passport_No }}" disabled>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="name">Name</label>
-                                        <input type="text" class="form-control" value="{{ application_details.Applicant_Name }}" disabled>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="presentAddress">Present Address</label>
-                                        <textarea class="form-control" rows="3" disabled>{{ application_details.Present_Address }}</textarea>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Contact Number</label>
-                                        <input type="number" class="form-control" value="{{ application_details.Contact_No }}" disabled>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Email</label>
-                                        <input type="email" class="form-control"  value="{{ application_details.Email }}" disabled>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Farm Source</label>
-                                        <input type="text" class="form-control" value="{{application_details.Purpose }}" disabled>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Exporter’s name and address</label>
-                                        <textarea class="form-control" disabled>{{application_details.Name_And_Address_Supplier }}</textarea>
-                                    </div>
-                                </div>
-                                 <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Place Of Entry</label>
-                                        <select class="form-control" disabled>
-                                            <option value="">--SELECT--</option>
-                                            {% for location in location %}
-                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
-                                            {% endfor %}
-                                         </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Quarantine Facility Requested</label>
-                                        <input type="text" class="form-control"  value="{{application_details.Quarantine_Facilities }}" disabled>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Place of Entry</label>
-                                        <select class="form-control"disabled>
-                                            {% for location in location %}
-                                                <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
-                                            {% endfor %}
-                                         </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Final Destination</label>
-                                         <input type="text" class="form-control" value="{{application_details.Final_Destination }}">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Expected Date for Arrival</label>
-                                         <input type="text" class="form-control" value="{{application_details.Expected_Arrival_Date }}" disabled>
-                                    </div>
-                                </div>
-                            </div>
-                        {% else %}
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="presentAddress">Present Address</label>
-                                        <textarea class="form-control" rows="3" disabled>{{ application_details.Present_Address }}</textarea>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Contact Number</label>
-                                        <input type="number" class="form-control" value="{{ application_details.Contact_No }}" disabled>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Email</label>
-                                        <input type="email" class="form-control"  value="{{ application_details.Email }}" disabled>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="regNo">License Number</label>
-                                        <input type="text" class="form-control" id="regNo" name="regNo" value="{{application_details.License_No}}" disabled>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="business_name">Business Name</label>
-                                        <input type="text" class="form-control" id="business_name" name="companyName" value="{{application_details.Business_Name }}" disabled>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Farm Source</label>
-                                        <input type="text" class="form-control" value="{{application_details.Purpose }}" disabled>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Exporter’s name and address</label>
-                                        <textarea class="form-control" disabled>{{application_details.Name_And_Address_Supplier }}</textarea>
-                                    </div>
-                                </div>
-                                 <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Place Of Entry</label>
-                                        <select class="form-control" disabled>
-                                            <option value="">--SELECT--</option>
-                                            {% for location in location %}
-                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
-                                            {% endfor %}
-                                         </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Quarantine Facility Requested</label>
-                                        <input type="text" class="form-control"  value="{{application_details.Quarantine_Facilities }}" disabled>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Place of Entry</label>
-                                        <select class="form-control"disabled>
-                                            {% for location in location %}
-                                                <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
-                                            {% endfor %}
-                                         </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Final Destination</label>
-                                         <input type="text" class="form-control" value="{{application_details.Final_Destination }}">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Expected Date for Arrival</label>
-                                         <input type="text" class="form-control" value="{{application_details.Expected_Arrival_Date }}" disabled>
-                                    </div>
-                                </div>
-                            </div>
-                        {% endif %}
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
-        <div class="card">
-            <div class="card-header" role="tab" id="headingTwo">
-                <a class="collapsed" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                    File Attachments
-                </a>
-            </div>
-            <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
-                <div class="card-body">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">File</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                           {% for file_attach in file %}
-                                <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td><a href='{{file_attach.File_Path}}' target="_blank">{{file_attach.Attachment}}</a></td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                  <td colspan="3" class="text-center">No Data</td>
-                                </tr>
-                           {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+
         <div class="card">
             <div class="card-header" role="tab" id="headingThree">
                 <a class="collapsed" data-toggle="collapse" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
@@ -500,6 +511,82 @@ option {
             </div>
             <div id="collapseThree" class="active" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion" style="">
                 <div class="card-body">
+                    <br>
+                    <div class="card-tools">
+                        <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="openDecisionModal()">
+                            <span class="btn-label">
+                                <i class="fa fa-print"></i>
+                            </span>
+                            Add
+                        </a>
+                    </div>
+                    <br>
+                    <div id="details">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Current Observation</th>
+                                    <th scope="col">Decision Conformity Statement</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               {% for import_lp in import_lp_permit %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{import.Current_Observation}}</td>
+                                        <td>{{import.Decision_Conformity}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="3" class="text-center">No Data</td>
+                                    </tr>
+                               {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <br>
+                    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Client</span>
+                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Details</span>
+                        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                    </div>
+                    {% for application_details in application_details %}
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Actual Point Of Entry</label>
+                                    <select class="form-control" disabled>
+                                        {% for location in location_details %}
+                                                <option value="{{ location.Field_Office_Id }}" {% if application_details.Actual_Point_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                            </div>
+                             <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Requested Inspection Date</label>
+                                    <input type="text" class="form-control" value="{{application_details.Proposed_Inspection_Date}}" disabled>
+                                </div>
+                            </div>
+                            {% if application_details.Inspection_Request_Remarks %}
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Remarks</label>
+                                        <textarea class="form-control" rows="2" disabled>{{application_details.Inspection_Request_Remarks }}</textarea>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    <br>
+                    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Consignment</span>
+                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Details</span>
+                        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                    </div>
                     <div id="details-import">
                         <table class="table table-bordered">
                             <thead>
@@ -533,7 +620,8 @@ option {
                                         <td>
                                             <button type="button" class="btn btn-info"
                                             onclick="populateEditDetails('{{ import.Species }}', '{{import.Breed}}', '{{import.Age}}',
-                                            '{{import.Sex}}', '{{import.Quantity}}', '{{import.Description}}', '{{import.Application_No}}','{{import.Record_Id}}','{{import.Quantity_Balance_1}}', '{{import.Quantity_Balance}}')">
+                                            '{{import.Sex}}', '{{import.Quantity}}', '{{import.Description}}', '{{import.Application_No}}','{{import.Record_Id}}','{{import.Quantity_Balance_1}}', '{{import.Quantity_Balance}}',
+                                            '{{import.Quantity_Released}}', '{{import.Remarks}}')">
                                             <i class="zmdi zmdi-edit"></i>
                                             </button>
                                         </td>
@@ -546,47 +634,12 @@ option {
                             </tbody>
                         </table>
                     </div>
-                    <br>
-                    <hr>
-                    <div class="card-tools">
-                        <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="openDecisionModal()">
-                            <span class="btn-label">
-                                <i class="fa fa-print"></i>
-                            </span>
-                            Add
-                        </a>
-                    </div>
-                    <br>
-                    <div id="details">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Current Observation</th>
-                                    <th scope="col">Decision Conformity Statement</th>
-                                    <th scope="col">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                               {% for import_lp in import_lp_permit %}
-                                    <tr>
-                                        <td>{{ forloop.counter }}</td>
-                                        <td>{{import.Current_Observation}}</td>
-                                        <td>{{import.Decision_Conformity}}</td>
-                                    </tr>
-                                    {% empty %}
-                                    <tr>
-                                      <td colspan="4" class="text-center">No Data</td>
-                                    </tr>
-                               {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                     <br>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Inspection Team Leader <font color="red">*</font></label>
-                                <select class="form-control" name="teamLeader"  id="teamLeader">
+                                <select class="form-control" name="teamLeader" id="teamLeader">
                                     <option value="">--SELECT TEAM LEADER--</option>
                                     {% for inspector_list in inspector_list %}
                                             <option value="{{ inspector_list.Login_Id }}">{{ inspector_list.Name }}</option>
@@ -614,7 +667,7 @@ option {
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>Time Of Inspection <font color="red">*</font></label>
-                                <input type="text" class="form-control time-picker flatpickr-input active" id="timeOfInspection" name="timeOfInspection"  placeholder="Pick a date" readonly="readonly">
+                                <input type="text" class="form-control time-picker flatpickr-input active" id="timeOfInspection" name="timeOfInspection" readonly="readonly">
                             </div>
                             <div class="alert alert-danger" id="timeOfInspectionErrorMsg" style="display:none"></div>
                         </div>
@@ -631,10 +684,12 @@ option {
                         <img src="{% static 'assets/img/ajax-loader.gif' %}" alt="processing..." />
                     </div>
                     <div class="card-action text-center">
+                        {% for application_details in application_details %}
                         <button type="button" class="btn btn-flat btn-primary" onclick="submit_details('{{application_details.Application_No}}')">
-                            <i class="ace-icon fa fa-times"></i>
+                            <i class="ace-icon fa fa-check"></i>
                             &nbsp;&nbsp;Submit
                         </button>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
@@ -644,7 +699,7 @@ option {
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title"></h5>
-                        <button type="button" class="close" onclick="closeModal()">
+                        <button type="button" class="close" data-dismiss="modal">
                             <span aria-hidden="true">&times;</span>
                         </button>
 
@@ -653,14 +708,14 @@ option {
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Current Observation <font color="red">*</font></label>
+                                    <label class="form-label">Current Observation</label>
                                     <textarea class="form-control" id="currentObservation" rows="2"></textarea>
                                 </div>
                                 <div class="alert alert-danger" id="currentObservationErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Decision Conformity Statement <font color="red">*</font></label>
+                                    <label class="form-label">Decision Conformity Statement </label>
                                     <textarea class="form-control" id="decisionConform" rows="2"></textarea>
                                 </div>
                                 <div class="alert alert-danger" id="decisionConformErrorMsg" style="display:none"></div>
@@ -669,17 +724,17 @@ option {
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-flat btn-primary" onclick="add_details_ins('{{ application_details.Application_No }}')">
-                            <i class="ace-icon fa fa-times"></i>
+                            <i class="ace-icon fa fa-check"></i>
                             &nbsp;&nbsp;Add
                         </button>
-                        <button type="button" class="btn btn-primary" onclick="closeModal()">Close Modal</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close Modal</button>
                      </div>
                      <div id="messageDiv" style="display:none"></div>
                   </div>
             </div>
         </div>
-        </div>
-    {% endfor %}
+</div>
+
 <form method="post" id="permit_details_form">
     {% csrf_token %}
     <input type="hidden" id="applicationNo" name="applicationNo">
@@ -700,54 +755,40 @@ option {
                             <div class="box-body">
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Species</label>
-                                        <select class="form-control" name="Species" id="Species" disabled>
-                                            <option value="">--SELECT--</option>
-                                            {% for species in species %}
-                                                <option value="{{ species.Species_Name }}">{{ species.Species_Name }}</option>
-                                            {% endfor %}
-                                         </select>
-                                        <div class="alert alert-danger" id="SpeciesErrorMsg" style="display:none"></div>
+                                        <label class="form-label">Particulars</label>
+                                        <input type="text" name="Particulars" class="form-control" id="Particulars" disabled>
+                                        <div class="alert alert-danger" id="ParticularsErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Breed</label>
-                                        <select class="form-control" name="Breed" id="Breed" disabled>
-                                            <option value="">--SELECT--</option>
-                                            {% for breed in breed %}
-                                                <option value="{{ breed.Species_Breed_Name }}">{{ breed.Species_Breed_Name }}</option>
-                                            {% endfor %}
-                                         </select>
-                                        <div class="alert alert-danger" id="BreedErrorMsg" style="display:none"></div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label class="form-label">Age</label>
-                                        <input type="number" name="Age" class="form-control" id="Age" disabled>
-                                        <div class="alert alert-danger" id="AgeErrorMsg" style="display:none"></div>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label class="form-label">Sex</label>
-                                        <input type="text" name="Sex" class="form-control" id="Sex" disabled>
-                                        <div class="alert alert-danger" id="SexErrorMsg" style="display:none"></div>
+                                        <label class="form-label">Company/Producer</label>
+                                        <input type="text" name="Company_Name" class="form-control" id="Company_Name" disabled>
+                                        <div class="alert alert-danger" id="Company_NameErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Description</label>
-                                        <textarea name="animal_Description" class="form-control" id="animal_Description" rows="3" disabled></textarea>
-                                        <div class="alert alert-danger" id="animal_DescriptionErrorMsg" style="display:none"></div>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label class="form-label">Approved Number <font color="red">*</font></label>
-                                        <input type="number" name="no" class="form-control" id="total_no" disabled>
-                                        <div class="alert alert-danger" id="noErrorMsg" style="display:none"></div>
+                                        <textarea class="form-control" name="Description" id="Description" disabled></textarea>
+                                        <div class="alert alert-danger" id="remarksMeansErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
+                                        <label class="form-label">Approved Quantity</label>
+                                        <input type="text" name="no" class="form-control" id="total_no" disabled>
+                                        <div class="alert alert-danger" id="noErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Unit</label>
+                                        <input type="text" name="unit" class="form-control" id="unit" disabled>
+                                        <div class="alert alert-danger" id="unitErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
                                         <div class="form-group">
-                                            <label class="form-label">Number Released <font color="red">*</font></label>
+                                            <label class="form-label">Quantity Released <font color="red">*</font></font> </label>
                                             <input type="text" class="form-control" id="number_released" name="number_released" onchange="get_balance_import()" onkeypress="return isNumberKey(event)">
                                         </div>
                                         <div class="alert alert-danger" id="number_releasedErrorMsg" style="display:none"></div>
@@ -761,7 +802,7 @@ option {
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Remarks (If Any)</label>
+                                        <label class="form-label">Remarks(If Any)</label>
                                         <textarea name="import_Remarks" class="form-control" id="import_Remarks" rows="3"></textarea>
                                     </div>
                                 </div>
@@ -852,7 +893,6 @@ function submit_details(application_id)
     Inspection_Team = $('#insTeam').val();
     remarks = $('#remarks').val();
     dateOfInspection = $('#dateOfInspection').val();
-    timeOfInspection = $('#timeOfInspection').val();
 
     if(Inspection_Leader == "")
     {
@@ -875,20 +915,13 @@ function submit_details(application_id)
         $('#dateOfInspectionErrorMsg').delay(2000).fadeOut('slow');
         $('#dateOfInspection').focus();
     }
-    else if(timeOfInspection == "")
-    {
-        $('#timeOfInspectionErrorMsg').html("Select Time Of Inspection.");
-        $('#timeOfInspectionErrorMsg').show();
-        $('#timeOfInspectionErrorMsg').delay(2000).fadeOut('slow');
-        $('#timeOfInspection').focus();
-    }
     else
     {
         $("#loader").show();
         $.ajax({
             type : "GET",
             url : "{% url 'submit_la_application' %}",
-            data :{'application_no':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks , 'dateOfInspection':dateOfInspection,'timeOfInspection':timeOfInspection},
+            data :{'application_no':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks , 'dateOfInspection':dateOfInspection},
             success : function(data) {
                 $("#loader").hide();
                 $('#approve_Msg').html("Application Approved.");
@@ -905,7 +938,7 @@ function submit_details(application_id)
     }
 }
 
-function populateEditDetails(Species, Breed, Age, Sex, Quantity, Description,Application_No, Record_Id,Quantity_Balance_1, Quantity_Balance)
+function populateEditDetails(Species, Breed, Age, Sex, Quantity, Description,Application_No, Record_Id,Quantity_Balance_1, Quantity_Balance, Quantity_Released, Remarks)
 {
     $('#import_record_id').val(Record_Id);
     $('#Species').val(Species);
@@ -916,7 +949,23 @@ function populateEditDetails(Species, Breed, Age, Sex, Quantity, Description,App
     $('#animal_Description').val(Description);
     $('#applicationNo').val(Application_No);
     $('#balance_quantity_1').val(Quantity_Balance_1);
-    $('#balance_quantity').val(Quantity_Balance);
+    $('#balance').val(Quantity_Balance);
+    if(Quantity_Released == "0")
+    {
+        $('#number_released').val("");
+    }
+    else
+    {
+        $('#number_released').val(Quantity_Released);
+    }
+    if(Remarks == "None")
+    {
+        $('#import_Remarks').val("");
+    }
+    else
+    {
+        $('#import_Remarks').val(Remarks);
+    }
     $('#permit_details_model').modal('show');
 }
 
@@ -927,7 +976,7 @@ function get_balance_import(qty)
     var quantity = balance_quantity - number_released
     if(quantity < 0)
     {
-        $('#number_releasedErrorMsg').html("quantity certified cannot be more than quantity requested.");
+        $('#number_releasedErrorMsg').html("quantity released cannot be more than quantity requested.");
         $('#number_releasedErrorMsg').show();
         $('#number_releasedErrorMsg').delay(2000).fadeOut('slow');
         $('#number_released').val("");

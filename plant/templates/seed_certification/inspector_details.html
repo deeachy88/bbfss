@@ -3,13 +3,18 @@
 form, input, select, textarea{
     color: black !important;
 }
+#loader img
+{
+  left: 50%;
+  margin-left: 500px;
+}
 </style>
 <div class="card">
     <div class="card-body">
         <h4 class="card-title">Inspector Details</h4>
-        {% for application_details in application_details %}
+
             <form method="post" id="certificate_inspector_form">
-                <input type="hidden" name="application_id" value="{{ application_details.Application_No }}">
+
                 <div class="accordion" role="tablist">
                     <div class="card">
                         <div class="card-header" role="tab" id="headingOne">
@@ -19,6 +24,8 @@ form, input, select, textarea{
                         </div>
 
                         <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion" style="">
+                            {% for application_details in application_details %}
+                            <input type="hidden" name="application_id" value="{{ application_details.Application_No }}">
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-sm-4">
@@ -117,6 +124,7 @@ form, input, select, textarea{
                                     </div>
                                 </div>
                             </div>
+                            {% endfor %}
                         </div>
                     </div>
                     <div class="card">
@@ -177,7 +185,7 @@ form, input, select, textarea{
                                        {% for file_attach in file %}
                                                 <tr>
                                                     <td>{{ forloop.counter }}</td>
-                                                    <td><a href='../{{file_attach.File_Path}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                                                    <td><a href='{{file_attach.File_Path}}' target="_blank">{{file_attach.Attachment}}</a></td>
                                                 </tr>
                                                 {% empty %}
                                                 <tr>
@@ -195,7 +203,7 @@ form, input, select, textarea{
                                 Inspector Details
                             </a>
                         </div>
-                        <div id="collapseFour" class="collapse" role="tabpanel" aria-labelledby="headingFour" data-parent="#accordion">
+                        <div id="collapseFour" class="active" role="tabpanel" aria-labelledby="headingFour" data-parent="#accordion">
                             <div class="card-body">
                                 <div class="card-tools">
                                     <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="openDecisionModal()">
@@ -207,30 +215,31 @@ form, input, select, textarea{
                                 </div>
                                 <br>
                                 <div id="details">
-                                    <table class="table table-bordered">
+                                    <table id="book-table" class="table table-bordered">
                                         <thead>
                                             <tr>
                                                 <th scope="col">#</th>
-                                                <th scope="col">Current Observation</th>
-                                                <th scope="col">Decision Conformity Statement</th>
+                                                <th scope="col">Current Observations</th>
+                                                <th scope="col">Decision Conformity</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                           {% for decision in decision %}
-                                                    <tr>
-                                                        <td>{{ forloop.counter }}</td>
-                                                        <td>{{decision.Observation}}</td>
-                                                        <td>{{decision.Action}}</td>
-                                                    </tr>
-                                                    {% empty %}
-                                                    <tr>
-                                                      <td colspan="4" class="text-center">No Data</td>
-                                                    </tr>
+                                           {% for decision_details in decision_details %}
+                                                <tr>
+                                                    <td>{{ forloop.counter }}</td>
+                                                    <td>{{decision_details.Observation}}</td>
+                                                    <td>{{decision_details.Action}}</td>
+                                                </tr>
+                                                {% empty %}
+                                                <tr>
+                                                  <td colspan="3" class="text-center">No Data</td>
+                                                </tr>
                                            {% endfor %}
                                         </tbody>
                                     </table>
                                 </div>
                                 <br>
+                                {% if application_details.Resubmit_Remarks %}
                                 <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
                                     <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
                                         <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Client </span>&nbsp;&nbsp;&nbsp;
@@ -238,13 +247,18 @@ form, input, select, textarea{
                                     <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
                                 </div>
                                 <div class="row">
+                                    <div class="col-sm-6">
+                                        <label class="form-label">Requested Date For Inspection</label>
+                                        <input type="text" name="date" id="inspection_date" class="form-control" value="{{application_details.Resubmit_Date}}" disabled>
+                                    </div>
                                      <div class="col-md-6">
-                                        <div class="from-label">
+                                        <div class="form-label">
                                             <label class="from-label">Resubmit Remarks</label>
-                                            <textarea class="form-control" rows="3" id="Resubmit_Remarks" disabled>{{application_details.Resubmit_Remarks}}</textarea>
+                                            <textarea class="form-control" rows="3" id="Resubmit_Remarks" disabled>{{application_details.Client_Remarks}}</textarea>
                                         </div>
                                     </div>
                                  </div>
+                                {% endif %}
                                 <hr>
                                 <div class="row">
                                     <div class="col-md-6">
@@ -271,25 +285,25 @@ form, input, select, textarea{
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="form-label">Date Of Inspection <font color="red">*</font></label>
-                                            <input type="text" class="form-control date-picker flatpickr-input active" id="dateOfInspection" name="date"  placeholder="Pick a date" readonly="readonly">
+                                            <input type="date" class="form-control" id="dateOfInspection" name="dateOfInspection">
                                         </div>
                                         <div class="alert alert-danger" id="dateOfInspectionErrorMsg" style="display:none"></div>
                                     </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Validity Of Permit(no of days) <font color="red">*</font></label>
+                                            <input type="text" class="form-control" id="validity" name="validity" onkeypress="return isNumberKey(event)" onchange="check_validity(this.value)">
+                                        </div>
+                                        <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="form-label">Remarks(Required If Resubmit/Reject) <font color="red">*</font> </label>
                                             <textarea class="form-control" id="inspector_remarks" name="inspector_remarks" rows="2"></textarea>
                                         </div>
                                         <div class="alert alert-danger" id="inspector_remarksErrorMsg" style="display:none"></div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label class="form-label">Validity Of Permit(no of days) <font color="red">*</font></label>
-                                            <input type="number" class="form-control" id="validity" name="validity">
-                                        </div>
-                                        <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <br>
@@ -333,7 +347,9 @@ form, input, select, textarea{
                                                     <td>{{recommendation.Remarks}}</td>
                                                     <td>
                                                         <button type="button" class="btn btn-sm btn-flat btn-warning" onclick="populateEditForm('{{recommendation.Record_Id}}','{{recommendation.Crop}}','{{recommendation.Variety}}',
-                                                        '{{recommendation.Seed_Source}}', '{{recommendation.Quantity}}','{{recommendation.Unit}}','{{recommendation.Purpose}}','{{recommendation.Application_No}}')">
+                                                        '{{recommendation.Seed_Source}}', '{{recommendation.Quantity}}','{{recommendation.Unit}}','{{recommendation.Purpose}}','{{recommendation.Application_No}}', '{{recommendation.Qty_Certified}}',
+                                                        '{{recommendation.Unit_Certified}}', '{{recommendation.Value_Certified}}', '{{recommendation.Qty_Rejected}}', '{{recommendation.Unit_Rejected}}','{{recommendation.Value_Rejected}}',
+                                                        '{{recommendation.Remarks}}')">
                                                             <i class="ace-icon zmdi zmdi-edit"></i>
                                                         </button>
                                                     </td>
@@ -347,7 +363,11 @@ form, input, select, textarea{
                                     </table>
                                 </div>
                                 <div class="alert alert-success" id="approve_Msg" style="display:none"></div>
-                                <div class="modal-footer">
+                                <hr>
+                                <div id="loader" style="display:none">
+                                    <img src="{% static 'assets/img/ajax-loader.gif' %}" alt="processing..." />
+                                </div>
+                                <div class="card-action text-center">
                                     <button type="button" class="btn btn-flat btn-primary" onclick="approve_application()">
                                         <i class="ace-icon fa fa-check"></i>
                                         &nbsp;&nbsp;Approve
@@ -366,7 +386,6 @@ form, input, select, textarea{
                     </div>
                 </div>
             </form>
-        {% endfor %}
     </div>
 </div>
 <form method="post" id="seed_recommendation_form">
@@ -378,11 +397,10 @@ form, input, select, textarea{
                     <button type="button" class="close" data-dismiss="modal">
                         <span aria-hidden="true">&times;</span>
                     </button>
-
                 </div>
                 <div class="modal-body">
-                    <input type="text" class="form-control" id="record_id" name="record_id">
-                    <input type="text" class="form-control" id="app_no" name="application_no">
+                    <input type="hidden" class="form-control" id="record_id" name="record_id">
+                    <input type="hidden" class="form-control" id="app_no" name="application_no">
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
@@ -427,7 +445,7 @@ form, input, select, textarea{
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Quantity Certified <font color="red">*</font></label>
-                                <input type="number" class="form-control" id="quantity_certified" name="quantity_certified" onchange="getRejectedQuantity(this.value)" onkeypress="return isNumberKey(event)">
+                                <input type="text" class="form-control" id="quantity_certified" name="quantity_certified" onchange="getRejectedQuantity()" onkeypress="return isNumberKey(event)">
                             </div>
                             <div class="alert alert-danger" id="quantity_certifiedErrorMsg" style="display:none"></div>
                         </div>
@@ -446,7 +464,7 @@ form, input, select, textarea{
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Value Certified <font color="red">*</font></label>
-                                <input type="number" class="form-control" id="value_certified" name="value_certified" onkeypress="return isNumberKey(event)">
+                                <input type="text" class="form-control" id="value_certified" name="value_certified" onkeypress="return isNumberKey(event)">
                             </div>
                             <div class="alert alert-danger" id="value_certifiedErrorMsg" style="display:none"></div>
                         </div>
@@ -633,11 +651,13 @@ function approve_application()
     }
     else
     {
+        $("#loader").show();
         $.ajax({
             type : "GET",
-            url : "{% url 'approve_certificate_app' %}",
+            url : "{% url 'approve_certificate_application' %}",
             data :$('#certificate_inspector_form').serialize(),
             success : function(data) {
+                $("#loader").hide();
                 $('#approve_Msg').html("Application Approved.");
                 $('#approve_Msg').show();
                 $('#approve_Msg').delay(2000).fadeOut('slow');
@@ -665,11 +685,13 @@ function reject_application()
     }
     else
     {
+        $("#loader").show();
         $.ajax({
             type : "GET",
             url : "{% url 'reject_certificate_app' %}",
             data :$('#certificate_inspector_form').serialize(),
             success : function(data) {
+                $("#loader").hide();
                 $('#approve_Msg').html("Application Rejected.");
                 $('#approve_Msg').show();
                 $('#approve_Msg').delay(2000).fadeOut('slow');
@@ -801,7 +823,8 @@ function getVariety(crop_id)
     });
 }
 
-function populateEditForm(recordId, crop,crop_variety, seed_source, quantity, unit, purpose, application_no)
+function populateEditForm(recordId, crop,crop_variety, seed_source, quantity, unit, purpose, application_no,Qty_Certified,Unit_Certified,Value_Certified,
+Qty_Rejected,Unit_Rejected,Value_Rejected,Remarks)
     {
         $('#record_id').val(recordId);;
         $('#crop').val(crop);
@@ -811,14 +834,72 @@ function populateEditForm(recordId, crop,crop_variety, seed_source, quantity, un
         $('#unit').val(unit);
         $('#purpose').val(purpose);
         $('#app_no').val(application_no);
+        if(Qty_Certified == "None")
+        {
+            $('#quantity_certified').val("");
+        }
+        else
+        {
+            $('#quantity_certified').val(Qty_Certified);
+        }
+        if(Unit_Certified == "None")
+        {
+            $('#unit_certified').val("");
+        }
+        else
+        {
+            $('#unit_certified').val(Unit_Certified);
+        }
+        if(Value_Certified == "None")
+        {
+            $('#value_certified').val("");
+        }
+        else
+        {
+            $('#value_certified').val(Value_Certified);
+        }
+        if(Qty_Rejected == "None")
+        {
+            $('#quantity_rejected').val("");
+        }
+        else
+        {
+            $('#quantity_rejected').val(Qty_Rejected);
+        }
+        if(Unit_Rejected == "None")
+        {
+            $('#unit_rejected').val("");
+        }
+        else
+        {
+            $('#unit_rejected').val(Unit_Rejected);
+        }
+        if(Value_Rejected == "None")
+        {
+            $('#value_rejected').val("");
+        }
+        else
+        {
+            $('#value_rejected').val(Value_Rejected);
+        }
+        if(Remarks == "None")
+        {
+            $('#remarks').val("");
+        }
+        else
+        {
+            $('#remarks').val(Remarks);
+        }
 
         $('#recommendModal').modal('show');
     }
 
-function getRejectedQuantity(value)
+function getRejectedQuantity()
 {
     var quantity = $('#quantity').val();
-    if(value > quantity)
+    var quantity_certified = $('#quantity_certified').val();
+    var quantity = quantity - quantity_certified
+    if(quantity < 0)
     {
         $('#quantity_certifiedErrorMsg').html("Cannot Be More Than Quantity.");
         $('#quantity_certifiedErrorMsg').show();
@@ -828,8 +909,22 @@ function getRejectedQuantity(value)
     }
     else
     {
-        rejected_quantity = quantity - value;
-        $('#quantity_rejected').val(rejected_quantity);
+        $('#quantity_rejected').val(quantity);
+    }
+}
+
+function check_validity(validity)
+{
+    if(validity == 0)
+    {
+        $('#validityErrorMsg').html("Must Be Greater Than Zero.");
+        $('#validityErrorMsg').show();
+        $('#validityErrorMsg').delay(2000).fadeOut('slow');
+        $('#validity').val("");
+    }
+    else
+    {
+        $('#validityErrorMsg').hide();
     }
 }
 </script>

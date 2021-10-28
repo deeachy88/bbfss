@@ -263,7 +263,7 @@ option {
                             </div>
                         </div>
                         <div class="card-action">
-                            <button type="button" class="btn btn-success" onclick="save_details_form()">Save</button>
+                            <button type="button" class="btn btn-success" onclick="save_details_form()" id="movement_details_button" style="display:none">Save</button>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="movement-profile-file">
@@ -301,7 +301,7 @@ option {
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Quantity <font color='red'>*</font></label>
-                                        <input type="text" name="qty" class="form-control" id="qty" onkeypress="return isNumberKey(event)">
+                                        <input type="text" name="qty" class="form-control" id="qty" onkeypress="return isNumberKey(event)" onchange="check_qty(this.value)">
                                         <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
@@ -397,7 +397,7 @@ option {
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Quantity <font color='red'>*</font></label>
-                                        <input type="text" name="edit_qty" class="form-control" id="edit_qty" onkeypress="return isNumberKey(event)">
+                                        <input type="text" name="edit_qty" class="form-control" id="edit_qty" onkeypress="return isNumberKey(event)" onchange="check_edit_qty(this.value)">
                                         <div class="alert alert-danger" id="edit_qtyErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
@@ -997,5 +997,34 @@ function populateDetails(Record_Id, Commodity, Quantity, Unit, Remarks, applicat
 
 }
 
+function check_qty(qty)
+{
+    if(qty == 0)
+    {
+        $('#qtyErrorMsg').html("Must Be Greater Than Zero.");
+        $('#qtyErrorMsg').show();
+        $('#qtyErrorMsg').delay(2000).fadeOut('slow');
+        $('#qty').val("");
+    }
+    else
+    {
+        $('#qtyErrorMsg').hide();
+    }
+}
+
+function check_edit_qty(qty)
+{
+    if(qty == 0)
+    {
+        $('#edit_qtyErrorMsg').html("Must Be Greater Than Zero.");
+        $('#edit_qtyErrorMsg').show();
+        $('#edit_qtyErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_qty').val("");
+    }
+    else
+    {
+        $('#edit_qtyErrorMsg').hide();
+    }
+}
 </script>
 {% endblock %}

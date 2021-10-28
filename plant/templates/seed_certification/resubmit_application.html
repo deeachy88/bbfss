@@ -1,3 +1,4 @@
+{% load static %}
 <style>
 form, input, select, textarea{
     color: black !important;
@@ -198,18 +199,25 @@ form, input, select, textarea{
                                 <div class="row">
                                      <div class="col-md-6">
                                         <div class="form-group">
-                                            <label class="from-label">Remarks From Inspector</label>
+                                            <label class="form-label">Remarks From Inspector</label>
                                             <textarea class="form-control" rows="3"  disabled>{{ application_details.Inspector_Remarks }}</textarea>
                                         </div>
                                     </div>
+                                    <div class="col-sm-6">
+                                        <label class="form-label">Date For Inspection <font color="red">*</font></label>
+                                        <input type="date" name="inspection_date" id="inspection_date" class="form-control">
+                                        <div class="alert alert-danger" id="inspection_dateErrorMsg" style="display:none"></div>
+                                    </div>
                                      <div class="col-md-6">
-                                        <div class="from-label">
-                                            <label class="from-label">Resubmit Remarks</label>
+                                        <div class="from-group">
+                                            <label class="form-label">Resubmit Remarks <font color="red">*</font></label>
                                             <textarea class="form-control" rows="3" id="Resubmit_Remarks" name="Resubmit_Remarks"></textarea>
                                         </div>
+                                         <div class="alert alert-danger" id="Resubmit_RemarksErrorMsg" style="display:none"></div>
                                     </div>
                                  </div>
                             </div>
+                            <div class="alert alert-success" id="approve_Msg" style="display:none"></div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-primary" onclick="nursery_client_resubmit('{{ application_details.Application_No }}')">Submit</button>
                                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
@@ -221,18 +229,48 @@ form, input, select, textarea{
         {% endfor %}
     </div>
 </div>
+<script src="{% static 'assets/js/app.min.js' %}"></script>
 <script>
+$(function(){
+    var today = new Date().toISOString().split('T')[0];
+    $('#inspection_date')[0].setAttribute('min', today);
+});
+
     function nursery_client_resubmit(application_id)
     {
+        var inspection_date = $('#inspection_date').val();
         var Resubmit_Remarks = $('#Resubmit_Remarks').val();
-       $.ajax({
-            type : "GET",
-            url : "{% url 'seed_certification_client_resubmit' %}",
-            data :{'application_id':application_id, 'Resubmit_Remarks':Resubmit_Remarks},
-            success : function(data) {
-                location.reload();
-            }
-        });
+
+        if(inspection_date == "")
+        {
+            $('#inspection_dateErrorMsg').html("Select Date For Inspection.");
+            $('#inspection_dateErrorMsg').show();
+            $('#inspection_dateErrorMsg').delay(2000).fadeOut('slow');
+            $('#inspection_date').focus();
+        }
+        else if(Resubmit_Remarks == "")
+        {
+            $('#Resubmit_RemarksErrorMsg').html("Enter Resubmit Remarks.");
+            $('#Resubmit_RemarksErrorMsg').show();
+            $('#Resubmit_RemarksErrorMsg').delay(2000).fadeOut('slow');
+            $('#Resubmit_Remarks').focus();
+        }
+        else
+        {
+            $.ajax({
+                type : "GET",
+                url : "{% url 'seed_certification_client_resubmit' %}",
+                data :{'application_id':application_id,'inspection_date':inspection_date, 'Resubmit_Remarks':Resubmit_Remarks},
+                success : function(data) {
+                    $('#approve_Msg').html("Application Resubmitted.");
+                    $('#approve_Msg').show();
+                    $('#approve_Msg').delay(2000).fadeOut('slow');
+                    setTimeout(function() {
+                        window.location.href = '{% url 'dashboard' %}';
+                    }, 3000);
+                }
+            });
+        }
     }
 </script>
 

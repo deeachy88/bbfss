@@ -292,7 +292,8 @@ form, input, select, textarea{
                                         <td>
                                             <button type="button" class="btn btn-info"
                                             onclick="populateEditDetails('{{ import.Common_Name }}', '{{import.Product_Category}}', '{{import.Product_Characteristics}}',
-                                            '{{import.Exporter_Type}}', '{{import.Quantity}}', '{{import.Unit}}', '{{import.Application_No}}','{{import.Record_Id}}', '{{import.Quantity_Balance_1}}', '{{import.Quantity_Balance}}')">
+                                            '{{import.Exporter_Type}}', '{{import.Quantity}}', '{{import.Unit}}', '{{import.Application_No}}','{{import.Record_Id}}', '{{import.Quantity_Balance_1}}', '{{import.Quantity_Balance}}',
+                                            '{{import.Quantity_Released}}','{{import.Remarks}}')">
                                             <i class="zmdi zmdi-edit"></i>
                                             </button>
                                         </td>
@@ -687,7 +688,7 @@ function submit_details(application_id)
     }
 }
 
-function populateEditDetails(Common_Name, Product_Category, Product_Characteristics, Exporter_Type, Quantity, Unit, Application_No, Record_Id,Quantity_Balance_1, Quantity_Balance)
+function populateEditDetails(Common_Name, Product_Category, Product_Characteristics, Exporter_Type, Quantity, Unit, Application_No, Record_Id,Quantity_Balance_1, Quantity_Balance, Quantity_Released, Remarks)
 {
     $('#import_record_id').val(Record_Id);
     $('#Common_Name').val(Common_Name);
@@ -699,6 +700,7 @@ function populateEditDetails(Common_Name, Product_Category, Product_Characterist
     $('#balance_quantity_1').val(Quantity_Balance_1);
     $('#balance_quantity').val(Quantity_Balance);
     $('#permit_details_model').modal('show');
+
     if(Exporter_Type == 'Producer')
     {
         $("#Producer").prop("checked", true);
@@ -707,6 +709,8 @@ function populateEditDetails(Common_Name, Product_Category, Product_Characterist
     {
         $("#Exporter").prop("checked", true);
     }
+    $('#qty_approved').val(Quantity_Released)
+    $('#import_remarks').val(Remarks)
 }
 
 function get_balance_import(qty)

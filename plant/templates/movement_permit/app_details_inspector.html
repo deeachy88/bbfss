@@ -3,6 +3,11 @@
     form, input, select, textarea{
     color: black !important;
     }
+    #loader img
+    {
+      left: 50%;
+  }
+
 </style>
 <form method="post" id="applicationForm">
     {% csrf_token %}
@@ -225,7 +230,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Vehicle No</label>
-                                            <input type="text" class="form-control" value="{{ application_details.Authorized_Route }}" readonly="readonly">
+                                            <input type="text" class="form-control" value="{{ application_details.Vehicle_No }}" readonly="readonly">
                                         </div>
                                     </div>
                                 {% else %}
@@ -309,12 +314,8 @@
                         <br><br>
                             <div class="row">
                                 <div class="card col-md-12">
-                                    <div class="card-header">
-                                        <div class="card-head-row">
-                                            <div class="card-tools">
-                                                <a data-toggle="modal" href="#addModal" class="btn btn-primary">Add</a>
-                                            </div>
-                                        </div>
+                                    <div class="card-tools">
+                                        <a data-toggle="modal" href="#addModal" class="btn btn-primary">Add</a>
                                     </div>
                                     <div class="card-body" id="details">
                                         <table class="table table-bordered">
@@ -369,14 +370,14 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Date Of Inspection <font color="red">*</font></label>
-                                    <input type="text" class="form-control date-picker flatpickr-input active" id="dateOfInspection" name="date" readonly="readonly">
+                                    <input type="date" class="form-control" id="dateOfInspection" name="date">
                                 </div>
                                 <div class="alert alert-danger" id="dateOfInspectionErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Validity Of Permit(no of days) <font color="red">*</font></label>
-                                    <input type="number" class="form-control" id="validity" name="validity">
+                                    <input type="text" class="form-control" id="validity" name="validity" onkeypress="return isNumberKey(event)" onchange="check_validity(this.value)">
                                 </div>
                                 <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>
                             </div>
@@ -424,14 +425,14 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Current Observation</label>
+                                <label class="form-label">Current Observation <font color="red">*</font></label>
                                 <textarea class="form-control" id="currentObservation" rows="2"></textarea>
                             </div>
                             <div class="alert alert-danger" id="currentObservationErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="conveyanceMeans">Decision Conformity Statement </label>
+                                <label class="form-label">Decision Conformity Statement <font color="red">*</font></label>
                                 <textarea class="form-control" id="decisionConform" rows="2"></textarea>
                             </div>
                             <div class="alert alert-danger" id="decisionConformErrorMsg" style="display:none"></div>
@@ -460,6 +461,16 @@ $(function(){
     var today = new Date().toISOString().split('T')[0];
     $('#dateOfInspection')[0].setAttribute('min', today);
 });
+
+function isNumberKey(evt)
+{
+ var charCode = (evt.which) ? evt.which : event.keyCode
+ if (charCode > 31 && (charCode < 48 || charCode > 57))
+    return false;
+
+ return true;
+}
+
 function add_details_ins(application_id)
 {
     currentObservation = $('#currentObservation').val();
@@ -552,7 +563,7 @@ function approve_movement_permit(application_id)
 
 function rejectMovementApplication(application_id)
 {
-    $("#loader").show();
+
     remarks = $('#remarks').val();
 
     if(remarks == "")
@@ -564,6 +575,7 @@ function rejectMovementApplication(application_id)
     }
     else
     {
+        $("#loader").show();
         $.ajax({
             type : "POST",
             url : "{% url 'reject_movement_application' %}",
@@ -578,6 +590,21 @@ function rejectMovementApplication(application_id)
                 }, 3000);
             }
         });
+    }
+}
+
+function check_validity(validity)
+{
+    if(validity == 0)
+    {
+        $('#validityErrorMsg').html("Must Be Greater Than Zero.");
+        $('#validityErrorMsg').show();
+        $('#validityErrorMsg').delay(2000).fadeOut('slow');
+        $('#validity').val("");
+    }
+    else
+    {
+        $('#validityErrorMsg').hide();
     }
 }
 </script>

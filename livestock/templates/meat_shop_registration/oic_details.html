@@ -167,6 +167,53 @@
                             </tbody>
                         </table>
                     </div>
+                    <br>
+                     {% for application_details in application_details %}
+                        {% if application_details.Desired_FR_Inspection_Date %}
+                            <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                                <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                    <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Client </span>&nbsp;&nbsp;&nbsp;
+                                    <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Details</span>
+                                <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Desired Factory Inspection Date</label>
+                                        <input type="text" class="form-control" value="{{ application_details.Desired_FR_Inspection_Date }}" readonly="readonly">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Response From Client</label>
+                                        <input type="text" class="form-control" value="{{ application_details.FR_Response }}" readonly="readonly">
+                                    </div>
+                                </div>
+                            </div>
+                        {% elif application_details.FI_Response and application_details.Desired_FR_Inspection_Date == None %}
+                            <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                                <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                    <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Client </span>&nbsp;&nbsp;&nbsp;
+                                    <span class="px-1 small text-muted font-weight-bold text-muted form-label"> Details</span>
+                                <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Desired Feasibility Inspection Date</label>
+                                        <input type="text" class="form-control" value="{{ application_details.Desired_FI_Inspection_Date }}" readonly="readonly">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Response From Client</label>
+                                        <input type="text" class="form-control" value="{{ application_details.FI_Response }}" readonly="readonly">
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                     {% endfor %}
+                    <br>
                         <div class="modal-footer justify-content-center">
                             <select class="form-control col-md-6" name="forwardTo"  id="forwardTo">
                                 <option value="">--SELECT INSPECTOR--</option>

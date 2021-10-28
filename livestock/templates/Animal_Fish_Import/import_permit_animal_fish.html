@@ -339,7 +339,7 @@ form, input, select, textarea{
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Number <font color="red">*</font></label>
-                                        <input type="text" name="no" class="form-control" id="no" onkeypress="return isNumberKey(event)">
+                                        <input type="text" name="no" class="form-control" id="no" onkeypress="return isNumberKey(event)" onchange="check_no(this.value)">
                                         <div class="alert alert-danger" id="noErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
@@ -453,7 +453,7 @@ form, input, select, textarea{
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Number <font color="red">*</font></label>
-                                        <input type="text" name="edit_no" class="form-control" id="edit_no" onkeypress="return isNumberKey(event)">
+                                        <input type="text" name="edit_no" class="form-control" id="edit_no" onkeypress="return isNumberKey(event)" onchange="check_edit_no(this.value)">
                                         <div class="alert alert-danger" id="edit_noErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
@@ -512,6 +512,7 @@ function permit_save_details()
     var nationality = $("input[name=nationality]:checked").length;
     var app_type = $('input[name="Import_Type"]:checked').val();
     var nationality_type = $('input[name="nationality"]:checked').val();
+    var passport = $('#passport').val();
 
     if(Application_Type < 1)
     {
@@ -590,14 +591,28 @@ function permit_save_details()
         $('#emailErrorMsg').delay(2000).fadeOut('slow');
         $('#email').focus();
     }
-    else if(app_type == "Commercial" || app_type == "Institution" && license_no == "")
+    else if(app_type == "Commercial" && license_no == "")
     {
         $('#license_noErrorMsg').html("Enter License No.");
         $('#license_noErrorMsg').show();
         $('#license_noErrorMsg').delay(2000).fadeOut('slow');
         $('#license_no').focus();
     }
-    else if(app_type == "Commercial" || app_type == "Institution" && business_name == "")
+    else if(app_type == "Institution" && license_no == "")
+    {
+        $('#license_noErrorMsg').html("Enter License No.");
+        $('#license_noErrorMsg').show();
+        $('#license_noErrorMsg').delay(2000).fadeOut('slow');
+        $('#license_no').focus();
+    }
+    else if(app_type == "Commercial" && business_name == "")
+    {
+        $('#business_nameErrorMsg').html("Enter Business Name.");
+        $('#business_nameErrorMsg').show();
+        $('#business_nameErrorMsg').delay(2000).fadeOut('slow');
+        $('#business_name').focus();
+    }
+    else if(app_type == "Institution" && business_name == "")
     {
         $('#business_nameErrorMsg').html("Enter Business Name.");
         $('#business_nameErrorMsg').show();
@@ -634,9 +649,9 @@ function permit_save_details()
     }
     else if(Final_Destination == "")
     {
-        $('#Place_of_ExitErrorMsg').html("Enter Final Destination.");
-        $('#Place_of_ExitErrorMsg').show();
-        $('#Place_of_ExitErrorMsg').delay(2000).fadeOut('slow');
+        $('#Final_DestinationErrorMsg').html("Enter Final Destination.");
+        $('#Final_DestinationErrorMsg').show();
+        $('#Final_DestinationErrorMsg').delay(2000).fadeOut('slow');
         $('#Final_Destination').focus();
     }
     else if(Expected_Arrival_Date == "")
@@ -1074,6 +1089,36 @@ function af_attachment()
             $('#fileAttach').html(response);
         }
     });
+}
+
+function check_no(no)
+{
+    if(no == 0)
+    {
+        $('#noErrorMsg').html("Must Be Greater Than Zero.");
+        $('#noErrorMsg').show();
+        $('#noErrorMsg').delay(2000).fadeOut('slow');
+        $('#no').val("");
+    }
+    else
+    {
+        $('#noErrorMsg').hide();
+    }
+}
+
+function check_edit_no(no)
+{
+    if(no == 0)
+    {
+        $('#edit_noErrorMsg').html("Must Be Greater Than Zero.");
+        $('#edit_noErrorMsg').show();
+        $('#edit_noErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_no').val("");
+    }
+    else
+    {
+        $('#edit_noErrorMsg').hide();
+    }
 }
 </script>
 {% endblock %}

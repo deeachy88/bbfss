@@ -53,7 +53,7 @@
                                             {% endif %}
                                         {% endfor %}
                                         <td>{{application_details.Applicant_Id}}</td>
-                                        <td>{{application_details.Action_Date|date:"d-m-Y"}}</td>
+                                        <td>{{application_details.Application_Date|date:"d-m-Y"}}</td>
                                         {% if application_details.Service_Code == 'OC' and application_details.Application_Status == 'P' or application_details.Service_Code == 'FPC' and application_details.Application_Status == 'P' or application_details.Service_Code == 'GAP' and application_details.Application_Status == 'P'  or application_details.Service_Code == 'FBR' and application_details.Application_Status == 'P' or application_details.Service_Code == 'CMS' and application_details.Application_Status == 'P' %}
                                             <td>
                                                 <button type="button" class="btn btn-warning btn-sm" onclick="acknowledge('{{application_details.Application_No}}', '{{application_details.Service_Code}}')">
@@ -116,6 +116,7 @@
             }
         });
     }
+
     function acknowledge(appId, Service_Code)
     {
         $("#loader").show();

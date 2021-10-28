@@ -1,3 +1,4 @@
+{% load static %}
 <style>
 form, input, select, textarea{
     color: black !important;
@@ -71,7 +72,7 @@ form, input, select, textarea{
                                         <div class="col-sm-4">
                                             <div class="form-group">
                                                 <label class="form-label">Nursery Category</label>
-                                                <select class="form-control form-control" id="Nursery_Category" name="Nursery_Category">
+                                                <select class="form-control form-control" id="Nursery_Category" name="Nursery_Category" disabled>
                                                     {% if application_details.Nursery_Category == "Agro-Forestry" %}
                                                     <option value="Agro-Forestry" selected>Agro-Forestry</option>
                                                     {% elif application_details.Nursery_Category == "Ornamental" %}
@@ -101,12 +102,12 @@ form, input, select, textarea{
                                         <div class="col-sm-4">
                                             <div class="form-group">
                                                 <label class="form-label">Nursery Type</label>
-                                                <select class="form-control form-control" id="Nursery_Type" name="Nursery_Type">
+                                                <select class="form-control form-control" id="Nursery_Type" name="Nursery_Type" disabled>
                                                     {% if application_details.Nursery_Type == "Bi-annual" %}
                                                     <option value="Bi-annual" selected>Bi-annual</option>
-                                                    {% elif application_details.Nursery_Category == "Annual" %}
+                                                    {% elif application_details.Nursery_Type == "Annual" %}
                                                     <option value="Annual"selected>Annual</option>
-                                                    {% elif application_details.Nursery_Category == "Perennial" %}
+                                                    {% elif application_details.Nursery_Type == "Perennial" %}
                                                     <option value="Perennial"selected>Perennial</option>
                                                     {% endif %}
                                                 </select>
@@ -118,7 +119,7 @@ form, input, select, textarea{
                                                 <label class="form-label">Dzongkhag</label>
                                                 <select class="form-control" disabled>
                                                     {% for dzongkhag in dzongkhag %}
-                                                        <option value="{{dzongkhag.Dzongkhag_Code}}"{% if application_details.Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>
+                                                        <option value="{{dzongkhag.Dzongkhag_Code}}"{% if application_details.Dzongkhag == dzongkhag.Dzongkhag_Code %}selected{% endif %}>
                                                             {{ dzongkhag.Dzongkhag_Name }}
                                                         </option>
                                                     {% endfor %}
@@ -130,7 +131,7 @@ form, input, select, textarea{
                                                 <label class="form-label">Gewog</label>
                                                 <select class="form-control" disabled>
                                                     {% for gewog in gewog %}
-                                                        <option value="{{ gewog.Gewog_Code }}"{% if application_details.Gewog_Code == gewog.Gewog_Code %}selected{% endif %}>{{ gewog.Gewog_Name }}</option>
+                                                        <option value="{{ gewog.Gewog_Code }}"{% if application_details.Gewog == gewog.Gewog_Code %}selected{% endif %}>{{ gewog.Gewog_Name }}</option>
                                                     {% endfor %}
                                                 </select>
                                             </div>
@@ -143,7 +144,7 @@ form, input, select, textarea{
                                             <label class="form-label">Village</label>
                                             <select class="form-control" disabled>
                                                 {% for village in village %}
-                                                    <option value="{{ village.Village_Code }}" {% if application_details.Village_Code == village.Village_Code %}selected{% endif %}>{{ village.Village_Name }}</option>
+                                                    <option value="{{ village.Village_Code }}" {% if application_details.Village == village.Village_Code %}selected{% endif %}>{{ village.Village_Name }}</option>
                                                 {% endfor %}
                                             </select>
                                         </div>
@@ -223,7 +224,7 @@ form, input, select, textarea{
                                        {% for file_attach in file %}
                                                 <tr>
                                                     <td>{{ forloop.counter }}</td>
-                                                    <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                                                    <td><a href='{{file_attach.File_Path}}' target="_blank">{{file_attach.Attachment}}</a></td>
                                                 </tr>
                                                 {% empty %}
                                                 <tr>
@@ -253,7 +254,7 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label class="from-label">Remarks From Inspector</label>
+                                            <label class="form-label">Remarks From Inspector</label>
                                             <textarea class="form-control" rows="3" disabled>{{ application_details.Remarks }}</textarea>
                                         </div>
                                     </div>
@@ -266,13 +267,13 @@ form, input, select, textarea{
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-6">
-                                        <label class="from-label">Date For Inspection</label>
-                                        <input type="date" name="date" id="inspection_date" class="form-control date-picker flatpickr-input active">
+                                        <label class="form-label">Date For Inspection <font color="red">*</font></label>
+                                        <input type="date" name="date" id="inspection_date" class="form-control">
                                         <div class="alert alert-danger" id="inspection_dateErrorMsg" style="display:none"></div>
                                     </div>
                                      <div class="col-md-6">
                                         <div class="from-label">
-                                            <label class="from-label">Resubmit Remarks</label>
+                                            <label class="form-label">Resubmit Remarks <font color="red">*</font></label>
                                             <textarea class="form-control" rows="5" id="Resubmit_Remarks" name="Resubmit_Remarks"></textarea>
                                             <div class="alert alert-danger" id="Resubmit_RemarksErrorMsg" style="display:none"></div>
                                         </div>
@@ -291,7 +292,13 @@ form, input, select, textarea{
             </form>
     </div>
 </div>
+<script src="{% static 'assets/js/app.min.js' %}"></script>
 <script>
+$(function(){
+    var today = new Date().toISOString().split('T')[0];
+    $('#inspection_date')[0].setAttribute('min', today);
+});
+
     function nursery_client_resubmit(application_id)
     {
         var inspection_date = $('#inspection_date').val();

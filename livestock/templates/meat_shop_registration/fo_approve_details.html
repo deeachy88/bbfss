@@ -472,12 +472,14 @@ form, input, select, textarea{
                                     <input type="text" class="form-control" value="{{application_details.FI_Inspection_Date}}" readonly="readonly">
                                 </div>
                             </div>
+                            {% if application_details.FI_Recommendation %}
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Recommendation</label>
                                     <textarea class="form-control" disabled rows="2">{{application_details.FI_Recommendation}}</textarea>
                                 </div>
                             </div>
+                            {% endif %}
                         </div>
                     {% endfor %}
                     <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
@@ -530,19 +532,21 @@ form, input, select, textarea{
                                 </div>
 
                             </div>
+                            {% if application_details.FR_Recommendation %}
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Recommendation</label>
                                     <textarea class="form-control" disabled rows="2">{{application_details.FR_Recommendation}}</textarea>
                                 </div>
                             </div>
+                            {% endif %}
                         </div>
                     {% endfor %}
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Validity Of License (No Of Days)<font color="red">*</font></label>
-                                <input type="number" class="form-control" id="validity" name="validity">
+                                <input type="text" class="form-control" id="validity" name="validity" onkeypress="return isNumberKey(event)" onchange="check_validity(this.value)">
                             </div>
                             <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>
                         </div>
@@ -578,6 +582,15 @@ form, input, select, textarea{
 
 <script src="{% static 'assets/js/app.min.js' %}"></script>
 <script>
+    function isNumberKey(evt)
+    {
+     var charCode = (evt.which) ? evt.which : event.keyCode
+     if (charCode > 31 && (charCode < 48 || charCode > 57))
+        return false;
+
+     return true;
+    }
+
     function fbr_submit(application_id)
     {
         validity = $('#validity').val();
@@ -613,6 +626,20 @@ form, input, select, textarea{
                     }, 3000);
                 }
             });
+        }
+    }
+    function check_validity(validity)
+    {
+        if(validity == 0)
+        {
+            $('#validityErrorMsg').html("Must Be Greater Than Zero.");
+            $('#validityErrorMsg').show();
+            $('#validityErrorMsg').delay(2000).fadeOut('slow');
+            $('#validity').val("");
+        }
+        else
+        {
+            $('#validityErrorMsg').hide();
         }
     }
 </script>

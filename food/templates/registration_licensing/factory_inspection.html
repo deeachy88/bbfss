@@ -969,11 +969,11 @@ form, input, select, textarea{
                     <div class="modal-footer">
                         {% for application_details in application_details %}
                         <button type="button" class="btn btn-flat btn-primary" onclick="add_details_ins('{{ application_details.Application_No }}')">
-                            <i class="ace-icon fa fa-times"></i>
+                            <i class="ace-icon fa fa-check"></i>
                             &nbsp;&nbsp;Add
                         </button>
                         {% endfor %}
-                        <button type="button" class="btn btn-primary" onclick="closeModal()">Close Modal</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close Modal</button>
                      </div>
                   </div>
             </div>
@@ -1193,7 +1193,8 @@ function add_details_ins(application_id)
 {
     Requirement = $('#Requirement').val();
     Clause_No = $('#Clause_No').val();
-    Concern = $('input[name="Concern"]:checked').val();
+    Concern = $('input[name="Concern"]:checked').length;
+    Concern_Val = $('input[name="Concern"]:checked').val();
     Observations = $('#Observations').val();
     nc_category = $('#nc_category').val();
 
@@ -1215,13 +1216,13 @@ function add_details_ins(application_id)
         $('#ConcernErrorMsg').show();
         $('#ConcernErrorMsg').delay(2000).fadeOut('slow');
     }
-    else if(nc_category == "")
+    else if(Concern_Val == "Yes" && nc_category == "")
     {
         $('#nc_categoryErrorMsg').html("Select NC Category.");
         $('#nc_categoryErrorMsg').show();
         $('#nc_categoryErrorMsg').delay(2000).fadeOut('slow');
     }
-    else if(Observations == "")
+    else if(Concern_Val == "Yes" && Observations == "")
     {
         $('#ObservationsErrorMsg').html("Enter Observations/Finding.");
         $('#ObservationsErrorMsg').show();
@@ -1232,7 +1233,7 @@ function add_details_ins(application_id)
         $.ajax({
             type : "GET",
             url : "{% url 'concern_details_factory_ins' %}",
-            data :{'application_id':application_id,'Requirement':Requirement,'Observations':Observations,'Clause_No':Clause_No,'Concern':Concern, 'NC_Category':nc_category},
+            data :{'application_id':application_id,'Requirement':Requirement,'Observations':Observations,'Clause_No':Clause_No,'Concern':Concern_Val, 'NC_Category':nc_category},
             success : function(data) {
                 $('#details').html(data);
                 $('#details').show();

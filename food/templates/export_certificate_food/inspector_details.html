@@ -374,7 +374,7 @@ form, input, select, textarea{
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Validity Of Permit <font color="red">*</font></label>
-                                    <input type="number" class="form-control" id="validity" name="validity">
+                                    <input type="text" class="form-control" id="validity" name="validity" onkeypress="return isNumberKey(event)" onchange="check_validity(this.value)">
                                 </div>
                                 <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>
                             </div>
@@ -419,6 +419,15 @@ form, input, select, textarea{
         </div>
 <script src="{% static 'assets/js/app.min.js' %}"></script>
 <script>
+function isNumberKey(evt)
+{
+ var charCode = (evt.which) ? evt.which : event.keyCode
+ if (charCode > 31 && (charCode < 48 || charCode > 57))
+    return false;
+
+ return true;
+}
+
 function approve_details()
 {
     var Inspection_Leader = $('#teamLeader').val();
@@ -541,6 +550,21 @@ function check_certified_qty(certified_qty)
     {
         qty = requested_qty - certified_qty
         $('#rejected_qty').val(qty);
+    }
+}
+
+function check_validity(validity)
+{
+    if(validity == 0)
+    {
+        $('#validityErrorMsg').html("Must Be Greater Than Zero.");
+        $('#validityErrorMsg').show();
+        $('#validityErrorMsg').delay(2000).fadeOut('slow');
+        $('#validity').val("");
+    }
+    else
+    {
+        $('#validityErrorMsg').hide();
     }
 }
 </script>
