@@ -60,6 +60,7 @@ def view_permit_list(request):
     service_name = t_service_master.objects.filter(Service_Id=serviceId)
     dzongkhag = t_dzongkhag_master.objects.all()
     location = t_location_field_office_mapping.objects.all()
+    field_office = t_field_office_master.objects.all()
     if serviceId == '1':    # List of Movement Permit For Plant And Products Issued
         permit_details = t_plant_movement_permit_t1.objects.filter(Approved_Date__gte=fromDate, Approved_Date__lte=toDate)
     elif serviceId == '2':  # List of Import Permit For Plant And Plant Products Issued
@@ -92,4 +93,4 @@ def view_permit_list(request):
         permit_details = t_food_business_registration_licensing_t1.objects.filter(Approve_Date__gte=fromDate, Approve_Date__lte=toDate)
 
     return render(request, 'permit_list.html', {'permit_details': permit_details, 'service_name': service_name,
-                                                'location':location})
+                                                'location':location, 'field_office':field_office})

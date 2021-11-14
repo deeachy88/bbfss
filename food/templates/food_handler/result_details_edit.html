@@ -1,6 +1,3 @@
-{% for details in file_attach %}
-       {{ details.File_Path}}
-{% endfor %}
 <table class="table table-bordered" id="food-table">
     <thead>
         <tr>
@@ -23,6 +20,8 @@
                 <td><button class="btn btn-primary btn-link" onclick="viewApplicationDetails('{{application_details.Application_No}}')">{{application_details.Application_No}}</button></td>
                 <td>{{application_details.Application_Date|date:"d-m-Y"}}</td>
                 <td>{{application_details.Minimum_Score}}</td>
+                <td>{{application_details.Assessment_Score}}</td>
+                <td>{{application_details.Attendance}}</td>
                 {% for details in file_attach %}
                     {% if application_details.Application_No == details.Application_No %}
                         <td><img src="{{ details.File_Path}}" alt="connect" style="max-height:70px"></td>
@@ -38,7 +37,12 @@
         {% endfor %}
     </tbody>
 </table>
-
+<div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+    Details Saved
+</div>
+<div class="card-action">
+    <button type="button" class="btn btn-primary" value="Submit" onclick="update_food_handler_status()">Update</button>
+</div>
 <script>
 function show_details_modal(application_no,Training_Batch_No)
 {

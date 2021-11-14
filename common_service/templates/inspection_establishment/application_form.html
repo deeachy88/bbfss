@@ -46,8 +46,8 @@ form, input, select, textarea{
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="form-label">Establishment Type </label>
-                                <select class="form-control form-control" id="Inspection_Type" name="Inspection_Type" onchange="conveyanceChange(this.value)">
+                                <label class="form-label">Establishment Type <font color="red">*</font></label>
+                                <select class="form-control form-control" id="Inspection_Type" name="Inspection_Type">
                                     <option value="">-SELECT-</option>
                                     <option value="Restaurant">Restaurant</option>
                                     <option value="Bar">Bar</option>
@@ -66,14 +66,14 @@ form, input, select, textarea{
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="form-label">Inspection Report Date</label>
+                                <label class="form-label">Inspection Report Date <font color="red">*</font></label>
                                 <input type="text" class="form-control date-picker flatpickr-input active" id="inspection_report_date" name="inspection_report_date"  placeholder="Pick a date" readonly="readonly">
                             </div>
                             <div class="alert alert-danger" id="inspection_report_dateErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="form-label">Name of FBO</label>
+                                <label class="form-label">Name of FBO <font color="red">*</font></label>
                                 <input type="text" class="form-control" id="FBO_Name" name="FBO_Name">
                             </div>
                             <div class="alert alert-danger" id="FBO_NameErrorMsg" style="display:none"></div>
@@ -83,21 +83,21 @@ form, input, select, textarea{
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="form-label">Food Safety License No</label>
+                                <label class="form-label">Food Safety License No. <font color="red">*</font></label>
                                 <input type="text" class="form-control" id="License_No" name="License_No">
                             </div>
                             <div class="alert alert-danger" id="License_NoErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="form-label">Address</label>
+                                <label class="form-label">Address <font color="red">*</font></label>
                                 <textarea class="form-control" id="Address" name="Address"></textarea>
                             </div>
                             <div class="alert alert-danger" id="AddressErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="form-label">Dzongkhag</label>
+                                <label class="form-label">Dzongkhag <font color="red">*</font></label>
                                 <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
                                     <option value="">--SELECT DZONGKHAG--</option>
                                     {% for dzongkhag in dzongkhag %}
@@ -111,7 +111,7 @@ form, input, select, textarea{
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="form-label">Gewog</label>
+                                <label class="form-label">Gewog <font color="red">*</font></label>
                                 <select class="form-control" name="gewog" id="gewog" onchange="getVillage(this.value)">
                                     <option value="">--SELECT GEWOG--</option>
                                     {% for gewog in gewog %}
@@ -123,7 +123,7 @@ form, input, select, textarea{
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="form-label">Village</label>
+                                <label class="form-label">Village <font color="red">*</font></label>
                                  <select class="form-control" name="village" id="village">
                                     <option value="">--SELECT VILLAGE--</option>
                                     {% for village in village %}
@@ -135,7 +135,7 @@ form, input, select, textarea{
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="form-label">CID</label>
+                                <label class="form-label">CID <font color="red">*</font></label>
                                 <input type="number" value="{{application_details.CID}}" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCitizenDetails(this.value);">
                             </div>
                             <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
@@ -144,22 +144,22 @@ form, input, select, textarea{
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="form-label">Name Of Owner</label>
+                                <label class="form-label">Name of Owner <font color="red">*</font></label>
                                 <input type="text" class="form-control" id="owner_name" name="owner_name" readonly="readonly">
                             </div>
                             <div class="alert alert-danger" id="owner_nameErrorMsg" style="display:none"></div>
                         </div>
                          <div class="col-md-4">
                             <div class="form-group">
-                                <label class="form-label">Email</label>
+                                <label class="form-label">Email <font color="red">*</font></label>
                                 <input type="email" class="form-control" id="email" name="email" onchange="validateemailId(this.value)">
                             </div>
                             <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="form-label">Contact Number</label>
-                                <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                                <label class="form-label">Contact Number <font color="red">*</font></label>
+                                <input type="text" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
                             </div>
                             <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
                         </div>
@@ -167,7 +167,7 @@ form, input, select, textarea{
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label class="form-label">Observation</label>
+                                <label class="form-label">Observation <font color="red">*</font></label>
                                 <textarea class="form-control" id="observations" name="observations"></textarea>
                             </div>
                             <div class="alert alert-danger" id="observationsErrorMsg" style="display:none"></div>
@@ -222,17 +222,17 @@ form, input, select, textarea{
                             <div class="box-body">
                                 <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Date of Inspection</label>
+                                        <label class="form-label">Date of Inspection <font color="red">*</font></label>
                                         <input type="text" class="form-control date-picker flatpickr-input active" id="Inspection_Date" name="Inspection_Date"  placeholder="Pick a date" readonly="readonly">
                                         <div class="alert alert-danger" id="Inspection_DateErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Inspector Name</label>
+                                        <label class="form-label">Inspector Name <font color="red">*</font></label>
                                         <input type="text" name="Inspector_Name" class="form-control" id="Inspector_Name" required>
                                         <div class="alert alert-danger" id="Inspector_NameErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Observation</label>
+                                        <label class="form-label">Observation <font color="red">*</font></label>
                                         <select class="form-control form-control" id="Observation" name="Observation">
                                             <option value="">-SELECT-</option>
                                             <option value="Critical">Critical</option>
@@ -245,21 +245,21 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Action Proposed</label>
+                                            <label class="form-label">Action Proposed <font color="red">*</font></label>
                                              <input type="text" name="Correction_Proposed" id="Correction_Proposed" class="form-control">
                                         </div>
                                         <div class="alert alert-danger" id="Correction_ProposedErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Date Line for Action</label>
+                                            <label class="form-label">Date Line for Action <font color="red">*</font></label>
                                              <input type="text" name="Date_Line_Correction" id="Date_Line_Correction" class="form-control date-picker flatpickr-input active">
                                         </div>
                                         <div class="alert alert-danger" id="Date_Line_CorrectionErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Action Taken</label>
+                                            <label class="form-label">Action Taken </label>
                                              <input type="text" name="Correction_Taken" id="Correction_Taken" class="form-control">
                                         </div>
                                         <div class="alert alert-danger" id="Correction_TakenErrorMsg" style="display:none"></div>
@@ -267,12 +267,12 @@ form, input, select, textarea{
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Fine Imposed</label>
+                                        <label class="form-label">Fine Imposed <font color="red">*</font></label>
                                         <input type="number" name="Fine_Imposed" class="form-control" id="Fine_Imposed" required>
                                         <div class="alert alert-danger" id="Fine_ImposedErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Revenue Receipt No</label>
+                                        <label class="form-label">Revenue Receipt No </label>
                                         <input type="text" name="Revenue_Receipt" class="form-control" id="Revenue_Receipt" required>
                                         <div class="alert alert-danger" id="Revenue_ReceiptErrorMsg" style="display:none"></div>
                                     </div>
@@ -316,29 +316,29 @@ form, input, select, textarea{
                             <div class="box-body">
                                 <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Date of Inspection</label>
+                                        <label class="form-label">Date of Inspection <font color="red">*</font></label>
                                         <input type="text" class="form-control date-picker flatpickr-input active" id="item_Inspection_Date" name="item_Inspection_Date"  placeholder="Pick a date" readonly="readonly">
                                         <div class="alert alert-danger" id="item_Inspection_DateErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Inspector Name</label>
+                                        <label class="form-label">Inspector Name <font color="red">*</font></label>
                                         <input type="text" name="Item_Inspector_Name" class="form-control" id="Item_Inspector_Name" required>
                                         <div class="alert alert-danger" id="Item_Inspector_NameErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Item Seized</label>
+                                        <label class="form-label">Item Seized <font color="red">*</font></label>
                                         <input type="text" class="form-control" id="Items_Seized" name="Items_Seized">
                                         <div class="alert alert-danger" id="Items_SeizedErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Quantity Seized</label>
+                                        <label class="form-label">Quantity Seized <font color="red">*</font></label>
                                         <input type="number" class="form-control" id="Qty_Seized" name="Qty_Seized">
                                         <div class="alert alert-danger" id="Qty_SeizedErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Unit </label>
+                                        <label class="form-label">Unit <font color="red">*</font></label>
                                         <select class="form-control" name="Unit" id="Unit">
                                             <option value="">--SELECT UNIT--</option>
                                             {% for unit in unit %}
@@ -348,14 +348,14 @@ form, input, select, textarea{
                                         <div class="alert alert-danger" id="UnitErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Reason For Seizing</label>
+                                        <label class="form-label">Reason For Seizing <font color="red">*</font></label>
                                         <textarea class="form-control" id="reason" name="reason"></textarea>
                                         <div class="alert alert-danger" id="reasonErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Fine Imposed</label>
+                                        <label class="form-label">Fine Imposed </label>
                                         <input type="number" name="Item_Fine_Imposed" class="form-control" id="Item_Fine_Imposed" required>
                                         <div class="alert alert-danger" id="Item_Fine_ImposedErrorMsg" style="display:none"></div>
                                     </div>
@@ -412,7 +412,7 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Collection Type</label>
+                                            <label class="form-label">Collection Type <font color="red">*</font></label>
                                             <select class="form-control form-control" id="Collection_Type" name="Collection_Type">
                                             <option value="">-SELECT-</option>
                                             <option value="Regulatory">Regulatory</option>
@@ -423,14 +423,14 @@ form, input, select, textarea{
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Collection Date</label>
+                                            <label class="form-label">Collection Date <font color="red">*</font></label>
                                             <input type="text" name="Collection_Date" id="Collection_Date" class="form-control date-picker flatpickr-input active">
                                         </div>
                                         <div class="alert alert-danger" id="Collection_DateErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Submission Date</label>
+                                            <label class="form-label">Submission Date <font color="red">*</font></label>
                                             <input type="text" name="Submission_Date" id="Submission_Date" class="form-control date-picker flatpickr-input active">
                                         </div>
                                         <div class="alert alert-danger" id="Submission_DateErrorMsg" style="display:none"></div>
@@ -438,46 +438,46 @@ form, input, select, textarea{
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">HS Code(imported)</label>
+                                        <label class="form-label">HS Code(imported) <font color="red">*</font></label>
                                         <input type="text" name="HS_Code_Imp" class="form-control" id="HS_Code_Imp" required>
                                         <div class="alert alert-danger" id="HS_Code_ImpErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">HS Code(Local)</label>
+                                        <label class="form-label">HS Code(Local) <font color="red">*</font></label>
                                         <input type="text" name="HS_Code_Local" class="form-control" id="HS_Code_Local" required>
                                         <div class="alert alert-danger" id="HS_Code_LocalErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Sample Type</label>
+                                        <label class="form-label">Sample Type <font color="red">*</font></label>
                                         <input type="text" name="Sample_Type" class="form-control" id="Sample_Type" required>
                                         <div class="alert alert-danger" id="Sample_TypeErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Quantity</label>
+                                        <label class="form-label">Quantity <font color="red">*</font></label>
                                         <input type="number" name="Qty" class="form-control" id="Qty" required>
                                         <div class="alert alert-danger" id="Sample_QtyErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Batch No</label>
+                                        <label class="form-label">Batch No <font color="red">*</font></label>
                                         <input type="text" name="Batch_No" class="form-control" id="Batch_No" required>
                                         <div class="alert alert-danger" id="Batch_NoErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Batch Date</label>
+                                        <label class="form-label">Batch Date <font color="red">*</font></label>
                                         <input type="text" name="Batch_Date" id="Batch_Date" class="form-control date-picker flatpickr-input active">
                                         <div class="alert alert-danger" id="Batch_DateErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Test Requested</label>
+                                        <label class="form-label">Test Requested <font color="red">*</font></label>
                                         <input type="text" name="Test_Requested" class="form-control" id="Test_Requested" required>
                                         <div class="alert alert-danger" id="Test_RequestedErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Test Report</label>
+                                        <label class="form-label">Test Report <font color="red">*</font></label>
                                         <input type="text" name="Test_Report" class="form-control" id="Test_Report" required>
                                         <div class="alert alert-danger" id="Test_ReportErrorMsg" style="display:none"></div>
                                     </div>
@@ -527,7 +527,7 @@ form, input, select, textarea{
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_inspection_attachment()"> Submit </button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_inspection_attachment()"> Upload </button>
                 </div>
             </div>
         </div>
@@ -695,53 +695,62 @@ function save_inspection_details()
 
 function save_inspection_attachment()
 {
-    var fileName = document.getElementById('document').files[0].name;
-    var fd = new FormData();
-    var file = document.getElementById('document').files[0];
-    fd.append('document', file);
-    token_value=$("input[name=csrfmiddlewaretoken]").val();
-    $.ajaxSetup
-    ({
-        beforeSend: function(xhr, settings)
-        {
-            xhr.setRequestHeader("X-CSRFToken", token_value);
-        }
-    });
-    $.ajax({
-    type : "POST",
-    url : "{% url 'inspection_file' %}",
-    data : fd,
-    dataType: 'json',
-    contentType: false,
-    processData: false,
-    success : function(data)
+    var file_length = document.getElementById("document");
+    if(file_length.value.length < 1)
     {
-        if (data.form_is_valid)
-        {
-            var file_url = data.file_url
-            var appNo = $('#attachment_appNo').val();
-            $.ajax
+        $('#fileErrorMsg').html("Please Choose A File");
+        $('#fileErrorMsg').show();
+        $('#fileErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else
+    {
+            var fileName = document.getElementById('document').files[0].name;
+            var fd = new FormData();
+            var file = document.getElementById('document').files[0];
+            fd.append('document', file);
+            token_value=$("input[name=csrfmiddlewaretoken]").val();
+            $.ajaxSetup
             ({
-                type : "POST",
-                url : "{% url 'inspection_file_name' %}",
-                data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
-                success : function(responseText)
+                beforeSend: function(xhr, settings)
                 {
-                    $('#attachmentModal').modal('hide');
-                    $('#fileAttach').html(responseText);
-                    $('.modal-backdrop').remove();
+                    xhr.setRequestHeader("X-CSRFToken", token_value);
                 }
             });
-        }
-        else
-        {
-            $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-            $('#fileErrorMsg').show();
-            $('#fileErrorMsg').delay(2000).fadeOut('slow');
-        }
+            $.ajax({
+            type : "POST",
+            url : "{% url 'inspection_file' %}",
+            data : fd,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            success : function(data)
+            {
+                if (data.form_is_valid)
+                {
+                    var file_url = data.file_url
+                    var appNo = $('#attachment_appNo').val();
+                    $.ajax
+                    ({
+                        type : "POST",
+                        url : "{% url 'inspection_file_name' %}",
+                        data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
+                        success : function(responseText)
+                        {
+                            $('#attachmentModal').modal('hide');
+                            $('#fileAttach').html(responseText);
+                            $('.modal-backdrop').remove();
+                        }
+                    });
+                }
+                else
+                {
+                    $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                    $('#fileErrorMsg').show();
+                    $('#fileErrorMsg').delay(2000).fadeOut('slow');
+                }
+            }
+        });
     }
-});
-
 }
 
 
@@ -835,6 +844,7 @@ function checkContact(value)
     $('#contactNumberErrorMsg').html("Contact Number must be 8 digit.");
         $('#contactNumberErrorMsg').show();
         $('#contactNumberErrorMsg').delay(1500).fadeOut('slow');
+        $('#contactNumber').val("");
     }
     else if(firstDigit != 7 && firstDigit != 1){
         $('#contactNumberErrorMsg').html("Must Start with either 1 or 7.");
@@ -954,9 +964,15 @@ function save_item_details()
     }
     else if(Items_Seized == "")
     {
-        $('#Items_SeizedErrorMsg').html("Enter Item Seized details.");
+        $('#Items_SeizedErrorMsg').html("Enter Item Seized.");
         $('#Items_SeizedErrorMsg').show();
         $('#Items_SeizedErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Qty_Seized = "")
+    {
+        $('#Qty_SeizedErrorMsg').html("Enter Quantity Seized.");
+        $('#Qty_SeizedErrorMsg').show();
+        $('#Qty_SeizedErrorMsg').delay(2000).fadeOut('slow');
     }
     else if(Unit == "")
     {
@@ -966,7 +982,7 @@ function save_item_details()
     }
     else if(reason == "")
     {
-        $('#reasonErrorMsg').html("Enter REason for Rejection.");
+        $('#reasonErrorMsg').html("Enter Reason for Rejection.");
         $('#reasonErrorMsg').show();
         $('#reasonErrorMsg').delay(2000).fadeOut('slow');
     }
@@ -1044,9 +1060,9 @@ function save_sample_details()
     }
     else if(Qty == "")
     {
-        $('#QtyErrorMsg').html("Enter Quantity.");
-        $('#QtyErrorMsg').show();
-        $('#QtyErrorMsg').delay(2000).fadeOut('slow');
+        $('#Sample_QtyErrorMsg').html("Enter Quantity.");
+        $('#Sample_QtyErrorMsg').show();
+        $('#Sample_QtyErrorMsg').delay(2000).fadeOut('slow');
     }
     else if(Batch_No == "")
     {

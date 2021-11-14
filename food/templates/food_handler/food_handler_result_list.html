@@ -54,7 +54,7 @@ form, input, select, textarea{
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="attachmentModalLabel">Attach Files</h5>
+                    <h5 class="modal-title" id="attachmentModalLabel"></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -82,13 +82,13 @@ form, input, select, textarea{
                                         </div>
                                     </div>
                                     <div class="form-group col-md-6 score_div">
-                                        <label>Score</label>
+                                        <label class="form-label">Score</label>
                                         <input type="text" class="form-control" name="score">
                                     </div>
                                 </div>
                                 <div class="row file_div">
                                     <div class="form-group col-md-6" style="margin-top: 26px;">
-                                        <label>Upload Image</label>
+                                        <label class="form-label">Upload Image</label>
                                         <input type="file" name="document" id="document">
                                         <div class="alert alert-danger" id="fileErrorMsg" style="display:none"></div>
                                      </div>
@@ -150,7 +150,7 @@ form, input, select, textarea{
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary btn-lg pull-right" onclick="update_details()"> Submit </button>
+                <button type="button" class="btn btn-primary btn-lg pull-right" onclick="update_details()"> Update </button>
             </div>
         </div>
     </div>
@@ -240,7 +240,6 @@ form, input, select, textarea{
     function save_details()
     {
         var fileName = document.getElementById('document').files[0].name;
-        alert(filename);
         var fd = new FormData();
         var file = document.getElementById('document').files[0];
         fd.append('document', file);
@@ -309,13 +308,13 @@ form, input, select, textarea{
     {
         if(value == "P")
         {
-            $('.file_div').show();
+            $('#file_div').show();
             $('.score_div').show();
             $('#delete_button').show();
         }
         else
         {
-             $('.file_div').hide();
+             $('#file_div').hide();
              $('.score_div').hide();
              $('#delete_button').hide();
 
@@ -334,58 +333,41 @@ form, input, select, textarea{
                 $('#modal-food').modal('show');
             }
         });
+
     }
 
     function update_details()
     {
-        var attendance = $('input[name="Attendance"]:checked').val();
-        if(attendance == "P")
+        var attendance_val = $('input[name="Attendance"]:checked').length;
+        if(attendance_val < 1)
         {
-            if(document.getElementById("image").files.length == 0 )
+            $('#AttendanceErrorMsg').html("Select Attendance");
+            $('#AttendanceErrorMsg').show();
+            $('#AttendanceErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            var attendance = $('input[name="Attendance"]:checked').val();
+            if(attendance == "P")
             {
-                var Application_No = $('#edit_application_no').val();
-                var batch_No = $('#Training_Batch_No').val();
                 var score = $('#score').val();
-                var attendance = $('input[name="Attendance"]:checked').val();
-                $.ajax
-                ({
-                    type : "GET",
-                    url : "{% url 'food_handler_update' %}",
-                    data : {'Application_No':Application_No , 'batch_No':batch_No , 'score':score, 'attendance':attendance},
-                    success : function(responseText)
-                    {
-                        $('#modal-food').modal('hide');
-                        $('#result-details').html(response);
-                        $('.modal-backdrop').remove();
-                    }
-                });
-            }
-            else
-            {
-                var fileName = document.getElementById('image').files[0].name;
-                var fd = new FormData();
-                var file = document.getElementById('image').files[0];
-                fd.append('image', file);
-                token_value=$("input[name=csrfmiddlewaretoken]").val();
-                $.ajaxSetup
-                ({
-                    beforeSend: function(xhr, settings)
-                    {
-                        xhr.setRequestHeader("X-CSRFToken", token_value);
-                    }
-                });
-                $.ajax({
-                type : "POST",
-                url : "{% url 'food_handler_image_update' %}",
-                data : fd,
-                dataType: 'json',
-                contentType: false,
-                processData: false,
-                success : function(data)
+                var image_length = document.getElementById('image');
+                if(score == "")
                 {
-                    if (data.form_is_valid)
+                    $('#scoreErrorMsg').html("Enter Score");
+                    $('#scoreErrorMsg').show();
+                    $('#scoreErrorMsg').delay(2000).fadeOut('slow');
+                }
+                else if(image_length.value.length < 1)
+                {
+                    $('#imageErrorMsg').html("Please Choose A Image");
+                    $('#imageErrorMsg').show();
+                    $('#imageErrorMsg').delay(2000).fadeOut('slow');
+                }
+                else
+                {
+                    if(document.getElementById("image").files.length == 0 )
                     {
-                        var file_url = data.file_url
                         var Application_No = $('#edit_application_no').val();
                         var batch_No = $('#Training_Batch_No').val();
                         var score = $('#score').val();
@@ -393,8 +375,8 @@ form, input, select, textarea{
                         $.ajax
                         ({
                             type : "GET",
-                            url : "{% url 'food_handler_image_name_update' %}",
-                            data : {'Application_No':Application_No ,'filename':fileName, 'file_url':file_url, 'batch_No':batch_No , 'score':score, 'attendance':attendance},
+                            url : "{% url 'food_handler_update' %}",
+                            data : {'Application_No':Application_No , 'batch_No':batch_No , 'score':score, 'attendance':attendance},
                             success : function(response)
                             {
                                 $('#modal-food').modal('hide');
@@ -405,30 +387,75 @@ form, input, select, textarea{
                     }
                     else
                     {
-                        $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-                        $('#fileErrorMsg').show();
-                        $('#fileErrorMsg').delay(2000).fadeOut('slow');
+                        var fileName = document.getElementById('image').files[0].name;
+                        var fd = new FormData();
+                        var file = document.getElementById('image').files[0];
+                        fd.append('image', file);
+                        token_value=$("input[name=csrfmiddlewaretoken]").val();
+                        $.ajaxSetup
+                        ({
+                            beforeSend: function(xhr, settings)
+                            {
+                                xhr.setRequestHeader("X-CSRFToken", token_value);
+                            }
+                        });
+                        $.ajax({
+                        type : "POST",
+                        url : "{% url 'food_handler_image_update' %}",
+                        data : fd,
+                        dataType: 'json',
+                        contentType: false,
+                        processData: false,
+                        success : function(data)
+                        {
+                            if (data.form_is_valid)
+                            {
+                                var file_url = data.file_url
+                                var Application_No = $('#edit_application_no').val();
+                                var batch_No = $('#Training_Batch_No').val();
+                                var score = $('#score').val();
+                                var attendance = $('input[name="Attendance"]:checked').val();
+                                $.ajax
+                                ({
+                                    type : "GET",
+                                    url : "{% url 'food_handler_image_name_update' %}",
+                                    data : {'Application_No':Application_No ,'filename':fileName, 'file_url':file_url, 'batch_No':batch_No , 'score':score, 'attendance':attendance},
+                                    success : function(response)
+                                    {
+                                        $('#modal-food').modal('hide');
+                                        $('#result-details').html(response);
+                                        $('.modal-backdrop').remove();
+                                    }
+                                });
+                            }
+                            else
+                            {
+                                $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                                $('#fileErrorMsg').show();
+                                $('#fileErrorMsg').delay(2000).fadeOut('slow');
+                            }
+                        }
+                        });
                     }
                 }
+            }
+            else
+            {
+                var Application_No = $('#edit_application_no').val();
+                var attendance = $('input[name="Attendance"]:checked').val();
+                $.ajax
+                ({
+                    type : "GET",
+                    url : "{% url 'food_handler' %}",
+                    data : {'Application_No':Application_No, 'attendance':attendance},
+                    success : function(response)
+                    {
+                        $('#modal-food').modal('hide');
+                        $('#result-details').html(response);
+                        $('.modal-backdrop').remove();
+                    }
                 });
             }
-        }
-        else
-        {
-            var Application_No = $('#edit_application_no').val();
-            var attendance = $('input[name="Attendance"]:checked').val();
-            $.ajax
-            ({
-                type : "GET",
-                url : "{% url 'food_handler' %}",
-                data : {'Application_No':Application_No, 'attendance':attendance},
-                success : function(responseText)
-                {
-                    $('#modal-food').modal('hide');
-                    $('#result-details').html(response);
-                    $('.modal-backdrop').remove();
-                }
-            });
         }
     }
 

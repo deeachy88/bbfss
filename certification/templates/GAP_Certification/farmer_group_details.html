@@ -27,7 +27,7 @@
             </tr>
             {% empty %}
             <tr>
-              <td colspan="3" class="text-center">No Data</td>
+              <td colspan="4" class="text-center">No Data</td>
             </tr>
        {% endfor %}
     </tbody>
@@ -42,9 +42,9 @@
             type : "GET",
             url : "{% url 'delete_farmers_group' %}",
             data :{'appNo':Application_No , 'Record_Id': Record_Id, 'identification_type':"GAP"},
-            success : function(responseText)
+            success : function(response)
             {
-
+                $('#farmer_details').html(response);
             }
         });
     }

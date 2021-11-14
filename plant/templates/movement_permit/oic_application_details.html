@@ -11,7 +11,7 @@ form, input, select, textarea{
                 <div class="card">
                     <div class="card-body">
                         {% for application_details in application_details %}
-                            {% if application_details.PermitType == P %}
+                            {% if application_details.Permit_Type == P %}
                             <div class="row">
                                 <div class="col-sm-2">
                                     <label class="form-label">Permit Type</label>
@@ -33,7 +33,7 @@ form, input, select, textarea{
                                     </div>
                                 </div>
                             </div>
-                            {% elif application_details.PermitType == A %}
+                            {% elif application_details.Permit_Type == A %}
                             <div class="row">
                                 <div class="col-sm-2">
                                     <label class="form-label">Permit Type</label>
@@ -207,17 +207,15 @@ form, input, select, textarea{
                                         <label class="form-label">Means of Conveyance </label>
                                         <select class="form-control form-control" id="conveyanceMeans" name="conveyanceMeans" disabled>
                                             <option value="">-SELECT-</option>
-                                            {% if application_details.Conveyance_Means == "Air" %}
-                                            <option value="Air" selected>Air</option>
-                                             <option value="Vehicular">Vehicular</option>
+                                            {% if application_details.Conveyance_Means == "By Air" %}
+                                                <option value="Air" selected>By Air</option>
                                             {% else %}
-                                             <option value="Air">Air</option>
-                                            <option value="Vehicular" selected>Vehicular</option>
+                                                <option value="Vehicular" selected>By Road</option>
                                             {% endif%}
                                         </select>
                                     </div>
                                 </div>
-                                {% if application_details.Conveyance_Means == "Vehicular" %}
+                                {% if application_details.Conveyance_Means == "By Road" %}
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Vehicle No</label>
@@ -227,17 +225,17 @@ form, input, select, textarea{
                                 {% else %}
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Purpose Of Movement</label>
+                                            <label class="form-label">Purpose of Movement</label>
                                             <input type="text" class="form-control" value="{{ application_details.Movement_Purpose }}" readonly="readonly">
                                         </div>
                                     </div>
                                 {% endif%}
                             </div>
                              <div class="row">
-                                 {% if application_details.Conveyance_Means == "Vehicular" %}
+                                 {% if application_details.Conveyance_Means == "By Road" %}
                                      <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Purpose Of Movement</label>
+                                            <label class="form-label">Purpose of Movement</label>
                                             <input type="text" class="form-control" value="{{ application_details.Movement_Purpose }}" readonly="readonly">
                                         </div>
                                     </div>

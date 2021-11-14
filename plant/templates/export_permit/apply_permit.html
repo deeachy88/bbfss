@@ -200,7 +200,7 @@ color: black !important;
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label class="form-label">Quantity (Net Weight) <font color="red">*</font></label>
-                                    <input type="text" class="form-control" id="p_Qty_Net" name="p_Qty_Net" onkeypress="return isNumberKey(event)">
+                                    <input type="text" class="form-control" id="p_Qty_Net" name="p_Qty_Net" onkeypress="return isNumberKey(event)" onchange="checkWeight()">
                                 </div>
                                 <div class="alert alert-danger" id="p_Qty_NetErrorMsg" style="display:none"></div>
                             </div>
@@ -442,14 +442,14 @@ color: black !important;
                          <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label class="form-label">Date Of Inspection Requested <font color="red">*</font></label>
+                                    <label class="form-label">Date of Inspection Requested <font color="red">*</font></label>
                                     <input type="date" class="form-control" id="date_for_Inspection" name="date_for_Inspection">
                                 </div>
                                 <div class="alert alert-danger" id="date_for_InspectionErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label class="form-label">Place Of Inspection Requested <font color="red">*</font></label>
+                                    <label class="form-label">Place of Inspection Requested <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="c_requested_place" name="Desired_Inspection_Place">
                                 </div>
                                 <div class="alert alert-danger" id="c_requested_placeErrorMsg" style="display:none"></div>
@@ -492,7 +492,7 @@ color: black !important;
                                 <div class="col-sm-4">
                                     <div class="input-group">
                                         <div class="form-group">
-                                            <input type="text" class="form-control" id="net_weight_gms" name="net_weight_gms" onkeypress="return isNumberKey(event)">
+                                            <input type="text" class="form-control" id="net_weight_gms" name="net_weight_gms" onkeypress="return isNumberKey(event)" onchange="check_net_weight_gms()">
                                             <i class="form-group__bar"></i>
                                         </div>
                                         <span class="input-group-addon">Gm(s)</span>
@@ -513,7 +513,7 @@ color: black !important;
                             <div class="row">
                                 <div class="col-sm-4">
                                     <div class="form-group">
-                                        <label class="form-label">No Of Packages <font color="red">*</font></label>
+                                        <label class="form-label">No. of Packages <font color="red">*</font></label>
                                         <input type="text" class="form-control" id="c_package" name="c_package" onkeypress="return isNumberKey(event)">
                                     </div>
                                     <div class="alert alert-danger" id="c_packageErrorMsg" style="display:none"></div>
@@ -687,7 +687,7 @@ color: black !important;
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_phyto_attachment()"> Submit </button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_phyto_attachment()"> Upload </button>
                 </div>
             </div>
         </div>
@@ -1331,52 +1331,62 @@ function isNumberKey(evt)
 
     function save_phyto_attachment()
     {
-        var fileName = document.getElementById('phyto_document').files[0].name;
-        var fd = new FormData();
-        var file = document.getElementById('phyto_document').files[0];
-        fd.append('phyto_document', file);
-        token_value=$("input[name=csrfmiddlewaretoken]").val();
-        $.ajaxSetup
-        ({
-            beforeSend: function(xhr, settings)
-            {
-                xhr.setRequestHeader("X-CSRFToken", token_value);
-            }
-        });
-            $.ajax({
-            type : "POST",
-            url : "{% url 'add_file_phyto' %}",
-            data : fd,
-            dataType: 'json',
-            contentType: false,
-            processData: false,
-            success : function(data)
-            {
-                if (data.form_is_valid)
+        var file_length = document.getElementById("phyto_document");
+        if(file_length.value.length < 1)
+        {
+            $('#fileErrorMsg').html("Please Choose A File");
+            $('#fileErrorMsg').show();
+            $('#fileErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            var fileName = document.getElementById('phyto_document').files[0].name;
+            var fd = new FormData();
+            var file = document.getElementById('phyto_document').files[0];
+            fd.append('phyto_document', file);
+            token_value=$("input[name=csrfmiddlewaretoken]").val();
+            $.ajaxSetup
+            ({
+                beforeSend: function(xhr, settings)
                 {
-                    var appNo = $('#applicationNo').val();
-                    var file_url = data.file_url
-                    $.ajax
-                    ({
-                        type : "POST",
-                        url : "{% url 'add_file_name_phyto' %}",
-                        data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
-                        success : function(responseText)
-                        {
-                            $('#phyto_attachmentModal').modal('hide');
-                            $('#phytoAttach').html(responseText);
-                            $('.modal-backdrop').remove();
-                            $('#phyto_attachment_form')[0].reset();
-                        }
-                    });
-                }else
-                {
-                    $('#phyto_documentErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-                    $('#phyto_documentErrorMsg').show();
-                    $('#phyto_documentErrorMsg').delay(2000).fadeOut('slow');
+                    xhr.setRequestHeader("X-CSRFToken", token_value);
                 }
-            }
-        });
+            });
+                $.ajax({
+                type : "POST",
+                url : "{% url 'add_file_phyto' %}",
+                data : fd,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success : function(data)
+                {
+                    if (data.form_is_valid)
+                    {
+                        var appNo = $('#applicationNo').val();
+                        var file_url = data.file_url
+                        $.ajax
+                        ({
+                            type : "POST",
+                            url : "{% url 'add_file_name_phyto' %}",
+                            data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
+                            success : function(responseText)
+                            {
+                                $('#phyto_attachmentModal').modal('hide');
+                                $('#phytoAttach').html(responseText);
+                                $('.modal-backdrop').remove();
+                                $('#phyto_attachment_form')[0].reset();
+                            }
+                        });
+                    }else
+                    {
+                        $('#phyto_documentErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                        $('#phyto_documentErrorMsg').show();
+                        $('#phyto_documentErrorMsg').delay(2000).fadeOut('slow');
+                    }
+                }
+            });
+        }
     }
 
     function save_cordyceps_attachment()
@@ -1678,6 +1688,34 @@ function checkComContact(value)
             $('#c_phoneNumberErrorMsg').show();
             $('#c_phoneNumberErrorMsg').delay(2000).fadeOut('slow');
             $('#c_phoneNumber').val("");
+        }
+    }
+
+    function checkWeight()
+    {
+        var p_Qty_Gross = $('#p_Qty_Gross').val();
+        var p_Qty_Net = $('#p_Qty_Net').val();
+        var diff = p_Qty_Gross - p_Qty_Net;
+        if( diff < 0 )
+        {
+            $('#p_Qty_NetErrorMsg').html("Cannot Be More Than Gross Quantity.");
+            $('#p_Qty_NetErrorMsg').show();
+            $('#p_Qty_NetErrorMsg').delay(2000).fadeOut('slow');
+            $('#p_Qty_Net').val("");
+        }
+    }
+
+    function check_net_weight_gms()
+    {
+        var gross_weight_gms = $('#gross_weight_gms').val();
+        var net_weight_gms = $('#net_weight_gms').val();
+        var diff = gross_weight_gms - net_weight_gms;
+        if( diff < 0 )
+        {
+            $('#direct_net_weight_gmsErrorMsg').html("Cannot Be More Than Gross Quantity.");
+            $('#direct_net_weight_gmsErrorMsg').show();
+            $('#direct_net_weight_gmsErrorMsg').delay(2000).fadeOut('slow');
+            $('#net_weight_gms').val("");
         }
     }
 </script>

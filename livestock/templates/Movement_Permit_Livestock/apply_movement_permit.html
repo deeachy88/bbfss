@@ -1,6 +1,7 @@
 {% extends 'common_dashboard.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+{% load static %}
 <style>
     option
     {
@@ -406,7 +407,7 @@
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Age <font color="red">*</font></label>
-                                        <input type="text" name="Age" class="form-control" id="Age" required>
+                                        <input type="text" name="Age" class="form-control" id="Age" onkeypress="return isNumberKey(event)" onchange="check_age()">
                                         <div class="alert alert-danger" id="AgeErrorMsg" style="display:none"></div>
                                     </div>
                                    <div class="form-group col-md-6">
@@ -464,7 +465,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_attachment()"> Submit </button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_attachment()"> Upload </button>
                 </div>
             </div>
         </div>
@@ -571,7 +572,7 @@
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Age <font color="red">*</font></label>
-                                        <input type="text" name="edit_Age" class="form-control" id="edit_Age" onkeypress="return isNumberKey(event)">
+                                        <input type="text" name="edit_Age" class="form-control" id="edit_Age" onkeypress="return isNumberKey(event)" onchange="check_edit_age()">
                                         <div class="alert alert-danger" id="edit_AgeErrorMsg" style="display:none"></div>
                                     </div>
                                    <div class="form-group col-md-6">
@@ -599,6 +600,7 @@
         </div>
     </div>
 </form>
+<script src="{% static 'assets/bower_components/jquery/dist/jquery.min.js' %}"></script>
 <script>
 function isNumberKey(evt)
 {
@@ -995,52 +997,62 @@ function updateDetails()
 
 function save_attachment()
 {
-    var fileName = document.getElementById('document').files[0].name;
-    var fd = new FormData();
-    var file = document.getElementById('document').files[0];
-    fd.append('document', file);
-    token_value=$("input[name=csrfmiddlewaretoken]").val();
-    $.ajaxSetup
-    ({
-        beforeSend: function(xhr, settings)
-        {
-            xhr.setRequestHeader("X-CSRFToken", token_value);
-        }
-    });
-    $.ajax({
-        type : "POST",
-        url : "{% url 'add_lmp_file' %}",
-        data : fd,
-        dataType: 'json',
-        contentType: false,
-        processData: false,
-        success : function(data)
-        {
-            if (data.form_is_valid)
+    var file_length = document.getElementById("document");
+    if(file_length.value.length < 1)
+    {
+        $('#fileErrorMsg').html("Please Choose A File");
+        $('#fileErrorMsg').show();
+        $('#fileErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else
+    {
+        var fileName = document.getElementById('document').files[0].name;
+        var fd = new FormData();
+        var file = document.getElementById('document').files[0];
+        fd.append('document', file);
+        token_value=$("input[name=csrfmiddlewaretoken]").val();
+        $.ajaxSetup
+        ({
+            beforeSend: function(xhr, settings)
             {
-                var appNo = $('#attachment_appNo').val();
-                var file_url = data.file_url
-                $.ajax
-                ({
-                    type : "POST",
-                    url : "{% url 'add_lmp_file_name' %}",
-                    data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
-                    success : function(responseText)
-                    {
-                        $('#attachmentModal').modal('hide');
-                        $('#file-attachment').html(responseText);
-                        $('.modal-backdrop').remove();
-                        $('#attachment_form')[0].reset();
-                    }
-                });
-            }else
-            {
-                $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-                $('#fileErrorMsg').show();
-                $('#fileErrorMsg').delay(2000).fadeOut('slow');
+                xhr.setRequestHeader("X-CSRFToken", token_value);
             }
-        }
-    });
+        });
+        $.ajax({
+            type : "POST",
+            url : "{% url 'add_lmp_file' %}",
+            data : fd,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            success : function(data)
+            {
+                if (data.form_is_valid)
+                {
+                    var appNo = $('#attachment_appNo').val();
+                    var file_url = data.file_url
+                    $.ajax
+                    ({
+                        type : "POST",
+                        url : "{% url 'add_lmp_file_name' %}",
+                        data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
+                        success : function(responseText)
+                        {
+                            $('#attachmentModal').modal('hide');
+                            $('#file-attachment').html(responseText);
+                            $('.modal-backdrop').remove();
+                            $('#attachment_form')[0].reset();
+                        }
+                    });
+                }else
+                {
+                    $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                    $('#fileErrorMsg').show();
+                    $('#fileErrorMsg').delay(2000).fadeOut('slow');
+                }
+            }
+        });
+    }
 }
 
 function show_animal_details_modal()
@@ -1063,13 +1075,13 @@ function save_animal_details()
 
     if(Common_Name == "")
     {
-        $('#Common_NameErrorMsg').html("Select Common Name.");
+        $('#Common_NameErrorMsg').html("Enter Common Name.");
         $('#Common_NameErrorMsg').show();
         $('#Common_NameErrorMsg').delay(2000).fadeOut('slow');
     }
     else if(Scientific_Name == "")
     {
-        $('#Scientific_NameErrorMsg').html("Select Scientific name.");
+        $('#Scientific_NameErrorMsg').html("Enter Scientific name.");
         $('#Scientific_NameErrorMsg').show();
         $('#Scientific_NameErrorMsg').delay(2000).fadeOut('slow');
     }
@@ -1179,7 +1191,8 @@ function enableForms(value)
         $("#business_name").attr("disabled", "disabled");
         $("#cid").removeAttr("disabled");
         $("#name").attr("readonly", "readonly");
-
+        $('#license_no').val("");
+        $('#business_name').val("");
     }
     else if(value == "Commercial")
     {
@@ -1189,7 +1202,11 @@ function enableForms(value)
         $("#village").attr("disabled", "disabled");
         $("#license_no").removeAttr("disabled");
         $("#business_name").removeAttr("disabled");
-        $("#name").removeAttr("readonly");
+        $('#cid').val("");
+        $('#name').val("");
+        $('#dzongkhag').val("");
+        $('#gewog').val("");
+        $('#village').val("");
     }
     else
     {
@@ -1199,7 +1216,11 @@ function enableForms(value)
         $("#village").attr("disabled", "disabled");
         $("#license_no").removeAttr("disabled");
         $("#business_name").removeAttr("disabled");
-        $("#name").removeAttr("readonly");
+        $('#cid').val("");
+        $('#name').val("");
+        $('#dzongkhag').val("");
+        $('#gewog').val("");
+        $('#village').val("");
     }
 }
 
@@ -1387,6 +1408,38 @@ function check_edit_no(qty)
     else
     {
         $('#edit_No_Of_AnimalErrorMsg').hide();
+    }
+}
+
+function check_age()
+{
+    var age = $('#Age').val();
+    if(age == 0)
+    {
+        $('#AgeErrorMsg').html("Must Be Greater Than Zero.");
+        $('#AgeErrorMsg').show();
+        $('#AgeErrorMsg').delay(2000).fadeOut('slow');
+        $('#Age').val("");
+    }
+    else
+    {
+        $('#AgeErrorMsg').hide();
+    }
+}
+
+function check_edit_age()
+{
+    var age = $('#edit_Age').val();
+    if(age == 0)
+    {
+        $('#edit_AgeErrorMsg').html("Must Be Greater Than Zero.");
+        $('#edit_AgeErrorMsg').show();
+        $('#edit_AgeErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_Age').val("");
+    }
+    else
+    {
+        $('#edit_AgeErrorMsg').hide();
     }
 }
 </script>

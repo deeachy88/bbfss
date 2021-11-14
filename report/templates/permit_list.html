@@ -482,7 +482,11 @@
                                             <td>{{permit_details.Contact_No}}</td>
                                             <td>{{permit_details.Origin_Source_Products}}</td>
                                             <td>{{permit_details.Importer_Name_Address}}</td>
-                                            <td>{{permit_details.Place_of_Exit}}</td>
+                                            {% for field_office in field_office %}
+                                                {% if field_office.Field_Office_Id == permit_details.Place_of_Exit %}
+                                                    <td>{{ field_office.Field_Office }}</td>
+                                                {% endif %}
+                                            {% endfor %}
                                             <td>{{permit_details.Export_Permit_No}}</td>
                                             <td>{{permit_details.Approve_Date}}</td>
                                             <td>{{permit_details.Validity}}</td>

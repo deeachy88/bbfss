@@ -20,7 +20,7 @@
                     </div>
                     <div class="card-body">
                         {% for application_details in application_details %}
-                            {% if application_details.PermitType == P %}
+                            {% if application_details.Permit_Type == P %}
                             <div class="row">
                                 <div class="col-sm-2">
                                     <label class="form-label">Permit Type</label>
@@ -42,7 +42,7 @@
                                     </div>
                                 </div>
                             </div>
-                            {% elif application_details.PermitType == A %}
+                            {% elif application_details.Permit_Type == A %}
                             <div class="row">
                                 <div class="col-sm-2">
                                     <label class="form-label">Permit Type</label>
@@ -216,17 +216,15 @@
                                         <label class="form-label">Means of Conveyance </label>
                                         <select class="form-control form-control" id="conveyanceMeans" name="conveyanceMeans" disabled>
                                             <option value="">-SELECT-</option>
-                                            {% if application_details.Conveyance_Means == "Air" %}
+                                            {% if application_details.Conveyance_Means == "By Air" %}
                                             <option value="Air" selected>Air</option>
-                                             <option value="Vehicular">Vehicular</option>
                                             {% else %}
-                                             <option value="Air">Air</option>
-                                            <option value="Vehicular" selected>Vehicular</option>
+                                            <option value="Vehicular" selected>By Road</option>
                                             {% endif%}
                                         </select>
                                     </div>
                                 </div>
-                                {% if application_details.Conveyance_Means == "Vehicular" %}
+                                {% if application_details.Conveyance_Means == "By Road" %}
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Vehicle No</label>
@@ -236,17 +234,17 @@
                                 {% else %}
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Purpose Of Movement</label>
+                                            <label class="form-label">Purpose of Movement</label>
                                             <input type="text" class="form-control" value="{{ application_details.Movement_Purpose }}" readonly="readonly">
                                         </div>
                                     </div>
                                 {% endif%}
                             </div>
                              <div class="row">
-                                 {% if application_details.Conveyance_Means == "Vehicular" %}
+                                 {% if application_details.Conveyance_Means == "By Road" %}
                                      <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Purpose Of Movement</label>
+                                            <label class="form-label">Purpose of Movement</label>
                                             <input type="text" class="form-control" value="{{ application_details.Movement_Purpose }}" readonly="readonly">
                                         </div>
                                     </div>
@@ -327,11 +325,22 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                               {% for import in movement_permit %}
+                                               {% for decision_details in movement_permit %}
                                                         <tr>
                                                             <td>{{ forloop.counter }}</td>
-                                                            <td>{{import.Current_Observation}}</td>
-                                                            <td>{{import.Decision_Conformity}}</td>
+                                                            <td>{{decision_details.Current_Observation}}</td>
+                                                            <td>{{decision_details.Decision_Conformity}}</td>
+                                                            <td>
+                                                                <button type="button" class="btn btn-primary btn-sm"
+                                                                onclick="delete_observation_details('{{decision_details.Record_Id}}','{{decision_details.Application_No}}')">
+                                                                <i class="zmdi zmdi-delete"></i>
+                                                                </button>
+                                                                <button  type="button" class="btn btn-info btn-sm" data-toggle="tooltip" title="Edit"
+                                                                     onclick="populate_observation_details('{{ decision_details.Record_Id }}', '{{decision_details.Current_Observation}}',
+                                                                      '{{decision_details.Current_Observation}}', '{{decision_details.Application_No}}')">
+                                                                    <i class="fa fa-edit"></i>
+                                                                </button>
+                                                            </td>
                                                         </tr>
                                                         {% empty %}
                                                         <tr>
@@ -376,7 +385,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Validity Of Permit(no of days) <font color="red">*</font></label>
+                                    <label class="form-label">Validity of Permit(No of Days) <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="validity" name="validity" onkeypress="return isNumberKey(event)" onchange="check_validity(this.value)">
                                 </div>
                                 <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>
@@ -385,7 +394,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Remarks(If Reject<font color="red">*</font>)</label>
+                                    <label class="form-label">Remarks(If Rejected)<font color="red">*</font>)</label>
                                     <textarea class="form-control" id="remarks" rows="2"></textarea>
                                 </div>
                                 <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
@@ -448,13 +457,53 @@
                     </button>
                     {% endfor %}
                     <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="ace-icon fa fa-times"></i>
-                        &nbsp;&nbsp;Close Modal</button>
+                        &nbsp;&nbsp;Close</button>
                  </div>
                  <div id="messageDiv" style="display:none"></div>
               </div>
         </div>
     </div>
 </form>
+<div id="edit_observation_modal" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="edit_record_id" id="edit_record_id">
+                <input type="hidden" name="edit_application_no" id="edit_application_no">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Current Observation</label>
+                            <textarea class="form-control" id="edit_currentObservation" rows="2"></textarea>
+                        </div>
+                        <div class="alert alert-danger" id="edit_currentObservationErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Decision Conformity Statement </label>
+                            <textarea class="form-control" id="edit_decisionConform" rows="2"></textarea>
+                        </div>
+                        <div class="alert alert-danger" id="edit_decisionConformErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-flat btn-primary" onclick="update_observation_details()">
+                    <i class="ace-icon fa fa-check"></i>
+                    &nbsp;&nbsp;Update
+                </button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+             </div>
+          </div>
+    </div>
+</div>
 <script src="{% static 'assets/js/app.min.js' %}"></script>
 <script>
 $(function(){
@@ -605,6 +654,68 @@ function check_validity(validity)
     else
     {
         $('#validityErrorMsg').hide();
+    }
+}
+
+function delete_observation_details(Record_Id, Application_No)
+{
+    var type = "MPP";
+    $.ajax
+    ({
+        type : "GET",
+        url : "{% url 'delete_observation' %}",
+        data :{'Application_No':Application_No , 'Record_Id': Record_Id, 'type':type},
+        success : function(responseText)
+        {
+            $('#details').html(responseText);
+        }
+    });
+}
+
+function populate_observation_details(Record_Id, Current_Observation, Decision_Conformity, Application_No)
+{
+    $('#edit_record_id').val(Record_Id);
+    $('#edit_currentObservation').val(Current_Observation);
+    $('#edit_decisionConform').val(Decision_Conformity);
+    $('#edit_application_no').val(Application_No);
+    $('#edit_observation_modal').show();
+
+}
+
+function update_observation_details()
+{
+    var application_id =$('#edit_application_no').val();
+    var currentObservation = $('#edit_currentObservation').val();
+    var decisionConform = $('#edit_decisionConform').val();
+    var record_id = $('#edit_record_id').val();
+    var type = "MPP";
+
+    if(currentObservation == "")
+    {
+        $('#edit_currentObservationErrorMsg').html("Enter Current Observation.");
+        $('#edit_currentObservationErrorMsg').show();
+        $('#edit_currentObservationErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_currentObservation').focus();
+    }
+    else if(decisionConform == "")
+    {
+        $('#edit_decisionConformErrorMsg').html("Enter Decision Conformity Statement.");
+        $('#edit_decisionConformErrorMsg').show();
+        $('#edit_decisionConformErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_decisionConform').focus();
+    }
+    else
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'update_decision' %}",
+            data :{'application_id':application_id,'currentObservation':currentObservation,'decisionConform':decisionConform, 'record_id': record_id, 'type':type},
+            success : function(data) {
+                $('#details').html(data);
+                $('#details').show();
+                $('#edit_observation_modal').hide();
+            }
+        });
     }
 }
 </script>

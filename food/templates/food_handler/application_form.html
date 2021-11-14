@@ -56,6 +56,7 @@ form, input, select, textarea{
                                 <label class="form-label" id="cid_label">CID <font color="red">*</font></label>
                                 <label class="form-label" id="permit_label" style="display:none;">Work Permit No <font color="red">*</font></label>
                                 <input type="text" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCitizenDetails(this.value);">
+                                <input type="text" class="form-control" id="Permit_No" name="Permit_No" style="display:none">
                                 <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
                             </div>
                             <div class="form-group col-md-4">
@@ -164,7 +165,7 @@ form, input, select, textarea{
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Preferred Date <font color="red">*</font></label>
-                                     <input type="date" name="preferred_Date" id="preferred_Date" class="form-control date-picker flatpickr-input active">
+                                     <input type="date" name="preferred_Date" id="preferred_Date" class="form-control">
                                 </div>
                                 <div class="alert alert-danger" id="preferred_DateErrorMsg" style="display:none"></div>
                             </div>
@@ -242,7 +243,7 @@ form, input, select, textarea{
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_attachment()"> Submit </button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_attachment()"> Upload </button>
                 </div>
             </div>
         </div>
@@ -379,10 +380,10 @@ function save_application_form()
     else
     {
         var applicationNo = $('#applicationNo').val();
-        var cid = $('#cid').val();
+        var cid = $('#Permit_No').val();
         var name = $('#name').val();
-        var country = $('#dzongkhag').val();
-        var email = $('#email').val();
+        var country = $('#country').val();
+        var email = $('#f_email').val();
         var contactNumber = $('#contactNumber').val();
         var number_count = $('#contactNumber').val().length;
         var training_type = $("input[name=Training_Type]:checked").length;
@@ -392,17 +393,31 @@ function save_application_form()
 
         if(cid == "")
         {
-            $('#cidErrorMsg').html("Enter Permit Number.");
+            $('#cidErrorMsg').html("Enter Work Permit No.");
             $('#cidErrorMsg').show();
             $('#cidErrorMsg').delay(2000).fadeOut('slow');
-            $('#cid').focus();
+            $('#Permit_No').focus();
         }
         else if(name == "")
         {
-            $('#nameErrorMsg').html("Enter Name .");
+            $('#nameErrorMsg').html("Enter Name.");
             $('#nameErrorMsg').show();
             $('#nameErrorMsg').delay(2000).fadeOut('slow');
             $('#name').focus();
+        }
+        else if(country == "")
+        {
+            $('#countryErrorMsg').html("Select Country.");
+            $('#countryErrorMsg').show();
+            $('#countryErrorMsg').delay(2000).fadeOut('slow');
+            $('#country').focus();
+        }
+        else if(email == "")
+        {
+            $('#f_emailErrorMsg').html("Enter Email.");
+            $('#f_emailErrorMsg').show();
+            $('#f_emailErrorMsg').delay(2000).fadeOut('slow');
+            $('#f_email').focus();
         }
         else if(contactNumber == "")
         {
@@ -417,13 +432,6 @@ function save_application_form()
             $('#contactNumberErrorMsg').show();
             $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
             $('#contactNumber').focus();
-        }
-        else if(email == "")
-        {
-            $('#emailErrorMsg').html("Enter Contact Number.");
-            $('#emailErrorMsg').show();
-            $('#emailErrorMsg').delay(2000).fadeOut('slow');
-            $('#email').focus();
         }
         else if(training_type < 1)
         {
@@ -554,52 +562,62 @@ function updateDetails()
 
 function save_attachment()
 {
-    var fileName = document.getElementById('document').files[0].name;
-    var fd = new FormData();
-    var file = document.getElementById('document').files[0];
-    fd.append('document', file);
-    token_value=$("input[name=csrfmiddlewaretoken]").val();
-    $.ajaxSetup
-    ({
-        beforeSend: function(xhr, settings)
+    var file_length = document.getElementById("document");
+    if(file_length.value.length < 1)
     {
-        xhr.setRequestHeader("X-CSRFToken", token_value);
+        $('#fileErrorMsg').html("Please Choose A File");
+        $('#fileErrorMsg').show();
+        $('#fileErrorMsg').delay(2000).fadeOut('slow');
     }
-    });
-        $.ajax({
-        type : "POST",
-        url : "{% url 'food_handler_file' %}",
-        data : fd,
-        dataType: 'json',
-        contentType: false,
-        processData: false,
-        success : function(data)
+    else
+    {
+        var fileName = document.getElementById('document').files[0].name;
+        var fd = new FormData();
+        var file = document.getElementById('document').files[0];
+        fd.append('document', file);
+        token_value=$("input[name=csrfmiddlewaretoken]").val();
+        $.ajaxSetup
+        ({
+            beforeSend: function(xhr, settings)
         {
-        if (data.form_is_valid)
-        {
-            var appNo = $('#appNo').val();
-            var file_url = data.file_url
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'food_handler_file_name' %}",
-                data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
-                success : function(responseText)
-                {
-                    $('#attachmentModal').modal('hide');
-                    $('#file-attachment').html(responseText);
-                    $('.modal-backdrop').remove();
-                    $('#attachment_form')[0].reset();
-                }
-            });
-        }else
-        {
-                $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-                $('#fileErrorMsg').show();
-                $('#fileErrorMsg').delay(2000).fadeOut('slow');
+            xhr.setRequestHeader("X-CSRFToken", token_value);
         }
+        });
+            $.ajax({
+            type : "POST",
+            url : "{% url 'food_handler_file' %}",
+            data : fd,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            success : function(data)
+            {
+            if (data.form_is_valid)
+            {
+                var appNo = $('#appNo').val();
+                var file_url = data.file_url
+                $.ajax
+                ({
+                    type : "POST",
+                    url : "{% url 'food_handler_file_name' %}",
+                    data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
+                    success : function(responseText)
+                    {
+                        $('#attachmentModal').modal('hide');
+                        $('#file-attachment').html(responseText);
+                        $('.modal-backdrop').remove();
+                        $('#attachment_form')[0].reset();
+                    }
+                });
+            }else
+            {
+                    $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                    $('#fileErrorMsg').show();
+                    $('#fileErrorMsg').delay(2000).fadeOut('slow');
+            }
+        }
+        });
     }
-    });
 }
 
 function validateemailId(emailId)
@@ -683,7 +701,9 @@ function checkValue(value)
         $('#email_div').hide();
         $('#f_email_div').show();
         $('#country_div').show();
-        $("#name").removeAttr("disabled");
+        $("#name").removeAttr("readonly");
+        $('#Permit_No').show();
+        $('#cid').hide();
     }
     else
     {
@@ -695,7 +715,9 @@ function checkValue(value)
         $('#email_div').show();
         $('#f_email_div').hide();
         $('#country_div').hide();
-        $("#name").attr("disabled", "disabled");
+        $("#name").attr("readonly", "readonly");
+        $('#Permit_No').hide();
+        $('#cid').show();
     }
 }
 

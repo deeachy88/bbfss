@@ -14,6 +14,48 @@
 form, input, select, textarea{
         color: black !important;
     }
+    .flatpickr-day {
+    font-size: .92rem;
+    border: 0;
+    color: #111;
+}
+.flatpickr-month {
+    background-color: rgba(255,255,255,.05);
+    color: #111010;
+    height: 60px;
+    border-radius: 2px 2px 0 0;
+    margin-bottom: 10px;
+}
+.flatpickr-calendar {
+    border-radius: 2px;
+    border: 0;
+    box-shadow: 0 4px 18px rgb(0 0 0 / 50%);
+    width: auto;
+    margin-top: -4px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-color: rgb(246 246 246);
+}
+day.nextMonthDay{
+    color: rgb(11 11 11);
+}
+.flatpickr-day.nextMonthDay
+{
+    color: rgb(11 11 11);
+}
+span.flatpickr-weekday {
+    font-weight: 600;
+    color: #090909;
+}
+.flatpickr-day.selected, .flatpickr-day.selected:hover {
+    background-color: #a29696!important;
+    color: #000;
+}
+.flatpickr-day.prevMonthDay {
+    color: rgb(13 13 13);
+}
 </style>
 <div class="card">
     <div class="card-header">
@@ -107,8 +149,8 @@ form, input, select, textarea{
                         </div>
                         <div class="col-md-4 farmer_group_details" style="display:none">
                             <div class="form-group">
-                                <label class="form-label">Number Of Members In Group <font color="red">*</font></label>
-                                <input type="text" class="form-control" id="farmers_group_number" name="farmers_group_number" onkeypress="return isNumberKey(event)">
+                                <label class="form-label">Number of Members In Group <font color="red">*</font></label>
+                                <input type="text" class="form-control" id="farmers_group_number" name="farmers_group_number" onkeypress="return isNumberKey(event)" onchange="check_farmers_no()">
                             </div>
                             <div class="alert alert-danger" id="farmers_group_numberErrorMsg" style="display:none"></div>
                         </div>
@@ -121,7 +163,7 @@ form, input, select, textarea{
                         <div class="col-md-4 farmer_group_details" style="display:none">
                             <div class="form-group">
                                 <label class="form-label">Dzongkhag <font color="red">*</font></label>
-                                <select class="form-control" name="dzongkhag"  id="dzongkhag">
+                                <select class="form-control" name="dzongkhag"  id="dzongkhag" onchange="getGewog(this.value)">
                                     <option value="">--SELECT--</option>
                                     {% for dzongkhag in dzongkhag %}
                                             <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
@@ -141,7 +183,7 @@ form, input, select, textarea{
                         <div class="col-md-4 farmer_group_details" style="display:none">
                             <div class="form-group">
                                 <label class="form-label">Gewog <font color="red">*</font></label>
-                                <select class="form-control" name="gewog"  id="gewog">
+                                <select class="form-control" name="gewog"  id="gewog" onchange="getVillage(this.value)">
                                     <option value="">--SELECT--</option>
                                     {% for gewog in gewog %}
                                         <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
@@ -558,7 +600,7 @@ form, input, select, textarea{
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Cultivated Area <font color="red">*</font></label>
-                                        <input type="text" name="area" class="form-control" id="area" onkeypress="return isNumberKey(event)">
+                                        <input type="text" name="area" class="form-control" id="area" onkeypress="return isNumberKey(event)" onchange="check_area()">
                                         <div class="alert alert-danger" id="areaErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -583,14 +625,14 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">From date <font color="red">*</font></label>
-                                             <input type="text" name="prev_year" id="prev_year" class="form-control date-picker flatpickr-input active" onchange="get_month()">
+                                            <input type="text" class="form-control date-picker flatpickr-input active" name="prev_year" id="prev_year"  placeholder="Pick a date" readonly="readonly" onchange="get_month()">
                                         </div>
                                         <div class="alert alert-danger" id="prev_yearErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">To date <font color="red">*</font></label>
-                                             <input type="text" name="to_year" id="to_year" class="form-control date-picker flatpickr-input active" onchange="get_month()">
+                                            <input type="text" class="form-control date-picker flatpickr-input active" name="to_year" id="to_year"  placeholder="Pick a date" readonly="readonly" onchange="get_month()">
                                         </div>
                                         <div class="alert alert-danger" id="to_yearErrorMsg" style="display:none"></div>
                                     </div>
@@ -645,21 +687,21 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">From date <font color="red">*</font></label>
-                                             <input type="text" name="current_year" id="current_year" class="form-control date-picker flatpickr-input active" onchange="get_harvest_month()">
+                                            <input type="text" class="form-control date-picker flatpickr-input active" name="current_year" id="current_year"  placeholder="Pick a date" readonly="readonly" onchange="get_current_month()">
                                         </div>
                                         <div class="alert alert-danger" id="current_yearErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">To date <font color="red">*</font></label>
-                                             <input type="text" name="to_current_year" id="to_current_year" class="form-control date-picker flatpickr-input active" onchange="get_harvest_month()">
+                                            <input type="text" class="form-control date-picker flatpickr-input active" name="to_current_year" id="to_current_year"  placeholder="Pick a date" readonly="readonly" onchange="get_current_month()">
                                         </div>
                                         <div class="alert alert-danger" id="to_current_yearErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Estimated Yield <font color="red">*</font></label>
-                                             <input type="text" name="estimated_yield" id="estimated_yield" class="form-control" onkeypress="return isNumberKey(event)">
+                                             <input type="text" name="estimated_yield" id="estimated_yield" class="form-control" onkeypress="return isNumberKey(event)" onchange="check_yield()">
                                         </div>
                                         <div class="alert alert-danger" id="estimated_yieldErrorMsg" style="display:none"></div>
                                     </div>
@@ -732,7 +774,7 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Estimated Harvest/Yield <font color="red">*</font></label>
-                                        <input type="text" name="estimated_harvest" class="form-control" id="estimated_harvest" onkeypress="return isNumberKey(event)">
+                                        <input type="text" name="estimated_harvest" class="form-control" id="estimated_harvest" onkeypress="return isNumberKey(event)" onchange="check_estimated_harvest()">
                                         <div class="alert alert-danger" id="estimated_harvestErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -747,14 +789,14 @@ form, input, select, textarea{
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Estimated Harvest Yield/Season <font color="red">*</font></label>
-                                        <input type="text" name="harvest_season" class="form-control" id="harvest_season" onkeypress="return isNumberKey(event)">
+                                        <input type="text" name="harvest_season" class="form-control" id="harvest_season" onkeypress="return isNumberKey(event)" onchange="check_harvest_season()">
                                         <div class="alert alert-danger" id="harvest_seasonErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Harvest Acreage <font color="red">*</font></label>
-                                        <input type="text" name="harvest_acreage" class="form-control" id="harvest_acreage" onkeypress="return isNumberKey(event)">
+                                        <input type="text" name="harvest_acreage" class="form-control" id="harvest_acreage" onkeypress="return isNumberKey(event)" onchange="check_harvest_acreage()">
                                         <div class="alert alert-danger" id="harvest_acreageErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -804,20 +846,20 @@ form, input, select, textarea{
                                         <div class="alert alert-danger" id="livestock_typeErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Number Of Male <font color="red">*</font></label>
-                                        <input type="text" name="male" class="form-control" id="male" onkeypress="return isNumberKey(event)">
+                                        <label class="form-label">Number of Male <font color="red">*</font></label>
+                                        <input type="text" name="male" class="form-control" id="male" onkeypress="return isNumberKey(event)" onchange="check_male()">
                                         <div class="alert alert-danger" id="maleErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Number Of Female <font color="red">*</font></label>
-                                        <input type="text" name="female" class="form-control" id="female" onkeypress="return isNumberKey(event)">
+                                        <label class="form-label">Number of Female <font color="red">*</font></label>
+                                        <input type="text" name="female" class="form-control" id="female" onkeypress="return isNumberKey(event)" onchange="check_female()">
                                         <div class="alert alert-danger" id="femaleErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Estimated Production <font color="red">*</font></label>
-                                        <input type="text" name="estimated_production" class="form-control" id="estimated_production" onkeypress="return isNumberKey(event)">
+                                        <input type="text" name="estimated_production" class="form-control" id="estimated_production" onkeypress="return isNumberKey(event)" onchange="check_estimated_production()">
                                         <div class="alert alert-danger" id="estimated_productionErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -873,7 +915,7 @@ form, input, select, textarea{
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Estimated Yield <font color="red">*</font></label>
-                                        <input type="text" name="Aquaculture_Yield" class="form-control" id="Aquaculture_Yield" onkeypress="return isNumberKey(event)" onchange="getBalanceStock()">
+                                        <input type="text" name="Aquaculture_Yield" class="form-control" id="Aquaculture_Yield" onkeypress="return isNumberKey(event)" onchange="getAquaBalanceStock()">
                                         <div class="alert alert-danger" id="Aquaculture_YieldErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -895,7 +937,7 @@ form, input, select, textarea{
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Sold <font color="red">*</font></label>
-                                        <input type="text" name="aqua_Sold" class="form-control" id="aqua_Sold" onkeypress="return isNumberKey(event)" onchange="getBalanceStock()">
+                                        <input type="text" name="aqua_Sold" class="form-control" id="aqua_Sold" onkeypress="return isNumberKey(event)" onchange="getAquaBalanceStock()">
                                         <div class="alert alert-danger" id="aqua_SoldErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -969,7 +1011,7 @@ form, input, select, textarea{
                                     </div>
                                    <div class="form-group col-md-4">
                                         <label class="form-label">Estimated Harvest Yield <font color="red">*</font></label>
-                                        <input type="text" name="api_estimated_harvest" class="form-control" id="api_estimated_harvest" onkeypress="return isNumberKey(event)">
+                                        <input type="text" name="api_estimated_harvest" class="form-control" id="api_estimated_harvest" onkeypress="return isNumberKey(event)" onchange="check_api_estimated_harvest()">
                                         <div class="alert alert-danger" id="api_estimated_harvestErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
@@ -986,7 +1028,7 @@ form, input, select, textarea{
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Harvest Acreage <font color="red">*</font></label>
-                                        <input type="text" name="api_harvest_acreage" class="form-control" id="api_harvest_acreage" onkeypress="return isNumberKey(event)">
+                                        <input type="text" name="api_harvest_acreage" class="form-control" id="api_harvest_acreage" onkeypress="return isNumberKey(event)" onchange="check_api_harvest_acreage()">
                                         <div class="alert alert-danger" id="api_harvest_acreageErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -1201,7 +1243,7 @@ form, input, select, textarea{
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_mortem_attachment()"> Submit </button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_oc_attachment()"> Upload </button>
                 </div>
             </div>
         </div>
@@ -1281,7 +1323,7 @@ form, input, select, textarea{
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Cultivated Area <font color="red">*</font></label>
-                                        <input type="text" name="edit_area" class="form-control" id="edit_area" onkeypress="return isNumberKey(event)">
+                                        <input type="text" name="edit_area" class="form-control" id="edit_area" onkeypress="return isNumberKey(event)" onchange="check_edit_area()">
                                         <div class="alert alert-danger" id="edit_areaErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -1320,7 +1362,7 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Yield <font color="red">*</font></label>
-                                             <input type="text" name="edit_yield" id="edit_yield" class="form-control" onkeypress="return isNumberKey(event)">
+                                             <input type="text" name="edit_yield" id="edit_yield" class="form-control" onkeypress="return isNumberKey(event)" onchange="getEditBalance()">
                                         </div>
                                         <div class="alert alert-danger" id="edit_yieldErrorMsg" style="display:none"></div>
                                     </div>
@@ -1357,7 +1399,7 @@ form, input, select, textarea{
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Sold <font color="red">*</font></label>
-                                        <input type="text" name="edit_sold" class="form-control" id="edit_sold" onkeypress="return isNumberKey(event)" onchange="getEditBalance(this.value)">
+                                        <input type="text" name="edit_sold" class="form-control" id="edit_sold" onkeypress="return isNumberKey(event)" onchange="getEditBalance()">
                                         <div class="alert alert-danger" id="edit_soldErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
@@ -1404,7 +1446,7 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Estimated Yield <font color="red">*</font></label>
-                                             <input type="text" name="edit_estimated_yield" id="edit_estimated_yield" class="form-control" onkeypress="return isNumberKey(event)">
+                                             <input type="text" name="edit_estimated_yield" id="edit_estimated_yield" class="form-control" onkeypress="return isNumberKey(event)" onchange="check_edit_yield()">
                                         </div>
                                         <div class="alert alert-danger" id="edit_estimated_yieldErrorMsg" style="display:none"></div>
                                     </div>
@@ -1491,7 +1533,7 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Estimated Harvest/Yield <font color="red">*</font></label>
-                                        <input type="text" name="edit_estimated_harvest" class="form-control" id="edit_estimated_harvest" onkeypress="return isNumberKey(event)">
+                                        <input type="text" name="edit_estimated_harvest" class="form-control" id="edit_estimated_harvest" onkeypress="return isNumberKey(event)" onchange="check_edit_estimated_harvest()">
                                         <div class="alert alert-danger" id="edit_estimated_harvestErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -1506,14 +1548,14 @@ form, input, select, textarea{
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Estimated Harvest Yield/Season <font color="red">*</font></label>
-                                        <input type="text" name="edit_harvest_season" class="form-control" id="edit_harvest_season" onkeypress="return isNumberKey(event)">
+                                        <input type="text" name="edit_harvest_season" class="form-control" id="edit_harvest_season" onkeypress="return isNumberKey(event)" onchange="check_edit_harvest_season()">
                                         <div class="alert alert-danger" id="edit_harvest_seasonErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Harvest Acreage <font color="red">*</font></label>
-                                        <input type="text" name="edit_harvest_acreage" class="form-control" id="edit_harvest_acreage" onkeypress="return isNumberKey(event)">
+                                        <input type="text" name="edit_harvest_acreage" class="form-control" id="edit_harvest_acreage" onkeypress="return isNumberKey(event)" onchange="check_edit_harvest_acreage()">
                                         <div class="alert alert-danger" id="edit_harvest_acreageErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -1565,20 +1607,20 @@ form, input, select, textarea{
                                         <div class="alert alert-danger" id="edit_livestock_typeErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Number Of Male <font color="red">*</font></label>
-                                        <input type="text" name="edit_male" class="form-control" id="edit_male" onkeypress="return isNumberKey(event)">
+                                        <label class="form-label">Number of Male <font color="red">*</font></label>
+                                        <input type="text" name="edit_male" class="form-control" id="edit_male" onkeypress="return isNumberKey(event)" onchange="check_edit_male()">
                                         <div class="alert alert-danger" id="edit_maleErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Number Of Female <font color="red">*</font></label>
-                                        <input type="text" name="edit_female" class="form-control" id="edit_female" onkeypress="return isNumberKey(event)">
+                                        <label class="form-label">Number of Female <font color="red">*</font></label>
+                                        <input type="text" name="edit_female" class="form-control" id="edit_female" onkeypress="return isNumberKey(event)" onchange="check_edit_female">
                                         <div class="alert alert-danger" id="edit_femaleErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Estimated Production <font color="red">*</font></label>
-                                        <input type="text" name="edit_estimated_production" class="form-control" id="edit_estimated_production" onkeypress="return isNumberKey(event)">
+                                        <input type="text" name="edit_estimated_production" class="form-control" id="edit_estimated_production" onkeypress="return isNumberKey(event)" onchange="check_edit_estimated_production()">
                                         <div class="alert alert-danger" id="edit_estimated_productionErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -1636,7 +1678,7 @@ form, input, select, textarea{
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Estimated Yield <font color="red">*</font></label>
-                                        <input type="text" name="edit_Aquaculture_Yield" class="form-control" id="edit_Aquaculture_Yield" onkeypress="return isNumberKey(event)" onchange="getEditBalanceStock()">
+                                        <input type="text" name="edit_Aquaculture_Yield" class="form-control" id="edit_Aquaculture_Yield" onkeypress="return isNumberKey(event)" onchange="getAquaEditBalanceStock()">
                                         <div class="alert alert-danger" id="edit_Aquaculture_YieldErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -1658,7 +1700,7 @@ form, input, select, textarea{
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Sold <font color="red">*</font></label>
-                                        <input type="text" name="edit_aqua_Sold" class="form-control" id="edit_aqua_Sold" onkeypress="return isNumberKey(event)" onchange="getEditBalanceStock()">
+                                        <input type="text" name="edit_aqua_Sold" class="form-control" id="edit_aqua_Sold" onkeypress="return isNumberKey(event)" onchange="getAquaEditBalanceStock()">
                                         <div class="alert alert-danger" id="edit_aqua_SoldErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -1734,7 +1776,7 @@ form, input, select, textarea{
                                     </div>
                                    <div class="form-group col-md-4">
                                         <label class="form-label">Estimated Harvest/Yield <font color="red">*</font></label>
-                                        <input type="text" name="edit_api_estimated_harvest" class="form-control" id="edit_api_estimated_harvest" onkeypress="return isNumberKey(event)">
+                                        <input type="text" name="edit_api_estimated_harvest" class="form-control" id="edit_api_estimated_harvest" onkeypress="return isNumberKey(event)" onchange="check_edit_api_estimated_harvest()">
                                         <div class="alert alert-danger" id="edit_api_estimated_harvestErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
@@ -1751,7 +1793,7 @@ form, input, select, textarea{
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Harvest Acreage <font color="red">*</font></label>
-                                        <input type="text" name="edit_api_harvest_acreage" class="form-control" id="edit_api_harvest_acreage" onkeypress="return isNumberKey(event)">
+                                        <input type="text" name="edit_api_harvest_acreage" class="form-control" id="edit_api_harvest_acreage" onkeypress="return isNumberKey(event)" onchange="check_edit_api_harvest_acreage()">
                                         <div class="alert alert-danger" id="edit_api_harvest_acreageErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -2145,55 +2187,65 @@ function save_organic_certificate()
 
 
 
-function save_mortem_attachment()
+function save_oc_attachment()
 {
-    var fileName = document.getElementById('document').files[0].name;
-    var fd = new FormData();
-    var file = document.getElementById('document').files[0];
-    fd.append('document', file);
-    token_value=$("input[name=csrfmiddlewaretoken]").val();
-    $.ajaxSetup
-    ({
-        beforeSend: function(xhr, settings)
+    var file_length = document.getElementById("document");
+    if(file_length.value.length < 1)
+    {
+        $('#fileErrorMsg').html("Please Choose A File");
+        $('#fileErrorMsg').show();
+        $('#fileErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else
+    {
+        var fileName = document.getElementById('document').files[0].name;
+        var fd = new FormData();
+        var file = document.getElementById('document').files[0];
+        fd.append('document', file);
+        token_value=$("input[name=csrfmiddlewaretoken]").val();
+        $.ajaxSetup
+        ({
+            beforeSend: function(xhr, settings)
+            {
+                xhr.setRequestHeader("X-CSRFToken", token_value);
+            }
+        });
+        $.ajax({
+        type : "POST",
+        url : "{% url 'organic_certificate_file' %}",
+        data : fd,
+        dataType: 'json',
+        contentType: false,
+        processData: false,
+        success : function(data)
         {
-            xhr.setRequestHeader("X-CSRFToken", token_value);
+            if (data.form_is_valid)
+            {
+                var file_url = data.file_url
+                var appNo = $('#attachment_appNo').val();
+                $.ajax
+                ({
+                    type : "POST",
+                    url : "{% url 'organic_certificate_file_name' %}",
+                    data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
+                    success : function(responseText)
+                    {
+                        $('#attachmentModal').modal('hide');
+                        $('#file-attachment-mortem').html(responseText);
+                        $('.modal-backdrop').remove();
+                        $('#attachment_form')[0].reset();
+                    }
+                });
+            }
+            else
+            {
+                $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                $('#fileErrorMsg').show();
+                $('#fileErrorMsg').delay(2000).fadeOut('slow');
+            }
         }
     });
-    $.ajax({
-    type : "POST",
-    url : "{% url 'organic_certificate_file' %}",
-    data : fd,
-    dataType: 'json',
-    contentType: false,
-    processData: false,
-    success : function(data)
-    {
-        if (data.form_is_valid)
-        {
-            var file_url = data.file_url
-            var appNo = $('#attachment_appNo').val();
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'organic_certificate_file_name' %}",
-                data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
-                success : function(responseText)
-                {
-                    $('#attachmentModal').modal('hide');
-                    $('#file-attachment-mortem').html(responseText);
-                    $('.modal-backdrop').remove();
-                    $('#attachment_form')[0].reset();
-                }
-            });
-        }
-        else
-        {
-            $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-            $('#fileErrorMsg').show();
-            $('#fileErrorMsg').delay(2000).fadeOut('slow');
-        }
-    }
-});
+}
 
 }
 
@@ -2555,13 +2607,13 @@ function save_animal_husbandry_details()
     }
     else if(male == "")
     {
-        $('#maleErrorMsg').html("Enter Number Of Male.");
+        $('#maleErrorMsg').html("Enter Number of Male.");
         $('#maleErrorMsg').show();
         $('#maleErrorMsg').delay(2000).fadeOut('slow');
     }
     else if(female == "")
     {
-        $('#femaleErrorMsg').html("Enter Number Of Female.");
+        $('#femaleErrorMsg').html("Enter Number of Female.");
         $('#femaleErrorMsg').show();
         $('#femaleErrorMsg').delay(2000).fadeOut('slow');
     }
@@ -2686,15 +2738,15 @@ function save_api_culture_details()
 }
 else if(api_botanical_name == "")
 {
-    $('#maleErrorMsg').html("Enter Number Of Male.");
-    $('#maleErrorMsg').show();
-    $('#maleErrorMsg').delay(2000).fadeOut('slow');
+    $('#api_botanical_nameErrorMsg').html("Enter Botanical Name.");
+    $('#api_botanical_nameErrorMsg').show();
+    $('#api_botanical_nameErrorMsg').delay(2000).fadeOut('slow');
 }
 else if(api_estimated_harvest == "")
 {
-    $('#femaleErrorMsg').html("Enter Number Of Female.");
-    $('#femaleErrorMsg').show();
-    $('#femaleErrorMsg').delay(2000).fadeOut('slow');
+    $('#api_estimated_harvestErrorMsg').html("Enter Estimated Harvest.");
+    $('#api_estimated_harvestErrorMsg').show();
+    $('#api_estimated_harvestErrorMsg').delay(2000).fadeOut('slow');
 }
 else if(api_estimated_harvest_Yield_Unit == "")
 {
@@ -3148,9 +3200,24 @@ function getBalance()
 {
     var yield = $('#yield').val();
     var sold = $('#sold').val();
-    if(sold > yield)
+
+    if(yield == 0)
     {
-        $('#soldErrorMsg').html("Cannot Be More Than Yie;d.");
+        $('#yieldErrorMsg').html("Must Be More Than Zero");
+        $('#yieldErrorMsg').show();
+        $('#yieldErrorMsg').delay(2000).fadeOut('slow');
+        $('#yield').val("");
+    }
+    else if(sold == 0)
+    {
+        $('#soldErrorMsg').html("Must Be More Than Zero");
+        $('#soldErrorMsg').show();
+        $('#soldErrorMsg').delay(2000).fadeOut('slow');
+        $('#sold').val("");
+    }
+    else if(sold > yield)
+    {
+        $('#soldErrorMsg').html("Cannot Be More Than Yield");
         $('#soldErrorMsg').show();
         $('#soldErrorMsg').delay(2000).fadeOut('slow');
         $('#sold').val("");
@@ -3158,34 +3225,101 @@ function getBalance()
     }
     else
     {
-        balance_yield = yield - sold
-        $('#balance_stock').val(balance_yield);
+        var balance = yield - sold;
+        $('#balance_stock').val(balance);
+    }
+
+}
+
+function check_yield()
+{
+    var estimated_yield = $('#estimated_yield').val();
+
+    if(estimated_yield == 0)
+    {
+        $('#estimated_yieldErrorMsg').html("Must Be More Than Zero.");
+        $('#estimated_yieldErrorMsg').show();
+        $('#estimated_yieldErrorMsg').delay(2000).fadeOut('slow');
+        $('#estimated_yield').val("");
+    }
+    else
+    {
+        $('#estimated_yieldErrorMsg').hide();
     }
 }
 
-function getEditBalance(sold)
+function check_edit_yield()
+{
+    var estimated_yield = $('#edit_estimated_yield').val();
+
+    if(estimated_yield == 0)
+    {
+        $('#edit_estimated_yieldErrorMsg').html("Must Be More Than Zero.");
+        $('#edit_estimated_yieldErrorMsg').show();
+        $('#edit_estimated_yieldErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_estimated_yield').val("");
+    }
+    else
+    {
+        $('#edit_estimated_yieldErrorMsg').hide();
+    }
+}
+
+function getEditBalance()
 {
     var yield = $('#edit_yield').val();
-    if(sold > yield)
+    var sold = $('#edit_sold').val();
+
+    if(yield == 0)
     {
-        $('#edit_soldErrorMsg').html("Cannot Be More Than Yie;d.");
+        $('#edit_yieldErrorMsg').html("Must Be More Than Zero");
+        $('#edit_yieldErrorMsg').show();
+        $('#edit_yieldErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_yield').val("");
+    }
+    else if(sold == 0)
+    {
+        $('#edit_soldErrorMsg').html("Must Be More Than Zero");
         $('#edit_soldErrorMsg').show();
         $('#edit_soldErrorMsg').delay(2000).fadeOut('slow');
         $('#edit_sold').val("");
+    }
+    else if(sold > yield)
+    {
+        $('#edit_soldErrorMsg').html("Cannot Be More Than Yield");
+        $('#edit_soldErrorMsg').show();
+        $('#edit_soldErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_previous_sold').val("");
         $('#edit_balance_stock').val("");
     }
     else
     {
-        balance_yield = yield - sold
-        $('#edit_balance_stock').val(balance_yield);
+        var balance = yield - sold;
+        $('#edit_balance_stock').val(balance);
     }
+
 }
 
-function getBalanceStock()
+function getAquaBalanceStock()
 {
     var production = $('#Aquaculture_Yield').val();
     var sold = $('#aqua_Sold').val();
-    if(sold > production)
+
+    if(production == 0)
+    {
+        $('#Aquaculture_YieldErrorMsg').html("Must Be More Than Zero.");
+        $('#Aquaculture_YieldErrorMsg').show();
+        $('#Aquaculture_YieldErrorMsg').delay(2000).fadeOut('slow');
+        $('#Aquaculture_Yield').val("");
+    }
+    else if(sold == 0)
+    {
+        $('#aqua_SoldErrorMsg').html("Must Be More Than Zero.");
+        $('#aqua_SoldErrorMsg').show();
+        $('#aqua_SoldErrorMsg').delay(2000).fadeOut('slow');
+        $('#aqua_Sold').val("");
+    }
+    else if(sold > production)
     {
         $('#aqua_SoldErrorMsg').html("Cannot Be More Than Yie;d.");
         $('#aqua_SoldErrorMsg').show();
@@ -3200,11 +3334,26 @@ function getBalanceStock()
     }
 }
 
-function getEditBalanceStock()
+function getAquaEditBalanceStock()
 {
     var production = $('#edit_Aquaculture_Yield').val();
     var sold = $('#edit_aqua_Sold').val();
-    if(sold > production)
+
+    if(production == 0)
+    {
+        $('#edit_Aquaculture_YieldErrorMsg').html("Must Be More Than Zero.");
+        $('#edit_Aquaculture_YieldErrorMsg').show();
+        $('#edit_Aquaculture_YieldErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_Aquaculture_Yield').val("");
+    }
+    else if(sold == 0)
+    {
+        $('#edit_aqua_SoldErrorMsg').html("Must Be More Than Zero.");
+        $('#edit_aqua_SoldErrorMsg').show();
+        $('#edit_aqua_SoldErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_aqua_Sold').val("");
+    }
+    else if(sold > production)
     {
         $('#edit_aqua_SoldErrorMsg').html("Cannot Be More Than Yie;d.");
         $('#edit_aqua_SoldErrorMsg').show();
@@ -3304,7 +3453,22 @@ function getBalanceProcessing()
 {
     var production = $('#production').val();
     var value = $('#processing_Sold').val();
-    if(value > production)
+
+    if(production == 0)
+    {
+        $('#productionErrorMsg').html("Must Be More Than Zero.");
+        $('#productionErrorMsg').show();
+        $('#productionErrorMsg').delay(2000).fadeOut('slow');
+        $('#production').val("");
+    }
+    else if(value == 0)
+    {
+        $('#processing_SoldErrorMsg').html("Must Be More Than Zero.");
+        $('#processing_SoldErrorMsg').show();
+        $('#processing_SoldErrorMsg').delay(2000).fadeOut('slow');
+        $('#processing_Sold').val("");
+    }
+    else if(value > production)
     {
         $('#processing_SoldErrorMsg').html("Cannot Be More Than Production.");
         $('#processing_SoldErrorMsg').show();
@@ -3340,7 +3504,22 @@ function getCurrentBalanceProcessing()
 {
     var production = $('#current_production').val();
     var value = $('#current_processing_Sold').val();
-    if(value > production)
+
+    if(production == 0)
+    {
+        $('#current_productionErrorMsg').html("Must Be More Than Zero.");
+        $('#current_productionErrorMsg').show();
+        $('#current_productionErrorMsg').delay(2000).fadeOut('slow');
+        $('#current_production').val("");
+    }
+    else if(value == 0)
+    {
+        $('#current_processing_SoldErrorMsg').html("Must Be More Than Zero.");
+        $('#current_processing_SoldErrorMsg').show();
+        $('#current_processing_SoldErrorMsg').delay(2000).fadeOut('slow');
+        $('#current_processing_Sold').val("");
+    }
+    else if(value > production)
     {
         $('#current_processing_SoldErrorMsg').html("Cannot Be More Than Production.");
         $('#current_processing_SoldErrorMsg').show();
@@ -3492,7 +3671,15 @@ function populate_wild_details(Record_Id, Common_Name, Botanical_Name, Plant_Par
 function check_ah_sold(sold)
 {
     var production = $('#estimated_production').val();
-    if(sold > production)
+
+    if(sold == 0)
+    {
+        $('#product_soldErrorMsg').html("Must Be More Than Zero.");
+        $('#product_soldErrorMsg').show();
+        $('#product_soldErrorMsg').delay(2000).fadeOut('slow');
+        $('#product_sold').val("");
+    }
+    else if(sold > production)
     {
         $('#product_soldErrorMsg').html("Cannot Be More Than Production.");
         $('#product_soldErrorMsg').show();
@@ -3508,7 +3695,14 @@ function check_ah_sold(sold)
 function edit_check_ah_sold(sold)
 {
     var production = $('#edit_estimated_production').val();
-    if(sold > production)
+    if(sold == 0)
+    {
+        $('#edit_product_soldErrorMsg').html("Must Be More Than Zero.");
+        $('#edit_product_soldErrorMsg').show();
+        $('#edit_product_soldErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_product_sold').val("");
+    }
+    else if(sold > production)
     {
         $('#edit_product_soldErrorMsg').html("Cannot Be More Than Production.");
         $('#edit_product_soldErrorMsg').show();
@@ -3684,6 +3878,390 @@ function oc_attachment_details()
             $('#file-attachment-oc').html(response);
         }
     });
+}
+
+function check_farmers_no()
+{
+    var farmers_group_number = $('#farmers_group_number').val();
+    if(farmers_group_number == 0)
+    {
+        $('#farmers_group_numberErrorMsg').html("Farmers Group Number Should Be More Than Zero.");
+        $('#farmers_group_numberErrorMsg').show();
+        $('#farmers_group_numberErrorMsg').delay(2000).fadeOut('slow');
+        $("#farmers_group_number").val("");
+    }
+    else
+    {
+        $('#farmers_group_numberErrorMsg').hide();
+    }
+
+}
+
+function check_area()
+{
+    var area = $('#area').val();
+
+    if(area == 0)
+    {
+        $('#areaErrorMsg').html("Must Be More Than Zero.");
+        $('#areaErrorMsg').show();
+        $('#areaErrorMsg').delay(2000).fadeOut('slow');
+        $('#area').val("");
+    }
+    else
+    {
+        $('#areaErrorMsg').hide();
+    }
+}
+
+function check_edit_area()
+{
+    var area = $('#edit_area').val();
+
+    if(area == 0)
+    {
+        $('#edit_areaErrorMsg').html("Must Be More Than Zero.");
+        $('#edit_areaErrorMsg').show();
+        $('#edit_areaErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_area').val("");
+    }
+    else
+    {
+        $('#edit_areaErrorMsg').hide();
+    }
+}
+
+function get_current_month()
+{
+    var from_date = $('#current_year').val();
+    var  to_date = $('#to_current_year').val();
+
+    $.ajax({
+        type : "GET",
+        url : "{% url 'check_difference' %}",
+        data :{'from_date':from_date, 'to_date':to_date},
+        success : function(data)
+        {
+            if(data.no_of_days <= 0)
+            {
+                $('#to_current_yearErrorMsg').html("Cannot Be Less Than From Date");
+                $('#to_current_yearErrorMsg').show();
+                $('#to_current_yearErrorMsg').delay(2000).fadeOut('slow');
+                $('#to_current_year').val("");
+            }
+            else
+            {
+                $.ajax({
+                    type : "GET",
+                    url : "{% url 'date_month' %}",
+                    data :{'from_date':from_date, 'to_date':to_date},
+                    success : function(data)
+                    {
+                        $('#estimated_harvest_month').html(data);
+                    }
+                });
+            }
+        }
+    });
+
+}
+
+function check_estimated_harvest()
+{
+    var estimated_harvest = $('#estimated_harvest').val();
+
+    if(estimated_harvest == 0)
+    {
+        $('#estimated_harvestErrorMsg').html("Must Be More Than Zero.");
+        $('#estimated_harvestErrorMsg').show();
+        $('#estimated_harvestErrorMsg').delay(2000).fadeOut('slow');
+        $('#estimated_harvest').val("");
+    }
+    else
+    {
+        $('#estimated_harvestErrorMsg').hide();
+    }
+}
+
+function check_edit_estimated_harvest()
+{
+    var edit_estimated_harvest = $('#edit_estimated_harvest').val();
+
+    if(estimated_harvest == 0)
+    {
+        $('#edit_estimated_harvestErrorMsg').html("Must Be More Than Zero.");
+        $('#edit_estimated_harvestErrorMsg').show();
+        $('#edit_estimated_harvestErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_estimated_harvest').val("");
+    }
+    else
+    {
+        $('#edit_estimated_harvestErrorMsg').hide();
+    }
+}
+
+function check_harvest_acreage()
+{
+    var harvest_acreage = $('#harvest_acreage').val();
+
+    if(harvest_acreage == 0)
+    {
+        $('#harvest_acreageErrorMsg').html("Must Be More Than Zero.");
+        $('#harvest_acreageErrorMsg').show();
+        $('#harvest_acreageErrorMsg').delay(2000).fadeOut('slow');
+        $('#harvest_acreage').val("");
+    }
+    else
+    {
+        $('#estimated_harvestErrorMsg').hide();
+    }
+}
+
+function check_edit_harvest_acreage()
+{
+    var edit_harvest_acreage = $('#edit_harvest_acreage').val();
+
+    if(harvest_acreage == 0)
+    {
+        $('#edit_harvest_acreageErrorMsg').html("Must Be More Than Zero.");
+        $('#edit_harvest_acreageErrorMsg').show();
+        $('#edit_harvest_acreageErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_harvest_acreage').val("");
+    }
+    else
+    {
+        $('#edit_harvest_acreageErrorMsg').hide();
+    }
+}
+
+function check_harvest_season()
+{
+    var harvest_season = $('#harvest_season').val();
+
+    if(harvest_season == 0)
+    {
+        $('#harvest_seasonErrorMsg').html("Must Be More Than Zero.");
+        $('#harvest_seasonErrorMsg').show();
+        $('#harvest_seasonErrorMsg').delay(2000).fadeOut('slow');
+        $('#harvest_season').val("");
+    }
+    else
+    {
+        $('#harvest_seasonErrorMsg').hide();
+    }
+}
+
+function edit_check_harvest_season()
+{
+    var edit_harvest_season = $('#edit_harvest_season').val();
+
+    if(harvest_season == 0)
+    {
+        $('#edit_harvest_seasonErrorMsg').html("Must Be More Than Zero.");
+        $('#edit_harvest_seasonErrorMsg').show();
+        $('#edit_harvest_seasonErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_harvest_season').val("");
+    }
+    else
+    {
+        $('#edit_harvest_seasonErrorMsg').hide();
+    }
+}
+
+function getGewog(dzongkhag_id)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'organic_gewog' %}",
+        data :{'dzongkhag_id':dzongkhag_id},
+        success : function(data)
+        {
+            $('#gewog').html(data);
+        }
+    });
+}
+
+function getVillage(gewog_id)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'organic_village' %}",
+        data :{'gewog_id':gewog_id},
+        success : function(data)
+        {
+            $('#village').html(data);
+        }
+    });
+}
+
+function check_male()
+{
+    var male = $('#male').val();
+
+    if(male == 0)
+    {
+        $('#maleErrorMsg').html("Must Be More Than Zero.");
+        $('#maleErrorMsg').show();
+        $('#maleErrorMsg').delay(2000).fadeOut('slow');
+        $('#male').val("");
+    }
+    else
+    {
+        $('#maleErrorMsg').hide();
+    }
+}
+
+function check_female()
+{
+    var female = $('#female').val();
+
+    if(female == 0)
+    {
+        $('#femaleErrorMsg').html("Must Be More Than Zero.");
+        $('#femaleErrorMsg').show();
+        $('#maleErrorMsg').delay(2000).fadeOut('slow');
+        $('#female').val("");
+    }
+    else
+    {
+        $('#maleErrorMsg').hide();
+    }
+}
+
+function check_edit_male()
+{
+    var edit_male = $('#edit_male').val();
+
+    if(male == 0)
+    {
+        $('#edit_maleErrorMsg').html("Must Be More Than Zero.");
+        $('#edit_maleErrorMsg').show();
+        $('#edit_maleErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_male').val("");
+    }
+    else
+    {
+        $('#edit_maleErrorMsg').hide();
+    }
+}
+
+function check_edit_female()
+{
+    var edit_female = $('#edit_female').val();
+
+    if(edit_female == 0)
+    {
+        $('#edit_femaleErrorMsg').html("Must Be More Than Zero.");
+        $('#edit_femaleErrorMsg').show();
+        $('#edit_femaleErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_female').val("");
+    }
+    else
+    {
+        $('#edit_femaleErrorMsg').hide();
+    }
+}
+
+function check_estimated_production()
+{
+    var estimated_production = $('#estimated_production').val();
+
+    if(estimated_production == 0)
+    {
+        $('#estimated_productionErrorMsg').html("Must Be More Than Zero.");
+        $('#estimated_productionErrorMsg').show();
+        $('#estimated_productionErrorMsg').delay(2000).fadeOut('slow');
+        $('#estimated_production').val("");
+    }
+    else
+    {
+        $('#estimated_productionErrorMsg').hide();
+    }
+}
+
+function check_edit_estimated_production()
+{
+    var edit_estimated_production = $('#edit_estimated_production').val();
+
+    if(edit_estimated_production == 0)
+    {
+        $('#edit_estimated_productionErrorMsg').html("Must Be More Than Zero.");
+        $('#edit_estimated_productionErrorMsg').show();
+        $('#edit_estimated_productionErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_estimated_production').val("");
+    }
+    else
+    {
+        $('#edit_estimated_productionErrorMsg').hide();
+    }
+}
+
+function check_api_estimated_harvest()
+{
+    var api_estimated_harvest = $('#api_estimated_harvest').val();
+
+    if(api_estimated_harvest == 0)
+    {
+        $('#api_estimated_harvestErrorMsg').html("Must Be More Than Zero.");
+        $('#api_estimated_harvestErrorMsg').show();
+        $('#api_estimated_harvestErrorMsg').delay(2000).fadeOut('slow');
+        $('#api_estimated_harvest').val("");
+    }
+    else
+    {
+        $('#api_estimated_harvestErrorMsg').hide();
+    }
+}
+
+function check_edit_api_estimated_harvest()
+{
+    var edit_api_estimated_harvest = $('#edit_api_estimated_harvest').val();
+
+    if(api_estimated_harvest == 0)
+    {
+        $('#edit_api_estimated_harvestErrorMsg').html("Must Be More Than Zero.");
+        $('#edit_api_estimated_harvestErrorMsg').show();
+        $('#edit_api_estimated_harvestErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_api_estimated_harvest').val("");
+    }
+    else
+    {
+        $('#edit_api_estimated_harvestErrorMsg').hide();
+    }
+}
+
+function check_api_harvest_acreage()
+{
+    var api_harvest_acreage = $('#api_harvest_acreage').val();
+
+    if(api_harvest_acreage == 0)
+    {
+        $('#api_harvest_acreageErrorMsg').html("Must Be More Than Zero.");
+        $('#api_harvest_acreageErrorMsg').show();
+        $('#api_harvest_acreageErrorMsg').delay(2000).fadeOut('slow');
+        $('#api_harvest_acreage').val("");
+    }
+    else
+    {
+        $('#api_harvest_acreageErrorMsg').hide();
+    }
+}
+
+function check_edit_api_harvest_acreage()
+{
+    var edit_api_harvest_acreage = $('#edit_api_harvest_acreage').val();
+
+    if(api_harvest_acreage == 0)
+    {
+        $('#edit_api_harvest_acreageErrorMsg').html("Must Be More Than Zero.");
+        $('#edit_api_harvest_acreageErrorMsg').show();
+        $('#edit_api_harvest_acreageErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_api_harvest_acreage').val("");
+    }
+    else
+    {
+        $('#edit_api_harvest_acreageErrorMsg').hide();
+    }
 }
 </script>
 {% endblock %}

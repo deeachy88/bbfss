@@ -223,17 +223,17 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Expected Date for Export <font color="red">*</font></label>
-                                    <input type="date" class="form-control" id="Export_Expected_Date" name="Export_Expected_Date">
-                                </div>
-                                <div class="alert alert-danger" id="Export_Expected_DateErrorMsg" style="display:none"></div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
                                     <label class="form-label">Propose Date for Inspection <font color="red">*</font></label>
                                     <input type="date" class="form-control" id="inspectionDate" name="inspectionDate">
                                 </div>
                                 <div class="alert alert-danger" id="inspectionDateErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Expected Date for Export <font color="red">*</font></label>
+                                    <input type="date" class="form-control" id="Export_Expected_Date" name="Export_Expected_Date" onchange="check_expected_date()">
+                                </div>
+                                <div class="alert alert-danger" id="Export_Expected_DateErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                     </div>
@@ -368,10 +368,10 @@
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Species <font color="red">*</font></label>
-                                        <select class="form-control" name="Species" id="Species">
+                                        <select class="form-control" name="Species" id="Species" onchange="get_species(this.value)">
                                             <option value="">--SELECT--</option>
                                             {% for species in species %}
-                                                <option value="{{ species.Species_Name }}">{{ species.Species_Name }}</option>
+                                                <option value="{{ species.Species_Id }}">{{ species.Species_Name }}</option>
                                             {% endfor %}
                                          </select>
                                         <div class="alert alert-danger" id="SpeciesErrorMsg" style="display:none"></div>
@@ -390,7 +390,7 @@
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Age <font color="red">*</font></label>
-                                        <input type="text" name="Age" class="form-control" id="Age" required>
+                                        <input type="text" name="Age" class="form-control" id="Age" onkeypress="return isNumberKey(event)" onchange="check_age()">
                                         <div class="alert alert-danger" id="AgeErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
@@ -464,7 +464,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_attachment()"> Submit </button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_attachment()"> Upload </button>
                 </div>
             </div>
         </div>
@@ -559,10 +559,10 @@
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Species <font color="red">*</font></label>
-                                        <select class="form-control" name="edit_Species" id="edit_Species">
+                                        <select class="form-control" name="edit_Species" id="edit_Species" onchange="get_edit_species(this.value)">
                                             <option value="">--SELECT--</option>
                                             {% for species in species %}
-                                                <option value="{{ species.Species_Name }}">{{ species.Species_Name }}</option>
+                                                <option value="{{ species.Species_Id }}">{{ species.Species_Name }}</option>
                                             {% endfor %}
                                          </select>
                                         <div class="alert alert-danger" id="edit_SpeciesErrorMsg" style="display:none"></div>
@@ -581,7 +581,7 @@
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Age <font color="red">*</font></label>
-                                        <input type="text" name="edit_Age" class="form-control" id="edit_Age" required>
+                                        <input type="text" name="edit_Age" class="form-control" id="edit_Age" onkeypress="return isNumberKey(event)" onchange="check_edit_age(this.value)">
                                         <div class="alert alert-danger" id="edit_AgeErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
@@ -651,6 +651,7 @@ function saveExportForm()
     var contactNumber = $('#contactNumber').val();
     var email = $('#email').val();
     var license_no = $('#license_no').val();
+    var business_name = $('#business_name').val();
     var Purpose = $('#Purpose').val();
     var Origin_Source_Products = $('#Origin_Source_Products').val();
     var Importer_Name_Address = $('#Importer_Name_Address').val();
@@ -734,7 +735,7 @@ function saveExportForm()
     }
     else if(email == "")
     {
-        $('#emailErrorMsg').html("Enter Contact Number.");
+        $('#emailErrorMsg').html("Enter Email.");
         $('#emailErrorMsg').show();
         $('#emailErrorMsg').delay(2000).fadeOut('slow');
         $('#email').focus();
@@ -945,52 +946,62 @@ function updateDetails()
 
 function save_attachment()
 {
-    var fileName = document.getElementById('document').files[0].name;
-    var fd = new FormData();
-    var file = document.getElementById('document').files[0];
-    fd.append('document', file);
-    token_value=$("input[name=csrfmiddlewaretoken]").val();
-    $.ajaxSetup
-    ({
-        beforeSend: function(xhr, settings)
+    var file_length = document.getElementById("document");
+    if(file_length.value.length < 1)
     {
-        xhr.setRequestHeader("X-CSRFToken", token_value);
+        $('#fileErrorMsg').html("Please Choose A File");
+        $('#fileErrorMsg').show();
+        $('#fileErrorMsg').delay(2000).fadeOut('slow');
     }
-    });
-        $.ajax({
-        type : "POST",
-        url : "{% url 'add_liv_export_file' %}",
-        data : fd,
-        dataType: 'json',
-        contentType: false,
-        processData: false,
-        success : function(data)
+    else
+    {
+        var fileName = document.getElementById('document').files[0].name;
+        var fd = new FormData();
+        var file = document.getElementById('document').files[0];
+        fd.append('document', file);
+        token_value=$("input[name=csrfmiddlewaretoken]").val();
+        $.ajaxSetup
+        ({
+            beforeSend: function(xhr, settings)
         {
-        if (data.form_is_valid)
-        {
-            var appNo = $('#appNo').val();
-            var file_url = data.file_url
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'add_ec_file_name' %}",
-                data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
-                success : function(responseText)
-                {
-                    $('#attachmentModal').modal('hide');
-                    $('#fileAttach').html(responseText);
-                    $('.modal-backdrop').remove();
-                    $('#attachment_form')[0].reset();
-                }
-            });
-        }else
-        {
-                $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-                $('#fileErrorMsg').show();
-                $('#fileErrorMsg').delay(2000).fadeOut('slow');
+            xhr.setRequestHeader("X-CSRFToken", token_value);
         }
+        });
+            $.ajax({
+            type : "POST",
+            url : "{% url 'add_liv_export_file' %}",
+            data : fd,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            success : function(data)
+            {
+            if (data.form_is_valid)
+            {
+                var appNo = $('#appNo').val();
+                var file_url = data.file_url
+                $.ajax
+                ({
+                    type : "POST",
+                    url : "{% url 'add_ec_file_name' %}",
+                    data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
+                    success : function(responseText)
+                    {
+                        $('#attachmentModal').modal('hide');
+                        $('#fileAttach').html(responseText);
+                        $('.modal-backdrop').remove();
+                        $('#attachment_form')[0].reset();
+                    }
+                });
+            }else
+            {
+                    $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                    $('#fileErrorMsg').show();
+                    $('#fileErrorMsg').delay(2000).fadeOut('slow');
+            }
+        }
+        });
     }
-    });
 }
 
 function validateemailId(emailId)
@@ -1047,6 +1058,7 @@ function save_export_details_form(identifier)
         var Company_Name = $('#Company_Name').val();
         var qty = $('#qty').val();
         var unit = $('#unit').val();
+        var animal_Description = $('#animal_Description').val();
 
         if(Particulars == "")
         {
@@ -1072,7 +1084,14 @@ function save_export_details_form(identifier)
             $('#unitErrorMsg').show();
             $('#unitErrorMsg').delay(2000).fadeOut('slow');
         }
-        else{
+        else if(animal_Description == "")
+        {
+            $('#animal_DescriptionErrorMsg').html("Select Unit.");
+            $('#animal_DescriptionErrorMsg').show();
+            $('#animal_DescriptionErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
             $.ajax({
                 type : "POST",
                 url : "{% url 'save_liv_export_details' %}",
@@ -1177,12 +1196,18 @@ function checkNationality(value)
         $('.bhutanese_div').show();
         $('.non_bhutanese_div').hide();
         $("#name").attr("readonly", "readonly");
+
     }
     else
     {
         $('.bhutanese_div').hide();
         $('.non_bhutanese_div').show();
         $("#name").removeAttr("readonly");
+        $('#cid').val("");
+        $('#name').val("");
+        $('#dzongkhag').val("");
+        $('#gewog').val("");
+        $('#village').val("");
     }
 }
 
@@ -1196,6 +1221,8 @@ function enableForms(value)
         $(".showNationality").show();
         $('.bhutanese_div').show();
         $('.non_bhutanese_div').hide();
+        $("#license_no").val("");
+        $("#business_name").val("");
     }
     else if(value == "Commercial")
     {
@@ -1211,6 +1238,11 @@ function enableForms(value)
         $('.bhutanese_div').show();
         $('.non_bhutanese_div').hide();
         $("#name").removeAttr("disabled");
+        $('#cid').val("");
+        $('#name').val("");
+        $('#dzongkhag').val("");
+        $('#gewog').val("");
+        $('#village').val("");
     }
     else
     {
@@ -1226,6 +1258,11 @@ function enableForms(value)
         $('.bhutanese_div').show();
         $('.non_bhutanese_div').hide();
         $("#name").removeAttr("disabled");
+        $('#cid').val("");
+        $('#name').val("");
+        $('#dzongkhag').val("");
+        $('#gewog').val("");
+        $('#village').val("");
     }
 }
 function getCitizenDetails(cidNo)
@@ -1406,6 +1443,82 @@ function check_edit_no(qty)
     else
     {
         $('#edit_noErrorMsg').hide();
+    }
+}
+
+function check_expected_date()
+{
+    var inspectionDate = $('#inspectionDate').val();
+    var Export_Expected_Date = $('#Export_Expected_Date').val();
+
+    if(Export_Expected_Date < inspectionDate)
+    {
+        $('#Export_Expected_DateErrorMsg').html("Cannot Be Less Than Propose Date for Inspection.");
+        $('#Export_Expected_DateErrorMsg').show();
+        $('#Export_Expected_DateErrorMsg').delay(2000).fadeOut('slow');
+        $('#Export_Expected_Date').val("");
+    }
+    else
+    {
+        $('#Export_Expected_DateErrorMsg').hide();
+    }
+}
+
+function check_age()
+{
+    var age = $('#Age').val();
+    if(age == 0)
+    {
+        $('#AgeErrorMsg').html("Must Be Greater Than Zero.");
+        $('#AgeErrorMsg').show();
+        $('#AgeErrorMsg').delay(2000).fadeOut('slow');
+        $('#Age').val("");
+    }
+    else
+    {
+        $('#AgeErrorMsg').hide();
+    }
+}
+
+function get_species(species)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_lec_species' %}",
+        data :{'species':species},
+        success : function(response)
+        {
+            $('#Breed').html(response);
+        }
+    });
+}
+
+function get_edit_species(species)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_lec_species' %}",
+        data :{'species':species},
+        success : function(response)
+        {
+            $('#edit_Breed').html(response);
+        }
+    });
+}
+
+function check_edit_age()
+{
+    var age = $('#edit_Age').val();
+    if(age == 0)
+    {
+        $('#edit_AgeErrorMsg').html("Must Be Greater Than Zero.");
+        $('#edit_AgeErrorMsg').show();
+        $('#edit_AgeErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_Age').val("");
+    }
+    else
+    {
+        $('#edit_AgeErrorMsg').hide();
     }
 }
 </script>

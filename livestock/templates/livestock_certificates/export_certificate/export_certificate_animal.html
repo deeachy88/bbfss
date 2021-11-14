@@ -29,30 +29,33 @@
             <table class="table table-bordered">
                 <tbody>
                     <tr>
-                        <td rowspan="3">To: {{certificate_details.Applicant_Name}} &nbsp;CID : {{certificate_details.CID}}
+                        <td rowspan="3">To: {{certificate_details.Applicant_Name}}<br>
+                            &nbsp;CID / Passport: {{certificate_details.CID}}/ {{certificate_details.Passport_No}}
                         </td>
-                        <td>Certificate No: </td>
+                        <td>Certificate No: {{certificate_details.Export_Permit_No}}</td>
                     </tr>
                     <tr>
-                        <td>Place of Issue: {{ Dzongkhag }}</td>
+                        <td>Place of Issue: {{ certificate_details.Dzongkhag_Code }}</td>
                     </tr>
                     <tr>
-                        <td>Date of Issue:{{ certificate_details.Approve_Date }} </td>
+                        <td>Date of Issue: {{ certificate_details.Approve_Date }} </td>
                     </tr>
                     <tr>
-                        <td rowspan="3">Name and Address of the Exporter {{certificate_details.Applicant_Name}}&nbsp;&nbsp;{{certificate_details.Present_Address}}</td>
+                        <td rowspan="2">Name and Address of the Exporter {{certificate_details.Applicant_Name}}&nbsp;&nbsp;{{certificate_details.Present_Address}}</td>
                         <td>Country of origin: Bhutan</td>
-                        <td>Place of shipment:{{certificate_details.Place_of_Exit}}</td>
                     </tr>
                     <tr>
-                        <td>Place of origin:{{certificate_details.Origin_Source_Products}}</td>
-                        <td>Date of shipment:{{certificate_details.Export_Expected_Date}}</td>
-                        <td>Declared Point of Exit:{{certificate_details.Place_of_Exit}}</td>
+                        <td>Place of origin: &nbsp;{{certificate_details.Origin_Source_Products}}</td>
+                        <td>Date of shipment:&nbsp;{{certificate_details.Export_Expected_Date}}</td>
+                        <td>Declared Point of Exit:&nbsp;{% for location in location %}
+                            {% if certificate_details.Place_of_Exit == location.Field_Office_Code %}
+                                {{ location.Field_Office }}
+                            {% endif %}
+                        {% endfor %}</td>
                     </tr>
                     <tr>
-                        <td rowspan="2">Name & Address of consignee  {{certificate_details.Importer_Name_Address}}</td>
+                        <td>Name & Address of consignee  {{certificate_details.Importer_Name_Address}}</td>
                         <td>Country of Destination: {{certificate_details.Final_Destination}}</td>
-                        <td>Means of transport:{{certificate_details.Conveyance_Means}}</td>
                     </tr>
                 </tbody>
             </table>

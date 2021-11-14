@@ -369,9 +369,9 @@ form, input, select, textarea{
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Place of Entry</label>
-                                        <select class="form-control" disabled>
-                                            {% for location in location %}
-                                                <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                        <select class="form-control"disabled>
+                                            {% for location in location_mapping %}
+                                                <option value="{{ location.Field_Office_Id }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
                                             {% endfor %}
                                          </select>
                                     </div>
@@ -418,8 +418,8 @@ form, input, select, textarea{
                                     <td>{{import.Particulars}}</td>
                                     <td>{{import.Company_Name}}</td>
                                     <td>{{import.Description}}</td>
-                                    <td>{{import.Unit}}</td>
                                     <td>{{import.Quantity}}</td>
+                                    <td>{{import.Unit}}</td>
                                 </tr>
                                 {% empty %}
                                 <tr>
@@ -458,14 +458,14 @@ form, input, select, textarea{
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="form-label">Validity Period (If Approve Please Fill The Validity Period) <font color="red">*</font></label>
+                                <label class="form-label">Validity Period(If Approve Please Fill The Validity Period[No Of Days]) <font color="red">*</font></label>
                                 <input type="text" class="form-control" name="validity" id="validity" onkeypress="return isNumberKey(event)" onchange="check_validity(this.value)">
                             </div>
                             <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-8">
                             <div class="form-group">
-                                <label class="form-label">Remarks(If Reject Please Fill THe Remarks) <font color="red">*</font></label>
+                                <label class="form-label">Remarks(If Reject Please Fill The Remarks)</label>
                                 <textarea class="form-control" rows="3" id="remarks" name="remarks"></textarea>
                             </div>
                             <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
@@ -474,8 +474,8 @@ form, input, select, textarea{
                     <br>
                     <hr>
                     <div id="loader" style="display:none">
-                        <img src="{% static 'assets/img/ajax-loader.gif' %}" alt="processing..." />
-                    </div>
+                            <img src="{% static 'assets/img/ajax-loader.gif' %}" alt="processing..." />
+                        </div>
                     <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
                         Application Approved
                     </div>

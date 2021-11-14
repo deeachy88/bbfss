@@ -54,6 +54,23 @@ urlpatterns = [
     path('update_meat_shop_registration', views.update_meat_shop_registration, name='update_meat_shop_registration'),
     path('load_meat_details', views.load_meat_details, name='load_meat_details'),
     path('load_meat_attachment', views.load_meat_attachment, name='load_meat_attachment'),
+    path('update_meat_shop_team_details_feasibility_ins', views.update_meat_shop_team_details_feasibility_ins,
+         name='update_meat_shop_team_details_feasibility_ins'),
+    path('update_meat_shop_inspection_team_details', views.update_meat_shop_inspection_team_details,
+         name='update_meat_shop_inspection_team_details'),
+    path('delete_fi_inspection_team_details', views.delete_fi_inspection_team_details,
+         name='delete_fi_inspection_team_details'),
+    path('delete_fi_team_details', views.delete_fi_team_details,
+         name='delete_fi_team_details'),
+    path('update_meat_shop_team_details_factory_ins', views.update_meat_shop_team_details_factory_ins,
+         name='update_meat_shop_team_details_factory_ins'),
+    path('update_meat_shop_factory_inspection_team_details', views.update_meat_shop_factory_inspection_team_details,
+         name='update_meat_shop_factory_inspection_team_details'),
+    path('delete_factory_inspection_team_details', views.delete_factory_inspection_team_details,
+         name='delete_factory_inspection_team_details'),
+    path('delete_factory_team_details', views.delete_factory_team_details,
+         name='delete_factory_team_details'),
+
 
 
     # import permit for live animal and fish
@@ -71,6 +88,7 @@ urlpatterns = [
     path('update_import_la_fish', views.update_import_la_fish, name='update_import_la_fish'),
     path('load_af_import_details', views.load_af_import_details, name='load_af_import_details'),
     path('load_af_attachment', views.load_af_attachment, name='load_af_attachment'),
+    path('af_import_observation', views.af_import_observation, name='af_import_observation'),
 
     # import permit for livestock products and animal feed
     path('import_permit_application', views.import_permit_application, name='import_permit_application'),
@@ -87,6 +105,7 @@ urlpatterns = [
     path('update_details_lp', views.update_details_lp, name='update_details_lp'),
     path('submit_lp_application', views.submit_lp_application, name='submit_lp_application'),
     path('update_import_lp', views.update_import_lp, name='update_import_lp'),
+    path('livestock_import_observation', views.livestock_import_observation, name='livestock_import_observation'),
 
     # export certificate for animal and animal products
     path('export_certificate_application', views.export_certificate_application, name='export_certificate_application'),
@@ -103,6 +122,7 @@ urlpatterns = [
     path('livestock_attachment_details', views.livestock_attachment_details, name='livestock_attachment_details'),
     path('load_lp_import_details', views.load_lp_import_details, name='load_lp_import_details'),
     path('load_lp_import_attachment', views.load_lp_import_attachment, name='load_lp_import_attachment'),
+    path('load_lec_species', views.load_lec_species, name='load_lec_species'),
 
 
     # movement permit for animal, animal products and animal feed apply_movement_permit
@@ -138,7 +158,11 @@ urlpatterns = [
     path('load_location', views.load_location, name='load_location'),
     path('update_application_form', views.update_application_form, name='update_application_form'),
     path('ante_post_mortem_details', views.ante_post_mortem_details, name='ante_post_mortem_details'),
-    path('ante_post_mortem_attachment', views.ante_post_mortem_attachment, name='ante_post_mortem_attachment')
+    path('ante_post_mortem_attachment', views.ante_post_mortem_attachment, name='ante_post_mortem_attachment'),
+
+    # Common
+    path('delete_observation', views.delete_observation, name='delete_observation'),
+    path('update_decision', views.update_decision, name='update_decision')
 
 ]
 if settings.DEBUG:

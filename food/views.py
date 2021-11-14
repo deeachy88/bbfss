@@ -13,6 +13,7 @@ from django.utils import timezone
 from administrator.models import t_village_master, t_gewog_master, t_dzongkhag_master, t_country_master, \
     t_field_office_master, t_location_field_office_mapping, t_unit_master, t_service_master, t_user_master, \
     t_food_category_master
+from administrator.views import dashboard
 from bbfss import settings
 from certification.models import t_certification_organic_t1, t_certification_food_t1, t_certification_gap_t1
 from food.forms import ImportFormFood, FeasibilityForm
@@ -417,10 +418,8 @@ def team_details_feasibility_ins(request):
     application_id = request.GET.get('application_id')
     name = request.GET.get('name')
     designation = request.GET.get('designation')
-    opening_date = request.GET.get('opening_date')
-    closing_date = request.GET.get('closing_date')
-    date_open = datetime.strptime(opening_date, '%d-%m-%Y').date()
-    date_close = datetime.strptime(closing_date, '%d-%m-%Y').date()
+    date_open = request.GET.get('opening_date')
+    date_close = request.GET.get('closing_date')
     t_food_business_registration_licensing_t4.objects.create(Application_No=application_id,
                                                              Meeting_Type='Feasibility Inspection',
                                                              Name=name, Designation=designation,
@@ -567,10 +566,8 @@ def team_details_factory_ins(request):
     application_id = request.GET.get('application_id')
     name = request.GET.get('name')
     designation = request.GET.get('designation')
-    opening_date = request.GET.get('opening_date')
-    closing_date = request.GET.get('closing_date')
-    date_open = datetime.strptime(opening_date, '%d-%m-%Y').date()
-    date_close = datetime.strptime(closing_date, '%d-%m-%Y').date()
+    date_open = request.GET.get('opening_date')
+    date_close = request.GET.get('closing_date')
     t_food_business_registration_licensing_t4.objects.create(Application_No=application_id,
                                                              Meeting_Type='Factory Inspection',
                                                              Name=name, Designation=designation,
@@ -858,6 +855,104 @@ def forward_factory_application(request):
     return redirect(factory_inspection_list)
 
 
+def update_fbr_team_details_feasibility_ins(request):
+    application_id = request.GET.get('application_id')
+    name = request.GET.get('name')
+    designation = request.GET.get('designation')
+    date_open = request.GET.get('opening_date')
+    date_close = request.GET.get('closing_date')
+    record_id = request.GET.get('record_id')
+    details = t_food_business_registration_licensing_t4.objects.filter(Record_Id=record_id)
+    details.update(Name=name, Designation=designation, Open_Meeting_Date=date_open, Closing_Meeting_Date=date_close)
+    application_details = t_food_business_registration_licensing_t4.objects.filter(Application_No=application_id,
+                                                                                   Meeting_Type='Feasibility Inspection')
+    return render(request, 'registration_licensing/team_details.html', {'application_details': application_details})
+
+
+def update_fbr_inspection_team_details(request):
+    application_id = request.GET.get('application_id')
+    name = request.GET.get('name')
+    designation = request.GET.get('designation')
+    record_id = request.GET.get('record_id')
+
+    details = t_food_business_registration_licensing_t6.objects.filter(Record_Id=record_id)
+    details.update(Name=name, Designation=designation)
+    application_details = t_food_business_registration_licensing_t6.objects.filter(Application_No=application_id,
+                                                                                   Meeting_Type='Feasibility Inspection')
+    return render(request, 'registration_licensing/inspection_team_details.html',
+                  {'application_details': application_details})
+
+
+def delete_fbr_fi_inspection_team_details(request):
+    application_id = request.GET.get('application_id')
+    record_id = request.GET.get('record_id')
+    details = t_food_business_registration_licensing_t6.objects.filter(Record_Id=record_id)
+    details.delete()
+    application_details = t_food_business_registration_licensing_t6.objects.filter(Application_No=application_id,
+                                                                                   Meeting_Type='Feasibility Inspection')
+    return render(request, 'registration_licensing/inspection_team_details.html',
+                  {'application_details': application_details})
+
+
+def delete_fbr_fi_team_details(request):
+    application_id = request.GET.get('application_id')
+    record_id = request.GET.get('record_id')
+    details = t_food_business_registration_licensing_t4.objects.filter(Record_Id=record_id)
+    details.delete()
+    application_details = t_food_business_registration_licensing_t4.objects.filter(Application_No=application_id,
+                                                                                   Meeting_Type='Feasibility Inspection')
+    return render(request, 'registration_licensing/team_details.html', {'application_details': application_details})
+
+
+def update_fbr_team_details_factory_ins(request):
+    application_id = request.GET.get('application_id')
+    name = request.GET.get('name')
+    designation = request.GET.get('designation')
+    date_open = request.GET.get('opening_date')
+    date_close = request.GET.get('closing_date')
+    record_id = request.GET.get('record_id')
+    details = t_food_business_registration_licensing_t4.objects.filter(Record_Id=record_id)
+    details.update(Name=name, Designation=designation, Open_Meeting_Date=date_open, Closing_Meeting_Date=date_close)
+    application_details = t_food_business_registration_licensing_t4.objects.filter(Application_No=application_id,
+                                                                                   Meeting_Type='Factory Inspection')
+    return render(request, 'registration_licensing/team_details.html', {'application_details': application_details})
+
+
+def update_fbr_factory_inspection_team_details(request):
+    application_id = request.GET.get('application_id')
+    name = request.GET.get('name')
+    designation = request.GET.get('designation')
+    record_id = request.GET.get('record_id')
+
+    details = t_food_business_registration_licensing_t6.objects.filter(Record_Id=record_id)
+    details.update(Name=name, Designation=designation)
+    application_details = t_food_business_registration_licensing_t6.objects.filter(Application_No=application_id,
+                                                                                   Meeting_Type='Factory Inspection')
+    return render(request, 'registration_licensing/inspection_team_details.html',
+                  {'application_details': application_details})
+
+
+def delete_fbr_factory_inspection_team_details(request):
+    application_id = request.GET.get('application_id')
+    record_id = request.GET.get('record_id')
+    details = t_livestock_clearance_meat_shop_t6.objects.filter(Record_Id=record_id)
+    details.delete()
+    application_details = t_livestock_clearance_meat_shop_t6.objects.filter(Application_No=application_id,
+                                                                            Meeting_Type='Factory Inspection')
+    return render(request, 'meat_shop_registration/inspection_team_details.html',
+                  {'application_details': application_details})
+
+
+def delete_fbr_factory_team_details(request):
+    application_id = request.GET.get('application_id')
+    record_id = request.GET.get('record_id')
+    details = t_food_business_registration_licensing_t4.objects.filter(Record_Id=record_id)
+    details.delete()
+    application_details = t_food_business_registration_licensing_t4.objects.filter(Application_No=application_id,
+                                                                                   Meeting_Type='Factory Inspection')
+    return render(request, 'meat_shop_registration/team_details.html', {'application_details': application_details})
+
+
 # Export OF Food
 def food_export_certificate_application(request):
     dzongkhag = t_dzongkhag_master.objects.all()
@@ -1116,13 +1211,12 @@ def approve_food_export(request):
     application_id = request.POST.get('application_id')
     Inspection_Leader = request.POST.get('Inspection_Leader')
     Inspection_Team = request.POST.get('Inspection_Team')
-    Inspection_Date = request.POST.get('dateOfInspection')
+    date_format_ins = request.POST.get('dateOfInspection')
     certified_qty = request.POST.get('certified_qty')
-    Unit_Net = request.POST.get('Unit_Net')
+    Unit_Net = request.POST.get('Unit_Certified')
     rejected_qty = request.POST.get('rejected_qty')
     Unit_Rejected = request.POST.get('Unit_Rejected')
     validity = request.POST.get('validity')
-    date_format_ins = datetime.strptime(Inspection_Date, '%d-%m-%Y').date()
     remarks = request.POST.get('remarks')
     rejection_reason = request.POST.get('rejection_reason')
     terms = request.POST.get('terms')
@@ -1180,30 +1274,10 @@ def food_export_permit_no(request):
 
 def reject_food_export(request):
     application_id = request.POST.get('application_id')
-    Inspection_Leader = request.POST.get('Inspection_Leader')
-    Inspection_Team = request.POST.get('Inspection_Team')
-    Inspection_Date = request.POST.get('dateOfInspection')
-    certified_qty = request.POST.get('certified_qty')
-    Unit_Net = request.POST.get('Unit_Net')
-    rejected_qty = request.POST.get('rejected_qty')
-    Unit_Rejected = request.POST.get('Unit_Rejected')
-    validity = request.POST.get('validity')
-    date_format_ins = datetime.strptime(Inspection_Date, '%d-%m-%Y').date()
     remarks = request.POST.get('remarks')
 
     details = t_food_export_certificate_t1.objects.filter(Application_No=application_id)
-    details.update(Inspection_Leader=Inspection_Leader)
-    details.update(Inspection_Team=Inspection_Team)
-    details.update(Inspection_Date=date_format_ins)
-    details.update(Validity_Period=validity)
-    details.update(Approved_Date=date.today())
-    details.update(Quantity_Certified=certified_qty)
-    details.update(Unit_Certified=Unit_Net)
-    details.update(Quantity_Rejected=rejected_qty)
-    details.update(Unit_Rejected=Unit_Rejected)
-    d = timedelta(days=int(validity))
-    validity_date = date.today() + d
-    details.update(Validity=validity_date)
+    details.update(Inspection_Remarks=remarks)
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='R')
@@ -1278,9 +1352,8 @@ def save_food_handler_details(request):
         Village_Code = None
     Training_Request = request.POST.get('Training_Type')
     Preferred_Place = request.POST.get('preferred_place')
-    Proposed_Inspection_Date = request.POST.get('preferred_Date')
+    date_format_ins = request.POST.get('preferred_Date')
     Associated_Food_Establishment = request.POST.get('associated_establishment')
-    date_format_ins = datetime.strptime(Proposed_Inspection_Date, '%d-%m-%Y').date()
     t_food_licensing_food_handler_t1.objects.create(
         Application_No=application_no,
         Application_Date=None,
@@ -1315,7 +1388,7 @@ def save_food_handler_details(request):
         Attendance=None,
         Training_Venue=None,
         Training_Batch=None,
-        App_Status='P'
+        App_Status=None
     )
     t_workflow_details.objects.create(Application_No=application_no, Applicant_Id=request.session['email'],
                                       Assigned_To=None, Field_Office_Id=Preferred_Place, Section='Food',
@@ -1391,7 +1464,7 @@ def update_food_handler_details(request):
         Attendance=None,
         Training_Venue=None,
         Training_Batch=None,
-        App_Status='P'
+        App_Status=None
     )
     workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
     workflow_details.update(Applicant_Id=request.session['email'],
@@ -1471,30 +1544,32 @@ def food_handler_forward_application(request):
     application_details.update(Assigned_To=forwardTo)
     application_details.update(Action_Date=date.today())
     application_details.update(Assigned_Role_Id='5')
+    application_details.update(Application_Status='A')
     if remarks is not None:
         details.update(OIC_Remarks=remarks)
     else:
         details.update(OIC_Remarks=None)
+    for application in details:
+        email = application.Email
+        send_acknowledgement_mail(email)
     Field_Office_Id = request.session['field_office_id']
     Role_Id = request.session['Role_Id']
     application_Lists = t_workflow_details.objects.filter(Assigned_To=Role_Id, Field_Office_Id=Field_Office_Id)
-    for application in application_details:
-        email = application.Applicant_Id
-        send_acknowledgement_mail(email)
-    return render(request, 'oic_pending_list.html', {'application_details': application_Lists})
+    return redirect(dashboard)
 
 
 def reject_food_handler_application(request):
-    application_id = request.GET.get('application_id')
+    application_id = request.POST.get('application_id')
     remarks = request.POST.get('remarks')
     details = t_food_licensing_food_handler_t1.objects.filter(Application_No=application_id)
     work_details = t_workflow_details.objects.filter(Application_No=application_id)
     work_details.update(Action_Date=date.today())
     work_details.update(Application_Status='R')
     for application in details:
-        email = application.Applicant_Id
-        send_reject_mail(email)
+        email = application.Email
+        send_reject_mail(remarks, email)
     details.update(OIC_Remarks=remarks)
+    return redirect(dashboard)
 
 
 def send_acknowledge(request):
@@ -1515,7 +1590,7 @@ def send_acknowledge(request):
     elif service_code == "FPC":
         application_details = t_certification_food_t1.objects.filter(Application_No=application_id)
         for app in application_details:
-            mail_id = app.Email
+            mail_id = app.Firm_Email
             send_fpc_acknowledgement_mail(mail_id)
     elif service_code == "GAP":
         application_details = t_certification_gap_t1.objects.filter(Application_No=application_id)
@@ -1658,7 +1733,7 @@ def food_handler_image_name_update(request):
     details.update(Assessment_Score=score)
     result_details = t_food_licensing_food_handler_t1.objects.filter(Training_Batch_No=batch_no)
     file_attach = t_file_attachment.objects.filter(Attachment_Type='FH')
-    return render(request, 'food_handler/result_details.html',
+    return render(request, 'food_handler/result_details_edit.html',
                   {'application_details': result_details, 'file_attach': file_attach})
 
 
@@ -1692,14 +1767,12 @@ def food_handler_application(request):
 def update_batch_no(request):
     app = request.POST.getlist('checkedVals')
     batchNo = request.POST.get('batch_no')
-    from_training_Date = request.POST.get('from_training_Date')
-    to_training_Date = request.POST.get('from_training_Date')
+    from_Date = request.POST.get('from_training_Date')
+    to_Date = request.POST.get('to_training_Date')
     remarks = request.POST.get('Remarks')
     Minimum_Score = request.POST.get('min_mark')
     training_batch = request.POST.get('Training_Batch')
     Training_Venue = request.POST.get('Training_Venue')
-    from_Date = datetime.strptime(from_training_Date, '%d-%m-%Y').date()
-    to_Date = datetime.strptime(to_training_Date, '%d-%m-%Y').date()
 
     strings = app[0].split("#")
     for tempArr in strings:
@@ -1712,7 +1785,7 @@ def update_batch_no(request):
                        Training_Batch=training_batch)
         work_details = t_workflow_details.objects.filter(Application_No=app_no)
         work_details.update(Application_Status='B')  # Batch No Updated
-        send_batch_mail(batchNo, from_training_Date, to_training_Date, remarks, email)
+        send_batch_mail(batchNo, from_Date, to_Date, remarks, email)
     return redirect(food_handler_application)
 
 
@@ -1746,6 +1819,7 @@ def update_list(request):
 
 def result_update(request):
     app = request.POST.getlist('checkedVals')
+
     strings = app[0].split("#")
     for tempArr in strings:
         checkboxArr = tempArr.split("~")
@@ -1755,6 +1829,7 @@ def result_update(request):
         details = t_food_licensing_food_handler_t1.objects.filter(Application_No=app_no)
         details.update(Assessment_Score=score)
         details.update(Attendance=att)
+
         for detail in details:
             min_mark = detail.Minimum_Score
             if int(score) > int(min_mark):
@@ -2009,7 +2084,8 @@ def save_food_import_details(request):
                                            Quantity_Balance=quantity, Remarks=None)
     import_details = t_food_import_permit_t2.objects.filter(Application_No=application_no)
     count = t_food_import_permit_t2.objects.filter(Application_No=application_no).count()
-    return render(request, 'import_certificate_food/food_permit_details.html', {'import': import_details,'count':count})
+    return render(request, 'import_certificate_food/food_permit_details.html',
+                  {'import': import_details, 'count': count})
 
 
 def load_fip_details(request):
@@ -2333,9 +2409,10 @@ def food_handler_application_details(request):
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
     field_office = t_field_office_master.objects.all()
+    country = t_country_master.objects.all()
     return render(request, 'food_handler/food_handler_application_details.html',
                   {'application_details': application_details, 'dzongkhag': dzongkhag, 'gewog': gewog,
-                   'village': village, 'field_office': field_office})
+                   'village': village, 'field_office': field_office, 'country': country})
 
 
 def get_food_handler_details(request):
@@ -2384,17 +2461,21 @@ def food_handler(request):
 
 def update_food_handler_status(request):
     Application_No = request.GET.get('batch')
+    d = timedelta(days=int(730))
+    validity_date = date.today() + d
     details = t_food_licensing_food_handler_t1.objects.filter(Training_Batch_No=Application_No)
     details.update(App_Status='Yes')
     details.update(Approved_Date=date.today())
     details_fh = t_food_licensing_food_handler_t1.objects.filter(Assessment_Score__gt=F('Minimum_Score'))
     for app_details in details_fh:
         app_no = app_details.Application_No
-        print(app_no)
         food_handler_license_no = fh_license_no()
-        print(food_handler_license_no)
         update_details = t_food_licensing_food_handler_t1.objects.filter(Application_No=app_no)
         update_details.update(FH_License_No=food_handler_license_no)
+        update_details.update(FH_License_Validity_Period=int(730))
+        update_details.update(FH_License_Validity=validity_date)
+        update_details.update(Approved_Date=date.today())
+        update_payment(app_no, food_handler_license_no, 'FHL', validity_date)
     return redirect(update_list)
 
 

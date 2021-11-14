@@ -214,7 +214,7 @@ form, input, select, textarea{
                                     <select class="form-control" name="Place_of_Exit" id="Place_of_Exit">
                                         <option value="">--SELECT--</option>
                                         {% for location in location %}
-                                            <option value="{{ location.Field_Office_Code }}">{{ location.Field_Office }}</option>
+                                            <option value="{{ location.Field_Office_Id }}">{{ location.Field_Office }}</option>
                                         {% endfor %}
                                      </select>
                                 </div>
@@ -300,10 +300,10 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Species <font color="red">*</font></label>
-                                        <select class="form-control" name="Species" id="Species">
+                                        <select class="form-control" name="Species" id="Species" onchange="get_species(this.value)">
                                             <option value="">--SELECT--</option>
                                             {% for species in species %}
-                                                <option value="{{ species.Species_Name }}">{{ species.Species_Name }}</option>
+                                                <option value="{{ species.Species_Id }}">{{ species.Species_Name }}</option>
                                             {% endfor %}
                                          </select>
                                         <div class="alert alert-danger" id="SpeciesErrorMsg" style="display:none"></div>
@@ -322,12 +322,16 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Age <font color="red">*</font></label>
-                                        <input type="text" name="Age" class="form-control" id="Age" onkeypress="return isNumberKey(event)">
+                                        <input type="text" name="Age" class="form-control" id="Age" onkeypress="return isNumberKey(event)" onchange="check_age()">
                                         <div class="alert alert-danger" id="AgeErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Sex <font color="red">*</font></label>
-                                        <input type="text" name="Sex" class="form-control" id="Sex" required>
+                                        <select name="Sex" class="form-control" id="Sex">
+                                            <option value="">-SELECT-</option>
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                        </select>
                                         <div class="alert alert-danger" id="SexErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
@@ -386,7 +390,7 @@ form, input, select, textarea{
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_attachment()"> Submit </button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_attachment()"> Upload </button>
                 </div>
             </div>
         </div>
@@ -414,10 +418,10 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Species <font color="red">*</font></label>
-                                        <select class="form-control" name="edit_Species" id="edit_Species">
+                                        <select class="form-control" name="edit_Species" id="edit_Species" onchange="get_edit_species(this.value)">
                                             <option value="">--SELECT--</option>
                                             {% for species in species %}
-                                                <option value="{{ species.Species_Name }}">{{ species.Species_Name }}</option>
+                                                <option value="{{ species.Species_Id }}">{{ species.Species_Name }}</option>
                                             {% endfor %}
                                          </select>
                                         <div class="alert alert-danger" id="edit_SpeciesErrorMsg" style="display:none"></div>
@@ -436,12 +440,16 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Age <font color="red">*</font></label>
-                                        <input type="text" name="edit_Age" class="form-control" id="edit_Age" onkeypress="return isNumberKey(event)">
+                                        <input type="text" name="edit_Age" class="form-control" id="edit_Age" onkeypress="return isNumberKey(event)" onchange="check_edit_age()">
                                         <div class="alert alert-danger" id="edit_AgeErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Sex <font color="red">*</font></label>
-                                        <input type="text" name="edit_Sex" class="form-control" id="edit_Sex" required>
+                                        <select name="edit_Sex" class="form-control" id="edit_Sex">
+                                            <option value="">-SELECT-</option>
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                        </select>
                                         <div class="alert alert-danger" id="edit_SexErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
@@ -586,7 +594,7 @@ function permit_save_details()
     }
     else if(email == "")
     {
-        $('#emailErrorMsg').html("Enter Contact Number.");
+        $('#emailErrorMsg').html("Enter Email.");
         $('#emailErrorMsg').show();
         $('#emailErrorMsg').delay(2000).fadeOut('slow');
         $('#email').focus();
@@ -768,52 +776,63 @@ function updateDetails()
 
 function save_attachment()
 {
-    var fileName = document.getElementById('document').files[0].name;
-    var fd = new FormData();
-    var file = document.getElementById('document').files[0];
-    fd.append('document', file);
-    token_value=$("input[name=csrfmiddlewaretoken]").val();
-    $.ajaxSetup
-    ({
-        beforeSend: function(xhr, settings)
+    var file_length = document.getElementById("document");
+
+    if(file_length.value.length < 1)
     {
-        xhr.setRequestHeader("X-CSRFToken", token_value);
+        $('#fileErrorMsg').html("Please Choose A File");
+        $('#fileErrorMsg').show();
+        $('#fileErrorMsg').delay(2000).fadeOut('slow');
     }
-    });
-        $.ajax({
-        type : "POST",
-        url : "{% url 'add_la_permit_file' %}",
-        data : fd,
-        dataType: 'json',
-        contentType: false,
-        processData: false,
-        success : function(data)
+    else
+    {
+        var fileName = document.getElementById('document').files[0].name;
+        var fd = new FormData();
+        var file = document.getElementById('document').files[0];
+        fd.append('document', file);
+        token_value=$("input[name=csrfmiddlewaretoken]").val();
+        $.ajaxSetup
+        ({
+            beforeSend: function(xhr, settings)
         {
-        if (data.form_is_valid)
-        {
-            var appNo = $('#applicationNo').val();
-            var file_url = data.file_url
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'add_la_file_name' %}",
-                data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
-                success : function(responseText)
-                {
-                    $('#attachmentModal').modal('hide');
-                    $('#fileAttach').html(responseText);
-                    $('.modal-backdrop').remove();
-                    $('#attachment_form')[0].reset();
-                }
-            });
-        }else
-        {
-                $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-                $('#fileErrorMsg').show();
-                $('#fileErrorMsg').delay(2000).fadeOut('slow');
+            xhr.setRequestHeader("X-CSRFToken", token_value);
         }
+        });
+            $.ajax({
+            type : "POST",
+            url : "{% url 'add_la_permit_file' %}",
+            data : fd,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            success : function(data)
+            {
+            if (data.form_is_valid)
+            {
+                var appNo = $('#applicationNo').val();
+                var file_url = data.file_url
+                $.ajax
+                ({
+                    type : "POST",
+                    url : "{% url 'add_la_file_name' %}",
+                    data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
+                    success : function(responseText)
+                    {
+                        $('#attachmentModal').modal('hide');
+                        $('#fileAttach').html(responseText);
+                        $('.modal-backdrop').remove();
+                        $('#attachment_form')[0].reset();
+                    }
+                });
+            }else
+            {
+                    $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                    $('#fileErrorMsg').show();
+                    $('#fileErrorMsg').delay(2000).fadeOut('slow');
+            }
+        }
+        });
     }
-    });
 }
 
 function validateemailId(emailId)
@@ -953,6 +972,7 @@ function checkNationality(value)
         $('.bhutanese_div').hide();
         $('.non_bhutanese_div').show();
         $("#name").removeAttr("readonly");
+        $('#name').val("");
     }
 }
 
@@ -978,6 +998,11 @@ function enableForms(value)
         $(".showNationality").hide();
         $("#Bhutanese").prop("checked", false);
         $("#Non-Bhutanese").prop("checked", false);
+        $('#cid').val("");
+        $('#name').val("");
+        $('#dzongkhag').val("");
+        $('#gewog').val("");
+        $('#village').val("");
     }
     else
     {
@@ -990,6 +1015,11 @@ function enableForms(value)
         $(".showNationality").hide();
         $("#Bhutanese").prop("checked", false);
         $("#Non-Bhutanese").prop("checked", false);
+        $('#cid').val("");
+        $('#name').val("");
+        $('#dzongkhag').val("");
+        $('#gewog').val("");
+        $('#village').val("");
     }
 }
 
@@ -1118,6 +1148,64 @@ function check_edit_no(no)
     else
     {
         $('#edit_noErrorMsg').hide();
+    }
+}
+
+function get_species(species)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_lec_species' %}",
+        data :{'species':species},
+        success : function(response)
+        {
+            $('#Breed').html(response);
+        }
+    });
+}
+
+function get_edit_species(species)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'load_lec_species' %}",
+        data :{'species':species},
+        success : function(response)
+        {
+            $('#edit_Breed').html(response);
+        }
+    });
+}
+
+function check_age()
+{
+    var age = $('#Age').val();
+    if(age == 0)
+    {
+        $('#AgeErrorMsg').html("Must Be Greater Than Zero.");
+        $('#AgeErrorMsg').show();
+        $('#AgeErrorMsg').delay(2000).fadeOut('slow');
+        $('#Age').val("");
+    }
+    else
+    {
+        $('#AgeErrorMsg').hide();
+    }
+}
+
+function check_edit_age()
+{
+    var age = $('#edit_Age').val();
+    if(age == 0)
+    {
+        $('#edit_AgeErrorMsg').html("Must Be Greater Than Zero.");
+        $('#edit_AgeErrorMsg').show();
+        $('#edit_AgeErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_Age').val("");
+    }
+    else
+    {
+        $('#edit_AgeErrorMsg').hide();
     }
 }
 </script>

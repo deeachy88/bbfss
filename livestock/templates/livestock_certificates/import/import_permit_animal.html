@@ -3,84 +3,96 @@
     .header-card {
     background-color: white;
 }
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
 </style>
 <div class="col-md-12">
     <div class="card">
         <div class="card-header header-card">
-            <div class="card-head-row float-right">
-                <div class="card-tools">
-                    <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Test Report';printClientTable()">
-                        <span class="btn-label">
-                            <i class="zmdi zmdi-print"></i>
-                        </span>
-                        Print
-                    </a>
-                </div>
-            </div>
-            <br>
-            <br>
-            <div class="row">
-                <div class="col-md-4">
-                    <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/bafra_logo.png' %}" style="width:90%;"/></a>
-                </div>
-                <div class="col-md-4">
-                    <label>IMPORT PERMIT FOR LIVE ANIMALS AND FISH</label>
-                </div>
+		<div class="card-head-row float-right">
+            <div class="card-tools">
+                <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='IMPORT PERMIT FOR LIVE ANIMAL AND FISH';printTable()">
+                    <span class="btn-label">
+                        <i class="zmdi zmdi-print"></i>
+                    </span>
+                    Print
+                </a>
             </div>
         </div>
+        <br>
+        <br>
+        <div class="card-title text-center">
+            <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
+        </div>
+        <h6 class="text-center"><font color='black'><b>IMPORT PERMIT FOR LIVE ANIMAL AND FISH</b></font></h6>
+	</div>
         {% for certificate_details in certificate_details %}
-        <table>
-            <tbody>
-                <tr>
-                    <td>Registration no./ Application no.&nbsp;:&nbsp;{{certificate_details.Import_Permit_No}}</td>
-                </tr>
-                <tr>
-                    <td rowspan="2">This Import Permit is granted in accordance with the Livestock Act of Bhutan, 2001; and Livestock Rules and Regulations 2017 there under.</td>
-                </tr>
-                <tr>
-                    <td>Name and Address of the Importer&nbsp;:&nbsp;{{certificate_details.Applicant_Name}}&nbsp;{{certificate_details.Present_Address}}</td>
-                    <td>Name and Address of the Exporter&nbsp;:&nbsp;{{certificate_details.Exporter_Name_And_Address}}</td>
-                </tr>
-                <tr>
-                    <td>Entry Point&nbsp;:&nbsp;{{certificate_details.Place_Of_Entry}}</td>
-                    <td>Country of Origin&nbsp;:&nbsp;{{certificate_details.Country}}</td>
-                </tr>
-                <tr>
-                    <td>Final Destination&nbsp;:&nbsp;{{certificate_details.Place_Of_Entry}}</td>
-                    <td>Expected date of arrival&nbsp;:&nbsp;{{certificate_details.Expected_Arrival_Date|date:"d-m-Y"}}</td>
-                </tr>
-                <tr>
-                    <td rowspan="2">
-                        <p>General Entry Conditions</p>
-                        <p>The animal and animal products should be:</p>
-                        <p>(i)	Free from notifiable disease/ zoonotic disease.</p>
-                        <p>(ii)	All import shall furnish LMO free written certificate from the source.</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td rowspan="2">
-                        Special Entry Conditions/ Additional Declaration: NA
-                    </td>
-                </tr>
-                <tr>
-                    <td rowspan="2">
-                        <p>PEQ requirements</p>
-                        <p>NIL</p>
-                        <p>For a period of 0 Day(s)</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <p>Date of Issue&nbsp;:&nbsp;{{certificate_details.Approve_Date}}</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <p>Valid Until&nbsp;:&nbsp;{{certificate_details.Validity}}</p>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+            <table class="tg">
+                <thead>
+                    <tr>
+                        <th class="tg-0pky">Registration no./ Application no</th>
+                        <th class="tg-0pky">{{certificate_details.Import_Permit_No}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="tg-0pky" colspan="2">This Import Permit is granted in accordance with the Livestock Act of Bhutan, 2001; and Livestock Rules and Regulations 2017 there under.</td>
+                    </tr>
+                        <tr>
+                            <td class="tg-0pky">Name and Address of the Importer</td>
+                            <td class="tg-0pky">Name and Address of the Exporter</td>
+                        </tr>
+                        <tr>
+                            <td class="tg-0pky">{{certificate_details.Applicant_Name}}&nbsp;,&nbsp;{{certificate_details.Present_Address}}</td>
+                            <td class="tg-0pky">{{certificate_details.Name_And_Address_Supplier}}</td>
+                        </tr>
+                        <tr>
+                            <td class="tg-0pky">Entry Point</td>
+                            <td class="tg-0pky">Country of Origin</td>
+                        </tr>
+                        <tr>
+                        <td class="tg-0pky">
+                            {% for location in location %}
+                                {% if location.Field_Office_Id == certificate_details.Place_Of_Entry %}
+                                    {{ location.Field_Office }}
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                            <td class="tg-0pky">{{certificate_details.Origin_Source_Products}}</td>
+                        </tr>
+                        <tr>
+                            <td class="tg-0pky">Final Destination</td>
+                            <td class="tg-0pky">Expected date of arrival</td>
+                        </tr>
+                        <tr>
+                            <td class="tg-0pky">{{certificate_details.Final_Destination}}</td>
+                            <td class="tg-0pky">{{certificate_details.Expected_Arrival_Date|date:"d-m-Y"}}</td>
+                        </tr>
+                        <tr>
+                            <td class="tg-0pky" colspan="2">General Entry Conditions<br>The animal and animal products should be&nbsp;:&nbsp;<br>(i) Free from notifiable disease/ zoonotic disease.<br>
+                            (ii)    All import shall furnish LMO free written certificate from the source.</td>
+                        </tr>
+                        <tr>
+                            <td class="tg-0pky" colspan="2">Special Entry Conditions/ Additional Declaration: NA</td>
+                        </tr>
+                        <tr>
+                            <td class="tg-0pky">Date of Issue&nbsp;:&nbsp;{{certificate_details.Approve_Date}}</td>
+                            <td class="tg-0pky">Name and signature of Authorized Officer</td>
+                        </tr>
+                        <tr>
+                            <td class="tg-0pky">Valid Until&nbsp;:&nbsp;{{certificate_details.Validity}}</td>
+                            <td class="tg-0pky"></td>
+                        </tr>
+                        <tr>
+                            <td class="tg-0pky"></td>
+                            <td class="tg-0pky"></td>
+                        </tr>
+                </tbody>
+            </table>
         {% endfor %}
         <table class="table table-bordered">
             <thead>
@@ -91,29 +103,153 @@
                     <th scope="col">Age</th>
                     <th scope="col">Sex</th>
                     <th scope="col">Description</th>
-                    <th scope="col">Quantity</th>
-                    <th scope="col">Unit</th>
+                    <th scope="col">Number</th>
                 </tr>
             </thead>
             <tbody>
-                {% for import in export_details %}
+                {% for import in import %}
                     <tr>
                         <td>{{ forloop.counter }}</td>
-                        <td>{{import.Species}}</td>
+                        {% for species in species %}
+                            {% if species.Species_Id == import.Species %}
+                                <td>{{species.Species_Name}}</td>
+                            {% endif %}
+                        {% endfor %}
                         <td>{{import.Breed}}</td>
                         <td>{{import.Age}}</td>
                         <td>{{import.Sex}}</td>
                         <td>{{import.Description}}</td>
                         <td>{{import.Quantity}}</td>
-                        <td>{{import.Unit}}</td>
                     </tr>
                     {% empty %}
                     <tr>
-                      <td colspan="8" class="text-center">No Data</td>
+                      <td colspan="6" class="text-center">No Data</td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 </div>
+
+<div id="print" style="display:none">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header header-card">
+                <br>
+                <br>
+                <div class="card-title text-center">
+                    <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
+                </div>
+                <h6 class="text-center"><font color='black'><b>IMPORT PERMIT FOR LIVE ANIMAL AND FISH</b></font></h6>
+            </div>
+            {% for certificate_details in certificate_details %}
+                <table class="tg">
+                    <thead>
+                        <tr>
+                            <th class="tg-0pky">Registration no./ Application no</th>
+                            <th class="tg-0pky">{{certificate_details.Import_Permit_No}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="tg-0pky" colspan="2">This Import Permit is granted in accordance with the Livestock Act of Bhutan, 2001; and Livestock Rules and Regulations 2017 there under.</td>
+                        </tr>
+                            <tr>
+                                <td class="tg-0pky">Name and Address of the Importer</td>
+                                <td class="tg-0pky">Name and Address of the Exporter</td>
+                            </tr>
+                            <tr>
+                                <td class="tg-0pky">{{certificate_details.Applicant_Name}}&nbsp;,&nbsp;{{certificate_details.Present_Address}}</td>
+                                <td class="tg-0pky">{{certificate_details.Name_And_Address_Supplier}}</td>
+                            </tr>
+                            <tr>
+                                <td class="tg-0pky">Entry Point</td>
+                                <td class="tg-0pky">Country of Origin</td>
+                            </tr>
+                            <tr>
+                            <td class="tg-0pky">
+                                {% for location in location %}
+                                    {% if location.Field_Office_Id == certificate_details.Place_Of_Entry %}
+                                        {{ location.Field_Office }}
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                                <td class="tg-0pky">{{certificate_details.Origin_Source_Products}}</td>
+                            </tr>
+                            <tr>
+                                <td class="tg-0pky">Final Destination</td>
+                                <td class="tg-0pky">Expected date of arrival</td>
+                            </tr>
+                            <tr>
+                                <td class="tg-0pky">{{certificate_details.Final_Destination}}</td>
+                                <td class="tg-0pky">{{certificate_details.Expected_Arrival_Date|date:"d-m-Y"}}</td>
+                            </tr>
+                            <tr>
+                                <td class="tg-0pky" colspan="2">General Entry Conditions<br>The animal and animal products should be&nbsp;:&nbsp;<br>(i) Free from notifiable disease/ zoonotic disease.<br>
+                                (ii)    All import shall furnish LMO free written certificate from the source.</td>
+                            </tr>
+                            <tr>
+                                <td class="tg-0pky" colspan="2">Special Entry Conditions/ Additional Declaration: NA</td>
+                            </tr>
+                            <tr>
+                                <td class="tg-0pky">Date of Issue&nbsp;:&nbsp;{{certificate_details.Approve_Date}}</td>
+                                <td class="tg-0pky">Name and signature of Authorized Officer</td>
+                            </tr>
+                            <tr>
+                                <td class="tg-0pky">Valid Until&nbsp;:&nbsp;{{certificate_details.Validity}}</td>
+                                <td class="tg-0pky"></td>
+                            </tr>
+                            <tr>
+                                <td class="tg-0pky"></td>
+                                <td class="tg-0pky"></td>
+                            </tr>
+                    </tbody>
+                </table>
+            {% endfor %}
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Species</th>
+                        <th scope="col">Breed</th>
+                        <th scope="col">Age</th>
+                        <th scope="col">Sex</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Number</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for import in import %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            {% for species in species %}
+                                {% if species.Species_Id == import.Species %}
+                                    <td>{{species.Species_Name}}</td>
+                                {% endif %}
+                            {% endfor %}
+                            <td>{{import.Breed}}</td>
+                            <td>{{import.Age}}</td>
+                            <td>{{import.Sex}}</td>
+                            <td>{{import.Description}}</td>
+                            <td>{{import.Quantity}}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                          <td colspan="6" class="text-center">No Data</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    function printTable()
+    {
+        $("#print").show();
+	    jQuery('#print').print();
+	    $("#print").hide();
+    }
+
+</script>
 

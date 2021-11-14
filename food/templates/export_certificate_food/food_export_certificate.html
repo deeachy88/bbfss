@@ -151,14 +151,14 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Number Of Packages <font color="red">*</font></label>
-                                    <input type="text" class="form-control" id="no_of_packages" name="no_of_packages" onkeypress="return isNumberKey(event)">
+                                    <label class="form-label">Number of Packages <font color="red">*</font></label>
+                                    <input type="text" class="form-control" id="no_of_packages" name="no_of_packages" onkeypress="return isNumberKey(event)" onchange="check_no(this.value)">
                                 </div>
                                 <div class="alert alert-danger" id="no_of_packagesErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Description Of Package <font color="red">*</font></label>
+                                    <label class="form-label">Description of Package <font color="red">*</font></label>
                                     <textarea class="form-control" id="description_of_packages" name="description_of_packages"></textarea>
                                 </div>
                                 <div class="alert alert-danger" id="description_of_packagesErrorMsg" style="display:none"></div>
@@ -169,7 +169,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Quantity <font color="red">*</font></label>
-                                    <input type="text" class="form-control" id="quantity" name="quantity" onkeypress="return isNumberKey(event)">
+                                    <input type="text" class="form-control" id="quantity" name="quantity" onkeypress="return isNumberKey(event)" onchange="check_quantity(this.value)">
                                 </div>
                                 <div class="alert alert-danger" id="quantityErrorMsg" style="display:none"></div>
                             </div>
@@ -201,13 +201,6 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Expected Date for Export <font color="red">*</font></label>
-                                    <input type="date" class="form-control" id="Export_Expected_Date" name="Export_Expected_Date">
-                                </div>
-                                <div class="alert alert-danger" id="Export_Expected_DateErrorMsg" style="display:none"></div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
                                     <label class="form-label">Propose Date for Inspection <font color="red">*</font></label>
                                     <input type="date" class="form-control" id="inspectionDate" name="inspectionDate">
                                 </div>
@@ -215,7 +208,14 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Purpose Of Export <font color="red">*</font></label>
+                                    <label class="form-label">Expected Date for Export <font color="red">*</font></label>
+                                    <input type="date" class="form-control" id="Export_Expected_Date" name="Export_Expected_Date" onchange="check_expected_date()">
+                                </div>
+                                <div class="alert alert-danger" id="Export_Expected_DateErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Purpose of Export <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="export_purpose" name="export_purpose">
                                 </div>
                                 <div class="alert alert-danger" id="export_purposeErrorMsg" style="display:none"></div>
@@ -266,7 +266,7 @@
                         </div>
                     </div>
                     <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
-                        Save SuccessFul
+                        Save Successful
                     </div>
                     <div class="card-action">
                         <button type="button" class="btn btn-primary" id="food_export_button" onclick="save_food_export()">Save</button>
@@ -311,7 +311,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_attachment()"> Submit </button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_attachment()"> Upload </button>
                 </div>
             </div>
         </div>
@@ -378,10 +378,10 @@ function save_food_export()
     }
     else if(exporters_address == "")
     {
-        $('#exporters_addressErrorMsg').html("Enter Exporter's Address .");
-        $('#exporters_addressErrorMsg').show();
-        $('#exporters_addressErrorMsg').delay(2000).fadeOut('slow');
-        $('#exporters_address').focus();
+        $('#Exporter_AddressErrorMsg').html("Enter Exporter's Address .");
+        $('#Exporter_AddressErrorMsg').show();
+        $('#Exporter_AddressErrorMsg').delay(2000).fadeOut('slow');
+        $('#Exporter_Address').focus();
     }
     else if(contactNumber == "")
     {
@@ -394,12 +394,12 @@ function save_food_export()
     {
         $('#contactNumberErrorMsg').html("Cannot Be Less Than Eight.");
         $('#contactNumberErrorMsg').show();
-        setTimeout('hideStatus("contactNumberErrorMsg")',2000);
+        $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
         $('#contactNumber').focus();
     }
     else if(email == "")
     {
-        $('#emailErrorMsg').html("Enter Contact Number.");
+        $('#emailErrorMsg').html("Enter Email.");
         $('#emailErrorMsg').show();
         $('#emailErrorMsg').delay(2000).fadeOut('slow');
         $('#email').focus();
@@ -427,7 +427,7 @@ function save_food_export()
     }
     else if (Product_name == "")
     {
-        $('#Product_nameErrorMsg').html("Enter Name Of Product.");
+        $('#Product_nameErrorMsg').html("Enter Name of Product.");
         $('#Product_nameErrorMsg').show();
         $('#Product_nameErrorMsg').delay(2000).fadeOut('slow');
         $('#Product_name').focus();
@@ -441,7 +441,7 @@ function save_food_export()
     }
     else if (description_of_packages == "")
     {
-        $('#description_of_packagesErrorMsg').html("Enter Description of Product.");
+        $('#description_of_packagesErrorMsg').html("Enter Description of Package.");
         $('#description_of_packagesErrorMsg').show();
         $('#description_of_packagesErrorMsg').delay(2000).fadeOut('slow');
         $('#description_of_packages').focus();
@@ -455,24 +455,17 @@ function save_food_export()
     }
     else if (unit == "")
     {
-        $('#unitErrorMsg').html("Enter Unit.");
+        $('#unitErrorMsg').html("Select Unit.");
         $('#unitErrorMsg').show();
         $('#unitErrorMsg').delay(2000).fadeOut('slow');
         $('#unit').focus();
     }
     else if (Place_of_Exit == "")
     {
-        $('#Place_of_ExitErrorMsg').html("Select Point Of Exit.");
+        $('#Place_of_ExitErrorMsg').html("Select Declared Point of Exit.");
         $('#Place_of_ExitErrorMsg').show();
         $('#Place_of_ExitErrorMsg').delay(2000).fadeOut('slow');
         $('#Place_of_Exit').focus();
-    }
-    else if (Export_Expected_Date == "")
-    {
-        $('#Export_Expected_DateErrorMsg').html("Select Expected Date for Export.");
-        $('#Export_Expected_DateErrorMsg').show();
-        $('#Export_Expected_DateErrorMsg').delay(2000).fadeOut('slow');
-        $('#Export_Expected_Date').focus();
     }
     else if (inspectionDate == "")
     {
@@ -481,9 +474,16 @@ function save_food_export()
         $('#inspectionDateErrorMsg').delay(2000).fadeOut('slow');
         $('#inspectionDate').focus();
     }
+    else if (Export_Expected_Date == "")
+    {
+        $('#Export_Expected_DateErrorMsg').html("Select Expected Date for Export.");
+        $('#Export_Expected_DateErrorMsg').show();
+        $('#Export_Expected_DateErrorMsg').delay(2000).fadeOut('slow');
+        $('#Export_Expected_Date').focus();
+    }
     else if (export_purpose == "")
     {
-        $('#export_purposeErrorMsg').html("Enter Purpose Of Expoer.");
+        $('#export_purposeErrorMsg').html("Enter Purpose of Export.");
         $('#export_purposeErrorMsg').show();
         $('#export_purposeErrorMsg').delay(2000).fadeOut('slow');
         $('#export_purpose').focus();
@@ -616,52 +616,62 @@ function updateDetails()
 
 function save_attachment()
 {
-    var fileName = document.getElementById('document').files[0].name;
-    var fd = new FormData();
-    var file = document.getElementById('document').files[0];
-    fd.append('document', file);
-    token_value=$("input[name=csrfmiddlewaretoken]").val();
-    $.ajaxSetup
-    ({
-        beforeSend: function(xhr, settings)
+    var file_length = document.getElementById("document");
+    if(file_length.value.length < 1)
     {
-        xhr.setRequestHeader("X-CSRFToken", token_value);
+        $('#fileErrorMsg').html("Please Choose A File");
+        $('#fileErrorMsg').show();
+        $('#fileErrorMsg').delay(2000).fadeOut('slow');
     }
-    });
-        $.ajax({
-        type : "POST",
-        url : "{% url 'food_export_file' %}",
-        data : fd,
-        dataType: 'json',
-        contentType: false,
-        processData: false,
-        success : function(data)
+    else
+    {
+        var fileName = document.getElementById('document').files[0].name;
+        var fd = new FormData();
+        var file = document.getElementById('document').files[0];
+        fd.append('document', file);
+        token_value=$("input[name=csrfmiddlewaretoken]").val();
+        $.ajaxSetup
+        ({
+            beforeSend: function(xhr, settings)
         {
-        if (data.form_is_valid)
-        {
-            var appNo = $('#applicationNo').val();
-            var file_url = data.file_url
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'food_export_file_name' %}",
-                data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
-                success : function(responseText)
-                {
-                    $('#attachmentModal').modal('hide');
-                    $('#fileAttach').html(responseText);
-                    $('.modal-backdrop').remove();
-                    $('#attachment_form')[0].reset();
-                }
-            });
-        }else
-        {
-                $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-                $('#fileErrorMsg').show();
-                $('#fileErrorMsg').delay(2000).fadeOut('slow');
+            xhr.setRequestHeader("X-CSRFToken", token_value);
         }
+        });
+            $.ajax({
+            type : "POST",
+            url : "{% url 'food_export_file' %}",
+            data : fd,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            success : function(data)
+            {
+            if (data.form_is_valid)
+            {
+                var appNo = $('#applicationNo').val();
+                var file_url = data.file_url
+                $.ajax
+                ({
+                    type : "POST",
+                    url : "{% url 'food_export_file_name' %}",
+                    data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
+                    success : function(responseText)
+                    {
+                        $('#attachmentModal').modal('hide');
+                        $('#fileAttach').html(responseText);
+                        $('.modal-backdrop').remove();
+                        $('#attachment_form')[0].reset();
+                    }
+                });
+            }else
+            {
+                    $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                    $('#fileErrorMsg').show();
+                    $('#fileErrorMsg').delay(2000).fadeOut('slow');
+            }
+        }
+        });
     }
-    });
 }
 
 function validateemailId(emailId)
@@ -795,6 +805,54 @@ function load_attachment_details()
             $('#fileAttach').html(response);
         }
     });
+}
+
+function check_no(no_of_packages)
+{
+    if(no_of_packages == 0)
+    {
+        $('#no_of_packagesErrorMsg').html("Must Be Greater Than Zero.");
+        $('#no_of_packagesErrorMsg').show();
+        $('#no_of_packagesErrorMsg').delay(2000).fadeOut('slow');
+        $('#no_of_packages').val("");
+    }
+    else
+    {
+        $('#no_of_packagesErrorMsg').hide();
+    }
+}
+
+function check_quantity(qty)
+{
+    if(qty == 0)
+    {
+        $('#quantityErrorMsg').html("Must Be Greater Than Zero.");
+        $('#quantityErrorMsg').show();
+        $('#quantityErrorMsg').delay(2000).fadeOut('slow');
+        $('#quantity').val("");
+    }
+    else
+    {
+        $('#quantityErrorMsg').hide();
+    }
+}
+
+function check_expected_date()
+{
+    var inspectionDate = $('#inspectionDate').val();
+    var Export_Expected_Date = $('#Export_Expected_Date').val();
+
+    if(Export_Expected_Date < inspectionDate)
+    {
+        $('#Export_Expected_DateErrorMsg').html("Cannot Be Less Than Propose Date for Inspection.");
+        $('#Export_Expected_DateErrorMsg').show();
+        $('#Export_Expected_DateErrorMsg').delay(2000).fadeOut('slow');
+        $('#Export_Expected_Date').val("");
+    }
+    else
+    {
+        $('#Export_Expected_DateErrorMsg').hide();
+    }
 }
 </script>
 {% endblock %}

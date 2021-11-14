@@ -103,7 +103,7 @@ form, input, select, textarea{
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Contact Number <font color="red">*</font></label>
-                                    <input type="number" class="form-control" id="Firm_Contact_No" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="Firm_Contact_No" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                                    <input type="text" class="form-control" id="Firm_Contact_No" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="Firm_Contact_No" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
                                 </div>
                                 <div class="alert alert-danger" id="Firm_Contact_NoErrorMsg" style="display:none"></div>
                             </div>
@@ -156,7 +156,7 @@ form, input, select, textarea{
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Contact Number</label>
-                                    <input type="number" class="form-control" id="Factory_Contact_No" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="Factory_Contact_No" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                                    <input type="text" class="form-control" id="Factory_Contact_No" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="Factory_Contact_No" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
                                 </div>
                                 <div class="alert alert-danger" id="Factory_Contact_NoErrorMsg" style="display:none"></div>
                             </div>
@@ -204,20 +204,20 @@ form, input, select, textarea{
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">From date <font color="red">*</font></label>
-                                     <input type="text" name="From_Date" id="P_From_Date" class="form-control date-picker flatpickr-input active">
+                                    <input type="date" name="From_Date" id="P_From_Date" class="form-control">
                                 </div>
                                 <div class="alert alert-danger" id="P_From_DateErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">To date <font color="red">*</font></label>
-                                     <input type="text" name="P_To_Date" id="P_To_Date" class="form-control date-picker flatpickr-input active">
+                                    <input type="date" name="P_To_Date" id="P_To_Date" class="form-control" onchange="check_previous_date()">
                                 </div>
                                 <div class="alert alert-danger" id="P_To_DateErrorMsg" style="display:none"></div>
                             </div>
                             <div class="form-group col-md-4">
                                 <label class="form-label">Production(Quantity) <font color="red">*</font></label>
-                                <input type="text" name="P_Production" class="form-control" id="P_Production" onkeypress="return isNumberKey(event)">
+                                <input type="text" name="P_Production" class="form-control" id="P_Production" onkeypress="return isNumberKey(event)" onchange="check_p_production()">
                                 <div class="alert alert-danger" id="productionErrorMsg" style="display:none"></div>
                             </div>
                         </div>
@@ -236,7 +236,7 @@ form, input, select, textarea{
                             </div>
                             <div class="form-group col-md-4">
                                 <label class="form-label">Value <font color="red">*</font></label>
-                                <input type="number" name="P_Production_Value" class="form-control" id="P_Production_Value" required>
+                                <input type="text" name="P_Production_Value" class="form-control" id="P_Production_Value" onkeypress="return isNumberKey(event)" onchange="check_previous_production_value()">
                                 <div class="alert alert-danger" id="P_Production_ValueErrorMsg" style="display:none"></div>
                             </div>
                         </div>
@@ -253,20 +253,20 @@ form, input, select, textarea{
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">From date <font color="red">*</font></label>
-                                     <input type="text" name="C_From_Date" id="C_From_Date" class="form-control date-picker flatpickr-input active">
+                                    <input type="date" name="C_From_Date" id="C_From_Date" class="form-control">
                                 </div>
                                 <div class="alert alert-danger" id="C_From_DateErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">To date <font color="red">*</font></label>
-                                     <input type="text" name="C_To_Date" id="C_To_Date" class="form-control date-picker flatpickr-input active">
+                                    <input type="date" name="C_To_Date" id="C_To_Date" class="form-control" onchange="check_current_date()">
                                 </div>
                                 <div class="alert alert-danger" id="to_current_yearErrorMsg" style="display:none"></div>
                             </div>
                             <div class="form-group col-md-4">
                                 <label class="form-label">Production(Quantity) <font color="red">*</font></label>
-                                <input type="text" name="C_Production" class="form-control" id="C_Production" onkeypress="return isNumberKey(event)">
+                                <input type="text" name="C_Production" class="form-control" id="C_Production" onkeypress="return isNumberKey(event)" onchange="check_c_production()">
                                 <div class="alert alert-danger" id="C_ProductionErrorMsg" style="display:none"></div>
                             </div>
                         </div>
@@ -283,7 +283,7 @@ form, input, select, textarea{
                             </div>
                             <div class="form-group col-md-4">
                                 <label class="form-label">Value <font color="red">*</font></label>
-                                <input type="number" name="C_Production_Value" class="form-control" id="C_Production_Value" required>
+                                <input type="text" name="C_Production_Value" class="form-control" id="C_Production_Value" onkeypress="return isNumberKey(event)" onchange="check_current_production_value()">
                                 <div class="alert alert-danger" id="C_Production_ValueErrorMsg" style="display:none"></div>
                             </div>
                         </div>
@@ -299,20 +299,20 @@ form, input, select, textarea{
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">From Date</label>
-                                     <input type="text" name="P_Export_From_Date" id="P_Export_From_Date" class="form-control date-picker flatpickr-input active">
+                                    <input type="date" name="P_Export_From_Date" id="P_Export_From_Date" class="form-control">
                                 </div>
                                 <div class="alert alert-danger" id="P_Export_From_DateErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">To Date</label>
-                                     <input type="text" name="P_Export_To_Date" id="P_Export_To_Date" class="form-control date-picker flatpickr-input active">
+                                    <input type="date" name="P_Export_To_Date" id="P_Export_To_Date" class="form-control" onchange="export_previous_date()">
                                 </div>
                                 <div class="alert alert-danger" id="P_Export_To_DateErrorMsg" style="display:none"></div>
                             </div>
                             <div class="form-group col-md-4">
                                 <label class="form-label">Export(Quantity)</label>
-                                <input type="text" name="P_Export" class="form-control" id="P_Export" onkeypress="return isNumberKey(event)">
+                                <input type="text" name="P_Export" class="form-control" id="P_Export" onkeypress="return isNumberKey(event)" onchange="check_p_export()">
                                 <div class="alert alert-danger" id="P_ExportErrorMsg" style="display:none"></div>
                             </div>
                         </div>
@@ -329,7 +329,7 @@ form, input, select, textarea{
                             </div>
                             <div class="form-group col-md-4">
                                 <label class="form-label">Export Value (in Nu.)</label>
-                                <input type="number" name="P_Export_Value" class="form-control" id="P_Export_Value" required>
+                                <input type="text" name="P_Export_Value" class="form-control" id="P_Export_Value" onkeypress="return isNumberKey(event)" onchange="check_previous_export_value()">
                                 <div class="alert alert-danger" id="P_Export_ValueErrorMsg" style="display:none"></div>
                             </div>
                         </div>
@@ -345,20 +345,20 @@ form, input, select, textarea{
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">From Date</label>
-                                     <input type="text" name="C_Export_From_Date" id="C_Export_From_Date" class="form-control date-picker flatpickr-input active">
+                                    <input type="date" name="C_Export_From_Date" id="C_Export_From_Date" class="form-control">
                                 </div>
                                 <div class="alert alert-danger" id="C_Export_From_DateErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">To Date</label>
-                                     <input type="text" name="C_Export_To_Date" id="C_Export_To_Date" class="form-control date-picker flatpickr-input active">
+                                    <input type="date" name="C_Export_To_Date" id="C_Export_To_Date" class="form-control" onchange="export_current_date()">
                                 </div>
                                 <div class="alert alert-danger" id="C_Export_To_DateErrorMsg" style="display:none"></div>
                             </div>
                             <div class="form-group col-md-4">
                                 <label class="form-label">Export(Quantity)</label>
-                                <input type="text" name="C_Export" class="form-control" id="C_Export" onkeypress="return isNumberKey(event)">
+                                <input type="text" name="C_Export" class="form-control" id="C_Export" onkeypress="return isNumberKey(event)" onchange="check_c_export()">
                                 <div class="alert alert-danger" id="export_yearErrorMsg" style="display:none"></div>
                             </div>
                         </div>
@@ -375,7 +375,7 @@ form, input, select, textarea{
                             </div>
                             <div class="form-group col-md-4">
                                 <label class="form-label">Value (in Nu.)</label>
-                                <input type="number" name="currentValue" class="form-control" id="currentValue" required>
+                                <input type="text" name="currentValue" class="form-control" id="currentValue" onkeypress="return isNumberKey(event)" onchange="check_current_value()">
                                 <div class="alert alert-danger" id="currentValueErrorMsg" style="display:none"></div>
                             </div>
                         </div>
@@ -535,7 +535,7 @@ form, input, select, textarea{
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_mortem_attachment()"> Submit </button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_fpc_attachment()"> Upload </button>
                 </div>
             </div>
         </div>
@@ -768,51 +768,61 @@ function save_food_product_form()
 
 
 
-function save_mortem_attachment()
+function save_fpc_attachment()
 {
-    var fileName = document.getElementById('document').files[0].name;
-    var fd = new FormData();
-    var file = document.getElementById('document').files[0];
-    fd.append('document', file);
-    token_value=$("input[name=csrfmiddlewaretoken]").val();
-    $.ajaxSetup
-    ({
-        beforeSend: function(xhr, settings)
-        {
-            xhr.setRequestHeader("X-CSRFToken", token_value);
-        }
-    });
-    $.ajax({
-    type : "POST",
-    url : "{% url 'food_product_certificate_file' %}",
-    data : fd,
-    dataType: 'json',
-    contentType: false,
-    processData: false,
-    success : function(data)
+    var file_length = document.getElementById("document");
+    if(file_length.value.length < 1)
     {
-        if (data.form_is_valid)
+        $('#fileErrorMsg').html("Please Choose A File");
+        $('#fileErrorMsg').show();
+        $('#fileErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else
+    {
+        var fileName = document.getElementById('document').files[0].name;
+        var fd = new FormData();
+        var file = document.getElementById('document').files[0];
+        fd.append('document', file);
+        token_value=$("input[name=csrfmiddlewaretoken]").val();
+        $.ajaxSetup
+        ({
+            beforeSend: function(xhr, settings)
+            {
+                xhr.setRequestHeader("X-CSRFToken", token_value);
+            }
+        });
+        $.ajax({
+        type : "POST",
+        url : "{% url 'food_product_certificate_file' %}",
+        data : fd,
+        dataType: 'json',
+        contentType: false,
+        processData: false,
+        success : function(data)
         {
-            var file_url = data.file_url
-            var appNo = $('#attachment_appNo').val();
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'food_product_certificate_file_name' %}",
-                data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
-                success : function(responseText)
-                {
-                    $('#attachmentModal').modal('hide');
-                    $('#file-attachment-mortem').html(responseText);
-                    $('.modal-backdrop').remove();
-                }
-            });
-        }
-        else
-        {
-            $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-            $('#fileErrorMsg').show();
-            $('#fileErrorMsg').delay(2000).fadeOut('slow');
+            if (data.form_is_valid)
+            {
+                var file_url = data.file_url
+                var appNo = $('#attachment_appNo').val();
+                $.ajax
+                ({
+                    type : "POST",
+                    url : "{% url 'food_product_certificate_file_name' %}",
+                    data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
+                    success : function(responseText)
+                    {
+                        $('#attachmentModal').modal('hide');
+                        $('#file-attachment-fpc').html(responseText);
+                        $('.modal-backdrop').remove();
+                    }
+                });
+            }
+            else
+            {
+                $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                $('#fileErrorMsg').show();
+                $('#fileErrorMsg').delay(2000).fadeOut('slow');
+            }
         }
     }
 });
@@ -1028,6 +1038,245 @@ function fpc_attachment_details()
         }
     });
 }
+
+function check_previous_date()
+{
+    var from_date = $('#P_From_Date').val();
+    var to_date = $('#P_To_Date').val();
+
+    if(to_date <= from_date)
+    {
+        $('#P_To_DateErrorMsg').html("Cannot Be Less Than Or Equal To From Date.");
+        $('#P_To_DateErrorMsg').show();
+        $('#P_To_DateErrorMsg').delay(2000).fadeOut('slow');
+        $('#P_To_Date').val("");
+        $('#P_To_Date').focus();
+    }
+    else
+    {
+        $('#P_To_DateErrorMsg').hide();
+    }
+}
+
+function check_current_date()
+{
+    var from_date = $('#C_From_Date').val();
+    var to_date = $('#C_To_Date').val();
+
+    if(to_date <= from_date)
+    {
+        $('#to_current_yearErrorMsg').html("Cannot Be Less Than Or Equal To From Date.");
+        $('#to_current_yearErrorMsg').show();
+        $('#to_current_yearErrorMsg').delay(2000).fadeOut('slow');
+        $('#C_To_Date').val("");
+        $('#C_To_Date').focus();
+    }
+    else
+    {
+        $('#to_current_yearErrorMsg').hide();
+    }
+}
+
+function export_previous_date()
+{
+    var from_date = $('#P_Export_From_Date').val();
+    var to_date = $('#P_Export_To_Date').val();
+
+    if(to_date <= from_date)
+    {
+        $('#P_Export_To_DateErrorMsg').html("Cannot Be Less Than Or Equal To From Date.");
+        $('#P_Export_To_DateErrorMsg').show();
+        $('#P_Export_To_DateErrorMsg').delay(2000).fadeOut('slow');
+        $('#P_Export_To_Date').val("");
+        $('#P_Export_To_Date').focus();
+    }
+    else
+    {
+        $('#P_Export_To_DateErrorMsg').hide();
+    }
+}
+
+function export_current_date()
+{
+    var from_date = $('#C_Export_From_Date').val();
+    var to_date = $('#C_Export_To_Date').val();
+
+    if(to_date <= from_date)
+    {
+        $('#C_Export_To_DateErrorMsg').html("Cannot Be Less Than Or Equal To From Date.");
+        $('#C_Export_To_DateErrorMsg').show();
+        $('#C_Export_To_DateErrorMsg').delay(2000).fadeOut('slow');
+        $('#C_Export_To_Date').val("");
+        $('#C_Export_To_Date').focus();
+    }
+    else
+    {
+        $('#C_Export_To_DateErrorMsg').hide();
+    }
+}
+
+function check_p_production()
+{
+    var P_Production = $('#P_Production').val();
+
+    if(P_Production == 0)
+    {
+        $('#productionErrorMsg').html("Must Be More Than Zero.");
+        $('#productionErrorMsg').show();
+        $('#productionErrorMsg').delay(2000).fadeOut('slow');
+        $('#P_Production').val("");
+        $('#P_Production').focus();
+    }
+    else
+    {
+        $('#productionErrorMsg').hide();
+    }
+}
+
+function check_c_production()
+{
+    var C_Production = $('#C_Production').val();
+
+    if(C_Production == 0)
+    {
+        $('#C_ProductionErrorMsg').html("Must Be More Than Zero.");
+        $('#C_ProductionErrorMsg').show();
+        $('#C_ProductionErrorMsg').delay(2000).fadeOut('slow');
+        $('#C_Production').val("");
+        $('#C_Production').focus();
+    }
+    else
+    {
+        $('#C_ProductionErrorMsg').hide();
+    }
+}
+
+function check_c_production()
+{
+    var C_Production = $('#C_Production').val();
+
+    if(C_Production == 0)
+    {
+        $('#C_ProductionErrorMsg').html("Must Be More Than Zero.");
+        $('#C_ProductionErrorMsg').show();
+        $('#C_ProductionErrorMsg').delay(2000).fadeOut('slow');
+        $('#C_Production').val("");
+        $('#C_Production').focus();
+    }
+    else
+    {
+        $('#C_ProductionErrorMsg').hide();
+    }
+}
+
+function check_p_export()
+{
+    var C_Production = $('#P_Export').val();
+
+    if(C_Production == 0)
+    {
+        $('#P_ExportErrorMsg').html("Must Be More Than Zero.");
+        $('#P_ExportErrorMsg').show();
+        $('#P_ExportErrorMsg').delay(2000).fadeOut('slow');
+        $('#P_Export').val("");
+        $('#P_Export').focus();
+    }
+    else
+    {
+        $('#P_ExportErrorMsg').hide();
+    }
+}
+
+function check_c_export()
+{
+    var C_Export = $('#C_Export').val();
+
+    if(C_Export == 0)
+    {
+        $('#export_yearErrorMsg').html("Must Be More Than Zero.");
+        $('#export_yearErrorMsg').show();
+        $('#export_yearErrorMsg').delay(2000).fadeOut('slow');
+        $('#C_Export').val("");
+        $('#C_Export').focus();
+    }
+    else
+    {
+        $('#export_yearErrorMsg').hide();
+    }
+}
+
+function check_current_value()
+{
+    var currentValue = $('#currentValue').val();
+
+    if(currentValue == 0)
+    {
+        $('#currentValueErrorMsg').html("Must Be More Than Zero.");
+        $('#currentValueErrorMsg').show();
+        $('#currentValueErrorMsg').delay(2000).fadeOut('slow');
+        $('#currentValue').val("");
+        $('#currentValue').focus();
+    }
+    else
+    {
+        $('#currentValueErrorMsg').hide();
+    }
+}
+
+function check_previous_export_value()
+{
+    var P_Export_Value = $('#P_Export_Value').val();
+
+    if(P_Export_Value == 0)
+    {
+        $('#P_Export_ValueErrorMsg').html("Must Be More Than Zero.");
+        $('#P_Export_ValueErrorMsg').show();
+        $('#P_Export_ValueErrorMsg').delay(2000).fadeOut('slow');
+        $('#P_Export_Value').val("");
+        $('#P_Export_Value').focus();
+    }
+    else
+    {
+        $('#P_Export_ValueErrorMsg').hide();
+    }
+}
+
+function check_current_production_value()
+{
+    var C_Production_Value = $('#C_Production_Value').val();
+
+    if(C_Production_Value == 0)
+    {
+        $('#C_Production_ValueErrorMsg').html("Must Be More Than Zero.");
+        $('#C_Production_ValueErrorMsg').show();
+        $('#C_Production_ValueErrorMsg').delay(2000).fadeOut('slow');
+        $('#C_Production_Value').val("");
+        $('#C_Production_Value').focus();
+    }
+    else
+    {
+        $('#C_Production_ValueErrorMsg').hide();
+    }
+}
+
+function check_previous_production_value()
+{
+    var P_Production_Value = $('#P_Production_Value').val();
+
+    if(P_Production_Value == 0)
+    {
+        $('#P_Production_ValueErrorMsg').html("Must Be More Than Zero.");
+        $('#P_Production_ValueErrorMsg').show();
+        $('#P_Production_ValueErrorMsg').delay(2000).fadeOut('slow');
+        $('#P_Production_Value').val("");
+        $('#P_Production_Value').focus();
+    }
+    else
+    {
+        $('#P_Production_ValueErrorMsg').hide();
+    }
+}
+
 
 </script>
 {% endblock %}

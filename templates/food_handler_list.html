@@ -1,6 +1,11 @@
 {% extends 'common_dashboard.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+<style>
+form, input, select, textarea{
+    color: black !important;
+}
+</style>
 <form method="post" id="food_handler_ins_form">
     {% csrf_token %}
     <div class="animated fadeIn">
@@ -92,7 +97,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">From Training Date <font color="red">*</font></label>
-                                             <input type="date" name="from_training_Date" id="from_training_Date" class="form-control date-picker flatpickr-input active">
+                                             <input type="date" name="from_training_Date" id="from_training_Date" class="form-control">
                                         </div>
                                         <div class="alert alert-danger" id="from_training_DateErrorMsg" style="display:none"></div>
                                     </div>
@@ -101,14 +106,14 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">To Training Date <font color="red">*</font></label>
-                                             <input type="date" name="to_training_Date" id="to_training_Date" class="form-control date-picker flatpickr-input active">
+                                             <input type="date" name="to_training_Date" id="to_training_Date" class="form-control" onchange="check_date()">
                                         </div>
                                         <div class="alert alert-danger" id="to_training_DateErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Minimum Qualifying Marks <font color="red">*</font></label>
-                                            <input type="number" name="min_mark" id="min_mark" class="form-control">
+                                            <input type="text" name="min_mark" id="min_mark" class="form-control" onkeypress="return isNumberKey(event)" onchange="check_mark()">
                                         </div>
                                         <div class="alert alert-danger" id="min_markErrorMsg" style="display:none"></div>
                                     </div>
@@ -132,7 +137,7 @@
                                 </div>
                                 <br>
                                 <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
-                                    Application Forwarded Successfully
+                                    Application Saved
                                 </div>
                                 <div class="card-action">
                                     <button type="button" class="btn btn-primary btn-md pull-right" onclick="update_details()"> Save </button>
@@ -238,9 +243,9 @@
         else if(to_training_Date == "")
         {
             $('#to_training_DateErrorMsg').html("Select To Training Date.");
-            $('#from_training_DateErrorMsg').show();
-            $('#from_training_DateErrorMsg').delay(2000).fadeOut('slow');
-            $('#from_training_Date').focus();
+            $('#to_training_DateErrorMsg').show();
+            $('#to_training_DateErrorMsg').delay(2000).fadeOut('slow');
+            $('#to_training_Date').focus();
         }
         else if(min_mark == "")
         {
@@ -296,6 +301,38 @@
                 $("#check_"+i).prop("checked", false);
             }
         }
+    }
+
+    function check_date()
+    {
+        var from_training_Date = $('#from_training_Date').val();
+        var to_training_Date = $('#to_training_Date').val();
+
+        if(to_training_Date < from_training_Date)
+        {
+            $('#to_training_DateErrorMsg').html("Cannot Be Less Than  From Training Date.");
+            $('#to_training_DateErrorMsg').show();
+            $('#to_training_DateErrorMsg').delay(2000).fadeOut('slow');
+            $('#to_training_Date').val("");
+            $('#to_training_Date').focus();
+        }
+        else
+        {
+            $('#to_training_DateErrorMsg').hide();
+        }
+    }
+
+    function check_mark()
+    {
+         var min_mark = $('#min_mark').val();
+         if(min_mark == 0)
+         {
+            $('#min_markErrorMsg').html("Cannot Be Zero.");
+            $('#min_markErrorMsg').show();
+            $('#min_markErrorMsg').delay(2000).fadeOut('slow');
+            $('#min_mark').val("");
+            $('#min_mark').focus();
+         }
     }
 </script>
 {% endblock %}

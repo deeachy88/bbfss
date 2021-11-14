@@ -170,6 +170,7 @@ form, input, select, textarea{
                                 {% endif %}
                             </div>
                         <br>
+                        {% if application_details.Import_Type == 'Individual' %}
                             <div class="row">
                                 <div class="col-sm-2">
                                     <label class="form-label">Nationality</label>
@@ -202,6 +203,7 @@ form, input, select, textarea{
                                     </div>
                                 {% endif %}
                             </div>
+                        {% endif %}
                         <br>
                             {% if application_details.Import_Type == 'Individual' and application_details.Nationality == 'Bhutanese'%}
                                 <div class="row">
@@ -260,7 +262,7 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Farm Source</label>
-                                            <input type="text" class="form-control" value="{{application_details.Purpose }}" disabled>
+                                            <input type="text" class="form-control" value="{{application_details.Origin_Source_Products }}" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -274,9 +276,9 @@ form, input, select, textarea{
                                      <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Place of Entry</label>
-                                            <select class="form-control" disabled>
-                                                {% for location in location %}
-                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                            <select class="form-control"disabled>
+                                                {% for location_mapping in location_mapping %}
+                                                    <option value="{{ location_mapping.Field_Office_Id }}" {% if application_details.Place_Of_Entry == location_mapping.Field_Office_Id %}selected{% endif %}>{{ location_mapping.Field_Office }}</option>
                                                 {% endfor %}
                                              </select>
                                         </div>
@@ -339,7 +341,7 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Farm Source</label>
-                                            <input type="text" class="form-control" value="{{application_details.Purpose }}" disabled>
+                                            <input type="text" class="form-control" value="{{application_details.Origin_Source_Products }}" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -354,8 +356,8 @@ form, input, select, textarea{
                                         <div class="form-group">
                                             <label class="form-label">Place of Entry</label>
                                             <select class="form-control"disabled>
-                                                {% for location in location %}
-                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                                {% for location_mapping in location_mapping %}
+                                                    <option value="{{ location_mapping.Field_Office_Id }}" {% if application_details.Place_Of_Entry == location_mapping.Field_Office_Id %}selected{% endif %}>{{ location_mapping.Field_Office }}</option>
                                                 {% endfor %}
                                              </select>
                                         </div>
@@ -418,7 +420,7 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Farm Source</label>
-                                            <input type="text" class="form-control" value="{{application_details.Purpose }}" disabled>
+                                            <input type="text" class="form-control" value="{{application_details.Origin_Source_Products }}" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -431,11 +433,10 @@ form, input, select, textarea{
                                     </div>
                                      <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Place Of Entry</label>
+                                            <label class="form-label">Place of Entry</label>
                                             <select class="form-control" disabled>
-                                                <option value="">--SELECT--</option>
-                                                {% for location in location %}
-                                                        <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
+                                                {% for location_mapping in location_mapping %}
+                                                    <option value="{{ location_mapping.Field_Office_Id }}" {% if application_details.Place_Of_Entry == location_mapping.Field_Office_Id %}selected{% endif %}>{{ location_mapping.Field_Office }}</option>
                                                 {% endfor %}
                                              </select>
                                         </div>
@@ -450,18 +451,8 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Place of Entry</label>
-                                            <select class="form-control"disabled>
-                                                {% for location in location %}
-                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
-                                                {% endfor %}
-                                             </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
                                             <label class="form-label">Final Destination</label>
-                                             <input type="text" class="form-control" value="{{application_details.Final_Destination }}">
+                                             <input type="text" class="form-control" value="{{application_details.Final_Destination }}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -480,30 +471,37 @@ form, input, select, textarea{
                         <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
                     </div>
                     <br>
+
                     <table class="table table-bordered">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Particulars</th>
-                                <th scope="col">Company Name</th>
+                                <th scope="col">Species</th>
+                                <th scope="col">Breed</th>
+                                <th scope="col">Age</th>
+                                <th scope="col">Sex</th>
                                 <th scope="col">Description</th>
-                                <th scope="col">Quantity</th>
-                                <th scope="col">Unit</th>
+                                <th scope="col">Number</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for import in details %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td>{{import.Particulars}}</td>
-                                    <td>{{import.Company_Name}}</td>
+                                    {% for species in species %}
+                                        {% if species.Species_Id == import.Species %}
+                                            <td>{{species.Species_Name}}</td>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <td>{{import.Breed}}</td>
+                                    <td>{{import.Age}}</td>
+                                    <td>{{import.Sex}}</td>
                                     <td>{{import.Description}}</td>
-                                    <td>{{import.Unit}}</td>
                                     <td>{{import.Quantity}}</td>
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                  <td colspan="6" class="text-center">No Data</td>
+                                  <td colspan="8" class="text-center">No Data</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -538,14 +536,14 @@ form, input, select, textarea{
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="form-label">Validity Period (If Approve Please Fill The Validity Period) <font color="red">*</font></label>
+                                <label class="form-label">Validity Period(If Approve Please Fill The Validity Period[No Of Days]) <font color="red">*</font></label>
                                 <input type="text" class="form-control" name="validity" id="validity" onkeypress="return isNumberKey(event)" onchange="check_validity(this.value)">
                             </div>
                             <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-8">
                             <div class="form-group">
-                                <label class="form-label">Remarks(If Reject Please Fill THe Remarks) <font color="red">*</font></label>
+                                <label class="form-label">Remarks(If Reject Please Fill The Remarks)</label>
                                 <textarea class="form-control" rows="3" id="remarks" name="remarks"></textarea>
                             </div>
                             <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
@@ -553,8 +551,10 @@ form, input, select, textarea{
                     </div>
                     <br>
                     <hr>
-                    <div id="loader" style="display:none">
-                        <img src="{% static 'assets/img/ring-loader.gif' %}"  alt="processing..." />
+                    <div class="justify-content-center">
+                          <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                          </div>
                     </div>
                     <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
                         Application Approved
@@ -599,13 +599,13 @@ form, input, select, textarea{
             }
             else
             {
-                $("#loader").show();
+                $(".spinner-border").show();
                 $.ajax({
                     type : "POST",
                     url : "{% url 'approve_fo_la_import' %}",
                     data :{'application_id':application_id ,'remarks':remarks,'validity':validity, csrfmiddlewaretoken: '{{ csrf_token }}'},
                     success : function(data) {
-                        $("#loader").hide();
+                        $(".spinner-border").hide();
                         $('#submitMsg').show();
                         setTimeout(function()
                         {
@@ -636,13 +636,13 @@ form, input, select, textarea{
         }
         else
         {
-            $("#loader").show();
+            $(".spinner-border").show();
             $.ajax({
                 type : "POST",
                 url : "{% url 'reject_fo_la_import' %}",
                 data :{'application_id':application_id ,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(data) {
-                    $("#loader").hide();
+                    $(".spinner-border").hide();
                     $('#rejectMsg').show();
                     setTimeout(function()
                     {

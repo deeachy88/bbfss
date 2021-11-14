@@ -28,7 +28,7 @@ form, input, select, textarea{
                         <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="check_meat_details()">Application Form</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="pills-details" data-toggle="pill" href="#details" role="tab" aria-controls="pills-details" aria-selected="false" onclick="load_meat_details()">Meat Items</a>
+                        <a class="nav-link" id="item-details" data-toggle="pill" href="#details" role="tab" aria-controls="pills-details" aria-selected="false" onclick="load_meat_details()">Meat Items</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="fbr-file-attach" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_meat_attachment()">File Attachment</a>
@@ -262,7 +262,7 @@ form, input, select, textarea{
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_meat_attachment()"> Submit </button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_meat_attachment()"> Upload </button>
                 </div>
             </div>
         </div>
@@ -447,7 +447,7 @@ function save_fbr_form()
                 $("#submitMsg").hide('blind', {}, 500)
             }, 2000);
             setTimeout(function() {
-                $('#pills-details').tab('show');
+                $('#item-details').tab('show');
             }, 3000);
             $("#fbr_button").html('Update');
         }
@@ -469,7 +469,7 @@ function save_fbr_form()
                 $("#submitMsg").hide('blind', {}, 500)
             }, 2000);
             setTimeout(function() {
-                $('#pills-details').tab('show');
+                $('#item-details').tab('show');
             }, 3000);
 
         }
@@ -481,53 +481,63 @@ function save_fbr_form()
 
 function save_meat_attachment()
 {
-    var fileName = document.getElementById('document').files[0].name;
-    var fd = new FormData();
-    var file = document.getElementById('document').files[0];
-    fd.append('document', file);
-    token_value=$("input[name=csrfmiddlewaretoken]").val();
-    $.ajaxSetup
-    ({
-        beforeSend: function(xhr, settings)
-        {
-            xhr.setRequestHeader("X-CSRFToken", token_value);
-        }
-    });
-    $.ajax({
-    type : "POST",
-    url : "{% url 'meat_shop_file' %}",
-    data : fd,
-    dataType: 'json',
-    contentType: false,
-    processData: false,
-    success : function(data)
+    var file_length = document.getElementById("document");
+    if(file_length.value.length < 1)
     {
-        if (data.form_is_valid)
-        {
-            var file_url = data.file_url
-            var appNo = $('#attachment_appNo').val();
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'meat_shop_file_name' %}",
-                data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
-                success : function(responseText)
-                {
-                    $('#attachmentModal').modal('hide');
-                    $('#file-attachment-mortem').html(responseText);
-                    $('.modal-backdrop').remove();
-                    $('#attachment_form')[0].reset();
-                }
-            });
-        }
-        else
-        {
-            $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-            $('#fileErrorMsg').show();
-            $('#fileErrorMsg').delay(2000).fadeOut('slow');
-        }
+        $('#fileErrorMsg').html("Please Choose A File");
+        $('#fileErrorMsg').show();
+        $('#fileErrorMsg').delay(2000).fadeOut('slow');
     }
-});
+    else
+    {
+        var fileName = document.getElementById('document').files[0].name;
+        var fd = new FormData();
+        var file = document.getElementById('document').files[0];
+        fd.append('document', file);
+        token_value=$("input[name=csrfmiddlewaretoken]").val();
+        $.ajaxSetup
+        ({
+            beforeSend: function(xhr, settings)
+            {
+                xhr.setRequestHeader("X-CSRFToken", token_value);
+            }
+        });
+        $.ajax({
+        type : "POST",
+        url : "{% url 'meat_shop_file' %}",
+        data : fd,
+        dataType: 'json',
+        contentType: false,
+        processData: false,
+        success : function(data)
+        {
+            if (data.form_is_valid)
+            {
+                var file_url = data.file_url
+                var appNo = $('#attachment_appNo').val();
+                $.ajax
+                ({
+                    type : "POST",
+                    url : "{% url 'meat_shop_file_name' %}",
+                    data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
+                    success : function(responseText)
+                    {
+                        $('#attachmentModal').modal('hide');
+                        $('#file-attachment-mortem').html(responseText);
+                        $('.modal-backdrop').remove();
+                        $('#attachment_form')[0].reset();
+                    }
+                });
+            }
+            else
+            {
+                $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                $('#fileErrorMsg').show();
+                $('#fileErrorMsg').delay(2000).fadeOut('slow');
+            }
+        }
+        });
+    }
 
 }
 
@@ -618,7 +628,7 @@ function save_meat_item_details()
                 success : function(responseText) {
                    $('#add_fh_details').modal('hide');
                    $('#meat_item_details').html(responseText);
-                   $('#pills-file').tab('show');
+                   $('#details').tab('show');
                    $('.modal-backdrop').remove();
                    $('#fh_form')[0].reset();
                 }
@@ -720,12 +730,12 @@ function check_meat_details()
     var applicationNo = $('#applicationNo').val();
     if(applicationNo == "")
     {
-        $("#pills-details").prop('disabled', true);
+        $("#item-details").prop('disabled', true);
         $("#fbr-file-attach").prop('disabled', true);
     }
     else if(applicationNo != "")
     {
-        $("#pills-details").prop('disabled', false);
+        $("#item-details").prop('disabled', false);
         $("#fbr-file-attach").prop('disabled', false);
     }
 }
@@ -740,6 +750,7 @@ function load_meat_details()
         success : function(response)
         {
             $('#meat_item_details').html(response);
+            $('#details').tab('show');
         }
     });
 }

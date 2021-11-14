@@ -14,6 +14,48 @@
 form, input, select, textarea{
         color: black !important;
     }
+    .flatpickr-day.prevMonthDay {
+    color: rgb(17 17 17);
+}
+    .flatpickr-day {
+    font-size: .92rem;
+    border: 0;
+    color: #111;
+}
+.flatpickr-month {
+    background-color: rgba(255,255,255,.05);
+    color: #111010;
+    height: 60px;
+    border-radius: 2px 2px 0 0;
+    margin-bottom: 10px;
+}
+.flatpickr-calendar {
+    border-radius: 2px;
+    border: 0;
+    box-shadow: 0 4px 18px rgb(0 0 0 / 50%);
+    width: auto;
+    margin-top: -4px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-color: rgb(246 246 246);
+}
+day.nextMonthDay{
+    color: rgb(11 11 11);
+}
+.flatpickr-day.nextMonthDay
+{
+    color: rgb(11 11 11);
+}
+span.flatpickr-weekday {
+    font-weight: 600;
+    color: #090909;
+}
+.flatpickr-day.selected, .flatpickr-day.selected:hover {
+    background-color: #a29696!important;
+    color: #000;
+}
 </style>
 <div class="card">
     <div class="card-header">
@@ -95,8 +137,8 @@ form, input, select, textarea{
                         </div>
                         <div class="col-md-4 farmer_group_details" style="display:none">
                             <div class="form-group">
-                                <label class="form-label">Number Of Members In Group <font color="red">*</font></label>
-                                <input type="text" class="form-control" id="farmers_group_number" name="farmers_group_number" onkeypress="return isNumberKey(event)">
+                                <label class="form-label">Number of Members In Group <font color="red">*</font></label>
+                                <input type="text" class="form-control" id="farmers_group_number" name="farmers_group_number" onkeypress="return isNumberKey(event)" onchange="check_farmers_no()">
                             </div>
                             <div class="alert alert-danger" id="farmers_group_numberErrorMsg" style="display:none"></div>
                         </div>
@@ -418,13 +460,13 @@ form, input, select, textarea{
                             <div class="box-body">
                                 <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Name Of Crop <font color="red">*</font></label>
+                                        <label class="form-label">Name of Crop <font color="red">*</font></label>
                                         <input type="text" name="crop_name" class="form-control" id="crop_name" required>
                                         <div class="alert alert-danger" id="crop_nameErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Cultivated Area <font color="red">*</font></label>
-                                        <input type="text" name="area" class="form-control" id="area" onkeypress="return isNumberKey(event)">
+                                        <input type="text" name="area" class="form-control" id="area" onkeypress="return isNumberKey(event)" onchange="check_area()">
                                         <div class="alert alert-danger" id="areaErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -449,14 +491,14 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">From date <font color="red">*</font></label>
-                                             <input type="text" name="prev_year" id="prev_year" class="form-control date-picker flatpickr-input active" onchange="get_month()">
+                                            <input type="text" class="form-control date-picker flatpickr-input active" name="prev_year" id="prev_year"  placeholder="Pick a date" readonly="readonly" onchange="get_month()">
                                         </div>
                                         <div class="alert alert-danger" id="prev_yearErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">To date <font color="red">*</font></label>
-                                             <input type="text" name="to_year" id="to_year" class="form-control date-picker flatpickr-input active" onchange="get_month()">
+                                            <input type="text" class="form-control date-picker flatpickr-input active" name="to_year" id="to_year"  placeholder="Pick a date" readonly="readonly" onchange="get_month()">
                                         </div>
                                         <div class="alert alert-danger" id="to_yearErrorMsg" style="display:none"></div>
                                     </div>
@@ -521,21 +563,21 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">From date <font color="red">*</font></label>
-                                             <input type="text" name="current_year" id="current_year" class="form-control date-picker flatpickr-input active" onchange="get_current_month()">
+                                            <input type="text" class="form-control date-picker flatpickr-input active" name="current_year" id="current_year"  placeholder="Pick a date" readonly="readonly" onchange="get_current_month()">
                                         </div>
                                         <div class="alert alert-danger" id="current_yearErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">To date <font color="red">*</font></label>
-                                             <input type="text" name="to_current_year" id="to_current_year" class="form-control date-picker flatpickr-input active" onchange="get_current_month()">
+                                            <input type="text" class="form-control date-picker flatpickr-input active" name="to_current_year" id="to_current_year"  placeholder="Pick a date" readonly="readonly" onchange="get_current_month()">
                                         </div>
                                         <div class="alert alert-danger" id="to_current_yearErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Estimated Yield <font color="red">*</font></label>
-                                             <input type="text" name="estimated_yield" id="estimated_yield" class="form-control" onkeypress="return isNumberKey(event)">
+                                             <input type="text" name="estimated_yield" id="estimated_yield" class="form-control" onkeypress="return isNumberKey(event)" onchange="check_yield()">
                                         </div>
                                         <div class="alert alert-danger" id="estimated_yieldErrorMsg" style="display:none"></div>
                                     </div>
@@ -595,7 +637,7 @@ form, input, select, textarea{
                                         <div class="alert alert-danger" id="pack_house_nameErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Address Of Pack House <font color="red">*</font></label>
+                                        <label class="form-label">Address of Pack House <font color="red">*</font></label>
                                         <textarea name="pack_house_address" id="pack_house_address" class="form-control"></textarea>
                                         <div class="alert alert-danger" id="pack_house_addressErrorMsg" style="display:none"></div>
                                     </div>
@@ -611,12 +653,12 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="form-label">From date <font color="red">*</font></label>
-                                        <input type="text" class="form-control date-picker flatpickr-input active" id="previous_from_date" name="previous_from_date"  placeholder="Pick a date" readonly="readonly" onchange="ph_previous_month()">
+                                        <input type="text" class="form-control date-picker flatpickr-input active" name="previous_from_date" id="previous_from_date"  placeholder="Pick a date" readonly="readonly" onchange="ph_previous_month()">
                                         <div class="alert alert-danger" id="previous_from_dateErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">To date <font color="red">*</font></label>
-                                        <input type="text" class="form-control date-picker flatpickr-input active" id="previous_to_date" name="previous_to_date"  placeholder="Pick a date" readonly="readonly" onchange="ph_previous_month()">
+                                        <input type="text" class="form-control date-picker flatpickr-input active" name="previous_to_date" id="previous_to_date"  placeholder="Pick a date" readonly="readonly" onchange="ph_previous_month()">
                                         <div class="alert alert-danger" id="previous_to_dateErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -680,12 +722,12 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="form-label">From date <font color="red">*</font></label>
-                                        <input type="text" class="form-control date-picker flatpickr-input active" id="current_from_date" name="current_from_date"  placeholder="Pick a date" readonly="readonly" onchange="ph_current_month()">
+                                        <input type="text" class="form-control date-picker flatpickr-input active" name="current_from_date" id="current_from_date"  placeholder="Pick a date" readonly="readonly" onchange="ph_current_month()">
                                         <div class="alert alert-danger" id="current_from_dateErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">To date <font color="red">*</font></label>
-                                        <input type="text" class="form-control date-picker flatpickr-input active" id="current_to_date" name="current_to_date"  placeholder="Pick a date" readonly="readonly" onchange="ph_current_month()">
+                                        <input type="text" class="form-control date-picker flatpickr-input active" name="current_to_date" id="current_to_date"  placeholder="Pick a date" readonly="readonly" onchange="ph_current_month()">
                                         <div class="alert alert-danger" id="current_to_dateErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -825,7 +867,7 @@ form, input, select, textarea{
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_gap_attachment()"> Submit </button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_gap_attachment()"> Upload </button>
                 </div>
             </div>
         </div>
@@ -899,13 +941,13 @@ form, input, select, textarea{
                                 <input type="hidden" name="identifier" value="GAP-CP"/>
                                 <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Name Of Crop <font color="red">*</font></label>
+                                        <label class="form-label">Name of Crop <font color="red">*</font></label>
                                         <input type="text" name="edit_crop_name" class="form-control" id="edit_crop_name" required>
                                         <div class="alert alert-danger" id="edit_crop_nameErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Cultivated Area <font color="red">*</font></label>
-                                        <input type="text" name="edit_area" class="form-control" id="edit_area" onkeypress="return isNumberKey(event)">
+                                        <input type="text" name="edit_area" class="form-control" id="edit_area" onkeypress="return isNumberKey(event)" onchange="check_edit_area()">
                                         <div class="alert alert-danger" id="edit_areaErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -930,14 +972,14 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">From Date <font color="red">*</font></label>
-                                             <input type="text" name="edit_prev_year" id="edit_prev_year" class="form-control date-picker flatpickr-input active" onchange="get_edit_month()">
+                                            <input type="text" name="edit_prev_year" class="form-control date-picker flatpickr-input active" id="edit_prev_year" onkeypress="return isNumberKey(event)" onchange="get_edit_month(this.value)">
                                         </div>
                                         <div class="alert alert-danger" id="edit_prev_yearErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">To Date <font color="red">*</font></label>
-                                             <input type="text" name="edit_to_year" id="edit_to_year" class="form-control date-picker flatpickr-input active" onchange="get_edit_month()">
+                                            <input type="text" name="edit_to_year" class="form-control date-picker flatpickr-input active" id="edit_to_year" onkeypress="return isNumberKey(event)" onchange="get_edit_month(this.value)">
                                         </div>
                                         <div class="alert alert-danger" id="edit_to_yearErrorMsg" style="display:none"></div>
                                     </div>
@@ -1028,7 +1070,7 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Estimated Yield <font color="red">*</font></label>
-                                             <input type="text" name="edit_estimated_yield" id="edit_estimated_yield" class="form-control" onkeypress="return isNumberKey(event)">
+                                             <input type="text" name="edit_estimated_yield" id="edit_estimated_yield" class="form-control" onkeypress="return isNumberKey(event)" onchange="check_edit_yield()">
                                         </div>
                                         <div class="alert alert-danger" id="edit_estimated_yieldErrorMsg" style="display:none"></div>
                                     </div>
@@ -1457,54 +1499,63 @@ function save_gap_certification()
 
 function save_gap_attachment()
 {
-    var fileName = document.getElementById('document').files[0].name;
-    var fd = new FormData();
-    var file = document.getElementById('document').files[0];
-    fd.append('document', file);
-    token_value=$("input[name=csrfmiddlewaretoken]").val();
-    $.ajaxSetup
-    ({
-        beforeSend: function(xhr, settings)
-        {
-            xhr.setRequestHeader("X-CSRFToken", token_value);
-        }
-    });
-    $.ajax({
-    type : "POST",
-    url : "{% url 'gap_certificate_file' %}",
-    data : fd,
-    dataType: 'json',
-    contentType: false,
-    processData: false,
-    success : function(data)
+    var file_length = document.getElementById("document");
+    if(file_length.value.length < 1)
     {
-        if (data.form_is_valid)
-        {
-            var file_url = data.file_url
-            var appNo = $('#attachment_appNo').val();
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'gap_certificate_file_name' %}",
-                data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
-                success : function(responseText)
-                {
-                    $('#attachmentModal').modal('hide');
-                    $('#file-attachment-gap').html(responseText);
-                    $('.modal-backdrop').remove();
-                    $('#attachment_form')[0].reset();
-                }
-            });
-        }
-        else
-        {
-            $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-            $('#fileErrorMsg').show();
-            $('#fileErrorMsg').delay(2000).fadeOut('slow');
-        }
+        $('#fileErrorMsg').html("Please Choose A File");
+        $('#fileErrorMsg').show();
+        $('#fileErrorMsg').delay(2000).fadeOut('slow');
     }
-});
-
+    else
+    {
+        var fileName = document.getElementById('document').files[0].name;
+        var fd = new FormData();
+        var file = document.getElementById('document').files[0];
+        fd.append('document', file);
+        token_value=$("input[name=csrfmiddlewaretoken]").val();
+        $.ajaxSetup
+        ({
+            beforeSend: function(xhr, settings)
+            {
+                xhr.setRequestHeader("X-CSRFToken", token_value);
+            }
+        });
+        $.ajax({
+        type : "POST",
+        url : "{% url 'gap_certificate_file' %}",
+        data : fd,
+        dataType: 'json',
+        contentType: false,
+        processData: false,
+        success : function(data)
+        {
+            if (data.form_is_valid)
+            {
+                var file_url = data.file_url
+                var appNo = $('#attachment_appNo').val();
+                $.ajax
+                ({
+                    type : "POST",
+                    url : "{% url 'gap_certificate_file_name' %}",
+                    data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
+                    success : function(responseText)
+                    {
+                        $('#attachmentModal').modal('hide');
+                        $('#file-attachment-gap').html(responseText);
+                        $('.modal-backdrop').remove();
+                        $('#attachment_form')[0].reset();
+                    }
+                });
+            }
+            else
+            {
+                $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                $('#fileErrorMsg').show();
+                $('#fileErrorMsg').delay(2000).fadeOut('slow');
+            }
+        }
+        });
+    }
 }
 
 
@@ -2217,7 +2268,21 @@ function getBalance()
     var yield = $('#yield').val();
     var sold = $('#sold').val();
 
-    if(sold > yield)
+    if(yield == 0)
+    {
+        $('#yieldErrorMsg').html("Must Be More Than Zero");
+        $('#yieldErrorMsg').show();
+        $('#yieldErrorMsg').delay(2000).fadeOut('slow');
+        $('#yield').val("");
+    }
+    else if(sold == 0)
+    {
+        $('#soldErrorMsg').html("Must Be More Than Zero");
+        $('#soldErrorMsg').show();
+        $('#soldErrorMsg').delay(2000).fadeOut('slow');
+        $('#sold').val("");
+    }
+    else if(sold > yield)
     {
         $('#soldErrorMsg').html("Cannot Be More Than Yield");
         $('#soldErrorMsg').show();
@@ -2238,7 +2303,21 @@ function getEditBalance()
     var yield = $('#edit_yield').val();
     var sold = $('#edit_sold').val();
 
-    if(sold > yield)
+    if(yield == 0)
+    {
+        $('#edit_yieldErrorMsg').html("Must Be More Than Zero");
+        $('#edit_yieldErrorMsg').show();
+        $('#edit_yieldErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_yield').val("");
+    }
+    else if(sold == 0)
+    {
+        $('#edit_soldErrorMsg').html("Must Be More Than Zero");
+        $('#edit_soldErrorMsg').show();
+        $('#edit_soldErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_sold').val("");
+    }
+    else if(sold > yield)
     {
         $('#edit_soldErrorMsg').html("Cannot Be More Than Yield");
         $('#edit_soldErrorMsg').show();
@@ -2258,7 +2337,22 @@ function getBalanceStock()
 {
     var production = $('#production').val();
     var sold = $('#previous_sold').val();
-    if(sold > production)
+
+    if(production == 0)
+    {
+        $('#productionErrorMsg').html("Must Be More Than Zero");
+        $('#productionErrorMsg').show();
+        $('#productionErrorMsg').delay(2000).fadeOut('slow');
+        $('#production').val("");
+    }
+    else if(sold == 0)
+    {
+        $('#previous_soldErrorMsg').html("Must Be More Than Zero");
+        $('#previous_soldErrorMsg').show();
+        $('#previous_soldErrorMsg').delay(2000).fadeOut('slow');
+        $('#previous_sold').val("");
+    }
+    else if(sold > production)
     {
         $('#previous_soldErrorMsg').html("Cannot Be More Than Production");
         $('#previous_soldErrorMsg').show();
@@ -2277,7 +2371,21 @@ function getEditBalanceStock()
 {
     var production = $('#edit_production').val();
     var sold = $('#edit_previous_sold').val();
-    if(sold > production)
+    if(production == 0)
+    {
+        $('#edit_productionErrorMsg').html("Must Be More Than Zero");
+        $('#edit_productionErrorMsg').show();
+        $('#edit_productionErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_production').val("");
+    }
+    else if(sold == 0)
+    {
+        $('#edit_previous_soldErrorMsg').html("Must Be More Than Zero");
+        $('#edit_previous_soldErrorMsg').show();
+        $('#edit_previous_soldErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_previous_sold').val("");
+    }
+    else if(sold > production)
     {
         $('#edit_previous_soldErrorMsg').html("Cannot Be More Than Production");
         $('#edit_previous_soldErrorMsg').show();
@@ -2297,6 +2405,20 @@ function get_current_stock_bal()
     var production = $('#current_Production').val();
     var sold = $('#current_sold').val();
 
+    if(production == 0)
+    {
+        $('#current_ProductionErrorMsg').html("Must Be More Than Zero");
+        $('#current_ProductionErrorMsg').show();
+        $('#current_ProductionErrorMsg').delay(2000).fadeOut('slow');
+        $('#current_Production').val("");
+    }
+    else if(sold == 0)
+    {
+        $('#current_soldErrorMsg').html("Must Be More Than Zero");
+        $('#current_soldErrorMsg').show();
+        $('#current_soldErrorMsg').delay(2000).fadeOut('slow');
+        $('#current_sold').val("");
+    }
     if(sold > production)
     {
         $('#current_soldErrorMsg').html("Cannot Be More Than Production");
@@ -2381,9 +2503,9 @@ function get_edit_farmers_name(cidNo)
             {
                 $('#edit_farmers_group_cid').val("");
                 $('#edit_farmers_group_fullname').val("");
-                $('#edit_farmers_group_fullnameErrorMsg').html("Invalid CID.Try With Another one");
-                $('#edit_farmers_group_fullnameErrorMsg').show();
-                $('#edit_farmers_group_fullnameErrorMsg').delay(2000).fadeOut('slow');
+                $('#edit_farmers_group_cidErrorMsg').html("Invalid CID.Try With Another one");
+                $('#edit_farmers_group_cidErrorMsg').show();
+                $('#edit_farmers_group_cidErrorMsg').delay(2000).fadeOut('slow');
             }
             else
             {
@@ -2568,6 +2690,91 @@ function gap_attachment_details()
             $('#file-attachment-gap').html(response);
         }
     });
+}
+
+function check_farmers_no()
+{
+    var farmers_group_number = $('#farmers_group_number').val();
+    if(farmers_group_number == 0)
+    {
+        $('#farmers_group_numberErrorMsg').html("Farmers Group Number Should Be More Than Zero.");
+        $('#farmers_group_numberErrorMsg').show();
+        $('#farmers_group_numberErrorMsg').delay(2000).fadeOut('slow');
+        $("#farmers_group_number").val("");
+    }
+    else
+    {
+        $('#farmers_group_numberErrorMsg').hide();
+    }
+
+}
+
+function check_yield()
+{
+    var estimated_yield = $('#estimated_yield').val();
+
+    if(estimated_yield == 0)
+    {
+        $('#estimated_yieldErrorMsg').html("Must Be More Than Zero.");
+        $('#estimated_yieldErrorMsg').show();
+        $('#estimated_yieldErrorMsg').delay(2000).fadeOut('slow');
+        $('#estimated_yield').val("");
+    }
+    else
+    {
+        $('#estimated_yieldErrorMsg').hide();
+    }
+}
+
+function check_edit_yield()
+{
+    var estimated_yield = $('#edit_estimated_yield').val();
+
+    if(estimated_yield == 0)
+    {
+        $('#edit_estimated_yieldErrorMsg').html("Must Be More Than Zero.");
+        $('#edit_estimated_yieldErrorMsg').show();
+        $('#edit_estimated_yieldErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_estimated_yield').val("");
+    }
+    else
+    {
+        $('#edit_estimated_yieldErrorMsg').hide();
+    }
+}
+
+function check_area()
+{
+    var area = $('#area').val();
+
+    if(area == 0)
+    {
+        $('#areaErrorMsg').html("Must Be More Than Zero.");
+        $('#areaErrorMsg').show();
+        $('#areaErrorMsg').delay(2000).fadeOut('slow');
+        $('#area').val("");
+    }
+    else
+    {
+        $('#areaErrorMsg').hide();
+    }
+}
+
+function check_edit_area()
+{
+    var area = $('#edit_area').val();
+
+    if(area == 0)
+    {
+        $('#edit_areaErrorMsg').html("Must Be More Than Zero.");
+        $('#edit_areaErrorMsg').show();
+        $('#edit_areaErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_area').val("");
+    }
+    else
+    {
+        $('#edit_areaErrorMsg').hide();
+    }
 }
 </script>
 {% endblock %}

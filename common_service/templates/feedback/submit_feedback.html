@@ -28,7 +28,7 @@ form, input, select, textarea{
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="form-label">Address <font color="red">*</font></label>
-                            <input type="text" class="form-control" id="address" name="address">
+                            <textarea rows="2" class="form-control" id="address" name="address"></textarea>
                         </div>
                         <div class="alert alert-danger" id="addressErrorMsg" style="display:none"></div>
                     </div>
@@ -44,7 +44,7 @@ form, input, select, textarea{
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="form-label">Contact Number <font color="red">*</font></label>
-                            <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                            <input type="text" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
                         </div>
                         <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
                     </div>
@@ -168,10 +168,11 @@ function checkContact(value)
     var secondDigit = value.charAt(1);
     var length = value.length;
 
-    if (length <8){
+    if (length < 8){
     $('#contactNumberErrorMsg').html("Contact Number must be 8 digit.");
         $('#contactNumberErrorMsg').show();
         $('#contactNumberErrorMsg').delay(1500).fadeOut('slow');
+        $('#contactNumber').val("");
     }
     else if(firstDigit != 7 && firstDigit != 1){
         $('#contactNumberErrorMsg').html("Must Start with either 1 or 7.");

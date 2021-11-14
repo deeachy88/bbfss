@@ -209,8 +209,8 @@ option {
                                         <label class="form-label">Means of Conveyance &nbsp;<font color='red'>*</font> </label>
                                         <select class="form-control form-control" id="conveyanceMeans" name="conveyanceMeans" onchange="conveyanceChange(this.value)">
                                             <option value="">-SELECT-</option>
-                                            <option value="Air">Air</option>
-                                            <option value="Vehicular">Vehicular</option>
+                                            <option value="By Air">By Air</option>
+                                            <option value="By Road">By Road</option>
                                         </select>
                                     </div>
                                     <div class="alert alert-danger" id="conveyanceMeansErrorMsg" style="display:none"></div>
@@ -226,7 +226,7 @@ option {
                              <div class="row">
                                  <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="form-label">Purpose Of Movement &nbsp;<font color='red'>*</font></label>
+                                        <label class="form-label">Purpose of Movement &nbsp;<font color='red'>*</font></label>
                                         <input type="text" class="form-control" id="movementPurpose" name="movementPurpose">
                                     </div>
                                     <div class="alert alert-danger" id="movementPurposeErrorMsg" style="display:none"></div>
@@ -363,7 +363,7 @@ option {
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_attachment()"> Submit </button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_attachment()"> Upload </button>
                 </div>
 
             </div>
@@ -459,7 +459,7 @@ function save()
     var from_dzongkhag = $('#from_dzongkhag').val();
     var from_gewog = $('#from_gewog').val().length;
     var from_location = $('#from_location').val().length;
-    var to_dzongkhag = $('#Purpose').val();
+    var to_dzongkhag = $('#to_dzongkhag').val();
     var to_gewog = $('#to_gewog').val();
     var to_exact_location = $('#to_exact_location').val();
     var route = $('#route').val();
@@ -522,9 +522,9 @@ function save()
     }
      else if(to_dzongkhag == "")
     {
-        $('#from_dzongkhagErrorMsg').html("Select To Dzongkhag.");
-        $('#from_dzongkhagErrorMsg').show();
-        $('#from_dzongkhagErrorMsg').delay(2000).fadeOut('slow');
+        $('#to_dzongkhagErrorMsg').html("Select To Dzongkhag.");
+        $('#to_dzongkhagErrorMsg').show();
+        $('#to_dzongkhagErrorMsg').delay(2000).fadeOut('slow');
         $('#to_dzongkhag').focus();
     }
     else if(to_gewog == "")
@@ -825,7 +825,7 @@ function plant_attachment()
 
 function conveyanceChange(value)
 {
-    if (value == "Air")
+    if (value == "By Air")
     {
         $('#vehicleNo').attr("disabled", "disabled");
         $('.vehicle_mandatory').hide();
@@ -941,6 +941,7 @@ function getCitizenDetails(cidNo)
 
 function save_details_movement()
 {
+    var applicationNo = $('#applicationNo').val();
     var commodity = $('#commodity').val();
     var qty = $('#qty').val();
     var unit = $('#unit').val();

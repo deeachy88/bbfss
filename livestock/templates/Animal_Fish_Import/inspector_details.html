@@ -27,6 +27,12 @@ form, input, select, textarea{
   position: absolute;
   top: 50%;
 }
+a {
+    color: #e6e8ec;
+    text-decoration: none;
+    background-color: transparent;
+    -webkit-text-decoration-skip: objects;
+}
 </style>
 <div class="accordion" role="tablist">
         <div class="card">
@@ -197,6 +203,7 @@ form, input, select, textarea{
                                 {% endif %}
                             </div>
                         <br>
+                        {% if application_details.Import_Type == 'Individual' %}
                             <div class="row">
                                 <div class="col-sm-2">
                                     <label class="form-label">Nationality</label>
@@ -229,6 +236,7 @@ form, input, select, textarea{
                                     </div>
                                 {% endif %}
                             </div>
+                        {% endif %}
                         <br>
                             {% if application_details.Import_Type == 'Individual' and application_details.Nationality == 'Bhutanese'%}
                                 <div class="row">
@@ -301,9 +309,9 @@ form, input, select, textarea{
                                      <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Place of Entry</label>
-                                            <select class="form-control" disabled>
-                                                {% for location in location %}
-                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                            <select class="form-control"disabled>
+                                                {% for location_mapping in location_details %}
+                                                    <option value="{{ location_mapping.Field_Office_Id }}" {% if application_details.Place_Of_Entry == location_mapping.Field_Office_Id %}selected{% endif %}>{{ location_mapping.Field_Office }}</option>
                                                 {% endfor %}
                                              </select>
                                         </div>
@@ -381,8 +389,8 @@ form, input, select, textarea{
                                         <div class="form-group">
                                             <label class="form-label">Place of Entry</label>
                                             <select class="form-control"disabled>
-                                                {% for location in location %}
-                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                                {% for location_mapping in location_details %}
+                                                    <option value="{{ location_mapping.Field_Office_Id }}" {% if application_details.Place_Of_Entry == location_mapping.Field_Office_Id %}selected{% endif %}>{{ location_mapping.Field_Office }}</option>
                                                 {% endfor %}
                                              </select>
                                         </div>
@@ -458,11 +466,10 @@ form, input, select, textarea{
                                     </div>
                                      <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Place Of Entry</label>
-                                            <select class="form-control" disabled>
-                                                <option value="">--SELECT--</option>
-                                                {% for location in location %}
-                                                        <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
+                                            <label class="form-label">Place of Entry</label>
+                                            <select class="form-control"disabled>
+                                                {% for location_mapping in location_details %}
+                                                    <option value="{{ location_mapping.Field_Office_Id }}" {% if application_details.Place_Of_Entry == location_mapping.Field_Office_Id %}selected{% endif %}>{{ location_mapping.Field_Office }}</option>
                                                 {% endfor %}
                                              </select>
                                         </div>
@@ -477,18 +484,8 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Place of Entry</label>
-                                            <select class="form-control"disabled>
-                                                {% for location in location %}
-                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
-                                                {% endfor %}
-                                             </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
                                             <label class="form-label">Final Destination</label>
-                                             <input type="text" class="form-control" value="{{application_details.Final_Destination }}">
+                                             <input type="text" class="form-control" value="{{application_details.Final_Destination }}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -531,11 +528,22 @@ form, input, select, textarea{
                                 </tr>
                             </thead>
                             <tbody>
-                               {% for import_lp in import_lp_permit %}
+                               {% for observation_details in observation_details %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td>{{import.Current_Observation}}</td>
-                                        <td>{{import.Decision_Conformity}}</td>
+                                        <td>{{observation_details.Current_Observation}}</td>
+                                        <td>{{observation_details.Decision_Conformity}}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-sm"
+                                            onclick="delete_observation_details('{{observation_details.Record_Id}}','{{observation_details.Application_No}}')">
+                                            <i class="zmdi zmdi-delete"></i>
+                                            </button>
+                                            <button  type="button" class="btn btn-info btn-sm" data-toggle="tooltip" title="Edit"
+                                                 onclick="populate_observation_details('{{ observation_details.Record_Id }}', '{{observation_details.Current_Observation}}',
+                                                  '{{observation_details.Decision_Conformity}}', '{{observation_details.Application_No}}')">
+                                                <i class="fa fa-edit"></i>
+                                            </button>
+                                        </td>
                                     </tr>
                                     {% empty %}
                                     <tr>
@@ -667,7 +675,7 @@ form, input, select, textarea{
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>Time Of Inspection <font color="red">*</font></label>
-                                <input type="text" class="form-control time-picker flatpickr-input active" id="timeOfInspection" name="timeOfInspection" readonly="readonly">
+                                <input type="text" class="form-control" id="timeOfInspection" name="timeOfInspection">
                             </div>
                             <div class="alert alert-danger" id="timeOfInspectionErrorMsg" style="display:none"></div>
                         </div>
@@ -723,13 +731,55 @@ form, input, select, textarea{
                         </div>
                     </div>
                     <div class="modal-footer">
+                        {% for application_details in application_details %}
                         <button type="button" class="btn btn-flat btn-primary" onclick="add_details_ins('{{ application_details.Application_No }}')">
                             <i class="ace-icon fa fa-check"></i>
                             &nbsp;&nbsp;Add
                         </button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close Modal</button>
+                        {% endfor %}
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                      </div>
                      <div id="messageDiv" style="display:none"></div>
+                  </div>
+            </div>
+        </div>
+        <div id="edit_observation_modal" class="modal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"></h5>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="edit_record_id" id="edit_record_id">
+                        <input type="hidden" name="edit_application_no" id="edit_application_no">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Current Observation</label>
+                                    <textarea class="form-control" id="edit_currentObservation" rows="2"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="edit_currentObservationErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Decision Conformity Statement </label>
+                                    <textarea class="form-control" id="edit_decisionConform" rows="2"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="edit_decisionConformErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-flat btn-primary" onclick="update_observation_details()">
+                            <i class="ace-icon fa fa-check"></i>
+                            &nbsp;&nbsp;Update
+                        </button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                     </div>
                   </div>
             </div>
         </div>
@@ -753,56 +803,73 @@ form, input, select, textarea{
                         <input type="hidden" id="import_record_id" name="import_record_id">
                         <div class="box box-primary">
                             <div class="box-body">
+                                <input type="text" name="edit_la_record_id" id="edit_la_record_id" style="display:none"/>
+                                <input type="hidden" name="identifier" value="AFIP"/>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Particulars</label>
-                                        <input type="text" name="Particulars" class="form-control" id="Particulars" disabled>
-                                        <div class="alert alert-danger" id="ParticularsErrorMsg" style="display:none"></div>
+                                        <label class="form-label">Species</label>
+                                        <select class="form-control" name="edit_Species" id="edit_Species" disabled>
+                                            <option value="">--SELECT--</option>
+                                            {% for species in species %}
+                                                <option value="{{ species.Species_Id }}">{{ species.Species_Name }}</option>
+                                            {% endfor %}
+                                         </select>
+                                        <div class="alert alert-danger" id="edit_SpeciesErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Company/Producer</label>
-                                        <input type="text" name="Company_Name" class="form-control" id="Company_Name" disabled>
-                                        <div class="alert alert-danger" id="Company_NameErrorMsg" style="display:none"></div>
+                                        <label class="form-label">Breed</label>
+                                        <select class="form-control" name="edit_Breed" id="edit_Breed" disabled>
+                                            <option value="">--SELECT--</option>
+                                            {% for breed in breed %}
+                                                <option value="{{ breed.Species_Breed_Name }}">{{ breed.Species_Breed_Name }}</option>
+                                            {% endfor %}
+                                         </select>
+                                        <div class="alert alert-danger" id="edit_BreedErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Age</label>
+                                        <input type="text" name="edit_Age" class="form-control" id="edit_Age"  disabled>
+                                        <div class="alert alert-danger" id="edit_AgeErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Sex</label>
+                                        <select name="edit_Sex" class="form-control" id="edit_Sex" disabled>
+                                            <option value="">-SELECT-</option>
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                        </select>
+                                        <div class="alert alert-danger" id="edit_SexErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Description</label>
-                                        <textarea class="form-control" name="Description" id="Description" disabled></textarea>
-                                        <div class="alert alert-danger" id="remarksMeansErrorMsg" style="display:none"></div>
+                                        <textarea name="edit_animal_Description" class="form-control" id="edit_animal_Description" rows="3" disabled></textarea>
+                                        <div class="alert alert-danger" id="edit_animal_DescriptionErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Approved Number</label>
+                                        <input type="text" name="edit_no" class="form-control" id="edit_no" onkeypress="return isNumberKey(event)" onchange="check_edit_no(this.value)" disabled>
+                                        <div class="alert alert-danger" id="edit_noErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Approved Quantity</label>
-                                        <input type="text" name="no" class="form-control" id="total_no" disabled>
-                                        <div class="alert alert-danger" id="noErrorMsg" style="display:none"></div>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label class="form-label">Unit</label>
-                                        <input type="text" name="unit" class="form-control" id="unit" disabled>
-                                        <div class="alert alert-danger" id="unitErrorMsg" style="display:none"></div>
-                                    </div>
-                                </div>
-                                <hr>
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <div class="form-group">
-                                            <label class="form-label">Quantity Released <font color="red">*</font></font> </label>
-                                            <input type="text" class="form-control" id="number_released" name="number_released" onchange="get_balance_import()" onkeypress="return isNumberKey(event)">
-                                        </div>
+                                        <label class="form-label">Number Released <font color="red">*</font></label>
+                                        <input type="text" name="number_released" class="form-control" id="number_released" onchange="get_balance_import()">
                                         <div class="alert alert-danger" id="number_releasedErrorMsg" style="display:none"></div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label class="form-label">Balance Number</label>
-                                            <input type="text" class="form-control" id="balance" name="balance" readonly="readonly">
-                                        </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Balance</label>
+                                        <input type="text" name="balance" class="form-control" id="balance" readonly="readonly">
+                                        <div class="alert alert-danger" id="balanceErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Remarks(If Any)</label>
+                                        <label class="form-label">Remarks</label>
                                         <textarea name="import_Remarks" class="form-control" id="import_Remarks" rows="3"></textarea>
                                     </div>
                                 </div>
@@ -875,12 +942,14 @@ function add_details_ins(application_id)
     {
         $.ajax({
             type : "GET",
-            url : "{% url 'add_details_ins_import' %}",
+            url : "{% url 'af_import_observation' %}",
             data :{'application_id':application_id,'currentObservation':currentObservation,'decisionConform':decisionConform},
             success : function(data) {
                 $('#details').html(data);
                 $('#details').show();
                 $('#addModal').modal('hide');
+                $('#currentObservation').val("");
+                $('#decisionConform').val("");
             }
         });
     }
@@ -941,12 +1010,12 @@ function submit_details(application_id)
 function populateEditDetails(Species, Breed, Age, Sex, Quantity, Description,Application_No, Record_Id,Quantity_Balance_1, Quantity_Balance, Quantity_Released, Remarks)
 {
     $('#import_record_id').val(Record_Id);
-    $('#Species').val(Species);
-    $('#Breed').val(Breed);
-    $('#Age').val(Age);
-    $('#Sex').val(Sex);
-    $('#total_no').val(Quantity);
-    $('#animal_Description').val(Description);
+    $('#edit_Species').val(Species);
+    $('#edit_Breed').val(Breed);
+    $('#edit_Age').val(Age);
+    $('#edit_Sex').val(Sex);
+    $('#edit_no').val(Quantity);
+    $('#edit_animal_Description').val(Description);
     $('#applicationNo').val(Application_No);
     $('#balance_quantity_1').val(Quantity_Balance_1);
     $('#balance').val(Quantity_Balance);
@@ -969,14 +1038,14 @@ function populateEditDetails(Species, Breed, Age, Sex, Quantity, Description,App
     $('#permit_details_model').modal('show');
 }
 
-function get_balance_import(qty)
+function get_balance_import()
 {
     var balance_quantity = $('#balance_quantity_1').val();
     var number_released = $('#number_released').val();
     var quantity = balance_quantity - number_released
     if(quantity < 0)
     {
-        $('#number_releasedErrorMsg').html("quantity released cannot be more than quantity requested.");
+        $('#number_releasedErrorMsg').html("quantity released cannot be more than approved quantity.");
         $('#number_releasedErrorMsg').show();
         $('#number_releasedErrorMsg').delay(2000).fadeOut('slow');
         $('#number_released').val("");
@@ -1013,4 +1082,65 @@ function update_permit_details_form()
     s}
 }
 
+function delete_observation_details(Record_Id, Application_No)
+{
+    var type = "IAF";
+    $.ajax
+    ({
+        type : "GET",
+        url : "{% url 'delete_observation' %}",
+        data :{'Application_No':Application_No , 'Record_Id': Record_Id, 'type':type},
+        success : function(responseText)
+        {
+            $('#details').html(responseText);
+        }
+    });
+}
+
+function populate_observation_details(Record_Id, Current_Observation, Decision_Conformity, Application_No)
+{
+    $('#edit_record_id').val(Record_Id);
+    $('#edit_currentObservation').val(Current_Observation);
+    $('#edit_decisionConform').val(Decision_Conformity);
+    $('#edit_application_no').val(Application_No);
+    $('#edit_observation_modal').show();
+
+}
+
+function update_observation_details()
+{
+    var application_id =$('#edit_application_no').val();
+    var currentObservation = $('#edit_currentObservation').val();
+    var decisionConform = $('#edit_decisionConform').val();
+    var record_id = $('#edit_record_id').val();
+    var type = "IAF";
+
+    if(currentObservation == "")
+    {
+        $('#edit_currentObservationErrorMsg').html("Enter Current Observation.");
+        $('#edit_currentObservationErrorMsg').show();
+        $('#edit_currentObservationErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_currentObservation').focus();
+    }
+    else if(decisionConform == "")
+    {
+        $('#edit_decisionConformErrorMsg').html("Enter Decision Conformity Statement.");
+        $('#edit_decisionConformErrorMsg').show();
+        $('#edit_decisionConformErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_decisionConform').focus();
+    }
+    else
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'update_decision' %}",
+            data :{'application_id':application_id,'currentObservation':currentObservation,'decisionConform':decisionConform, 'record_id': record_id, 'type':type},
+            success : function(data) {
+                $('#details').html(data);
+                $('#details').show();
+                $('#edit_observation_modal').hide();
+            }
+        });
+    }
+}
 </script>

@@ -190,6 +190,8 @@
             }
             $(function ()
             {
+
+
                 $("#user-table").DataTable({
                     dom: 'Bfrtip',
                     buttons: [
@@ -326,6 +328,7 @@
                     $("#pills-nursery-seed-file").prop('disabled', true);
                     $("#fpc_file-attach").prop('disabled', true);
                     $("#no_tab").prop('disabled', true);
+                    $("#item-details").prop('disabled', true);
                 }
                 if($("#referenceNo").val() == "")
                 {
@@ -509,7 +512,6 @@
                         {
                             $('#Details').html(responseText);
                         }
-
                         else if(identification_type =='CMS')
                         {
                             $('#meat_item_details').html(responseText);
@@ -553,6 +555,38 @@
                         else if(identification_type =='FBR-FH')
                         {
                             $('#food_handler_details').html(responseText);
+                        }
+                        else if(identification_type =='GAP-CP')
+                        {
+                            $('#details_crop_production').html(responseText);
+                        }
+                        else if(identification_type =='GAP-PH')
+                        {
+                            $('#pack_house').html(responseText);
+                        }
+                        else if(identification_type =='OC-CP')
+                        {
+                            $('#crop_production').html(responseText);
+                        }
+                        else if(identification_type =='OC-WC')
+                        {
+                            $('#wild_collection').html(responseText);
+                        }
+                        else if(identification_type =='OC-AH')
+                        {
+                            $('#animal_husbandry').html(responseText);
+                        }
+                        else if(identification_type =='OC-AQUA')
+                        {
+                            $('#aquaculture').html(responseText);
+                        }
+                        else if(identification_type =='OC-API')
+                        {
+                            $('#api_culture').html(responseText);
+                        }
+                        else if(identification_type =='OC-PU')
+                        {
+                            $('#processing_details').html(responseText);
                         }
                     }
                 });
@@ -1148,7 +1182,7 @@
                             data : $('#edit_animal_form').serialize(),
                             success : function(response) {
                                  $('#animal_details').html(response);
-                                 $('#edit_animal_model').modal('hide');
+                                 $('#edit_animal_model').modal("hide");
                                  $('.modal-backdrop').remove();
                             }
                         });
@@ -1868,13 +1902,13 @@
                     }
                     else if(male == "")
                     {
-                        $('#edit_maleErrorMsg').html("Enter Number Of Male.");
+                        $('#edit_maleErrorMsg').html("Enter Number of Male.");
                         $('#edit_maleErrorMsg').show();
                         $('#edit_maleErrorMsg').delay(2000).fadeOut('slow');
                     }
                     else if(female == "")
                     {
-                        $('#edit_femaleErrorMsg').html("Enter Number Of Female.");
+                        $('#edit_femaleErrorMsg').html("Enter Number of Female.");
                         $('#edit_femaleErrorMsg').show();
                         $('#edit_femaleErrorMsg').delay(2000).fadeOut('slow');
                     }
@@ -1979,11 +2013,11 @@
                 else if(identifier == 'OC-API')
                 {
                     var api_common_name = $('#edit_api_common_name').val();
-                    var api_botanical_name = $('#api_botanical_name').val();
-                    var api_estimated_harvest = $('#api_estimated_harvest').val();
-                    var api_estimated_harvest_Yield_Unit = $('#api_estimated_harvest_Yield_Unit').val();
-                    var api_harvest_acreage = $('#api_harvest_acreage').val();
-                    var api_Unit = $('#api_Unit').val();
+                    var api_botanical_name = $('#edit_api_botanical_name').val();
+                    var api_estimated_harvest = $('#edit_api_estimated_harvest').val();
+                    var api_estimated_harvest_Yield_Unit = $('#edit_api_estimated_harvest_Yield_Unit').val();
+                    var api_harvest_acreage = $('#edit_api_harvest_acreage').val();
+                    var api_Unit = $('#edit_api_Unit').val();
 
                     if(api_common_name == "")
                     {

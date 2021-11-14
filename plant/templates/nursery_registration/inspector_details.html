@@ -185,8 +185,8 @@ form, input, select, textarea{
                                         <tr>
                                             <th scope="col">#</th>
                                             <th scope="col">Crop Category</th>
-                                            <th scope="col">Crop</th>
-                                            <th scope="col">Crop Variety</th>
+                                            <th scope="col">Scientific Name</th>
+                                            <th scope="col">Variety</th>
                                             <th scope="col">Source</th>
                                             <th scope="col">Quantity</th>
                                             <th scope="col">Remarks</th>
@@ -196,11 +196,20 @@ form, input, select, textarea{
                                         {% for seed_details in details_list %}
                                             <tr>
                                                 <td>{{ forloop.counter }}</td>
-                                                <td>{{seed_details.Crop_Category}}</td>
-                                                <td>{{seed_details.Crop}}</td>
+                                                {% for crop_category in crop_category %}
+                                                    {% if crop_category.Crop_Category_Id == seed_details.Crop_Category %}
+                                                        <td>{{crop_category.Crop_Category_Name}}</td>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {% for crop_master in crop_master %}
+                                                    {% if crop_master.Crop_Id == seed_details.Crop_Scientific_Name %}
+                                                        <td>{{crop_master.Crop_Scientific_Name}}</td>
+                                                    {% endif %}
+                                                {% endfor %}
                                                 <td>{{seed_details.Variety}}</td>
                                                 <td>{{seed_details.Source}}</td>
                                                 <td>{{seed_details.Qty}}</td>
+                                                <td>{{seed_details.Unit}}</td>
                                                 <td>{{seed_details.Remarks}}</td>
                                             </tr>
                                             {% empty %}

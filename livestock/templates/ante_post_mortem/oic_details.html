@@ -3,6 +3,9 @@
 form, input, select, textarea{
     color: black !important;
 }
+.custom-control-input:disabled~.custom-control-description {
+    color: rgb(0 0 0);
+}
 </style>
 <form method="post" id="oic_mortem_form">
 {% csrf_token %}
@@ -15,12 +18,12 @@ form, input, select, textarea{
                         </div>
                         <div class="col-sm-4 justify-content-center">
                             <label class="custom-control custom-radio">
-                                <input type="radio" class="custom-control-input" checked>
+                                <input type="radio" class="custom-control-input" disabled>
                                 <span class="custom-control-indicator"></span>
                                 <span class="custom-control-description">Ante-mortem</span>
                             </label>
                             <label class="custom-control custom-radio">
-                                <input type="radio" class="custom-control-input" disabled>
+                                <input type="radio" class="custom-control-input" checked>
                                 <span class="custom-control-indicator"></span>
                                 <span class="custom-control-description">Post-mortem</span>
                             </label>
@@ -33,12 +36,12 @@ form, input, select, textarea{
                         </div>
                         <div class="col-sm-4 justify-content-center">
                             <label class="custom-control custom-radio">
-                                <input type="radio" class="custom-control-input" disabled>
+                                <input type="radio" class="custom-control-input" checked>
                                 <span class="custom-control-indicator"></span>
                                 <span class="custom-control-description">Ante-mortem</span>
                             </label>
                             <label class="custom-control custom-radio">
-                                <input type="radio" class="custom-control-input" checked>
+                                <input type="radio" class="custom-control-input" disabled>
                                 <span class="custom-control-indicator"></span>
                                 <span class="custom-control-description">Post-mortem</span>
                             </label>
@@ -101,7 +104,7 @@ form, input, select, textarea{
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label class="form-label">Location_Dzongkhag_Code</label>
+                            <label class="form-label">Dzongkhag</label>
                             <select class="form-control" disabled>
                                 {% for dzongkhag in dzongkhag %}
                                     <option value="{{ dzongkhag.Dzongkhag_Code }}" {% if application_details.Location_Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>{{ dzongkhag.Dzongkhag_Name }}</option>
@@ -113,10 +116,10 @@ form, input, select, textarea{
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label class="form-label">Location Code</label>
+                            <label class="form-label">Location</label>
                              <select class="form-control" disabled>
                                 {% for location in location %}
-                                    <option value="{{ location.Location_Code }}" {% if application_details.Location_Code == dzongkhag.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                    <option value="{{ location.Location_Code }}" {% if application_details.Location_Code == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
                                 {% endfor %}
                              </select>
                         </div>

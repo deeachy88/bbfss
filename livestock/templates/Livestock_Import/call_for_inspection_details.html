@@ -111,6 +111,7 @@ form, input, select, textarea{
                             {% endif %}
                         </div>
                         <br>
+                        {% if application_details.Import_Type == 'Individual' %}
                         <div class="row">
                             <div class="col-sm-2">
                                 <label class="form-label">Nationality</label>
@@ -143,6 +144,7 @@ form, input, select, textarea{
                                 </div>
                             {% endif %}
                         </div>
+                        {% endif %}
                         <br>
                         {% if application_details.Import_Type == 'Individual' and application_details.Nationality == 'Bhutanese'%}
                             <div class="row">
@@ -216,7 +218,7 @@ form, input, select, textarea{
                                     <div class="form-group">
                                         <label class="form-label">Place of Entry</label>
                                         <select class="form-control"disabled>
-                                            {% for location in location_mapping %}
+                                            {% for location in location_details %}
                                                 <option value="{{ location.Field_Office_Id }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
                                             {% endfor %}
                                          </select>
@@ -370,7 +372,7 @@ form, input, select, textarea{
                                     <div class="form-group">
                                         <label class="form-label">Place of Entry</label>
                                         <select class="form-control" disabled>
-                                            {% for location in location %}
+                                            {% for location in location_details %}
                                                 <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
                                             {% endfor %}
                                          </select>

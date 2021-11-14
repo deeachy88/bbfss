@@ -1,0 +1,34 @@
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Current Observation</th>
+            <th scope="col">Decision Conformity Statement</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+       {% for observation_details in decision_details %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{observation_details.Current_Observation}}</td>
+                <td>{{observation_details.Decision_Conformity}}</td>
+                <td>
+                    <button type="button" class="btn btn-primary btn-sm"
+                    onclick="delete_observation_details('{{observation_details.Record_Id}}','{{observation_details.Application_No}}')">
+                    <i class="zmdi zmdi-delete"></i>
+                    </button>
+                    <button  type="button" class="btn btn-info btn-sm" data-toggle="tooltip" title="Edit"
+                         onclick="populate_observation_details('{{ observation_details.Record_Id }}', '{{observation_details.Current_Observation}}',
+                          '{{observation_details.Decision_Conformity}}', '{{observation_details.Application_No}}')">
+                        <i class="fa fa-edit"></i>
+                    </button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="4" class="text-center">No Data</td>
+            </tr>
+       {% endfor %}
+    </tbody>
+</table>

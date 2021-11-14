@@ -319,7 +319,7 @@ form, input, select, textarea{
                                     </div>
                                     <div class="form-group col-md-4">
                                         <div class="form-check">
-                                            <label>Type Of Exporter <font color="red">*</font></label><br>
+                                            <label class="from-label">Type Of Exporter <font color="red">*</font></label><br>
                                             <label class="custom-control custom-radio">
                                                 <input type="radio" name="Export_Type" class="custom-control-input" value="Producer">
                                                 <span class="custom-control-indicator"></span>
@@ -377,7 +377,7 @@ form, input, select, textarea{
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_import_attachment()"> Submit </button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_import_attachment()"> Upload </button>
                 </div>
             </div>
         </div>
@@ -517,13 +517,13 @@ function save_food_permit_details()
         $('#cidErrorMsg').show();
         $('#cidErrorMsg').delay(2000).fadeOut('slow');
     }
-    else if(Import_Type_value == "Indvidual" && cidCount < 11)
+    else if(Import_Type_value == "Individual" && cidCount < 11)
     {
         $('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits.");
         $('#cidErrorMsg').show();
         setTimeout('hideStatus("cidErrorMsg")',2000);
     }
-    else if(name == "")
+    else if(Import_Type_value == "Individual" && name == "")
     {
         $('#nameErrorMsg').html("Enter Name .");
         $('#nameErrorMsg').show();
@@ -531,7 +531,7 @@ function save_food_permit_details()
     }
     else if(present_address == "")
     {
-        $('#presentAddressErrorMsg').html("Enter Name .");
+        $('#presentAddressErrorMsg').html("Enter Present Address .");
         $('#presentAddressErrorMsg').show();
         $('#presentAddressErrorMsg').delay(2000).fadeOut('slow');
     }
@@ -561,7 +561,7 @@ function save_food_permit_details()
     }
     else if(email == "")
     {
-        $('#emailErrorMsg').html("Enter Contact Number.");
+        $('#emailErrorMsg').html("Enter Email.");
         $('#emailErrorMsg').show();
         $('#emailErrorMsg').delay(2000).fadeOut('slow');
     }
@@ -603,7 +603,7 @@ function save_food_permit_details()
     }
     else if(conveyanceMeans == "")
     {
-        $('#conveyanceMeansErrorMsg').html("Select Means OF Conveyance.");
+        $('#conveyanceMeansErrorMsg').html("Select Means of Conveyance.");
         $('#conveyanceMeansErrorMsg').show();
         $('#conveyanceMeansErrorMsg').delay(2000).fadeOut('slow');
     }
@@ -738,54 +738,64 @@ function updateDetails()
 
 function save_import_attachment()
 {
-    var fileName = document.getElementById('document').files[0].name;
-    var fd = new FormData();
-    var file = document.getElementById('document').files[0];
-    fd.append('document', file);
-    token_value=$("input[name=csrfmiddlewaretoken]").val();
-    $.ajaxSetup
-    ({
-        beforeSend: function(xhr, settings)
-        {
-        xhr.setRequestHeader("X-CSRFToken", token_value);
-        }
-    });
-    $.ajax
-    ({
-        type : "POST",
-        url : "{% url 'food_import_file' %}",
-        data : fd,
-        dataType: 'json',
-        contentType: false,
-        processData: false,
-        success : function(data)
-        {
-            if (data.form_is_valid)
+    var file_length = document.getElementById("document");
+    if(file_length.value.length < 1)
+    {
+        $('#fileErrorMsg').html("Please Choose A File");
+        $('#fileErrorMsg').show();
+        $('#fileErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else
+    {
+        var fileName = document.getElementById('document').files[0].name;
+        var fd = new FormData();
+        var file = document.getElementById('document').files[0];
+        fd.append('document', file);
+        token_value=$("input[name=csrfmiddlewaretoken]").val();
+        $.ajaxSetup
+        ({
+            beforeSend: function(xhr, settings)
             {
-                var appNo = $('#applicationNo').val();
-                var file_url = data.file_url
-                $.ajax
-                ({
-                    type : "POST",
-                    url : "{% url 'food_import_file_name' %}",
-                    data : {'appNo':appNo , 'filename':fileName , 'file_url':file_url},
-                    success : function(responseText)
-                    {
-                        $('#attachmentModal').modal('hide');
-                        $('#fileAttach').html(responseText);
-                        $('.modal-backdrop').remove();
-                        $('#attachment_form')[0].reset();
-                    }
-                });
+            xhr.setRequestHeader("X-CSRFToken", token_value);
             }
-            else
+        });
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'food_import_file' %}",
+            data : fd,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            success : function(data)
             {
-                $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-                $('#fileErrorMsg').show();
-                $('#fileErrorMsg').delay(2000).fadeOut('slow');
+                if (data.form_is_valid)
+                {
+                    var appNo = $('#applicationNo').val();
+                    var file_url = data.file_url
+                    $.ajax
+                    ({
+                        type : "POST",
+                        url : "{% url 'food_import_file_name' %}",
+                        data : {'appNo':appNo , 'filename':fileName , 'file_url':file_url},
+                        success : function(responseText)
+                        {
+                            $('#attachmentModal').modal('hide');
+                            $('#fileAttach').html(responseText);
+                            $('.modal-backdrop').remove();
+                            $('#attachment_form')[0].reset();
+                        }
+                    });
+                }
+                else
+                {
+                    $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                    $('#fileErrorMsg').show();
+                    $('#fileErrorMsg').delay(2000).fadeOut('slow');
+                }
             }
-        }
-    });
+        });
+    }
 
 }
 function save_food_import_permit_details()
@@ -890,7 +900,6 @@ function checkForm(value)
         $('#dzongkhag').val("");
         $('#village').val("");
         $('#gewog').val("");
-        $("#name").removeAttr("readonly");
     }
 }
 

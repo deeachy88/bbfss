@@ -62,12 +62,12 @@ form, input, select, textarea{
                                         <input type="text" class="form-control" id="name" name="name" value="{{ application_details.Applicant_Name  }}" disabled>
                                     </div>
                                     {% if application_details.Nationality == 'Foreigner' %}
-                                        <div class="col-md-4" id="country_div" style="display:none">
+                                        <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="form-label">Country</label>
                                                 <select class="form-control" disabled>
                                                     {% for country in country %}
-                                                        <option value="{{ country.Country_Code }}" {% if country.Country_Code == country.Country_Code %}selected{% endif %}>{{ country.Country_Name }}</option>
+                                                        <option value="{{ country.Country_Code }}" {% if application_details.Country_Code == country.Country_Code %}selected{% endif %}>{{ country.Country_Name }}</option>
                                                     {% endfor %}
                                                  </select>
                                             </div>
@@ -176,10 +176,16 @@ form, input, select, textarea{
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Preferred Date</label>
-                                             <input type="text" class="form-control" value="{{ application_details.Proposed_Inspection_Date|date:'d-m-Y'}}">
+                                             <input type="text" class="form-control" value="{{ application_details.Proposed_Inspection_Date|date:'d-m-Y'}}" disabled>
                                         </div>
                                     </div>
-
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Associated food establishment <font color="red">*</font></label>
+                                            <textarea class="form-control" disabled rows="3">{{ application_details.Associated_Food_Establishment}}</textarea>
+                                        </div>
+                                        <div class="alert alert-danger" id="associated_establishmentErrorMsg" style="display:none"></div>
+                                    </div>
                                 </div>
                             </div>
                         {% endfor %}

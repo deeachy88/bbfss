@@ -569,18 +569,26 @@ form, input, select, textarea{
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="form-label">Validity Period (If Approve - No Of Days)<font color="red">*</font></label>
+                                        <label class="form-label">Validity Period (If Approve - No of Days)<font color="red">*</font></label>
                                         <input type="text" class="form-control" name="validity" id="validity" onkeypress="return isNumberKey(event)" onchange="check_validity(this.value)">
                                     </div>
                                     <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>
                                 </div>
                                  <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="form-label">Remarks(If Reject Please Fill THe Remarks)</label>
+                                        <label class="form-label">Remarks(If Reject Please Fill The Remarks)</label>
                                         <textarea class="form-control" rows="5" id="remarks" name="remarks"></textarea>
                                         <div class="alert alert-danger" id="remarksErrorMsg" style="display:none"></div>
                                     </div>
                                  </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Special Entry Conditions/ Additional Declaration(If Any)</label>
+                                        <textarea class="form-control" id="additional_Info" name="additional_Info" rows="3"></textarea>
+                                    </div>
+                                </div>
                             </div>
                             <div class="alert alert-success" id="fo_success_Msg" style="display:none"></div>
                             <div class="alert alert-danger" id="fo_reject_Msg" style="display:none"></div>
@@ -625,6 +633,7 @@ form, input, select, textarea{
 
             remarks = $('#remarks').val();
             validity = $('#validity').val();
+            var additional_Info = $('#additional_Info').val();
             if(validity == "")
             {
                 $('#validityErrorMsg').html("Enter Validity.");
@@ -637,7 +646,7 @@ form, input, select, textarea{
                 $.ajax({
                 type : "POST",
                 url : "{% url 'fo_approve' %}",
-                data :{'application_id':application_id ,'remarks':remarks,'validity': validity, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                data :{'application_id':application_id ,'remarks':remarks,'validity': validity,'additional_Info':additional_Info, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(data) {
                     $("#pageloader").hide();
                     $('#fo_success_Msg').html("Application Approved.");

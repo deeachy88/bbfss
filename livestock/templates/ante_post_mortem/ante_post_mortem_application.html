@@ -285,7 +285,7 @@ form, input, select, textarea{
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_mortem_attachment()"> Submit </button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_mortem_attachment()"> Upload </button>
                 </div>
             </div>
         </div>
@@ -378,6 +378,7 @@ function save_mortem_form()
     var location = $('#location').val();
     var Location_Dzongkhag_Code = $('#Location_Dzongkhag_Code').val();
     var location_code = $('#location_code').val();
+    var exact_location = $('#exact_location').val();
     var inspectionDate = $('#inspectionDate').val();
     var cidCount = $('#cid').val().length;
     var number_count = $('#contactNumber').val().length;
@@ -426,7 +427,7 @@ function save_mortem_form()
     }
     else if(email == "")
     {
-        $('#emailErrorMsg').html("Enter Contact Number.");
+        $('#emailErrorMsg').html("Enter Email.");
         $('#emailErrorMsg').show();
         $('#emailErrorMsg').delay(2000).fadeOut('slow');
     }
@@ -438,7 +439,7 @@ function save_mortem_form()
     }
     else if (Location_Dzongkhag_Code == "")
     {
-        $('#Location_Dzongkhag_CodeErrorMsg').html("Select Location Dzongkhag Code.");
+        $('#Location_Dzongkhag_CodeErrorMsg').html("Select Dzongkhag.");
         $('#Location_Dzongkhag_CodeErrorMsg').show();
         $('#Location_Dzongkhag_CodeErrorMsg').delay(2000).fadeOut('slow');
     }
@@ -509,54 +510,63 @@ function save_mortem_form()
 
 function save_mortem_attachment()
 {
-    var fileName = document.getElementById('document').files[0].name;
-    var fd = new FormData();
-    var file = document.getElementById('document').files[0];
-    fd.append('document', file);
-    token_value=$("input[name=csrfmiddlewaretoken]").val();
-    $.ajaxSetup
-    ({
-        beforeSend: function(xhr, settings)
-        {
-            xhr.setRequestHeader("X-CSRFToken", token_value);
-        }
-    });
-    $.ajax({
-    type : "POST",
-    url : "{% url 'add_mortem_file' %}",
-    data : fd,
-    dataType: 'json',
-    contentType: false,
-    processData: false,
-    success : function(data)
+    var file_length = document.getElementById("document");
+    if(file_length.value.length < 1)
     {
-        if (data.form_is_valid)
-        {
-            var file_url = data.file_url
-            var appNo = $('#applicationNo').val();
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'add_mortem_file_name' %}",
-                data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
-                success : function(responseText)
-                {
-                    $('#attachmentModal').modal('hide');
-                    $('#file-attachment-mortem').html(responseText);
-                    $('.modal-backdrop').remove();
-                    $('#attachment_form')[0].reset();
-                }
-            });
-        }
-        else
-        {
-            $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-            $('#fileErrorMsg').show();
-            $('#fileErrorMsg').delay(2000).fadeOut('slow');
-        }
+        $('#fileErrorMsg').html("Please Choose A File");
+        $('#fileErrorMsg').show();
+        $('#fileErrorMsg').delay(2000).fadeOut('slow');
     }
-});
-
+    else
+    {
+        var fileName = document.getElementById('document').files[0].name;
+        var fd = new FormData();
+        var file = document.getElementById('document').files[0];
+        fd.append('document', file);
+        token_value=$("input[name=csrfmiddlewaretoken]").val();
+        $.ajaxSetup
+        ({
+            beforeSend: function(xhr, settings)
+            {
+                xhr.setRequestHeader("X-CSRFToken", token_value);
+            }
+        });
+        $.ajax({
+        type : "POST",
+        url : "{% url 'add_mortem_file' %}",
+        data : fd,
+        dataType: 'json',
+        contentType: false,
+        processData: false,
+        success : function(data)
+        {
+            if (data.form_is_valid)
+            {
+                var file_url = data.file_url
+                var appNo = $('#applicationNo').val();
+                $.ajax
+                ({
+                    type : "POST",
+                    url : "{% url 'add_mortem_file_name' %}",
+                    data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
+                    success : function(responseText)
+                    {
+                        $('#attachmentModal').modal('hide');
+                        $('#file-attachment-mortem').html(responseText);
+                        $('.modal-backdrop').remove();
+                        $('#attachment_form')[0].reset();
+                    }
+                });
+            }
+            else
+            {
+                $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                $('#fileErrorMsg').show();
+                $('#fileErrorMsg').delay(2000).fadeOut('slow');
+            }
+        }
+        });
+    }
 }
 
 function show_modal()

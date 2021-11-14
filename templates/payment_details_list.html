@@ -28,7 +28,7 @@
                                 {% for application_details in application_details %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td><button class="btn btn-primary btn-link" data-toggle="modal" data-target="#payment-modal">{{application_details.Application_No}}</button></td>
+                                        <td><button class="btn btn-primary btn-link"  onclick="populate_payment_modal('{{application_details.Application_No}}')">{{application_details.Application_No}}</button></td>
                                         {% for service_details in service_details %}
                                             {% if application_details.Service_Id == service_details.Service_Code %}
                                                 <td>{{service_details.Service_Name}}</td>
@@ -51,9 +51,6 @@
 </div>
 <form method="post" id="payment_form">
     {% csrf_token %}
-    {% for application_details in application_details %}
-        <input type="hidden" name="application_no" value="{{application_details.Application_No}}">
-    {% endfor %}
         <div id="payment-modal" class="modal" tabindex="-1">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -63,6 +60,7 @@
                 <div class="modal-body">
                     <div class="col-md-12">
                     <div class="row">
+                        <input type="hidden" name="application_no" id="application_no">
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Payment Type <font color="red">*</font></label>
@@ -93,14 +91,16 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label>Receipt No <font color="red">*</font></label>
+                                <label id="receipt">Receipt No <font color="red">*</font></label>
+                                <label id="jrnl" style="display:none">Jrnl. No <font color="red">*</font></label>
                                 <input type="text" class="form-control" name="Receipt_No" id="Receipt_No" onchange="checkReceiptNo(this.value)">
                             </div>
                             <div class="alert alert-danger" id="Receipt_NoErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label>Receipt Date <font color="red">*</font></label>
+                                <label id="receipt_date_label">Receipt Date <font color="red">*</font></label>
+                                <label id="jrnl_date" style="display:none">Jrnl. Date <font color="red">*</font></label>
                                 <input type="date" class="form-control" id="Receipt_Date" name="Receipt_Date">
                             </div>
                             <div class="alert alert-danger" id="Receipt_DateErrorMsg" style="display:none"></div>
@@ -143,12 +143,6 @@
             $('#Payment_TypeErrorMsg').delay(2000).fadeOut('slow');
         }
         else if(Payment_Type == "Cheque" && Instrument_No == "")
-        {
-            $('#Instrument_NoErrorMsg').html("Enter Instrument No");
-            $('#Instrument_NoErrorMsg').show();
-            $('#Instrument_NoErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(Payment_Type == "Online" && Instrument_No == "")
         {
             $('#Instrument_NoErrorMsg').html("Enter Instrument No");
             $('#Instrument_NoErrorMsg').show();
@@ -220,12 +214,34 @@
         {
             $('#Instrument_No').val("");
             $("#Instrument_No" ).prop( "disabled", true );
-
+            $('#receipt').show();
+            $('#receipt_date_label').show();
+            $('#jrnl').hide();
+            $('#jrnl_date').hide();
+        }
+        else if(p_type == "Online")
+        {
+            $('#Instrument_No').val("");
+            $("#Instrument_No" ).prop( "disabled", true );
+            $('#receipt').hide();
+            $('#receipt_date_label').hide();
+            $('#jrnl').show();
+            $('#jrnl_date').show();
         }
         else
         {
             $("#Instrument_No" ).prop( "disabled", false );
+            $('#receipt').show();
+            $('#receipt_date_label').show();
+            $('#jrnl').hide();
+            $('#jrnl_date').hide();
         }
+    }
+
+    function populate_payment_modal(application_no)
+    {
+        $('#application_no').val(application_no);
+        $("#payment-modal").modal('show')
     }
 </script>
 {% endblock %}

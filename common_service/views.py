@@ -67,7 +67,7 @@ def investigation_complaint_list(request):
     Login_Id = request.session['Login_Id']
     # Role_Id = request.session['Role_Id']
     global investigation_list
-    in_complaint_list = t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='A')
+    in_complaint_list = t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='A', Service_Code='COM')
 
     return render(request, 'complaint_investigation_pending_list.html', {'in_complaint_list': in_complaint_list})
 
@@ -80,7 +80,7 @@ def co_complaint_details(request):
     village = t_village_master.objects.all()
     details = t_common_complaint_t1.objects.filter(Application_No=Application_No)
     file = t_file_attachment.objects.filter(Application_No=Application_No)
-    inspector_list = t_user_master.objects.all()
+    inspector_list = t_user_master.objects.filter(Login_Type='I')
 
     return render(request, 'complaint_handling/complaint_officer_complaint_forward.html', {'complaint_details': details,
      'inspector_list': inspector_list, 'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village, 'file': file})
@@ -197,7 +197,7 @@ def add_complaint_file_name(request):
         Application_No = request.POST.get('appNo')
         fileName = request.POST.get('filename')
         Applicant_Id = request.session['email']
-        fs = ("/attachments" + "/" + str(timezone.now().year) + "/common_service/complaint_handling/")
+        fs = ("attachments" + "/" + str(timezone.now().year) + "/common_service/complaint_handling/" + fileName)
         print(fs)
         t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
                                          Role_Id='8', File_Path=fs, Attachment=fileName)
@@ -241,7 +241,7 @@ def add_investigation_file_name(request):
         Application_No = request.POST.get('appNo')
         fileName = request.POST.get('filename')
         Applicant_Id = request.session['email']
-        fs = ("/attachments" + "/" + str(timezone.now().year) + "/common_service/complaint_handling/")
+        fs = ("attachments" + "/" + str(timezone.now().year) + "/common_service/complaint_handling/" + fileName)
         t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
                                          Role_Id='5', File_Path=fs, Attachment=fileName)
         investigation_file = t_file_attachment.objects.filter(Application_No=Application_No, Role_Id='5')
@@ -262,6 +262,7 @@ def delete_investigation_file(request):
 def submit_complaint(request):
     application_no = request.GET.get('appNo')
     workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
+    workflow_details.update(Application_Date=date.today())
     workflow_details.update(Action_Date=date.today())
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
@@ -857,7 +858,7 @@ def add_commodity_file_name(request):
         fileName = request.POST.get('filename')
         Applicant_Id = request.session['email']
         Role_Id = request.session['Role_Id']
-        fs = ("/attachments" + "/" + str(timezone.now().year) + "/common_service/complaint_handling/")
+        fs = ("attachments" + "/" + str(timezone.now().year) + "/common_service/complaint_handling/" + fileName)
         t_file_attachment.objects.create(Application_No=Reference_No, Applicant_Id=Applicant_Id,
                                          Role_Id=Role_Id, File_Path=fs, Attachment=fileName)
         file_attach = t_file_attachment.objects.filter(Application_No=Reference_No)

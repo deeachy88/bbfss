@@ -15,6 +15,12 @@ form, input, select, textarea{
   position: absolute;
   top: 50%;
 }
+a {
+    color: #e6e8ec;
+    text-decoration: none;
+    background-color: transparent;
+    -webkit-text-decoration-skip: objects;
+}
 </style>
         <div class="card">
             <div class="card-header" role="tab" id="headingOne">
@@ -616,6 +622,7 @@ form, input, select, textarea{
                                     <th scope="col">#</th>
                                     <th scope="col">Name</th>
                                     <th scope="col">Designation</th>
+                                    <th scope="col"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -624,6 +631,17 @@ form, input, select, textarea{
                                         <td>{{ forloop.counter }}</td>
                                         <td>{{import.Name}}</td>
                                         <td>{{import.Designation}}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-sm"
+                                            onclick="delete_fi_inspection_team_details('{{import.Record_Id}}','{{import.Application_No}}')">
+                                            <i class="zmdi zmdi-delete"></i>
+                                            </button>
+                                            <button  type="button" class="btn btn-info btn-sm" data-toggle="tooltip" title="Edit"
+                                                 onclick="inspection_team_details('{{ import.Record_Id }}', '{{import.Name}}',
+                                                  '{{import.Designation}}', '{{import.Application_No}}')">
+                                                <i class="fa fa-edit"></i>
+                                            </button>
+                                        </td>
                                     </tr>
                                     {% empty %}
                                     <tr>
@@ -665,9 +683,31 @@ form, input, select, textarea{
                                 </tr>
                             </thead>
                             <tbody>
+                                    {% for import in team_details %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{import.Name}}</td>
+                                        <td>{{import.Designation}}</td>
+                                        <td>{{import.Open_Meeting_Date|date:"d-m-Y"}}</td>
+                                        <td>{{import.Closing_Meeting_Date|date:"d-m-Y"}}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-sm"
+                                            onclick="delete_fi_team_details('{{import.Record_Id}}','{{import.Application_No}}')">
+                                            <i class="zmdi zmdi-delete"></i>
+                                            </button>
+                                            <button  type="button" class="btn btn-info btn-sm" data-toggle="tooltip" title="Edit"
+                                                 onclick="fi_team_details('{{ import.Record_Id }}', '{{import.Name}}','{{import.Designation}}',
+                                                 '{{import.Open_Meeting_Date|date:'Y-m-d'}}', '{{import.Closing_Meeting_Date|date:'Y-m-d'}}',
+                                                  '{{import.Application_No}}')">
+                                                <i class="fa fa-edit"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
                                     <tr>
                                       <td colspan="5" class="text-center">No Data</td>
                                     </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
@@ -680,7 +720,7 @@ form, input, select, textarea{
                      Details of Non-Conformities
                 </a>
             </div>
-            <div id="Conformities_collapse" class="collapse" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion" style="">
+            <div id="Conformities_collapse" class="active" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion" style="">
                 <div class="card-body">
                     <div class="card-tools">
                         <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="openDecisionModal()">
@@ -776,7 +816,7 @@ form, input, select, textarea{
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-label">Desired Inspection Date</label>
-                                        <input type="text" class="form-control" value="{{ application_details.Desired_FR_Inspection_Date }}" readonly="readonly">
+                                        <input type="text" class="form-control" value="{{ application_details.Desired_FR_Inspection_Date|date:'d-m-Y' }}" readonly="readonly">
                                     </div>
                                 </div>
                             </div>
@@ -817,12 +857,14 @@ form, input, select, textarea{
                                     <input type="text" class="form-control" value="{{application_details.FI_Inspection_Date}}" readonly="readonly">
                                 </div>
                             </div>
+                            {% if application_details.FI_Recommendation %}
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Recommendation</label>
                                     <textarea class="form-control" disabled rows="2">{{application_details.FI_Recommendation}}</textarea>
                                 </div>
                             </div>
+                            {% endif %}
                         </div>
                     {% endfor %}
                     <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
@@ -1009,14 +1051,14 @@ form, input, select, textarea{
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Opening Meeting(Date) <font color="red">*</font></label>
-                                    <input type="text" class="form-control date-picker flatpickr-input active" name="opening_date" id="opening_date" readonly>
+                                    <input type="date" class="form-control" name="opening_date" id="opening_date">
                                 </div>
                                 <div class="alert alert-danger" id="opening_dateErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Closing Meeting(Date) <font color="red">*</font></label>
-                                    <input type="text" class="form-control date-picker flatpickr-input active" name="closing_date" id="closing_date" readonly>
+                                    <input type="date" class="form-control" name="closing_date" id="closing_date" onchange="check_date()">
                                 </div>
                                 <div class="alert alert-danger" id="closing_dateErrorMsg" style="display:none"></div>
                             </div>
@@ -1026,7 +1068,7 @@ form, input, select, textarea{
                     <div class="modal-footer">
                         {% for application_details in application_details %}
                         <button type="button" class="btn btn-flat btn-primary" onclick="add_team_details('{{ application_details.Application_No }}')">
-                            <i class="ace-icon fa fa-times"></i>
+                            <i class="ace-icon fa fa-check"></i>
                             &nbsp;&nbsp;Add
                         </button>
                         {% endfor %}
@@ -1073,6 +1115,104 @@ form, input, select, textarea{
                         </button>
                         {% endfor %}
                         <button type="button" class="btn btn-primary" data-dismiss="modal">Close Modal</button>
+                     </div>
+
+                  </div>
+            </div>
+        </div>
+        <div id="edit_teamModal" class="modal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"></h5>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="edit_record_id" id="edit_record_id">
+                        <input type="hidden" name="edit_app_no" id="edit_app_no">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Name Of Key Personal <font color="red">*</font></label>
+                                    <input type="text" class="form-control" name="edit_name" id="edit_name">
+                                </div>
+                                <div class="alert alert-danger" id="edit_nameErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Designation Of Key Personal <font color="red">*</font></label>
+                                    <input type="text" class="form-control" name="edit_designation" id="edit_designation">
+                                </div>
+                                <div class="alert alert-danger" id="edit_designationErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Opening Meeting(Date) <font color="red">*</font></label>
+                                    <input type="date" class="form-control" name="edit_opening_date" id="edit_opening_date">
+                                </div>
+                                <div class="alert alert-danger" id="edit_opening_dateErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Closing Meeting(Date) <font color="red">*</font></label>
+                                    <input type="date" class="form-control" name="edit_closing_date" id="edit_closing_date" onchange="check_edit_date()">
+                                </div>
+                                <div class="alert alert-danger" id="edit_closing_dateErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-flat btn-primary" onclick="edit_team_details()">
+                            <i class="ace-icon fa fa-check"></i>
+                            &nbsp;&nbsp;Update
+                        </button>
+                       <button type="button" class="btn btn-primary" onclick="dismiss_team_modal()">Close Modal</button>
+                     </div>
+
+                  </div>
+            </div>
+        </div>
+
+        <div id="edit_InspectionTeamModal" class="modal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"></h5>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="edit_ins_record_id" id="edit_ins_record_id">
+                        <input type="hidden" name="edit_ins_app_no" id="edit_ins_app_no">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Name <font color="red">*</font></label>
+                                    <input type="text" class="form-control" name="edit_ins_name" id="edit_ins_name">
+                                </div>
+                                <div class="alert alert-danger" id="edit_ins_nameErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Designation <font color="red">*</font></label>
+                                    <input type="text" class="form-control" name="edit_ins_designation" id="edit_ins_designation">
+                                </div>
+                                <div class="alert alert-danger" id="edit_ins_designationErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-flat btn-primary" onclick="edit_inspection_team_details()">
+                            <i class="ace-icon fa fa-check"></i>
+                            &nbsp;&nbsp;Update
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="dismiss_ins_modal()">Close Modal</button>
                      </div>
 
                   </div>
@@ -1235,9 +1375,14 @@ function add_details_ins(application_id)
             url : "{% url 'concern_details_factory_ins' %}",
             data :{'application_id':application_id,'Requirement':Requirement,'Observations':Observations,'Clause_No':Clause_No,'Concern':Concern_Val, 'NC_Category':nc_category},
             success : function(data) {
-                $('#details').html(data);
-                $('#details').show();
+                $('#nc_details').html(data);
+                $('#nc_details').show();
                 $('#addModal').modal('hide');
+                $('#Requirement').val("");
+                $('#Clause_No').val("");
+                $('input[name="Concern"]').prop('checked', false);
+                $('#Observations').val("");
+                $('#response_fbo').val("");
             }
         });
     }
@@ -1288,6 +1433,10 @@ function add_team_details(application_id)
                 $('#team_details').html(data);
                 $('#team_details').show();
                 $('#teamModal').modal('hide');
+                $('#name').val("");
+                $('#designation').val("");
+                $('#opening_date').val("");
+                $('#closing_date').val("");
             }
         });
     }
@@ -1473,8 +1622,183 @@ function add_inspection_team_details(application_id)
                 $('#inspection_team_details').html(data);
                 $('#inspection_team_details').show();
                 $('#InspectionTeamModal').modal('hide');
+                $('#ins_name').val("");
+                $('#ins_designation').val("");
             }
         });
+    }
+}
+
+function delete_fi_inspection_team_details(record_id, application_no)
+{
+    $.ajax({
+    type : "GET",
+    url : "{% url 'delete_fbr_factory_inspection_team_details' %}",
+    data :{'Application_No':application_no , 'Record_Id': record_id},
+    success : function(responseText)
+    {
+        $('#inspection_team_details').html(responseText);
+    }
+    });
+}
+
+function delete_fi_team_details(record_id, application_no)
+{
+    $.ajax
+    ({
+        type : "GET",
+        url : "{% url 'delete_fbr_factory_team_details' %}",
+        data :{'Application_No':application_no , 'Record_Id': record_id},
+        success : function(responseText)
+        {
+            $('#team_details').html(responseText);
+        }
+    });
+}
+
+function inspection_team_details(Record_id, Name, Designation, Application_No)
+{
+    $('#edit_ins_record_id').val(Record_id);
+    $('#edit_ins_name').val(Name);
+    $('#edit_ins_designation').val(Designation);
+    $('#edit_ins_app_no').val(Application_No);
+    $('#edit_InspectionTeamModal').show();
+}
+
+function fi_team_details(Record_id, Name, Designation,Open_Meeting_Date,Closing_Meeting_Date, Application_No)
+{
+    $('#edit_record_id').val(Record_id);
+    $('#edit_name').val(Name);
+    $('#edit_designation').val(Designation);
+    $('#edit_opening_date').val(Open_Meeting_Date);
+    $('#edit_closing_date').val(Closing_Meeting_Date);
+    $('#edit_app_no').val(Application_No);
+    $('#edit_teamModal').show();
+}
+
+function edit_inspection_team_details()
+{
+    var record_id = $('#edit_ins_record_id').val();
+    var name = $('#edit_ins_name').val();
+    var designation = $('#edit_ins_designation').val();
+    var application_id = $('#edit_ins_app_no').val();
+
+    if(name == "")
+    {
+        $('#ins_nameErrorMsg').html("Enter Name.");
+        $('#ins_nameErrorMsg').show();
+        $('#ins_nameErrorMsg').delay(2000).fadeOut('slow');
+        $("#ins_name").focus();
+    }
+    else if(designation == "")
+    {
+        $('#ins_designationErrorMsg').html("Enter Designation.");
+        $('#ins_designationErrorMsg').show();
+        $('#ins_designationErrorMsg').delay(2000).fadeOut('slow');
+        $("#ins_designation").focus();
+    }
+    else
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'update_fbr_factory_inspection_team_details' %}",
+            data :{'application_id':application_id,'name':name,'designation':designation, 'record_id':record_id},
+            success : function(responseText) {
+                $('#edit_InspectionTeamModal').hide();
+                $('#inspection_team_details').html(responseText);
+                $('#inspection_team_details').show();
+
+            }
+        });
+    }
+
+}
+
+function edit_team_details()
+{
+    var edit_record_id = $('#edit_record_id').val();
+    var edit_name = $('#edit_name').val();
+    var edit_designation = $('#edit_designation').val();
+    var edit_opening_date = $('#edit_opening_date').val();
+    var edit_closing_date = $('#edit_closing_date').val();
+    var application_id = $('#edit_app_no').val();
+
+    if(edit_name == "")
+    {
+        $('#edit_nameErrorMsg').html("Enter Name.");
+        $('#edit_nameErrorMsg').show();
+        $('#edit_nameErrorMsg').delay(2000).fadeOut('slow');
+        $("#edit_name").focus();
+    }
+    else if(edit_designation == "")
+    {
+        $('#edit_designationErrorMsg').html("Enter Designation.");
+        $('#edit_designationErrorMsg').show();
+        $('#edit_designationErrorMsg').delay(2000).fadeOut('slow');
+        $("#edit_designation").focus();
+    }
+    else if(edit_opening_date == "")
+    {
+        $('#edit_opening_dateErrorMsg').html("Select Opening Date.");
+        $('#edit_opening_dateErrorMsg').show();
+        $('#edit_opening_dateErrorMsg').delay(2000).fadeOut('slow');
+        $("#edit_opening_date").focus();
+    }
+    else if(edit_closing_date == "")
+    {
+        $('#edit_closing_dateErrorMsg').html("Select Closing Date.");
+        $('#edit_closing_dateErrorMsg').show();
+        $('#edit_closing_dateErrorMsg').delay(2000).fadeOut('slow');
+        $("#edit_closing_date").focus();
+    }
+    else
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'update_fbr_team_details_factory_ins' %}",
+            data :{'application_id':application_id,'name':edit_name,'designation':edit_designation,'opening_date':edit_opening_date,'closing_date':edit_closing_date, 'record_id': edit_record_id},
+            success : function(responseText) {
+                $('#team_details').html(responseText);
+                $('#team_details').show();
+                $('#edit_teamModal').hide();
+            }
+        });
+    }
+}
+
+function check_date()
+{
+    opening_date = $('#opening_date').val();
+    closing_date = $('#closing_date').val();
+
+    if(closing_date <= opening_date)
+    {
+        $('#closing_dateErrorMsg').html("Cannot Be Less Than Or Equal To Opening Meeting(Date).");
+        $('#closing_dateErrorMsg').show();
+        $('#closing_dateErrorMsg').delay(2000).fadeOut('slow');
+        $('#closing_date').val("");
+    }
+    else
+    {
+        $('#closing_dateErrorMsg').hide();
+    }
+}
+
+function check_edit_date()
+{
+    opening_date = $('#edit_opening_date').val();
+    closing_date = $('#edit_closing_date').val();
+
+    if(closing_date <= opening_date)
+    {
+        $('#edit_closing_dateErrorMsg').html("Cannot Be Less Than Or Equal To Opening Meeting(Date).");
+        $('#edit_closing_dateErrorMsg').show();
+        $('#edit_closing_dateErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_closing_date').val("");
+    }
+    else
+    {
+        $('#edit_closing_dateErrorMsg').hide();
     }
 }
 </script>

@@ -54,7 +54,6 @@ urlpatterns = [
     path('save_processing_unit_details', views.save_processing_unit_details, name='save_processing_unit_details'),
     path('submit_organic_certificate', views.submit_organic_certificate,
          name='submit_organic_certificate'),
-    path('send_acknowledge', views.send_acknowledge, name='send_acknowledge'),
     path('send_for_acceptance', views.send_for_acceptance, name='send_for_acceptance'),
     path('add_audit_team_details', views.add_audit_team_details, name='add_audit_team_details'),
     path('send_audit_plan_acceptance', views.send_audit_plan_acceptance, name='send_audit_plan_acceptance'),
@@ -125,7 +124,9 @@ urlpatterns = [
     path('load_fpc_details_page', views.load_fpc_details_page, name='load_fpc_details_page'),
     path('get_prev_crop_mont', views.get_prev_crop_mont, name='get_prev_crop_mont'),
     path('update_fpc_details', views.update_fpc_details, name='update_fpc_details'),
-    path('check_difference', views.check_difference, name='check_difference')
+    path('check_difference', views.check_difference, name='check_difference'),
+    path('organic_gewog', views.organic_gewog, name='organic_gewog'),
+    path('organic_village', views.organic_village, name='organic_village'),
 
 ]
 if settings.DEBUG:

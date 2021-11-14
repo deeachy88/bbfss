@@ -44,9 +44,13 @@ def dashboard(request):
             section_details = t_section_master.objects.filter(Section_Id=section)
             for id_section in section_details:
                 section_name = id_section.Section_Name
-                message_count = t_workflow_details.objects.filter(
+                message_count = (t_workflow_details.objects.filter(
                     Assigned_Role_Id=Role_Id, Section=section_name,
-                    Action_Date__isnull=False, Application_Status='P').count()
+                    Action_Date__isnull=False, Application_Status='P') | t_workflow_details.objects.filter(
+                    Assigned_Role_Id=Role_Id, Section=section_name,
+                    Action_Date__isnull=False, Application_Status='ATA')| t_workflow_details.objects.filter(
+                    Assigned_Role_Id=Role_Id, Section=section_name,
+                    Action_Date__isnull=False, Application_Status='FRA')).count()
                 return render(request, 'dashboard.html', {'count': message_count})
         elif Role == 'OIC':
             login_id = request.session['Login_Id']

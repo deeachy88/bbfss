@@ -245,26 +245,26 @@
                                          <select class="form-control" name="crop_category_id"  id="crop_category_id" onchange="getCrop(this.value)">
                                             <option value="">--SELECT--</option>
                                             {% for crop_category in crop_category %}
-                                                    <option value="{{ crop_category.Crop_Category_Name }}">{{ crop_category.Crop_Category_Name }}</option>
+                                                    <option value="{{ crop_category.Crop_Category_Id }}">{{ crop_category.Crop_Category_Name }}</option>
                                             {% endfor %}
                                          </select>
                                         <div class="alert alert-danger" id="crop_category_idErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Crop <font color="red">*</font></label>
-                                            <select class="form-control" name="crop_id"  id="crop_id" onchange="getVariety(this.value)">
+                                            <label class="form-label">Scientific Name <font color="red">*</font></label>
+                                            <select class="form-control" name="scientific_name"  id="scientific_name" onchange="getVariety(this.value)">
                                                 <option value="">--SELECT--</option>
                                                 {% for crop in crop %}
-                                                        <option value="{{ crop.Crop_Common_Name }}">{{ crop.Crop_Common_Name }}</option>
+                                                        <option value="{{ crop.Crop_Id }}">{{ crop.Crop_Scientific_Name }}</option>
                                                 {% endfor %}
                                             </select>
                                         </div>
-                                        <div class="alert alert-danger" id="crop_idErrorMsg" style="display:none"></div>
+                                        <div class="alert alert-danger" id="scientific_nameErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Crop Variety <font color="red">*</font></label>
+                                            <label class="form-label">Variety <font color="red">*</font></label>
                                             <select class="form-control" name="crop_variety_id" id="crop_variety">
                                                 <option value="">--SELECT--</option>
                                                 {% for variety in variety %}
@@ -346,7 +346,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_attachment()"> Submit </button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_attachment()"> Upload </button>
                 </div>
             </div>
         </div>
@@ -374,10 +374,10 @@
                                 <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Crop Category <font color="red">*</font></label>
-                                         <select class="form-control" name="edit_crop_category_id"  id="edit_crop_category_id" onchange="getCrop(this.value)">
+                                         <select class="form-control" name="edit_crop_category_id"  id="edit_crop_category_id" onchange="getEditCrop(this.value)">
                                             <option value="">--SELECT--</option>
                                             {% for crop_category in crop_category %}
-                                                    <option value="{{ crop_category.Crop_Category_Name }}">{{ crop_category.Crop_Category_Name }}</option>
+                                                    <option value="{{ crop_category.Crop_Category_Id }}">{{ crop_category.Crop_Category_Name }}</option>
                                             {% endfor %}
                                          </select>
                                         <div class="alert alert-danger" id="edit_crop_category_idErrorMsg" style="display:none"></div>
@@ -388,7 +388,7 @@
                                             <select class="form-control" name="edit_crop_id"  id="edit_crop_id" onchange="getNurseryVariety(this.value)">
                                                 <option value="">--SELECT--</option>
                                                 {% for crop in crop %}
-                                                        <option value="{{ crop.Crop_Common_Name }}">{{ crop.Crop_Common_Name }}</option>
+                                                        <option value="{{ crop.Crop_Id }}">{{ crop.Crop_Scientific_Name }}</option>
                                                 {% endfor %}
                                             </select>
                                         </div>
@@ -667,58 +667,68 @@ function save_nursery_form()
 
 function save_attachment()
 {
-    var fileName = document.getElementById('document').files[0].name;
-    var fd = new FormData();
-    var file = document.getElementById('document').files[0];
-    fd.append('document', file);
-    token_value=$("input[name=csrfmiddlewaretoken]").val();
-    $.ajaxSetup
-    ({
-        beforeSend: function(xhr, settings)
-        {
-            xhr.setRequestHeader("X-CSRFToken", token_value);
-        }
-    });
-        $.ajax({
-        type : "POST",
-        url : "{% url 'add_file_reg' %}",
-        data : fd,
-        dataType: 'json',
-        contentType: false,
-        processData: false,
-        success : function(data)
-        {
-            if (data.form_is_valid)
+    var file_length = document.getElementById("document");
+    if(file_length.value.length < 1)
+    {
+        $('#fileErrorMsg').html("Please Choose A File");
+        $('#fileErrorMsg').show();
+        $('#fileErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else
+    {
+        var fileName = document.getElementById('document').files[0].name;
+        var fd = new FormData();
+        var file = document.getElementById('document').files[0];
+        fd.append('document', file);
+        token_value=$("input[name=csrfmiddlewaretoken]").val();
+        $.ajaxSetup
+        ({
+            beforeSend: function(xhr, settings)
             {
-                var appNo = $('#applicationNo').val();
-                var file_url = data.file_url
-                $.ajax
-                ({
-                    type : "POST",
-                    url : "{% url 'add_file_name_reg' %}",
-                    data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
-                    success : function(responseText)
-                    {
-                        $('#attachmentModal').modal('hide');
-                        $('#seedAttach').html(responseText);
-                        $('.modal-backdrop').remove();
-                        $('#attachment_form')[0].reset();
-                    }
-                });
-            }else
-            {
-                $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-                $('#fileErrorMsg').show();
-                $('#fileErrorMsg').delay(2000).fadeOut('slow');
+                xhr.setRequestHeader("X-CSRFToken", token_value);
             }
-        }
-    });
+        });
+            $.ajax({
+            type : "POST",
+            url : "{% url 'add_file_reg' %}",
+            data : fd,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            success : function(data)
+            {
+                if (data.form_is_valid)
+                {
+                    var appNo = $('#applicationNo').val();
+                    var file_url = data.file_url
+                    $.ajax
+                    ({
+                        type : "POST",
+                        url : "{% url 'add_file_name_reg' %}",
+                        data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
+                        success : function(responseText)
+                        {
+                            $('#attachmentModal').modal('hide');
+                            $('#seedAttach').html(responseText);
+                            $('.modal-backdrop').remove();
+                            $('#attachment_form')[0].reset();
+                        }
+                    });
+                }else
+                {
+                    $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                    $('#fileErrorMsg').show();
+                    $('#fileErrorMsg').delay(2000).fadeOut('slow');
+                }
+            }
+        });
+    }
 }
 
 function save_nursery_details()
 {
     var crop_category_id = $('#crop_category_id').val();
-    var crop_id =  $('#crop_id').val();
+    var scientific_name =  $('#scientific_name').val();
     var crop_variety_id = $('#crop_variety').val();
     var Source = $('#Source').val();
     var qty = $('#qty').val();
@@ -730,15 +740,15 @@ function save_nursery_details()
         $('#crop_category_idErrorMsg').show();
         $('#crop_category_idErrorMsg').delay(2000).fadeOut('slow');
     }
-    else if(crop_id == "")
+    else if(scientific_name == "")
     {
-        $('#crop_idErrorMsg').html("Select Crop.");
-        $('#crop_idErrorMsg').show();
-        $('#crop_idErrorMsg').delay(2000).fadeOut('slow');
+        $('#scientific_nameErrorMsg').html("Select Scientific Name.");
+        $('#scientific_nameErrorMsg').show();
+        $('#scientific_nameErrorMsg').delay(2000).fadeOut('slow');
     }
     else if(crop_variety_id == "")
     {
-        $('#crop_varietyErrorMsg').html("Select Crop Variety.");
+        $('#crop_varietyErrorMsg').html("Select Variety.");
         $('#crop_varietyErrorMsg').show();
         $('#crop_varietyErrorMsg').delay(2000).fadeOut('slow');
     }
@@ -845,6 +855,19 @@ function getCrop(crop_category_id)
         type : "GET",
         url : "{% url 'get_crop' %}",
         data :{'crop_category_id':crop_category_id},
+        success : function(data)
+        {
+             $('#scientific_name').html(data);
+        }
+    });
+}
+
+function getEditCrop(crop_category_id)
+{
+    $.ajax({
+        type : "GET",
+        url : "{% url 'get_crop' %}",
+        data :{'edit_crop_id':crop_category_id},
         success : function(data)
         {
              $('#crop_id').html(data);

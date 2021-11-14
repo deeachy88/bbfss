@@ -4,6 +4,7 @@
             <th scope="col">#</th>
             <th scope="col">Name Of Key Personal</th>
             <th scope="col">Designation of Key Personal</th>
+            <th scope="col"></th>
         </tr>
     </thead>
     <tbody>
@@ -12,6 +13,17 @@
                 <td>{{ forloop.counter }}</td>
                 <td>{{import.Name}}</td>
                 <td>{{import.Designation}}</td>
+                <td>
+                    <button type="button" class="btn btn-primary btn-sm"
+                    onclick="delete_fi_inspection_team_details('{{import.Record_Id}}','{{import.Application_No}}')">
+                    <i class="zmdi zmdi-delete"></i>
+                    </button>
+                    <button  type="button" class="btn btn-info btn-sm" data-toggle="tooltip" title="Edit"
+                         onclick="inspection_team_details('{{ import.Record_Id }}', '{{import.Name}}',
+                          '{{import.Designation}}', '{{import.Application_No}}')">
+                        <i class="fa fa-edit"></i>
+                    </button>
+                </td>
             </tr>
             {% empty %}
             <tr>

@@ -84,7 +84,7 @@ form, input, select, textarea{
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Name Of FB Representative <font color="red">*</font></label>
+                                    <label class="form-label">Name of FB Representative <font color="red">*</font></label>
                                     <input type="text" class="form-control" id="name_manager" name="name_manager">
                                 </div>
                                 <div class="alert alert-danger" id="name_managerErrorMsg" style="display:none"></div>
@@ -188,7 +188,7 @@ form, input, select, textarea{
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Number of years in production <font color="red">*</font></label>
-                                    <input type="text" class="form-control" id="no_of_years" name="no_of_years" onkeypress="return isNumberKey(event)">
+                                    <input type="text" class="form-control" id="no_of_years" name="no_of_years" onkeypress="return isNumberKey(event)" onchange="check_no_of_years()">
                                 </div>
                                 <div class="alert alert-danger" id="no_of_yearsErrorMsg" style="display:none"></div>
                             </div>
@@ -581,7 +581,7 @@ form, input, select, textarea{
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_fbr_attachment()"> Submit </button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_fbr_attachment()"> Upload </button>
                 </div>
             </div>
         </div>
@@ -725,6 +725,8 @@ function save_fbr_form()
     var gewog = $('#gewog').val();
     var village = $('#village').val();
     var identified_water_source = $('#identified_water_source').val();
+    var provided_details = $('#provided_details').val();
+    var regulatory_proceedings_details = $('#regulatory_proceedings_details').val();
 
     if(Business_Name == "")
     {
@@ -771,7 +773,7 @@ function save_fbr_form()
     }
     else if(name_manager == "")
     {
-        $('#name_managerErrorMsg').html("Enter Name Of FB Representative.");
+        $('#name_managerErrorMsg').html("Enter Name of FB Representative.");
         $('#name_managerErrorMsg').show();
         $('#name_managerErrorMsg').delay(2000).fadeOut('slow');
         $('#name_manager').focus();
@@ -909,14 +911,14 @@ function save_fbr_form()
         $('#licensed_beforeErrorMsg').delay(2000).fadeOut('slow');
         $("input[name=licensed_before]").focus();
     }
-    else if(licensed_before == "Yes" && license_number == "")
+    else if(licensed_before_val == "Yes" && license_number == "")
     {
         $('#license_numberErrorMsg').html("Enter License No.");
         $('#license_numberErrorMsg').show();
         $('#license_numberErrorMsg').delay(2000).fadeOut('slow');
         $('#license_number').focus();
     }
-    else if(licensed_before == "Yes" && reason == "")
+    else if(licensed_before_val == "Yes" && reason == "")
     {
         $('#reasonErrorMsg').html("Enter Reason.");
         $('#reasonErrorMsg').show();
@@ -1027,54 +1029,63 @@ function save_fbr_form()
 
 function save_fbr_attachment()
 {
-    var fileName = document.getElementById('document').files[0].name;
-    var fd = new FormData();
-    var file = document.getElementById('document').files[0];
-    fd.append('document', file);
-    token_value=$("input[name=csrfmiddlewaretoken]").val();
-    $.ajaxSetup
-    ({
-        beforeSend: function(xhr, settings)
+    var file_length = document.getElementById("document");
+    if(file_length.value.length < 1)
+    {
+        $('#fileErrorMsg').html("Please Choose A File");
+        $('#fileErrorMsg').show();
+        $('#fileErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else
+    {
+        var fileName = document.getElementById('document').files[0].name;
+        var fd = new FormData();
+        var file = document.getElementById('document').files[0];
+        fd.append('document', file);
+        token_value=$("input[name=csrfmiddlewaretoken]").val();
+        $.ajaxSetup
+        ({
+            beforeSend: function(xhr, settings)
+            {
+                xhr.setRequestHeader("X-CSRFToken", token_value);
+            }
+        });
+        $.ajax({
+        type : "POST",
+        url : "{% url 'food_business_file' %}",
+        data : fd,
+        dataType: 'json',
+        contentType: false,
+        processData: false,
+        success : function(data)
         {
-            xhr.setRequestHeader("X-CSRFToken", token_value);
+            if (data.form_is_valid)
+            {
+                var file_url = data.file_url
+                var appNo = $('#attachment_appNo').val();
+                $.ajax
+                ({
+                    type : "POST",
+                    url : "{% url 'food_business_file_name' %}",
+                    data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
+                    success : function(responseText)
+                    {
+                        $('#attachmentModal').modal('hide');
+                        $('#file-attachment-fbr').html(responseText);
+                        $('.modal-backdrop').remove();
+                        $('#attachment_form')[0].reset();
+                    }
+                });
+            }
+            else
+            {
+                $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                $('#fileErrorMsg').show();
+                $('#fileErrorMsg').delay(2000).fadeOut('slow');
+            }
         }
     });
-    $.ajax({
-    type : "POST",
-    url : "{% url 'food_business_file' %}",
-    data : fd,
-    dataType: 'json',
-    contentType: false,
-    processData: false,
-    success : function(data)
-    {
-        if (data.form_is_valid)
-        {
-            var file_url = data.file_url
-            var appNo = $('#attachment_appNo').val();
-            $.ajax
-            ({
-                type : "POST",
-                url : "{% url 'food_business_file_name' %}",
-                data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
-                success : function(responseText)
-                {
-                    $('#attachmentModal').modal('hide');
-                    $('#file-attachment-fbr').html(responseText);
-                    $('.modal-backdrop').remove();
-                    $('#attachment_form')[0].reset();
-                }
-            });
-        }
-        else
-        {
-            $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-            $('#fileErrorMsg').show();
-            $('#fileErrorMsg').delay(2000).fadeOut('slow');
-        }
     }
-});
-
 }
 
 function show_fbr_modal()
@@ -1377,6 +1388,9 @@ function enableStatus(value)
         $("#no_of_years").attr("disabled", "disabled");
         $("#production_volume").attr("disabled", "disabled");
         $("#volume_unit").attr("disabled", "disabled");
+        $("#no_of_years").val("");
+        $("#production_volume").val("");
+        $("#volume_unit").val("");
     }
 }
 function checkSiteHistory(value)
@@ -1520,6 +1534,22 @@ function load_fbr_attachment()
             $('#file-attachment-fbr').html(response);
         }
     });
+}
+
+function check_no_of_years()
+{
+    var no_of_years = $('#no_of_years').val();
+    if(no_of_years == 0)
+    {
+        $('#no_of_yearsErrorMsg').html("Must Be Greater Than Zero.");
+        $('#no_of_yearsErrorMsg').show();
+        $('#no_of_yearsErrorMsg').delay(2000).fadeOut('slow');
+        $('#no_of_years').val("");
+    }
+    else
+    {
+        $('#no_of_yearsErrorMsg').hide();
+    }
 }
 </script>
 {% endblock %}

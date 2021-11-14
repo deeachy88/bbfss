@@ -50,6 +50,22 @@ urlpatterns = [
     path('load_outsourced_details', views.load_outsourced_details, name='load_outsourced_details'),
     path('food_handler_details', views.food_handler_details, name='food_handler_details'),
     path('load_fbr_attachment', views.load_fbr_attachment, name='load_fbr_attachment'),
+    path('update_fbr_team_details_feasibility_ins', views.update_fbr_team_details_feasibility_ins,
+         name='update_fbr_team_details_feasibility_ins'),
+    path('update_fbr_inspection_team_details', views.update_fbr_inspection_team_details,
+         name='update_fbr_inspection_team_details'),
+    path('delete_fbr_fi_inspection_team_details', views.delete_fbr_fi_inspection_team_details,
+         name='delete_fbr_fi_inspection_team_details'),
+    path('delete_fbr_fi_team_details', views.delete_fbr_fi_team_details,
+         name='delete_fbr_fi_team_details'),
+    path('update_fbr_team_details_factory_ins', views.update_fbr_team_details_factory_ins,
+         name='update_fbr_team_details_factory_ins'),
+    path('update_fbr_factory_inspection_team_details', views.update_fbr_factory_inspection_team_details,
+         name='update_fbr_factory_inspection_team_details'),
+    path('delete_fbr_factory_inspection_team_details', views.delete_fbr_factory_inspection_team_details,
+         name='delete_fbr_factory_inspection_team_details'),
+    path('delete_fbr_factory_team_details', views.delete_fbr_factory_team_details,
+         name='delete_fbr_factory_team_details'),
 
 
     # Export Of Food

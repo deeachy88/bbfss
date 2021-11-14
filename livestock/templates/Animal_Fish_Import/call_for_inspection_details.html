@@ -170,6 +170,7 @@ form, input, select, textarea{
                                 {% endif %}
                             </div>
                         <br>
+                        {% if application_details.Import_Type == 'Individual' %}
                             <div class="row">
                                 <div class="col-sm-2">
                                     <label class="form-label">Nationality</label>
@@ -202,6 +203,7 @@ form, input, select, textarea{
                                     </div>
                                 {% endif %}
                             </div>
+                        {% endif %}
                         <br>
                             {% if application_details.Import_Type == 'Individual' and application_details.Nationality == 'Bhutanese'%}
                                 <div class="row">
@@ -274,9 +276,9 @@ form, input, select, textarea{
                                      <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Place of Entry</label>
-                                            <select class="form-control" disabled>
-                                                {% for location in location %}
-                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                             <select class="form-control"disabled>
+                                                {% for location_mapping in location_mapping %}
+                                                    <option value="{{ location_mapping.Field_Office_Id }}" {% if application_details.Place_Of_Entry == location_mapping.Field_Office_Id %}selected{% endif %}>{{ location_mapping.Field_Office }}</option>
                                                 {% endfor %}
                                              </select>
                                         </div>
@@ -354,8 +356,8 @@ form, input, select, textarea{
                                         <div class="form-group">
                                             <label class="form-label">Place of Entry</label>
                                             <select class="form-control"disabled>
-                                                {% for location in location %}
-                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                                {% for location_mapping in location_mapping %}
+                                                    <option value="{{ location_mapping.Field_Office_Id }}" {% if application_details.Place_Of_Entry == location_mapping.Field_Office_Id %}selected{% endif %}>{{ location_mapping.Field_Office }}</option>
                                                 {% endfor %}
                                              </select>
                                         </div>
@@ -432,10 +434,9 @@ form, input, select, textarea{
                                      <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Place Of Entry</label>
-                                            <select class="form-control" disabled>
-                                                <option value="">--SELECT--</option>
-                                                {% for location in location %}
-                                                        <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
+                                            <select class="form-control"disabled>
+                                                {% for location_mapping in location_mapping %}
+                                                    <option value="{{ location_mapping.Field_Office_Id }}" {% if application_details.Place_Of_Entry == location_mapping.Field_Office_Id %}selected{% endif %}>{{ location_mapping.Field_Office }}</option>
                                                 {% endfor %}
                                              </select>
                                         </div>
@@ -450,21 +451,11 @@ form, input, select, textarea{
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Place of Entry</label>
-                                            <select class="form-control"disabled>
-                                                {% for location in location %}
-                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
-                                                {% endfor %}
-                                             </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
                                             <label class="form-label">Final Destination</label>
                                              <input type="text" class="form-control" value="{{application_details.Final_Destination }}">
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Expected Date for Arrival</label>
                                              <input type="text" class="form-control" value="{{application_details.Expected_Arrival_Date }}" disabled>
@@ -479,7 +470,7 @@ form, input, select, textarea{
                                             <label class="form-label">Actual Point Of Entry <font color="red">*</font></label>
                                             <select class="form-control" name="entry_point"  id="entryPlace">
                                                 <option value="">--SELECT--</option>
-                                                {% for location in location_details %}
+                                                {% for location in location_mapping %}
                                                         <option value="{{ location.Field_Office_Id }}">{{ location.Field_Office }}</option>
                                                 {% endfor %}
                                             </select>

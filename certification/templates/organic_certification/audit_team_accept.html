@@ -586,26 +586,9 @@ form, input, select, textarea{
                     Audit Team Details
                 </a>
             </div>
-            <div id="collapseFour" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+            <div id="collapseFour" class="active" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
                 <div class="card-body">
-                    <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
-                        <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
-                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Focal</span>
-                            <span class="px-2 small text-muted font-weight-bold text-muted form-label">Ofiicer</span>
-                            <span class="px-1 small text-muted font-weight-bold text-muted form-label">Details</span>
-                        <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label class="form-label">Remarks</label>
-                                {% for application_details in application_details %}
-                                <textarea class="form-control" disabled>{{application_details.FO_Remarks}}</textarea>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-                    <br>
+
                     <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
                         <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
                             <span class="px-2 small text-muted font-weight-bold text-muted form-label">Audit</span>
@@ -637,7 +620,27 @@ form, input, select, textarea{
                             </tbody>
                         </table>
                     </div>
-                    <br>
+                    {% if application_details.FO_Remarks %}
+                        <br>
+                        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">Focal</span>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">Ofiicer</span>
+                                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Details</span>
+                            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-label">Remarks</label>
+                                    {% for application_details in application_details %}
+                                    <textarea class="form-control" disabled>{{application_details.FO_Remarks}}</textarea>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                    {% endif %}
                 <form method="post" id="audit_team_form">
                     {% csrf_token %}
                     <div class="row">
@@ -652,6 +655,47 @@ form, input, select, textarea{
                                             {{ user_details.Name }}
                                         </option>
                                     {% endfor %}
+                                    </select>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Audit Date  &nbsp;<font color='red'>*</font> </label>
+                                {% for application_details in application_details %}
+                                    <input type="text"  class="form-control" value="{{ application_details.Audit_Date}}" disabled>
+                                {% endfor %}
+                            </div>
+                            <div class="alert alert-danger" id="Audit_DateErrorMsg" style="display:none"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Audit Type &nbsp;<font color='red'>*</font> </label>
+                                {% for application_details in application_details %}
+                                    <select class="form-control form-control" disabled>
+                                        {% if application_details.Audit_Plan_Type == "Initial" %}
+                                            <option value="Initial" selected>Initial</option>
+                                        {% elif application_details.Audit_Plan_Type == "Revisit" %}
+                                            <option value="Revisit" selected>Revisit/Follow Up</option>
+                                        {% elif application_details.Audit_Plan_Type == "Surveillance" %}
+                                            <option value="Surveillance" selected>Surveillance</option>
+                                        {% elif application_details.Audit_Plan_Type == "Renewal" %}
+                                            <option value="Renewal" selected>Renewal</option>
+                                        {% elif application_details.Audit_Plan_Type == "Preliminary" %}
+                                            <option value="Preliminary" selected>Preliminary</option>
+                                        {% elif application_details.Audit_Plan_Type == "Special" %}
+                                            <option value="Special" selected>Special</option>
+                                        {% elif application_details.Audit_Plan_Type == "Farm" %}
+                                            <option value="Farm" selected>Farm</option>
+                                        {% elif application_details.Audit_Plan_Type == "Company/Factory" %}
+                                            <option value="Company/Factory" selected>Company/Factory</option>
+                                        {% elif application_details.Audit_Plan_Type == "Management System" %}
+                                            <option value="Management System" selected>Management System</option>
+                                        {% else %}
+                                            <option value="Processing">Processing</option>
+                                        {% endif %}
                                     </select>
                                 {% endfor %}
                             </div>

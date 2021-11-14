@@ -227,7 +227,7 @@ form, input, select, textarea{
                         </div>
                     </div>
                     <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
-                        Save SuccessFul
+                        Save Successful
                     </div>
                     <div class="card-action">
                         <button type="button" class="btn btn-primary" id="lp_button" onclick="permit_save_details()">Save</button>
@@ -294,7 +294,7 @@ form, input, select, textarea{
                                     <div class="form-group col-md-6">
                                         <label class="form-label">Description <font color="red">*</font></label>
                                         <textarea class="form-control" name="Description" id="Description"></textarea>
-                                        <div class="alert alert-danger" id="remarksMeansErrorMsg" style="display:none"></div>
+                                        <div class="alert alert-danger" id="DescriptionErrorMsg" style="display:none"></div>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -358,7 +358,7 @@ form, input, select, textarea{
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_attachment()"> Submit </button>
+                    <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_attachment()"> Upload </button>
                 </div>
             </div>
         </div>
@@ -548,7 +548,7 @@ function permit_save_details()
     }
     else if(email == "")
     {
-        $('#emailErrorMsg').html("Enter Contact Number.");
+        $('#emailErrorMsg').html("Enter Email.");
         $('#emailErrorMsg').show();
         $('#emailErrorMsg').delay(2000).fadeOut('slow');
         $('#email').focus();
@@ -611,7 +611,7 @@ function permit_save_details()
     }
     else if(Expected_Arrival_Date == "")
     {
-        $('#Expected_Arrival_DateErrorMsg').html("Enter Final Destination.");
+        $('#Expected_Arrival_DateErrorMsg').html("Select Expected Date Of Arrival.");
         $('#Expected_Arrival_DateErrorMsg').show();
         $('#Expected_Arrival_DateErrorMsg').delay(2000).fadeOut('slow');
         $('#Expected_Arrival_Date').focus();
@@ -723,55 +723,64 @@ function updateDetails()
 
 function save_attachment()
 {
-    var fileName = document.getElementById('document').files[0].name;
-    var fd = new FormData();
-    var file = document.getElementById('document').files[0];
-    fd.append('document', file);
-    token_value=$("input[name=csrfmiddlewaretoken]").val();
-    $.ajaxSetup
-    ({
-        beforeSend: function(xhr, settings)
-        {
-        xhr.setRequestHeader("X-CSRFToken", token_value);
-        }
-    });
-    $.ajax
-    ({
-        type : "POST",
-        url : "{% url 'add_livestock_product_file' %}",
-        data : fd,
-        dataType: 'json',
-        contentType: false,
-        processData: false,
-        success : function(data)
-        {
-            if (data.form_is_valid)
+    var file_length = document.getElementById("document");
+    if(file_length.value.length < 1)
+    {
+        $('#fileErrorMsg').html("Please Choose A File");
+        $('#fileErrorMsg').show();
+        $('#fileErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else
+    {
+        var fileName = document.getElementById('document').files[0].name;
+        var fd = new FormData();
+        var file = document.getElementById('document').files[0];
+        fd.append('document', file);
+        token_value=$("input[name=csrfmiddlewaretoken]").val();
+        $.ajaxSetup
+        ({
+            beforeSend: function(xhr, settings)
             {
-                var appNo = $('#applicationNo').val();
-                var file_url = data.file_url
-                $.ajax
-                ({
-                    type : "POST",
-                    url : "{% url 'add_livestock_product_name' %}",
-                    data : {'appNo':appNo , 'filename':fileName , 'file_url':file_url},
-                    success : function(responseText)
-                    {
-                        $('#attachmentModal').modal('hide');
-                        $('#fileAttach').html(responseText);
-                        $('.modal-backdrop').remove();
-                        $('#attachment_form')[0].reset();
-                    }
-                });
+            xhr.setRequestHeader("X-CSRFToken", token_value);
             }
-            else
+        });
+        $.ajax
+        ({
+            type : "POST",
+            url : "{% url 'add_livestock_product_file' %}",
+            data : fd,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            success : function(data)
             {
-                $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-                $('#fileErrorMsg').show();
-                $('#fileErrorMsg').delay(2000).fadeOut('slow');
+                if (data.form_is_valid)
+                {
+                    var appNo = $('#applicationNo').val();
+                    var file_url = data.file_url
+                    $.ajax
+                    ({
+                        type : "POST",
+                        url : "{% url 'add_livestock_product_name' %}",
+                        data : {'appNo':appNo , 'filename':fileName , 'file_url':file_url},
+                        success : function(responseText)
+                        {
+                            $('#attachmentModal').modal('hide');
+                            $('#fileAttach').html(responseText);
+                            $('.modal-backdrop').remove();
+                            $('#attachment_form')[0].reset();
+                        }
+                    });
+                }
+                else
+                {
+                    $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                    $('#fileErrorMsg').show();
+                    $('#fileErrorMsg').delay(2000).fadeOut('slow');
+                }
             }
-        }
-    });
-
+        });
+    }
 }
 function save_permit_details_form()
 {
@@ -852,6 +861,11 @@ function checkNationality(value)
         $('.bhutanese_div').hide();
         $('.non_bhutanese_div').show();
         $("#name").removeAttr("readonly");
+        $('#cid').val("");
+        $('#name').val("");
+        $('#dzongkhag').val("");
+        $('#gewog').val("");
+        $('#village').val("");
     }
 }
 
@@ -879,6 +893,11 @@ function enableForms(value)
         $('.non_bhutanese_div').hide();
         $("#Bhutanese").prop("checked", false);
         $("#Non-Bhutanese").prop("checked", false);
+        $('#cid').val("");
+        $('#name').val("");
+        $('#dzongkhag').val("");
+        $('#gewog').val("");
+        $('#village').val("");
     }
     else
     {
@@ -893,6 +912,11 @@ function enableForms(value)
         $('.non_bhutanese_div').hide();
         $("#Bhutanese").prop("checked", false);
         $("#Non-Bhutanese").prop("checked", false);
+        $('#cid').val("");
+        $('#name').val("");
+        $('#dzongkhag').val("");
+        $('#gewog').val("");
+        $('#village').val("");
     }
 }
 
@@ -1011,8 +1035,8 @@ function checkDetails()
     }
     else if(applicationNo != "")
     {
-        $("#pills-lp-details").prop('disabled', true);
-        $("#pills-lp-file").prop('disabled', true);
+        $("#pills-lp-details").prop('disabled', false);
+        $("#pills-lp-file").prop('disabled', false);
     }
 }
 
@@ -1025,7 +1049,8 @@ function load_lp_details()
         data :{'appNo':appNo},
         success : function(response)
         {
-            $('#Details').html(response);
+            $('#permit_details').html(response);
+            $('#pills-lp-details').tab('show');
         }
     });
 }

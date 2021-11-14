@@ -522,6 +522,16 @@
                                {% endfor %}
                             </tbody>
                         </table>
+                        {% for application_details in application_details %}
+                            {% if application_details.Desired_FR_Inspection_Date %}
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label"> Proposed Factory Inspection Date</label>
+                                        <input type="text" class="form-control" value="{{application_details.Desired_FR_Inspection_Date|date:'d-m-Y'}}" disabled>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
                     </div>
                         <div class="modal-footer justify-content-center">
                             <select class="form-control col-md-6" name="forwardTo"  id="forwardTo">

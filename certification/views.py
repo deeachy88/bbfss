@@ -9,6 +9,7 @@ from datetime import date, datetime, timedelta
 # Organic Certificate.
 from administrator.models import t_dzongkhag_master, t_gewog_master, t_village_master, t_country_master, \
     t_field_office_master, t_location_field_office_mapping, t_unit_master, t_user_master, t_service_master
+from administrator.views import dashboard
 from bbfss import settings
 from certification.forms import GapForm, FpcForm, OCForm
 from certification.models import t_certification_food_t2, t_certification_organic_t2, t_certification_organic_t4, \
@@ -52,8 +53,8 @@ def save_organic_certificate(request):
     else:
         cid = None
         Name = None
-        Farmer_Group_No = request.POST.get('farmers_group_name')
-        Farmer_Group_name = request.POST.get('farmers_group_number')
+        Farmer_Group_name = request.POST.get('farmers_group_name')
+        Farmer_Group_No = request.POST.get('farmers_group_number')
     contact_number = request.POST.get('contactNumber')
     email = request.POST.get('email')
     dzongkhag = request.POST.get('dzongkhag')
@@ -323,7 +324,7 @@ def save_aquaculture_details(request):
     Aquaculture_Yield_Unit = request.POST.get('Aquaculture_Yield_Unit')
     aqua_harvest_month = request.POST.get('aqua_harvest_month')
     aqua_Sold = request.POST.get('aqua_Sold')
-    aqua_Sold_unit = request.POST.get('aqua_Sold')
+    aqua_Sold_unit = request.POST.get('aqua_Sold_unit')
     stock_balance = request.POST.get('stock_balance')
     stock_balance_unit = request.POST.get('stock_balance_unit')
 
@@ -502,50 +503,23 @@ def add_audit_team_details(request):
                   {'audit_team': audit_team})
 
 
-def send_acknowledge(request):
-    application_no = request.POST.get('application_no')
-    service_id = request.POST.get('service_id')
-    if service_id == 'OC':
-        app_details = t_certification_organic_t1.objects.filter(Application_No=application_no)
-        app_details.update(Acknowledge='Y')
-        workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
-        for email_id in workflow_details:
-            email = email_id.Applicant_Id
-            send_acknowledge_email(email)
-    elif service_id == 'FPC':
-        app_details = t_certification_food_t1.objects.filter(Application_No=application_no)
-        app_details.update(Acknowledge='Y')
-        workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
-        for email_id in workflow_details:
-            email = email_id.Applicant_Id
-            send_acknowledge_email(email)
-    else:
-        app_details = t_certification_gap_t1.objects.filter(Application_No=application_no)
-        app_details.update(Acknowledge='Y')
-        workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
-        for email_id in workflow_details:
-            email = email_id.Applicant_Id
-            send_acknowledge_email(email)
-    return redirect(organic_certificate)
-
-
-def send_acknowledge_email(Email):
-    subject = 'APPLICATION ACCEPTED'
-    message = "Dear Sir, Your Application for Organic Certificate Has Been Accepted. You Can Check Your Application " \
-              "Status By Loggin Into BBFSS"
-    email_from = settings.EMAIL_HOST_USER
-    recipient_list = [Email]
-    send_mail(subject, message, email_from, recipient_list)
-
-
 # audit_team_acceptance
 def send_for_acceptance(request):
     application_no = request.GET.get('application_id')
     remarks = request.GET.get('remarks')
     audit_team_leader = request.GET.get('audit_team_leader')
+    audit_date = request.GET.get('Audit_Date')
+    audit_type = request.GET.get('audit_type')
+
     app_details = t_certification_organic_t1.objects.filter(Application_No=application_no)
-    app_details.update(FO_Remarks=remarks)
+    if remarks is not None:
+        app_details.update(FO_Remarks=remarks)
+    else:
+        app_details.update(FO_Remarks=remarks)
+
     app_details.update(Audit_Team_Leader=audit_team_leader)
+    app_details.update(Audit_Date=audit_date)
+    app_details.update(Audit_Plan_Type=audit_type)
     workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
     workflow_details.update(Assigned_Role_Id=None)
     workflow_details.update(Application_Status='ATR')
@@ -739,7 +713,7 @@ def audit_team_accept(request):
     workflow_details.update(Assigned_To=None)
     workflow_details.update(Assigned_Role_Id='2')
     workflow_details.update(Application_Status='ATA')
-    return redirect(focal_officer_application)
+    return redirect(resubmit_application)
 
 
 def approve_oc_application(request):
@@ -984,8 +958,8 @@ def save_gap_certificate(request):
     else:
         cid = None
         Name = None
-        Farmer_Group_No = request.POST.get('farmers_group_name')
-        Farmer_Group_name = request.POST.get('farmers_group_number')
+        Farmer_Group_name = request.POST.get('farmers_group_name')
+        Farmer_Group_No = request.POST.get('farmers_group_number')
     contact_number = request.POST.get('contactNumber')
     email = request.POST.get('email')
     dzongkhag = request.POST.get('dzongkhag')
@@ -1341,9 +1315,14 @@ def gap_for_acceptance(request):
     application_no = request.GET.get('application_id')
     remarks = request.GET.get('remarks')
     audit_team_leader = request.GET.get('audit_team_leader')
+    audit_date = request.GET.get('Audit_Date')
+    audit_type = request.GET.get('audit_type')
+
     app_details = t_certification_gap_t1.objects.filter(Application_No=application_no)
     app_details.update(FO_Remarks=remarks)
     app_details.update(Audit_Team_Leader=audit_team_leader)
+    app_details.update(Audit_Date=audit_date)
+    app_details.update(Audit_Plan_Type=audit_type)
     workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
     workflow_details.update(Assigned_Role_Id=None)
     workflow_details.update(Application_Status='ATR')
@@ -1724,15 +1703,15 @@ def save_food_product_certificate(request):
     Factory_Email = request.POST.get('Factory_Email')
     Product_Description = request.POST.get('Product_Description')
     Product_Trade_Mark = request.POST.get('Product_Trade_Mark')
-    P_From_Date = request.POST.get('From_Date')
-    P_To_Date = request.POST.get('P_To_Date')
+    date_from_p = request.POST.get('From_Date')
+    date_to_p = request.POST.get('P_To_Date')
     P_Production = request.POST.get('P_Production')
     P_Production_Unit = request.POST.get('P_Production_Unit')
     P_Production_Value = request.POST.get('P_Production_Value')
     P_Export = request.POST.get('P_Export')
     P_Export_Unit = request.POST.get('P_Export_Unit')
-    C_From_Date = request.POST.get('C_From_Date')
-    C_To_Date = request.POST.get('C_To_Date')
+    date_from_c = request.POST.get('C_From_Date')
+    date_to_c = request.POST.get('C_To_Date')
     C_Production = request.POST.get('C_Production')
     C_Production_Unit = request.POST.get('C_Production_Unit')
     C_Production_Value = request.POST.get('C_Production_Value')
@@ -1744,25 +1723,24 @@ def save_food_product_certificate(request):
     P_Export_From_Date = request.POST.get('P_Export_From_Date')
     P_Export_To_Date = request.POST.get('P_Export_To_Date')
     P_Export_Value = request.POST.get('P_Export_Value')
+    dzongkhag = request.POST.get('dzongkhag')
+    gewog = request.POST.get('gewog')
+    village = request.POST.get('village')
 
-    date_from_p = datetime.strptime(P_From_Date, '%d-%m-%Y').date()
-    date_to_p = datetime.strptime(P_To_Date, '%d-%m-%Y').date()
-    date_from_c = datetime.strptime(C_From_Date, '%d-%m-%Y').date()
-    date_to_c = datetime.strptime(C_To_Date, '%d-%m-%Y').date()
     if C_Export_From_Date:
-        date_export_f = datetime.strptime(C_Export_From_Date, '%d-%m-%Y').date()
+        date_export_f = C_Export_From_Date
     else:
         date_export_f = None
     if C_Export_To_Date:
-        date_export_t = datetime.strptime(C_Export_To_Date, '%d-%m-%Y').date()
+        date_export_t = C_Export_To_Date
     else:
         date_export_t = None
     if P_Export_From_Date:
-        date_export_pf = datetime.strptime(P_Export_From_Date, '%d-%m-%Y').date()
+        date_export_pf = P_Export_From_Date
     else:
         date_export_pf = None
     if P_Export_To_Date:
-        date_export_pt = datetime.strptime(P_Export_To_Date, '%d-%m-%Y').date()
+        date_export_pt = P_Export_To_Date
     else:
         date_export_pt = None
     if Factory_Contact_No:
@@ -1859,7 +1837,10 @@ def save_food_product_certificate(request):
         Terms_Standards=None,
         License_Number=business_license_no,
         Technical_In_Charge=technical_in_charge,
-        Manager_In_Charge=management_in_charge
+        Manager_In_Charge=management_in_charge,
+        Dzongkhag_Code=dzongkhag,
+        Gewog_Code=gewog,
+        Village_Code=village
     )
     t_workflow_details.objects.create(Application_No=food_product_certificate_app_no,
                                       Applicant_Id=request.session['email'],
@@ -1984,9 +1965,14 @@ def fpc_for_acceptance(request):
     application_no = request.GET.get('application_id')
     remarks = request.GET.get('remarks')
     audit_team_leader = request.GET.get('audit_team_leader')
+    audit_date = request.GET.get('Audit_Date')
+    audit_type = request.GET.get('audit_type')
+
     app_details = t_certification_food_t1.objects.filter(Application_No=application_no)
     app_details.update(FO_Remarks=remarks)
     app_details.update(Audit_Team_Leader=audit_team_leader)
+    app_details.update(Audit_Date=audit_date)
+    app_details.update(Audit_Plan_Type=audit_type)
     workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
     workflow_details.update(Assigned_Role_Id=None)
     workflow_details.update(Application_Status='ATR')
@@ -2024,7 +2010,7 @@ def fpc_audit_team_accept(request):
     workflow_details.update(Assigned_To=None)
     workflow_details.update(Assigned_Role_Id='2')
     workflow_details.update(Application_Status='ATA')
-    return redirect(focal_officer_application)
+    return redirect(dashboard)
 
 
 def fpc_farm_input_observation(request):
@@ -2059,14 +2045,10 @@ def fpc_audit_plan_acceptance(request):
 
 def fpc_audit_plan_resubmit(request):
     application_no = request.GET.get('audit_date_application_no')
-    Audit_Type = request.GET.get('Audit_Type')
-    Audit_Date = request.GET.get('Audit_Date')
     app_details = t_certification_food_t1.objects.filter(Application_No=application_no)
-    app_details.update(Audit_Type=Audit_Type)
-    app_details.update(Audit_Date=Audit_Date)
     workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
     workflow_details.update(Assigned_Role_Id=None)
-    workflow_details.update(Application_Status='APR')
+    workflow_details.update(Application_Status='APA')
     for email_id in workflow_details:
         email = email_id.Applicant_Id
         user_details = t_user_master.objects.filter(Email_Id=email)
@@ -2180,10 +2162,12 @@ def save_fpc_audit_plan_name(request):
 
         t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
                                          File_Path=file_url, Role_Id=None,
-                                         Attachment=fileName)
+                                         Attachment=fileName, Attachment_Type='AP')
 
         file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
-        return render(request, 'food_product_certification/audit_plan_details.html', {'file_attach': file_attach})
+        file_count = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='AP').count()
+        return render(request, 'food_product_certification/audit_plan_details.html', {'file_attach': file_attach,
+                                                                                      'file_count': file_count})
 
 
 def resubmit_fpc_nc_details(request):
@@ -2823,13 +2807,14 @@ def delete_farmers_group(request):
     if identification_type == 'GAP':
         details = t_certification_gap_t2.objects.filter(Record_Id=record_id)
         details.delete()
-        farmer_group = t_certification_gap_t2.objects.filter(Application_No=application_no)
-        return render(request, 'GAP_Certification/farmer_group_details.html', {'farmer_group': farmer_group})
+        farmer_group = t_certification_gap_t2.objects.filter(Application_No=application_no).order_by('Record_Id')
+        return render(request, 'GAP_Certification/farmer_group_details.html', {'farmers_group_details': farmer_group})
     else:
         details = t_certification_organic_t2.objects.filter(Record_Id=record_id)
         details.delete()
-        farmer_group = t_certification_organic_t2.objects.filter(Application_No=application_no)
-        return render(request, 'organic_certification/farmer_group_details.html', {'farmer_group': farmer_group})
+        farmer_group = t_certification_organic_t2.objects.filter(Application_No=application_no).order_by('Record_Id')
+        return render(request, 'organic_certification/farmer_group_details.html',
+                      {'farmers_group_details': farmer_group})
 
 
 def load_fpc_details_page(request):
@@ -2997,3 +2982,15 @@ def update_fpc_details(request):
     )
     data['applNo'] = Application_No
     return JsonResponse(data)
+
+
+def organic_gewog(request):
+    dzongkhag_id = request.GET.get('dzongkhag_id')
+    gewog_list = t_gewog_master.objects.filter(Dzongkhag_Code_id=dzongkhag_id).order_by('Gewog_Name')
+    return render(request, 'organic_certification/gewog_list.html', {'gewog_list': gewog_list})
+
+
+def organic_village(request):
+    gewog_id = request.GET.get('gewog_id')
+    village_list = t_village_master.objects.filter(Gewog_Code_id=gewog_id).order_by('Village_Name')
+    return render(request, 'organic_certification/village_list.html', {'village_list': village_list})

@@ -117,12 +117,25 @@ form, input, select, textarea{
                                         <label class="form-label">Contact Number</label>
                                         <input type="number" class="form-control" value="{{application_details.Contact_No}}" disabled>
                                     </div>
-                                    <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="form-label">Request Date for Inspection</label>
-                                         <input type="text" class="form-control" value="{{application_details.Proposed_Inspection_Date}}" disabled>
+                                        <label class="form-label">Business License Number (if applicable)</label>
+                                         <input type="text" class="form-control" value="{{application_details.License_Number}}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Name of the Technical Incharge(if different from the owner)</label>
+                                         <input type="text" class="form-control" value="{{application_details.Technical_In_Charge}}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Name of the Management Incharge (if different from the owner)</label>
+                                         <input type="text" class="form-control" value="{{application_details.Manager_In_Charge}}" disabled>
                                     </div>
                                 </div>
                             </div>
@@ -183,7 +196,7 @@ form, input, select, textarea{
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Address</label>
-                                        <<textarea class="form-control" disabled>{{application_details.Present_Address}}</textarea>
+                                        <textarea class="form-control" disabled>{{application_details.Present_Address}}</textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -202,8 +215,22 @@ form, input, select, textarea{
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="form-label">Request Date for Inspection</label>
-                                         <input type="text" class="form-control" value="{{application_details.Proposed_Inspection_Date}}" disabled>
+                                        <label class="form-label">Business License Number (if applicable)</label>
+                                         <input type="text" class="form-control" value="{{application_details.License_Number}}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Name of the Technical Incharge(if different from the owner)</label>
+                                         <input type="text" class="form-control" value="{{application_details.Technical_In_Charge}}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Name of the Management Incharge (if different from the owner)</label>
+                                         <input type="text" class="form-control" value="{{application_details.Manager_In_Charge}}" disabled>
                                     </div>
                                 </div>
                             </div>
@@ -578,7 +605,7 @@ form, input, select, textarea{
                     Audit Team Details
                 </a>
             </div>
-            <div id="collapseFour" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+            <div id="collapseFour" class="active" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
 
                 <div class="card-body">
                 {% for application_details in application_details %}
@@ -655,23 +682,23 @@ form, input, select, textarea{
                     <div class="row">
                         {% for application_details in application_details %}
                             {% if application_details.Audit_Team_Acceptance == 'A' %}
+                            <input type="hidden" class="form-control" id="team_leader" name="team_leader" value="{{application_details.Audit_Team_Leader}}">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-label">Audit Team Leader</label>
-                                        <input type="hidden" class="form-control" id="team_leader" name="team_leader" value="{{application_details.Audit_Team_Leader}}" disabled>
-                                        <select class="form-control" disabled>
-                                        {% for user_details in user_details %}
-                                            <option value="{{user_details.Login_Id}}"{% if application_details.Audit_Team_Leader == user_details.Login_Id %}selected{% endif %}>
-                                                {{ user_details.Name }}
-                                            </option>
-                                        {% endfor %}
+                                            <select class="form-control" disabled>
+                                            {% for team_leader in team_leader %}
+                                                <option value="{{team_leader.Login_Id}}"{% if application_details.Audit_Team_Leader == team_leader.Login_Id %}selected{% endif %}>
+                                                    {{ team_leader.Name }}
+                                                </option>
+                                            {% endfor %}
                                         </select>
                                     </div>
                                 </div>
                             {% else %}
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="form-label">Audit Team Leader</label>
+                                        <label class="form-label">Audit Team Leader <font color='red'>*</font></label>
                                         <select class="form-control" id="audit_team_leader">
                                             <option value="">--SELECT--</option>
                                             {% for team_details in team_details %}
@@ -679,42 +706,122 @@ form, input, select, textarea{
                                             {% endfor %}
                                         </select>
                                     </div>
+                                    <div class="alert alert-danger" id="audit_team_leaderErrorMsg" style="display:none"></div>
                                 </div>
                             {% endif %}
                         {% endfor %}
                         {% for application_details in application_details %}
-                            {% if application_details.Audit_Team_Acceptance == 'A' or  application_details.Audit_Team_Acceptance == 'R' %}
+                            {% if application_details.Audit_Team_Acceptance == 'A' %}
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Audit Date  &nbsp;<font color='red'>*</font> </label>
+                                       <input type="text"  class="form-control" value="{{application_details.Audit_Date}}" disabled>
+                                    </div>
+                                </div>
+                            {% else %}
+                                 <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Audit Date  &nbsp;<font color='red'>*</font> </label>
+                                       <input type="date" name="Audit_Date" id="Audit_Date" class="form-control date-picker flatpickr-input active">
+                                    </div>
+                                    <div class="alert alert-danger" id="Audit_DateErrorMsg" style="display:none"></div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                        </div>
+                        {% for application_details in application_details %}
+                            {% if application_details.Audit_Team_Acceptance == 'A' %}
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Audit Type &nbsp;<font color='red'>*</font> </label>
+                                                <select class="form-control form-control" disabled>
+                                                    {% if application_details.Audit_Plan_Type == "Initial" %}
+                                                        <option value="Initial" selected>Initial</option>
+                                                    {% elif application_details.Audit_Plan_Type == "Revisit" %}
+                                                        <option value="Revisit" selected>Revisit/Follow Up</option>
+                                                    {% elif application_details.Audit_Plan_Type == "Surveillance" %}
+                                                        <option value="Surveillance" selected>Surveillance</option>
+                                                    {% elif application_details.Audit_Plan_Type == "Renewal" %}
+                                                        <option value="Renewal" selected>Renewal</option>
+                                                    {% elif application_details.Audit_Plan_Type == "Preliminary" %}
+                                                        <option value="Preliminary" selected>Preliminary</option>
+                                                    {% elif application_details.Audit_Plan_Type == "Special" %}
+                                                        <option value="Special" selected>Special</option>
+                                                    {% elif application_details.Audit_Plan_Type == "Farm" %}
+                                                        <option value="Farm" selected>Farm</option>
+                                                    {% elif application_details.Audit_Plan_Type == "Company/Factory" %}
+                                                        <option value="Company/Factory" selected>Company/Factory</option>
+                                                    {% elif application_details.Audit_Plan_Type == "Management System" %}
+                                                        <option value="Management System" selected>Management System</option>
+                                                    {% else %}
+                                                        <option value="Processing">Processing</option>
+                                                    {% endif %}
+                                                </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Focal Officer Remarks</label>
+                                            <textarea class="form-control"  disabled>{{application_details.FO_Remarks}}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% else%}
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Audit Type &nbsp;<font color='red'>*</font> </label>
+                                            <select class="form-control form-control" id="audit_type" name="audit_type">
+                                                <option value="">-SELECT-</option>
+                                                <option value="Initial">Initial</option>
+                                                <option value="Revisit">Revisit/Follow Up</option>
+                                                <option value="Surveillance">Surveillance</option>
+                                                <option value="Renewal">Renewal</option>
+                                                <option value="Preliminary">Preliminary</option>
+                                                <option value="Special">Special</option>
+                                                <option value="Farm">Farm</option>
+                                                <option value="Company/Factory">Company/Factory</option>
+                                                <option value="Management System">Management System</option>
+                                                <option value="Processing">Processing</option>
+                                            </select>
+                                        </div>
+                                        <div class="alert alert-danger" id="audit_plan_typeErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Remarks</label>
+                                            <textarea class="form-control" id="remarks_fo"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                        {% for application_details in application_details %}
+                            {% if application_details.Audit_Team_Acceptance_Remarks %}
                                 <div class="col-md-6">
                                     <label class="form-label">Remarks From Client </label>
                                     <textarea type="text" class="form-control" disabled>{{ application_details.Audit_Team_Acceptance_Remarks }}</textarea>
                                 </div>
                             {% endif %}
                         {% endfor %}
-
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label class="form-label">Remarks</label>
-                                <textarea class="form-control" id="remarks_fo"></textarea>
-                            </div>
-                        </div>
-
-                    </div>
-                    <hr>
+                        <br>
+                        <hr>
                     <div class="card-action">
                         {% for application_details in application_details %}
                          {% if application_details.Audit_Team_Acceptance == 'A' %}
                             <button type="button" class="btn btn-flat btn-primary" onclick="forward_application('{{ application_details.Application_No }}')">
-                                <i class="ace-icon fa fa-times"></i>
+                                <i class="ace-icon fa fa-arrow-right"></i>
                                 &nbsp;&nbsp;Forward
                             </button>
                         {% else %}
                             <button type="button" class="btn btn-flat btn-primary" onclick="send_for_acceptance('{{ application_details.Application_No }}')">
-                                <i class="ace-icon fa fa-times"></i>
+                                <i class="ace-icon fa fa-reply-all"></i>
                                 &nbsp;&nbsp;Send For Acceptance
                             </button>
                         {% endif%}
                         {% endfor %}
-                        <button type="button" class="btn btn-primary" onclick="closeTeamModal()">Close Modal</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
@@ -762,7 +869,7 @@ form, input, select, textarea{
                             &nbsp;&nbsp;Add
                         </button>
                         {% endfor %}
-                        <button type="button" class="btn btn-primary" onclick="closeTeamModal()">Close Modal</button>
+                        <button type="button" class="btn btn-primary" onclick="closeTeamModal()">Close</button>
                     </div>
                   </div>
             </div>
@@ -786,23 +893,53 @@ function audit_team_details(application_id)
         success : function(data) {
             $('#team_details').html(data);
             $('#AuditTeamModal').modal('hide');
+            $('#audit_team_member').val("");
+            $('#role').val("");
         }
     });
 }
 
 function send_for_acceptance(application_id)
 {
-    audit_team_leader = $('#audit_team_leader').val();
-    remarks = $('#remarks_fo').val();
-    $.ajax({
-        type : "GET",
-        url : "{% url 'send_for_acceptance' %}",
-        data :{'application_id':application_id,'audit_team_leader':audit_team_leader, 'remarks':remarks},
-        success : function(data) {
-            $('#addModal').modal('hide');
-            location.reload();
-        }
-    });
+    var audit_team_leader = $('#audit_team_leader').val();
+    var Audit_Date = $('#Audit_Plan_Date').val();
+    var audit_type = $('#audit_plan_type').val();
+    var remarks = $('#remarks_fo').val();
+
+    if(audit_team_leader == "")
+    {
+        $('#audit_team_leaderErrorMsg').html("Select Audit Team Leader.");
+        $('#audit_team_leaderErrorMsg').show();
+        $('#audit_team_leaderErrorMsg').delay(2000).fadeOut('slow');
+        $('#audit_team_leader').focus();
+    }
+    else if(Audit_Date == "")
+    {
+        $('#Audit_Plan_DateErrorMsg').html("Select Audit Date.");
+        $('#Audit_Plan_DateErrorMsg').show();
+        $('#Audit_Plan_DateErrorMsg').delay(2000).fadeOut('slow');
+        $('#Audit_Plan_Date').focus();
+    }
+    else if(audit_type == "")
+    {
+        $('#audit_plan_typeErrorMsg').html("Select Audit Type.");
+        $('#audit_plan_typeErrorMsg').show();
+        $('#audit_plan_typeErrorMsg').delay(2000).fadeOut('slow');
+        $('#audit_plan_type').focus();
+    }
+    else
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'send_for_acceptance' %}",
+            data :{'application_id':application_id,'audit_team_leader':audit_team_leader, 'remarks':remarks, 'Audit_Date':Audit_Date,
+            'audit_type':audit_type},
+            success : function(data) {
+                $('#addModal').modal('hide');
+                location.reload();
+            }
+        });
+    }
 }
 
 function forward_application(application_id)

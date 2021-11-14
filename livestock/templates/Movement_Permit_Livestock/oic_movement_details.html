@@ -159,20 +159,6 @@ form, input, select, textarea{
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="form-label">License Number</label>
-                                        <input type="text" class="form-control" value="{{application_details.License_No}}" readonly="readonly">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Business Name</label>
-                                        <input type="text" class="form-control" value="{{application_details.Business_Name}}" readonly="readonly">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
                                         <label class="form-label">From Dzongkhag</label>
                                         <select class="form-control" disabled>
                                             {% for dzongkhag in dzongkhag %}
@@ -191,14 +177,14 @@ form, input, select, textarea{
                                         </select>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">From Location</label>
                                         <input type="text" class="form-control" value="{{ application_details.From_Location }}" readonly="readonly">
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">To Dzongkhag</label>
@@ -214,19 +200,19 @@ form, input, select, textarea{
                                         <label class="form-label">To Gewog</label>
                                         <select class="form-control" disabled>
                                             {% for location in location %}
-                                                <option value="{{ location.Location_Code }}" {% if application_details.To_Gewog_Code == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
+                                                <option value="{{ location.Location_Code }}" {% if application_details.From_Gewog_Code == location.Location_Code %}selected{% endif %}>{{ location.Location_Name }}</option>
                                             {% endfor %}
                                         </select>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">To Location</label>
                                         <input type="text" class="form-control" value="{{ application_details.To_Location }}" readonly="readonly">
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Authorized Route</label>
@@ -252,7 +238,7 @@ form, input, select, textarea{
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="form-label">Vehicle No</label>
-                                                <input type="text" class="form-control" value="{{ application_details.Authorized_Route }}" readonly="readonly">
+                                                <input type="text" class="form-control" value="{{ application_details.Vehicle_No }}" readonly="readonly">
                                             </div>
                                         </div>
                                     {% else %}
@@ -263,9 +249,7 @@ form, input, select, textarea{
                                             </div>
                                         </div>
                                     {% endif%}
-                                </div>
-                                 <div class="row">
-                                     {% if application_details.Conveyance_Means == "Vehicular" %}
+                                    {% if application_details.Conveyance_Means == "Vehicular" %}
                                          <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="form-label">Purpose Of Movement</label>
@@ -398,7 +382,7 @@ form, input, select, textarea{
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="form-label">Vehicle No</label>
-                                                <input type="text" class="form-control" value="{{ application_details.Authorized_Route }}" readonly="readonly">
+                                                <input type="text" class="form-control" value="{{ application_details.Vehicle_No }}" readonly="readonly">
                                             </div>
                                         </div>
                                     {% else %}

@@ -72,6 +72,7 @@ form, input, select, textarea{
                             {% endif %}
                         </div>
                         <br>
+                        {% if application_details.Import_Type == 'Individual' %}
                         <div id="applicant_details">
                             <div class="row">
                                 <div class="col-md-4">
@@ -218,7 +219,7 @@ form, input, select, textarea{
                                         <label class="form-label">Place of Entry</label>
                                         <select class="form-control" disabled>
                                             {% for location in location %}
-                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
+                                                <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
                                             {% endfor %}
                                          </select>
                                     </div>
@@ -242,6 +243,135 @@ form, input, select, textarea{
                                 </div>
                             </div>
                         </div>
+                        {% else %}
+                        <div id="applicant_details_com">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Present Address</label>
+                                        <textarea class="form-control"disabled>{{ application_details.Present_Address }}</textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Contact Number</label>
+                                        <input type="number" class="form-control" value="{{application_details.Contact_No}}" readonly="readonly">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" class="form-control" value="{{application_details.Email}}" readonly="readonly">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Operation</label>
+                                        <select class="form-control" disabled>
+                                            {% if application_details.Operation_Type == "Import Only"%}
+                                                <option value="Import Only" selected>Import Only</option>
+                                                <option value="Further Processing">Import for further Processing</option>
+                                            {% else %}
+                                                <option value="Import Only">Import Only</option>
+                                                <option value="Further Processing" selected>Import for further Processing</option>
+                                            {% endif %}
+                                         </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">License Number</label>
+                                        <input type="text" class="form-control" value="{{application_details.License_No}}" readonly="readonly">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Country of origin of food</label>
+                                        <input type="text" class="form-control" value="{{application_details.Origin_Country_Food}}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 text-center">
+                                    <label class="form-label" style="margin-bottom: 4px;padding-right: 60px;">Country of Transit</label>
+                                    <div class="form-group">
+                                        <div class="form-check">
+                                            {% if application_details.Transit_Country == "Yes" %}
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio" name="country_of_transit" class="custom-control-input" checked>
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Yes</span>
+                                                </label>&nbsp;
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio" name="country_of_transit" class="custom-control-input" disabled>
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">No</span>
+                                                </label>
+                                            {% else %}
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio" name="country_of_transit" class="custom-control-input" disabled>
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Yes</span>
+                                                </label>&nbsp;
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio" name="country_of_transit" class="custom-control-input" checked>
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">No</span>
+                                                </label>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% if application_details.Transit_Country == "Yes" %}
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Name Of Country</label>
+                                            <input type="text" class="form-control" value="{{application_details.Country_Of_Transit}}" disabled>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Means of Conveyance </label>
+                                        <select class="form-control form-control"  disabled>
+                                            <option value="">-SELECT-</option>
+                                            {% if application_details.Conveyance_Means == "Air" %}
+                                            <option value="Air" selected>Air</option>
+                                             <option value="Vehicular">Vehicular</option>
+                                            {% else %}
+                                             <option value="Air">Air</option>
+                                            <option value="Vehicular" selected>Vehicular</option>
+                                            {% endif%}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Place of Entry</label>
+                                        <select class="form-control" disabled>
+                                            {% for location in location %}
+                                                <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
+                                            {% endfor %}
+                                         </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Final Destination</label>
+                                        <input type="text" class="form-control" disabled value="{{ application_details.Final_Destination  }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Expected Arrival Date</label>
+                                        <input type="text" class="form-control date-picker flatpickr-input active" disabled  value="{{ application_details.Expected_Arrival_Date}}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
                     {% endfor %}
                     </div>
                     <br>

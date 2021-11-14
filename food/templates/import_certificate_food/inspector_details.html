@@ -77,6 +77,7 @@ form, input, select, textarea{
                             {% endif %}
                         </div>
                         <br>
+                        {% if application_details.Import_Type == 'Individual' %}
                         <div id="applicant_details">
                             <div class="row">
                                 <div class="col-md-4">
@@ -222,8 +223,8 @@ form, input, select, textarea{
                                     <div class="form-group">
                                         <label class="form-label">Place of Entry</label>
                                         <select class="form-control" disabled>
-                                            {% for location in field_office %}
-                                                    <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
+                                            {% for location in location %}
+                                                <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
                                             {% endfor %}
                                          </select>
                                     </div>
@@ -247,6 +248,135 @@ form, input, select, textarea{
                                 </div>
                             </div>
                         </div>
+                        {% else %}
+                        <div id="applicant_details_com">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Present Address</label>
+                                        <textarea class="form-control"disabled>{{ application_details.Present_Address }}</textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Contact Number</label>
+                                        <input type="number" class="form-control" value="{{application_details.Contact_No}}" readonly="readonly">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" class="form-control" value="{{application_details.Email}}" readonly="readonly">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Operation</label>
+                                        <select class="form-control" disabled>
+                                            {% if application_details.Operation_Type == "Import Only"%}
+                                                <option value="Import Only" selected>Import Only</option>
+                                                <option value="Further Processing">Import for further Processing</option>
+                                            {% else %}
+                                                <option value="Import Only">Import Only</option>
+                                                <option value="Further Processing" selected>Import for further Processing</option>
+                                            {% endif %}
+                                         </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">License Number</label>
+                                        <input type="text" class="form-control" value="{{application_details.License_No}}" readonly="readonly">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Country of origin of food</label>
+                                        <input type="text" class="form-control" value="{{application_details.Origin_Country_Food}}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 text-center">
+                                    <label class="form-label" style="margin-bottom: 4px;padding-right: 60px;">Country of Transit</label>
+                                    <div class="form-group">
+                                        <div class="form-check">
+                                            {% if application_details.Transit_Country == "Yes" %}
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio" name="country_of_transit" class="custom-control-input" checked>
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Yes</span>
+                                                </label>&nbsp;
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio" name="country_of_transit" class="custom-control-input" disabled>
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">No</span>
+                                                </label>
+                                            {% else %}
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio" name="country_of_transit" class="custom-control-input" disabled>
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Yes</span>
+                                                </label>&nbsp;
+                                                <label class="custom-control custom-radio">
+                                                    <input type="radio" name="country_of_transit" class="custom-control-input" checked>
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">No</span>
+                                                </label>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% if application_details.Transit_Country == "Yes" %}
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Name Of Country</label>
+                                            <input type="text" class="form-control" value="{{application_details.Country_Of_Transit}}" disabled>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Means of Conveyance </label>
+                                        <select class="form-control form-control"  disabled>
+                                            <option value="">-SELECT-</option>
+                                            {% if application_details.Conveyance_Means == "Air" %}
+                                            <option value="Air" selected>Air</option>
+                                             <option value="Vehicular">Vehicular</option>
+                                            {% else %}
+                                             <option value="Air">Air</option>
+                                            <option value="Vehicular" selected>Vehicular</option>
+                                            {% endif%}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Place of Entry</label>
+                                        <select class="form-control" disabled>
+                                            {% for location in location %}
+                                                <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
+                                            {% endfor %}
+                                         </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Final Destination</label>
+                                        <input type="text" class="form-control" disabled value="{{ application_details.Final_Destination  }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Expected Arrival Date</label>
+                                        <input type="text" class="form-control date-picker flatpickr-input active" disabled  value="{{ application_details.Expected_Arrival_Date}}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
                     {% endfor %}
                 </div>
             </div>
@@ -328,18 +458,22 @@ form, input, select, textarea{
                                 </tr>
                             </thead>
                             <tbody>
-                               {% for import_lp in import_lp_permit %}
+                               {% for observation_details in observation %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td>{{import.Current_Observation}}</td>
-                                        <td>{{import.Decision_Conformity}}</td>
-                                        <!--<td>
-                                            <button type="button"
-                                            class="btn btn-primary btn&#45;&#45;icon btn-sm js-edit"
-                                            data-url="{% url 'edit_decision' import.Record_Id %}">
-                                            <i class="zmdi zmdi-edit"></i>
+                                        <td>{{observation_details.Current_Observation}}</td>
+                                        <td>{{observation_details.Decision_Conformity}}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-sm"
+                                            onclick="delete_observation_details('{{observation_details.Record_Id}}','{{observation_details.Application_No}}')">
+                                            <i class="zmdi zmdi-delete"></i>
                                             </button>
-                                        </td>-->
+                                            <button  type="button" class="btn btn-info btn-sm" data-toggle="tooltip" title="Edit"
+                                                 onclick="populate_observation_details('{{ observation_details.Record_Id }}', '{{observation_details.Current_Observation}}',
+                                                  '{{observation_details.Decision_Conformity}}', '{{observation_details.Application_No}}')">
+                                                <i class="fa fa-edit"></i>
+                                            </button>
+                                        </td>
                                     </tr>
                                     {% empty %}
                                     <tr>
@@ -473,11 +607,53 @@ form, input, select, textarea{
                     </div>
 
                     <div class="modal-footer">
+                        {% for application_details in application_details %}
                         <button type="button" class="btn btn-flat btn-primary" onclick="add_details_ins('{{ application_details.Application_No }}')">
                             <i class="ace-icon fa fa-check"></i>
                             &nbsp;&nbsp;Add
                         </button>
+                        {% endfor %}
                         <button type="button" class="btn btn-primary" data-dismiss="modal">Close Modal</button>
+                     </div>
+                  </div>
+            </div>
+        </div>
+        <div id="edit_observation_modal" class="modal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"></h5>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="edit_record_id" id="edit_record_id">
+                        <input type="hidden" name="edit_application_no" id="edit_application_no">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Current Observation</label>
+                                    <textarea class="form-control" id="edit_currentObservation" rows="2"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="edit_currentObservationErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Decision Conformity Statement </label>
+                                    <textarea class="form-control" id="edit_decisionConform" rows="2"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="edit_decisionConformErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-flat btn-primary" onclick="update_observation_details()">
+                            <i class="ace-icon fa fa-check"></i>
+                            &nbsp;&nbsp;Update
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="close_edit_modal()">Close Modal</button>
                      </div>
                   </div>
             </div>
@@ -520,7 +696,7 @@ form, input, select, textarea{
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Quantity <font color="red">*</font></label>
+                                        <label class="form-label">Approved Quantity <font color="red">*</font></label>
                                         <input type="number" name="qty" class="form-control" id="qty" disabled>
                                         <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
                                     </div>
@@ -602,6 +778,11 @@ function closeModal()
     $("#addModal").modal('hide');
 }
 
+function close_edit_modal()
+{
+    $("#edit_observation_modal").hide();
+}
+
 function add_details_ins(application_id)
 {
     currentObservation = $('#currentObservation').val();
@@ -631,6 +812,8 @@ function add_details_ins(application_id)
                 $('#details').html(data);
                 $('#details').show();
                 $('#addModal').modal('hide');
+                $('#currentObservation').val("");
+                $('#decisionConform').val("");
             }
         });
     }
@@ -720,7 +903,7 @@ function get_balance_import(qty)
     var quantity = balance_quantity_1 - number_released
     if(quantity < 0)
     {
-        $('#certified_qtyErrorMsg').html("quantity certified cannot be more than quantity requested.");
+        $('#certified_qtyErrorMsg').html("quantity released cannot be more than approved quantity.");
         $('#certified_qtyErrorMsg').show();
         $('#certified_qtyErrorMsg').delay(2000).fadeOut('slow');
         $('#qty_approved').val("");
@@ -754,5 +937,67 @@ function update_permit_details_form()
             }
         });
     }
+}
+
+function populate_observation_details(Record_Id, Current_Observation, Decision_Conformity, Application_No)
+{
+    $('#edit_record_id').val(Record_Id);
+    $('#edit_currentObservation').val(Current_Observation);
+    $('#edit_decisionConform').val(Decision_Conformity);
+    $('#edit_application_no').val(Application_No);
+    $('#edit_observation_modal').show();
+
+}
+
+function update_observation_details()
+{
+    var application_id =$('#edit_application_no').val();
+    var currentObservation = $('#edit_currentObservation').val();
+    var decisionConform = $('#edit_decisionConform').val();
+    var record_id = $('#edit_record_id').val();
+    var type = "FIP";
+
+    if(currentObservation == "")
+    {
+        $('#edit_currentObservationErrorMsg').html("Enter Current Observation.");
+        $('#edit_currentObservationErrorMsg').show();
+        $('#edit_currentObservationErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_currentObservation').focus();
+    }
+    else if(decisionConform == "")
+    {
+        $('#edit_decisionConformErrorMsg').html("Enter Decision Conformity Statement.");
+        $('#edit_decisionConformErrorMsg').show();
+        $('#edit_decisionConformErrorMsg').delay(2000).fadeOut('slow');
+        $('#edit_decisionConform').focus();
+    }
+    else
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'update_decision' %}",
+            data :{'application_id':application_id,'currentObservation':currentObservation,'decisionConform':decisionConform, 'record_id': record_id, 'type':type},
+            success : function(data) {
+                $('#details').html(data);
+                $('#details').show();
+                $('#edit_observation_modal').hide();
+            }
+        });
+    }
+}
+
+function delete_observation_details(Record_Id, Application_No)
+{
+    var type = "FIP";
+    $.ajax
+    ({
+        type : "GET",
+        url : "{% url 'delete_observation' %}",
+        data :{'Application_No':Application_No , 'Record_Id': Record_Id, 'type':type},
+        success : function(responseText)
+        {
+            $('#details').html(responseText);
+        }
+    });
 }
 </script>

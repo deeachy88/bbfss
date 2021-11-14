@@ -12,6 +12,7 @@ from administrator.models import t_dzongkhag_master, t_gewog_master, t_village_m
     t_livestock_species_breed_master, t_meat_item_master
 from administrator.views import dashboard
 from bbfss import settings
+from food.models import t_food_import_permit_inspection_t3
 from food.views import factory_inspection_list
 from livestock.forms import ImportFormProduct, MeatShopFeasibilityForm
 from livestock.models import t_livestock_clearance_meat_shop_t1, t_livestock_clearance_meat_shop_t2, \
@@ -22,8 +23,10 @@ from livestock.models import t_livestock_clearance_meat_shop_t1, t_livestock_cle
     t_livestock_import_permit_animal_t2, t_livestock_import_permit_product_t2, \
     t_livestock_import_permit_product_inspection_t2, t_livestock_import_permit_animal_inspection_t2, \
     t_livestock_clearance_meat_shop_t5, t_livestock_clearance_meat_shop_t4, t_livestock_clearance_meat_shop_t6, \
-    t_livestock_clearance_meat_shop_t3
-from plant.models import t_workflow_details, t_file_attachment, t_payment_details
+    t_livestock_clearance_meat_shop_t3, t_livestock_import_permit_product_inspection_t3, \
+    t_livestock_import_permit_animal_inspection_t3
+from plant.models import t_workflow_details, t_file_attachment, t_payment_details, t_plant_seed_certification_t3, \
+    t_plant_movement_permit_t3
 from plant.views import inspector_application, resubmit_application, focal_officer_application, oic_application
 
 
@@ -331,14 +334,62 @@ def meat_shop_inspection_team_details(request):
                   {'application_details': application_details})
 
 
+def update_meat_shop_inspection_team_details(request):
+    application_id = request.GET.get('application_id')
+    name = request.GET.get('name')
+    designation = request.GET.get('designation')
+    record_id = request.GET.get('record_id')
+
+    details = t_livestock_clearance_meat_shop_t6.objects.filter(Record_Id=record_id)
+    details.update(Name=name, Designation=designation)
+    application_details = t_livestock_clearance_meat_shop_t6.objects.filter(Application_No=application_id,
+                                                                            Meeting_Type='Feasibility Inspection')
+    return render(request, 'meat_shop_registration/inspection_team_details.html',
+                  {'application_details': application_details})
+
+
+def update_meat_shop_factory_inspection_team_details(request):
+    application_id = request.GET.get('application_id')
+    name = request.GET.get('name')
+    designation = request.GET.get('designation')
+    record_id = request.GET.get('record_id')
+
+    details = t_livestock_clearance_meat_shop_t6.objects.filter(Record_Id=record_id)
+    details.update(Name=name, Designation=designation)
+    application_details = t_livestock_clearance_meat_shop_t6.objects.filter(Application_No=application_id,
+                                                                            Meeting_Type='Factory Inspection')
+    return render(request, 'meat_shop_registration/inspection_team_details.html',
+                  {'application_details': application_details})
+
+
+def delete_fi_inspection_team_details(request):
+    application_id = request.GET.get('application_id')
+    record_id = request.GET.get('record_id')
+    details = t_livestock_clearance_meat_shop_t6.objects.filter(Record_Id=record_id)
+    details.delete()
+    application_details = t_livestock_clearance_meat_shop_t6.objects.filter(Application_No=application_id,
+                                                                            Meeting_Type='Feasibility Inspection')
+    return render(request, 'meat_shop_registration/inspection_team_details.html',
+                  {'application_details': application_details})
+
+
+def delete_factory_inspection_team_details(request):
+    application_id = request.GET.get('application_id')
+    record_id = request.GET.get('record_id')
+    details = t_livestock_clearance_meat_shop_t6.objects.filter(Record_Id=record_id)
+    details.delete()
+    application_details = t_livestock_clearance_meat_shop_t6.objects.filter(Application_No=application_id,
+                                                                            Meeting_Type='Factory Inspection')
+    return render(request, 'meat_shop_registration/inspection_team_details.html',
+                  {'application_details': application_details})
+
+
 def meat_shop_team_details_feasibility_ins(request):
     application_id = request.GET.get('application_id')
     name = request.GET.get('name')
     designation = request.GET.get('designation')
-    opening_date = request.GET.get('opening_date')
-    closing_date = request.GET.get('closing_date')
-    date_open = datetime.strptime(opening_date, '%d-%m-%Y').date()
-    date_close = datetime.strptime(closing_date, '%d-%m-%Y').date()
+    date_open = request.GET.get('opening_date')
+    date_close = request.GET.get('closing_date')
     t_livestock_clearance_meat_shop_t4.objects.create(Application_No=application_id,
                                                       Meeting_Type='Feasibility Inspection',
                                                       Name=name, Designation=designation,
@@ -346,6 +397,54 @@ def meat_shop_team_details_feasibility_ins(request):
                                                       Closing_Meeting_Date=date_close)
     application_details = t_livestock_clearance_meat_shop_t4.objects.filter(Application_No=application_id,
                                                                             Meeting_Type='Feasibility Inspection')
+    return render(request, 'meat_shop_registration/team_details.html', {'application_details': application_details})
+
+
+def update_meat_shop_team_details_feasibility_ins(request):
+    application_id = request.GET.get('application_id')
+    name = request.GET.get('name')
+    designation = request.GET.get('designation')
+    date_open = request.GET.get('opening_date')
+    date_close = request.GET.get('closing_date')
+    record_id = request.GET.get('record_id')
+    details = t_livestock_clearance_meat_shop_t4.objects.filter(Record_Id=record_id)
+    details.update(Name=name, Designation=designation, Open_Meeting_Date=date_open, Closing_Meeting_Date=date_close)
+    application_details = t_livestock_clearance_meat_shop_t4.objects.filter(Application_No=application_id,
+                                                                            Meeting_Type='Feasibility Inspection')
+    return render(request, 'meat_shop_registration/team_details.html', {'application_details': application_details})
+
+
+def update_meat_shop_team_details_factory_ins(request):
+    application_id = request.GET.get('application_id')
+    name = request.GET.get('name')
+    designation = request.GET.get('designation')
+    date_open = request.GET.get('opening_date')
+    date_close = request.GET.get('closing_date')
+    record_id = request.GET.get('record_id')
+    details = t_livestock_clearance_meat_shop_t4.objects.filter(Record_Id=record_id)
+    details.update(Name=name, Designation=designation, Open_Meeting_Date=date_open, Closing_Meeting_Date=date_close)
+    application_details = t_livestock_clearance_meat_shop_t4.objects.filter(Application_No=application_id,
+                                                                            Meeting_Type='Factory Inspection')
+    return render(request, 'meat_shop_registration/team_details.html', {'application_details': application_details})
+
+
+def delete_fi_team_details(request):
+    application_id = request.GET.get('application_id')
+    record_id = request.GET.get('record_id')
+    details = t_livestock_clearance_meat_shop_t4.objects.filter(Record_Id=record_id)
+    details.delete()
+    application_details = t_livestock_clearance_meat_shop_t4.objects.filter(Application_No=application_id,
+                                                                            Meeting_Type='Feasibility Inspection')
+    return render(request, 'meat_shop_registration/team_details.html', {'application_details': application_details})
+
+
+def delete_factory_team_details(request):
+    application_id = request.GET.get('application_id')
+    record_id = request.GET.get('record_id')
+    details = t_livestock_clearance_meat_shop_t4.objects.filter(Record_Id=record_id)
+    details.delete()
+    application_details = t_livestock_clearance_meat_shop_t4.objects.filter(Application_No=application_id,
+                                                                            Meeting_Type='Factory Inspection')
     return render(request, 'meat_shop_registration/team_details.html', {'application_details': application_details})
 
 
@@ -489,10 +588,8 @@ def meat_shop_team_details_factory_ins(request):
     application_id = request.GET.get('application_id')
     name = request.GET.get('name')
     designation = request.GET.get('designation')
-    opening_date = request.GET.get('opening_date')
-    closing_date = request.GET.get('closing_date')
-    date_open = datetime.strptime(opening_date, '%d-%m-%Y').date()
-    date_close = datetime.strptime(closing_date, '%d-%m-%Y').date()
+    date_open = request.GET.get('opening_date')
+    date_close = request.GET.get('closing_date')
     t_livestock_clearance_meat_shop_t4.objects.create(Application_No=application_id,
                                                       Meeting_Type='Factory Inspection',
                                                       Name=name, Designation=designation,
@@ -762,14 +859,16 @@ def save_meat_shop_details(request):
 
 def load_meat_details(request):
     Application_No = request.GET.get('appNo')
-    file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
-    return render(request, 'meat_shop_registration/file_attachment.html', {'file_attach': file_attach})
+    meat_details = t_livestock_clearance_meat_shop_t2.objects.filter(Application_No=Application_No)
+    meat_details_count = t_livestock_clearance_meat_shop_t2.objects.filter(Application_No=Application_No).count()
+    return render(request, 'meat_shop_registration/details.html', {'meat_details': meat_details,
+                                                                   'count': meat_details_count})
 
 
 def load_meat_attachment(request):
     Application_No = request.GET.get('appNo')
-    meat_details = t_file_attachment.objects.filter(Application_No=Application_No)
-    return render(request, 'meat_shop_registration/details.html', {'meat_details': meat_details})
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+    return render(request, 'meat_shop_registration/file_attachment.html', {'file_attach': file_attach})
 
 
 def save_meat_shop_fh_details(request):
@@ -802,6 +901,8 @@ def send_meat_shop_acknowledgement_mail(Email):
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
     send_mail(subject, message, email_from, recipient_list)
+
+
 
 
 # import permit for live animal and fish
@@ -842,7 +943,7 @@ def save_import_la_fish(request):
     Final_Destination = request.POST.get('Final_Destination')
     expected_date = request.POST.get('Expected_Arrival_Date')
     conveyanceMeans = request.POST.get('p_conveyanceMeans')
-    point_of_entry = request.POST.get('Actual_Point_Of_Entry')
+    point_of_entry = request.POST.get('Place_of_Exit')
     QF = request.POST.get('QF')
     passport = request.POST.get('passport')
 
@@ -1081,13 +1182,16 @@ def import_permit_la_details(request):
                                                        )
     import_details = t_livestock_import_permit_animal_t2.objects.filter(Application_No=application_no)
     count = t_livestock_import_permit_animal_t2.objects.filter(Application_No=application_no).count()
-    return render(request, 'Animal_Fish_Import/animal_details.html', {'import': import_details, 'count': count})
+    species = t_livestock_species_master.objects.all()
+    return render(request, 'Animal_Fish_Import/animal_details.html', {'import': import_details, 'count': count,
+                                                                      'species': species})
 
 
 def load_af_import_details(request):
     application_no = request.GET.get('appNo')
     import_details = t_livestock_import_permit_animal_t2.objects.filter(Application_No=application_no)
-    return render(request, 'Animal_Fish_Import/animal_details.html', {'import': import_details})
+    count = t_livestock_import_permit_animal_t2.objects.filter(Application_No=application_no).count()
+    return render(request, 'Animal_Fish_Import/animal_details.html', {'import': import_details, 'count': count})
 
 
 def load_af_attachment(request):
@@ -1221,6 +1325,17 @@ def reject_fo_la_import(request):
     return redirect(focal_officer_application)
 
 
+def livestock_import_observation(request):
+    application_id = request.GET.get('application_id')
+    currentObservation = request.GET.get('currentObservation')
+    decisionConform = request.GET.get('decisionConform')
+    t_livestock_import_permit_product_inspection_t3.objects.create(Application_No=application_id,
+                                                                   Current_Observation=currentObservation,
+                                                                   Decision_Conformity=decisionConform)
+    decision_details = t_livestock_import_permit_product_inspection_t3.objects.filter(Application_No=application_id)
+    return render(request, 'Livestock_Import/decision_details.html', {'decision_details': decision_details})
+
+
 def send_la_approve_email(new_import_permit, Email, validity_date):
     subject = 'APPLICATION APPROVED'
     message = "Dear Sir," \
@@ -1273,6 +1388,7 @@ def submit_la_application(request):
     update_details.update(Inspection_Leader=Inspection_Leader)
     update_details.update(Inspection_Team=Inspection_Team)
     update_details.update(Inspection_Date=dateOfInspection)
+    update_details.update(Approve_Date=date.today())
     if remarks is not None:
         update_details.update(Inspection_Remarks=remarks)
     else:
@@ -1342,7 +1458,7 @@ def update_details_la(request):
     import_det.update(Quantity_Balance=balance_number)
     for import_ILA in import_det:
         Product_Record_Id = import_ILA.Product_Record_Id
-        balance = int(import_ILA.Quantity_Balance) - int(import_ILA.Quantity_Released)
+        balance = int(import_ILA.Quantity_Balance_1) - int(import_ILA.Quantity_Released)
         product_details = t_livestock_import_permit_animal_t2.objects.filter(pk=Product_Record_Id)
         product_details.update(Quantity_Balance=balance)
         if balance == 0:
@@ -1502,7 +1618,6 @@ def save_import_lp(request):
             Applicant_Id=request.session['email'],
             Passport_Number=passport
         )
-
     t_workflow_details.objects.create(Application_No=application_no, Applicant_Id=request.session['email'],
                                       Assigned_To=None, Field_Office_Id=None, Section='Livestock',
                                       Assigned_Role_Id='2', Action_Date=None, Application_Status='P',
@@ -1642,13 +1757,20 @@ def import_livestock_product_details(request):
 def load_lp_import_details(request):
     application_id = request.GET.get('appNo')
     import_details = t_livestock_import_permit_product_t2.objects.filter(Application_No=application_id)
-    return render(request, 'Livestock_Import/permit_details.html', {'import': import_details})
+    count = t_livestock_import_permit_product_t2.objects.filter(Application_No=application_id).count()
+    return render(request, 'Livestock_Import/permit_details.html', {'import': import_details, 'count': count})
 
 
 def load_lp_import_attachment(request):
     Application_No = request.GET.get('appNo')
     file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
     return render(request, 'Livestock_Import/file_attachment.html', {'file_attach': file_attach})
+
+
+def load_lec_species(request):
+    species = request.GET.get('species')
+    breed = t_livestock_species_breed_master.objects.filter(Species_Id=species)
+    return render(request, 'Export_Certificate/breed_list.html', {'breed': breed})
 
 
 def add_livestock_product_file(request):
@@ -1706,6 +1828,17 @@ def submit_livestock_product_application(request):
     return redirect(import_permit)
 
 
+def af_import_observation(request):
+    application_id = request.GET.get('application_id')
+    currentObservation = request.GET.get('currentObservation')
+    decisionConform = request.GET.get('decisionConform')
+    t_livestock_import_permit_animal_inspection_t3.objects.create(Application_No=application_id,
+                                                                  Current_Observation=currentObservation,
+                                                                  Decision_Conformity=decisionConform)
+    decision_details = t_livestock_import_permit_animal_inspection_t3.objects.filter(Application_No=application_id)
+    return render(request, 'Animal_Fish_Import/decision_details.html', {'decision_details': decision_details})
+
+
 def approve_fo_lp_import(request):
     service_code = "ILP"
     permit_no = get_lp_permit_no(service_code)
@@ -1752,7 +1885,7 @@ def approve_fo_lp_import(request):
 
 
 def reject_fo_lp_import(request):
-    application_no = request.GET.get('application_id')
+    application_no = request.POST.get('application_id')
     remarks = request.POST.get('remarks')
     workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
     workflow_details.update(Action_Date=date.today())
@@ -1763,6 +1896,7 @@ def reject_fo_lp_import(request):
         email = email_id.Email
         send_lp_reject_email(email, remarks)
     return redirect(focal_officer_application)
+
 
 def send_lp_approve_email(new_import_permit, Email, validity_date):
     subject = 'APPLICATION APPROVED'
@@ -1817,6 +1951,7 @@ def submit_lp_application(request):
     update_details.update(Inspection_Team=Inspection_Team)
     update_details.update(Inspection_Date=dateOfInspection)
     update_details.update(Inspection_Time=timeOfInspection)
+    update_details.update(Approve_Date=date.today())
     if remarks is not None:
         update_details.update(Inspection_Remarks=remarks)
     else:
@@ -1851,6 +1986,7 @@ def lp_clearance_no(request):
 
 def update_details_lp(request):
     application_no = request.POST.get('applicationNo')
+
     record_id = request.POST.get('import_record_id')
     approved_quantity = request.POST.get('number_released')
     balance_number = request.POST.get('balance')
@@ -1865,7 +2001,8 @@ def update_details_lp(request):
     import_det.update(Quantity_Balance=balance_number)
     for import_ILA in import_det:
         Product_Record_Id = import_ILA.Product_Record_Id
-        balance = int(import_ILA.Quantity_Balance) - int(import_ILA.Quantity_Released)
+        balance = int(import_ILA.Quantity_Balance_1) - int(import_ILA.Quantity_Released)
+        print(balance)
         product_details = t_livestock_import_permit_product_t2.objects.filter(pk=Product_Record_Id)
         product_details.update(Quantity_Balance=balance)
         if balance == 0:
@@ -2009,11 +2146,8 @@ def save_livestock_export(request):
             Applicant_Id=applicant_Id,
             Passport_No=passport
         )
-    field = t_location_field_office_mapping.objects.filter(Location_Code=Place_of_Exit)
-    for field_office in field:
-        field_office_id = field_office.Field_Office_Id_id
     t_workflow_details.objects.create(Application_No=application_no, Applicant_Id=request.session['email'],
-                                      Assigned_To=None, Field_Office_Id=field_office_id, Section='Livestock',
+                                      Assigned_To=None, Field_Office_Id=Place_of_Exit, Section='Livestock',
                                       Assigned_Role_Id='4', Action_Date=None, Application_Status='P',
                                       Service_Code=service_code)
     data['applNo'] = application_no
@@ -2186,8 +2320,10 @@ def save_liv_export_details(request):
             export_details = t_livestock_export_certificate_t2.objects.filter(Application_No=application_no)
             export_details_count = t_livestock_export_certificate_t2.objects.filter(
                 Application_No=application_no).count()
+            species = t_livestock_species_master.objects.all()
             return render(request, 'Export_Certificate/animal_details.html', {'export_details': export_details,
-                                                                              'count': export_details_count})
+                                                                              'count': export_details_count,
+                                                                              'species': species})
         else:
             application_no = request.POST.get('appNo')
             Particulars = request.POST.get('Particulars')
@@ -2339,14 +2475,13 @@ def reject_application_export(request):
     remarks = request.GET.get('remarks')
     details = t_livestock_export_certificate_t1.objects.filter(Application_No=application_id)
 
-    details.update(Remarks_Inspection=remarks)
-    details.update(Application_Status='R')
+    details.update(Inspection_Remarks=remarks)
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='R')
     for email_id in details:
         email = email_id.Email
-        send_lms_reject_email(remarks, email)
+        send_lec_reject_email(remarks, email)
     return redirect(inspector_application)
 
 
@@ -2707,10 +2842,14 @@ def liv_mov_details(request):
     Permit_Type = request.GET.get('permit_type')
     if Permit_Type == 'A':
         mortem_details = t_livestock_movement_permit_t2.objects.filter(Application_No=application_no)
-        return render(request, 'Movement_Permit_Livestock/animal_details.html', {'import': mortem_details})
+        count = t_livestock_movement_permit_t2.objects.filter(Application_No=application_no).count()
+        return render(request, 'Movement_Permit_Livestock/animal_details.html', {'import': mortem_details,
+                                                                                 'count': count})
     else:
         mortem_details = t_livestock_movement_permit_t2.objects.filter(Application_No=application_no)
-        return render(request, 'Movement_Permit_Livestock/animal_product_details.html', {'import': mortem_details})
+        lp_count = t_livestock_movement_permit_t2.objects.filter(Application_No=application_no).count()
+        return render(request, 'Movement_Permit_Livestock/animal_product_details.html', {'import': mortem_details,
+                                                                                         'lp_count': lp_count})
 
 
 def liv_mov_attachment(request):
@@ -2779,7 +2918,7 @@ def details_ins_lmp(request):
                                                   Current_Observation=currentObservation,
                                                   Decision_Conformity=decisionConform)
     observation = t_livestock_movement_permit_t3.objects.filter(Application_No=application_id)
-    return render(request, 'Movement_Permit_Livestock/observation_details.html', {'observation': observation})
+    return render(request, 'Movement_Permit_Livestock/observation_details.html', {'observation_details': observation})
 
 
 def approve_application_lmp(request):
@@ -3039,12 +3178,10 @@ def save_application_form(request):
     field = t_location_field_office_mapping.objects.filter(Location_Code=location_code)
     for field_office in field:
         field_office_id = field_office.Field_Office_Id_id
-
-    workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
-    workflow_details.update(Applicant_Id=request.session['email'],
-                            Assigned_To=None, Field_Office_Id=field_office_id, Section='Livestock',
-                            Assigned_Role_Id='4', Action_Date=None, Application_Status='P',
-                            Service_Code=service_code)
+        t_workflow_details.objects.create(Application_No=application_no, Applicant_Id=request.session['email'],
+                                          Assigned_To=None, Field_Office_Id=field_office_id, Section='Livestock',
+                                          Assigned_Role_Id='4', Action_Date=None, Application_Status='P',
+                                          Service_Code=service_code)
     data['applNo'] = application_no
     return JsonResponse(data)
 
@@ -3075,13 +3212,15 @@ def save_mortem_details(request):
                                                        Nos=Nos, Quantity=qty, Remarks=remarks)
         mortem_details = t_livestock_ante_post_mortem_t2.objects.filter(Application_No=application_no)
         mortem_details_count = t_livestock_ante_post_mortem_t2.objects.filter(Application_No=application_no).count()
-        return render(request, 'ante_post_mortem/details.html', {'mortem': mortem_details, 'count': mortem_details_count})
+        return render(request, 'ante_post_mortem/details.html',
+                      {'mortem': mortem_details, 'count': mortem_details_count})
 
 
 def ante_post_mortem_details(request):
     application_no = request.GET.get('appNo')
     mortem_details = t_livestock_ante_post_mortem_t2.objects.filter(Application_No=application_no)
-    return render(request, 'ante_post_mortem/details.html', {'mortem': mortem_details})
+    mortem_details_count = t_livestock_ante_post_mortem_t2.objects.filter(Application_No=application_no).count()
+    return render(request, 'ante_post_mortem/details.html', {'mortem': mortem_details, 'count': mortem_details_count})
 
 
 def add_mortem_file(request):
@@ -3319,3 +3458,83 @@ def meat_factory_inspection_list(request):
     service_details = t_service_master.objects.all()
     return render(request, 'factory_inspection_list.html',
                   {'service_details': service_details, 'application_details': new_import_app})
+
+
+def delete_observation(request):
+    service_type = request.GET.get('type')
+    Record_Id = request.GET.get('Record_Id')
+    Application_No = request.GET.get('Application_No')
+
+    # Livestock Section
+    if service_type == 'ILP':
+        details = t_livestock_import_permit_product_inspection_t3.objects.filter(Record_Id=Record_Id)
+        details.delete()
+        decision_details = t_livestock_import_permit_product_inspection_t3.objects.filter(Application_No=Application_No)
+        return render(request, 'Livestock_Import/decision_details.html', {'decision_details': decision_details})
+    elif service_type == 'IAF':
+        details = t_livestock_import_permit_animal_inspection_t3.objects.filter(Record_Id=Record_Id)
+        details.delete()
+        decision_details = t_livestock_import_permit_animal_inspection_t3.objects.filter(Application_No=Application_No)
+        return render(request, 'Animal_Fish_Import/decision_details.html', {'decision_details': decision_details})
+    elif service_type == 'LMP':
+        details = t_livestock_movement_permit_t3.objects.filter(Record_Id=Record_Id)
+        details.delete()
+        observation_details = t_livestock_movement_permit_t3.objects.filter(Application_No=Application_No)
+        return render(request, 'Movement_Permit_Livestock/observation_details.html',
+                      {'observation_details': observation_details})
+    elif service_type == 'FIP':
+        details = t_food_import_permit_inspection_t3.objects.filter(Record_Id=Record_Id)
+        details.delete()
+        observation_details = t_food_import_permit_inspection_t3.objects.filter(Application_No=Application_No)
+        return render(request, 'import_certificate_food/observation_details.html',
+                      {'observation': observation_details})
+    elif service_type == 'RSC':
+        details = t_plant_seed_certification_t3.objects.filter(Record_Id=Record_Id)
+        details.delete()
+        details_statement = t_plant_seed_certification_t3.objects.filter(Application_No=Application_No)
+        return render(request, 'seed_certification/add_decision_details.html', {'decision': details_statement})
+    elif service_type == 'MPP':
+        details = t_plant_movement_permit_t3.objects.filter(Record_Id=Record_Id)
+        details.delete()
+        details_statement = t_plant_movement_permit_t3.objects.filter(Application_No=Application_No)
+        return render(request, 'movement_permit/add_application_details.html', {'movement_permit': details_statement})
+
+
+def update_decision(request):
+    service_type = request.GET.get('type')
+    Record_Id = request.GET.get('record_id')
+    Application_No = request.GET.get('application_id')
+    currentObservation = request.GET.get('currentObservation')
+    decisionConform = request.GET.get('decisionConform')
+
+    # Livestock Section
+    if service_type == 'ILP':
+        details = t_livestock_import_permit_product_inspection_t3.objects.filter(Record_Id=Record_Id)
+        details.update(Current_Observation=currentObservation, Decision_Conformity=decisionConform)
+        decision_details = t_livestock_import_permit_product_inspection_t3.objects.filter(Application_No=Application_No).order_by('Record_Id')
+        return render(request, 'Livestock_Import/decision_details.html', {'decision_details': decision_details})
+    elif service_type == 'IAF':
+        details = t_livestock_import_permit_animal_inspection_t3.objects.filter(Record_Id=Record_Id)
+        details.update(Current_Observation=currentObservation, Decision_Conformity=decisionConform)
+        decision_details = t_livestock_import_permit_animal_inspection_t3.objects.filter(Application_No=Application_No).order_by('Record_Id')
+        return render(request, 'Animal_Fish_Import/decision_details.html', {'decision_details': decision_details})
+    elif service_type == 'LMP':
+        details = t_livestock_movement_permit_t3.objects.filter(Record_Id=Record_Id)
+        details.update(Current_Observation=currentObservation, Decision_Conformity=decisionConform)
+        decision_details = t_livestock_movement_permit_t3.objects.filter(Application_No=Application_No).order_by('Record_Id')
+        return render(request, 'Movement_Permit_Livestock/observation_details.html', {'observation_details': decision_details})
+    elif service_type == 'FIP':
+        details = t_food_import_permit_inspection_t3.objects.filter(Record_Id=Record_Id)
+        details.update(Current_Observation=currentObservation, Decision_Conformity=decisionConform)
+        decision_details = t_food_import_permit_inspection_t3.objects.filter(Application_No=Application_No).order_by('Record_Id')
+        return render(request, 'import_certificate_food/observation_details.html', {'observation': decision_details})
+    elif service_type == 'RSC':
+        details = t_plant_seed_certification_t3.objects.filter(Record_Id=Record_Id)
+        details.update(Observation=currentObservation, Action=decisionConform)
+        details_statement = t_plant_seed_certification_t3.objects.filter(Application_No=Application_No).order_by('Record_Id')
+        return render(request, 'seed_certification/add_decision_details.html', {'decision': details_statement})
+    elif service_type == 'MPP':
+        details = t_plant_movement_permit_t3.objects.filter(Record_Id=Record_Id)
+        details.update(Current_Observation=currentObservation, Decision_Conformity=decisionConform)
+        decision_details = t_plant_movement_permit_t3.objects.filter(Application_No=Application_No).order_by('Record_Id')
+        return render(request, 'movement_permit/add_application_details.html', {'movement_permit': decision_details})

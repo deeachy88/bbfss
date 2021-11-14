@@ -5,7 +5,7 @@
                 <th scope="col">#</th>
                 <th scope="col">Clearance No</th>
                 <th scope="col">Application No</th>
-                <th scope="col">Application Date</th>
+                <th scope="col">Approved Date</th>
                 <th></th>
             </tr>
         </thead>
@@ -13,22 +13,24 @@
             {% now "Y-m-d" as todays_date %}
                 {% for payment_details in payment_details %}
                     {% for application_details in application_details %}
-                        {% if todays_date < application_details.Validity or payment_details.Receipt_No == None %}
-                            <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td>{{application_details.Meat_Shop_Clearance_No}}</td>
-                                <td>{{application_details.Approved_Date|date:"dd-mm-Y"}}</td>
-                                <td>{{application_details.Validity}}</td>
-                                <td>Invalid</td>
-                            </tr>
-                        {% else %}
-                            <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td>{{application_details.Meat_Shop_Clearance_No}}</td>
-                                <td>{{application_details.Approved_Date|date:"d-m-Y"}}</td>
-                                <td>{{application_details.Validity|date:"d-m-Y"}}</td>
-                                <td><button  class="btn btn-default btn-border" type="button" onclick="print_certificate('CMS','{{application_details.Application_No}}')"><i class="zmdi zmdi-print"></i></button></td>
-                            </tr>
+                        {% if application_details.Application_No == payment_details.Application_No %}
+                            {% if todays_date < application_details.Validity or payment_details.Receipt_No == None %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{application_details.Meat_Shop_Clearance_No}}</td>
+                                    <td>{{application_details.Application_No}}</td>
+                                    <td>{{application_details.Approve_Date|date:"d-m-Y"}}</td>
+                                    <td>Invalid</td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{application_details.Meat_Shop_Clearance_No}}</td>
+                                    <td>{{application_details.Application_No}}</td>
+                                    <td>{{application_details.Approve_Date|date:"d-m-Y"}}</td>
+                                    <td><button  class="btn btn-default btn-border" type="button" onclick="print_certificate('CMS','{{application_details.Application_No}}')"><i class="zmdi zmdi-print"></i></button></td>
+                                </tr>
+                            {% endif %}
                         {% endif %}
                     {% endfor %}
                 {% endfor %}

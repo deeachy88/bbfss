@@ -16,7 +16,11 @@
         {% for import in export_details %}
             <tr>
                 <td>{{ forloop.counter }}</td>
-                <td>{{import.Species}}</td>
+                {% for species in species %}
+                    {% if species.Species_Id == import.Species %}
+                        <td>{{species.Species_Name}}</td>
+                    {% endif %}
+                {% endfor %}
                 <td>{{import.Breed}}</td>
                 <td>{{import.Age}}</td>
                 <td>{{import.Sex}}</td>

@@ -21,6 +21,7 @@ class t_division_master(models.Model):
 class t_unit_master(models.Model):
     Unit_Id = models.AutoField(primary_key=True)
     Unit = models.CharField(max_length=20)
+    Unit_Type = models.CharField(max_length=10, default=None)
 
     def __str__(self):
         return self.Unit
@@ -65,7 +66,7 @@ class t_village_master(models.Model):
     Village_Code = models.AutoField(primary_key=True)
     Village_Name = models.CharField(max_length=100)
     Gewog_Code = models.ForeignKey(t_gewog_master, on_delete=models.CASCADE, null=True, blank=True)
-    Village_Name_Dzo = models.CharField(max_length=100)
+    Village_Name_Dzo = models.CharField(max_length=100, default=None)
 
     def __str__(self):
         return self.Gewog_Code
@@ -81,7 +82,6 @@ class t_country_master(models.Model):
 
 class t_plant_crop_category_master(models.Model):
     Crop_Category_Id = models.AutoField(primary_key=True)
-    Crop_Category_Name = models.CharField(max_length=100)
     Crop_Category_Name = models.CharField(max_length=100)
 
     def __str__(self):
