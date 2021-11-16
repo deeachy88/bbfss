@@ -1467,10 +1467,31 @@ def password_update(request):
 
 
 def payment_list(request):
+    Login_Id = request.session['Login_Id']
+    Field_Office_Id = request.session['field_office_id']
     application_details = t_payment_details.objects.filter(Receipt_No__isnull=True)
     service_details = t_service_master.objects.all()
+    message_count = (t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='AP',
+                                                       Action_Date__isnull=False)
+                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Field_Office_Id=Field_Office_Id,
+                                                         Application_Status='I',
+                                                         Action_Date__isnull=False)
+                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Field_Office_Id=Field_Office_Id,
+                                                         Application_Status='FI',
+                                                         Action_Date__isnull=False)
+                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Field_Office_Id=Field_Office_Id,
+                                                         Application_Status='FR',
+                                                         Action_Date__isnull=False)
+                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Field_Office_Id=Field_Office_Id,
+                                                         Application_Status='P',
+                                                         Action_Date__isnull=False)
+                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='APA',
+                                                         Action_Date__isnull=False)
+                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='NCF',
+                                                         Action_Date__isnull=False)).count()
     return render(request, 'payment_details_list.html', {'application_details': application_details,
-                                                         'service_details': service_details})
+                                                         'service_details': service_details,
+                                                         'ins_count': message_count})
 
 
 def update_payment_details(request):

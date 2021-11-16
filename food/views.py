@@ -30,12 +30,25 @@ from plant.views import inspector_application, resubmit_application, focal_offic
 
 
 def food_business_registration_licensing(request):
+    login_id = request.session['Login_Id']
     unit = t_unit_master.objects.filter(Unit_Type='S')
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
+    message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
+
+    inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
+                                                              Action_Date__isnull=False).count()
+    consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
+                                                               Action_Date__isnull=False, Application_Status='P') \
+        .count()
     return render(request, 'registration_licensing/registration_application.html',
-                  {'unit': unit, 'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village})
+                  {'unit': unit, 'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village, 'count': message_count,
+                   'count_call': inspection_call_count, 'consignment_call_count': consignment_call_count})
 
 
 def save_food_business_registration(request):
@@ -955,6 +968,7 @@ def delete_fbr_factory_team_details(request):
 
 # Export OF Food
 def food_export_certificate_application(request):
+    login_id = request.session['Login_Id']
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
@@ -962,11 +976,23 @@ def food_export_certificate_application(request):
     field_office = t_field_office_master.objects.filter(Is_Entry_Point='Y')
     location = t_location_field_office_mapping.objects.all()
     unit = t_unit_master.objects.filter(Unit_Type='S')
+    message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
+
+    inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
+                                                              Action_Date__isnull=False).count()
+    consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
+                                                               Action_Date__isnull=False, Application_Status='P') \
+        .count()
     return render(request, 'export_certificate_food/food_export_certificate.html',
                   {'dzongkhag': dzongkhag, 'village': village,
                    'gewog': gewog, 'country': country,
                    'field_office': field_office,
-                   'location': location, 'unit': unit})
+                   'location': location, 'unit': unit, 'count': message_count, 'count_call': inspection_call_count,
+                   'consignment_call_count': consignment_call_count})
 
 
 def save_food_export_details(request):
@@ -1311,6 +1337,7 @@ def send_fec_reject_email(remarks, Email):
 
 # Licensing of Food Handler
 def food_handler_licensing(request):
+    login_id = request.session['Login_Id']
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
@@ -1318,11 +1345,23 @@ def food_handler_licensing(request):
     field_office = t_field_office_master.objects.all()
     location = t_location_field_office_mapping.objects.all()
     unit = t_unit_master.objects.filter(Unit_Type='S')
+    message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
+
+    inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
+                                                              Action_Date__isnull=False).count()
+    consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
+                                                               Action_Date__isnull=False, Application_Status='P') \
+        .count()
     return render(request, 'food_handler/application_form.html',
                   {'dzongkhag': dzongkhag, 'village': village,
                    'gewog': gewog, 'country': country,
                    'field_office': field_office,
-                   'location': location, 'unit': unit})
+                   'location': location, 'unit': unit, 'count': message_count, 'count_call': inspection_call_count,
+                   'consignment_call_count': consignment_call_count})
 
 
 def save_food_handler_details(request):
@@ -1761,7 +1800,20 @@ def food_handler_application(request):
     application_details = t_workflow_details.objects.filter(Assigned_Role_Id='5', Assigned_To=Login_Id,
                                                             Application_Status='A', Service_Code=service_code)
     details = t_food_licensing_food_handler_t1.objects.filter(Training_Batch_No__isnull=True)
-    return render(request, 'food_handler_list.html', {'application_details': application_details, 'details': details})
+    message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
+
+    inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
+                                                              Action_Date__isnull=False).count()
+    consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
+                                                               Action_Date__isnull=False, Application_Status='P') \
+        .count()
+    return render(request, 'food_handler_list.html', {'application_details': application_details, 'details': details,
+                                                      'count': message_count, 'count_call': inspection_call_count,
+                                                      'consignment_call_count': consignment_call_count})
 
 
 def update_batch_no(request):
@@ -1854,6 +1906,7 @@ def generate_fh_license_no(request):
 
 # Licensing of Food Handler
 def food_import_application(request):
+    login_id = request.session['Login_Id']
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
@@ -1862,11 +1915,23 @@ def food_import_application(request):
     location = t_location_field_office_mapping.objects.all()
     unit = t_unit_master.objects.filter(Unit_Type='S')
     category = t_food_category_master.objects.all()
+    message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
+
+    inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
+                                                              Action_Date__isnull=False).count()
+    consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
+                                                               Action_Date__isnull=False, Application_Status='P') \
+        .count()
     return render(request, 'import_certificate_food/application_form.html',
                   {'dzongkhag': dzongkhag, 'village': village,
                    'gewog': gewog, 'country': country,
                    'field_office': field_office,
-                   'location': location, 'unit': unit, 'category': category})
+                   'location': location, 'unit': unit, 'category': category, 'count': message_count,
+                   'count_call': inspection_call_count, 'consignment_call_count': consignment_call_count})
 
 
 def save_food_import(request):
@@ -2383,8 +2448,21 @@ def factory_inspection_list(request):
     new_import_app = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=Login_Id,
                                                        Action_Date__isnull=False)
     service_details = t_service_master.objects.all()
+    message_count = (t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='RS')
+                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='IRS')
+                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='ATR')
+                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='APR')
+                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='NCR')).count()
+
+    inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=Login_Id,
+                                                              Action_Date__isnull=False).count()
+    consignment_call_count = t_workflow_details.objects.filter(Assigned_To=Login_Id,
+                                                               Action_Date__isnull=False, Application_Status='P') \
+        .count()
     return render(request, 'factory_inspection_list.html',
-                  {'service_details': service_details, 'application_details': new_import_app})
+                  {'service_details': service_details, 'application_details': new_import_app, 'count': message_count,
+                   'count_call': inspection_call_count,
+                   'consignment_call_count': consignment_call_count})
 
 
 def update_payment(application_no, permit_no, service_code, validity_date):

@@ -25,6 +25,7 @@ from plant.views import focal_officer_application, inspector_application, resubm
 
 
 def organic_certificate(request):
+    login_id = request.session['Login_Id']
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
@@ -32,11 +33,23 @@ def organic_certificate(request):
     field_office = t_field_office_master.objects.all()
     location = t_location_field_office_mapping.objects.all()
     unit = t_unit_master.objects.filter(Unit_Type='S')
+    message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
+
+    inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
+                                                              Action_Date__isnull=False).count()
+    consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
+                                                               Action_Date__isnull=False, Application_Status='P') \
+        .count()
     return render(request, 'organic_certification/apply_organic_certification.html',
                   {'dzongkhag': dzongkhag, 'village': village,
                    'gewog': gewog, 'country': country,
                    'field_office': field_office,
-                   'location': location, 'unit': unit})
+                   'location': location, 'unit': unit, 'count': message_count, 'count_call': inspection_call_count,
+                   'consignment_call_count': consignment_call_count})
 
 
 def save_organic_certificate(request):
@@ -920,6 +933,7 @@ def oc_nc_response(request):
 
 # gap_certificate
 def gap_certificate(request):
+    login_id = request.session['Login_Id']
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
@@ -927,11 +941,23 @@ def gap_certificate(request):
     field_office = t_field_office_master.objects.all()
     location = t_location_field_office_mapping.objects.all()
     unit = t_unit_master.objects.filter(Unit_Type='S')
+    message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
+
+    inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
+                                                              Action_Date__isnull=False).count()
+    consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
+                                                               Action_Date__isnull=False, Application_Status='P') \
+        .count()
     return render(request, 'GAP_Certification/apply_gap_certification.html',
                   {'dzongkhag': dzongkhag, 'village': village,
                    'gewog': gewog, 'country': country,
                    'field_office': field_office,
-                   'location': location, 'unit': unit})
+                   'location': location, 'unit': unit, 'count': message_count, 'count_call': inspection_call_count,
+                   'consignment_call_count': consignment_call_count})
 
 
 def save_gap_certificate(request):
@@ -1653,6 +1679,7 @@ def gap_certificate_no(request):
 
 # Food Product certificate
 def food_product_certificate(request):
+    login_id = request.session['Login_Id']
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
@@ -1660,11 +1687,23 @@ def food_product_certificate(request):
     field_office = t_field_office_master.objects.all()
     location = t_location_field_office_mapping.objects.all()
     unit = t_unit_master.objects.filter(Unit_Type='S')
+    message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
+
+    inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
+                                                              Action_Date__isnull=False).count()
+    consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
+                                                               Action_Date__isnull=False, Application_Status='P') \
+        .count()
     return render(request, 'food_product_certification/apply_food_product_certification.html',
                   {'dzongkhag': dzongkhag, 'village': village,
                    'gewog': gewog, 'country': country,
                    'field_office': field_office,
-                   'location': location, 'unit': unit})
+                   'location': location, 'unit': unit, 'count': message_count, 'count_call': inspection_call_count,
+                   'consignment_call_count': consignment_call_count})
 
 
 def save_food_product_certificate(request):
@@ -2262,8 +2301,21 @@ def certificate_pending_list(request):
                           | t_workflow_details.objects.filter(Applicant_Id=Login_Id, Service_Code='GAP',
                                                               Action_Date__isnull=True)
     service_details = t_service_master.objects.all()
+    message_count = (t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='RS')
+                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='IRS')
+                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='ATR')
+                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='APR')
+                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='NCR')).count()
+
+    inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=Login_Id,
+                                                              Action_Date__isnull=False).count()
+    consignment_call_count = t_workflow_details.objects.filter(Assigned_To=Login_Id,
+                                                               Action_Date__isnull=False, Application_Status='P') \
+        .count()
     return render(request, 'certification_draft_list.html', {'application_details': application_details,
-                                                             'service_details': service_details})
+                                                             'service_details': service_details, 'count': message_count,
+                                                             'count_call': inspection_call_count,
+                                                             'consignment_call_count': consignment_call_count})
 
 
 def view_certificate_draft_details(request):
