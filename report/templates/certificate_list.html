@@ -107,8 +107,6 @@
                                             <th scope="col">Firm Name</th>
                                             <th scope="col">Firm Address</th>
                                             <th scope="col">Firm Contact No</th>
-                                            <th scope="col">Factory Name</th>
-                                            <th scope="col">Factory Address</th>
                                             <th scope="col">Certificate Number</th>
                                             <th scope="col">Approve Date</th>
                                             <th scope="col">Validity</th>
@@ -121,8 +119,6 @@
                                                 <td>{{certificate_details.Firm_Name}}</td>
                                                 <td>{{certificate_details.Firm_Address}}</td>
                                                 <td>{{certificate_details.Firm_Contact_No}}</td>
-                                                <td>{{certificate_details.Factory_Name}}</td>
-                                                <td>{{certificate_details.Factory_Address}}</td>
                                                 <td>{{certificate_details.Certificate_No}}</td>
                                                 <td>{{certificate_details.Approve_Date}}</td>
                                                 <td>{{certificate_details.Validity}}</td>
@@ -146,9 +142,79 @@
 <script>
     $(function ()
         {
-        $('#certificate_gap_table').DataTable();
-        $('#certificate_org_table').DataTable();
-        $('#certificate_fpc_table').DataTable();
-    });
+            $("#certificate_gap_table").DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        title: 'List of GAP Certificate',
+                        text:'<i class="fas fa-file-excel"></i>',
+                        titleAttr: 'Excel'
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        title: 'List of GAP Certificate',
+                        text:'<i class="fas fa-file-pdf"></i>',
+                        titleAttr: 'PDF'
+                    },
+                     {
+                        extend: 'print',
+                        title: 'List of GAP Certificate',
+                        text: '<i class="fas fa-print"></i>',
+                        titleAttr: 'Print'
+                    },
+                ]
+            });
+
+            $("#certificate_org_table").DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        title: 'List of Organic Certificate',
+                        text:'<i class="fas fa-file-excel"></i>',
+                        titleAttr: 'Excel'
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        title: 'List of Organic Certificate',
+                        text:'<i class="fas fa-file-pdf"></i>',
+                        titleAttr: 'PDF'
+                    },
+                     {
+                        extend: 'print',
+                        title: 'List of Organic Certificate',
+                        text: '<i class="fas fa-print"></i>',
+                        titleAttr: 'Print'
+                    },
+                ]
+            });
+
+            $("#certificate_fpc_table").DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        title: 'List of Food Product Certificate',
+                        text:'<i class="fas fa-file-excel"></i>',
+                        titleAttr: 'Excel'
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        title: 'List of Food Product Certificate',
+                        text:'<i class="fas fa-file-pdf"></i>',
+                        titleAttr: 'PDF'
+                    },
+                     {
+                        extend: 'print',
+                        title: 'List of Food Product Certificate',
+                        text: '<i class="fas fa-print"></i>',
+                        titleAttr: 'Print'
+                    },
+                ]
+            });
+        }
+    );
+
 </script>
 {% endblock %}

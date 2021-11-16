@@ -1800,15 +1800,15 @@ def food_handler_application(request):
     application_details = t_workflow_details.objects.filter(Assigned_Role_Id='5', Assigned_To=Login_Id,
                                                             Application_Status='A', Service_Code=service_code)
     details = t_food_licensing_food_handler_t1.objects.filter(Training_Batch_No__isnull=True)
-    message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
+    message_count = (t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='RS')
+                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='IRS')
+                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='ATR')
+                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='APR')
+                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='NCR')).count()
 
-    inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
+    inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=Login_Id,
                                                               Action_Date__isnull=False).count()
-    consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
+    consignment_call_count = t_workflow_details.objects.filter(Assigned_To=Login_Id,
                                                                Action_Date__isnull=False, Application_Status='P') \
         .count()
     return render(request, 'food_handler_list.html', {'application_details': application_details, 'details': details,

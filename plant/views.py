@@ -101,7 +101,7 @@ def oic_application(request):
                      t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='NCF',
                                                        Action_Date__isnull=False)).count()
     return render(request, 'oic_pending_list.html',
-                  {'service_details': service_details, 'application_details': new_import_app,'count': message_count})
+                  {'service_details': service_details, 'application_details': new_import_app, 'count': message_count})
 
 
 def inspector_application(request):
@@ -141,9 +141,11 @@ def inspector_application(request):
                                                          Action_Date__isnull=False)
                      | t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='NCF',
                                                          Action_Date__isnull=False)).count()
+    fhc_count = t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
+                                                  Action_Date__isnull=False, Service_Code='FHC').count()
     return render(request, 'inspector_pending_list.html',
                   {'service_details': service_details, 'application_details': new_import_app,
-                   'ins_count': message_count})
+                   'ins_count': message_count, 'fhc_count': fhc_count})
 
 
 def complain_officer_application(request):
@@ -192,7 +194,7 @@ def apply_movement_permit(request):
         .count()
     return render(request, 'movement_permit/apply_movement_permit.html',
                   {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village, 'location': location, 'unit': unit,
-                   'count': message_count,'count_call': inspection_call_count,
+                   'count': message_count, 'count_call': inspection_call_count,
                    'consignment_call_count': consignment_call_count})
 
 
@@ -899,7 +901,7 @@ def view_application_details(request):
             return render(request, 'food_product_certification/team_leader_details.html',
                           {'application_details': application_details, 'details': details, 'file': file,
                            'audit_findings': audit_findings, 'audit_observation': audit_observation,
-                           'inspection_details': inspection_details, 'file_count': file_count, 'audit_plan':audit_plan
+                           'inspection_details': inspection_details, 'file_count': file_count, 'audit_plan': audit_plan
                            })
 
 
@@ -1714,7 +1716,7 @@ def fo_app_details(request):
                         team_leader = t_user_master.objects.filter(Role_Id__in=['2', '3', '4', '5', '6', ])
                         team_details = t_user_master.objects.filter(Role_Id__in=['2', '3', '4', '5', '6', ])
                         audit_plan = t_file_attachment.objects.filter(Application_No=Application_No,
-                                                                      Attachment_type='AP')
+                                                                      Attachment_Type='AP')
                         return render(request, 'organic_certification/approve_fo_details.html',
                                       {'application_details': application_details, 'details': details, 'file': file,
                                        'crop_production': crop_production, 'audit_team': audit_team,
@@ -1925,7 +1927,8 @@ def fo_app_details(request):
                         village = t_village_master.objects.all()
                         team_leader = t_user_master.objects.filter(Role_Id__in=['2', '3', '4', '5', '6', ])
                         team_details = t_user_master.objects.filter(Role_Id__in=['2', '3', '4', '5', '6', ])
-                        audit_plan = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_type='AP')
+                        audit_plan = t_file_attachment.objects.filter(Application_No=Application_No,
+                                                                      Attachment_Type='AP')
                         return render(request, 'food_product_certification/approve_fo_details.html',
                                       {'application_details': application_details, 'details': details, 'file': file,
                                        'audit_findings': audit_findings, 'audit_observation': audit_observation,
@@ -5778,20 +5781,76 @@ def certificate_file_details(request):
 
 # certification_certificates
 def certificate_print(request):
-    Login_Id = request.session['Login_Id']
-    message_count = (t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='RS')
-                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='IRS')
-                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='ATR')
-                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='APR')
-                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='NCR')).count()
+    login_type = request.session['Login_Type']
+    if login_type == 'I':
+        Role = request.session['role']
+        Role_Id = request.session['Role_Id']
+        if Role == 'Focal Officer':
+            section = request.session['section']
+            section_details = t_section_master.objects.filter(Section_Id=section)
+            for id_section in section_details:
+                section_name = id_section.Section_Name
+                message_count = (t_workflow_details.objects.filter(
+                    Assigned_Role_Id=Role_Id, Section=section_name,
+                    Action_Date__isnull=False, Application_Status='P') | t_workflow_details.objects.filter(
+                    Assigned_Role_Id=Role_Id, Section=section_name,
+                    Action_Date__isnull=False, Application_Status='ATA') | t_workflow_details.objects.filter(
+                    Assigned_Role_Id=Role_Id, Section=section_name,
+                    Action_Date__isnull=False, Application_Status='FRA') |
+                                 t_workflow_details.objects.filter(
+                                     Assigned_Role_Id=Role_Id, Section=section_name,
+                                     Action_Date__isnull=False, Application_Status='CA')
+                                 ).count()
+                return render(request, 'certificate_printing.html', {'count': message_count})
+        elif Role == 'OIC':
+            login_id = request.session['Login_Id']
+            Field_Office_Id = request.session['field_office_id']
+            message_count = (t_workflow_details.objects.filter(Assigned_Role_Id='4', Field_Office_Id=Field_Office_Id,
+                                                               Action_Date__isnull=False) |
+                             t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
+                                                               Action_Date__isnull=False)).count()
 
-    inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=Login_Id,
-                                                              Action_Date__isnull=False).count()
-    consignment_call_count = t_workflow_details.objects.filter(Assigned_To=Login_Id,
-                                                               Action_Date__isnull=False, Application_Status='P') \
-        .count()
-    return render(request, 'certificate_printing.html', {'count': message_count, 'count_call': inspection_call_count,
-                   'consignment_call_count': consignment_call_count})
+            return render(request, 'certificate_printing.html', {'count': message_count})
+        elif Role == 'Inspector':
+            login_id = request.session['Login_Id']
+            Field_Office_Id = request.session['field_office_id']
+            message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
+                                                               Action_Date__isnull=False)
+                             | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
+                                                                 Application_Status='I',
+                                                                 Action_Date__isnull=False)
+                             | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
+                                                                 Application_Status='FI',
+                                                                 Action_Date__isnull=False)
+                             | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
+                                                                 Application_Status='FR',
+                                                                 Action_Date__isnull=False)
+                             | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
+                                                                 Application_Status='P',
+                                                                 Action_Date__isnull=False)
+                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APA',
+                                                                 Action_Date__isnull=False)
+                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
+                                                                 Action_Date__isnull=False)).count()
+            fhc_count = t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
+                                                          Action_Date__isnull=False, Service_Code='FHC').count()
+            return render(request, 'certificate_printing.html', {'ins_count': message_count, 'fhc_count': fhc_count})
+    else:
+        login_id = request.session['Login_Id']
+        message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
+
+        inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
+                                                                  Action_Date__isnull=False).count()
+        consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
+                                                                   Action_Date__isnull=False, Application_Status='P') \
+            .count()
+        return render(request, 'certificate_printing.html',
+                      {'count': message_count, 'count_call': inspection_call_count,
+                       'consignment_call_count': consignment_call_count})
 
 
 def view_certificate_details(request):
@@ -6451,7 +6510,7 @@ def call_for_inspection(request):
     return render(request, 'inspection_call.html',
                   {'application_details': application_details, 'service_details': service_details,
                    'payment_details': payment_details, 'count': message_count, 'count_call': inspection_call_count,
-                    'consignment_call_count': consignment_call_count})
+                   'consignment_call_count': consignment_call_count})
 
 
 def application_status(request):
@@ -6474,7 +6533,7 @@ def application_status(request):
     return render(request, 'application_status.html', {'application_details': application_details,
                                                        'service_details': service_details, 'count': message_count,
                                                        'count_call': inspection_call_count,
-                                                        'consignment_call_count': consignment_call_count})
+                                                       'consignment_call_count': consignment_call_count})
 
 
 def resubmit_application(request):
@@ -6500,7 +6559,7 @@ def resubmit_application(request):
     return render(request, 'resubmit_application.html', {'application_details': application_details,
                                                          'service_details': service_details, 'count': message_count,
                                                          'count_call': inspection_call_count,
-                                                        'consignment_call_count': consignment_call_count})
+                                                         'consignment_call_count': consignment_call_count})
 
 
 def call_for_inspection_details(request):
@@ -7983,18 +8042,91 @@ def view_chief_details(request):
 
 def member_audit_plan(request):
     login_id = request.session['Login_Id']
-    application_details = t_certification_food_t3.objects.filter(Login_Id=login_id)
-    service_details = t_service_master.objects.all()
-    return render(request, 'member_audit_plan_list.html',
-                  {'application_details': application_details, 'service_details': service_details})
+    Role = request.session['role']
+    Role_Id = request.session['Role_Id']
+    if Role == 'Focal Officer':
+        section = request.session['section']
+        section_details = t_section_master.objects.filter(Section_Id=section)
+        for id_section in section_details:
+            section_name = id_section.Section_Name
+            message_count = (t_workflow_details.objects.filter(
+                Assigned_Role_Id=Role_Id, Section=section_name,
+                Action_Date__isnull=False, Application_Status='P') | t_workflow_details.objects.filter(
+                Assigned_Role_Id=Role_Id, Section=section_name,
+                Action_Date__isnull=False, Application_Status='ATA') | t_workflow_details.objects.filter(
+                Assigned_Role_Id=Role_Id, Section=section_name,
+                Action_Date__isnull=False, Application_Status='FRA') |
+                             t_workflow_details.objects.filter(
+                                 Assigned_Role_Id=Role_Id, Section=section_name,
+                                 Action_Date__isnull=False, Application_Status='CA')
+                             ).count()
+            application_details = t_certification_food_t3.objects.filter(Login_Id=login_id)
+            service_details = t_service_master.objects.all()
+            return render(request, 'member_audit_plan_list.html', {'application_details': application_details,
+                                                                   'service_details': service_details,
+                                                                   'count': message_count})
+    elif Role == 'OIC':
+        login_id = request.session['Login_Id']
+        Field_Office_Id = request.session['field_office_id']
+        message_count = (t_workflow_details.objects.filter(Assigned_Role_Id='4', Field_Office_Id=Field_Office_Id,
+                                                           Action_Date__isnull=False) |
+                         t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
+                                                           Action_Date__isnull=False)).count()
+        application_details = t_certification_food_t3.objects.filter(Login_Id=login_id)
+        service_details = t_service_master.objects.all()
+        return render(request, 'member_audit_plan_list.html', {'application_details': application_details,
+                                                               'service_details': service_details,
+                                                               'count': message_count})
+    elif Role == 'Inspector':
+        login_id = request.session['Login_Id']
+        Field_Office_Id = request.session['field_office_id']
+        message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
+                                                           Action_Date__isnull=False)
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
+                                                             Application_Status='I',
+                                                             Action_Date__isnull=False)
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
+                                                             Application_Status='FI',
+                                                             Action_Date__isnull=False)
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
+                                                             Application_Status='FR',
+                                                             Action_Date__isnull=False)
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
+                                                             Application_Status='P',
+                                                             Action_Date__isnull=False)
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APA',
+                                                             Action_Date__isnull=False)
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
+                                                             Action_Date__isnull=False)).count()
+        application_details = t_certification_food_t3.objects.filter(Login_Id=login_id)
+        service_details = t_service_master.objects.all()
+        fhc_count = t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
+                                                      Action_Date__isnull=False, Service_Code='FHC').count()
+        return render(request, 'member_audit_plan_list.html', {'application_details': application_details,
+                                                               'service_details': service_details,
+                                                               'ins_count': message_count, 'fhc_count': fhc_count})
 
 
 def client_audit_plan(request):
+    login_id = request.session['Login_Id']
     application_details = t_workflow_details.objects.filter(Application_Status__in=['APA', 'NCF', 'CA', 'A'],
                                                             Service_Code__in=['GAP', 'OC', 'FPC'])
     service_details = t_service_master.objects.all()
+    message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
+                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
+
+    inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
+                                                              Action_Date__isnull=False).count()
+    consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
+                                                               Action_Date__isnull=False, Application_Status='P') \
+        .count()
     return render(request, 'client_audit_plan_list.html',
-                  {'application_details': application_details, 'service_details': service_details})
+                  {'application_details': application_details, 'service_details': service_details,
+                   'count': message_count, 'count_call': inspection_call_count,
+                   'consignment_call_count': consignment_call_count})
 
 
 def view_audit_plan(request):

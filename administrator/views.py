@@ -86,7 +86,9 @@ def dashboard(request):
                                                                  Action_Date__isnull=False)
                              | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
                                                                  Action_Date__isnull=False)).count()
-            return render(request, 'dashboard.html', {'ins_count': message_count})
+            fhc_count = t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
+                                                           Action_Date__isnull=False, Service_Code='FHC').count()
+            return render(request, 'dashboard.html', {'ins_count': message_count, 'fhc_count': fhc_count})
         elif Role == 'Complain Officer':
             login_id = request.session['Login_Id']
             message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
@@ -153,7 +155,7 @@ def login(request):
                             if str(user.Login_Type) == "C":
                                 client = "client"
                                 request.session['email'] = user.Email_Id
-                                request.session['name'] = user.Name
+                                request.session['username'] = user.Name
                                 request.session['role'] = client
                                 request.session['Login_Id'] = user.Login_Id
                                 request.session['Login_Type'] = user.Login_Type
@@ -174,6 +176,7 @@ def login(request):
                                         request.session['email'] = user.Email_Id
                                         request.session['Login_Type'] = user.Login_Type
                                         request.session['Role_Id'] = mainroles.Role_Id
+                                        request.session['username'] = user.Name
                                         return redirect(dashboard)
                                     elif DG == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
@@ -1467,31 +1470,69 @@ def password_update(request):
 
 
 def payment_list(request):
-    Login_Id = request.session['Login_Id']
-    Field_Office_Id = request.session['field_office_id']
-    application_details = t_payment_details.objects.filter(Receipt_No__isnull=True)
-    service_details = t_service_master.objects.all()
-    message_count = (t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='AP',
-                                                       Action_Date__isnull=False)
-                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Field_Office_Id=Field_Office_Id,
-                                                         Application_Status='I',
-                                                         Action_Date__isnull=False)
-                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Field_Office_Id=Field_Office_Id,
-                                                         Application_Status='FI',
-                                                         Action_Date__isnull=False)
-                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Field_Office_Id=Field_Office_Id,
-                                                         Application_Status='FR',
-                                                         Action_Date__isnull=False)
-                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Field_Office_Id=Field_Office_Id,
-                                                         Application_Status='P',
-                                                         Action_Date__isnull=False)
-                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='APA',
-                                                         Action_Date__isnull=False)
-                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='NCF',
-                                                         Action_Date__isnull=False)).count()
-    return render(request, 'payment_details_list.html', {'application_details': application_details,
-                                                         'service_details': service_details,
-                                                         'ins_count': message_count})
+    Role = request.session['role']
+    Role_Id = request.session['Role_Id']
+    if Role == 'Focal Officer':
+        section = request.session['section']
+        section_details = t_section_master.objects.filter(Section_Id=section)
+        for id_section in section_details:
+            section_name = id_section.Section_Name
+            message_count = (t_workflow_details.objects.filter(
+                Assigned_Role_Id=Role_Id, Section=section_name,
+                Action_Date__isnull=False, Application_Status='P') | t_workflow_details.objects.filter(
+                Assigned_Role_Id=Role_Id, Section=section_name,
+                Action_Date__isnull=False, Application_Status='ATA') | t_workflow_details.objects.filter(
+                Assigned_Role_Id=Role_Id, Section=section_name,
+                Action_Date__isnull=False, Application_Status='FRA') |
+                             t_workflow_details.objects.filter(
+                                 Assigned_Role_Id=Role_Id, Section=section_name,
+                                 Action_Date__isnull=False, Application_Status='CA')
+                             ).count()
+            application_details = t_payment_details.objects.filter(Receipt_No__isnull=True)
+            service_details = t_service_master.objects.all()
+            return render(request, 'payment_details_list.html', {'application_details': application_details,
+                                                                 'service_details': service_details,
+                                                                 'count': message_count})
+    elif Role == 'OIC':
+        login_id = request.session['Login_Id']
+        Field_Office_Id = request.session['field_office_id']
+        message_count = (t_workflow_details.objects.filter(Assigned_Role_Id='4', Field_Office_Id=Field_Office_Id,
+                                                           Action_Date__isnull=False) |
+                         t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
+                                                           Action_Date__isnull=False)).count()
+        application_details = t_payment_details.objects.filter(Receipt_No__isnull=True)
+        service_details = t_service_master.objects.all()
+        return render(request, 'payment_details_list.html', {'application_details': application_details,
+                                                             'service_details': service_details,
+                                                             'count': message_count})
+    elif Role == 'Inspector':
+        login_id = request.session['Login_Id']
+        Field_Office_Id = request.session['field_office_id']
+        message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
+                                                           Action_Date__isnull=False)
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
+                                                             Application_Status='I',
+                                                             Action_Date__isnull=False)
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
+                                                             Application_Status='FI',
+                                                             Action_Date__isnull=False)
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
+                                                             Application_Status='FR',
+                                                             Action_Date__isnull=False)
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
+                                                             Application_Status='P',
+                                                             Action_Date__isnull=False)
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APA',
+                                                             Action_Date__isnull=False)
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
+                                                             Action_Date__isnull=False)).count()
+        fhc_count = t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
+                                                      Action_Date__isnull=False, Service_Code='FHC').count()
+        application_details = t_payment_details.objects.filter(Receipt_No__isnull=True)
+        service_details = t_service_master.objects.all()
+        return render(request, 'payment_details_list.html', {'application_details': application_details,
+                                                             'service_details': service_details,
+                                                             'ins_count': message_count, 'fhc_count': fhc_count})
 
 
 def update_payment_details(request):
