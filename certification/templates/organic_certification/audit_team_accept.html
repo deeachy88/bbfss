@@ -15,10 +15,16 @@
 form, input, select, textarea{
         color: black !important;
     }
+    .head {
+    color: #f3f5f8;
+    text-decoration: none;
+    background-color: transparent;
+    -webkit-text-decoration-skip: objects;
+}
 </style>
         <div class="card">
             <div class="card-header" role="tab" id="headingOne">
-                <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed">
+                <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed head">
                     Application Details
                 </a>
             </div>
@@ -191,7 +197,7 @@ form, input, select, textarea{
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Address</label>
-                                        <<textarea class="form-control" disabled>{{application_details.Present_Address}}</textarea>
+                                        <textarea class="form-control" disabled>{{application_details.Present_Address}}</textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -225,7 +231,7 @@ form, input, select, textarea{
             {% if application_details.Application_Type == 'F' %}
             <div class="card">
                 <div class="card-header" role="tab" id="farmer_group_details">
-                    <a class="collapsed" data-toggle="collapse" href="#collapse_farmer_group" aria-expanded="false" aria-controls="collapse_farmer_group">
+                    <a class="collapsed head" data-toggle="collapse" href="#collapse_farmer_group" aria-expanded="false" aria-controls="collapse_farmer_group">
                         Farmer Group Details
                     </a>
                 </div>
@@ -260,7 +266,7 @@ form, input, select, textarea{
         {% endfor %}
         <div class="card">
             <div class="card-header" role="tab" id="crop_details">
-                <a class="collapsed" data-toggle="collapse" href="#collapseCrop" aria-expanded="false" aria-controls="collapseCrop">
+                <a class="collapsed head" data-toggle="collapse" href="#collapseCrop" aria-expanded="false" aria-controls="collapseCrop">
                     Crop Production Details
                 </a>
             </div>
@@ -319,7 +325,7 @@ form, input, select, textarea{
         </div>
         <div class="card">
             <div class="card-header" role="tab" id="wild_collection_details">
-                <a class="collapsed" data-toggle="collapse" href="#collapse_wild_collection" aria-expanded="false" aria-controls="collapse_wild_collection">
+                <a class="collapsed head" data-toggle="collapse" href="#collapse_wild_collection" aria-expanded="false" aria-controls="collapse_wild_collection">
                     Wild Collection Details
                 </a>
             </div>
@@ -365,7 +371,7 @@ form, input, select, textarea{
         </div>
         <div class="card">
             <div class="card-header" role="tab" id="animal_husbandry_details">
-                <a class="collapsed" data-toggle="collapse" href="#collapse_animal_husbandry" aria-expanded="false" aria-controls="collapse_animal_husbandry">
+                <a class="collapsed head" data-toggle="collapse" href="#collapse_animal_husbandry" aria-expanded="false" aria-controls="collapse_animal_husbandry">
                    Animal Husbandry Details
                 </a>
             </div>
@@ -406,7 +412,7 @@ form, input, select, textarea{
         </div>
         <div class="card">
             <div class="card-header" role="tab" id="aquaculture_details">
-                <a class="collapsed" data-toggle="collapse" href="#collapse_aquaculture" aria-expanded="false" aria-controls="collapse_aquaculture">
+                <a class="collapsed head" data-toggle="collapse" href="#collapse_aquaculture" aria-expanded="false" aria-controls="collapse_aquaculture">
                     Aquaculture Details
                 </a>
             </div>
@@ -451,7 +457,7 @@ form, input, select, textarea{
         </div>
         <div class="card">
             <div class="card-header" role="tab" id="api_culture_details">
-                <a class="collapsed" data-toggle="collapse" href="#collapse_api_culture" aria-expanded="false" aria-controls="collapse_api_culture">
+                <a class="collapsed head" data-toggle="collapse" href="#collapse_api_culture" aria-expanded="false" aria-controls="collapse_api_culture">
                     Apiculture Details
                 </a>
             </div>
@@ -492,7 +498,7 @@ form, input, select, textarea{
         </div>
         <div class="card">
             <div class="card-header" role="tab" id="processing_details">
-                <a class="collapsed" data-toggle="collapse" href="#collapse_processing_details" aria-expanded="false" aria-controls="collapse_processing_details">
+                <a class="collapsed head" data-toggle="collapse" href="#collapse_processing_details" aria-expanded="false" aria-controls="collapse_processing_details">
                     Processing Unit Details
                 </a>
             </div>
@@ -551,7 +557,7 @@ form, input, select, textarea{
         </div>
         <div class="card">
             <div class="card-header" role="tab" id="headingTwo">
-                <a class="collapsed" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                <a class="collapsed head" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                     Attachments
                 </a>
             </div>
@@ -582,7 +588,7 @@ form, input, select, textarea{
         </div>
         <div class="card">
             <div class="card-header" role="tab" id="headingFour">
-                <a class="collapsed" data-toggle="collapse" href="#collapseFour" aria-expanded="false" aria-controls="collapseTwo">
+                <a class="collapsed head" data-toggle="collapse" href="#collapseFour" aria-expanded="false" aria-controls="collapseTwo">
                     Audit Team Details
                 </a>
             </div>
@@ -722,7 +728,7 @@ form, input, select, textarea{
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label class="form-label">Response <font color="red" id="response">*</font></label>
+                                <label class="form-label">Response (Required If Do you have any objection on the audit team composition is Yes)</label>
                                 <textarea class="form-control" name="remarks" id="remarks"></textarea>
                             </div>
                         </div>
@@ -759,7 +765,7 @@ function audit_team_accept()
     }
     else if(acceptance_val == 'R' && remarks == "")
     {
-        $('#remarksErrorMsg').html("Please Check One.");
+        $('#remarksErrorMsg').html("Enter Response.");
         $('#remarksErrorMsg').show();
         $('#remarksErrorMsg').delay(2000).fadeOut('slow');
          $("#remarks").focus();

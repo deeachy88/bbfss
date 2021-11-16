@@ -585,9 +585,22 @@ form, input, select, textarea{
                     Audit Plan Details
                 </a>
             </div>
-            <div id="observations_tab" class="collapse" role="tabpanel" aria-labelledby="observations_tab" data-parent="#observations_tab" style="">
-                    <div id="oc-file-attachment">
-                        <div class="card-body">
+            <div id="observations_tab" class="active" role="tabpanel" aria-labelledby="observations_tab" data-parent="#observations_tab" style="">
+                    <div class="card-body">
+                        {% for application_details in application_details %}
+                            {% if application_details.Audit_Plan_Acceptance == 'A' %}
+
+                            {% else %}
+                                <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="show_oc_attachmentModal()">
+                                <span class="btn-label">
+                                    <i class="fa fa-print"></i>
+                                </span>
+                                Add
+                            </a>
+                            {% endif %}
+                        {% endfor %}
+                        <br><br>
+                        <div id="oc-file-attachment">
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
@@ -599,7 +612,7 @@ form, input, select, textarea{
                                    {% for file_attach in file_attach %}
                                         <tr>
                                             <td>{{ forloop.counter }}</td>
-                                            <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                                            <td><a href='{{file_attach.File_Path}}' target="_blank">{{file_attach.Attachment}}</a></td>
                                         </tr>
                                         {% empty %}
                                         <tr>
@@ -608,84 +621,35 @@ form, input, select, textarea{
                                    {% endfor %}
                                 </tbody>
                             </table>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Provisional Audit Date</label>
-                                         {% for application_details in application_details %}
-                                            <input type="text" class="form-control" value="{{application_details.Audit_Plan_Date}}" disabled>
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                         </div>
+                        <div id="msgDiv" class="alert alert-info" style="display:none;"></div>
+                        <hr>
+                        {% for application_details in application_details %}
+                            {% if application_details.Audit_Plan_Acceptance == 'A' %}
 
+                            {% else %}
+                                <button type="button" class="btn btn-flat btn-primary" onclick="resubmit_details('{{ application_details.Application_No }}')">
+                                    <i class="ace-icon fa fa-share-alt"></i>
+                                    &nbsp;&nbsp;Share With Client
+                                </button>
+                            {% endif %}
+
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
         </div>
     <form method="post" id="oc_audit_date_form">
                 {% csrf_token %}
     {% for application_details in application_details %}
-    {% if application_details.Audit_Plan_Acceptance == 'R' %}
-        <div class="card">
-            <div class="card-header" role="tab" id="audit_date_details">
-                <a class="collapsed" data-toggle="collapse" href="#audit_date_tab" aria-expanded="false" aria-controls="collapseTwo">
-                    Audit Date
-                </a>
-            </div>
-            <div id="audit_date_tab" class="collapse" role="tabpanel" aria-labelledby="audit_date_tab" data-parent="#audit_date_tab" style="">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="form-label">Audit Date  &nbsp;<font color='red'>*</font> </label>
-                               <input type="date" name="Audit_Plan_Date" id="Audit_Plan_Date" class="form-control date-picker flatpickr-input active">
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="form-label">Audit Type &nbsp;<font color='red'>*</font> </label>
-                                <select class="form-control form-control" id="audit_plan_type" name="audit_plan_type" onchange="conveyanceChange(this.value)">
-                                    <option value="">-SELECT-</option>
-                                    <option value="Initial">Initial</option>
-                                    <option value="Revisit">Revisit/Follow Up</option>
-                                    <option value="Surveillance">Surveillance</option>
-                                    <option value="Renewal">Renewal</option>
-                                    <option value="Preliminary">Preliminary</option>
-                                    <option value="Special">Special</option>
-                                    <option value="Farm">Farm</option>
-                                    <option value="Company/Factory">Company/Factory</option>
-                                    <option value="Management System">Management System</option>
-                                    <option value="Processing">Processing</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Remarks From Focal Officer </label>
-                                <textarea class="form-control" disabled>{{ application_details.FO_Remarks }}</textarea>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="msgDiv" class="alert alert-info" style="display:none;"></div>
-                    <hr>
-                    <input type="hidden" name="audit_application_no" value="{{ application_details.Application_No }}">
-                    <button type="button" class="btn btn-flat btn-primary" onclick="resubmit_details()">
-                        <i class="ace-icon fa fa-share-square-o"></i>
-                        &nbsp;&nbsp;Share With Client
-                    </button>
-                </div>
-            </div>
-        </div>
-    {% else %}
+    {% if application_details.Audit_Plan_Acceptance == 'A' %}
         <div class="card">
             <div class="card-header" role="tab" id="audit_findings">
                 <a class="collapsed" data-toggle="collapse" href="#audit_findings_tab" aria-expanded="false" aria-controls="collapseTwo">
                     Audit Findings
                 </a>
             </div>
-            <div id="audit_findings_tab" class="collapse" role="tabpanel" aria-labelledby="observations_tab" data-parent="#observations_tab" style="">
+            <div id="audit_findings_tab" class="active" role="tabpanel" aria-labelledby="observations_tab" data-parent="#observations_tab" style="">
 
                 <div class="card-body">
                     <div class="row">
@@ -999,7 +963,7 @@ form, input, select, textarea{
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <!--<div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Remarks From Client </label>
@@ -1012,7 +976,7 @@ form, input, select, textarea{
                                 <textarea type="text" class="form-control" disabled>{{ application_details.FO_Remarks }}</textarea>
                             </div>
                         </div>
-                    </div>
+                    </div>-->
                 </div>
             </div>
         </div>
@@ -1022,7 +986,7 @@ form, input, select, textarea{
                     NONCONFORMITY REPORT
                 </a>
             </div>
-            <div id="non_conform_tab" class="collapse" role="tabpanel" aria-labelledby="observations_tab" data-parent="#observations_tab" style="">
+            <div id="non_conform_tab" class="active" role="tabpanel" aria-labelledby="observations_tab" data-parent="#observations_tab" style="">
                 <div class="card-body">
                     <div class="card-body">
                         <div class="card-tools">
@@ -1063,7 +1027,7 @@ form, input, select, textarea{
                             </table>
                         </div>
                         <br>
-                        <div class="row">
+                        <!--<div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Audit Date </label>
@@ -1088,7 +1052,7 @@ form, input, select, textarea{
                                     </select>
                                 </div>
                             </div>
-                        </div>
+                        </div>-->
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -1123,17 +1087,17 @@ form, input, select, textarea{
                         <div class="row">
                             <div class="col-md-6">
                                 <label class="form-label">Farm Inputs</label>
-                                <input type="text" name="Audit_Findings_Farm_Inputs" id="farm_input">
+                                <input type="text" name="Audit_Findings_Farm_Inputs" class="form-control" id="farm_input">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Name Of Supplier/Source</label>
-                                <input type="text" name="Audit_Findings_Farm_Supplier" id="name_supplier">
+                                <input type="text" name="Audit_Findings_Farm_Supplier" class="form-control" id="name_supplier">
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <label class="form-label">Invoice/Certificate</label>
-                                <input type="text" name="Audit_Findings_Farm_Invoice" id="invoice">
+                                <input type="text" name="Audit_Findings_Farm_Invoice" class="form-control" id="invoice">
                             </div>
                         </div>
                     </div>
@@ -1141,11 +1105,11 @@ form, input, select, textarea{
                         {% for application_details in application_details %}
                         <input type="hidden" name="application_no" value="{{ application_details.Application_No }}">
                         <button type="button" class="btn btn-flat btn-primary" onclick="farm_input_observation()">
-                            <i class="ace-icon fa fa-times"></i>
+                            <i class="ace-icon fa fa-check"></i>
                             &nbsp;&nbsp;Add
                         </button>
                         {% endfor %}
-                        <button type="button" class="btn btn-primary" onclick="closeTeamModal()">Close Modal</button>
+                        <button type="button" class="btn btn-primary" onclick="closeTeamModal()">Close</button>
                     </div>
                     </form>
                   </div>
@@ -1208,11 +1172,11 @@ form, input, select, textarea{
                         {% for application_details in application_details %}
                         <input type="hidden" name="appl_no" value="{{ application_details.Application_No }}">
                         <button type="button" class="btn btn-flat btn-primary" onclick="conform_observation()">
-                            <i class="ace-icon fa fa-times"></i>
+                            <i class="ace-icon fa fa-check"></i>
                             &nbsp;&nbsp;Add
                         </button>
                         {% endfor %}
-                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close Modal</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                     </div>
                     </form>
                   </div>
@@ -1237,7 +1201,7 @@ form, input, select, textarea{
                                         <div class="row">
                                             <div class="form-group col-md-6">
                                                 <label>Attach File</label>
-                                                <input type="file" name="document" id="document">
+                                                <input type="file" name="document" id="document" accept=".png,.jpg,.jpeg,.gif,.pdf,.docx,.doc">
                                                 <div class="alert alert-danger" id="fileErrorMsg" style="display:none"></div>
                                             </div>
                                         </div>
@@ -1248,7 +1212,7 @@ form, input, select, textarea{
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             {% for application_details in application_details %}
-                            <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_oc_attachment('{{application_details.Application_No}}')"> Submit </button>
+                            <button type="button" class="btn btn-primary btn-lg pull-right" onclick="save_oc_attachment('{{application_details.Application_No}}')"> Upload </button>
                             {% endfor %}
                         </div>
                     </div>
@@ -1302,6 +1266,7 @@ function farm_input_observation(application_id)
         success : function(data) {
             $('#farm_inputs_table').html(data);
             $('#farmInputModal').modal('hide');
+            $("#farm_input_form")[0].reset();
         }
     });
 }
@@ -1327,48 +1292,30 @@ function conform_observation()
         success : function(data) {
             $('#conform_details').html(data);
             $('#conformModal').modal('hide');
+            $("#conform_form")[0].reset();
         }
     });
 }
 
-function resubmit_details()
+function resubmit_details(application_no)
 {
-    var Audit_Plan_Date = $('#Audit_Plan_Date').val();
-    var audit_plan_type = $('#audit_plan_type').val();
-    if(Audit_Plan_Date == "")
-    {
-        $('#Audit_Plan_DateErrorMsg').html("Select Audit Date.");
-        $('#Audit_Plan_DateErrorMsg').show();
-        $('#Audit_Plan_DateErrorMsg').delay(2000).fadeOut('slow');
-        $("#Audit_Plan_Date").focus();
-    }
-    else if(audit_plan_type == "")
-    {
-        $('#audit_plan_typeErrorMsg').html("Select Audit Type.");
-        $('#audit_plan_typeErrorMsg').show();
-        $('#audit_plan_typeErrorMsg').delay(2000).fadeOut('slow');
-        $("#remarks").focus();
-    }
-    else
-    {
-        $.ajax({
-            type : "GET",
-            url : "{% url 'send_audit_plan_resubmit' %}",
-            data :$('#oc_audit_date_form').serialize(),
-            success : function(data) {
-                $('#msgDiv').html("Application Resubmitted For Acceptance To Client.");
-                $('#msgDiv').show();
-                setTimeout(function()
-                {
-                    $("#msgDiv").hide('blind', {}, 500)
-                }, 2000);
-                setTimeout(function()
-                {
-                     location.reload();
-                }, 3000);
-            }
-        });
-    }
+    $.ajax({
+        type : "GET",
+        url : "{% url 'send_audit_plan_resubmit' %}",
+        data :{'application_no':application_no },
+        success : function(data) {
+            $('#msgDiv').html("Application Shared With Client.");
+            $('#msgDiv').show();
+            setTimeout(function()
+            {
+                $("#msgDiv").hide('blind', {}, 500)
+            }, 2000);
+            setTimeout(function()
+            {
+                 location.reload();
+            }, 3000);
+        }
+    });
 }
 
 function save_oc_attachment(application_no)

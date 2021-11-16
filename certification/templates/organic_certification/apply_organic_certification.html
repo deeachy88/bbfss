@@ -213,9 +213,9 @@ span.flatpickr-weekday {
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Address <font color="red">*</font></label>
-                                <textarea class="form-control" id="adddress" name="adddress"></textarea>
+                                <textarea class="form-control" id="address" name="address"></textarea>
                             </div>
-                            <div class="alert alert-danger" id="adddress_ErrorMsg" style="display:none"></div>
+                            <div class="alert alert-danger" id="address_ErrorMsg" style="display:none"></div>
                         </div>
                     </div>
                     <div class="row">
@@ -1998,7 +1998,7 @@ function save_organic_certificate()
         var dzongkhag = $('#dzongkhag').val();
         var gewog = $('#gewog').val();
         var village = $('#village').val();
-        var address = $('#present_address').val();
+        var address = $('#address').val();
         var farm_location = $('#farm_location').val();
         var email = $('#email').val();
         var contactNumber = $('#contactNumber').val();
@@ -2031,7 +2031,7 @@ function save_organic_certificate()
             $('#cidErrorMsg').delay(2000).fadeOut('slow');
             $("#cid").focus();
         }
-        else if($('#farmers_radio').prop('checked') &&farmers_group_name == "")
+        else if($('#farmers_radio').prop('checked') && farmers_group_name == "")
         {
             $('#farmers_group_nameErrorMsg').html("Enter Farmers Group Name.");
             $('#farmers_group_nameErrorMsg').show();
@@ -2068,9 +2068,9 @@ function save_organic_certificate()
         }
         else if(address == "")
         {
-            $('#addressErrorMsg').html("Enter Address.");
-            $('#addressErrorMsg').show();
-            $('#addressErrorMsg').delay(2000).fadeOut('slow');
+            $('#address_ErrorMsg').html("Enter Address.");
+            $('#address_ErrorMsg').show();
+            $('#address_ErrorMsg').delay(2000).fadeOut('slow');
             $("#address").focus();
         }
         else if(farm_name == "")
@@ -2231,7 +2231,7 @@ function save_oc_attachment()
                     success : function(responseText)
                     {
                         $('#attachmentModal').modal('hide');
-                        $('#file-attachment-mortem').html(responseText);
+                        $('#file-attachment-oc').html(responseText);
                         $('.modal-backdrop').remove();
                         $('#attachment_form')[0].reset();
                     }

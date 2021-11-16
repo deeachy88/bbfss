@@ -7,10 +7,16 @@
 form, input, select, textarea{
         color: black !important;
     }
+.head {
+    color: #f3f5f8;
+    text-decoration: none;
+    background-color: transparent;
+    -webkit-text-decoration-skip: objects;
+}
 </style>
         <div class="card">
             <div class="card-header" role="tab" id="headingOne">
-                <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed">
+                <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed head">
                     Application Details
                 </a>
             </div>
@@ -69,7 +75,9 @@ form, input, select, textarea{
                                         <label class="form-label">Dzongkhag</label>
                                         <select class="form-control" disabled>
                                             {% for dzongkhag in dzongkhag %}
-                                                    <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                                <option value="{{dzongkhag.Dzongkhag_Code}}"{% if application_details.Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>
+                                                    {{ dzongkhag.Dzongkhag_Name }}
+                                                </option>
                                             {% endfor %}
                                         </select>
                                     </div>
@@ -96,18 +104,24 @@ form, input, select, textarea{
                                          </select>
                                     </div>
                                 </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Address</label>
+                                        <textarea class="form-control" disabled>{{application_details.Present_Address}}</textarea>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="form-label">Farm Location</label>
-                                        <textarea class="form-control" disabled>{{application_details.Farm_Location}}</textarea>
+                                        <label class="form-label">Farm Name</label>
+                                        <textarea class="form-control" disabled>{{application_details.Farm_Name}}</textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="form-label">Address</label>
-                                        <<textarea class="form-control" disabled>{{application_details.Present_Address}}</textarea>
+                                        <label class="form-label">Farm Location</label>
+                                        <textarea class="form-control" disabled>{{application_details.Farm_Location}}</textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -123,12 +137,25 @@ form, input, select, textarea{
                                         <label class="form-label">Contact Number</label>
                                         <input type="number" class="form-control" value="{{application_details.Contact_No}}" disabled>
                                     </div>
-                                    <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="form-label">Request Date for Inspection</label>
-                                         <input type="text" class="form-control" value="{{application_details.Proposed_Inspection_Date}}" disabled>
+                                        <label class="form-label">Business License Number (if applicable)</label>
+                                         <input type="text" class="form-control" value="{{application_details.License_Number}}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Name of the Technical Incharge(if different from the owner)</label>
+                                         <input type="text" class="form-control" value="{{application_details.Technical_In_Charge}}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Name of the Management Incharge (if different from the owner)</label>
+                                         <input type="text" class="form-control" value="{{application_details.Manager_In_Charge}}" disabled>
                                     </div>
                                 </div>
                             </div>
@@ -178,18 +205,24 @@ form, input, select, textarea{
                                          </select>
                                     </div>
                                 </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Address</label>
+                                        <textarea class="form-control" disabled>{{application_details.Present_Address}}</textarea>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="form-label">Farm Location</label>
-                                        <textarea class="form-control" disabled>{{application_details.Farm_Location}}</textarea>
+                                        <label class="form-label">Farm Name</label>
+                                        <textarea class="form-control" disabled>{{application_details.Farm_Name}}</textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="form-label">Address</label>
-                                        <<textarea class="form-control" disabled>{{application_details.Present_Address}}</textarea>
+                                        <label class="form-label">Farm Location</label>
+                                        <textarea class="form-control" disabled>{{application_details.Farm_Location}}</textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -208,8 +241,22 @@ form, input, select, textarea{
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="form-label">Request Date for Inspection</label>
-                                         <input type="text" class="form-control" value="{{application_details.Proposed_Inspection_Date}}" disabled>
+                                        <label class="form-label">Business License Number (if applicable)</label>
+                                         <input type="text" class="form-control" value="{{application_details.License_Number}}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Name of the Technical Incharge(if different from the owner)</label>
+                                         <input type="text" class="form-control" value="{{application_details.Technical_In_Charge}}" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Name of the Management Incharge (if different from the owner)</label>
+                                         <input type="text" class="form-control" value="{{application_details.Manager_In_Charge}}" disabled>
                                     </div>
                                 </div>
                             </div>
@@ -221,7 +268,7 @@ form, input, select, textarea{
         </div>
         <div class="card">
             <div class="card-header" role="tab" id="farmer_group_details">
-                <a class="collapsed" data-toggle="collapse" href="#collapse_farmer_group" aria-expanded="false" aria-controls="collapse_farmer_group">
+                <a class="collapsed head" data-toggle="collapse" href="#collapse_farmer_group" aria-expanded="false" aria-controls="collapse_farmer_group">
                     Farmer Group Details
                 </a>
             </div>
@@ -254,7 +301,7 @@ form, input, select, textarea{
         </div>
         <div class="card">
             <div class="card-header" role="tab" id="crop_details">
-                <a class="collapsed" data-toggle="collapse" href="#collapseCrop" aria-expanded="false" aria-controls="collapseCrop">
+                <a class="collapsed head" data-toggle="collapse" href="#collapseCrop" aria-expanded="false" aria-controls="collapseCrop">
                     Crop Production Details
                 </a>
             </div>
@@ -313,7 +360,7 @@ form, input, select, textarea{
         </div>
         <div class="card">
             <div class="card-header" role="tab" id="wild_collection_details">
-                <a class="collapsed" data-toggle="collapse" href="#collapse_wild_collection" aria-expanded="false" aria-controls="collapse_wild_collection">
+                <a class="collapsed head" data-toggle="collapse" href="#collapse_wild_collection" aria-expanded="false" aria-controls="collapse_wild_collection">
                     Pack House Details
                 </a>
             </div>
@@ -371,7 +418,7 @@ form, input, select, textarea{
         </div>
         <div class="card">
             <div class="card-header" role="tab" id="headingTwo">
-                <a class="collapsed" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                <a class="collapsed head" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                     Attachments
                 </a>
             </div>
@@ -403,7 +450,7 @@ form, input, select, textarea{
 
         <div class="card">
             <div class="card-header" role="tab" id="audit_findings">
-                <a class="collapsed" data-toggle="collapse" href="#audit_findings_tab" aria-expanded="false" aria-controls="collapseTwo">
+                <a class="collapsed head" data-toggle="collapse" href="#audit_findings_tab" aria-expanded="false" aria-controls="collapseTwo">
                     Audit Findings
                 </a>
             </div>
@@ -717,7 +764,7 @@ form, input, select, textarea{
         </div>
         <div class="card">
             <div class="card-header" role="tab" id="headingThree">
-                <a class="collapsed" data-toggle="collapse" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                <a class="collapsed head" data-toggle="collapse" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                     Non Confirmatory  Details
                 </a>
             </div>
@@ -765,7 +812,7 @@ form, input, select, textarea{
                     <br>
                     <form method="post" id="nc_form">
                     {% csrf_token %}
-                        <div class="row">
+                        <!--<div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Date Of Audit</label>
@@ -783,7 +830,7 @@ form, input, select, textarea{
                                     {% endfor %}
                                 </div>
                             </div>
-                        </div>
+                        </div>-->
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -794,7 +841,7 @@ form, input, select, textarea{
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Corrective Action Date</label>
-                                    <input type="text" class="form-control date-picker flatpickr-input active" id="Corrective_Action_Date" name="Corrective_Action_Date"  placeholder="Pick a date" readonly="readonly">
+                                    <input type="date" class="form-control" id="Corrective_Action_Date" name="Corrective_Action_Date">
                                 </div>
                                 <div class="alert alert-danger" id="dateErrorMsg" style="display:none"></div>
                             </div>
@@ -810,7 +857,7 @@ form, input, select, textarea{
                                     &nbsp;&nbsp;Respond
                                 </button>
                             {% endfor %}
-                            <button type="button" class="btn btn-primary" data-dismiss="modal">Close Modal</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                         </div>
                     </form>
                 </div>

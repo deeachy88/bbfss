@@ -96,6 +96,7 @@ class t_certification_gap_t3(models.Model):  # GAP Certification audit team
     Role = models.CharField(max_length=100, default=None, blank=True, null=True)
 
 
+
 class t_certification_gap_t4(models.Model):  # GAP Certification crop production
     Record_Id = models.AutoField(primary_key=True)
     Application_No = models.CharField(max_length=30)
@@ -482,7 +483,7 @@ class t_certification_food_t3(models.Model):  # Food Product audit team
     Login_Id = models.CharField(max_length=100, default=None, blank=True, null=True)
     Name = models.CharField(max_length=100, default=None, blank=True, null=True)
     Role = models.CharField(max_length=100, default=None, blank=True, null=True)
-
+    Service_Code = models.CharField(max_length=20, default=None, blank=True, null=True)
 
 class t_certification_food_t4(models.Model):  # Food Product Audit Finding/Report (Farm inputs/raw materials)
     Record_Id = models.AutoField(primary_key=True)

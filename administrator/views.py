@@ -48,9 +48,13 @@ def dashboard(request):
                     Assigned_Role_Id=Role_Id, Section=section_name,
                     Action_Date__isnull=False, Application_Status='P') | t_workflow_details.objects.filter(
                     Assigned_Role_Id=Role_Id, Section=section_name,
-                    Action_Date__isnull=False, Application_Status='ATA')| t_workflow_details.objects.filter(
+                    Action_Date__isnull=False, Application_Status='ATA') | t_workflow_details.objects.filter(
                     Assigned_Role_Id=Role_Id, Section=section_name,
-                    Action_Date__isnull=False, Application_Status='FRA')).count()
+                    Action_Date__isnull=False, Application_Status='FRA') |
+                                 t_workflow_details.objects.filter(
+                                     Assigned_Role_Id=Role_Id, Section=section_name,
+                                     Action_Date__isnull=False, Application_Status='CA')
+                                 ).count()
                 return render(request, 'dashboard.html', {'count': message_count})
         elif Role == 'OIC':
             login_id = request.session['Login_Id']
@@ -83,6 +87,24 @@ def dashboard(request):
                              | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
                                                                  Action_Date__isnull=False)).count()
             return render(request, 'dashboard.html', {'ins_count': message_count})
+        elif Role == 'Complain Officer':
+            login_id = request.session['Login_Id']
+            message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
+                                                               Action_Date__isnull=False)
+                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APA',
+                                                                 Action_Date__isnull=False)
+                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
+                                                                 Action_Date__isnull=False)).count()
+            return render(request, 'dashboard.html', {'complain_count': message_count})
+        elif Role == 'Chief':
+            login_id = request.session['Login_Id']
+            message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
+                                                               Action_Date__isnull=False)
+                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APA',
+                                                                 Action_Date__isnull=False)
+                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
+                                                                 Action_Date__isnull=False)).count()
+            return render(request, 'dashboard.html', {'chief_count': message_count})
         else:
             return render(request, 'dashboard.html')
     else:
@@ -96,7 +118,7 @@ def dashboard(request):
         inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
                                                                   Action_Date__isnull=False).count()
         consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
-                                                                   Action_Date__isnull=False, Application_Status='P')\
+                                                                   Action_Date__isnull=False, Application_Status='P') \
             .count()
         return render(request, 'dashboard.html', {'count': message_count, 'count_call': inspection_call_count,
                                                   'consignment_call_count': consignment_call_count})

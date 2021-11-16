@@ -15,8 +15,8 @@ from certification.forms import GapForm, FpcForm, OCForm
 from certification.models import t_certification_food_t2, t_certification_organic_t2, t_certification_organic_t4, \
     t_certification_organic_t6, t_certification_organic_t7, t_certification_organic_t8, t_certification_organic_t5, \
     t_certification_organic_t9, t_certification_organic_t1, t_certification_gap_t5, t_certification_gap_t4, \
-    t_certification_organic_t3, t_certification_gap_t1, t_certification_food_t4, t_certification_organic_t11, \
-    t_certification_food_t1, t_certification_gap_t3, t_certification_food_t3, t_certification_organic_t10, \
+    t_certification_food_t3, t_certification_gap_t1, t_certification_food_t4, t_certification_organic_t11, \
+    t_certification_food_t1, t_certification_food_t3, t_certification_food_t3, t_certification_organic_t10, \
     t_certification_food_t5, t_certification_gap_t2, t_certification_gap_t7, t_certification_gap_t8
 from plant.models import t_file_attachment, t_workflow_details, t_payment_details
 import pandas as pd
@@ -496,9 +496,9 @@ def add_audit_team_details(request):
     details = t_user_master.objects.filter(Login_Id=audit_team_member)
     for name in details:
         app_name = name.Name
-        t_certification_organic_t3.objects.create(Application_No=application_no, Login_Id=audit_team_member,
-                                                  Name=app_name, Role=role)
-    audit_team = t_certification_organic_t3.objects.filter(Application_No=application_no)
+        t_certification_food_t3.objects.create(Application_No=application_no, Login_Id=audit_team_member,
+                                                  Name=app_name, Role=role, Service_Code='OC')
+    audit_team = t_certification_food_t3.objects.filter(Application_No=application_no)
     return render(request, 'organic_certification/audit_team_details.html',
                   {'audit_team': audit_team})
 
@@ -647,22 +647,13 @@ def send_audit_plan_acceptance(request):
 
 
 def send_audit_plan_resubmit(request):
-    application_no = request.GET.get('audit_application_no')
-
-    Audit_Type = request.GET.get('audit_plan_type')
-    Audit_Date = request.GET.get('Audit_Plan_Date')
+    application_no = request.GET.get('application_no')
     app_details = t_certification_organic_t1.objects.filter(Application_No=application_no)
-    app_details.update(Audit_Plan_Type=Audit_Type)
-    app_details.update(Audit_Plan_Date=Audit_Date)
+    app_details.update(Audit_Plan_Acceptance='A')
     workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
     workflow_details.update(Assigned_Role_Id=None)
-    workflow_details.update(Application_Status='APR')
-    for email_id in workflow_details:
-        email = email_id.Applicant_Id
-        user_details = t_user_master.objects.filter(Email_Id=email)
-        for user in user_details:
-            login = user.Login_Id
-            workflow_details.update(Assigned_To=login)
+    workflow_details.update(Application_Status='APA')
+
     return redirect(inspector_application)
 
 
@@ -811,9 +802,9 @@ def save_oc_audit_plan_name(request):
 
         t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
                                          File_Path=file_url, Role_Id=None,
-                                         Attachment=fileName, Attachment_Type='Audit Plan')
+                                         Attachment=fileName, Attachment_Type='AP')
 
-        file_attach = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='Audit Plan')
+        file_attach = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='AP')
     return render(request, 'organic_certification/audit_plan_details.html', {'file_attach': file_attach})
 
 
@@ -845,8 +836,6 @@ def resubmit_oc_nc_details(request):
     Audit_Findings_Worker_Health_O = request.GET.get('Audit_Findings_Worker_Health_O')
     Audit_Findings_Group_Requirement_O = request.GET.get('Audit_Findings_Group_Requirement_O')
     Audit_Findings_Others_O = request.GET.get('Audit_Findings_Others_O')
-    Audit_Type = request.GET.get('Audit_Type')
-    audit_date = request.GET.get('audit_date')
     app_details = t_certification_gap_t1.objects.filter(Application_No=application_no)
     app_details.update(Audit_Findings_Site_History_OE=Audit_Findings_Site_History)
     app_details.update(Audit_Findings_Water_Source_OE=Audit_Findings_Water_Source)
@@ -1116,9 +1105,9 @@ def save_gap_audit_plan_name(request):
 
         t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
                                          File_Path=file_url, Role_Id=None,
-                                         Attachment=fileName, Attachment_Type='Audit Plan')
+                                         Attachment=fileName, Attachment_Type='AP')
 
-        file_attach = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='Audit Plan')
+        file_attach = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='AP')
         return render(request, 'GAP_Certification/audit_plan_details.html', {'file_attach': file_attach})
 
 
@@ -1279,9 +1268,9 @@ def gap_audit_team_details(request):
     details = t_user_master.objects.filter(Login_Id=audit_team_member)
     for name in details:
         app_name = name.Name
-        t_certification_gap_t3.objects.create(Application_No=application_no, Login_Id=audit_team_member,
-                                              Name=app_name, Role=role)
-    audit_team = t_certification_gap_t3.objects.filter(Application_No=application_no)
+        t_certification_food_t3.objects.create(Application_No=application_no, Login_Id=audit_team_member,
+                                              Name=app_name, Role=role, Service_Code='GAP')
+    audit_team = t_certification_food_t3.objects.filter(Application_No=application_no)
     return render(request, 'GAP_Certification/audit_team_details.html',
                   {'audit_team': audit_team})
 
@@ -1395,21 +1384,12 @@ def gap_audit_plan_acceptance(request):
 
 
 def gap_audit_plan_resubmit(request):
-    application_no = request.GET.get('audit_date_application_no')
-    Audit_Date = request.GET.get('Audit_Plan_Date')
-    audit_plan_type = request.GET.get('audit_plan_type')
+    application_no = request.GET.get('application_no')
     app_details = t_certification_gap_t1.objects.filter(Application_No=application_no)
-    app_details.update(Audit_Plan_Date=Audit_Date)
-    app_details.update(Audit_Plan_Type=audit_plan_type)
+    app_details.update(Audit_Plan_Acceptance='A')
     workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
-    workflow_details.update(Assigned_Role_Id=None)
-    workflow_details.update(Application_Status='APR')
-    for email_id in workflow_details:
-        email = email_id.Applicant_Id
-        user_details = t_user_master.objects.filter(Email_Id=email)
-        for user in user_details:
-            login = user.Login_Id
-            workflow_details.update(Assigned_To=login)
+    workflow_details.update(Application_Status='APA')
+
     return redirect(inspector_application)
 
 
@@ -1603,9 +1583,8 @@ def forward_application_head_office(request):
 def gap_nc_response(request):
     application_no = request.GET.get('application_id')
     action_taken = request.GET.get('action_taken')
-    Corrective_Action_Date = request.GET.get('Corrective_Action_Date')
+    date_action = request.GET.get('Corrective_Action_Date')
     Team_Leader = request.GET.get('Team_Leader')
-    date_action = datetime.strptime(Corrective_Action_Date, '%d-%m-%Y').date()
     nc_details = t_certification_gap_t1.objects.filter(Application_No=application_no)
     nc_details.update(Corrective_Action_Taken_Auditee=action_taken)
     nc_details.update(Corrective_Action_Date=date_action)
@@ -1955,7 +1934,7 @@ def fpc_audit_team_details(request):
     for name in details:
         app_name = name.Name
         t_certification_food_t3.objects.create(Application_No=application_no, Login_Id=audit_team_member,
-                                               Name=app_name, Role=role)
+                                               Name=app_name, Role=role, Service_Code='FPC')
     audit_team = t_certification_food_t3.objects.filter(Application_No=application_no)
     return render(request, 'food_product_certification/audit_team_details.html',
                   {'audit_team': audit_team})
@@ -2046,15 +2025,9 @@ def fpc_audit_plan_acceptance(request):
 def fpc_audit_plan_resubmit(request):
     application_no = request.GET.get('audit_date_application_no')
     app_details = t_certification_food_t1.objects.filter(Application_No=application_no)
+    app_details.update(Audit_Plan_Acceptance='A')
     workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
-    workflow_details.update(Assigned_Role_Id=None)
     workflow_details.update(Application_Status='APA')
-    for email_id in workflow_details:
-        email = email_id.Applicant_Id
-        user_details = t_user_master.objects.filter(Email_Id=email)
-        for user in user_details:
-            login = user.Login_Id
-            workflow_details.update(Assigned_To=login)
     return redirect(inspector_application)
 
 
@@ -2072,10 +2045,6 @@ def fpc_conform_observation(request):
         Non_Conformity_Category=Non_Conformity_Category,
         Non_Conformity_Description=Non_Conformity_Description,
         Corrective_Action_Proposed_Auditee=Corrective_Action_Proposed_Auditee,
-        Corrective_Action_Taken_Auditee=None,
-        Corrective_Action_Date=None,
-        Corrective_Action_Verified_Auditor=None,
-        Non_Conformity_Closure=None
     )
     conform_details = t_certification_food_t5.objects.filter(Application_No=application_no)
     message_count = t_certification_food_t5.objects.filter(Non_Conformity='Yes').count()
@@ -2739,9 +2708,9 @@ def delete_audit_team(request):
     identification_type = request.GET.get('identification_type')
 
     if identification_type == 'GAP':
-        details = t_certification_gap_t3.objects.filter(Record_Id=record_id)
+        details = t_certification_food_t3.objects.filter(Record_Id=record_id)
         details.delete()
-        audit_team = t_certification_gap_t3.objects.filter(Application_No=application_no)
+        audit_team = t_certification_food_t3.objects.filter(Application_No=application_no)
         return render(request, 'GAP_Certification/audit_team_details.html', {'audit_team': audit_team})
     elif identification_type == 'FPC':
         details = t_certification_food_t3.objects.filter(Record_Id=record_id)
@@ -2749,9 +2718,9 @@ def delete_audit_team(request):
         audit_team = t_certification_food_t3.objects.filter(Application_No=application_no)
         return render(request, 'food_product_certification/audit_team_details.html', {'audit_team': audit_team})
     else:
-        details = t_certification_organic_t3.objects.filter(Record_Id=record_id)
+        details = t_certification_food_t3.objects.filter(Record_Id=record_id)
         details.delete()
-        audit_team = t_certification_organic_t3.objects.filter(Application_No=application_no)
+        audit_team = t_certification_food_t3.objects.filter(Application_No=application_no)
         return render(request, 'organic_certification/audit_team_details.html', {'audit_team': audit_team})
 
 
@@ -2771,9 +2740,9 @@ def delete_farm_details(request):
         farm_inputs = t_certification_food_t3.objects.filter(Application_No=application_no)
         return render(request, 'food_product_certification/audit_team_details.html', {'farm_inputs': farm_inputs})
     else:
-        details = t_certification_organic_t3.objects.filter(Record_Id=record_id)
+        details = t_certification_food_t3.objects.filter(Record_Id=record_id)
         details.delete()
-        farm_inputs = t_certification_organic_t3.objects.filter(Application_No=application_no)
+        farm_inputs = t_certification_food_t3.objects.filter(Application_No=application_no)
         return render(request, 'organic_certification/audit_team_details.html', {'farm_inputs': farm_inputs})
 
 

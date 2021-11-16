@@ -7,10 +7,19 @@
 form, input, select, textarea{
         color: black !important;
     }
+.head {
+    color: #f3f5f8;
+    text-decoration: none;
+    background-color: transparent;
+    -webkit-text-decoration-skip: objects;
+}
+#import_detailsModal {
+    overflow-y:scroll;
+}
 </style>
         <div class="card">
             <div class="card-header" role="tab" id="headingOne">
-                <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed">
+                <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed head">
                     Application Details
                 </a>
             </div>
@@ -209,7 +218,7 @@ form, input, select, textarea{
                             </div>
                             <div class="form-group col-md-4">
                                 <label class="form-label">Value</label>
-                                <input type="number" class="form-control" value="{{application_details.C_Production_Value}}" disabled>
+                                <input type="text" class="form-control" value="{{application_details.C_Production_Value}}" disabled>
                             </div>
                         </div>
                         <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
@@ -282,7 +291,7 @@ form, input, select, textarea{
                             </div>
                             <div class="form-group col-md-4">
                                 <label class="form-label">Value</label>
-                                <input type="text" class="form-control" value="{{application_details.C_Export_Value}}" disabled>
+                                <input type="text" class="form-control" value="{{application_details.C_Export}}" disabled>
                                 <div class="alert alert-danger" id="currentValueErrorMsg" style="display:none"></div>
                             </div>
                         </div>
@@ -293,7 +302,7 @@ form, input, select, textarea{
         </div>
         <div class="card">
             <div class="card-header" role="tab" id="headingTwo">
-                <a class="collapsed" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                <a class="collapsed head" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                     Attachments
                 </a>
             </div>
@@ -324,11 +333,11 @@ form, input, select, textarea{
         </div>
         <div class="card">
             <div class="card-header" role="tab" id="headingFour">
-                <a class="collapsed" data-toggle="collapse" href="#collapseFour" aria-expanded="false" aria-controls="collapseTwo">
+                <a class="collapsed head" data-toggle="collapse" href="#collapseFour" aria-expanded="false" aria-controls="collapseTwo">
                     Audit Team Details
                 </a>
             </div>
-            <div id="collapseFour" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+            <div id="collapseFour" class="active" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
 
                 <div class="card-body">
                 {% for application_details in application_details %}
@@ -445,7 +454,7 @@ form, input, select, textarea{
                                  <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-label">Audit Date  &nbsp;<font color='red'>*</font> </label>
-                                       <input type="date" name="Audit_Date" id="Audit_Date" class="form-control date-picker flatpickr-input active">
+                                       <input type="date" name="Audit_Date" id="Audit_Date" class="form-control">
                                     </div>
                                     <div class="alert alert-danger" id="Audit_DateErrorMsg" style="display:none"></div>
                                 </div>
@@ -494,7 +503,7 @@ form, input, select, textarea{
                                     {% if application_details.Audit_Team_Acceptance_Remarks %}
                                         <div class="col-md-6">
                                             <label class="form-label">Remarks From Client </label>
-                                            <textarea type="text" class="form-control" disabled>{{ application_details.Audit_Team_Acceptance_Remarks }}</textarea>
+                                            <textarea class="form-control" disabled>{{ application_details.Audit_Team_Acceptance_Remarks }}</textarea>
                                         </div>
                                     {% endif %}
                                 </div>
@@ -563,32 +572,33 @@ form, input, select, textarea{
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Audit Team Member</label>
+                                    <label class="form-label">Audit Team Member <font color="red">*</font></label>
                                     <select class="form-control" id="audit_team_member">
                                         <option value="">--SELECT--</option>
                                         {% for team_details in team_details %}
                                             <option value="{{team_details.Login_Id}}">{{team_details.Name}}</option>
                                         {% endfor %}
                                     </select>
+                                    <div class="alert alert-danger" id="audit_team_memberErrorMsg" style="display:none"></div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Role</label>
+                                    <label class="form-label">Role <font color="red">*</font></label>
                                     <select class="form-control" id="role">
                                         <option value="">--SELECT--</option>
                                         <option value="Team Member">Team Member</option>
                                         <option value="Observer">Observer</option></option>
-
                                     </select>
                                 </div>
+                                <div class="alert alert-danger" id="roleErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         {% for application_details in application_details %}
                         <button type="button" class="btn btn-flat btn-primary" onclick="audit_team_details('{{ application_details.Application_No }}')">
-                            <i class="ace-icon fa fa-times"></i>
+                            <i class="ace-icon fa fa-check"></i>
                             &nbsp;&nbsp;Add
                         </button>
                         {% endfor %}
@@ -613,18 +623,36 @@ function audit_team_details(application_id)
 {
     name = $('#audit_team_member').val();
     role = $('#role').val();
-    $.ajax({
-        type : "GET",
-        url : "{% url 'fpc_audit_team_details' %}",
-        data :{'application_id':application_id,'name':name, 'role':role},
-        success : function(data) {
-            $('#audit_team_details').html(data);
-            $('#details').show();
-            $('#AuditTeamModal').modal('hide');
-            $('#audit_team_member').val("");
-            $('#role').val("");
-        }
-    });
+
+    if(name == "")
+    {
+        $('#audit_team_memberErrorMsg').html("Please Check One Applicant Type.");
+        $('#audit_team_memberErrorMsg').show();
+        $('#audit_team_memberErrorMsg').delay(2000).fadeOut('slow');
+        $('#audit_team_member').focus();
+    }
+    else if(role == "")
+    {
+        $('#roleErrorMsg').html("Please Check One Applicant Type.");
+        $('#roleErrorMsg').show();
+        $('#roleErrorMsg').delay(2000).fadeOut('slow');
+        $('#role').focus();
+    }
+    else
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'fpc_audit_team_details' %}",
+            data :{'application_id':application_id,'name':name, 'role':role},
+            success : function(data) {
+                $('#audit_team_details').html(data);
+                $('#AuditTeamModal').modal('hide');
+                $('.modal-backdrop').remove();
+                $('#audit_team_member').val("");
+                $('#role').val("");
+            }
+        });
+    }
 }
 
 function send_for_acceptance(application_id)

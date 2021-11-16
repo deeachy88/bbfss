@@ -7,10 +7,20 @@
 form, input, select, textarea{
         color: black !important;
     }
+
+    .head {
+    color: #f3f5f8;
+    text-decoration: none;
+    background-color: transparent;
+    -webkit-text-decoration-skip: objects;
+}
+#import_detailsModal {
+    overflow-y:scroll;
+}
 </style>
         <div class="card">
             <div class="card-header" role="tab" id="headingOne">
-                <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed">
+                <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed head">
                     Application Details
                 </a>
             </div>
@@ -260,7 +270,7 @@ form, input, select, textarea{
         </div>
         <div class="card">
             <div class="card-header" role="tab" id="farmer_group_details">
-                <a class="collapsed" data-toggle="collapse" href="#collapse_farmer_group" aria-expanded="false" aria-controls="collapse_farmer_group">
+                <a class="collapsed head" data-toggle="collapse" href="#collapse_farmer_group" aria-expanded="false" aria-controls="collapse_farmer_group">
                     Farmers Group Details
                 </a>
             </div>
@@ -293,7 +303,7 @@ form, input, select, textarea{
         </div>
         <div class="card">
             <div class="card-header" role="tab" id="crop_details">
-                <a class="collapsed" data-toggle="collapse" href="#collapseCrop" aria-expanded="false" aria-controls="collapseCrop">
+                <a class="collapsed head" data-toggle="collapse" href="#collapseCrop" aria-expanded="false" aria-controls="collapseCrop">
                     Crop Production Details
                 </a>
             </div>
@@ -352,7 +362,7 @@ form, input, select, textarea{
         </div>
         <div class="card">
             <div class="card-header" role="tab" id="wild_collection_details">
-                <a class="collapsed" data-toggle="collapse" href="#collapse_wild_collection" aria-expanded="false" aria-controls="collapse_wild_collection">
+                <a class="collapsed head" data-toggle="collapse" href="#collapse_wild_collection" aria-expanded="false" aria-controls="collapse_wild_collection">
                     Pack House Details
                 </a>
             </div>
@@ -410,7 +420,7 @@ form, input, select, textarea{
         </div>
         <div class="card">
             <div class="card-header" role="tab" id="headingTwo">
-                <a class="collapsed" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                <a class="collapsed head" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                     Attachments
                 </a>
             </div>
@@ -441,11 +451,11 @@ form, input, select, textarea{
         </div>
         <div class="card">
             <div class="card-header" role="tab" id="headingFour">
-                <a class="collapsed" data-toggle="collapse" href="#collapseFour" aria-expanded="false" aria-controls="collapseTwo">
+                <a class="collapsed head" data-toggle="collapse" href="#collapseFour" aria-expanded="false" aria-controls="collapseTwo">
                     Audit Team Details
                 </a>
             </div>
-            <div id="collapseFour" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+            <div id="collapseFour" class="active" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
 
                 <div class="card-body">
                 {% for application_details in application_details %}
@@ -562,7 +572,7 @@ form, input, select, textarea{
                                  <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-label">Audit Date  &nbsp;<font color='red'>*</font> </label>
-                                       <input type="date" name="Audit_Date" id="Audit_Date" class="form-control date-picker flatpickr-input active">
+                                       <input type="date" name="Audit_Date" id="Audit_Date" class="form-control">
                                     </div>
                                     <div class="alert alert-danger" id="Audit_DateErrorMsg" style="display:none"></div>
                                 </div>
@@ -688,6 +698,7 @@ form, input, select, textarea{
                                         {% endfor %}
                                     </select>
                                 </div>
+                                <div class="alert alert-danger" id="audit_team_memberErrorMsg" style="display:none"></div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -698,6 +709,7 @@ form, input, select, textarea{
                                         <option value="Observer">Observer</option>
                                     </select>
                                 </div>
+                                <div class="alert alert-danger" id="roleErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                     </div>
@@ -721,29 +733,51 @@ function openAuditTeamModal()
     $('#AuditTeamModal').modal('show');
 }
 
+function closeTeamModal()
+{
+    $('#AuditTeamModal').modal('hide');
+}
 
 function audit_team_details(application_id)
 {
     name = $('#audit_team_member').val();
     role = $('#role').val();
-    $.ajax({
-        type : "GET",
-        url : "{% url 'gap_audit_team_details' %}",
-        data :{'application_id':application_id,'name':name, 'role':role},
-        success : function(data) {
-            $('#audit_team_details_gap').html(data);
-            $('#details').show();
-            $('#AuditTeamModal').modal('hide');
-            $('#audit_team_member').val("");
-            $('#role').val("");
-        }
-    });
+
+    if(name == "")
+    {
+        $('#audit_team_memberErrorMsg').html("Please Check One Applicant Type.");
+        $('#audit_team_memberErrorMsg').show();
+        $('#audit_team_memberErrorMsg').delay(2000).fadeOut('slow');
+        $('#audit_team_member').focus();
+    }
+    else if(role == "")
+    {
+        $('#roleErrorMsg').html("Please Check One Applicant Type.");
+        $('#roleErrorMsg').show();
+        $('#roleErrorMsg').delay(2000).fadeOut('slow');
+        $('#role').focus();
+    }
+    else
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'gap_audit_team_details' %}",
+            data :{'application_id':application_id,'name':name, 'role':role},
+            success : function(data) {
+                $('#audit_team_details_gap').html(data);
+                $('#AuditTeamModal').modal('hide');
+                $('.modal-backdrop').remove();
+                $('#audit_team_member').val("");
+                $('#role').val("");
+            }
+        });
+    }
 }
 
 function send_for_acceptance(application_id)
 {
     var audit_team_leader = $('#audit_team_leader').val();
-    var Audit_Date = $('#Audit_Plan_Date').val();
+    var Audit_Date = $('#Audit_Date').val();
     var audit_type = $('#audit_plan_type').val();
     var remarks = $('#remarks_fo').val();
 
@@ -756,10 +790,10 @@ function send_for_acceptance(application_id)
     }
     else if(Audit_Date == "")
     {
-        $('#Audit_Plan_DateErrorMsg').html("Select Audit Date.");
-        $('#Audit_Plan_DateErrorMsg').show();
-        $('#Audit_Plan_DateErrorMsg').delay(2000).fadeOut('slow');
-        $('#Audit_Plan_Date').focus();
+        $('#Audit_DateErrorMsg').html("Select Audit Date.");
+        $('#Audit_DateErrorMsg').show();
+        $('#Audit_DateErrorMsg').delay(2000).fadeOut('slow');
+        $('#Audit_Date').focus();
     }
     else if(audit_type == "")
     {

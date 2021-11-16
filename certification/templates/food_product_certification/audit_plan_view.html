@@ -1,0 +1,361 @@
+{% load static %}
+<style>
+    .card {
+    margin-bottom: 0rem;
+    box-shadow: 0 1px 5px rgb(0 0 0 / 10%);
+}
+form, input, select, textarea{
+        color: black !important;
+    }
+.head {
+    color: #f3f5f8;
+    text-decoration: none;
+    background-color: transparent;
+    -webkit-text-decoration-skip: objects;
+}
+</style>
+<div class="card">
+    <div class="card-header" role="tab" id="headingOne">
+        <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed head">
+            Application Details
+        </a>
+    </div>
+
+    <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion" style="">
+        <div class="card-body">
+            {% for application_details in application_details %}
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Name Of the Firm</label>
+                            <input type="text" class="form-control" value="{{application_details.Firm_Name}}" disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Address</label>
+                            <textarea class="form-control" disabled>{{application_details.Firm_Address}}</textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Dzongkhag</label>
+                            <select class="form-control" disabled>
+                                {% for dzongkhag in dzongkhag %}
+                                    <option value="{{dzongkhag.Dzongkhag_Code}}"{% if application_details.Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>
+                                        {{ dzongkhag.Dzongkhag_Name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Gewog</label>
+                            <select class="form-control" disabled>
+                                {% for gewog in gewog %}
+                                    <option value="{{gewog.Gewog_Code}}"{% if application_details.Gewog_Code == village.Gewog_Code %}selected{% endif %}>
+                                        {{ gewog.Gewog_Name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Village</label>
+                            <select class="form-control" disabled>
+                                {% for village in village %}
+                                    <option value="{{village.Village_Code}}"{% if application_details.Village_Code == village.Village_Code %}selected{% endif %}>
+                                        {{ village.Village_Name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" value="{{application_details.Firm_Email}}" disabled>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Contact Number</label>
+                            <input type="number" class="form-control" value="{{application_details.Firm_Contact_No}}" disabled>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">Factory</span>
+                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Details</span>
+                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Name Of Factory</label>
+                            <input type="text" class="form-control" value="{{application_details.Factory_Name}}" disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Address</label>
+                            <textarea class="form-control" disabled>{{application_details.Factory_Address}}</textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Contact Number</label>
+                            <input type="number" class="form-control" value="{{application_details.Factory_Contact_No}}" disabled>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" value="{{application_details.Factory_Email}}" disabled>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">Product</span>
+                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Information</span>
+                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Brief description of the product</label>
+                            <textarea class="form-control" disabled>{{application_details.Product_Description}}</textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Product Trade Mark(s)</label>
+                            <textarea class="form-control" disabled>{{application_details.Product_Trade_Mark}}</textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">Production</span>
+                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">Details</span>
+                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Previous</span>
+                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Year</span>
+                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">From date</label>
+                            <input type="text" class="form-control" value="{{application_details.P_From_Date}}" disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">To date</label>
+                             <input type="text" class="form-control" value="{{application_details.P_To_Date}}" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="form-label">Production(Quantity)</label>
+                        <input type="text" class="form-control" value="{{application_details.P_Production}}" disabled>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Unit</label>
+                            <input type="text" class="form-control" value="{{application_details.P_Production_Unit}}" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="form-label">Value</label>
+                        <input type="text" class="form-control" value="{{application_details.P_Production_Value}}" disabled>
+                    </div>
+                </div>
+                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">Production</span>
+                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">Details</span>
+                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Current</span>
+                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Year</span>
+                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">From date</label>
+                             <input type="text" class="form-control" value="{{application_details.C_From_Date}}" disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">To date</label>
+                             <input type="text" class="form-control" value="{{application_details.C_To_Date}}" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="form-label">Production(Quantity)</label>
+                        <input type="text" class="form-control" value="{{application_details.C_Production}}" disabled>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label class="form-label">Unit</label>
+                        <input type="text" class="form-control" value="{{application_details.C_Production_Unit}}" disabled>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="form-label">Value</label>
+                        <input type="number" class="form-control" value="{{application_details.C_Production_Value}}" disabled>
+                    </div>
+                </div>
+                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">Export</span>
+                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">Details</span>
+                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Previous</span>
+                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Year</span>
+                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">From date</label>
+                             <input type="text" class="form-control" value="{{application_details.P_Export_From_Date}}" disabled>
+                        </div>
+                        <div class="alert alert-danger" id="P_Export_From_DateErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">To date</label>
+                             <input type="text" class="form-control" value="{{application_details.P_Export_To_Date}}" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="form-label">Export(Quantity)</label>
+                        <input type="text" class="form-control" value="{{application_details.P_Export}}" disabled>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label class="form-label">Export Unit</label>
+                        <input type="text" class="form-control" value="{{application_details.P_Export_Unit}}" disabled>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="form-label">Export Value</label>
+                        <input type="text" class="form-control" value="{{application_details.P_Export_Value}}" disabled>
+                    </div>
+                </div>
+                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">Export</span>
+                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">Details</span>
+                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Current</span>
+                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Year</span>
+                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">From date</label>
+                             <input type="text" class="form-control" value="{{application_details.C_Export_From_Date}}" disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">To date</label>
+                             <input type="text" class="form-control" value="{{application_details.C_Export_To_Date}}" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="form-label">Export(Quantity)</label>
+                        <input type="number" class="form-control" value="{{application_details.C_Export}}" disabled>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label class="form-label">Unit</label>
+                        <input type="text" class="form-control" value="{{application_details.C_Export_Unit}}" disabled>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="form-label">Value</label>
+                        <input type="text" class="form-control" value="{{application_details.C_Export_Value}}" disabled>
+                        <div class="alert alert-danger" id="currentValueErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+             <br><br>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-header" role="tab" id="headingTwo">
+        <a class="collapsed head" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+            Attachments
+        </a>
+    </div>
+    <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">File</th>
+                    </tr>
+                </thead>
+                <tbody>
+                   {% for file_attach in file %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td><a href='{{file_attach.File_Path}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                          <td colspan="3" class="text-center">No Data</td>
+                        </tr>
+                   {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-header" role="tab" id="headingPlan">
+        <a class="collapsed head" data-toggle="collapse" href="#collapsePlan" aria-expanded="false" aria-controls="collapseTwo">
+            Audit Plan
+        </a>
+    </div>
+    <div id="collapsePlan" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">File</th>
+                    </tr>
+                </thead>
+                <tbody>
+                   {% for file_attach in audit_plan %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td><a href='{{file_attach.File_Path}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                          <td colspan="3" class="text-center">No Data</td>
+                        </tr>
+                   {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

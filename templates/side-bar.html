@@ -108,7 +108,7 @@
                 </ul>
             </li>
             <li class="@@datatableactive">
-                <a href="{% url 'submit_feedback_form' %}"><i class="zmdi zmdi-collection-text"></i>View Audit Plan</a>
+                <a href="{% url 'member_audit_plan' %}"><i class="zmdi zmdi-collection-text"></i>View Audit Plan</a>
             </li>
             <li class="navigation__sub @@formactive">
                 <a href="#"><font color="white"><i class="zmdi zmdi-collection-text" ></i>&nbsp; &nbsp;Reports</font></a>
@@ -130,7 +130,12 @@
             <li class="@@datatableactive"><a href="{% url 'investigation_report_list' %}"><i class="zmdi zmdi-collection-text"></i>Investigation Report</a></li>
             <li class="@@datatableactive"><a href="{% url 'complaint_closed_list' %}"><i class="zmdi zmdi-collection-text"></i>List - Closed Complaint</a></li>
             <li class="@@datatableactive">
-                <a href="{% url 'submit_feedback_form' %}"><i class="zmdi zmdi-collection-text"></i>View Audit Plan</a>
+                <a href="{% url 'focal_officer_application' %}"><i class="zmdi zmdi-collection-text"></i> Pending Applications
+                    <span class="badge badge-danger">{{ complain_count }}</span>
+                </a>
+            </li>
+            <li class="@@datatableactive">
+                <a href="{% url 'member_audit_plan' %}"><i class="zmdi zmdi-collection-text"></i>View Audit Plan</a>
             </li>
         </ul>
     {% elif request.session.role == 'OIC' %}
@@ -163,7 +168,7 @@
             </li>
             <li class="@@datatableactive"><a href="{% url 'assign_revoke_officiating' %}"><i class="zmdi zmdi-collection-text"></i>Assign/Revoke Officiating</a></li>
             <li class="@@datatableactive">
-                <a href="{% url 'submit_feedback_form' %}"><i class="zmdi zmdi-collection-text"></i>View Audit Plan</a>
+                <a href="{% url 'member_audit_plan' %}"><i class="zmdi zmdi-collection-text"></i>View Audit Plan</a>
             </li>
             <li class="navigation__sub @@formactive">
                 <a href="#"><font color="white"><i class="zmdi zmdi-collection-text" ></i>&nbsp; &nbsp;Reports</font></a>
@@ -221,7 +226,7 @@
                 </ul>
             </li>
             <li class="@@datatableactive">
-                <a href="{% url 'submit_feedback_form' %}"><i class="zmdi zmdi-collection-text"></i>View Audit Plan</a>
+                <a href="{% url 'member_audit_plan' %}"><i class="zmdi zmdi-collection-text"></i>View Audit Plan</a>
             </li>
             <li class="navigation__sub @@formactive">
                 <a href="#"><font color="white"><i class="zmdi zmdi-collection-text" ></i>&nbsp; &nbsp;Reports</font></a>
@@ -235,6 +240,11 @@
     {% elif request.session.role == 'Chief' %}
         <ul class="navigation">
              <li class="navigation__active"><a href="{% url 'dashboard' %}"><i class="zmdi zmdi-home"></i> Home</a></li>
+            <li class="@@datatableactive">
+                <a href="{% url 'focal_officer_application' %}"><i class="zmdi zmdi-collection-text"></i> Pending Applications
+                <span class="badge badge-danger">{{ chief_count }}</span>
+                </a>
+            </li>
              <li class="navigation__sub @@formactive">
                 <a href="#"><font color="white"><i class="zmdi zmdi-collection-text" ></i>&nbsp; &nbsp;Reports</font></a>
                 <ul>
@@ -339,7 +349,7 @@
                 <a href="{% url 'submit_feedback_form' %}"><i class="zmdi zmdi-collection-text"></i>Feedback Form</a>
             </li>
             <li class="@@datatableactive">
-                <a href="{% url 'submit_feedback_form' %}"><i class="zmdi zmdi-collection-text"></i>View Audit Plan</a>
+                <a href="{% url 'client_audit_plan' %}"><i class="zmdi zmdi-collection-text"></i>View Audit Plan</a>
             </li>
         </ul>
     {% endif %}

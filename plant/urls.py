@@ -8,6 +8,8 @@ urlpatterns = [
     path('focal_officer_application', views.focal_officer_application, name='focal_officer_application'),
     path('oic_application', views.oic_application, name='oic_application'),
     path('inspector_application', views.inspector_application, name='inspector_application'),
+    path('complain_officer_application', views.complain_officer_application, name='complain_officer_application'),
+    path('chief_application', views.chief_application, name='chief_application'),
 
     # movement permit
     path('apply_movement_permit', views.apply_movement_permit, name='apply_movement_permit'),
@@ -160,7 +162,12 @@ urlpatterns = [
     path('validate_receipt_no', views.validate_receipt_no, name='validate_receipt_no'),
     path('get_citizen_details', views.get_citizen_details, name='get_citizen_details'),
     path('delete_details', views.delete_details, name='delete_details'),
-    path('update_edit_details', views.update_edit_details, name='update_edit_details')
+    path('update_edit_details', views.update_edit_details, name='update_edit_details'),
+    path('view_complain_officer_details', views.view_complain_officer_details, name='view_complain_officer_details'),
+    path('view_chief_details', views.view_chief_details, name='view_chief_details'),
+    path('member_audit_plan', views.member_audit_plan, name='member_audit_plan'),
+    path('client_audit_plan', views.client_audit_plan, name='client_audit_plan'),
+    path('view_audit_plan', views.view_audit_plan, name='view_audit_plan'),
 
 ]
 if settings.DEBUG:
