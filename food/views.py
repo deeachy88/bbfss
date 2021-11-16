@@ -30,7 +30,7 @@ from plant.views import inspector_application, resubmit_application, focal_offic
 
 
 def food_business_registration_licensing(request):
-    unit = t_unit_master.objects.all()
+    unit = t_unit_master.objects.filter(Unit_Type='S')
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
@@ -961,7 +961,7 @@ def food_export_certificate_application(request):
     country = t_country_master.objects.all()
     field_office = t_field_office_master.objects.filter(Is_Entry_Point='Y')
     location = t_location_field_office_mapping.objects.all()
-    unit = t_unit_master.objects.all()
+    unit = t_unit_master.objects.filter(Unit_Type='S')
     return render(request, 'export_certificate_food/food_export_certificate.html',
                   {'dzongkhag': dzongkhag, 'village': village,
                    'gewog': gewog, 'country': country,
@@ -1317,7 +1317,7 @@ def food_handler_licensing(request):
     country = t_country_master.objects.all()
     field_office = t_field_office_master.objects.all()
     location = t_location_field_office_mapping.objects.all()
-    unit = t_unit_master.objects.all()
+    unit = t_unit_master.objects.filter(Unit_Type='S')
     return render(request, 'food_handler/application_form.html',
                   {'dzongkhag': dzongkhag, 'village': village,
                    'gewog': gewog, 'country': country,
@@ -1860,7 +1860,7 @@ def food_import_application(request):
     country = t_country_master.objects.all()
     field_office = t_field_office_master.objects.filter(Is_Entry_Point='Y')
     location = t_location_field_office_mapping.objects.all()
-    unit = t_unit_master.objects.all()
+    unit = t_unit_master.objects.filter(Unit_Type='S')
     category = t_food_category_master.objects.all()
     return render(request, 'import_certificate_food/application_form.html',
                   {'dzongkhag': dzongkhag, 'village': village,

@@ -1191,10 +1191,11 @@ def apply_import_permit(request):
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
     unit = t_unit_master.objects.filter(Unit_Type='S')
+    unit_agro = t_unit_master.objects.filter(Unit_Type='L')
     return render(request, 'import_permit/apply_import_permit.html',
                   {'crop': crop, 'pesticide': pesticide, 'variety': variety,
                    'location': location, 'country': country, 'dzongkhag': dzongkhag, 'gewog': gewog,
-                   'village': village, 'unit': unit})
+                   'village': village, 'unit': unit, 'unit_agro': unit_agro})
 
 
 def save_import_permit(request):
@@ -4686,7 +4687,7 @@ def registration_application(request):
     crop = t_plant_crop_master.objects.all()
     crop_category = t_plant_crop_category_master.objects.all()
     variety = t_plant_crop_variety_master.objects.all()
-    unit = t_unit_master.objects.all()
+    unit = t_unit_master.objects.filter(Unit_Type='S')
 
     return render(request, 'nursery_registration/apply_nursery_registration.html',
                   {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village,
@@ -5224,7 +5225,7 @@ def seed_certificate_application(request):
     location = t_location_field_office_mapping.objects.all()
     crop = t_plant_crop_master.objects.all()
     variety = t_plant_crop_variety_master.objects.all()
-    unit = t_unit_master.objects.all()
+    unit = t_unit_master.objects.filter(Unit_Type='S')
     return render(request, 'seed_certification/apply_seed_certification.html',
                   {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village,
                    'location': location, 'crop': crop, 'variety': variety, 'unit': unit})

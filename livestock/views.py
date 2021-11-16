@@ -55,7 +55,7 @@ def clearance_print(request):
 
 # MEAT SHOP REGISTRATON
 def meat_shop_registration_licensing(request):
-    unit = t_unit_master.objects.all()
+    unit = t_unit_master.objects.filter(Unit_Type='S')
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
@@ -1489,7 +1489,7 @@ def import_permit_application(request):
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
     location = t_field_office_master.objects.filter(Is_Entry_Point='Y')
-    unit = t_unit_master.objects.all()
+    unit = t_unit_master.objects.filter(Unit_Type='S')
 
     return render(request, 'Livestock_Import/import_permit_livestock.html',
                   {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village,
@@ -2033,7 +2033,7 @@ def export_certificate_application(request):
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
     location = t_field_office_master.objects.filter(Is_Entry_Point='Y')
-    unit = t_unit_master.objects.all()
+    unit = t_unit_master.objects.filter(Unit_Type='S')
     species = t_livestock_species_master.objects.all()
     breed = t_livestock_species_breed_master.objects.all()
     return render(request, 'Export_Certificate/export_certificate_application.html',
@@ -2534,7 +2534,7 @@ def movement_permit_application(request):
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
     location = t_location_field_office_mapping.objects.all()
-    unit = t_unit_master.objects.all()
+    unit = t_unit_master.objects.filter(Unit_Type='S')
     return render(request, 'Movement_Permit_Livestock/apply_movement_permit.html',
                   {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village,
                    'location': location, 'unit': unit})

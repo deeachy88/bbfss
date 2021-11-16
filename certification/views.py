@@ -31,7 +31,7 @@ def organic_certificate(request):
     country = t_country_master.objects.all()
     field_office = t_field_office_master.objects.all()
     location = t_location_field_office_mapping.objects.all()
-    unit = t_unit_master.objects.all()
+    unit = t_unit_master.objects.filter(Unit_Type='S')
     return render(request, 'organic_certification/apply_organic_certification.html',
                   {'dzongkhag': dzongkhag, 'village': village,
                    'gewog': gewog, 'country': country,
@@ -926,7 +926,7 @@ def gap_certificate(request):
     country = t_country_master.objects.all()
     field_office = t_field_office_master.objects.all()
     location = t_location_field_office_mapping.objects.all()
-    unit = t_unit_master.objects.all()
+    unit = t_unit_master.objects.filter(Unit_Type='S')
     return render(request, 'GAP_Certification/apply_gap_certification.html',
                   {'dzongkhag': dzongkhag, 'village': village,
                    'gewog': gewog, 'country': country,
@@ -1659,7 +1659,7 @@ def food_product_certificate(request):
     country = t_country_master.objects.all()
     field_office = t_field_office_master.objects.all()
     location = t_location_field_office_mapping.objects.all()
-    unit = t_unit_master.objects.all()
+    unit = t_unit_master.objects.filter(Unit_Type='S')
     return render(request, 'food_product_certification/apply_food_product_certification.html',
                   {'dzongkhag': dzongkhag, 'village': village,
                    'gewog': gewog, 'country': country,
