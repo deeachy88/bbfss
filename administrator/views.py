@@ -87,7 +87,7 @@ def dashboard(request):
                              | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
                                                                  Action_Date__isnull=False)).count()
             fhc_count = t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                           Action_Date__isnull=False, Service_Code='FHC').count()
+                                                          Action_Date__isnull=False, Service_Code='FHC').count()
             return render(request, 'dashboard.html', {'ins_count': message_count, 'fhc_count': fhc_count})
         elif Role == 'Complain Officer':
             login_id = request.session['Login_Id']
@@ -503,57 +503,37 @@ def save_division_form(request, form, template_name):
 
 
 def unit_manage(request):
-    if request.method == 'POST':
-        form = UnitForm(request.POST)
-        if form.is_valid():
-            form.save()
-            unit = t_unit_master.objects.all()
-            return render(request, 'unit.html', {'form': form, 'unit': unit})
-    else:
-        unit = t_unit_master.objects.all()
-        form = UnitForm()
-        return render(request, 'unit.html', {'form': form, 'unit': unit})
+    unit_list = t_unit_master.objects.all()
+    return render(request, 'unit.html', {'unit_list': unit_list})
 
 
-def edit_unit(request, Unit_Id):
-    print(Unit_Id)
-    unit = get_object_or_404(t_unit_master, pk=Unit_Id)
-    if request.method == 'POST':
-        form = UnitForm(request.POST, instance=unit)
-    else:
-        form = UnitForm(instance=unit)
-    return save_unit_form(request, form, 'edit_unit.html')
+def unit_add(request):
+    unit = request.GET.get('unit')
+    unit_type = request.GET.get('unit_type')
+    t_unit_master.objects.create(Unit=unit, Unit_Type=unit_type)
+    unit_list = t_unit_master.objects.all()
+
+    return render(request, 'unit_list_master.html', {'unit_list': unit_list})
 
 
-def delete_unit(request, Unit_Id):
-    unit = get_object_or_404(t_unit_master, pk=Unit_Id)
-    data = dict()
-    if request.method == 'POST':
-        unit.delete()
-        data['form_is_valid'] = True  # This is just to play along with the existing code
-        unit = t_unit_master.objects.all()
-        data['html_form'] = render_to_string('unit.html', {'unit': unit})
-    else:
-        context = {'unit': unit}
-        data['html_form'] = render_to_string('unit_delete.html', context, request=request)
-    return JsonResponse(data)
+def edit_unit(request):
+    record_id = request.GET.get('record_id')
+    unit = request.GET.get('edit_unit')
+    unit_type = request.GET.get('edit_unit_type')
+
+    unit_details = t_unit_master.objects.filter(pk=record_id)
+    unit_details.update(Unit=unit, Unit_Type=unit_type)
+
+    unit_list = t_unit_master.objects.all()
+    return render(request, 'unit_list_master.html', {'unit_list': unit_list})
 
 
-def save_unit_form(request, form, template_name):
-    data = dict()
-    if request.method == 'POST':
-        if form.is_valid():
-            form.save()
-            data['form_is_valid'] = True
-            division = t_division_master.objects.all()
-            data['html_division_list'] = render_to_string('division.html', {
-                'division': division
-            })
-        else:
-            data['form_is_valid'] = False
-    context = {'form': form}
-    data['html_form'] = render_to_string(template_name, context, request=request)
-    return JsonResponse(data)
+def delete_unit(request):
+    record_id = request.GET.get('record_id')
+    unit_details = t_unit_master.objects.filter(Unit_Id=record_id)
+    unit_details.delete()
+    unit = t_unit_master.objects.all()
+    return render(request, 'unit_list_master.html', {'unit_list': unit})
 
 
 def crop_category_manage(request):

@@ -1213,7 +1213,7 @@ def mov_agro_attachment(request):
 
 def get_unit_master(request):
     unit = t_unit_master.objects.all()
-    return render(request, 'unit_list.html',
+    return render(request, 'unit_list_master.html',
                   {'unit': unit})
 
 

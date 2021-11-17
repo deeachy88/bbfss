@@ -494,7 +494,7 @@ function save_users()
         var email = $('#email').val();
         var mobile = $('#mobile').val();
         var role = $('#role').val();
-        var division = $('#role').val();
+        var division = $('#division').val();
         var section = $('#section').val();
         var field_office = $('#fieldOffice').val();
 
@@ -535,6 +535,12 @@ function save_users()
             $('#roleErrorMsg').delay(2000).fadeOut('slow');
         }
         else if(role == "2" && division == "")
+        {
+            $('#divisionErrorMsg').html("Select Division.");
+            $('#divisionErrorMsg').show();
+            $('#divisionErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(role == "6" && division == "")
         {
             $('#divisionErrorMsg').html("Select Division.");
             $('#divisionErrorMsg').show();
@@ -658,7 +664,6 @@ function populateEditForm(loginId, name, empId, gender, emailId, mobileNumber, r
     }
     else if(roleId == "5")
     {
-
         $('.division_div').hide();
         $('.section_div').hide();
         $('.field_div').show();
@@ -668,12 +673,11 @@ function populateEditForm(loginId, name, empId, gender, emailId, mobileNumber, r
     {
         $('.field_div').hide();
         $('.section_div').hide();
-        $('.field_div').show();
+        $('.division_div').show();
 	    $('#edit_division').val(fieldId);
     }
     else
     {
-
         $('.division_div').hide();
         $('.section_div').hide();
 	    $('.field_div').hide();
@@ -757,13 +761,6 @@ function editUserDetails()
         $("#edit_division").focus();
     }
     else if(role == "2" && section == "")
-    {
-        $('#edit_sectionErrorMsg').html("Select Section.");
-        $('#edit_sectionErrorMsg').show();
-        $('#edit_sectionErrorMsg').delay(2000).fadeOut('slow');
-        $("#edit_section").focus();
-    }
-    else if(role == "6" && section == "")
     {
         $('#edit_sectionErrorMsg').html("Select Section.");
         $('#edit_sectionErrorMsg').show();
