@@ -193,9 +193,9 @@ def apply_movement_permit(request):
                                                                Action_Date__isnull=False, Application_Status='P') \
         .count()
     return render(request, 'movement_permit/apply_movement_permit.html',
-                  {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village, 'location': location, 'unit': unit,
+                  {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village, 'location': location,
                    'count': message_count, 'count_call': inspection_call_count,
-                   'consignment_call_count': consignment_call_count})
+                   'consignment_call_count': consignment_call_count, 'unit': unit})
 
 
 def save_details(request):
@@ -1212,7 +1212,7 @@ def mov_agro_attachment(request):
 
 
 def get_unit_master(request):
-    unit = t_unit_master.objects.all()
+    unit = t_unit_master.objects.filter(Unit_Type='S')
     return render(request, 'unit_list_master.html',
                   {'unit': unit})
 
