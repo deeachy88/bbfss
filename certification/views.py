@@ -21,7 +21,8 @@ from certification.models import t_certification_food_t2, t_certification_organi
 from plant.models import t_file_attachment, t_workflow_details, t_payment_details
 import pandas as pd
 # Organic Certification
-from plant.views import focal_officer_application, inspector_application, resubmit_application
+from plant.views import focal_officer_application, inspector_application, resubmit_application, oic_application, \
+    complain_officer_application, chief_application
 
 
 def organic_certificate(request):
@@ -510,7 +511,7 @@ def add_audit_team_details(request):
     for name in details:
         app_name = name.Name
         t_certification_food_t3.objects.create(Application_No=application_no, Login_Id=audit_team_member,
-                                                  Name=app_name, Role=role, Service_Code='OC')
+                                               Name=app_name, Role=role, Service_Code='OC')
     audit_team = t_certification_food_t3.objects.filter(Application_No=application_no)
     return render(request, 'organic_certification/audit_team_details.html',
                   {'audit_team': audit_team})
@@ -660,14 +661,23 @@ def send_audit_plan_acceptance(request):
 
 
 def send_audit_plan_resubmit(request):
+    Role_Id = request.session['Role_Id']
     application_no = request.GET.get('application_no')
     app_details = t_certification_organic_t1.objects.filter(Application_No=application_no)
     app_details.update(Audit_Plan_Acceptance='A')
     workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
     workflow_details.update(Assigned_Role_Id=None)
     workflow_details.update(Application_Status='APA')
-
-    return redirect(inspector_application)
+    if Role_Id == '2':
+        return redirect(focal_officer_application)
+    if Role_Id == '3':
+        return redirect(complain_officer_application)
+    elif Role_Id == '4':
+        return redirect(oic_application)
+    elif Role_Id == '5':
+        return redirect(inspector_application)
+    else:
+        return redirect(chief_application)
 
 
 def farm_input_observation(request):
@@ -822,6 +832,7 @@ def save_oc_audit_plan_name(request):
 
 
 def resubmit_oc_nc_details(request):
+    Role_Id = request.session['Role_Id']
     application_no = request.GET.get('det_application_no')
     Audit_Findings_Site_History = request.GET.get('Audit_Findings_Site_History')
     Audit_Findings_Water_Source = request.GET.get('Audit_Findings_Water_Source')
@@ -877,8 +888,7 @@ def resubmit_oc_nc_details(request):
     app_details.update(Audit_Findings_Worker_Health_Observations=Audit_Findings_Worker_Health_O)
     app_details.update(Audit_Findings_Group_Requirement_Observations=Audit_Findings_Group_Requirement_O)
     app_details.update(Audit_Findings_Others_Observations=Audit_Findings_Others_O)
-    app_details.update(Audit_Type=Audit_Type)
-    app_details.update(Audit_Date=audit_date)
+
     workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
     workflow_details.update(Assigned_Role_Id=None)
     workflow_details.update(Application_Status='NCR')
@@ -888,7 +898,16 @@ def resubmit_oc_nc_details(request):
         for user in user_details:
             login = user.Login_Id
             workflow_details.update(Assigned_To=login)
-    return redirect(inspector_application)
+    if Role_Id == '2':
+        return redirect(focal_officer_application)
+    if Role_Id == '3':
+        return redirect(complain_officer_application)
+    elif Role_Id == '4':
+        return redirect(oic_application)
+    elif Role_Id == '5':
+        return redirect(inspector_application)
+    else:
+        return redirect(chief_application)
 
 
 def edit_oc_nc_details(request, Record_Id):
@@ -905,7 +924,7 @@ def save_oc_nc_details(request, form, template_name):
     if request.method == 'POST':
         form.save()
         data['form_is_valid'] = True
-        books = t_certification_organic_t11.objects.all()
+        books = t_certification_organic_t11.objects.all().order_by('Record_Id')
         message_count = t_certification_organic_t11.objects.filter(Non_Conformity='Yes').count()
         data['html_book_list'] = render_to_string('organic_certification/nc_update_details.html', {
             'audit_observation': books, 'message_count': message_count
@@ -920,10 +939,9 @@ def oc_nc_response(request):
     action_taken = request.GET.get('action_taken')
     Corrective_Action_Date = request.GET.get('Corrective_Action_Date')
     Team_Leader = request.GET.get('Team_Leader')
-    date_action = datetime.strptime(Corrective_Action_Date, '%d-%m-%Y').date()
     nc_details = t_certification_organic_t1.objects.filter(Application_No=application_no)
     nc_details.update(Corrective_Action_Taken_Auditee=action_taken)
-    nc_details.update(Corrective_Action_Date=date_action)
+    nc_details.update(Corrective_Action_Date=Corrective_Action_Date)
     details = t_workflow_details.objects.filter(Application_No=application_no)
     details.update(Assigned_To=Team_Leader)
     details.update(Action_Date=date.today())
@@ -1295,7 +1313,7 @@ def gap_audit_team_details(request):
     for name in details:
         app_name = name.Name
         t_certification_food_t3.objects.create(Application_No=application_no, Login_Id=audit_team_member,
-                                              Name=app_name, Role=role, Service_Code='GAP')
+                                               Name=app_name, Role=role, Service_Code='GAP')
     audit_team = t_certification_food_t3.objects.filter(Application_No=application_no)
     return render(request, 'GAP_Certification/audit_team_details.html',
                   {'audit_team': audit_team})
@@ -1410,16 +1428,26 @@ def gap_audit_plan_acceptance(request):
 
 
 def gap_audit_plan_resubmit(request):
+    Role_Id = request.session['Role_Id']
     application_no = request.GET.get('application_no')
     app_details = t_certification_gap_t1.objects.filter(Application_No=application_no)
     app_details.update(Audit_Plan_Acceptance='A')
     workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
     workflow_details.update(Application_Status='APA')
-
-    return redirect(inspector_application)
+    if Role_Id == '2':
+        return redirect(focal_officer_application)
+    if Role_Id == '3':
+        return redirect(complain_officer_application)
+    elif Role_Id == '4':
+        return redirect(oic_application)
+    elif Role_Id == '5':
+        return redirect(inspector_application)
+    else:
+        return redirect(chief_application)
 
 
 def resubmit_nc_details(request):
+    Role_Id = request.session['Role_Id']
     application_no = request.GET.get('det_application_no')
     Audit_Findings_Site_History = request.GET.get('Audit_Findings_Site_History')
     Audit_Findings_Water_Source = request.GET.get('Audit_Findings_Water_Source')
@@ -1488,7 +1516,16 @@ def resubmit_nc_details(request):
         for user in user_details:
             login = user.Login_Id
             workflow_details.update(Assigned_To=login)
-    return redirect(inspector_application)
+    if Role_Id == '2':
+        return redirect(focal_officer_application)
+    if Role_Id == '3':
+        return redirect(complain_officer_application)
+    elif Role_Id == '4':
+        return redirect(oic_application)
+    elif Role_Id == '5':
+        return redirect(inspector_application)
+    else:
+        return redirect(chief_application)
 
 
 def edit_nc_details(request, Record_Id):
@@ -1505,7 +1542,7 @@ def save_nc_details(request, form, template_name):
     if request.method == 'POST':
         form.save()
         data['form_is_valid'] = True
-        books = t_certification_gap_t8.objects.all()
+        books = t_certification_gap_t8.objects.all().order_by('Record_Id')
         message_count = t_certification_gap_t8.objects.filter(Non_Conformity='Yes').count()
         data['html_book_list'] = render_to_string('GAP_Certification/nc_update_details.html', {
             'audit_observation': books, 'message_count': message_count
@@ -1539,6 +1576,7 @@ def gap_conform_observation(request):
 
 
 def forward_application_head_office(request):
+    Role_Id = request.session['Role_Id']
     application_no = request.GET.get('det_application_no')
     Audit_Findings_Site_History = request.GET.get('Audit_Findings_Site_History')
     Audit_Findings_Water_Source = request.GET.get('Audit_Findings_Water_Source')
@@ -1566,8 +1604,6 @@ def forward_application_head_office(request):
     Audit_Findings_Worker_Health_O = request.GET.get('Audit_Findings_Worker_Health_O')
     Audit_Findings_Group_Requirement_O = request.GET.get('Audit_Findings_Group_Requirement_O')
     Audit_Findings_Others_O = request.GET.get('Audit_Findings_Others_O')
-    Audit_Type = request.GET.get('Audit_Type')
-    audit_date = request.GET.get('audit_date')
     app_details = t_certification_gap_t1.objects.filter(Application_No=application_no)
     app_details.update(Audit_Findings_Site_History_OE=Audit_Findings_Site_History)
     app_details.update(Audit_Findings_Water_Source_OE=Audit_Findings_Water_Source)
@@ -1596,14 +1632,21 @@ def forward_application_head_office(request):
     app_details.update(Audit_Findings_Worker_Health_Observations=Audit_Findings_Worker_Health_O)
     app_details.update(Audit_Findings_Group_Requirement_Observations=Audit_Findings_Group_Requirement_O)
     app_details.update(Audit_Findings_Others_Observations=Audit_Findings_Others_O)
-    app_details.update(Audit_Type=Audit_Type)
-    app_details.update(Audit_Date=audit_date)
     details = t_workflow_details.objects.filter(Application_No=application_no)
     details.update(Assigned_To=None)
     details.update(Assigned_Role_Id='2')
     details.update(Action_Date=date.today())
     details.update(Application_Status='CA')
-    return redirect(inspector_application)
+    if Role_Id == '2':
+        return redirect(focal_officer_application)
+    if Role_Id == '3':
+        return redirect(complain_officer_application)
+    elif Role_Id == '4':
+        return redirect(oic_application)
+    elif Role_Id == '5':
+        return redirect(inspector_application)
+    else:
+        return redirect(chief_application)
 
 
 def gap_nc_response(request):
@@ -1943,7 +1986,7 @@ def submit_food_product_certificate(request):
     Terms_Change_Willingness = request.POST.get('Terms_Change_Willingness')
     Terms_Abide = request.POST.get('Terms_Abide')
     Terms_Agreement = request.POST.get('Terms_Agreement')
-    Standards = request.POST.get('Standards')
+    Standards = request.POST.get('Standard')
     Others_Standards = request.POST.get('other_standard')
 
     workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
@@ -2062,12 +2105,22 @@ def fpc_audit_plan_acceptance(request):
 
 
 def fpc_audit_plan_resubmit(request):
+    Role_Id = request.session['Role_Id']
     application_no = request.GET.get('audit_date_application_no')
     app_details = t_certification_food_t1.objects.filter(Application_No=application_no)
     app_details.update(Audit_Plan_Acceptance='A')
     workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
     workflow_details.update(Application_Status='APA')
-    return redirect(inspector_application)
+    if Role_Id == '2':
+        return redirect(focal_officer_application)
+    if Role_Id == '3':
+        return redirect(complain_officer_application)
+    elif Role_Id == '4':
+        return redirect(oic_application)
+    elif Role_Id == '5':
+        return redirect(inspector_application)
+    else:
+        return redirect(chief_application)
 
 
 def fpc_conform_observation(request):
@@ -2179,6 +2232,7 @@ def save_fpc_audit_plan_name(request):
 
 
 def resubmit_fpc_nc_details(request):
+    Role_Id = request.session['Role_Id']
     application_no = request.GET.get('det_application_no')
     Audit_Findings_Site_History = request.GET.get('Audit_Findings_Site_History')
     Audit_Findings_Water_Source = request.GET.get('Audit_Findings_Water_Source')
@@ -2206,8 +2260,6 @@ def resubmit_fpc_nc_details(request):
     Audit_Findings_Worker_Health_O = request.GET.get('Audit_Findings_Worker_Health_O')
     Audit_Findings_Group_Requirement_O = request.GET.get('Audit_Findings_Group_Requirement_O')
     Audit_Findings_Others_O = request.GET.get('Audit_Findings_Others_O')
-    Audit_Type = request.GET.get('Audit_Type')
-    audit_date = request.GET.get('audit_date')
     app_details = t_certification_food_t1.objects.filter(Application_No=application_no)
     app_details.update(Audit_Findings_Site_History_OE=Audit_Findings_Site_History)
     app_details.update(Audit_Findings_Water_Source_OE=Audit_Findings_Water_Source)
@@ -2222,7 +2274,6 @@ def resubmit_fpc_nc_details(request):
     app_details.update(Audit_Findings_Worker_Health_OE=Audit_Findings_Worker_Health)
     app_details.update(Audit_Findings_Group_Requirement_OE=Audit_Findings_Group_Requirement)
     app_details.update(Audit_Findings_Others_OE=Audit_Findings_Others)
-
     app_details.update(Audit_Findings_Site_History_Observations=Audit_Findings_Site_History_O)
     app_details.update(Audit_Findings_Water_Source_Observations=Audit_Findings_Water_Source_O)
     app_details.update(Audit_Findings_Product_Quality_Observations=Audit_Findings_Product_Quality_O)
@@ -2236,8 +2287,6 @@ def resubmit_fpc_nc_details(request):
     app_details.update(Audit_Findings_Worker_Health_Observations=Audit_Findings_Worker_Health_O)
     app_details.update(Audit_Findings_Group_Requirement_Observations=Audit_Findings_Group_Requirement_O)
     app_details.update(Audit_Findings_Others_Observations=Audit_Findings_Others_O)
-    app_details.update(Audit_Type=Audit_Type)
-    app_details.update(Audit_Date=audit_date)
     workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
     workflow_details.update(Assigned_Role_Id=None)
     workflow_details.update(Application_Status='NCR')
@@ -2247,7 +2296,16 @@ def resubmit_fpc_nc_details(request):
         for user in user_details:
             login = user.Login_Id
             workflow_details.update(Assigned_To=login)
-    return redirect(inspector_application)
+    if Role_Id == '2':
+        return redirect(focal_officer_application)
+    if Role_Id == '3':
+        return redirect(complain_officer_application)
+    elif Role_Id == '4':
+        return redirect(oic_application)
+    elif Role_Id == '5':
+        return redirect(inspector_application)
+    else:
+        return redirect(chief_application)
 
 
 def edit_fpc_nc_details(request, Record_Id):
@@ -2264,7 +2322,7 @@ def save_fpc_nc_details(request, form, template_name):
     if request.method == 'POST':
         form.save()
         data['form_is_valid'] = True
-        books = t_certification_food_t5.objects.all()
+        books = t_certification_food_t5.objects.all().order_by('Record_Id')
         message_count = t_certification_food_t5.objects.filter(Non_Conformity='Yes').count()
         data['html_book_list'] = render_to_string('food_product_certification/nc_update_details.html', {
             'audit_observation': books, 'message_count': message_count
@@ -2279,10 +2337,9 @@ def fpc_nc_response(request):
     action_taken = request.GET.get('action_taken')
     Corrective_Action_Date = request.GET.get('Corrective_Action_Date')
     Team_Leader = request.GET.get('Team_Leader')
-    date_action = datetime.strptime(Corrective_Action_Date, '%d-%m-%Y').date()
-    nc_details = t_certification_gap_t8.objects.filter(Application_No=application_no)
+    nc_details = t_certification_food_t1.objects.filter(Application_No=application_no)
     nc_details.update(Corrective_Action_Taken_Auditee=action_taken)
-    nc_details.update(Corrective_Action_Date=date_action)
+    nc_details.update(Corrective_Action_Date=Corrective_Action_Date)
     details = t_workflow_details.objects.filter(Application_No=application_no)
     details.update(Assigned_To=Team_Leader)
     details.update(Action_Date=date.today())
@@ -2802,21 +2859,21 @@ def update_nc_response(request):
     application_no = request.GET.get('application_No')
     record_id = request.GET.get('record_id')
     identification_type = request.GET.get('identification_type')
-
+    Corrective_Action_Proposed_Auditee=request.GET.get('Corrective_Action_Proposed_Auditee')
     if identification_type == 'gap_nc':
         details = t_certification_gap_t8.objects.filter(Record_Id=record_id)
-        details.delete()
-        nc_details = t_certification_gap_t8.objects.filter(Application_No=application_no)
+        details.update(Corrective_Action_Proposed_Auditee=Corrective_Action_Proposed_Auditee)
+        nc_details = t_certification_gap_t8.objects.filter(Application_No=application_no).order_by('Record_Id')
         return render(request, 'GAP_Certification/edit_nc_details.html', {'nc_details': nc_details})
     elif identification_type == 'fpc_nc':
         details = t_certification_food_t5.objects.filter(Record_Id=record_id)
-        details.delete()
-        nc_details = t_certification_food_t5.objects.filter(Application_No=application_no)
+        details.update(Corrective_Action_Proposed_Auditee=Corrective_Action_Proposed_Auditee)
+        nc_details = t_certification_food_t5.objects.filter(Application_No=application_no).order_by('Record_Id')
         return render(request, 'food_product_certification/edit_nc_details.html', {'nc_details': nc_details})
     else:
         details = t_certification_organic_t11.objects.filter(Record_Id=record_id)
-        details.delete()
-        nc_details = t_certification_organic_t11.objects.filter(Application_No=application_no)
+        details.update(Corrective_Action_Proposed_Auditee=Corrective_Action_Proposed_Auditee)
+        nc_details = t_certification_organic_t11.objects.filter(Application_No=application_no).order_by('Record_Id')
         return render(request, 'organic_certification/edit_nc_details.html', {'nc_details': nc_details})
 
 

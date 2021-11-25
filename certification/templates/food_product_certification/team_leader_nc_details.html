@@ -725,7 +725,7 @@ form, input, select, textarea{
     {% csrf_token %}
         <div class="card">
             <div class="card-header" role="tab">
-                <a class="collapsed" data-toggle="collapse" href="#non_conform_tab" aria-expanded="false" aria-controls="collapseTwo">
+                <a class="collapsed head" data-toggle="collapse" href="#non_conform_tab" aria-expanded="false" aria-controls="collapseTwo">
                     NONCONFORMITY REPORT
                 </a>
             </div>
@@ -741,8 +741,9 @@ form, input, select, textarea{
                                         <th scope="col">Non Conformity</th>
                                         <th scope="col">Non Conformity Category</th>
                                         <th scope="col">Description of nonconformity</th>
-                                        <th scope="col">Corrective Action Proposed</th>
-                                        <th scope="col">Action</th>
+                                        <th scope="col">Response To NC</th>
+                                        <th scope="col">Auditors Remarks</th>
+                                        <th scope="col"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -754,6 +755,7 @@ form, input, select, textarea{
                                             <td>{{import.Non_Conformity_Category}}</td>
                                             <td>{{import.Non_Conformity_Description}}</td>
                                             <td>{{import.Corrective_Action_Proposed_Auditee}}</td>
+                                            <td>{{import.Corrective_Action_Verified_Auditor}}</td>
                                             <td>
                                                 <button type="button"
                                                 class="btn btn-primary btn-sm js-edit-details"
@@ -967,7 +969,7 @@ function farm_input_observation(application_id)
 function Forward_details()
 {
     $.ajax({
-        type : "POST",
+        type : "GET",
         url : "{% url 'forward_application_head_office' %}",
         data :$('#FPC_observation_form').serialize(),
         success : function(data) {
@@ -989,11 +991,11 @@ function conform_observation()
     });
 }
 
-function resubmit_details()
+function resubmit_nc_details()
 {
     $.ajax({
         type : "GET",
-        url : "{% url 'fpc_audit_plan_resubmit' %}",
+        url : "{% url 'resubmit_fpc_nc_details' %}",
         data :$('#FPC_observation_form').serialize(),
         success : function(data) {
             location.reload();

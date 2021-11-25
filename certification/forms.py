@@ -10,11 +10,13 @@ class GapForm(forms.ModelForm):
         fields = '__all__'
         exclude = ('Application_No',)
         labels = {
-            "Corrective_Action_Verified_Auditor": "Auditors Remarks"
+            "Corrective_Action_Verified_Auditor": "Auditors Remarks",
+            "Corrective_Action_Proposed_Auditee": "Response To NC"
         }
         widgets = {
             'Non_Conformity_Description': Textarea(attrs={'rows': 3}),
             'Corrective_Action_Verified_Auditor': Textarea(attrs={'rows': 3}),
+            'Corrective_Action_Proposed_Auditee': Textarea(attrs={'rows': 3}),
         }
 
 
@@ -24,11 +26,13 @@ class FpcForm(forms.ModelForm):
         fields = '__all__'
         exclude = ('Application_No',)
         labels = {
-            "Corrective_Action_Verified_Auditor": "Auditors Remarks"
+            "Corrective_Action_Verified_Auditor": "Auditors Remarks",
+            "Corrective_Action_Proposed_Auditee": "Response To NC"
         }
         widgets = {
             'Non_Conformity_Description': Textarea(attrs={'rows': 3}),
             'Corrective_Action_Verified_Auditor': Textarea(attrs={'rows': 3}),
+            'Corrective_Action_Proposed_Auditee': Textarea(attrs={'rows': 3}),
         }
 
 
@@ -38,9 +42,11 @@ class OCForm(forms.ModelForm):
         fields = '__all__'
         exclude = ('Application_No',)
         labels = {
-            "Corrective_Action_Verified_Auditor": "Auditors Remarks"
+            "Corrective_Action_Verified_Auditor": "Auditors Remarks",
+            "Corrective_Action_Proposed_Auditee": "Response To NC"
         }
         widgets = {
             'Non_Conformity_Description': Textarea(attrs={'rows': 3}),
             'Corrective_Action_Verified_Auditor': Textarea(attrs={'rows': 3}),
+            'Corrective_Action_Proposed_Auditee': Textarea(attrs={'rows': 3}),
         }

@@ -374,49 +374,62 @@ form, input, select, textarea{
             <div id="collapse_wild_collection" class="collapse" role="tabpanel" aria-labelledby="collapse_wild_collection" data-parent="#accordion" style="">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered" id="dynamic-table">
+                        <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Pack House Name</th>
-                                    <th scope="col">Address of the pack house</th>
-                                    <th scope="col">For the previous year(From date)</th>
-                                    <th scope="col">For the previous year(To date)</th>
+                                    <th scope="col" rowspan="2">#</th>
+                                    <th scope="col" rowspan="2">Pack House Name</th>
+                                    <th scope="col" rowspan="2">Address of the pack house</th>
+                                    <th scope="col" colspan="8">For The Previous Year</th>
+                                    <th scope="col" colspan="8">For The Current Year</th>
+                                </tr>
+                                <tr>
+                                    <th scope="col">From Date</th>
+                                    <th scope="col">To Date</th>
                                     <th scope="col">Production</th>
                                     <th scope="col">Production  Unit</th>
                                     <th scope="col">Sold</th>
                                     <th scope="col">Sold Unit</th>
                                     <th scope="col">Balance Stock</th>
-                                    <th scope="col">For the current year(From date)</th>
-                                    <th scope="col">For the current year(To date)</th>
+                                    <th scope="col">Balance Stock Unit</th>
+                                    <th scope="col">From Date</th>
+                                    <th scope="col">To Date</th>
                                     <th scope="col">Production</th>
+                                    <th scope="col">Production Unit</th>
                                     <th scope="col">Sold</th>
+                                    <th scope="col">Sold Unit</th>
                                     <th scope="col">Balance Stock</th>
+                                    <th scope="col">Balance Stock Unit</th>
                                 </tr>
                             </thead>
                             <tbody>
-                               {% for crop in pack_house_details %}
-                                    <tr>
-                                        <td>{{ forloop.counter }}</td>
-                                        <td>{{crop.Pack_House_Name}}</td>
-                                        <td>{{crop.Pack_House_Address}}</td>
-                                        <td>{{crop.P_From_Date}}</td>
-                                        <td>{{crop.P_To_Date}}</td>
-                                        <td>{{crop.P_Production}}</td>
-                                        <td>{{crop.P_Production_Unit}}</td>
-                                        <td>{{crop.P_Sold}}</td>
-                                        <td>{{crop.P_Balance_Stock}}</td>
-                                        <td>{{crop.C_From_Date}}</td>
-                                        <td>{{crop.C_To_Date}}</td>
-                                        <td>{{crop.C_Production}}</td>
-                                        <td>{{crop.C_Sold}}</td>
-                                        <td>{{crop.C_Balance_Stock}}</td>
-                                    </tr>
-                                    {% empty %}
-                                    <tr>
-                                      <td colspan="15" class="text-center">No Data</td>
-                                    </tr>
-                               {% endfor %}
+                                {% for crop in pack_house_details %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{crop.Pack_House_Name}}</td>
+                                    <td>{{crop.Pack_House_Address}}</td>
+                                    <td>{{crop.P_From_Date|date:'d-m-Y' }}</td>
+                                    <td>{{crop.P_To_Date|date:'d-m-Y' }}</td>
+                                    <td>{{crop.P_Production}}</td>
+                                    <td>{{crop.P_Production_Unit}}</td>
+                                    <td>{{crop.P_Sold}}</td>
+                                    <td>{{crop.P_Sold_Unit}}</td>
+                                    <td>{{crop.P_Balance_Stock}}</td>
+                                    <td>{{crop.P_Balance_Stock_Unit}}</td>
+                                    <td>{{crop.C_From_Date|date:'d-m-Y' }}</td>
+                                    <td>{{crop.C_To_Date|date:'d-m-Y' }}</td>
+                                    <td>{{crop.C_Production}}</td>
+                                    <td>{{crop.C_Production_Unit}}</td>
+                                    <td>{{crop.C_Sold}}</td>
+                                    <td>{{crop.C_Sold_Unit}}</td>
+                                    <td>{{crop.C_Balance_Stock}}</td>
+                                    <td>{{crop.C_Balance_Stock_Unit}}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="17" class="text-center">No Data</td>
+                                </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
@@ -503,8 +516,7 @@ form, input, select, textarea{
                     {% for application_details in application_details %}
                         {% if application_details.Audit_Plan_Acceptance == 'R' %}
                             <input type="hidden" value="{{file_count}}" id="file_count">
-                            <input type="hidden" id="audit_date_application_no" name="audit_date_application_no" value="{{ application_details.Application_No }}">
-                            <button type="button" class="btn btn-flat btn-primary" id="client_share" onclick="resubmit_details()">
+                            <button type="button" class="btn btn-flat btn-primary" id="client_share" onclick="resubmit_details('{{ application_details.Application_No }}')">
                                 <i class="ace-icon fa fa-share-alt"></i>
                                 &nbsp;&nbsp;Share With Client
                             </button>
@@ -882,7 +894,6 @@ form, input, select, textarea{
                                         <th scope="col">Non Conformity</th>
                                         <th scope="col">Non Conformity Category</th>
                                         <th scope="col">Description of nonconformity</th>
-                                        <th scope="col">Corrective Action Proposed</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -893,7 +904,6 @@ form, input, select, textarea{
                                             <td>{{import.Non_Conformity}}</td>
                                             <td>{{import.Non_Conformity_Category}}</td>
                                             <td>{{import.Non_Conformity_Description}}</td>
-                                            <td>{{import.Corrective_Action_Proposed_Auditee}}</td>
                                         </tr>
                                         {% empty %}
                                         <tr>
@@ -904,32 +914,6 @@ form, input, select, textarea{
                             </table>
                         </div>
                         <br>
-                        <!--<div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Audit Date </label>
-                                   <input type="date" class="form-control" name="audit_date" id="Audit_Date">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Nature Of Audit</label>
-                                   <select class="form-control" name="Audit_Type" id="Audit_Type">
-                                        <option value="">-SELECT-</option>
-                                        <option value="Initial">Initial</option>
-                                        <option value="Revisit">Revisit/Follow Up</option>
-                                        <option value="Surveillance">Surveillance</option>
-                                        <option value="Renewal">Renewal</option>
-                                        <option value="Preliminary">Preliminary</option>
-                                        <option value="Special">Special</option>
-                                        <option value="Farm">Farm</option>
-                                        <option value="Company/Factory">Company/Factory</option>
-                                        <option value="Management System">Management System</option>
-                                        <option value="Processing">Processing</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>-->
                     </div>
                 </div>
                 <div id="msgDiv" class="alert alert-info" style="display:none;"></div>
@@ -1049,10 +1033,6 @@ form, input, select, textarea{
                             <div class="col-md-4">
                                 <label class="form-label">Description of nonconformity</label>
                                 <textarea class="form-control" name="Non_Conformity_Description"></textarea>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Corrective Action Proposed</label>
-                                <textarea class="form-control" id="Corrective_Action_Proposed_Auditee" name="Corrective_Action_Proposed_Auditee" disabled></textarea>
                             </div>
                         </div>
                     </div>

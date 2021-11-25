@@ -25,8 +25,7 @@
 <style>
   .login_wrapper {
     right: 0px;
-    margin: 0px auto;
-    margin-top: 0%;
+    margin-top: 8%;
     max-width: 350px;
     position: relative;
 }
@@ -46,10 +45,9 @@
     border-radius: 0.25rem;
     transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
-.footer
-{
-    margin-top: 320px;
-    margin-bottom: 1rem;
+.footer {
+    margin-top: 380px;
+    /* margin-bottom: 1rem; */
     border-top: 1px solid #33a661;
     padding: 1rem 1rem 1rem;
     color: #000;
@@ -64,21 +62,24 @@ body {
     line-height: 1.471;
 }
 hr {
-    margin-top: 1rem;
+    margin-top: 0rem;
     margin-bottom: 1rem;
     border: 0;
     border-top: 1px solid #33a661;
 }
-a {
+a
+{
     color: #b20606;
     text-decoration: none;
 }
-.btn-secondary {
+.btn-secondary
+{
     color: #fff;
     background-color: #3770a2;
     border-color: #6c757d;
 }
-.login_content h1 {
+.login_content h1
+ {
     font: normal 20px Helvetica, Arial, sans-serif;
     letter-spacing: -0.05em;
     line-height: 20px;
@@ -99,57 +100,103 @@ a {
     border-radius: 0.25rem;
     transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
+
+.login_content div .reset_pass
+{
+    margin-top: -8px !important;
+    margin-left: 215px;
+    float: right;
+}
+button, .buttons, .btn, .modal-footer .btn+.btn
+{
+    margin-bottom: 5px;
+    margin-right: 2px;
+    margin-left: 15px;
+}
+.login_content form div a {
+    margin-bottom: 5px;
+    margin-right: 0px;
+    margin-left: 15px;
+}
+.login_content form {
+    margin: -26px 0;
+    position: relative;
+}
+.row {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-right: 0px;
+    margin-left: -15px;
+}
+.card-body {
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: 1.25rem;
+    margin-top: -30px;
+}
 </style>
   <body>
    {% block content %}
     <div>
       <a class="hiddenanchor" id="signup"></a>
-      <header class="header justify-content-center text-center" style="background-color: white;">
-                <img src="{% static 'assets/img/banner.png' %}" alt="placeholder 960" class="img-responsive" />
-      </header>
-      <hr>
-      <div class="card-body text-center">
-        <!--<h5 class="card-body__title">Login Form</h5>-->
-      <div class="login_wrapper">
-        <div class="animate form login_form">
-          <section class="login_content">
-            <form action="{% url 'login' %}" id="loginForm" method="post">
-              {% csrf_token %}
-              <h1>Login Form</h1>
-              {% if message %}
-                <div class="alert alert-danger" id="login_error">{{ message }}</div>
-              {% endif %}
-              <div>
-                <input type="text" name="username" class="form-control" placeholder="Email" required/>
-              </div>
-              <div>
-                <input type="password" name="password" class="form-control" placeholder="Password" required />
-              </div>
-              <div>
-                <button class="btn-login submit" href="index.html">Log in</button>
-                <a class="reset_pass" href="{% url 'forgot_password' %}">Lost your password?</a>
-              </div>
-
-              <div class="clearfix"></div>
-
-              <div class="separator">
-                <div class="row d-flex justify-content-center">
-                  <a href="{% url 'register' %}" class="btn btn-secondary">
-                    Client Register
-                </a>
-                <div class="clearfix"></div>
-                <!--<a href="{% url 'apply_complaint_form' %}" class="btn btn-secondary btn-round">
-                    Complaint
-                </a>-->
-                </div>
-              </div>
-            </form>
-          </section>
+      <img src="{% static 'assets/img/banner.png' %}" class="img-fluid mx-auto d-block" alt="Responsive image" style="background:center">
+         <hr>
+      <div class="card-body">
+        <div class="col-md-6">
+            <img src="{% static 'assets/img/BAFRA.png' %}" class="img-fluid mx-auto d-block" alt="Responsive image" style="background:center;height:400px;">
         </div>
+          <div class="col-md-6">
+              <div class="row float-right">
+                <a href="{% url 'apply_complaint_form' %}" class="btn btn-sm btn-info">
+                    <i class="fa fa-comments-o"></i>
+                    Complaint
+                </a>
+                <a href="{% static '/assets/manual/BBFS_UserManual.pdf' %}" class="btn btn-sm btn-danger" download="{% static 'assets/manual/BBFS_UserManual.pdf' %}">
+                  <i class="fa fa-cloud-download"></i>
+                    User Manual
+                </a>
+             </div>
+          <div class="login_wrapper">
+            <div class="animate form login_form">
+              <section class="login_content">
+                <form action="{% url 'login' %}" id="loginForm" method="post">
+                  {% csrf_token %}
+                  <h1>Login Form</h1>
+                  {% if message %}
+                    <div class="alert alert-danger" id="login_error">{{ message }}</div>
+                  {% endif %}
+                  <div>
+                    <input type="text" name="username" class="form-control" placeholder="Email" required/>
+                  </div>
+                  <div>
+                    <input type="password" name="password" class="form-control" placeholder="Password" required />
+                  </div>
+                  <div class="row">
+                      <a class="reset_pass" href="/forgot_password">Lost your password?</a>
+                    </div>
+                  <div class="row">
+                    <button class="btn btn-primary btn-block submit">Login</button>
+                  </div>
+                    <div class="row">
+                      <a href="{% url 'register' %}" class="btn btn-secondary btn-lg btn-floating btn-block">
+                        Client Register
+                    </a>
+
+                    <div class="clearfix"></div>
+                    <!--<a href="{% url 'apply_complaint_form' %}" class="btn btn-secondary btn-round">
+                        Complaint
+                    </a>-->
+                    </div>
+                </form>
+              </section>
+            </div>
+          </div>
+          </div>
       </div>
-      </div>
-      <div class="card-body text-center">
-            <p class="footer">©  BAFRA- Bhutan Biosecurity and Food Safety System (BBFSS), 2021. All Rights Reserved.</p>
+      <div class="text-center">
+              <p class="footer">©  BAFRA- Bhutan Biosecurity and Food Safety System (BBFSS), 2021. All Rights Reserved.</p>
       </div>
     </div>
   {% endblock %}

@@ -768,17 +768,18 @@ form, input, select, textarea{
                 </div>
             </div>
         </div>
-            <div class="card">
-                <div class="card-header" role="tab" id="headingFive">
-                    <a class="collapsed head" data-toggle="collapse" href="#collapseFive" aria-expanded="false" aria-controls="collapseTwo">
-                        Head Office Details
-                    </a>
-                </div>
-                <div id="collapseFive" class="active" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+        <div class="card">
+            <div class="card-header" role="tab" id="head_office_details">
+                <a class="collapsed head" data-toggle="collapse" href="#collapse_head" aria-expanded="false" aria-controls="collapseTwo">
+                    Head Office Details
+                </a>
+            </div>
+            <div id="collapse_head" class="active" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+                <div class="card-body">
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="form-label">Validity Of Certificate(No Of Days) <font color="red">*</font></label>
+                                <label class="form-label">Validity of Certificate(No Of Days) <font color="red">*</font></label>
                                 <input type="text" class="form-control" id="validity" name="validity" onkeypress="return isNumberKey(event)" onchange="check_validity(this.value)">
                             </div>
                             <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>
@@ -810,16 +811,18 @@ form, input, select, textarea{
                     </div>
                     <div id="submitMsg" class="alert alert-info" style="display:none;"></div>
                     <div class="card-action">
-                        {% for application_details in application_details %}
-                            <button type="button" class="btn btn-flat btn-primary" onclick="approve_fpc_application('{{ application_details.Application_No }}')">
-                            <i class="ace-icon fa fa-check"></i>
-                            &nbsp;&nbsp;Approve
-                            </button>
-                        {% endfor %}
+                    {% for application_details in application_details %}
+                        <button type="button" class="btn btn-flat btn-primary" onclick="approve_fpc_application('{{ application_details.Application_No }}')">
+                        <i class="ace-icon fa fa-check"></i>
+                        &nbsp;&nbsp;Approve
+                        </button>
+                    {% endfor %}
+
                     <button type="button" class="btn btn-primary" onclick="closeTeamModal()">Close</button>
                     </div>
                 </div>
             </div>
+        </div>
 <script src="{% static 'assets/js/app.min.js' %}"></script>
 <script>
 function isNumberKey(evt)

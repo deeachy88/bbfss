@@ -62,6 +62,8 @@ def dashboard(request):
             message_count = (t_workflow_details.objects.filter(Assigned_Role_Id='4', Field_Office_Id=Field_Office_Id,
                                                                Action_Date__isnull=False) |
                              t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
+                                                               Action_Date__isnull=False) |
+                             t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
                                                                Action_Date__isnull=False)).count()
 
             return render(request, 'dashboard.html', {'count': message_count})

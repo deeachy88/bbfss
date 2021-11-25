@@ -367,49 +367,62 @@ form, input, select, textarea{
             <div id="collapse_wild_collection" class="collapse" role="tabpanel" aria-labelledby="collapse_wild_collection" data-parent="#accordion" style="">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered" id="dynamic-table">
+                        <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Pack House Name</th>
-                                    <th scope="col">Address of the pack house</th>
-                                    <th scope="col">For the previous year(From date)</th>
-                                    <th scope="col">For the previous year(To date)</th>
+                                    <th scope="col" rowspan="2">#</th>
+                                    <th scope="col" rowspan="2">Pack House Name</th>
+                                    <th scope="col" rowspan="2">Address of the pack house</th>
+                                    <th scope="col" colspan="8">For The Previous Year</th>
+                                    <th scope="col" colspan="8">For The Current Year</th>
+                                </tr>
+                                <tr>
+                                    <th scope="col">From Date</th>
+                                    <th scope="col">To Date</th>
                                     <th scope="col">Production</th>
                                     <th scope="col">Production  Unit</th>
                                     <th scope="col">Sold</th>
                                     <th scope="col">Sold Unit</th>
                                     <th scope="col">Balance Stock</th>
-                                    <th scope="col">For the current year(From date)</th>
-                                    <th scope="col">For the current year(To date)</th>
+                                    <th scope="col">Balance Stock Unit</th>
+                                    <th scope="col">From Date</th>
+                                    <th scope="col">To Date</th>
                                     <th scope="col">Production</th>
+                                    <th scope="col">Production Unit</th>
                                     <th scope="col">Sold</th>
+                                    <th scope="col">Sold Unit</th>
                                     <th scope="col">Balance Stock</th>
+                                    <th scope="col">Balance Stock Unit</th>
                                 </tr>
                             </thead>
                             <tbody>
-                               {% for crop in pack_house_details %}
-                                    <tr>
-                                        <td>{{ forloop.counter }}</td>
-                                        <td>{{crop.Pack_House_Name}}</td>
-                                        <td>{{crop.Pack_House_Address}}</td>
-                                        <td>{{crop.P_From_Date}}</td>
-                                        <td>{{crop.P_To_Date}}</td>
-                                        <td>{{crop.P_Production}}</td>
-                                        <td>{{crop.P_Production_Unit}}</td>
-                                        <td>{{crop.P_Sold}}</td>
-                                        <td>{{crop.P_Balance_Stock}}</td>
-                                        <td>{{crop.C_From_Date}}</td>
-                                        <td>{{crop.C_To_Date}}</td>
-                                        <td>{{crop.C_Production}}</td>
-                                        <td>{{crop.C_Sold}}</td>
-                                        <td>{{crop.C_Balance_Stock}}</td>
-                                    </tr>
-                                    {% empty %}
-                                    <tr>
-                                      <td colspan="15" class="text-center">No Data</td>
-                                    </tr>
-                               {% endfor %}
+                                {% for crop in pack_house_details %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{crop.Pack_House_Name}}</td>
+                                    <td>{{crop.Pack_House_Address}}</td>
+                                    <td>{{crop.P_From_Date|date:'d-m-Y' }}</td>
+                                    <td>{{crop.P_To_Date|date:'d-m-Y' }}</td>
+                                    <td>{{crop.P_Production}}</td>
+                                    <td>{{crop.P_Production_Unit}}</td>
+                                    <td>{{crop.P_Sold}}</td>
+                                    <td>{{crop.P_Sold_Unit}}</td>
+                                    <td>{{crop.P_Balance_Stock}}</td>
+                                    <td>{{crop.P_Balance_Stock_Unit}}</td>
+                                    <td>{{crop.C_From_Date|date:'d-m-Y' }}</td>
+                                    <td>{{crop.C_To_Date|date:'d-m-Y' }}</td>
+                                    <td>{{crop.C_Production}}</td>
+                                    <td>{{crop.C_Production_Unit}}</td>
+                                    <td>{{crop.C_Sold}}</td>
+                                    <td>{{crop.C_Sold_Unit}}</td>
+                                    <td>{{crop.C_Balance_Stock}}</td>
+                                    <td>{{crop.C_Balance_Stock_Unit}}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="17" class="text-center">No Data</td>
+                                </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
@@ -1007,7 +1020,7 @@ form, input, select, textarea{
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label class="form-label">Validity Of Certificate(No Of Days) <font color="red">*</font></label>
+                            <label class="form-label">Validity of Certificate(No Of Days) <font color="red">*</font></label>
                             <input type="text" class="form-control" id="validity" name="validity" onkeypress="return isNumberKey(event)" onchange="check_validity(this.value)">
                         </div>
                         <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>

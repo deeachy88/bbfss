@@ -607,29 +607,6 @@ form, input, select, textarea{
                         </tbody>
                     </table>
                     <br>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Provisional Audit Date</label>
-                                 {% for application_details in application_details %}
-                                    <input type="text" class="form-control" value="{{application_details.Audit_Plan_Date}}" disabled>
-                                {% endfor %}
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Nature Of Audit</label>
-                                <select class="form-control" disabled>
-                                    <option value="">-SELECT-</option>
-                                    <option value="Preliminary visit">Preliminary visit</option>
-                                    <option value="Factory audit">Factory audit</option>
-                                    <option value="Surveillance audit">Surveillance audit</option>
-                                    <option value="Recertification audit">Recertification audit</option>
-                                    <option value="Others">Others</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -1003,7 +980,7 @@ form, input, select, textarea{
                     NONCONFORMITY REPORT
                 </a>
             </div>
-            <div id="non_conform_tab" class="collapse" role="tabpanel" aria-labelledby="observations_tab" data-parent="#observations_tab" style="">
+            <div id="non_conform_tab" class="active" role="tabpanel" aria-labelledby="observations_tab" data-parent="#observations_tab" style="">
                 <div class="card-body">
                     <div class="card-body">
                         <div id="conform_details">
@@ -1015,8 +992,9 @@ form, input, select, textarea{
                                         <th scope="col">Non Conformity</th>
                                         <th scope="col">Non Conformity Category</th>
                                         <th scope="col">Description of nonconformity</th>
+                                        <th scope="col">Response To NC</th>
                                         <th scope="col">Auditors Remarks</th>
-                                        <th scope="col">Action</th>
+                                        <th scope="col"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1027,6 +1005,7 @@ form, input, select, textarea{
                                             <td>{{import.Non_Conformity}}</td>
                                             <td>{{import.Non_Conformity_Category}}</td>
                                             <td>{{import.Non_Conformity_Description}}</td>
+                                            <td>{{import.Corrective_Action_Proposed_Auditee}}</td>
                                             <td>{{import.Corrective_Action_Verified_Auditor}}</td>
                                             <td>
                                                 <button type="button"
@@ -1044,12 +1023,37 @@ form, input, select, textarea{
                                 </tbody>
                             </table>
                         </div>
+                        <br>
+                        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">Remarks</span>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">From</span>
+                                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Client</span>
+                            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                        </div>
+
+                        {% for application_details in application_details%}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Corrective Action Date </label>
+                                        <input type="text" class="form-control" value="{{ application_details.Corrective_Action_Date }}" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Corrective Action Taken </label>
+                                        <textarea type="text" class="form-control" disabled>{{ application_details.Corrective_Action_Taken_Auditee }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
                     </div>
                 </div>
                 <div id="msgDiv" class="alert alert-info" style="display:none;"></div>
                 <div class="modal-footer">
                     {% for application_details in application_details %}
-                        <input type="hidden" name="approved_application_no" value="{{ application_details.Application_No }}">
+                        <input type="hidden" name="det_application_no" value="{{ application_details.Application_No }}">
                     {% endfor %}
                     <button type="button" id="approve-btn" class="btn btn-flat btn-primary" onclick="Forward_details()">
                         <i class="ace-icon fa fa-arrow-right"></i>
@@ -1059,7 +1063,6 @@ form, input, select, textarea{
                         <i class="ace-icon fa fa-reply-all"></i>
                         &nbsp;&nbsp;Resubmit
                     </button>
-                    <button type="button" class="btn btn-primary" onclick="closeTeamModal()">Close Modal</button>
                 </div>
             </div>
         </div>
@@ -1214,7 +1217,7 @@ function farm_input_observation(application_id)
 function Forward_details()
 {
     $.ajax({
-        type : "POST",
+        type : "GET",
         url : "{% url 'forward_application_head_office' %}",
         data :$('#OC_observation_form').serialize(),
         success : function(data) {

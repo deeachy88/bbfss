@@ -43,6 +43,11 @@
             </div>
             <div class="col-md-4">
                 <div class="form-group">
+                    {{ form.Corrective_Action_Proposed_Auditee|as_crispy_field }}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
                     {{ form.Corrective_Action_Verified_Auditor|as_crispy_field }}
                 </div>
             </div>
@@ -50,7 +55,7 @@
       <hr>
   </div>
   <div class="modal-footer">
-      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      <button type="button" class="btn btn-default" onclick="close_edit_nc_fpc()">Close</button>
       <button type="submit" class="btn btn-primary">Save</button>
   </div>
 </form>
@@ -66,4 +71,9 @@
             $("#no_radio").prop("checked", true);
         }
      });
+     function close_edit_nc_fpc()
+     {
+        $('#modal-book').modal('hide');
+        $('.modal-backdrop').remove();
+     }
 </script>

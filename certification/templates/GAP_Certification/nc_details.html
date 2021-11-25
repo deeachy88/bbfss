@@ -795,7 +795,8 @@ form, input, select, textarea{
                                         <td>
                                             <button type="button" class="btn btn-primary btn-sm"
                                             onclick="editDetails('{{import.Record_Id}}','{{import.Clause_Number}}',
-                                            '{{import.Non_Conformity_Category}}', 'import.Non_Conformity_Description',
+                                            '{{import.Non_Conformity}}', '{{import.Non_Conformity_Category}}',
+                                             '{{import.Non_Conformity_Description}}',
                                              '{{import.Corrective_Action_Proposed_Auditee}}','{{import.Application_No}}')">
                                             <i class="zmdi zmdi-edit"></i>&nbsp;Respond
                                             </button>
@@ -832,13 +833,13 @@ form, input, select, textarea{
                             </div>
                         </div>-->
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-8">
                                 <div class="form-group">
                                     <label class="form-label">Corrective Action Taken</label>
                                     <textarea class="form-control" name="action_taken" id="action_taken"></textarea>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Corrective Action Date</label>
                                     <input type="date" class="form-control" id="Corrective_Action_Date" name="Corrective_Action_Date">
@@ -851,7 +852,8 @@ form, input, select, textarea{
                                 Succesfull
                             </div>
                             {% for application_details in application_details %}
-                            <input type="hidden" value="{{ application_details.Application_No }}" name="application_id">
+                                <input type="hidden" value="{{ application_details.Application_No }}" name="application_id">
+                                <input type="hidden" value="{{ application_details.Audit_Team_Leader }}" name="Team_Leader">
                                 <button type="button" class="btn btn-flat btn-primary" onclick="nc_response_details()">
                                     <i class="ace-icon fa fa-reply-all"></i>
                                     &nbsp;&nbsp;Respond
@@ -881,7 +883,7 @@ form, input, select, textarea{
                     <div class="row">
                         <div class="col-md-4">
                             <label class="form-label">Clause Number</label>
-                            <input type="text" class="form-control" name="Clause_Number" id="Clause_Number">
+                            <input type="text" class="form-control" name="Clause_Number" id="Clause_Number" disabled>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
@@ -902,7 +904,7 @@ form, input, select, textarea{
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">Nonconformity Category</label>
-                            <select class="form-control" id="Non_Conformity_Category" name="Non_Conformity_Category">
+                            <select class="form-control" id="Non_Conformity_Category" name="Non_Conformity_Category" disabled>
                                 <option value="">-SELECT-</option>
                                 <option value="Critical">Critical</option>
                                 <option value="Major">Major</option>
@@ -913,14 +915,13 @@ form, input, select, textarea{
                     <div class="row">
                         <div class="col-md-4">
                             <label class="form-label">Description of nonconformity</label>
-                            <textarea class="form-control" id="Non_Conformity_Description" name="Non_Conformity_Description"></textarea>
+                            <textarea class="form-control" id="Non_Conformity_Description" name="Non_Conformity_Description" disabled></textarea>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label class="form-label">Response To NC</label>
-                            <textarea class="form-control" id="Corrective_Action_Proposed_Auditee" name="Corrective_Action_Proposed_Auditee" disabled></textarea>
+                            <textarea class="form-control" id="Corrective_Action_Proposed_Auditee" name="Corrective_Action_Proposed_Auditee"></textarea>
                             <div class="alert alert-danger" id="responseErrorMsg" style="display:none"></div>
                         </div>
-
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -928,10 +929,10 @@ form, input, select, textarea{
                     <input type="hidden" name="appl_no" value="{{ application_details.Application_No }}">
                     <button type="button" class="btn btn-flat btn-primary" onclick="update_nc_details()">
                         <i class="ace-icon fa fa-check"></i>
-                        &nbsp;&nbsp;Add
+                        &nbsp;&nbsp;Update
                     </button>
                     {% endfor %}
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close Modal</button>
+                    <button type="button" class="btn btn-primary" onclick="close_nc_modal()">Close</button>
                 </div>
             </form>
         </div>
@@ -958,21 +959,30 @@ function editDetails(Record_Id, Clause_Number, Non_Conformity, Non_Conformity_Ca
     if(Non_Conformity == "Yes")
     {
         $("#nc_yes").prop("checked", true);
+        $("#nc_no").attr('disabled', 'disabled');
     }
     else
     {
         $("#nc_no").prop("checked", true);
+        $("#nc_yes").attr('disabled', 'disabled');
     }
     $('#Non_Conformity_Category').val(Non_Conformity_Category);
     $('#Non_Conformity_Description').val(Non_Conformity_Description);
-    $('#Corrective_Action_Proposed_Auditee').val(Corrective_Action_Proposed_Auditee);
+    if(Corrective_Action_Proposed_Auditee == 'None')
+    {
+        $('#Corrective_Action_Proposed_Auditee').val("");
+    }
+    else
+    {
+        $('#Corrective_Action_Proposed_Auditee').val(Corrective_Action_Proposed_Auditee);
+    }
     $('#application_No').val(application_No);
     $('#editModal').modal('show');
 }
 
 function update_nc_details()
 {
-    val response = $('#Corrective_Action_Proposed_Auditee').val();
+    var response = $('#Corrective_Action_Proposed_Auditee').val();
     if(response == "")
     {
         $('#responseErrorMsg').html("Enter Response To NC");

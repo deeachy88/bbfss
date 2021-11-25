@@ -194,106 +194,14 @@ def apply_complaint_form(request):
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
-
-    login_type = request.session['Login_Type']
-    if login_type == 'I':
-        Role = request.session['role']
-        Role_Id = request.session['Role_Id']
-        if Role == 'Focal Officer':
-            section = request.session['section']
-            section_details = t_section_master.objects.filter(Section_Id=section)
-            for id_section in section_details:
-                section_name = id_section.Section_Name
-                message_count = (t_workflow_details.objects.filter(
-                    Assigned_Role_Id=Role_Id, Section=section_name,
-                    Action_Date__isnull=False, Application_Status='P') | t_workflow_details.objects.filter(
-                    Assigned_Role_Id=Role_Id, Section=section_name,
-                    Action_Date__isnull=False, Application_Status='ATA') | t_workflow_details.objects.filter(
-                    Assigned_Role_Id=Role_Id, Section=section_name,
-                    Action_Date__isnull=False, Application_Status='FRA') |
-                                 t_workflow_details.objects.filter(
-                                     Assigned_Role_Id=Role_Id, Section=section_name,
-                                     Action_Date__isnull=False, Application_Status='CA')
-                                 ).count()
-                return render(request, 'complaint_handling/submit_complaint.html',
-                              {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village, 'count': message_count})
-        elif Role == 'OIC':
-            login_id = request.session['Login_Id']
-            Field_Office_Id = request.session['field_office_id']
-            message_count = (t_workflow_details.objects.filter(Assigned_Role_Id='4', Field_Office_Id=Field_Office_Id,
-                                                               Action_Date__isnull=False) |
-                             t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                               Action_Date__isnull=False)).count()
-
-            return render(request, 'complaint_handling/submit_complaint.html',
-                          {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village, 'count': message_count})
-        elif Role == 'Inspector':
-            login_id = request.session['Login_Id']
-            Field_Office_Id = request.session['field_office_id']
-            message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                               Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                                 Application_Status='I',
-                                                                 Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                                 Application_Status='FI',
-                                                                 Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                                 Application_Status='FR',
-                                                                 Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                                 Application_Status='P',
-                                                                 Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APA',
-                                                                 Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                                 Action_Date__isnull=False)).count()
-            return render(request, 'complaint_handling/submit_complaint.html',
-                          {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village, 'ins_count': message_count})
-        elif Role == 'Complain Officer':
-            login_id = request.session['Login_Id']
-            message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                               Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APA',
-                                                                 Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                                 Action_Date__isnull=False)).count()
-            return render(request, 'complaint_handling/submit_complaint.html',
-                          {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village, 'complain_count': message_count})
-        elif Role == 'Chief':
-            login_id = request.session['Login_Id']
-            message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                               Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APA',
-                                                                 Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                                 Action_Date__isnull=False)).count()
-            return render(request, 'complaint_handling/submit_complaint.html',
-                          {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village, 'chief_count': message_count})
-    else:
-        login_id = request.session['Login_Id']
-        message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
-
-        inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
-                                                                  Action_Date__isnull=False).count()
-        consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
-                                                                   Action_Date__isnull=False, Application_Status='P') \
-            .count()
-        return render(request, 'complaint_handling/submit_complaint.html',
-                      {'count': message_count, 'count_call': inspection_call_count,
-                       'consignment_call_count': consignment_call_count,
-                       'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village})
+    return render(request, 'complaint_handling/submit_complaint.html',
+                  {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village})
 
 
 def save_complaint(request):
     data = dict()
     service_code = "COM"
     last_application_no = get_complaint_application_no(request, service_code)
-    applicant_Id = request.session['email']
     cid = request.POST.get('cid')
     complainantName = request.POST.get('complainantName')
     dzongkhag = request.POST.get('dzongkhag')
@@ -306,7 +214,7 @@ def save_complaint(request):
 
     t_common_complaint_t1.objects.create(
         Application_No=last_application_no,
-        Applicant_Id=applicant_Id,
+        Applicant_Id=email,
         Application_Date=date.today(),
         CID=cid,
         Name=complainantName,
@@ -321,11 +229,12 @@ def save_complaint(request):
 
     )
 
-    t_workflow_details.objects.create(Application_No=last_application_no, Applicant_Id=request.session['email'],
+    t_workflow_details.objects.create(Application_No=last_application_no, Applicant_Id=email,
                                       Assigned_To=None, Field_Office_Id=None, Section='Complaint',
                                       Assigned_Role_Id='3', Action_Date=None, Application_Status='P',
                                       Service_Code=service_code)
     data['applNo'] = last_application_no
+    data['enail'] = email
     return JsonResponse(data)
 
 
@@ -382,7 +291,7 @@ def add_complaint_file_name(request):
     if request.method == 'POST':
         Application_No = request.POST.get('appNo')
         fileName = request.POST.get('filename')
-        Applicant_Id = request.session['email']
+        Applicant_Id = request.POST.get('email')
         fs = ("attachments" + "/" + str(timezone.now().year) + "/common_service/complaint_handling/" + fileName)
         print(fs)
         t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
@@ -474,7 +383,7 @@ def complaint_details(request):
     complaint_details = t_common_complaint_t1.objects.filter(Application_No=Application_No)
     file = t_file_attachment.objects.filter(Application_No=Application_No)
 
-    inspector_list = t_user_master.objects.filter(Login_Type='I')
+    inspector_list = t_user_master.objects.filter(Role_Id__in=['2', '3', '4', '5', '6'])
 
     return render(request, 'complaint_handling/complaint_officer_complaint_acknowledge.html',
                   {'complaint_details': complaint_details, 'inspector_list': inspector_list, 'dzongkhag': dzongkhag,
