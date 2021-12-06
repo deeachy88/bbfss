@@ -12,7 +12,7 @@ from django.utils import timezone
 
 from administrator.models import t_village_master, t_gewog_master, t_dzongkhag_master, t_country_master, \
     t_field_office_master, t_location_field_office_mapping, t_unit_master, t_service_master, t_user_master, \
-    t_food_category_master
+    t_food_category_master, t_food_product_category_master
 from administrator.views import dashboard
 from bbfss import settings
 from certification.models import t_certification_organic_t1, t_certification_food_t1, t_certification_gap_t1
@@ -35,6 +35,7 @@ def food_business_registration_licensing(request):
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
+    food_product_category = t_food_product_category_master.objects.all()
     message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
                      | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
                      | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
@@ -48,7 +49,8 @@ def food_business_registration_licensing(request):
         .count()
     return render(request, 'registration_licensing/registration_application.html',
                   {'unit': unit, 'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village, 'count': message_count,
-                   'count_call': inspection_call_count, 'consignment_call_count': consignment_call_count})
+                   'count_call': inspection_call_count, 'consignment_call_count': consignment_call_count,
+                   'food_product_category': food_product_category})
 
 
 def save_food_business_registration(request):
@@ -131,7 +133,6 @@ def save_food_business_registration(request):
         Dzongkhag_Code=dzongkhag,
         Gewog_Code=gewog,
         Village_Code=village
-
     )
 
     t_workflow_details.objects.create(Application_No=new_food_business_registration_application,
@@ -975,7 +976,7 @@ def food_export_certificate_application(request):
     country = t_country_master.objects.all()
     field_office = t_field_office_master.objects.filter(Is_Entry_Point='Y')
     location = t_location_field_office_mapping.objects.all()
-    unit = t_unit_master.objects.filter(Unit_Type='S')
+    unit = t_unit_master.objects.all()
     message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
                      | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
                      | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
@@ -1913,7 +1914,7 @@ def food_import_application(request):
     country = t_country_master.objects.all()
     field_office = t_field_office_master.objects.filter(Is_Entry_Point='Y')
     location = t_location_field_office_mapping.objects.all()
-    unit = t_unit_master.objects.filter(Unit_Type='S')
+    unit = t_unit_master.objects.all()
     category = t_food_category_master.objects.all()
     message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
                      | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')

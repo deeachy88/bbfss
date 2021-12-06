@@ -209,6 +209,20 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
+                                    <label class="form-label">Place of Inspection <font color="red">*</font></label>
+                                    <select class="form-control" name="Place_of_Inspection" id="Place_of_Inspection">
+                                        <option value="">--SELECT--</option>
+                                        {% for field_office in field_office %}
+                                            <option value="{{ field_office.Field_Office_Id }}">{{ field_office.Field_Office }}</option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                                <div class="alert alert-danger" id="Place_of_InspectionErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
                                     <label class="form-label">Place of Exit <font color="red">*</font></label>
                                     <select class="form-control" name="Place_of_Exit" id="Place_of_Exit">
                                         <option value="">--SELECT--</option>
@@ -219,8 +233,6 @@
                                 </div>
                                 <div class="alert alert-danger" id="Place_of_ExitErrorMsg" style="display:none"></div>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Propose Date for Inspection <font color="red">*</font></label>
@@ -410,7 +422,7 @@
                                         <div class="alert alert-danger" id="animal_DescriptionErrorMsg" style="display:none"></div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">No Of Animals <font color="red">*</font></label>
+                                        <label class="form-label">No of Animals <font color="red">*</font></label>
                                         <input type="text" name="no" class="form-control" id="no" onkeypress="return isNumberKey(event)" onchange="check_no(this.value)">
                                         <div class="alert alert-danger" id="noErrorMsg" style="display:none"></div>
                                     </div>
@@ -662,6 +674,7 @@ function saveExportForm()
     var passport = $('#passport').val();
     var cidCount = $('#cid').val().length;
     var number_count = $('#contactNumber').val().length;
+    var Place_of_Inspection = $('#Place_of_Inspection').val();
 
     if(Application_Type < 1)
     {
@@ -789,14 +802,21 @@ function saveExportForm()
         $('#Importer_Name_AddressErrorMsg').delay(2000).fadeOut('slow');
         $('#Importer_Name_Address').focus();
     }
-    else if (Final_Destination == "")
+    else if(Final_Destination == "")
     {
         $('#Final_DestinationErrorMsg').html("Enter Final Destination.");
         $('#Final_DestinationErrorMsg').show();
         $('#Final_DestinationErrorMsg').delay(2000).fadeOut('slow');
         $('#Final_Destination').focus();
     }
-    else if (Place_of_Exit == "")
+    else if(Place_of_Inspection == "")
+    {
+        $('#Place_of_InspectionErrorMsg').html("Select Place Of Inspection.");
+        $('#Place_of_InspectionErrorMsg').show();
+        $('#Place_of_InspectionErrorMsg').delay(2000).fadeOut('slow');
+        $('#Place_of_Inspection').focus();
+    }
+    else if(Place_of_Exit == "")
     {
         $('#Place_of_ExitErrorMsg').html("Select Place Of Exit.");
         $('#Place_of_ExitErrorMsg').show();
@@ -1058,7 +1078,8 @@ function save_export_details_form(identifier)
         var Company_Name = $('#Company_Name').val();
         var qty = $('#qty').val();
         var unit = $('#unit').val();
-        var animal_Description = $('#animal_Description').val();
+        var remarks = $('#remarks').val();
+        var appNo = $('#applicationNo').val();
 
         if(Particulars == "")
         {
@@ -1084,18 +1105,12 @@ function save_export_details_form(identifier)
             $('#unitErrorMsg').show();
             $('#unitErrorMsg').delay(2000).fadeOut('slow');
         }
-        else if(animal_Description == "")
-        {
-            $('#animal_DescriptionErrorMsg').html("Select Unit.");
-            $('#animal_DescriptionErrorMsg').show();
-            $('#animal_DescriptionErrorMsg').delay(2000).fadeOut('slow');
-        }
         else
         {
             $.ajax({
                 type : "POST",
                 url : "{% url 'save_liv_export_details' %}",
-                data : $('#animal_details_form').serialize(),
+                data : {'appNo':appNo, 'Particulars':Particulars,'Company_Name':Company_Name,'qty':qty,'unit':unit, 'remarks':remarks,'export_type': "AP", csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText) {
                    $('#animal_products_model').modal('hide');
                    $('#animal_product_details').html(responseText);
@@ -1114,7 +1129,8 @@ function save_export_details_form(identifier)
         var Sex = $('#Sex').val();
         var Description = $('#Description').val();
         var No_Of_Animal = $('#no').val();
-
+        var appNo = $('#applicationNo').val();
+        var AP_Remarks = $('#AP_Remarks').val();
         if(Species == "")
         {
             $('#SpeciesErrorMsg').html("Select Species.");
@@ -1155,8 +1171,8 @@ function save_export_details_form(identifier)
         {
             $.ajax({
                 type : "POST",
-                url : "{% url 'save_liv_export_details' %}",
-                data : $('#animal_details_form').serialize(),
+                url : "{% url 'save_animal_liv_export_details' %}",
+                data : {'appNo':appNo, 'Species':Species, 'Breed':Breed,'Age':Age,'Sex':Sex, 'animal_Description':Description,'no':No_Of_Animal,'AP_Remarks':AP_Remarks,'export_type': "A", csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(responseText) {
                    $('#animal_details_model').modal('hide');
                    $('#animal_details').html(responseText);

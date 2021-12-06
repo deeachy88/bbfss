@@ -15,16 +15,13 @@
 form, input, select, textarea{
         color: black !important;
     }
-   a {
+   .head {
     color: #e6e8ec;
-    text-decoration: none;
-    background-color: transparent;
-    -webkit-text-decoration-skip: objects;
 }
 </style>
         <div class="card">
             <div class="card-header" role="tab" id="headingOne">
-                <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed">
+                <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed head">
                     Application Details
                 </a>
             </div>
@@ -275,7 +272,7 @@ form, input, select, textarea{
 
         <div class="card">
             <div class="card-header" role="tab" id="farmer_group_details">
-                <a class="collapsed" data-toggle="collapse" href="#collapse_farmer_group" aria-expanded="false" aria-controls="collapse_farmer_group">
+                <a class="collapsed head" data-toggle="collapse" href="#collapse_farmer_group" aria-expanded="false" aria-controls="collapse_farmer_group">
                     Farmer Group Details
                 </a>
             </div>
@@ -308,7 +305,7 @@ form, input, select, textarea{
         </div>
         <div class="card">
             <div class="card-header" role="tab" id="crop_details">
-                <a class="collapsed" data-toggle="collapse" href="#collapseCrop" aria-expanded="false" aria-controls="collapseCrop">
+                <a class="collapsed head" data-toggle="collapse" href="#collapseCrop" aria-expanded="false" aria-controls="collapseCrop">
                     Crop Production Details
                 </a>
             </div>
@@ -367,7 +364,7 @@ form, input, select, textarea{
         </div>
         <div class="card">
             <div class="card-header" role="tab" id="wild_collection_details">
-                <a class="collapsed" data-toggle="collapse" href="#collapse_wild_collection" aria-expanded="false" aria-controls="collapse_wild_collection">
+                <a class="collapsed head" data-toggle="collapse" href="#collapse_wild_collection" aria-expanded="false" aria-controls="collapse_wild_collection">
                     Pack House Details
                 </a>
             </div>
@@ -438,7 +435,7 @@ form, input, select, textarea{
         </div>
         <div class="card">
             <div class="card-header" role="tab" id="headingTwo">
-                <a class="collapsed" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                <a class="collapsed head" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                     Attachments
                 </a>
             </div>
@@ -471,7 +468,7 @@ form, input, select, textarea{
 
         <div class="card">
             <div class="card-header" role="tab" id="observations">
-                <a class="collapsed" data-toggle="collapse" href="#observations_tab" aria-expanded="false" aria-controls="collapseTwo">
+                <a class="collapsed head" data-toggle="collapse" href="#observations_tab" aria-expanded="false" aria-controls="collapseTwo">
                     Audit Plan Details
                 </a>
             </div>
@@ -485,7 +482,7 @@ form, input, select, textarea{
                                     <span class="btn-label">
                                         <i class="fa fa-print"></i>
                                     </span>
-                                    Add
+                                    Upload Audit Plan
                                 </a>
                             {% endif %}
                         {% endfor %}
@@ -503,6 +500,12 @@ form, input, select, textarea{
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
                                         <td><a href='{{file_attach.File_Path}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                                        <td>
+                                            <button type="button"
+                                                class="btn btn-danger btn-sm" onclick="DeleteAttachment('{{ file_attach.File_Id }}')">
+                                                <i class="zmdi zmdi-delete"></i>
+                                            </button>
+                                        </td>
                                     </tr>
                                     {% empty %}
                                     <tr>
@@ -513,9 +516,12 @@ form, input, select, textarea{
                         </table>
                      </div>
                     <hr>
+                    <div id="share_msgDiv" class="alert alert-info" style="display:none;"></div>
                     {% for application_details in application_details %}
-                        {% if application_details.Audit_Plan_Acceptance == 'R' %}
-                            <input type="hidden" value="{{file_count}}" id="file_count">
+                        {% if application_details.Audit_Plan_Acceptance == 'A' %}
+
+                        {% else %}
+                            <input type="hidden" value="{{file_attach_count}}" id="file_count">
                             <button type="button" class="btn btn-flat btn-primary" id="client_share" onclick="resubmit_details('{{ application_details.Application_No }}')">
                                 <i class="ace-icon fa fa-share-alt"></i>
                                 &nbsp;&nbsp;Share With Client
@@ -531,7 +537,7 @@ form, input, select, textarea{
     {% if application_details.Audit_Plan_Acceptance == 'A' %}
         <div class="card">
             <div class="card-header" role="tab" id="audit_findings">
-                <a class="collapsed" data-toggle="collapse" href="#audit_findings_tab" aria-expanded="false" aria-controls="collapseTwo">
+                <a class="collapsed head" data-toggle="collapse" href="#audit_findings_tab" aria-expanded="false" aria-controls="collapseTwo">
                     Audit Findings
                 </a>
             </div>
@@ -869,7 +875,7 @@ form, input, select, textarea{
         </div>
         <div class="card">
             <div class="card-header" role="tab">
-                <a class="collapsed" data-toggle="collapse" href="#non_conform_tab" aria-expanded="false" aria-controls="collapseTwo">
+                <a class="collapsed head" data-toggle="collapse" href="#non_conform_tab" aria-expanded="false" aria-controls="collapseTwo">
                     NONCONFORMITY REPORT
                 </a>
             </div>
@@ -1090,24 +1096,16 @@ form, input, select, textarea{
 
 <script>
 $(function(){
-    var dtToday = new Date();
-
-    var month = dtToday.getMonth() + 1;
-    var day = dtToday.getDate();
-    var year = dtToday.getFullYear();
-
-    if(month < 10)
-        month = '0' + month.toString();
-    if(day < 10)
-        day = '0' + day.toString();
-
-    var maxDate = year + '-' + month + '-' + day;
-    $('#Audit_Date').attr('max', maxDate);
-
-    var today = new Date().toISOString().split('T')[0];
-    $('#Audit_Plan_Date')[0].setAttribute('min', today);
+    var file_count = $('#file_count').val();
+    if(file_count > 0)
+    {
+        $('#client_share').show();
+    }
+    else
+    {
+        $('#client_share').hide();
+    }
 });
-
 
 function openInputModal()
 {
@@ -1183,11 +1181,11 @@ function resubmit_details(application_no)
         url : "{% url 'gap_audit_plan_resubmit' %}",
         data :{'application_no':application_no},
         success : function(data) {
-            $('#msgDiv').html("Application Resubmitted For Acceptance To Client.");
-            $('#msgDiv').show();
+            $('#share_msgDiv').html("Application Shared With Client.");
+            $('#share_msgDiv').show();
             setTimeout(function()
             {
-                $("#msgDiv").hide('blind', {}, 500)
+                $("#share_msgDiv").hide('blind', {}, 500)
             }, 2000);
             setTimeout(function()
             {
@@ -1275,4 +1273,18 @@ function audit_plan_modal()
     $('#attachmentModal').modal('show');
 }
 
+f
+function DeleteAttachment(id)
+{
+    var appNo = $('#appNo').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'delete_gap_ap' %}",
+        data :{'appNo':appNo , 'file_id': id},
+        success : function(responseText)
+        {
+            $('#file-attachment').html(responseText);
+        }
+    });
+}
 </script>

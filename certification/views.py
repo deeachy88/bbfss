@@ -209,7 +209,7 @@ def organic_certificate_file_name(request):
                                          File_Path=file_url, Role_Id=None,
                                          Attachment=fileName)
 
-        file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+        file_attach = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type__isnull=True)
     return render(request, 'organic_certification/file_attachment.html', {'file_attach': file_attach})
 
 
@@ -224,8 +224,25 @@ def delete_oc_file(request):
         fs.delete(str(fileName))
     file.delete()
 
-    file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type__isnull=True)
     return render(request, 'organic_certification/file_attachment.html', {'file_attach': file_attach})
+
+
+def delete_oc_ap(request):
+    File_Id = request.GET.get('file_id')
+    Application_No = request.GET.get('appNo')
+
+    file = t_file_attachment.objects.filter(pk=File_Id)
+    for file in file:
+        fileName = file.Attachment
+        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/organic_certificate/audit_plan")
+        fs.delete(str(fileName))
+    file.delete()
+
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='AP')
+    file_attach_count = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='AP').count()
+    return render(request, 'organic_certification/audit_plan_details.html', {'file_attach': file_attach,
+                                                                             'file_attach_count': file_attach_count})
 
 
 def save_farmers_group_details(request):
@@ -828,7 +845,10 @@ def save_oc_audit_plan_name(request):
                                          Attachment=fileName, Attachment_Type='AP')
 
         file_attach = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='AP')
-    return render(request, 'organic_certification/audit_plan_details.html', {'file_attach': file_attach})
+        file_attach_count = t_file_attachment.objects.filter(Application_No=Application_No,
+                                                             Attachment_Type='AP').count()
+    return render(request, 'organic_certification/audit_plan_details.html', {'file_attach': file_attach,
+                                                                             'file_attach_count': file_attach_count})
 
 
 def resubmit_oc_nc_details(request):
@@ -1097,17 +1117,16 @@ def gap_certificate_file(request):
 
 
 def gap_certificate_file_name(request):
-    if request.method == 'POST':
-        Application_No = request.POST.get('appNo')
-        fileName = request.POST.get('filename')
-        Applicant_Id = request.session['email']
-        file_url = request.POST.get('file_url')
+    Application_No = request.POST.get('appNo')
+    fileName = request.POST.get('filename')
+    Applicant_Id = request.session['email']
+    file_url = request.POST.get('file_url')
 
-        t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
-                                         File_Path=file_url, Role_Id=None,
-                                         Attachment=fileName)
+    t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
+                                     File_Path=file_url, Role_Id=None,
+                                     Attachment=fileName)
 
-        file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type__isnull=True)
     return render(request, 'GAP_Certification/file_attachment.html', {'file_attach': file_attach})
 
 
@@ -1122,8 +1141,25 @@ def delete_gap_file(request):
         fs.delete(str(fileName))
     file.delete()
 
-    file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type__isnull=True)
     return render(request, 'GAP_Certification/file_attachment.html', {'file_attach': file_attach})
+
+
+def delete_gap_ap(request):
+    File_Id = request.GET.get('file_id')
+    Application_No = request.GET.get('appNo')
+
+    file = t_file_attachment.objects.filter(pk=File_Id, Attachment_Type='AP')
+    for file in file:
+        fileName = file.Attachment
+        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/gap_certificate/audit_plan")
+        fs.delete(str(fileName))
+    file.delete()
+
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='AP')
+    file_attach_count = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='AP').count()
+    return render(request, 'GAP_Certification/audit_plan_details.html', {'file_attach': file_attach,
+                                                                         'file_attach_count':file_attach_count})
 
 
 def save_gap_audit_plan(request):
@@ -1141,18 +1177,19 @@ def save_gap_audit_plan(request):
 
 
 def save_gap_audit_plan_name(request):
-    if request.method == 'POST':
-        Application_No = request.POST.get('appNo')
-        fileName = request.POST.get('filename')
-        Applicant_Id = request.session['email']
-        file_url = request.POST.get('file_url')
+    Application_No = request.POST.get('appNo')
+    fileName = request.POST.get('filename')
+    Applicant_Id = request.session['email']
+    file_url = request.POST.get('file_url')
 
-        t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
-                                         File_Path=file_url, Role_Id=None,
-                                         Attachment=fileName, Attachment_Type='AP')
+    t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
+                                     File_Path=file_url, Role_Id=None,
+                                     Attachment=fileName, Attachment_Type='AP')
 
-        file_attach = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='AP')
-        return render(request, 'GAP_Certification/audit_plan_details.html', {'file_attach': file_attach})
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='AP')
+    file_attach_count = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='AP').count()
+    return render(request, 'GAP_Certification/audit_plan_details.html', {'file_attach': file_attach,
+                                                                         'file_attach_count': file_attach_count})
 
 
 def gap_farmers_group_details(request):
@@ -1944,17 +1981,16 @@ def food_product_certificate_file(request):
 
 
 def food_product_certificate_file_name(request):
-    if request.method == 'POST':
-        Application_No = request.POST.get('appNo')
-        fileName = request.POST.get('filename')
-        Applicant_Id = request.session['email']
-        file_url = request.POST.get('file_url')
+    Application_No = request.POST.get('appNo')
+    fileName = request.POST.get('filename')
+    Applicant_Id = request.session['email']
+    file_url = request.POST.get('file_url')
 
-        t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
-                                         File_Path=file_url, Role_Id=None,
-                                         Attachment=fileName)
+    t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
+                                     File_Path=file_url, Role_Id=None,
+                                     Attachment=fileName)
 
-        file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type__isnull=True)
     return render(request, 'food_product_certification/file_attachment.html', {'file_attach': file_attach})
 
 
@@ -1976,8 +2012,25 @@ def delete_fpc_file(request):
         fs.delete(str(fileName))
     file.delete()
 
-    file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type__isnull=True)
     return render(request, 'food_product_certification/file_attachment.html', {'file_attach': file_attach})
+
+
+def delete_fpc_ap(request):
+    File_Id = request.GET.get('file_id')
+    Application_No = request.GET.get('appNo')
+
+    file = t_file_attachment.objects.filter(pk=File_Id)
+    for file in file:
+        fileName = file.Attachment
+        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/food_product_certificate/audit_plan")
+        fs.delete(str(fileName))
+    file.delete()
+
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='AP')
+    file_attach_count = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='AP').count()
+    return render(request, 'food_product_certification/audit_plan_details.html', {'file_attach': file_attach,
+                                                                                  'file_attach_count': file_attach_count})
 
 
 def submit_food_product_certificate(request):
@@ -2226,9 +2279,11 @@ def save_fpc_audit_plan_name(request):
                                          Attachment=fileName, Attachment_Type='AP')
 
         file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
-        file_count = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='AP').count()
+        file_attach_count = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='AP')\
+            .count()
         return render(request, 'food_product_certification/audit_plan_details.html', {'file_attach': file_attach,
-                                                                                      'file_count': file_count})
+                                                                                      'file_attach_count':
+                                                                                          file_attach_count})
 
 
 def resubmit_fpc_nc_details(request):
@@ -2859,7 +2914,7 @@ def update_nc_response(request):
     application_no = request.GET.get('application_No')
     record_id = request.GET.get('record_id')
     identification_type = request.GET.get('identification_type')
-    Corrective_Action_Proposed_Auditee=request.GET.get('Corrective_Action_Proposed_Auditee')
+    Corrective_Action_Proposed_Auditee = request.GET.get('Corrective_Action_Proposed_Auditee')
     if identification_type == 'gap_nc':
         details = t_certification_gap_t8.objects.filter(Record_Id=record_id)
         details.update(Corrective_Action_Proposed_Auditee=Corrective_Action_Proposed_Auditee)

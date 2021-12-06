@@ -779,7 +779,7 @@ form, input, select, textarea{
                                     <th scope="col">Non Conformity</th>
                                     <th scope="col">Non Conformity Category</th>
                                     <th scope="col">Description of nonconformity</th>
-                                    <th scope="col">Corrective Action Proposed</th>
+                                    <th scope="col">Response To NC</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -848,9 +848,7 @@ form, input, select, textarea{
                             </div>
                         </div>
                         <div class="card-action">
-                            <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
-                                Succesfull
-                            </div>
+                            <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;"></div>
                             {% for application_details in application_details %}
                                 <input type="hidden" value="{{ application_details.Application_No }}" name="application_id">
                                 <input type="hidden" value="{{ application_details.Audit_Team_Leader }}" name="Team_Leader">
@@ -947,7 +945,13 @@ function nc_response_details()
         url : "{% url 'gap_nc_response' %}",
         data :$('#nc_form').serialize(),
         success : function(data) {
-            location.reload();
+            $('#submitMsg').html("Application Submitted.");
+            $('#submitMsg').show();
+            $('#submitMsg').delay(2000).fadeOut('slow');
+            setTimeout(function()
+            {
+                 location.reload();
+            }, 3000);
         }
     });
 }

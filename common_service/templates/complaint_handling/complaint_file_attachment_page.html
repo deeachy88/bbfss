@@ -17,7 +17,7 @@
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">File</th>
-                        <th scope="col">Action</th>
+                        <th scope="col"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -28,7 +28,7 @@
                                 <td>
                                     <button type="button"
 									    class="btn btn-danger btn-sm" onclick="delete_attachment('{{ complaint_file.File_Id }}')">
-									    <i class="zmdi zmdi-delete"></i>
+									    <i class="fa fa-trash"></i>
 								    </button>
                                 </td>
                             </tr>
@@ -41,9 +41,9 @@
             </table>
         </div>
 </div>
-<div class="card-action">
-    <button type="button" class="btn btn-success" onclick="submit_complaint()">Submit Complaint</button>
-</div>
+<p class="signin button text-center" style="margin-bottom: -29px;">
+    <input type="button" class="signin button" value="Submit Complaint" onclick="submit_complaint()">
+</p>
 <script>
 function submit_complaint()
 {
@@ -52,8 +52,6 @@ function submit_complaint()
 			type : "GET",
 			url : "{% url 'submit_complaint' %}",
 			data : {'appNo':appNo},
-			cache : false,
-			dataType : "html",
 			success : function(responseText)
 			{
                 Swal.fire({

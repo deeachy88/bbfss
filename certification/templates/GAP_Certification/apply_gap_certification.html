@@ -360,12 +360,12 @@ span.flatpickr-weekday {
                                 <div class="form-group">
                                     <div class="form-check">
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Agree" onclick="checkStandardsRadio(this.value)">
+                                            <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Agree" onclick="checkStandardsRadio()">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Agree</span>
                                         </label>&nbsp;
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio(this.value)">
+                                            <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio()">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Disagree</span>
                                         </label>
@@ -379,12 +379,12 @@ span.flatpickr-weekday {
                                 <div class="form-group">
                                     <div class="form-check">
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Agree" onclick="checkStandardsRadio(this.value)">
+                                            <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Agree" onclick="checkStandardsRadio()">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Agree</span>
                                         </label>&nbsp;
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio(this.value)">
+                                            <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio()">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Disagree</span>
                                         </label>
@@ -400,12 +400,12 @@ span.flatpickr-weekday {
                                 <div class="form-group">
                                     <div class="form-check">
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Abide" class="custom-control-input" value="Agree" onclick="checkStandardsRadio(this.value)">
+                                            <input type="radio" name="Terms_Abide" class="custom-control-input" value="Agree" onclick="checkStandardsRadio()">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Agree</span>
                                         </label>&nbsp;
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Abide" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio(this.value)">
+                                            <input type="radio" name="Terms_Abide" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio()">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Disagree</span>
                                         </label>
@@ -419,12 +419,12 @@ span.flatpickr-weekday {
                                 <div class="form-group">
                                     <div class="form-check">
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Agree" onclick="checkStandardsRadio(this.value)">
+                                            <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Agree" onclick="checkStandardsRadio()">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Agree</span>
                                         </label>&nbsp;
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio(this.value)">
+                                            <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio()">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Disagree</span>
                                         </label>
@@ -434,7 +434,7 @@ span.flatpickr-weekday {
                         </div>
                     </div>
                     <div class="card-action">
-                        <button type="button" class="btn btn-primary" id="button_submit" onclick="submit_gap_certificate_details()">Submit</button>
+                        <button type="button" class="btn btn-primary" id="submit_gap_button" onclick="submit_gap_certificate_details()">Submit</button>
                     </div>
                 </div>
             </div>
@@ -2525,15 +2525,20 @@ function get_edit_farmers_name(cidNo)
     });
 }
 
-function checkStandardsRadio(value)
+function checkStandardsRadio()
 {
-    if(value="Agree")
+    var Terms_Bafra_Certification = $('input[name="Terms_Bafra_Certification"]:checked').val();
+    var Terms_Change_Willingness = $('input[name="Terms_Change_Willingness"]:checked').val();
+    var Terms_Abide = $('input[name="Terms_Abide"]:checked').val();
+    var Terms_Agreement = $('input[name="Terms_Agreement"]:checked').val();
+
+    if(Terms_Bafra_Certification == "Agree" && Terms_Change_Willingness == "Agree" && Terms_Abide == "Agree" && Terms_Agreement == "Agree")
     {
-        $('#button_submit').show();
+        $('#submit_gap_button').show();
     }
     else
     {
-        $('#button_submit').hide();
+        $('#submit_gap_button').hide();
     }
 }
 

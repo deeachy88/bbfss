@@ -16,17 +16,11 @@
                     <td>{{application_details.Clearance_Number}}</td>
                     <td>{{application_details.Application_No}}</td>
                     <td>{{application_details.Application_Date}}</td>
-                    {% for payment_details in payment_details%}
-                        {% if application_details.Application_No == payment_details.Application_No %}
-                            {% if payment_details.Receipt_Date %}
-                                <td><button  class="btn btn-default btn-border" type="button" onclick="print_certificate('RNS','{{application_details.Application_No}}')"><i class="zmdi zmdi-print"></i></button></td>
-                            {% endif %}
-                        {% endif %}
-                    {% endfor %}
+                    <td><button  class="btn btn-default btn-border" type="button" onclick="print_certificate('RNS','{{application_details.Application_No}}')"><i class="zmdi zmdi-print"></i></button></td>
                 </tr>
                 {% empty %}
                 <tr>
-                  <td colspan="5" class="text-center">No Data</td>
+                  <td colspan="4" class="text-center">No Data</td>
                 </tr>
             {% endfor %}
         </tbody>

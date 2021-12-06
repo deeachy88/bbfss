@@ -133,7 +133,7 @@ def investigation_complaint_list(request):
                                                       Action_Date__isnull=False, Service_Code='FHC').count()
         return render(request, 'complaint_investigation_pending_list.html',
                       {'ins_count': message_count, 'in_complaint_list': in_complaint_list, 'fhc_count': fhc_count})
-    elif Role == 'Complain Officer':
+    elif Role == 'Complaint Officer':
         login_id = request.session['Login_Id']
         message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
                                                            Action_Date__isnull=False)
@@ -234,7 +234,7 @@ def save_complaint(request):
                                       Assigned_Role_Id='3', Action_Date=None, Application_Status='P',
                                       Service_Code=service_code)
     data['applNo'] = last_application_no
-    data['enail'] = email
+    data['email'] = email
     return JsonResponse(data)
 
 

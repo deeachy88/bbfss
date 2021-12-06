@@ -322,6 +322,14 @@ class t_food_category_master(models.Model):
         return self.Category_Name
 
 
+class t_food_product_category_master(models.Model):
+    Food_Product_Category_Id = models.AutoField(primary_key=True)
+    Food_Product_Category_Name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.Food_Product_Category_Name
+
+
 class t_meat_item_master(models.Model):
     Item_Code = models.AutoField(primary_key=True)
     Meat_Item = models.CharField(max_length=100)

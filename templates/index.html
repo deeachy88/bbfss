@@ -1,392 +1,175 @@
 <!DOCTYPE html>
-<html lang="en">
 {% load static %}
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <!-- Meta, title, CSS, favicons, etc. -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<!--[if lt IE 7 ]> <html lang="en" class="no-js ie6 lt8"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="en" class="no-js ie7 lt8"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="en" class="no-js ie8 lt8"> <![endif]-->
+<!--[if IE 9 ]>    <html lang="en" class="no-js ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
 
-    <title>BAFRA | Bhutan Biosecurity and Food Safety System</title>
-
-    <!-- Bootstrap -->
-    <link href="{% static 'styles/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link href="{% static 'styles/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
-    <!-- NProgress -->
-    <link href="{% static 'styles/nprogress/nprogress.css' %}" rel="stylesheet">
-    <!-- Animate.css -->
-    <link href="{% static 'styles/animate.css/animate.min.css' %}" rel="stylesheet">
-
-    <!-- Custom Theme Style -->
-    <link href="{% static 'assets/css/custom.min.css' %}" rel="stylesheet">
-  </head>
-<style>
-  .login_wrapper {
-    right: 0px;
-    margin-top: 8%;
-    max-width: 350px;
-    position: relative;
-}
-.btn-login {
-    display: inline-block;
-    font-weight: 400;
-    text-align: center;
-    vertical-align: middle;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    border: 1px solid #21620c;
-    padding: 0.25rem 0.75rem;
-    font-size: 1rem;
-    line-height: 1.5;
-    border-radius: 0.25rem;
-    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-}
-.footer {
-    margin-top: 380px;
-    /* margin-bottom: 1rem; */
-    border-top: 1px solid #33a661;
-    padding: 1rem 1rem 1rem;
-    color: #000;
-    background-color: #327e24;
-}
-body {
-    color: #3770a2;
-    background: #ffffff;
-    font-family: "Helvetica Neue", Roboto, Arial, "Droid Sans", sans-serif;
-    font-size: 13px;
-    font-weight: 400;
-    line-height: 1.471;
-}
-hr {
-    margin-top: 0rem;
-    margin-bottom: 1rem;
-    border: 0;
-    border-top: 1px solid #33a661;
-}
-a
-{
-    color: #b20606;
-    text-decoration: none;
-}
-.btn-secondary
-{
-    color: #fff;
-    background-color: #3770a2;
-    border-color: #6c757d;
-}
-.login_content h1
- {
-    font: normal 20px Helvetica, Arial, sans-serif;
-    letter-spacing: -0.05em;
-    line-height: 20px;
-    margin: 10px 0 30px;
-}
-.form-control {
-    display: block;
-    width: 100%;
-    height: calc(1.5em + 0.75rem + 2px);
-    padding: 0.375rem 0.75rem;
-    font-size: 0.9rem;
-    font-weight: 400;
-    line-height: 1.5;
-    color: #495057;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 1px solid #ced4da;
-    border-radius: 0.25rem;
-    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-}
-
-.login_content div .reset_pass
-{
-    margin-top: -8px !important;
-    margin-left: 215px;
-    float: right;
-}
-button, .buttons, .btn, .modal-footer .btn+.btn
-{
-    margin-bottom: 5px;
-    margin-right: 2px;
-    margin-left: 15px;
-}
-.login_content form div a {
-    margin-bottom: 5px;
-    margin-right: 0px;
-    margin-left: 15px;
-}
-.login_content form {
-    margin: -26px 0;
-    position: relative;
-}
-.row {
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-    margin-right: 0px;
-    margin-left: -15px;
-}
-.card-body {
-    -ms-flex: 1 1 auto;
-    flex: 1 1 auto;
-    padding: 1.25rem;
-    margin-top: -30px;
-}
-</style>
-  <body>
-   {% block content %}
-    <div>
-      <a class="hiddenanchor" id="signup"></a>
-      <img src="{% static 'assets/img/banner.png' %}" class="img-fluid mx-auto d-block" alt="Responsive image" style="background:center">
-         <hr>
-      <div class="card-body">
-        <div class="col-md-6">
-            <img src="{% static 'assets/img/BAFRA.png' %}" class="img-fluid mx-auto d-block" alt="Responsive image" style="background:center;height:400px;">
-        </div>
-          <div class="col-md-6">
-              <div class="row float-right">
-                <a href="{% url 'apply_complaint_form' %}" class="btn btn-sm btn-info">
-                    <i class="fa fa-comments-o"></i>
-                    Complaint
-                </a>
-                <a href="{% static '/assets/manual/BBFS_UserManual.pdf' %}" class="btn btn-sm btn-danger" download="{% static 'assets/manual/BBFS_UserManual.pdf' %}">
-                  <i class="fa fa-cloud-download"></i>
-                    User Manual
-                </a>
-             </div>
-          <div class="login_wrapper">
-            <div class="animate form login_form">
-              <section class="login_content">
-                <form action="{% url 'login' %}" id="loginForm" method="post">
-                  {% csrf_token %}
-                  <h1>Login Form</h1>
-                  {% if message %}
-                    <div class="alert alert-danger" id="login_error">{{ message }}</div>
-                  {% endif %}
-                  <div>
-                    <input type="text" name="username" class="form-control" placeholder="Email" required/>
-                  </div>
-                  <div>
-                    <input type="password" name="password" class="form-control" placeholder="Password" required />
-                  </div>
-                  <div class="row">
-                      <a class="reset_pass" href="/forgot_password">Lost your password?</a>
-                    </div>
-                  <div class="row">
-                    <button class="btn btn-primary btn-block submit">Login</button>
-                  </div>
-                    <div class="row">
-                      <a href="{% url 'register' %}" class="btn btn-secondary btn-lg btn-floating btn-block">
-                        Client Register
-                    </a>
-
-                    <div class="clearfix"></div>
-                    <!--<a href="{% url 'apply_complaint_form' %}" class="btn btn-secondary btn-round">
+    <head>
+        <meta charset="UTF-8" />
+        <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">  -->
+        <title>Login</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Login and Registration Form with HTML5 and CSS3" />
+        <meta name="keywords" content="html5, css3, form, switch, animation, :target, pseudo-class" />
+        <meta name="author" content="Codrops" />
+        <link rel="shortcut icon" href="../favicon.ico">
+        <link rel="stylesheet" type="text/css" href="{% static 'css/demo.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'css/style2.css' %}" />
+		<link rel="stylesheet" type="text/css" href="{% static 'css/animate-custom.css' %}" />
+        <style>
+              hr {
+                  margin-top: 1rem;
+                  margin-bottom: 1rem;
+                  border: 0;
+                  border-top: 1px solid #33a661;
+                  margin-right: 0px;
+              }
+              ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+                color: black;
+                opacity: 1; /* Firefox */
+              }
+              #wrapper select
+              {
+                    width: 98%;
+                    margin-top: 2px;
+                    padding: 10px 5px 10px 2px;
+                    border: 1px solid rgb(178, 178, 178);
+                    -webkit-appearance: textfield;
+                    -webkit-box-sizing: content-box;
+                    -moz-box-sizing: content-box;
+                    box-sizing: content-box;
+                    -webkit-border-radius: 3px;
+                    -moz-border-radius: 3px;
+                    border-radius: 3px;
+                    -webkit-box-shadow: 0px 1px 4px 0px rgb(168 168 168 / 60%) inset;
+                    -moz-box-shadow: 0px 1px 4px 0px rgba(168, 168, 168, 0.6) inset;
+                    box-shadow: 0px 1px 4px 0px rgb(168 168 168 / 60%) inset;
+                    -webkit-transition: all 0.2s linear;
+                    -moz-transition: all 0.2s linear;
+                    -o-transition: all 0.2s linear;
+                    transition: all 0.2s linear;
+              }
+              .alert {
+                  padding: 10px;
+                  background-color: #f44336;
+                  color: white;
+                }
+                .footer
+                {
+                    margin-top: 350px;
+                    border-top: 1px solid #33a661;
+                    padding: 1rem 1rem 1rem;
+                    color: #000;
+                    background-color: #327e24;
+                }
+        </style>
+    </head>
+    <body style="background:url(static/assets/img/background1.jpg) no-repeat center;background-size:max-width:100%">
+        <div class="container">
+            <header>
+                <img src="{% static 'assets/img/banner.png' %}" class="img-fluid mx-auto d-block" alt="Responsive image" style="background:center;max-width:100%">
+                <nav class="codrops-demos">
+					<a href="{% url 'apply_complaint_form' %}" class="btn btn-sm btn-info">
+                        <i class="fa fa-comments-o"></i>
                         Complaint
-                    </a>-->
+                    </a>
+                    <a href="{% static '/assets/manual/BBFS_UserManual.pdf' %}" class="btn btn-sm btn-danger" download="{% static 'assets/manual/BBFS_UserManual.pdf' %}">
+                        <i class="fa fa-cloud-download"></i>
+                        User Manual
+                    </a>
+				</nav>
+            </header>
+            <hr>
+            <section>
+                <div id="container_demo">
+                    <!-- hidden anchor to stop jump http://www.css3create.com/Astuce-Empecher-le-scroll-avec-l-utilisation-de-target#wrap4  -->
+                    <a class="hiddenanchor" id="toregister"></a>
+                    <a class="hiddenanchor" id="tologin"></a>
+                    <div id="wrapper">
+                        <div id="login" class="animate form">
+                            <form action="{% url 'login' %}" id="loginForm" method="post">
+                                {% csrf_token %}
+                                <h1>Log in</h1>
+                                {% if message %}
+                                    <div class="alert alert-danger" id="login_error">{{ message }}</div>
+                                {% endif %}
+                                <p>
+                                    <label for="emailsignup" class="youmail" data-icon="e"> Your Email</label>
+                                    <input id="emailsignup" name="username" required="required" type="email" >
+                                </p>
+                                <p>
+                                    <label for="password" class="youpasswd" data-icon="p"> Your Password </label>
+                                    <input id="password" name="password" required="required" type="password" />
+                                </p>
+                                <p class="login button">
+                                    <input type="submit" value="Login" />
+								</p>
+                                <p class="change_link">
+									<a href="{% url 'register' %}" class="to_register">Client Register</a>
+									<a href="#toregister" class="to_register">Forgot Password ?</a>
+								</p>
+                            </form>
+                        </div>
+                        <div id="register" class="animate form">
+                            <form method="post" id="forgot_password_form">
+                                {% csrf_token %}
+                                <h1> Forgot Password </h1>
+                                <p>
+                                    <div class="form-group">
+                                        <label for="email" class="uname" data-icon="e">Your Email</label>
+                                        <input name="email" id="email" required="required" type="text" onchange="validateemailId(this.value)" onblur="getSecurityQuestion(this.value)"/>
+                                    </div>
+                                    <div class="alert" id="emailErrorMsg" style="display:none"></div>
+                                </p>
+                                <p>
+                                    <div class="form-group">
+                                        <label for="security" class="youpasswd" >Security Question </label>
+                                        <select name="security" id="security" onchange="getAnswer(this.value)">
+                                            <option value="">SELECT SECURITY QUESTION</option>
+                                            {% for security in security %}
+                                                <option value="{{ security.Question_Id }}">{{ security.Question }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="alert" id="securityErrorMsg" style="display:none"></div>
+                                </p>
+                                <p>
+                                    <div class="form-group">
+                                        <label for="answer" class="youpasswd" data-icon="A">Security Answer</label>
+                                        <input id="answer" name="answer" required="required" type="text" />
+                                        <input type="hidden" class="form-control form-control-md" id="securityAnswer">
+                                    </div>
+                                    <div class="alert" id="AnswerErrorMsg" style="display:none"></div>
+                                </p>
+                                <div id="sucessMsg" class="alert alert-info" role="alert" style="display:none;">
+                                    Your password was successfully reset..Please Check Your Email
+                                </div>
+                                <p class="signin button">
+									<input type="button" id="submit_button" value="Submit"  onclick="update_password()"/>
+								</p>
+                                <p class="change_link">
+									Already a member ?
+									<a href="#tologin" class="to_register"> Go and log in </a>
+								</p>
+                            </form>
+                        </div>
                     </div>
-                </form>
-              </section>
-            </div>
-          </div>
-          </div>
-      </div>
-      <div class="text-center">
+                </div>
+            </section>
+            <div class="text-center">
               <p class="footer">©  BAFRA- Bhutan Biosecurity and Food Safety System (BBFSS), 2021. All Rights Reserved.</p>
-      </div>
-    </div>
-  {% endblock %}
-  </body>
+            </div>
+        </div>
+    </body>
 </html>
 <script src="{% static 'styles/jquery/dist/jquery.min.js' %}"></script>
 <script>
- $(document).ready(function() {
-        $("#organizationDiv").hide();
-        $("#login_error").delay(3000).fadeOut('slow');
-    });
-
-function isNumberKey(evt)
-{
- var charCode = (evt.which) ? evt.which : event.keyCode
- if (charCode > 31 && (charCode < 48 || charCode > 57))
-    return false;
-
- return true;
-}
-
-function changeOnSelection(registrationType)
-{
-	if(registrationType == "I"){
-		$("#individualDiv").show();
-		$("#organizationDiv").hide();
-	}
-	else{
-		$("#organizationDiv").show();
-		$("#individualDiv").hide();
-	}
-}
-
-function register()
-{
-if($('#individual').prop('checked'))
-    {
-        var cid = $('#cid').val();
-        var name = $('#name').val();
-        var email = $('#email').val();
-        var contactnumber = $('#contactnumber').val();
-        var address = $('#address').val();
-        var cidCount = $('#cid').val().length;
-        var numbercount = $('#contactnumber').val().length;
-
-        if(cid == "")
-			{
-				$('#cidErrorMsg').html("Enter CID.");
-				$('#cidErrorMsg').show();
-				$('#cidErrorMsg').delay(2000).fadeOut('slow');
-			}
-			else if(cidCount < 11)
-			{
-				$('#cidErrorMsg').html("Cannot Be Less Than Eleven Digits.");
-				$('#cidErrorMsg').show();
-				$('#cidErrorMsg').delay(2000).fadeOut('slow');
-			}
-			else if(name == "")
-			{
-				$('#nameErrorMsg').html("Enter Name.");
-				$('#nameErrorMsg').show();
-				$('#nameErrorMsg').delay(2000).fadeOut('slow');
-			}
-			else if(email == "")
-			{
-				$('#emailErrorMsg').html("Enter Email.");
-				$('#emailErrorMsg').show();
-				$('#emailErrorMsg').delay(2000).fadeOut('slow');
-			}
-			else if(contactnumber == "")
-			{
-				$('#contactErrorMsg').html("Enter Contact Number.");
-				$('#contactErrorMsg').show();
-				$('#contactErrorMsg').delay(2000).fadeOut('slow');
-			}
-			else if(address == "")
-			{
-				$('#addressErrorMsg').html("Enter Address.");
-				$('#addressErrorMsg').show();
-				$('#addressErrorMsg').delay(2000).fadeOut('slow');
-			}
-			else
-			{
-                $.ajax({
-                    type : "POST",
-                    url : "{% url 'register' %}",
-                    data : $('#registerForm').serialize(),
-                    cache : false,
-                    dataType : "html",
-                    success : function(responseText) {
-                        $('#registerForm')[0].reset();
-                        $('#cid').prop('checked',true);
-                    }
-                });
-			}
-    }
-    else
-    {
-        var contactPerson = $('#contactPerson').val();
-        var id_email = $('#id_email').val();
-        var mobile_number = $('#mobile_number').val();
-        var org_agency = $('#org_agency').val();
-        var org_license = $('#org_license').val();
-        var dzongkhag = $('#dzongkhag').val();
-        var gewog = $('#org_license').val();
-        var village = $('#dzongkhag').val();
-        var org_address = $('#org_license').val();
-        var number_count = $('#contactnumber').val().length;
-
-            if(contactPerson == "")
-			{
-				$('#contactPersonErrorMsg').html("Enter CID.");
-				$('#contactPersonErrorMsg').show();
-				$('#contactPersonErrorMsg').delay(2000).fadeOut('slow');
-			}
-			else if(id_email == "")
-			{
-				$('#id_emailErrorMsg').html("Enter Name.");
-				$('#id_emailErrorMsg').show();
-				$('#id_emailErrorMsg').delay(2000).fadeOut('slow');
-			}
-			else if(mobile_number == "")
-			{
-				$('#mobile_numberErrorMsg').html("Enter Contact Number.");
-				$('#mobile_numberErrorMsg').show();
-				$('#mobile_numberErrorMsg').delay(2000).fadeOut('slow');
-			}
-			else if(org_agency == "")
-			{
-				$('#org_agencyErrorMsg').html("Enter Address.");
-				$('#org_agencyErrorMsg').show();
-				$('#org_agencyErrorMsg').delay(2000).fadeOut('slow');
-
-			}
-			else if(org_license == "")
-			{
-				$('#org_licenseErrorMsg').html("Enter Address.");
-				$('#org_licenseErrorMsg').show();
-				$('#org_licenseErrorMsg').delay(2000).fadeOut('slow');
-			}
-			else if(dzongkhag == "")
-			{
-				$('#dzongkhagErrorMsg').html("Enter Address.");
-				$('#dzongkhagErrorMsg').show();
-				$('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
-			}
-			else if(gewog == "")
-			{
-				$('#gewogErrorMsg').html("Enter Address.");
-				$('#gewogErrorMsg').show();
-				$('#gewogErrorMsg').delay(2000).fadeOut('slow');
-			}
-			else if(village == "")
-			{
-				$('#villageErrorMsg').html("Enter Address.");
-				$('#villageErrorMsg').show();
-				$('#villageErrorMsg').delay(2000).fadeOut('slow');
-			}
-			else if(org_address == "")
-			{
-				$('#org_addressErrorMsg').html("Enter Address.");
-				$('#org_addressErrorMsg').show();
-				$('#org_addressErrorMsg').delay(2000).fadeOut('slow');
-			}
-			else if(number_count < 8)
-			{
-				$('#mobile_numberErrorMsg').html("Cannot Be Less Than Eight.");
-				$('#mobile_numberErrorMsg').show();
-				$('#mobile_numberErrorMsg').delay(2000).fadeOut('slow');
-			}
-			else
-			{
-                $.ajax({
-                    type : "POST",
-                    url : "{% url 'register' %}",
-                    data : $('#registerForm').serialize(),
-                    cache : false,
-                    dataType : "html",
-                    success : function(responseText) {
-                        $('#registerForm')[0].reset();
-                        $('#cid').prop('checked',true);
-                    }
-                });
-			}
-    }
-}
-
+var spinner = $('#loader');
+spinner.hide();
 function saveDetails()
 {
-
     var new_password = $('#new_password').val();
     var confirm_password = $('#confirm_password').val();
     var pattern = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/;
@@ -505,4 +288,118 @@ function getRegistrationForm()
         }
     });
 }
+
+function update_password()
+    {
+
+        var uid = $('#email').val();
+        var answer = $('#answer').val();
+        var security = $('#security').val();
+        var answerForm =  $('#securityAnswer').val();
+
+        if(uid == "")
+        {
+            $('#emailErrorMsg').html("Email Is Required");
+            $('#emailErrorMsg').show();
+            $('#email').focus();
+            $('#emailErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(security == "")
+        {
+            $('#securityErrorMsg').html("Select Security Question");
+            $('#securityErrorMsg').show();
+            $('#security').focus();
+            $('#securityErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(answer == "")
+        {
+            $('#AnswerErrorMsg').html("Enter Your Security Questions Answer");
+            $('#AnswerErrorMsg').show();
+            $('#answer').focus();
+            $('#AnswerErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            var enteredAnswer = $('#answer').val();
+            if(answerForm.toLowerCase() == enteredAnswer.toLowerCase())
+            {
+                $('#AnswerErrorMsg').html("Please Wait..");
+                $('#AnswerErrorMsg').show();
+                $('#AnswerErrorMsg').delay(3000).fadeOut('slow');
+                $('#submit_button').hide();
+                $.ajax({
+                    type: 'POST',
+                    url : "{% url 'update_password' %}",
+                    data : $('#forgot_password_form').serialize(),
+                    success: function(data)
+                    {
+                        $('#sucessMsg').show();
+                        $('#sucessMsg').delay(2000).fadeOut('slow');
+                        $('#submit_button').show();
+                        setTimeout('location.reload()',3000);
+                    }
+                });
+            }
+            else
+            {
+                $('#AnswerErrorMsg').html("The answer you entered does not match your previous answer, please verify and try again else contact administrator");
+                $('#AnswerErrorMsg').show();
+                $('#AnswerErrorMsg').delay(2000).fadeOut('slow');
+            }
+        }
+    }
+
+    function validateemailId(emailId)
+    {
+        var pattern=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+        var no=emailId.match(pattern);
+
+        if(no==null)
+        {
+            $('#emailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
+            $('#email').val("");
+            $('#emailErrorMsg').show();
+            $('#emailErrorMsg').delay(2000).fadeOut('slow');
+        }else{
+         $('#emailErrorMsg').hide();
+        }
+
+    }
+
+    function getSecurityQuestion(uid)
+     {
+        if(uid == "")
+        {
+            $('#emailErrorMsg').html("Email Is Required.");
+            $('#emailErrorMsg').show();
+            $('#emailErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            $.ajax({
+                type : "GET",
+                url : "{% url 'load_security_question' %}",
+                data :{'email':uid},
+                success : function(data)
+                {
+                    $('#security').html(data);
+                }
+            });
+        }
+     }
+
+    function getAnswer(questionId)
+    {
+        var uid = $('#email').val();
+        $.ajax({
+            async: false,
+            type: 'POST',
+            url : "{% url 'get_security_answer' %}",
+            data :{'questionId':questionId, 'email':uid,  csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success: function(data)
+            {
+                $('#securityAnswer').val(data.answer);
+            }
+        });
+    }
 </script>

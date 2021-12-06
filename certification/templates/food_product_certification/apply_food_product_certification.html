@@ -235,7 +235,7 @@ form, input, select, textarea{
                                 </div>
                             </div>
                             <div class="form-group col-md-4">
-                                <label class="form-label">Value <font color="red">*</font></label>
+                                <label class="form-label">Value(in Nu.) <font color="red">*</font></label>
                                 <input type="text" name="P_Production_Value" class="form-control" id="P_Production_Value" onkeypress="return isNumberKey(event)" onchange="check_previous_production_value()">
                                 <div class="alert alert-danger" id="P_Production_ValueErrorMsg" style="display:none"></div>
                             </div>
@@ -282,7 +282,7 @@ form, input, select, textarea{
                                 <div class="alert alert-danger" id="C_Production_UnitErrorMsg" style="display:none"></div>
                             </div>
                             <div class="form-group col-md-4">
-                                <label class="form-label">Value <font color="red">*</font></label>
+                                <label class="form-label">Value(in Nu.) <font color="red">*</font></label>
                                 <input type="text" name="C_Production_Value" class="form-control" id="C_Production_Value" onkeypress="return isNumberKey(event)" onchange="check_current_production_value()">
                                 <div class="alert alert-danger" id="C_Production_ValueErrorMsg" style="display:none"></div>
                             </div>
@@ -424,12 +424,12 @@ form, input, select, textarea{
                                 <div class="form-group">
                                     <div class="form-check">
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Agree">
+                                            <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Agree" onclick="checkStandardsRadio()">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Agree</span>
                                         </label>&nbsp;
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Disagree">
+                                            <input type="radio" name="Terms_Bafra_Certification" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio()">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Disagree</span>
                                         </label>
@@ -443,12 +443,12 @@ form, input, select, textarea{
                                 <div class="form-group">
                                     <div class="form-check">
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Agree">
+                                            <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Agree" onclick="checkStandardsRadio()">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Agree</span>
                                         </label>&nbsp;
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Disagree">
+                                            <input type="radio" name="Terms_Change_Willingness" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio()">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Disagree</span>
                                         </label>
@@ -464,12 +464,12 @@ form, input, select, textarea{
                                 <div class="form-group">
                                     <div class="form-check">
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Abide" class="custom-control-input" value="Agree">
+                                            <input type="radio" name="Terms_Abide" class="custom-control-input" value="Agree" onclick="checkStandardsRadio()">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Agree</span>
                                         </label>&nbsp;
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Abide" class="custom-control-input" value="Disagree">
+                                            <input type="radio" name="Terms_Abide" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio()">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Disagree</span>
                                         </label>
@@ -483,12 +483,12 @@ form, input, select, textarea{
                                 <div class="form-group">
                                     <div class="form-check">
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Agree">
+                                            <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Agree" onclick="checkStandardsRadio()">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Agree</span>
                                         </label>&nbsp;
                                         <label class="custom-control custom-radio">
-                                            <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Disagree">
+                                            <input type="radio" name="Terms_Agreement" class="custom-control-input" value="Disagree" onclick="checkStandardsRadio()">
                                             <span class="custom-control-indicator"></span>
                                             <span class="custom-control-description">Disagree</span>
                                         </label>
@@ -498,7 +498,7 @@ form, input, select, textarea{
                         </div>
                     </div>
                     <div class="card-action">
-                        <button type="button" class="btn btn-primary" onclick="submit_fpc_certificate()">Submit</button>
+                        <button type="button" id="submit_fpc_button" class="btn btn-primary" onclick="submit_fpc_certificate()">Submit</button>
                     </div>
                 </div>
             </div>
@@ -1276,6 +1276,21 @@ function check_previous_production_value()
     }
 }
 
+function checkStandardsRadio()
+{
+    var Terms_Bafra_Certification = $('input[name="Terms_Bafra_Certification"]:checked').val();
+    var Terms_Change_Willingness = $('input[name="Terms_Change_Willingness"]:checked').val();
+    var Terms_Abide = $('input[name="Terms_Abide"]:checked').val();
+    var Terms_Agreement = $('input[name="Terms_Agreement"]:checked').val();
 
+    if(Terms_Bafra_Certification == "Agree" && Terms_Change_Willingness == "Agree" && Terms_Abide == "Agree" && Terms_Agreement == "Agree")
+    {
+        $('#submit_fpc_button').show();
+    }
+    else
+    {
+        $('#submit_fpc_button').hide();
+    }
+}
 </script>
 {% endblock %}

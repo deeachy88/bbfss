@@ -6,160 +6,224 @@
     <!-- Meta, title, CSS, favicons, etc. -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>BAFRA | Bhutan Biosecurity and Food Safety System</title>
-
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="{% static 'assets/bower_components/material-design-iconic-font/dist/css/material-design-iconic-font.min.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/bower_components/animate.css/animate.min.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/bower_components/jquery.scrollbar/jquery.scrollbar.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/bower_components/fullcalendar/dist/fullcalendar.min.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/bower_components/flatpickr/dist/flatpickr.min.css' %}" />
-    <!-- App styles -->
-    <link rel="stylesheet" href="{% static 'assets/fontawesome/css/all.css' %}">
+    <link href="{% static 'styles/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/demo.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/animate-custom.css' %}" />
+    <link href="{% static 'styles/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'assets/css/app.min.css' %}">
-    <!-- Custom Theme Style -->
   </head>
 <style>
-    hr {
+    .nav-pills .nav-link.active, .show>.nav-pills .nav-link {
+        color: #fff;
+        background-color: rgba(255,255,255,.08);
+        font-size: 14px;
+        font-weight: 800;
+        font-style: italic;
+        background: #888888;
+        border-radius: 6px;
+    }
+    #wrapper textarea, select {
+    width: 92%;
+    margin-top: -10px;
+    padding: 10px 5px 10px 32px;
+    border: 1px solid rgb(178, 178, 178);
+    -webkit-appearance: textfield;
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    -webkit-box-shadow: 0px 1px 4px 0px rgb(168 168 168 / 60%) inset;
+    -moz-box-shadow: 0px 1px 4px 0px rgba(168, 168, 168, 0.6) inset;
+    box-shadow: 0px 1px 4px 0px rgb(168 168 168 / 60%) inset;
+    -webkit-transition: all 0.2s linear;
+    -moz-transition: all 0.2s linear;
+    -o-transition: all 0.2s linear;
+    transition: all 0.2s linear;
+}
+
+.form-control {
+    display: block;
+    width: 95%;
+    height: calc(1.5em + 0.75rem + 2px);
+    padding: 0.1rem 0.95rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+#wrapper input[readonly] {
+    background-color: #918989;
+}
+.badge {
+    position: absolute;
+    right: -5px;
+    top: -13px;
+    font-size: 20px;
+    border: 0px solid #ddd;
+}
+hr {
     margin-top: 1rem;
     margin-bottom: 1rem;
     border: 0;
     border-top: 1px solid #33a661;
+    margin-right: 54px;
 }
-form, input, select, textarea{
-    color: black !important;
+.badge_one {
+    position: absolute;
+    right: 40px;
+    top: -13px;
+    font-size: 20px;
+    border: 0px solid #ddd;
+}
+.btn-info {
+    color: #fff;
+    background-color: #193033;
+    border-color: #17a2b8;
+}
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: black;
+  opacity: 1; /* Firefox */
 }
 </style>
-  <body>
-   {% block content %}
-   <header style="background-color: white;">
-            <img src="{% static 'assets/img/banner.png' %}" alt="placeholder 960" class="img-responsive" />
-  </header>
-  <hr>
-    <input type="hidden" id="applicationNo" name="applicationNo">
-    <input type="hidden" id="email_id" name="email_id">
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title">Complaint Form</h4>
-                <div class="actions">
-                    <a href="{% url 'index' %}" class="btn btn-info btn-border btn-round btn-sm mr-2 float-right">
-                        <span class="btn-label">
-                            <i class="fa fa-arrow-left"></i>
-                        </span>
-                        Back To Login
-                    </a>
-                </div>
-                <hr>
-                <form method="post" id="complaintForm">
-                     {% csrf_token %}
-                    <div id="complaint">
-                        <div class="row justify-content-left">
-                            <ul class="nav nav-pills nav-secondary" id="pills-tab" role="tablist">
-                                <li class="nav-item">
-                                    <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadDetails()">Complaint Form</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" id="pills-complaint-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="tab-content mt-2 mb-3" id="pills-tabContent">
-                            <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-                                <div id="applicant_details">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label class="form-label">Applicant CID <font color="red">*</font></label>
-                                                <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" class="form-control" id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCitizenDetails(this.value);">
+<body>
+        <div class="container">
+            <header>
+                <img src="{% static 'assets/img/banner.png' %}" class="img-fluid mx-auto d-block" alt="Responsive image" style="background:center">
+            </header>
+            <hr>
+            <section>
+                <div id="container_demo" >
+                    <div id="wrapper">
+                        <div id="register" class="animate form">
+                            <h1> Complaint Form </h1>
+                            <a href="{% url 'index' %}" class="btn btn-default btn-sm float-right" style="margin-top: -68px;">
+                                <span class="btn-label">
+                                    <i class="fa fa-arrow-left"></i>
+                                </span>
+                                Back To Login
+                            </a>
+
+                            <div class="col-md-12" style="margin-top: -30px;">
+                                <form method="post" id="complaintForm">
+                                {% csrf_token %}
+                                    <input type="hidden" id="applicationNo" name="applicationNo">
+                                    <input type="hidden" id="email_id" name="email_id">
+                                <div class="row justify-content-left" style="margin-top: 4px;">
+                                    <ul class="nav nav-pills nav-secondary" id="pills-tab" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="loadDetails()">Complaint Form</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="pills-complaint-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">File Attachment</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <br>
+                                <div class="tab-content mt-2 mb-3" id="pills-tabContent">
+                                    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <input type="text" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  id="cid" name="cid" maxlength="11" onkeypress="return isNumberKey(event)" onchange="getCitizenDetails(this.value);" placeholder="CID">
+                                                </div>
+                                                <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                                                <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
                                             </div>
-                                            <div class="alert alert-danger" id="cidErrorMsg" style="display:none"></div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label  class="form-label">Name <font color="red">*</font></label>
-                                                <input type="text" class="form-control" id="complainantName" name="complainantName" readonly="readonly">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <input type="text"  name="complainantName" id="complainantName" placeholder="Name" readonly="readonly" onfocus="this.blur">
+                                                </div>
+                                                <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                                                <div class="alert alert-danger" id="complainantNameErrorMsg" style="display:none"></div>
                                             </div>
-                                            <div class="alert alert-danger" id="nameErrorMsg" style="display:none"></div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label class="form-label">Dzongkhag &nbsp;<font color='red'>*</font></label>
-                                                <input type="text" class="form-control" name="dzongkhag"  id="dzongkhag" readonly="readonly">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <input type="text"  name="dzongkhag"  id="dzongkhag" placeholder="Dzongkhag" readonly="readonly">
+                                                </div>
+                                                <span class="badge"><font color='red'><font color='red'>*</font></font></span>
                                             </div>
-                                            <div class="alert alert-danger" id="dzongkhagErrorMsg" style="display:none"></div>
                                         </div>
+                                        <br>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <input type="text"  name="gewog"  id="gewog" placeholder="Gewog" readonly="readonly">
+                                                </div>
+                                                <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <input type="text"  name="village"  id="village" placeholder="Village" readonly="readonly">
+                                                </div>
+                                                <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <input type="number"  id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onchange="checkContact(this.value)" placeholder="Contact No">
+                                                </div>
+                                                <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                                                <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <input class="youmail" name="email"  id="email" required="required" type="email" placeholder="Email"/>
+                                                </div>
+                                                <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                                                <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <textarea placeholder="Address" id="address" name="address"></textarea>
+                                                </div>
+                                                <span class="badge"><font color='red'><font color='red'>*</font></font></span>
+                                                <div class="alert alert-danger" id="addressErrorMsg" style="display:none"></div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <textarea placeholder="Description of Complaint" id="complainDescription" name="complainDescription"></textarea>
+                                                </div>
+                                                <span class="badge badge_one"><font color='red'><font color='red'>*</font></font></span>
+                                                <div class="alert alert-danger" id="complainDescriptionErrorMsg" style="display:none"></div>
+                                            </div>
+                                        </div>
+                                        <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
+                                            Save Successful
+                                        </div>
+                                        <p class="signin button text-center" style="margin-bottom: -29px;">
+                                            <input type="button" class="signin button" value="Save & Next" onclick="Save_form()">
+                                        </p>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label class="form-label">Gewog &nbsp;<font color='red'>*</font></label>
-                                                <input type="text" class="form-control" name="gewog" id="gewog" readonly="readonly">
-                                            </div>
-                                            <div class="alert alert-danger" id="gewogErrorMsg" style="display:none"></div>
+                                    <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="pills-complaint-file">
+                                        <div id="fileAttach">
+                                            {% include 'complaint_handling/complaint_file_attachment_page.html' %}
                                         </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label class="form-label">Village &nbsp;<font color='red'>*</font></label>
-                                                <input type="text" class="form-control" name="village" id="village" readonly="readonly">
-                                            </div>
-                                            <div class="alert alert-danger" id="villageErrorMsg" style="display:none"></div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label class="form-label">Contact Number <font color="red">*</font></label>
-                                                <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
-                                            </div>
-                                            <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label class="form-label">Email <font color="red">*</font></label>
-                                                <input type="email" class="form-control" id="email" name="email" onchange="validateemailId(this.value)">
-                                            </div>
-                                            <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label class="form-label">Address <font color="red">*</font></label>
-                                                <textarea rows="3" class="form-control" id="address" name="address"></textarea>
-                                            </div>
-                                            <div class="alert alert-danger" id="addressErrorMsg" style="display:none"></div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label class="form-label">Description of Complaint <font color="red">*</font></label>
-                                                <textarea class="form-control" id="complainDescription" name="complainDescription"></textarea>
-                                            </div>
-                                            <div class="alert alert-danger" id="complainDescriptionErrorMsg" style="display:none"></div>
-                                        </div>
-                                    </div>
-                                    <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
-                                        Save SuccessFul
-                                    </div>
-                                    <div class="card-action">
-                                        <button type="button" class="btn btn-primary" value="Submit" onclick="Save_form(this.form)">Save & Next</button>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="pills-complaint-file">
-                                <div id="fileAttach">
-                                    {% include 'complaint_handling/complaint_file_attachment_page.html' %}
-                                </div>
+                                </form>
                             </div>
                         </div>
                     </div>
-                </form>
-            </div>
+                </div>
+            </section>
         </div>
         <form method="post" id="attachment_form" enctype="multipart/form-data">
             {% csrf_token %}
-            <input type="hidden" name="appNo" id="appNo" value="{{ title }}">
             <div class="modal fade" id="attachmentModal" tabindex="-1">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
@@ -192,23 +256,18 @@ form, input, select, textarea{
                 </div>
             </div>
         </form>
-  {% endblock %}
-  </body>
-</html>
+</body>
 <script src="{% static 'assets/bower_components/jquery/dist/jquery.min.js' %}"></script>
 <script src="{% static 'assets/bower_components/popper.js/dist/umd/popper.min.js' %}"></script>
 <script src="{% static 'assets/bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'assets/js/sweetalert2.all.min.js' %}"></script>
 <script src="{% static 'assets/js/app.min.js' %}"></script>
 <script>
-function Save_form(form)
+function Save_form()
     {
         var appNo = $('#applicationNo').val();
         var cid = $('#cid').val();
-        var name = $('#complainantName').val();
-        var dzongkhag = $('#dzongkhag').val();
-        var gewog = $('#gewog').val();
-        var village = $('#village').val();
+        var complainantName = $('#complainantName').val();
         var contactNumber = $('#contactNumber').val();
         var email = $('#email').val();
         var address = $('#address').val();
@@ -222,29 +281,11 @@ function Save_form(form)
             $('#cidErrorMsg').show();
             $('#cidErrorMsg').delay(2000).fadeOut('slow');
         }
-        else if(name == "")
+        else if(complainantName == "")
         {
-            $('#nameErrorMsg').html("Enter Name .");
-            $('#nameErrorMsg').show();
-            $('#nameErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(dzongkhag == "")
-        {
-            $('#dzongkhagErrorMsg').html("Select Dzongkhag.");
-            $('#dzongkhagErrorMsg').show();
-            $('#dzongkhagErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(gewog == "")
-        {
-            $('#gewogErrorMsg').html("Select Gewog.");
-            $('#gewogErrorMsg').show();
-            $('#gewogErrorMsg').delay(2000).fadeOut('slow');
-        }
-        else if(village == "")
-        {
-            $('#villageErrorMsg').html("Select Village.");
-            $('#villageErrorMsg').show();
-            $('#villageErrorMsg').delay(2000).fadeOut('slow');
+            $('#complainantNameErrorMsg').html("Enter Name .");
+            $('#complainantNameErrorMsg').show();
+            $('#complainantNameErrorMsg').delay(2000).fadeOut('slow');
         }
         else if(contactNumber == "")
         {
@@ -274,13 +315,13 @@ function Save_form(form)
         {
             $('#cidErrorMsg').html("CID number Cannot Be Less Than Eleven Digits.");
             $('#cidErrorMsg').show();
-            setTimeout('hideStatus("cidErrorMsg")',2000);
+            $('#cidErrorMsg').delay(2000).fadeOut('slow');
         }
         else if(number_count < 8)
         {
             $('#contactNumberErrorMsg').html("Contact Number Cannot Be Less Than Eight.");
             $('#contactNumberErrorMsg').show();
-            setTimeout('hideStatus("contactNumberErrorMsg")',2000);
+            $('#contactNumberErrorMsg').delay(2000).fadeOut('slow');
         }
         else if(appNo == "")
         {
@@ -292,9 +333,7 @@ function Save_form(form)
                     $('#applicationNo').val(data.applNo);
                     $('#email_id').val(data.email);
                     $('#submitMsg').show();
-                    setTimeout(function() {
-                        $("#submitMsg").hide('blind', {}, 500)
-                    }, 1000);
+                    $('#submitMsg').delay(1000).fadeOut('slow');
                     setTimeout(function() {
                          $('#pills-complaint-file').tab('show');
                     }, 2000);
@@ -367,10 +406,11 @@ function save_attachment()
         ({
             beforeSend: function(xhr, settings)
             {
-                xhr.setRequestHeader("X-CSRFToken", token_value);
+            xhr.setRequestHeader("X-CSRFToken", token_value);
             }
         });
-            $.ajax({
+        $.ajax
+        ({
             type : "POST",
             url : "{% url 'save_complaint_file' %}",
             data : fd,
@@ -382,7 +422,7 @@ function save_attachment()
                 if (data.form_is_valid)
                 {
                     var appNo = $('#applicationNo').val();
-                    var file_url = data.file_url
+                    var file_url = data.file_url;
                     var email = $('#email_id').val();
                     $.ajax
                     ({
@@ -391,12 +431,14 @@ function save_attachment()
                         data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url, 'email':email},
                         success : function(responseText)
                         {
-                            $('#file-attachment').html(responseText);
                             $('#attachmentModal').modal('hide');
+                            $('#fileAttach').html(responseText);
                             $('.modal-backdrop').remove();
+                            $('#attachment_form')[0].reset();
                         }
                     });
-                }else
+                }
+                else
                 {
                     $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
                     $('#fileErrorMsg').show();
@@ -428,7 +470,7 @@ function validateemailId(emailId)
 
     if(no==null)
     {
-        $('#emailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid");
+        $('#emailErrorMsg').html("<span class='alert alert-danger'>The email Id is Not valid</span>");
         $('#email').val("");
         $('#emailErrorMsg').show();
         $('#emailErrorMsg').delay(2000).fadeOut('slow');
@@ -531,3 +573,4 @@ function show_attachmentModal()
     $('#attachmentModal').modal('show');
 }
 </script>
+</html>

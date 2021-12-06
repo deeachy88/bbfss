@@ -29,7 +29,20 @@
         </table>
     </div>
 </div>
+<input type="hidden" value="{{file_attach_count}}" id="file_count">
 <script>
+$(function(){
+    var file_count = $('#file_count').val();
+    if(file_count > 0)
+    {
+        $('#client_share').show();
+    }
+    else
+    {
+        $('#client_share').hide();
+    }
+});
+
 function save_details()
 {
 	$.ajax({
@@ -50,11 +63,11 @@ function DeleteAttachment(id)
     var appNo = $('#appNo').val();
     $.ajax({
         type : "GET",
-        url : "{% url 'delete_agro_file' %}",
+        url : "{% url 'delete_oc_ap' %}",
         data :{'appNo':appNo , 'file_id': id},
         success : function(responseText)
         {
-            $('#fileAttach').html(responseText);
+            $('#oc-file-attachment').html(responseText);
         }
     });
 }

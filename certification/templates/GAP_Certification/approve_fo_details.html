@@ -488,23 +488,6 @@ form, input, select, textarea{
                            {% endfor %}
                         </tbody>
                     </table>
-                    <br>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Audit Plan Date</label>
-                                 {% for application_details in application_details %}
-                                    <input type="text" class="form-control" value="{{application_details.Audit_Plan_Date}}" disabled>
-                                {% endfor %}
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">Nature Of Audit Plan</label>
-                                <input type="text" class="form-control" value="{{application_details.Audit_Plan_Type}}" disabled>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -1017,38 +1000,43 @@ form, input, select, textarea{
                 </a>
             </div>
             <div id="collapseFive" class="active" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="form-label">Validity of Certificate(No Of Days) <font color="red">*</font></label>
-                            <input type="text" class="form-control" id="validity" name="validity" onkeypress="return isNumberKey(event)" onchange="check_validity(this.value)">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Validity of Certificate(No of Days) <font color="red">*</font></label>
+                                <input type="text" class="form-control" id="validity" name="validity" onkeypress="return isNumberKey(event)" onchange="check_validity(this.value)">
+                            </div>
+                            <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>
                         </div>
-                        <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="form-label">Certificate Type <font color="red">*</font></label>
-                            <div class="justify-content-center">
-                                <label class="custom-control custom-radio"  style="margin-top: 14px;">
-                                    <input type="radio" name="Certificate_Type" class="custom-control-input" value="Accredited">
-                                    <span class="custom-control-indicator"></span>
-                                    <span class="custom-control-description">Accredited</span>
-                                </label>
-                                <label class="custom-control custom-radio">
-                                    <input type="radio" name="Certificate_Type" class="custom-control-input" value="Non-Accredited">
-                                    <span class="custom-control-indicator"></span>
-                                    <span class="custom-control-description">Non-Accredited</span>
-                                </label>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Certificate Type <font color="red">*</font></label>
+                                <div class="justify-content-center">
+                                    <label class="custom-control custom-radio"  style="margin-top: 14px;">
+                                        <input type="radio" name="Certificate_Type" class="custom-control-input" value="Accredited">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Accredited</span>
+                                    </label>
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" name="Certificate_Type" class="custom-control-input" value="Non-Accredited">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description">Non-Accredited</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="alert alert-danger" id="Certificate_TypeErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Remarks</label>
+                                <textarea class="form-control" id="remarks" name="remarks" rows="2"></textarea>
                             </div>
                         </div>
-                        <div class="alert alert-danger" id="Certificate_TypeErrorMsg" style="display:none"></div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="form-label">Remarks</label>
-                            <textarea class="form-control" id="remarks" name="remarks" rows="2"></textarea>
-                        </div>
-                    </div>
+                </div>
+                <div id="pageloader" style="display:none">
+                   <img src="{% static 'assets/img/ring-loader.gif' %}" style="height:50px; width:50px;margin-left: 400px;" alt="processing..." />
                 </div>
                 <div id="submitMsg" class="alert alert-info" style="display:none;"></div>
                 <div class="card-action">
@@ -1093,12 +1081,14 @@ function approve_gap_application(application_id)
     }
     else
     {
-       $.ajax({
+        $("#pageloader").show();
+        $.ajax({
             type : "GET",
             url : "{% url 'approve_gap_application' %}",
             data :{'application_no':application_id , 'remarks':remarks ,'validity':validity, 'Certificate_Type': Certificate_Type},
             success : function(data) {
-               $('#submitMsg').html("Application Approved.");
+                $("#pageloader").hide();
+                $('#submitMsg').html("Application Approved.");
                 $('#submitMsg').show();
                 setTimeout(function()
                 {

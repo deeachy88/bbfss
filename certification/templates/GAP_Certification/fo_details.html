@@ -674,6 +674,7 @@ form, input, select, textarea{
                         {% endfor %}
                         <br>
                         <hr>
+                    <div id="submitMsg" class="alert alert-info"  style="display:none;"></div>
                     <div class="card-action">
                         {% for application_details in application_details %}
                          {% if application_details.Audit_Team_Acceptance == 'A' %}
@@ -827,8 +828,15 @@ function send_for_acceptance(application_id)
             data :{'application_id':application_id,'audit_team_leader':audit_team_leader, 'remarks':remarks, 'Audit_Date':Audit_Date,
             'audit_type':audit_type},
             success : function(data) {
-                $('#addModal').modal('hide');
-                location.reload();
+                $('#submitMsg').html("Application Sent For Acceptance To Client.");
+                $('#submitMsg').show();
+                $('#submitMsg').delay(2000).fadeOut('slow');
+                setTimeout(function() {
+                    $('#addModal').modal('hide');
+                }, 3000);
+                setTimeout(function() {
+                   location.reload();
+                }, 3000);
             }
         });
     }
@@ -843,8 +851,15 @@ function forward_application(application_id)
         url : "{% url 'gap_application_team_leader' %}",
         data :{'application_id':application_id, 'audit_team_leader':leader, 'remarks':remarks},
         success : function(data) {
-            $('#import_detailsModal').modal('hide');
-            location.reload();
+            $('#submitMsg').html("Application Forwarded.");
+            $('#submitMsg').show();
+            $('#submitMsg').delay(2000).fadeOut('slow');
+            setTimeout(function() {
+                $('#import_detailsModal').modal('hide');
+            }, 3000);
+            setTimeout(function() {
+               location.reload();
+            }, 3000);
         }
     });
 }

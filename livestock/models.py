@@ -347,7 +347,7 @@ class t_livestock_export_certificate_t1(models.Model):
     Validity = models.DateField(blank=True, null=True)
     Applicant_Id = models.CharField(max_length=100, null=True, default=None)
     Passport_No = models.CharField(max_length=100, blank=True, null=True, default=None)
-
+    Place_Of_Inspection = models.IntegerField(blank=True, null=True)
 
 class t_livestock_export_certificate_t2(models.Model):
     Record_Id = models.AutoField(primary_key=True)

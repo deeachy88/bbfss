@@ -1002,7 +1002,7 @@ form, input, select, textarea{
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="form-label">Validity of Certificate(No Of Days) <font color="red">*</font></label>
+                                <label class="form-label">Validity of Certificate(No of Days) <font color="red">*</font></label>
                                 <input type="text" class="form-control" id="validity" name="validity" onkeypress="return isNumberKey(event)" onchange="check_validity(this.value)">
                             </div>
                             <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>
@@ -1031,6 +1031,9 @@ form, input, select, textarea{
                                 <textarea class="form-control" id="remarks" name="remarks" rows="2"></textarea>
                             </div>
                         </div>
+                    </div>
+                    <div id="pageloader" style="display:none">
+                       <img src="{% static 'assets/img/ring-loader.gif' %}" style="height:50px; width:50px;margin-left: 400px;" alt="processing..." />
                     </div>
                     <div id="submitMsg" class="alert alert-info" style="display:none;"></div>
                     <div class="card-action">
@@ -1079,11 +1082,13 @@ function approve_oc_application(application_id)
     }
     else
     {
+        $("#pageloader").show();
         $.ajax({
             type : "GET",
             url : "{% url 'approve_oc_application' %}",
             data :{'application_no':application_id , 'remarks':remarks ,'validity':validity},
             success : function(data) {
+                $("#pageloader").hide();
                 $('#submitMsg').html("Application Approved.");
                 $('#submitMsg').show();
                 setTimeout(function()

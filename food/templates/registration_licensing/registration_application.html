@@ -160,11 +160,11 @@ form, input, select, textarea{
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Product Category <font color="red">*</font></label>
+                                    <label class="form-label">Product Category(proposed/being manufactured) <font color="red">*</font></label>
                                     <select class="form-control" name="product_category"  id="product_category">
-                                        <option value="">--SELECT--</option>
-                                        <option value="Fresh land">Proposed</option>
-                                        <option value="Being Manufactured">Being Manufactured</option>
+                                        {% for food_product_category in food_product_category %}
+                                            <option value="{{ food_product_category.Food_Product_Category_Name }}">{{ food_product_category.Food_Product_Category_Name }}</option>
+                                        {% endfor %}
                                     </select>
                                     <div class="alert alert-danger" id="product_categoryErrorMsg" style="display:none"></div>
                                 </div>

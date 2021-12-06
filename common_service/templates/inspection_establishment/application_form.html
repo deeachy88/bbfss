@@ -83,7 +83,7 @@ form, input, select, textarea{
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="form-label">Food Safety License No. <font color="red">*</font></label>
+                                <label class="form-label">Food Safety License No.</label>
                                 <input type="text" class="form-control" id="License_No" name="License_No">
                             </div>
                             <div class="alert alert-danger" id="License_NoErrorMsg" style="display:none"></div>
@@ -237,7 +237,7 @@ form, input, select, textarea{
                                             <option value="">-SELECT-</option>
                                             <option value="Critical">Critical</option>
                                             <option value="Major">Major</option>
-                                            <option value="NCs observed">NCs observed</option>
+                                            <option value="Minor">Minor</option>
                                         </select>
                                         <div class="alert alert-danger" id="ObservationErrorMsg" style="display:none"></div>
                                     </div>
@@ -252,7 +252,7 @@ form, input, select, textarea{
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="form-label">Date Line for Action <font color="red">*</font></label>
+                                            <label class="form-label">Deadline for Action <font color="red">*</font></label>
                                              <input type="text" name="Date_Line_Correction" id="Date_Line_Correction" class="form-control date-picker flatpickr-input active">
                                         </div>
                                         <div class="alert alert-danger" id="Date_Line_CorrectionErrorMsg" style="display:none"></div>
@@ -372,7 +372,7 @@ form, input, select, textarea{
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label class="form-label">Detaintion and destruction No</label>
+                                        <label class="form-label">Detention and destruction No</label>
                                         <input type="number" class="form-control" name="Detaintion_Destruction_No" id="Detaintion_Destruction_No">
                                         <div class="alert alert-danger" id="Detaintion_Destruction_NoErrorMsg" style="display:none"></div>
                                     </div>
@@ -541,7 +541,6 @@ function save_inspection_details()
     var Inspection_Type = $('#Inspection_Type').val();
     var inspection_report_date = $('#inspection_report_date').val();
     var FBO_Name = $('#FBO_Name').val();
-    var License_No = $('#License_No').val();
     var Address = $('#Address').val();
     var dzongkhag = $('#dzongkhag').val();
     var gewog = $('#gewog').val();
@@ -570,12 +569,6 @@ function save_inspection_details()
         $('#FBO_NameErrorMsg').html("Enter Name Of FBO.");
         $('#FBO_NameErrorMsg').show();
         $('#FBO_NameErrorMsg').delay(2000).fadeOut('slow');
-    }
-    else if(License_No == "")
-    {
-        $('#License_NoErrorMsg').html("Enter License No.");
-        $('#License_NoErrorMsg').show();
-        $('#License_NoErrorMsg').delay(2000).fadeOut('slow');
     }
     else if(Address == "")
     {

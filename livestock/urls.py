@@ -71,8 +71,6 @@ urlpatterns = [
     path('delete_factory_team_details', views.delete_factory_team_details,
          name='delete_factory_team_details'),
 
-
-
     # import permit for live animal and fish
     path('import_permit', views.import_permit, name='import_permit'),
     path('save_import_la_fish', views.save_import_la_fish, name='save_import_la_fish'),
@@ -111,6 +109,7 @@ urlpatterns = [
     path('export_certificate_application', views.export_certificate_application, name='export_certificate_application'),
     path('save_livestock_export', views.save_livestock_export, name="save_livestock_export"),
     path('save_liv_export_details', views.save_liv_export_details, name='save_liv_export_details'),
+    path('save_animal_liv_export_details', views.save_animal_liv_export_details, name='save_animal_liv_export_details'),
     path('add_liv_export_file', views.add_liv_export_file, name='add_liv_export_file'),
     path('add_ec_file_name', views.add_ec_file_name, name='add_ec_file_name'),
     path('submit_ec_details', views.submit_ec_details, name='submit_ec_details'),
@@ -123,7 +122,6 @@ urlpatterns = [
     path('load_lp_import_details', views.load_lp_import_details, name='load_lp_import_details'),
     path('load_lp_import_attachment', views.load_lp_import_attachment, name='load_lp_import_attachment'),
     path('load_lec_species', views.load_lec_species, name='load_lec_species'),
-
 
     # movement permit for animal, animal products and animal feed apply_movement_permit
     path('movement_permit_application', views.movement_permit_application, name='movement_permit_application'),
@@ -141,7 +139,6 @@ urlpatterns = [
     path('liv_mov_attachment', views.liv_mov_attachment, name='liv_mov_attachment'),
     path('update_movement_permit_application', views.update_movement_permit_application,
          name='update_movement_permit_application'),
-
 
     # Ante Mortem And Post Mortem
     path('application_form', views.application_form, name='application_form'),
