@@ -101,5 +101,9 @@ urlpatterns = [
     path('check_already_assigned_officiating', views.check_already_assigned_officiating,
          name='check_already_assigned_officiating'),
     path('manage_user', views.manage_user, name='manage_user'),
-    path('check_cid_exists', views.check_cid_exists, name='check_cid_exists')
+    path('check_cid_exists', views.check_cid_exists, name='check_cid_exists'),
+    path('food_product_category_master', views.food_product_category_master, name='food_product_category_master'),
+    path('add_food_product_category', views.add_food_product_category, name='add_food_product_category'),
+    path('update_food_product_category', views.update_food_product_category, name='update_food_product_category'),
+    path('delete_food_product_category', views.delete_food_product_category, name='delete_food_product_category')
 ]

@@ -6118,8 +6118,9 @@ def view_certificate_details(request):
         elif service_code == 'CFC':  # Conditional Food Safety Clearance
             application_details = t_food_business_registration_licensing_t1.objects.filter(
                 Conditional_Clearance_No__isnull=False)
+            payment_details = t_payment_details.objects.all()
             return render(request, 'food_certificates/safety_clearance_food_list.html',
-                          {'application_details': application_details})
+                          {'application_details': application_details, 'payment_details':payment_details})
 
         elif service_code == 'FSL':  # Food Safety License
             application_details = t_food_business_registration_licensing_t1.objects.filter(FB_License_No__isnull=False)
@@ -6286,8 +6287,9 @@ def view_certificate_details(request):
         elif service_code == 'CFC':  # Conditional Food Safety Clearance
             application_details = t_food_business_registration_licensing_t1.objects.filter(Applicant_Id=login_id,
                                                                                            Conditional_Clearance_No__isnull=False)
+            payment_details = t_payment_details.objects.all()
             return render(request, 'food_certificates/safety_clearance_food_list.html',
-                          {'application_details': application_details})
+                          {'application_details': application_details, 'payment_details': payment_details})
 
         elif service_code == 'FSL':  # Food Safety License
             application_details = t_food_business_registration_licensing_t1.objects.filter(Applicant_Id=login_id,

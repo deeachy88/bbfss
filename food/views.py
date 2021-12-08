@@ -391,13 +391,13 @@ def fbr_fo_reject(request):
     return redirect(focal_officer_application)
 
 
-def send_fbr_approve_email(new_import_permit, Email, validity_date):
+def send_fbr_approve_email(new_import_permit, Email):
     subject = 'APPLICATION APPROVED'
     message = "Dear Sir," \
               "" \
               "Your Application for Food Business Registration Has Been Approved. Your " \
-              "Registration No is:" + new_import_permit + " And is Valid Till " + str(validity_date) + \
-              " Please Make Payment Before Validity Expires. Visit The Nearest Bafra Office For Payment."
+              "Registration No is:" + new_import_permit + \
+              " Please Make Payment To Download The Certificate. Visit The Nearest Bafra Office For Payment."
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
     send_mail(subject, message, email_from, recipient_list)
@@ -497,6 +497,7 @@ def approve_feasibility_inspection(request):
     for email_id in details:
         emailId = email_id.Email
         send_feasibility_approve_email(Clearance_No, emailId)
+    update_payment(application_id, Clearance_No, 'FBR', None)
     return redirect(inspector_application)
 
 
@@ -525,7 +526,8 @@ def send_feasibility_approve_email(Clearance_No, Email):
     subject = 'APPLICATION APPROVED'
     message = "Dear Sir, Your Application for Feasibility Inspection of " \
               "Food Business Registration And Licensing Has Been Approved. Your " \
-              "Clearance No is :" + Clearance_No + "."
+              "Clearance No is :" + Clearance_No + "Please Make Payment To Download The Clearance." \
+                                                   " Visit The Nearest Bafra Office For Payment."
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
     send_mail(subject, message, email_from, recipient_list)
@@ -655,22 +657,22 @@ def approve_factory_inspection(request):
 def fbr_submit(request):
     application_id = request.GET.get('application_id')
     remarks = request.GET.get('remarks')
-    validity = request.GET.get('validity')
+
     clearance = factory_clearance_no(request, application_id)
     print(clearance)
     details = t_food_business_registration_licensing_t1.objects.filter(Application_No=application_id)
     details.update(FB_License_No=clearance)
     details.update(Approve_Date=date.today())
-    d = timedelta(days=int(validity))
-    validity_date = date.today() + d
-    details.update(Validity=validity_date)
+    # d = timedelta(days=int(validity))
+    # validity_date = date.today() + d
+    # details.update(Validity=validity_date)
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='A')
-    update_payment(application_id, clearance, 'FBR', validity_date)
+    update_payment(application_id, clearance, 'FBR', None)
     for email_id in details:
         emailId = email_id.Email
-        send_fbr_approve_email(clearance, emailId, validity_date)
+        send_fbr_approve_email(clearance, emailId)
     return redirect(focal_officer_application)
 
 
@@ -2460,9 +2462,10 @@ def factory_inspection_list(request):
     consignment_call_count = t_workflow_details.objects.filter(Assigned_To=Login_Id,
                                                                Action_Date__isnull=False, Application_Status='P') \
         .count()
+    payment_details = t_payment_details.objects.all()
     return render(request, 'factory_inspection_list.html',
                   {'service_details': service_details, 'application_details': new_import_app, 'count': message_count,
-                   'count_call': inspection_call_count,
+                   'count_call': inspection_call_count, 'payment_details': payment_details,
                    'consignment_call_count': consignment_call_count})
 
 

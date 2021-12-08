@@ -163,7 +163,7 @@ def co_complaint_details(request):
     village = t_village_master.objects.all()
     details = t_common_complaint_t1.objects.filter(Application_No=Application_No)
     file = t_file_attachment.objects.filter(Application_No=Application_No)
-    inspector_list = t_user_master.objects.filter(Login_Type='I')
+    inspector_list = t_user_master.objects.filter(Role_Id__in=['2', '3', '4', '5', '6', ])
 
     return render(request, 'complaint_handling/complaint_officer_complaint_forward.html', {'complaint_details': details,
                                                                                            'inspector_list': inspector_list,

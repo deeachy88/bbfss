@@ -24,7 +24,7 @@ from administrator.models import t_user_master, t_security_question_master, t_ro
     t_plant_pesticide_master, t_plant_ornamental_master, t_plant_crop_species_master, t_plant_chemical_master, \
     t_plant_crop_variety_master, t_plant_crop_master, t_service_master, t_division_master, \
     t_plant_crop_category_master, t_livestock_species_master, t_livestock_category_master, \
-    t_livestock_species_breed_master, t_livestock_product_master, t_unit_master
+    t_livestock_species_breed_master, t_livestock_product_master, t_unit_master, t_food_product_category_master
 
 from bbfss import settings
 from plant.models import t_payment_details, t_workflow_details
@@ -1862,3 +1862,34 @@ def check_cid_exists(request):
     print(response)
     data['response'] = response.json()
     return JsonResponse(data)
+
+
+def add_food_product_category(request):
+    food_product_category_name = request.GET.get('food_product_category_name')
+    t_food_product_category_master.objects.create(Food_Product_Category_Name=food_product_category_name)
+    food_product_category_list = t_food_product_category_master.objects.all()
+    return render('food_product_category_master.html', {'food_product_category_list': food_product_category_list})
+
+
+def update_food_product_category(request):
+    food_product_category_id = request.GET.get('food_product_category_id')
+    edit_food_product_category_name = request.GET.get('edit_Food_Product_Category_Name')
+    food_product_category_list = t_food_product_category_master.objects.filter(
+        Food_Product_Category_Id=food_product_category_id)
+    food_product_category_list.update(Food_Product_Category_Name=edit_food_product_category_name)
+    food_product_category_list = t_food_product_category_master.objects.all()
+    return render('food_product_category_master.html', {'food_product_category_list': food_product_category_list})
+
+
+def delete_food_product_category(request):
+    food_product_category_id = request.GET.get('food_product_category_id')
+    food_product_category_list = t_food_product_category_master.objects.filter(
+        Food_Product_Category_Id=food_product_category_id)
+    food_product_category_list.delete()
+    food_product_category_list = t_food_product_category_master.objects.all()
+    return render('food_product_category_master.html', {'food_product_category_list': food_product_category_list})
+
+
+def food_product_category_master(request):
+    food_product_category_list = t_food_product_category_master.objects.all()
+    return render('food_product_category_master.html', {'food_product_category_list': food_product_category_list})

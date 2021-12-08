@@ -67,7 +67,6 @@
                                         <th scope="col">License No</th>
                                         <th scope="col">Contact No</th>
                                         <th scope="col">Purpose</th>
-                                        <th scope="col">Final Destination</th>
                                         <th scope="col">Import Permit Number</th>
                                         <th scope="col">Approve Date</th>
                                         <th scope="col">Validity</th>
@@ -77,9 +76,9 @@
                                     {% for permit_details in permit_details %}
                                         <tr>
                                             <td>{{ forloop.counter }}</td>
-                                            {% if permit_details.Application_Type == 'P' %}
+                                            {% if permit_details.Import_Type == 'P' %}
                                                 <td>Plant & Plant Products</td>
-                                            {% elif permit_details.Application_Type == 'A' %}
+                                            {% elif permit_details.Import_Type == 'A' %}
                                                 <td>Agrochemicals</td>
                                             {% endif %}
                                             <td>{{permit_details.Applicant_Name}}</td>
@@ -87,9 +86,8 @@
                                             <td>{{permit_details.License_No}}</td>
                                             <td>{{permit_details.Contact_No}}</td>
                                             <td>{{permit_details.Purpose}}</td>
-                                            <td>{{permit_details.Final_Destination}}</td>
-                                            <td>{{permit_details.Clearance_Ref_No}}</td>
-                                            <td>{{permit_details.Approve_Date}}</td>
+                                            <td>{{permit_details.Import_Permit_No}}</td>
+                                            <td>{{permit_details.Approved_Date}}</td>
                                             <td>{{permit_details.Validity}}</td>
                                         </tr>
                                         {% empty %}

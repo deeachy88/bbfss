@@ -73,6 +73,7 @@ TEMPLATES = [
     },
 ]
 
+
 WSGI_APPLICATION = 'bbfss.wsgi.application'
 
 # Database
