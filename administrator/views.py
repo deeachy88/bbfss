@@ -3,9 +3,10 @@ import os
 import random
 import string
 from datetime import date, datetime
-
+from django.utils import timezone
 from django.contrib.auth.hashers import make_password, check_password
 import requests
+from django.core.files.storage import FileSystemStorage
 from django.core.mail import send_mail
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
@@ -27,7 +28,8 @@ from administrator.models import t_user_master, t_security_question_master, t_ro
     t_livestock_species_breed_master, t_livestock_product_master, t_unit_master, t_food_product_category_master
 
 from bbfss import settings
-from plant.models import t_payment_details, t_workflow_details
+from plant.models import t_payment_details, t_workflow_details, t_file_attachment
+from random import randint
 
 
 def home(request):
@@ -91,8 +93,10 @@ def dashboard(request):
                                                                  Action_Date__isnull=False)
                              | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
                                                                  Action_Date__isnull=False)).count()
-            fhc_count = t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                          Action_Date__isnull=False, Service_Code='FHC').count()
+            fhc_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='B',
+                                                           Action_Date__isnull=False, Service_Code='FHC') |
+                         t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='A',
+                                                           Action_Date__isnull=False, Service_Code='FHC')).count()
             return render(request, 'dashboard.html', {'ins_count': message_count, 'fhc_count': fhc_count})
         elif Role == 'Complain Officer':
             login_id = request.session['Login_Id']
@@ -147,6 +151,7 @@ def login(request):
                             if str(user.Login_Type) == "C":
                                 request.session['Login_Id'] = user.Login_Id
                                 security = t_security_question_master.objects.all()
+                                return render(request, 'update_password.html', {'security': security})
                             else:
                                 main_role = t_role_master.objects.filter(Role_Id=user.Role_Id_id)
                                 for main_role in main_role:
@@ -155,7 +160,7 @@ def login(request):
                                     request.session['email'] = user.Email_Id
                                     request.session['Role_Id'] = Role_Id
                                     security = t_security_question_master.objects.all()
-                            return render(request, 'update_password.html', {'security': security})
+                                return render(request, 'update_password.html', {'security': security})
                         else:
                             if str(user.Login_Type) == "C":
                                 client = "client"
@@ -176,7 +181,7 @@ def login(request):
                                     Chief = "Chief"
                                     DG = "DG"
                                     if admin == str(mainroles.Role_Name):
-                                        request.session['role'] = admin
+                                        request.session['role'] = "Administrator"
                                         request.session['Login_Id'] = user.Login_Id
                                         request.session['email'] = user.Email_Id
                                         request.session['Login_Type'] = user.Login_Type
@@ -193,7 +198,7 @@ def login(request):
                                         return redirect(dashboard)
                                     elif focal_officer == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
-                                        request.session['role'] = focal_officer
+                                        request.session['role'] = "Focal Officer"
                                         request.session['Role_Id'] = mainroles.Role_Id
                                         request.session['section'] = user.Section_Id_id
                                         request.session['Login_Id'] = user.Login_Id
@@ -202,7 +207,7 @@ def login(request):
                                         return redirect(dashboard)
                                     elif complaint_officer == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
-                                        request.session['role'] = complaint_officer
+                                        request.session['role'] = "Complain Officer"
                                         request.session['Login_Id'] = user.Login_Id
                                         request.session['email'] = user.Email_Id
                                         request.session['Login_Type'] = user.Login_Type
@@ -284,6 +289,7 @@ def user(request):
         division_id = request.POST['division']
         section_id = request.POST['section']
         field = request.POST['field']
+        # document_id = request.POST['document_id']
 
         password = get_random_password_string(8)
         password_value = make_password(password)
@@ -348,19 +354,71 @@ def user(request):
                                              Gewog_Code=None, Section_Id_id=None, Village_Code=None,
                                              Accept_Reject=None, Division_Id_id=None, Field_Office_Id_id=None,
                                              Role_Id_id=role)
-        details = t_user_master.objects.filter(Login_Type="I")
+        details = t_user_master.objects.filter(Login_Type="I").order_by('Login_Id')
+        # file = t_file_attachment.objects.filter(Application_No=document_id)
+        # file.update(Applicant_Id=email)
         sendmail(request, name, email, password)
         return render(request, 'user.html', {'form': form, 'details': details, 'role': roles, 'section': section,
                                              'division': division, 'field_office': field_office})
     else:
-        details = t_user_master.objects.filter(Login_Type="I")
+        details = t_user_master.objects.filter(Login_Type="I").order_by('Login_Id')
         form = UserForm()
         roles = t_role_master.objects.all()
         section = t_section_master.objects.all()
         division = t_division_master.objects.all()
         field_office = t_field_office_master.objects.all()
+        document_id = document_id_generator(4);
         return render(request, 'user.html', {'form': form, 'details': details, 'role': roles, 'section': section,
-                                             'division': division, 'field_office': field_office})
+                                             'division': division, 'field_office': field_office,
+                                             'document_id': document_id})
+
+
+def document_id_generator(n):
+    range_start = 10 ** (n - 1)
+    range_end = (10 ** n) - 1
+    return randint(range_start, range_end)
+
+
+def add_signature(request):
+    data = dict()
+    myFile = request.FILES['document']
+    print(myFile)
+    fs = FileSystemStorage("attachments" + "/" + "signature")
+    if fs.exists(myFile.name):
+        data['form_is_valid'] = False
+    else:
+        fs.save(myFile.name, myFile)
+        file_url = "attachments" + "/" + "signature/" + myFile.name
+        data['form_is_valid'] = True
+        data['file_url'] = file_url
+    return JsonResponse(data)
+
+
+def add_signature_name(request):
+    Application_No = request.GET.get('document_id')
+    fileName = request.GET.get('filename')
+    file_url = request.GET.get('file_url')
+
+    t_file_attachment.objects.create(Application_No=Application_No,
+                                     File_Path=file_url,
+                                     Attachment=fileName)
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+    return render(request, 'signature.html', {'file_attach': file_attach})
+
+
+def delete_signature(request):
+    data = dict()
+    File_Id = request.GET.get('file_id')
+    document_id = request.GET.get('document_id')
+    file = t_file_attachment.objects.filter(pk=File_Id)
+    for file in file:
+        fileName = file.Attachment
+        fs = FileSystemStorage("attachments" + "/" + "signature")
+        fs.delete(str(fileName))
+    file.delete()
+    count = t_file_attachment.objects.filter(Application_No=document_id).count()
+    data['file_delete'] = count
+    return JsonResponse(data)
 
 
 def forgot_password(request):

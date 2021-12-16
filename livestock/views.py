@@ -13,7 +13,7 @@ from administrator.models import t_dzongkhag_master, t_gewog_master, t_village_m
 from administrator.views import dashboard
 from bbfss import settings
 from food.models import t_food_import_permit_inspection_t3
-from food.views import factory_inspection_list
+from food.views import factory_inspection_list, update_payment
 from livestock.forms import ImportFormProduct, MeatShopFeasibilityForm
 from livestock.models import t_livestock_clearance_meat_shop_t1, t_livestock_clearance_meat_shop_t2, \
     t_livestock_ante_post_mortem_t1, t_livestock_movement_permit_t1, t_livestock_export_certificate_t1, \
@@ -26,7 +26,7 @@ from livestock.models import t_livestock_clearance_meat_shop_t1, t_livestock_cle
     t_livestock_clearance_meat_shop_t3, t_livestock_import_permit_product_inspection_t3, \
     t_livestock_import_permit_animal_inspection_t3
 from plant.models import t_workflow_details, t_file_attachment, t_payment_details, t_plant_seed_certification_t3, \
-    t_plant_movement_permit_t3
+    t_plant_movement_permit_t3, t_plant_clearence_nursery_seed_grower_t3
 from plant.views import inspector_application, resubmit_application, focal_officer_application, oic_application
 
 
@@ -498,6 +498,7 @@ def approve_meat_shop_feasibility_inspection(request):
 
     details.update(FI_Inspection_Date=date_format_ins)
     details.update(Conditional_Clearance_No=Clearance_No)
+    details.update(Clearance_Approve_Date=date.today())
     details.update(FI_Inspection_Leader=Inspection_Leader)
     details.update(FI_Inspection_Team=Inspection_Team)
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
@@ -513,7 +514,7 @@ def approve_meat_shop_feasibility_inspection(request):
     for email_id in details:
         emailId = email_id.Email
         send_feasibility_approve_email(Clearance_No, emailId)
-
+    update_payment(application_id, Clearance_No, 'CMS', None, 'Feasibility')
     return redirect(inspector_application)
 
 
@@ -528,13 +529,13 @@ def feasibility_clearance_no(request):
     lastAppNo = last_application_no['Conditional_Clearance_No__max']
     if not lastAppNo:
         year = timezone.now().year
-        newAppNo = Field_Code + "/" + "FBR" + "/" + str(year) + "/" + "0001"
+        newAppNo = Field_Code + "/" + "CMS/CR" + "/" + str(year) + "/" + "0001"
     else:
-        substring = str(lastAppNo)[14:17]
+        substring = str(lastAppNo)[17:20]
         substring = int(substring) + 1
         AppNo = str(substring).zfill(4)
         year = timezone.now().year
-        newAppNo = Field_Code + "/" + "FBR" + "/" + str(year) + "/" + AppNo
+        newAppNo = Field_Code + "/" + "CMS/CR" + "/" + str(year) + "/" + AppNo
     return newAppNo
 
 
@@ -690,7 +691,8 @@ def meat_shop_submit(request):
                                      Receipt_No=None,
                                      Receipt_Date=None,
                                      Updated_By=None,
-                                     Updated_On=None)
+                                     Updated_On=None,
+                                     Permit_Type='Final')
     for email_id in details:
         emailId = email_id.Email
         send_meat_shop_approve_email(clearance, emailId, validity_date)
@@ -1331,7 +1333,8 @@ def approve_fo_la_import(request):
                                      Receipt_No=None,
                                      Receipt_Date=None,
                                      Updated_By=None,
-                                     Updated_On=None)
+                                     Updated_On=None,
+                                     Permit_Type='Final')
     return redirect(focal_officer_application)
 
 
@@ -1916,7 +1919,8 @@ def approve_fo_lp_import(request):
                                      Receipt_No=None,
                                      Receipt_Date=None,
                                      Updated_By=None,
-                                     Updated_On=None)
+                                     Updated_On=None,
+                                     Permit_Type='Final')
     return render(request, 'focal_officer_pending_list.html')
 
 
@@ -2515,7 +2519,8 @@ def approve_application_export(request):
                                      Receipt_No=None,
                                      Receipt_Date=None,
                                      Updated_By=None,
-                                     Updated_On=None)
+                                     Updated_On=None,
+                                     Permit_Type='Final')
     for email_id in details:
         emailId = email_id.Email
         send_lec_approve_email(Export_Permit_No, emailId, validity_date)
@@ -3024,7 +3029,8 @@ def approve_application_lmp(request):
                                      Receipt_No=None,
                                      Receipt_Date=None,
                                      Updated_By=None,
-                                     Updated_On=None)
+                                     Updated_On=None,
+                                     Permit_Type='Final')
     for email_id in details:
         emailId = email_id.Email
         send_lms_approve_email(Movement_Permit_No, emailId, validity_date)
@@ -3448,7 +3454,8 @@ def approve_application_apm(request):
                                      Receipt_No=None,
                                      Receipt_Date=None,
                                      Updated_By=None,
-                                     Updated_On=None)
+                                     Updated_On=None,
+                                     Permit_Type='Final')
     return redirect(inspector_application)
 
 
@@ -3565,6 +3572,11 @@ def delete_observation(request):
         observation_details = t_food_import_permit_inspection_t3.objects.filter(Application_No=Application_No)
         return render(request, 'import_certificate_food/observation_details.html',
                       {'observation': observation_details})
+    elif service_type == 'RNS':
+        details = t_plant_clearence_nursery_seed_grower_t3.objects.filter(Record_Id=Record_Id)
+        details.delete()
+        details_statement = t_plant_clearence_nursery_seed_grower_t3.objects.filter(Application_No=Application_No)
+        return render(request, 'nursery_registration/add_decision_details.html', {'decision': details_statement})
     elif service_type == 'RSC':
         details = t_plant_seed_certification_t3.objects.filter(Record_Id=Record_Id)
         details.delete()
@@ -3616,6 +3628,12 @@ def update_decision(request):
         details_statement = t_plant_seed_certification_t3.objects.filter(Application_No=Application_No).order_by(
             'Record_Id')
         return render(request, 'seed_certification/add_decision_details.html', {'decision': details_statement})
+    elif service_type == 'RNS':
+        details = t_plant_clearence_nursery_seed_grower_t3.objects.filter(Record_Id=Record_Id)
+        details.update(Observation=currentObservation, Action=decisionConform)
+        details_statement = t_plant_clearence_nursery_seed_grower_t3.objects.filter(Application_No=Application_No).order_by(
+            'Record_Id')
+        return render(request, 'nursery_registration/add_decision_details.html', {'decision_details': details_statement})
     elif service_type == 'MPP':
         details = t_plant_movement_permit_t3.objects.filter(Record_Id=Record_Id)
         details.update(Current_Observation=currentObservation, Decision_Conformity=decisionConform)

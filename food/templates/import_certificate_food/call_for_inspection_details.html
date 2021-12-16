@@ -193,7 +193,7 @@ form, input, select, textarea{
                                 {% if application_details.Transit_Country == "Yes" %}
                                     <div class="col-md-4" id="transit_country">
                                         <div class="form-group">
-                                            <label class="form-label">Name Of Country</label>
+                                            <label class="form-label">Name of Country</label>
                                             <input type="text" class="form-control" value="{{application_details.Country_Of_Transit}}" disabled>
                                         </div>
                                     </div>
@@ -219,8 +219,8 @@ form, input, select, textarea{
                                     <div class="form-group">
                                         <label class="form-label">Place of Entry</label>
                                         <select class="form-control" disabled>
-                                            {% for location in location %}
-                                                <option value="{{ location.Location_Code }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
+                                            {% for location in location_details %}
+                                                <option value="{{ location.Field_Office_Id }}" {% if application_details.Place_Of_Entry == location.Field_Office_Id %}selected{% endif %}>{{ location.Field_Office }}</option>
                                             {% endfor %}
                                          </select>
                                     </div>
@@ -240,7 +240,6 @@ form, input, select, textarea{
                                         <label class="form-label">Expected Arrival Date</label>
                                         <input type="text" class="form-control date-picker flatpickr-input active" disabled  value="{{ application_details.Expected_Arrival_Date}}">
                                     </div>
-                                    <div class="alert alert-danger" id="dateErrorMsg" style="display:none"></div>
                                 </div>
                             </div>
                         </div>

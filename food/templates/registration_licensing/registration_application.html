@@ -1,6 +1,7 @@
 {% extends 'common_dashboard.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+{% load static %}
 <style>
     option
     {
@@ -13,6 +14,7 @@
 form, input, select, textarea{
         color: black !important;
     }
+
 </style>
 <div class="card">
     <div class="card-header">
@@ -162,6 +164,7 @@ form, input, select, textarea{
                                 <div class="form-group">
                                     <label class="form-label">Product Category(proposed/being manufactured) <font color="red">*</font></label>
                                     <select class="form-control" name="product_category"  id="product_category">
+                                        <option val="">-SELECT-</option>
                                         {% for food_product_category in food_product_category %}
                                             <option value="{{ food_product_category.Food_Product_Category_Name }}">{{ food_product_category.Food_Product_Category_Name }}</option>
                                         {% endfor %}
@@ -195,7 +198,7 @@ form, input, select, textarea{
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Production Volume(Last Calender Year) <font color="red">*</font></label>
-                                    <input type="number" class="form-control" id="production_volume" name="production_volume">
+                                    <input type="number" class="form-control" id="production_volume" name="production_volume" onkeypress="return isNumberKey(event)" onchange="check_prod_volume()">
                                 </div>
                                 <div class="alert alert-danger" id="production_volumeErrorMsg" style="display:none"></div>
                             </div>
@@ -685,6 +688,7 @@ form, input, select, textarea{
         </div>
     </div>
 </form>
+
 <script>
 
 function save_fbr_form()
@@ -1549,6 +1553,22 @@ function check_no_of_years()
     else
     {
         $('#no_of_yearsErrorMsg').hide();
+    }
+}
+
+function check_prod_volume()
+{
+    var production_volume = $('#production_volume').val();
+    if(production_volume == 0)
+    {
+        $('#production_volumeErrorMsg').html("Must Be Greater Than Zero.");
+        $('#production_volumeErrorMsg').show();
+        $('#production_volumeErrorMsg').delay(2000).fadeOut('slow');
+        $('#production_volume').val("");
+    }
+    else
+    {
+        $('#production_volumeErrorMsg').hide();
     }
 }
 </script>

@@ -105,5 +105,9 @@ urlpatterns = [
     path('food_product_category_master', views.food_product_category_master, name='food_product_category_master'),
     path('add_food_product_category', views.add_food_product_category, name='add_food_product_category'),
     path('update_food_product_category', views.update_food_product_category, name='update_food_product_category'),
-    path('delete_food_product_category', views.delete_food_product_category, name='delete_food_product_category')
+    path('delete_food_product_category', views.delete_food_product_category, name='delete_food_product_category'),
+    path('add_signature', views.add_signature, name='add_signature'),
+    path('add_signature_name', views.add_signature_name, name='add_signature_name'),
+    path('delete_signature', views.delete_signature, name='delete_signature')
+
 ]

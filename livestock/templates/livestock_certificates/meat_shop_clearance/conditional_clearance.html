@@ -1,6 +1,6 @@
 {% load static %}
 <style>
-    .header-card {
+    .header-card{
     background-color: white;
 }
 </style>
@@ -8,7 +8,7 @@
     <div class="card-header header-card">
 		<div class="card-head-row float-right">
             <div class="card-tools">
-                <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Test Report';printClientTable()">
+                <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Meat Shop Conditional Clearance';printTable()">
                     <span class="btn-label">
                         <i class="zmdi zmdi-print"></i>
                     </span>
@@ -23,7 +23,7 @@
         </div>
         <h6 class="text-center"><font color='black'><b>CONDITIONAL CLEARANCE FOR ESTABLISHMENT OF MEAT SHOP</b></font></h6>
 	</div>
-    <div class="card-body">
+    <div class="card-body header-card">
         {% now "Y-m-d" as todays_date %}
         {% for certificate_details in certificate_details %}
         <div class="row d-flex justify-content-between details">
@@ -63,3 +63,62 @@
     </div>
     {% endfor %}
 </div>
+
+<div id="print" style="display:none">
+    <div class="card">
+        <div class="card-header header-card">
+            <div class="card-title text-center">
+                <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
+            </div>
+            <h6 class="text-center"><font color='black'><b>CONDITIONAL CLEARANCE FOR ESTABLISHMENT OF MEAT SHOP</b></font></h6>
+        </div>
+        <div class="card-body header-card">
+            {% now "Y-m-d" as todays_date %}
+            {% for certificate_details in certificate_details %}
+            <div class="row d-flex justify-content-between details">
+                    <h6>Date Of Issue.&nbsp;&nbsp;{{certificate_details.Approve_Date}}</h6>
+                    <h6>Date of Inspection.&nbsp;&nbsp;{{certificate_details.FI_Inspection_Date}}</h6>
+            </div>
+            <div class="row d-flex justify-content-between details">
+                <h6>Registration No.&nbsp;&nbsp;{{certificate_details.Meat_Shop_Clearance_No}}</h6>
+            </div>
+            <div class="row d-flex justify-content-between details">
+                    <h6>Conditional clearance for the establishment of meat shop</h6>
+            </div>
+            <div class="row">
+                    <p>
+                        The Bhutan Agriculture and Food Regulatory Authority (BAFRA),
+                        Ministry of Agriculture and Forests (MoAF) is pleased to issue the Conditional
+                        Clearance to Mr./Mrs.{{certificate_details.Name_Owner}}
+                        CID no.&nbsp;{{certificate_details.CID}}
+                        from {{ Village }}&nbsp; village, {{ Gewog }}&nbsp; gewog,{{ Dzongkhag }}&nbsp; dzongkhag
+                        for the establishment of meat shop.
+                        This conditional clearance is subject to the following terms and conditions:
+                        <ol>
+                            <li>The holder shall ensure that this clearance is valid only for the establishment of meat
+                                shop at {{ Village }}&nbsp; village, {{ Gewog }}&nbsp; gewog,{{ Dzongkhag }}&nbsp;
+                                dzongkhag/Thromde
+                                and not for any other purpose and at any other place.</li>
+                            <li>The scope of this clearance is limited to establishment of a
+                                (retail/wholesale/cold storage) meat shop and not for the clearances required by other stakeholders.</li>
+                            <li>The holder of this clearance shall comply with the BAFRA Criteria for Good Hygienic and Manufacturing Practices.</li>
+                            <li>The holder of this clearance shall comply with the BAFRA Criteria for Good Hygienic and Manufacturing Practices.</li>
+                            <li>The holder of this clearance shall ensure that the proposed activity is implemented in line with the Livestock Act of Bhutan 2001 and the Livestock Rules and Regulations of Bhutan 2017 or any other food safety norms in effect.</li>
+                            <li>Failure to comply with the standard requirement for establishment of meat shop shall be dealt as per the provisions of the Livestock Rules and Regulations of Bhutan 2017</li>
+                            <li>After setting up the meat shop establishment completely, the holder of this clearance must approach the BAFRA office concerned for final inspection and to obtain operational clearance to start meat shop.</li>
+                        </ol>
+                    </p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<script>
+    function printTable()
+    {
+        $("#print").show();
+	    jQuery('#print').print();
+	    $("#print").hide();
+    }
+
+</script>

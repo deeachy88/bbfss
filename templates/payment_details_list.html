@@ -35,7 +35,11 @@
                                             {% endif %}
                                         {% endfor %}
                                         <td>{{application_details.Application_Date|date:"d-m-Y"}}</td>
-                                        <td>{{application_details.Validity|date:"d-m-Y"}}</td>
+                                        {% if application_details.Validity %}
+                                            <td>{{application_details.Validity|date:"d-m-Y"}}</td>
+                                        {% else %}
+                                            <td>None</td>
+                                        {% endif %}
                                     </tr>
                                     {% empty %}
                                     <tr>

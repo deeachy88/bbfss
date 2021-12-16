@@ -9,7 +9,7 @@
     <head>
         <meta charset="UTF-8" />
         <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">  -->
-        <title>Login and Registration Form with HTML5 and CSS3</title>
+        <title>BBFSS| Bhutan Biosecurity and Food Safety System</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="Login and Registration Form with HTML5 and CSS3" />
         <meta name="keywords" content="html5, css3, form, switch, animation, :target, pseudo-class" />
@@ -134,91 +134,9 @@
 <script>
 var spinner = $('#loader');
 spinner.hide();
-function saveDetails()
-{
-    var new_password = $('#new_password').val();
-    var confirm_password = $('#confirm_password').val();
-    var pattern = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/;
-    var no = new_password.match(pattern);
-    var security_question = $('#security_question').val();
-    var answer = $('#Answer').val();
 
-        if(new_password == "")
-            {
-                $('#new_passwordErrorMsg').html("");
-                $('#new_passwordErrorMsg').html("New Password Cannot Be Empty");
-                $('#new_passwordErrorMsg').show();
-                $('#new_passwordErrorMsg').delay(2000).fadeOut('slow');
-                return;
-            }
-        if(no==null)
-            {
-                $('#new_passwordErrorMsg').html("");
-                $('#new_passwordErrorMsg').html("Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters");
-                $('#new_passwordErrorMsg').show();
-                $('#new_passwordErrorMsg').delay(2000).fadeOut('slow');
-                return;
-            }
-        if(confirm_password == "")
-            {
-                $('#confirm_passworderrorMsg').html("");
-                $('#confirm_passworderrorMsg').html("Confirm Password Cannot Be Empty");
-                $('#confirm_passworderrorMsg').show();
-                $('#confirm_passworderrorMsg').delay(2000).fadeOut('slow');
-                return;
-            }
-        if(new_password != confirm_password)
-            {
-                $('#confirm_passworderrorMsg').html("");
-                $('#confirm_passworderrorMsg').html("New password and Password Confirmation Does Not Match");
-                $('#confirm_passworderrorMsg').show();
-                $('#confirm_passworderrorMsg').delay(2000).fadeOut('slow');
-                $('#new_password').val("");
-                $('#confirm_password').val("");
-                $('#security_question').val("");
-                $('#Answer').val("");
-                return;
-            }
-        if(security_question == "")
-            {
-                $('#security_questionerrorMsg').html("");
-                $('#security_questionerrorMsg').html("Select Atleast One Security Question");
-                $('#security_questionerrorMsg').show();
-                $('#security_questionerrorMsg').delay(2000).fadeOut('slow');
-                return;
-            }
-        if(answer == "")
-            {
-                $('#AnswererrorMsg').html("");
-                $('#AnswererrorMsg').html("security answer cannot be empty");
-                $('#AnswererrorMsg').show();
-                $('#AnswererrorMsg').delay(2000).fadeOut('slow');
-                return;
-            }
-        else
-            {
-                $.ajax({
-                    type : "POST",
-                    url : "{% url 'password_update' %}",
-                    data : $('#passwordUpdateForm').serialize(),
-                    cache : false,
-                    dataType : "html",
-                    success : function(responseText)
-                    {
-                        $('#update_passwordMsg').show();
-                        $('#update_passwordMsg').delay(2000).fadeOut('slow');
-                        setTimeout('redirectPage()',2000);
-                    }
-                });
-            }
-}
 
-function redirectPage()
-{
-    var url = "{% url 'login' %}";
-    document.forms[0].action = url;
-    document.forms[0].submit();
-}
+
 
 function getGewog(dzongkhag_id)
 {

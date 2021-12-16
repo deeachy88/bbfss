@@ -2,16 +2,28 @@
     <thead>
         <tr>
             <th scope="col">#</th>
-            <th scope="col">Current Observationss</th>
+            <th scope="col">Current Observations</th>
             <th scope="col">Decision Conformity</th>
+            <th scope="col"></th>
         </tr>
     </thead>
     <tbody>
-       {% for import_permit in decision %}
+       {% for decision_details in decision_details %}
             <tr>
                 <td>{{ forloop.counter }}</td>
-                <td>{{import_permit.Current_Observation}}</td>
-                <td>{{import_permit.Decision_Conformity}}</td>
+                <td>{{decision_details.Observation}}</td>
+                <td>{{decision_details.Action}}</td>
+                <td>
+                    <button type="button" class="btn btn-primary btn-sm"
+                    onclick="delete_observation_details('{{decision_details.Record_Id}}','{{decision_details.Application_No}}')">
+                    <i class="zmdi zmdi-delete"></i>
+                    </button>
+                    <button  type="button" class="btn btn-info btn-sm" data-toggle="tooltip" title="Edit"
+                         onclick="populate_observation_details('{{ decision_details.Record_Id }}', '{{decision_details.Observation}}',
+                          '{{decision_details.Action}}', '{{decision_details.Application_No}}')">
+                        <i class="fa fa-edit"></i>
+                    </button>
+                </td>
             </tr>
             {% empty %}
             <tr>

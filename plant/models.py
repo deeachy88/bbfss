@@ -372,8 +372,6 @@ class t_plant_clearence_nursery_seed_grower_t1(models.Model):
     Approved_Date = models.DateField(default=None, blank=True, null=True)
     Validity_Period = models.CharField(default=None, max_length=10, blank=True, null=True)
     Validity = models.DateField(default=None, blank=True, null=True)
-    Current_Observation = models.CharField(default=None, max_length=250, blank=True, null=True)
-    Decision_Conformity = models.CharField(default=None, max_length=250, blank=True, null=True)
 
 
 class t_plant_clearence_nursery_seed_grower_t2(models.Model):
@@ -387,6 +385,13 @@ class t_plant_clearence_nursery_seed_grower_t2(models.Model):
     Qty = models.IntegerField(blank=True, null=True)
     Remarks = models.CharField(max_length=100, blank=True, null=True)
     Unit = models.CharField(max_length=100, blank=True, null=True)
+
+
+class t_plant_clearence_nursery_seed_grower_t3(models.Model):
+    Record_Id = models.AutoField(primary_key=True, default=None)
+    Application_No = models.CharField(max_length=30, default=None)
+    Observation = models.TextField(blank=True, null=True)
+    Action = models.TextField(blank=True, null=True)
 
 
 class t_plant_seed_certification_t1(models.Model):
@@ -457,5 +462,5 @@ class t_payment_details(models.Model):
     Receipt_Date = models.DateField(default=None, blank=True, null=True)
     Updated_By = models.CharField(max_length=100, default=None, blank=True, null=True)
     Updated_On = models.DateField(default=None, blank=True, null=True)
-
+    Permit_Type = models.CharField(max_length=100, blank=True, null=True)
 # Remember to make changes in plant export permit models

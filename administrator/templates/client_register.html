@@ -92,6 +92,8 @@ hr {
                                 Back To Login
                             </a>
                             <div class="col-md-12" style="margin-top: -30px;">
+                                <form method="post" id="registration_form">
+                                {% csrf_token %}
                                 <div class="form-check text-center">
                                     <label style="margin-left: 100px;">Client Type <font color="red" style="font-size: 20px;">*</font></label><br>
                                     <label class="form-radio-label">
@@ -122,7 +124,7 @@ hr {
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <input id="emailsignup" class="youmail" name="emailsignup" required="required" type="email" placeholder="Email"/>
+                                                <input id="email" class="youmail" name="email" required="required" type="email" placeholder="Email"/>
                                             </div>
                                             <span class="badge"><font color='red'><font color='red'>*</font></font></span>
                                             <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
@@ -256,8 +258,9 @@ hr {
                                     </div>
                                 </div>
                                 <p class="signin button text-center" style="margin-bottom: -29px;">
-                                    <input type="submit" class="signin button" value="Register">
+                                    <input type="button" class="signin button" value="Register" onclick="save_client()">
                                 </p>
+                                </form>
                             </div>
 
                         </div>

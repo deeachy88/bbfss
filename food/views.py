@@ -287,7 +287,7 @@ def food_business_file_name(request):
     return render(request, 'registration_licensing/file_attachment.html', {'file_attach': file_attach})
 
 
-def delete_fh_file(request):
+def delete_fbr_file(request):
     File_Id = request.GET.get('file_id')
     Application_No = request.GET.get('appNo')
 
@@ -497,7 +497,7 @@ def approve_feasibility_inspection(request):
     for email_id in details:
         emailId = email_id.Email
         send_feasibility_approve_email(Clearance_No, emailId)
-    update_payment(application_id, Clearance_No, 'FBR', None)
+    update_payment(application_id, Clearance_No, 'FBR', None, 'Feasibility')
     return redirect(inspector_application)
 
 
@@ -669,7 +669,7 @@ def fbr_submit(request):
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='A')
-    update_payment(application_id, clearance, 'FBR', None)
+    update_payment(application_id, clearance, 'FBR', None, 'Final')
     for email_id in details:
         emailId = email_id.Email
         send_fbr_approve_email(clearance, emailId)
@@ -1273,7 +1273,7 @@ def approve_food_export(request):
     application_details = t_workflow_details.objects.filter(Application_No=application_id)
     application_details.update(Action_Date=date.today())
     application_details.update(Application_Status='A')
-    update_payment(application_id, Export_Permit_No, 'FEC', validity_date)
+    update_payment(application_id, Export_Permit_No, 'FEC', validity_date, 'Final')
     for email_id in details:
         emailId = email_id.Email
         send_fec_approve_email(Export_Permit_No, emailId, validity_date)
@@ -1369,7 +1369,7 @@ def food_handler_licensing(request):
 
 def save_food_handler_details(request):
     data = dict()
-    service_code = "FHC"
+    service_code = "FHL"
     application_no = food_handler_application_no(service_code)
     Nationality = request.POST.get('Nationality')
     if Nationality == "Bhutanese":
@@ -1558,6 +1558,21 @@ def food_handler_file_name(request):
                                          Attachment=fileName)
 
         file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+    return render(request, 'food_handler/file_attachment.html', {'file_attach': file_attach})
+
+
+def delete_fh_file(request):
+    File_Id = request.GET.get('file_id')
+    Application_No = request.GET.get('appNo')
+
+    file = t_file_attachment.objects.filter(pk=File_Id)
+    for file in file:
+        fileName = file.Attachment
+        fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/food/food_handler_certificate")
+        fs.delete(str(fileName))
+    file.delete()
+
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
     return render(request, 'food_handler/file_attachment.html', {'file_attach': file_attach})
 
 
@@ -1814,9 +1829,14 @@ def food_handler_application(request):
     consignment_call_count = t_workflow_details.objects.filter(Assigned_To=Login_Id,
                                                                Action_Date__isnull=False, Application_Status='P') \
         .count()
+    fhc_count = (t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='B',
+                                                   Action_Date__isnull=False, Service_Code='FHC') |
+                 t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='A',
+                                                   Action_Date__isnull=False, Service_Code='FHC')).count()
     return render(request, 'food_handler_list.html', {'application_details': application_details, 'details': details,
                                                       'count': message_count, 'count_call': inspection_call_count,
-                                                      'consignment_call_count': consignment_call_count})
+                                                      'consignment_call_count': consignment_call_count,
+                                                      'fhc_count': fhc_count})
 
 
 def update_batch_no(request):
@@ -1866,7 +1886,8 @@ def result_update_list(request):
 
 def update_list(request):
     batch_no = request.POST.get('Training_Batch_No')
-    result_details = t_food_licensing_food_handler_t1.objects.filter(Training_Batch_No=batch_no)
+    result_details = t_food_licensing_food_handler_t1.objects.filter(Training_Batch_No=batch_no,
+                                                                     FH_License_No__isnull=True)
     file_attach = t_file_attachment.objects.filter(Attachment_Type='FH')
     return render(request, 'food_handler/result_list.html',
                   {'application_details': result_details, 'file_attach': file_attach})
@@ -2248,7 +2269,7 @@ def approve_fo_fip_import(request):
     d = timedelta(days=int(validity))
     validity_date = date.today() + d
     details.update(Validity=validity_date)
-    update_payment(application_no, permit_no, 'FIP', validity_date)
+    update_payment(application_no, permit_no, 'FIP', validity_date, 'Final')
     for email_id in details:
         email = email_id.Email
         send_fip_approve_email(permit_no, email, validity_date)
@@ -2469,7 +2490,7 @@ def factory_inspection_list(request):
                    'consignment_call_count': consignment_call_count})
 
 
-def update_payment(application_no, permit_no, service_code, validity_date):
+def update_payment(application_no, permit_no, service_code, validity_date, Permit_Type):
     t_payment_details.objects.create(Application_No=application_no,
                                      Application_Date=date.today(),
                                      Permit_No=permit_no,
@@ -2481,7 +2502,8 @@ def update_payment(application_no, permit_no, service_code, validity_date):
                                      Receipt_No=None,
                                      Receipt_Date=None,
                                      Updated_By=None,
-                                     Updated_On=None)
+                                     Updated_On=None,
+                                     Permit_Type=Permit_Type)
 
 
 def food_handler_application_details(request):
@@ -2557,7 +2579,9 @@ def update_food_handler_status(request):
         update_details.update(FH_License_Validity_Period=int(730))
         update_details.update(FH_License_Validity=validity_date)
         update_details.update(Approved_Date=date.today())
-        update_payment(app_no, food_handler_license_no, 'FHL', validity_date)
+        update_payment(app_no, food_handler_license_no, 'FHL', validity_date, 'Final')
+        details = t_workflow_details.objects.filter(Application_No=app_no)
+        details.update(Application_Staus='FHC') # food handler license complete
     return redirect(update_list)
 
 
