@@ -36,6 +36,7 @@ def home(request):
     return render(request, 'index.html')
 
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def dashboard(request):
     login_type = request.session['Login_Type']
     if login_type == 'I':
