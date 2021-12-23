@@ -6,6 +6,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.utils import timezone
+from django.views.decorators.cache import cache_control
 
 from administrator.models import t_dzongkhag_master, t_gewog_master, t_village_master, t_location_field_office_mapping, \
     t_user_master, t_field_office_master, t_unit_master, t_service_master, t_livestock_species_master, \
@@ -54,28 +55,35 @@ def clearance_print(request):
 
 
 # MEAT SHOP REGISTRATON
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def meat_shop_registration_licensing(request):
-    login_id = request.session['Login_Id']
-    unit = t_unit_master.objects.filter(Unit_Type='S')
-    dzongkhag = t_dzongkhag_master.objects.all()
-    gewog = t_gewog_master.objects.all()
-    village = t_village_master.objects.all()
-    meat_item = t_meat_item_master.objects.all()
-    message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
+    try:
+        login_id = request.session['Login_Id']
+    except:
+        login_id = None
+    if login_id:
+        unit = t_unit_master.objects.filter(Unit_Type='S')
+        dzongkhag = t_dzongkhag_master.objects.all()
+        gewog = t_gewog_master.objects.all()
+        village = t_village_master.objects.all()
+        meat_item = t_meat_item_master.objects.all()
+        message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
 
-    inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
-                                                              Action_Date__isnull=False).count()
-    consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
-                                                               Action_Date__isnull=False, Application_Status='P') \
-        .count()
-    return render(request, 'meat_shop_registration/registration_application.html',
-                  {'unit': unit, 'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village,
-                   'meat_item': meat_item, 'count': message_count, 'count_call': inspection_call_count,
-                   'consignment_call_count': consignment_call_count})
+        inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
+                                                                  Action_Date__isnull=False).count()
+        consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
+                                                                   Action_Date__isnull=False, Application_Status='P') \
+            .count()
+        return render(request, 'meat_shop_registration/registration_application.html',
+                      {'unit': unit, 'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village,
+                       'meat_item': meat_item, 'count': message_count, 'count_call': inspection_call_count,
+                       'consignment_call_count': consignment_call_count})
+    else:
+        return render(request, 'redirect_page.html')
 
 
 def save_meat_shop_registration(request):
@@ -919,29 +927,36 @@ def send_meat_shop_acknowledgement_mail(Email):
 
 
 # import permit for live animal and fish
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def import_permit(request):
-    login_id = request.session['Login_Id']
-    dzongkhag = t_dzongkhag_master.objects.all()
-    gewog = t_gewog_master.objects.all()
-    village = t_village_master.objects.all()
-    location = t_field_office_master.objects.filter(Is_Entry_Point='Y')
-    species = t_livestock_species_master.objects.all()
-    breed = t_livestock_species_breed_master.objects.all()
-    message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
+    try:
+        login_id = request.session['Login_Id']
+    except:
+        login_id = None
+    if login_id:
+        dzongkhag = t_dzongkhag_master.objects.all()
+        gewog = t_gewog_master.objects.all()
+        village = t_village_master.objects.all()
+        location = t_field_office_master.objects.filter(Is_Entry_Point='Y')
+        species = t_livestock_species_master.objects.all()
+        breed = t_livestock_species_breed_master.objects.all()
+        message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
 
-    inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
-                                                              Action_Date__isnull=False).count()
-    consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
-                                                               Action_Date__isnull=False, Application_Status='P') \
-        .count()
-    return render(request, 'Animal_Fish_Import/import_permit_animal_fish.html',
-                  {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village,
-                   'location': location, 'species': species, 'breed': breed, 'count': message_count,
-                   'count_call': inspection_call_count, 'consignment_call_count': consignment_call_count})
+        inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
+                                                                  Action_Date__isnull=False).count()
+        consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
+                                                                   Action_Date__isnull=False, Application_Status='P') \
+            .count()
+        return render(request, 'Animal_Fish_Import/import_permit_animal_fish.html',
+                      {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village,
+                       'location': location, 'species': species, 'breed': breed, 'count': message_count,
+                       'count_call': inspection_call_count, 'consignment_call_count': consignment_call_count})
+    else:
+        return render(request, 'redirect_page.html')
 
 
 def save_import_la_fish(request):
@@ -1511,28 +1526,35 @@ def update_details_la(request):
 
 
 # import permit for livestock products and animal feed
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def import_permit_application(request):
-    login_id = request.session['Login_Id']
-    dzongkhag = t_dzongkhag_master.objects.all()
-    gewog = t_gewog_master.objects.all()
-    village = t_village_master.objects.all()
-    location = t_field_office_master.objects.filter(Is_Entry_Point='Y')
-    unit = t_unit_master.objects.filter(Unit_Type='S')
-    message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
+    try:
+        login_id = request.session['Login_Id']
+    except:
+        login_id = None
+    if login_id:
+        dzongkhag = t_dzongkhag_master.objects.all()
+        gewog = t_gewog_master.objects.all()
+        village = t_village_master.objects.all()
+        location = t_field_office_master.objects.filter(Is_Entry_Point='Y')
+        unit = t_unit_master.objects.filter(Unit_Type='S')
+        message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
 
-    inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
-                                                              Action_Date__isnull=False).count()
-    consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
-                                                               Action_Date__isnull=False, Application_Status='P') \
-        .count()
-    return render(request, 'Livestock_Import/import_permit_livestock.html',
-                  {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village,
-                   'location': location, 'unit': unit, 'count': message_count,
-                   'count_call': inspection_call_count, 'consignment_call_count': consignment_call_count})
+        inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
+                                                                  Action_Date__isnull=False).count()
+        consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
+                                                                   Action_Date__isnull=False, Application_Status='P') \
+            .count()
+        return render(request, 'Livestock_Import/import_permit_livestock.html',
+                      {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village,
+                       'location': location, 'unit': unit, 'count': message_count,
+                       'count_call': inspection_call_count, 'consignment_call_count': consignment_call_count})
+    else:
+        return render(request, 'redirect_page.html')
 
 
 def save_import_lp(request):
@@ -2068,32 +2090,40 @@ def update_details_lp(request):
 
 
 # export certificate for animal and animal products
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def export_certificate_application(request):
-    login_id = request.session['Login_Id']
-    dzongkhag = t_dzongkhag_master.objects.all()
-    gewog = t_gewog_master.objects.all()
-    village = t_village_master.objects.all()
-    location = t_field_office_master.objects.filter(Is_Entry_Point='Y')
-    field_office = t_field_office_master.objects.all()
-    unit = t_unit_master.objects.filter(Unit_Type='S')
-    species = t_livestock_species_master.objects.all()
-    breed = t_livestock_species_breed_master.objects.all()
-    message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
+    try:
+        login_id = request.session['Login_Id']
+    except:
+        login_id = None
+    if login_id:
+        dzongkhag = t_dzongkhag_master.objects.all()
+        gewog = t_gewog_master.objects.all()
+        village = t_village_master.objects.all()
+        location = t_field_office_master.objects.filter(Is_Entry_Point='Y')
+        field_office = t_field_office_master.objects.all()
+        unit = t_unit_master.objects.filter(Unit_Type='S')
+        species = t_livestock_species_master.objects.all()
+        breed = t_livestock_species_breed_master.objects.all()
+        message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
 
-    inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
-                                                              Action_Date__isnull=False).count()
-    consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
-                                                               Action_Date__isnull=False, Application_Status='P') \
-        .count()
-    return render(request, 'Export_Certificate/export_certificate_application.html',
-                  {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village,
-                   'location': location, 'unit': unit, 'species': species, 'breed': breed,
-                   'count': message_count, 'count_call': inspection_call_count,
-                   'consignment_call_count': consignment_call_count, 'field_office': field_office})
+        inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
+                                                                  Action_Date__isnull=False).count()
+        consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
+                                                                   Action_Date__isnull=False, Application_Status='P') \
+            .count()
+        return render(request, 'Export_Certificate/export_certificate_application.html',
+                      {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village,
+                       'location': location, 'unit': unit, 'species': species, 'breed': breed,
+                       'count': message_count, 'count_call': inspection_call_count,
+                       'consignment_call_count': consignment_call_count, 'field_office': field_office})
+    else:
+        return render(request, 'redirect_page.html')
+
 
 
 def save_livestock_export(request):
@@ -2586,28 +2616,36 @@ def send_lec_reject_email(remarks, Email):
 
 
 # movement permit for animal, animal products and animal feed apply_movement_permit
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def movement_permit_application(request):
-    login_id = request.session['Login_Id']
-    dzongkhag = t_dzongkhag_master.objects.all()
-    gewog = t_gewog_master.objects.all()
-    village = t_village_master.objects.all()
-    location = t_location_field_office_mapping.objects.all()
-    unit = t_unit_master.objects.filter(Unit_Type='S')
-    message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
+    try:
+        login_id = request.session['Login_Id']
+    except:
+        login_id = None
+    if login_id:
+        dzongkhag = t_dzongkhag_master.objects.all()
+        gewog = t_gewog_master.objects.all()
+        village = t_village_master.objects.all()
+        location = t_location_field_office_mapping.objects.all()
+        unit = t_unit_master.objects.filter(Unit_Type='S')
+        message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
 
-    inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
-                                                              Action_Date__isnull=False).count()
-    consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
-                                                               Action_Date__isnull=False, Application_Status='P') \
-        .count()
-    return render(request, 'Movement_Permit_Livestock/apply_movement_permit.html',
-                  {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village,
-                   'location': location, 'unit': unit, 'count': message_count,
-                   'count_call': inspection_call_count, 'consignment_call_count': consignment_call_count})
+        inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
+                                                                  Action_Date__isnull=False).count()
+        consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
+                                                                   Action_Date__isnull=False, Application_Status='P') \
+            .count()
+        return render(request, 'Movement_Permit_Livestock/apply_movement_permit.html',
+                      {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village,
+                       'location': location, 'unit': unit, 'count': message_count,
+                       'count_call': inspection_call_count, 'consignment_call_count': consignment_call_count})
+    else:
+        return render(request, 'redirect_page.html')
+
 
 
 def save_movement_permit_application(request):
@@ -3113,28 +3151,35 @@ def send_lms_reject_email(remarks, Email):
 
 
 # Ante Mortem And Post Mortem
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def application_form(request):
-    login_id = request.session['Login_Id']
-    dzongkhag = t_dzongkhag_master.objects.all()
-    gewog = t_gewog_master.objects.all()
-    village = t_village_master.objects.all()
-    location = t_location_field_office_mapping.objects.all()
-    species = t_livestock_species_master.objects.all()
-    message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
+    try:
+        login_id = request.session['Login_Id']
+    except:
+        login_id = None
+    if login_id:
+        dzongkhag = t_dzongkhag_master.objects.all()
+        gewog = t_gewog_master.objects.all()
+        village = t_village_master.objects.all()
+        location = t_location_field_office_mapping.objects.all()
+        species = t_livestock_species_master.objects.all()
+        message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
 
-    inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
-                                                              Action_Date__isnull=False).count()
-    consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
-                                                               Action_Date__isnull=False, Application_Status='P') \
-        .count()
-    return render(request, 'ante_post_mortem/ante_post_mortem_application.html',
-                  {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village,
-                   'location': location, 'species': species, 'count': message_count,
-                   'count_call': inspection_call_count, 'consignment_call_count': consignment_call_count})
+        inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
+                                                                  Action_Date__isnull=False).count()
+        consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
+                                                                   Action_Date__isnull=False, Application_Status='P') \
+            .count()
+        return render(request, 'ante_post_mortem/ante_post_mortem_application.html',
+                      {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village,
+                       'location': location, 'species': species, 'count': message_count,
+                       'count_call': inspection_call_count, 'consignment_call_count': consignment_call_count})
+    else:
+        return render(request, 'redirect_page.html')
 
 
 def update_application_form(request):

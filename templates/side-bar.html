@@ -30,7 +30,7 @@
             <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
         </div>
     </div>-->
-    {% if request.session.role == 'Agency Admin' %}
+    {% if request.session.role == 'Administrator' %}
         <ul class="navigation">
             <li class="navigation__active"><a href="{% url 'dashboard' %}"><font color="white"><i class="zmdi zmdi-home"></i>&nbsp; &nbsp;Home</font></a></li>
 
@@ -351,6 +351,8 @@
                 <a href="{% url 'client_audit_plan' %}"><i class="zmdi zmdi-collection-text"></i>View Audit Plan</a>
             </li>
         </ul>
+    {% else %}
+    {% include 'redirect_page.html' %}
     {% endif %}
 
 </div>

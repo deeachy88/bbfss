@@ -7,6 +7,8 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from datetime import date, datetime, timedelta
 # Organic Certificate.
+from django.views.decorators.cache import cache_control
+
 from administrator.models import t_dzongkhag_master, t_gewog_master, t_village_master, t_country_master, \
     t_field_office_master, t_location_field_office_mapping, t_unit_master, t_user_master, t_service_master
 from administrator.views import dashboard
@@ -24,33 +26,39 @@ import pandas as pd
 from plant.views import focal_officer_application, inspector_application, resubmit_application, oic_application, \
     complain_officer_application, chief_application
 
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def organic_certificate(request):
-    login_id = request.session['Login_Id']
-    dzongkhag = t_dzongkhag_master.objects.all()
-    gewog = t_gewog_master.objects.all()
-    village = t_village_master.objects.all()
-    country = t_country_master.objects.all()
-    field_office = t_field_office_master.objects.all()
-    location = t_location_field_office_mapping.objects.all()
-    unit = t_unit_master.objects.filter(Unit_Type='S')
-    message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
+    try:
+        login_id = request.session['Login_Id']
+    except:
+        login_id = None
+    if login_id:
+        dzongkhag = t_dzongkhag_master.objects.all()
+        gewog = t_gewog_master.objects.all()
+        village = t_village_master.objects.all()
+        country = t_country_master.objects.all()
+        field_office = t_field_office_master.objects.all()
+        location = t_location_field_office_mapping.objects.all()
+        unit = t_unit_master.objects.filter(Unit_Type='S')
+        message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
 
-    inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
-                                                              Action_Date__isnull=False).count()
-    consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
-                                                               Action_Date__isnull=False, Application_Status='P') \
-        .count()
-    return render(request, 'organic_certification/apply_organic_certification.html',
-                  {'dzongkhag': dzongkhag, 'village': village,
-                   'gewog': gewog, 'country': country,
-                   'field_office': field_office,
-                   'location': location, 'unit': unit, 'count': message_count, 'count_call': inspection_call_count,
-                   'consignment_call_count': consignment_call_count})
+        inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
+                                                                  Action_Date__isnull=False).count()
+        consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
+                                                                   Action_Date__isnull=False, Application_Status='P') \
+            .count()
+        return render(request, 'organic_certification/apply_organic_certification.html',
+                      {'dzongkhag': dzongkhag, 'village': village,
+                       'gewog': gewog, 'country': country,
+                       'field_office': field_office,
+                       'location': location, 'unit': unit, 'count': message_count, 'count_call': inspection_call_count,
+                       'consignment_call_count': consignment_call_count})
+    else:
+        return render(request, 'redirect_page.html')
 
 
 def save_organic_certificate(request):
@@ -970,32 +978,39 @@ def oc_nc_response(request):
 
 
 # gap_certificate
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def gap_certificate(request):
-    login_id = request.session['Login_Id']
-    dzongkhag = t_dzongkhag_master.objects.all()
-    gewog = t_gewog_master.objects.all()
-    village = t_village_master.objects.all()
-    country = t_country_master.objects.all()
-    field_office = t_field_office_master.objects.all()
-    location = t_location_field_office_mapping.objects.all()
-    unit = t_unit_master.objects.filter(Unit_Type='S')
-    message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
+    try:
+        login_id = request.session['Login_Id']
+    except:
+        login_id = None
+    if login_id:
+        dzongkhag = t_dzongkhag_master.objects.all()
+        gewog = t_gewog_master.objects.all()
+        village = t_village_master.objects.all()
+        country = t_country_master.objects.all()
+        field_office = t_field_office_master.objects.all()
+        location = t_location_field_office_mapping.objects.all()
+        unit = t_unit_master.objects.filter(Unit_Type='S')
+        message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
 
-    inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
-                                                              Action_Date__isnull=False).count()
-    consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
-                                                               Action_Date__isnull=False, Application_Status='P') \
-        .count()
-    return render(request, 'GAP_Certification/apply_gap_certification.html',
-                  {'dzongkhag': dzongkhag, 'village': village,
-                   'gewog': gewog, 'country': country,
-                   'field_office': field_office,
-                   'location': location, 'unit': unit, 'count': message_count, 'count_call': inspection_call_count,
-                   'consignment_call_count': consignment_call_count})
+        inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
+                                                                  Action_Date__isnull=False).count()
+        consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
+                                                                   Action_Date__isnull=False, Application_Status='P') \
+            .count()
+        return render(request, 'GAP_Certification/apply_gap_certification.html',
+                      {'dzongkhag': dzongkhag, 'village': village,
+                       'gewog': gewog, 'country': country,
+                       'field_office': field_office,
+                       'location': location, 'unit': unit, 'count': message_count, 'count_call': inspection_call_count,
+                       'consignment_call_count': consignment_call_count})
+    else:
+        return render(request, 'redirect_page.html')
 
 
 def save_gap_certificate(request):
@@ -1758,32 +1773,40 @@ def gap_certificate_no(request):
 
 
 # Food Product certificate
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def food_product_certificate(request):
-    login_id = request.session['Login_Id']
-    dzongkhag = t_dzongkhag_master.objects.all()
-    gewog = t_gewog_master.objects.all()
-    village = t_village_master.objects.all()
-    country = t_country_master.objects.all()
-    field_office = t_field_office_master.objects.all()
-    location = t_location_field_office_mapping.objects.all()
-    unit = t_unit_master.objects.filter(Unit_Type='S')
-    message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
-                     | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
+    try:
+        login_id = request.session['Login_Id']
+    except:
+        login_id = None
+    if login_id:
+        dzongkhag = t_dzongkhag_master.objects.all()
+        gewog = t_gewog_master.objects.all()
+        village = t_village_master.objects.all()
+        country = t_country_master.objects.all()
+        field_office = t_field_office_master.objects.all()
+        location = t_location_field_office_mapping.objects.all()
+        unit = t_unit_master.objects.filter(Unit_Type='S')
+        message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
 
-    inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
-                                                              Action_Date__isnull=False).count()
-    consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
-                                                               Action_Date__isnull=False, Application_Status='P') \
-        .count()
-    return render(request, 'food_product_certification/apply_food_product_certification.html',
-                  {'dzongkhag': dzongkhag, 'village': village,
-                   'gewog': gewog, 'country': country,
-                   'field_office': field_office,
-                   'location': location, 'unit': unit, 'count': message_count, 'count_call': inspection_call_count,
-                   'consignment_call_count': consignment_call_count})
+        inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
+                                                                  Action_Date__isnull=False).count()
+        consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
+                                                                   Action_Date__isnull=False, Application_Status='P') \
+            .count()
+        return render(request, 'food_product_certification/apply_food_product_certification.html',
+                      {'dzongkhag': dzongkhag, 'village': village,
+                       'gewog': gewog, 'country': country,
+                       'field_office': field_office,
+                       'location': location, 'unit': unit, 'count': message_count, 'count_call': inspection_call_count,
+                       'consignment_call_count': consignment_call_count})
+    else:
+        return render(request, 'redirect_page.html')
+
 
 
 def save_food_product_certificate(request):
@@ -2403,31 +2426,37 @@ def fpc_nc_response(request):
 
 
 # Common
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def certificate_pending_list(request):
-    Login_Id = request.session['email']
+    try:
+        Login_Id = request.session['email']
+    except:
+        Login_Id = None
+    if Login_Id:
+        application_details = t_workflow_details.objects.filter(Applicant_Id=Login_Id, Service_Code='OC',
+                                                                Action_Date__isnull=True) \
+                              | t_workflow_details.objects.filter(Applicant_Id=Login_Id, Service_Code='FPC',
+                                                                  Action_Date__isnull=True) \
+                              | t_workflow_details.objects.filter(Applicant_Id=Login_Id, Service_Code='GAP',
+                                                                  Action_Date__isnull=True)
+        service_details = t_service_master.objects.all()
+        message_count = (t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='RS')
+                         | t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='IRS')
+                         | t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='ATR')
+                         | t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='APR')
+                         | t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='NCR')).count()
 
-    application_details = t_workflow_details.objects.filter(Applicant_Id=Login_Id, Service_Code='OC',
-                                                            Action_Date__isnull=True) \
-                          | t_workflow_details.objects.filter(Applicant_Id=Login_Id, Service_Code='FPC',
-                                                              Action_Date__isnull=True) \
-                          | t_workflow_details.objects.filter(Applicant_Id=Login_Id, Service_Code='GAP',
-                                                              Action_Date__isnull=True)
-    service_details = t_service_master.objects.all()
-    message_count = (t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='RS')
-                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='IRS')
-                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='ATR')
-                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='APR')
-                     | t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='NCR')).count()
-
-    inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=Login_Id,
-                                                              Action_Date__isnull=False).count()
-    consignment_call_count = t_workflow_details.objects.filter(Assigned_To=Login_Id,
-                                                               Action_Date__isnull=False, Application_Status='P') \
-        .count()
-    return render(request, 'certification_draft_list.html', {'application_details': application_details,
-                                                             'service_details': service_details, 'count': message_count,
-                                                             'count_call': inspection_call_count,
-                                                             'consignment_call_count': consignment_call_count})
+        inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=Login_Id,
+                                                                  Action_Date__isnull=False).count()
+        consignment_call_count = t_workflow_details.objects.filter(Assigned_To=Login_Id,
+                                                                   Action_Date__isnull=False, Application_Status='P') \
+            .count()
+        return render(request, 'certification_draft_list.html', {'application_details': application_details,
+                                                                 'service_details': service_details, 'count': message_count,
+                                                                 'count_call': inspection_call_count,
+                                                                 'consignment_call_count': consignment_call_count})
+    else:
+        return render(request, 'redirect_page.html')
 
 
 def view_certificate_draft_details(request):
@@ -2861,7 +2890,6 @@ def check_difference(request):
     d1 = datetime.strptime(date1, "%d-%m-%Y").date()
     d2 = datetime.strptime(date2, "%d-%m-%Y").date()
     delta = d2 - d1
-    print(delta.days)
     data['no_of_days'] = delta.days
     return JsonResponse(data)
 

@@ -92,12 +92,16 @@ hr {
 }
 .btn-info {
     color: #fff;
-    background-color: #193033;
+    background-color: #888888;
     border-color: #17a2b8;
 }
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
   color: black;
   opacity: 1; /* Firefox */
+}
+.card-footer, .card-header {
+    background-color: rgb(144 130 130);
+    color: white;
 }
 </style>
 <body>
@@ -269,6 +273,13 @@ hr {
 <script src="{% static 'assets/js/sweetalert2.all.min.js' %}"></script>
 <script src="{% static 'assets/js/app.min.js' %}"></script>
 <script>
+$(document).ready(function()
+{
+    if($("#applicationNo").val() == "")
+    {
+        $("#pills-complaint-file").prop('disabled', true);
+    }
+});
 function Save_form()
     {
         var appNo = $('#applicationNo').val();
@@ -354,10 +365,9 @@ function Save_form()
                 data : $('#complaintForm').serialize(),
                 success : function(data) {
                     $('#applicationNo').val(data.applNo);
+                    $('#email_id').val(data.email);
                     $('#submitMsg').show();
-                    setTimeout(function() {
-                        $("#submitMsg").hide('blind', {}, 500)
-                    }, 1000);
+                    $('#submitMsg').delay(1000).fadeOut('slow');
                     setTimeout(function() {
                          $('#pills-complaint-file').tab('show');
                     }, 2000);
