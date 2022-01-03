@@ -64,6 +64,8 @@ def dashboard(request):
                                      Action_Date__isnull=False, Application_Status='CA')
                                  | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='P',
                                                                      Action_Date__isnull=False)
+                                 | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='A',
+                                                                     Service_Code='COM')
                                  ).count()
                 return render(request, 'dashboard.html', {'count': message_count})
         elif Role == 'OIC':
@@ -75,8 +77,25 @@ def dashboard(request):
                                                                Action_Date__isnull=False) |
                              t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
                                                                Action_Date__isnull=False)).count()
-
-            return render(request, 'dashboard.html', {'count': message_count})
+            oic_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
+                                                           Action_Date__isnull=False)
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
+                                                             Application_Status='I',
+                                                             Action_Date__isnull=False)
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
+                                                             Application_Status='FI',
+                                                             Action_Date__isnull=False)
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
+                                                             Application_Status='FR',
+                                                             Action_Date__isnull=False)
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
+                                                             Application_Status='P',
+                                                             Action_Date__isnull=False)
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APA',
+                                                             Action_Date__isnull=False)
+                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
+                                                             Action_Date__isnull=False)).count()
+            return render(request, 'dashboard.html', {'count': message_count, 'oic_count':oic_count})
         elif Role == 'Inspector':
             login_id = request.session['Login_Id']
             Field_Office_Id = request.session['field_office_id']
@@ -141,6 +160,7 @@ def dashboard(request):
     else:
         return render(request, 'redirect_page.html')
 
+
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def login(request):
     _message = 'Please sign in'
@@ -181,7 +201,7 @@ def login(request):
                                 for mainroles in mainrole:
                                     admin = "Agency Admin"
                                     focal_officer = "Focal Officer"
-                                    complaint_officer = "Complaint Officer"
+                                    complaint_officer = "Complaint Handling Officer"
                                     OIC = "OIC"
                                     Inspector = "Inspector"
                                     Chief = "Chief"
@@ -213,7 +233,7 @@ def login(request):
                                         return redirect(dashboard)
                                     elif complaint_officer == str(mainroles.Role_Name):
                                         request.session['username'] = user.Name
-                                        request.session['role'] = "Complain Officer"
+                                        request.session['role'] = "Complaint Handling Officer"
                                         request.session['Login_Id'] = user.Login_Id
                                         request.session['email'] = user.Email_Id
                                         request.session['Login_Type'] = user.Login_Type
@@ -1517,6 +1537,7 @@ def password_update(request):
         t_forgot_password.objects.create(Login_Id=Login_Id, Security_Question_Id=security_question, Answer=Answer)
     return render(request, 'common_dashboard.html')
 
+
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def payment_list(request):
     try:
@@ -1589,6 +1610,7 @@ def payment_list(request):
                                                                  'ins_count': message_count, 'fhc_count': fhc_count})
     else:
         return render(request, 'redirect_page.html')
+
 
 def update_payment_details(request):
     Application_No = request.POST.get('application_no')
