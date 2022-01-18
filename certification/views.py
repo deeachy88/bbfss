@@ -2301,7 +2301,7 @@ def save_fpc_audit_plan_name(request):
                                          File_Path=file_url, Role_Id=None,
                                          Attachment=fileName, Attachment_Type='AP')
 
-        file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+        file_attach = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='AP')
         file_attach_count = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='AP')\
             .count()
         return render(request, 'food_product_certification/audit_plan_details.html', {'file_attach': file_attach,

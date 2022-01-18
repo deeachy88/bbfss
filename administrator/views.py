@@ -66,6 +66,7 @@ def dashboard(request):
                                                                      Action_Date__isnull=False)
                                  | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='A',
                                                                      Service_Code='COM')
+                                 | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP')
                                  ).count()
                 return render(request, 'dashboard.html', {'count': message_count})
         elif Role == 'OIC':
@@ -592,7 +593,7 @@ def save_division_form(request, form, template_name):
 
 
 def unit_manage(request):
-    unit_list = t_unit_master.objects.all()
+    unit_list = t_unit_master.objects.all().order_by('Unit_Id')
     return render(request, 'unit.html', {'unit_list': unit_list})
 
 
@@ -600,9 +601,9 @@ def unit_add(request):
     unit = request.GET.get('unit')
     unit_type = request.GET.get('unit_type')
     t_unit_master.objects.create(Unit=unit, Unit_Type=unit_type)
-    unit_list = t_unit_master.objects.all()
+    unit_list = t_unit_master.objects.all().order_by('Unit_Id')
 
-    return render(request, 'unit_list_master.html', {'unit_list': unit_list})
+    return render(request, 'unit.html', {'unit_list': unit_list})
 
 
 def edit_unit(request):
@@ -613,16 +614,16 @@ def edit_unit(request):
     unit_details = t_unit_master.objects.filter(pk=record_id)
     unit_details.update(Unit=unit, Unit_Type=unit_type)
 
-    unit_list = t_unit_master.objects.all()
-    return render(request, 'unit_list_master.html', {'unit_list': unit_list})
+    unit_list = t_unit_master.objects.all().order_by('Unit_Id')
+    return render(request, 'unit.html', {'unit_list': unit_list})
 
 
 def delete_unit(request):
     record_id = request.GET.get('record_id')
     unit_details = t_unit_master.objects.filter(Unit_Id=record_id)
     unit_details.delete()
-    unit = t_unit_master.objects.all()
-    return render(request, 'unit_list_master.html', {'unit_list': unit})
+    unit = t_unit_master.objects.all().order_by('Unit_Id')
+    return render(request, 'unit.html', {'unit_list': unit})
 
 
 def crop_category_manage(request):
@@ -1959,8 +1960,8 @@ def check_cid_exists(request):
 def add_food_product_category(request):
     food_product_category_name = request.GET.get('food_product_category_name')
     t_food_product_category_master.objects.create(Food_Product_Category_Name=food_product_category_name)
-    food_product_category_list = t_food_product_category_master.objects.all()
-    return render('food_product_category_master.html', {'food_product_category_list': food_product_category_list})
+    food_product_category_list = t_food_product_category_master.objects.all().order_by('Food_Product_Category_Id')
+    return render(request,'food_product_category_master.html', {'food_product_category_list': food_product_category_list})
 
 
 def update_food_product_category(request):
@@ -1969,19 +1970,19 @@ def update_food_product_category(request):
     food_product_category_list = t_food_product_category_master.objects.filter(
         Food_Product_Category_Id=food_product_category_id)
     food_product_category_list.update(Food_Product_Category_Name=edit_food_product_category_name)
-    food_product_category_list = t_food_product_category_master.objects.all()
-    return render('food_product_category_master.html', {'food_product_category_list': food_product_category_list})
+    food_product_category_list = t_food_product_category_master.objects.all().order_by('Food_Product_Category_Id')
+    return render(request,'food_product_category_master.html', {'food_product_category_list': food_product_category_list})
 
 
 def delete_food_product_category(request):
-    food_product_category_id = request.GET.get('food_product_category_id')
+    food_product_category_id = request.GET.get('record_id')
     food_product_category_list = t_food_product_category_master.objects.filter(
         Food_Product_Category_Id=food_product_category_id)
     food_product_category_list.delete()
-    food_product_category_list = t_food_product_category_master.objects.all()
-    return render('food_product_category_master.html', {'food_product_category_list': food_product_category_list})
+    food_product_category_list = t_food_product_category_master.objects.all().order_by('Food_Product_Category_Id')
+    return render(request,'food_product_category_master.html', {'food_product_category_list': food_product_category_list})
 
 
 def food_product_category_master(request):
-    food_product_category_list = t_food_product_category_master.objects.all()
-    return render('food_product_category_master.html', {'food_product_category_list': food_product_category_list})
+    food_product_category_list = t_food_product_category_master.objects.all().order_by('Food_Product_Category_Id')
+    return render(request,'food_product_category_master.html', {'food_product_category_list': food_product_category_list})

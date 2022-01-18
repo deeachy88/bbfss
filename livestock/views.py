@@ -27,7 +27,7 @@ from livestock.models import t_livestock_clearance_meat_shop_t1, t_livestock_cle
     t_livestock_clearance_meat_shop_t3, t_livestock_import_permit_product_inspection_t3, \
     t_livestock_import_permit_animal_inspection_t3
 from plant.models import t_workflow_details, t_file_attachment, t_payment_details, t_plant_seed_certification_t3, \
-    t_plant_movement_permit_t3, t_plant_clearence_nursery_seed_grower_t3
+    t_plant_movement_permit_t3, t_plant_clearence_nursery_seed_grower_t3, t_plant_import_permit_inspection_t3
 from plant.views import inspector_application, resubmit_application, focal_officer_application, oic_application
 
 
@@ -2125,7 +2125,6 @@ def export_certificate_application(request):
         return render(request, 'redirect_page.html')
 
 
-
 def save_livestock_export(request):
     data = dict()
     service_code = "LEC"
@@ -2645,7 +2644,6 @@ def movement_permit_application(request):
                        'count_call': inspection_call_count, 'consignment_call_count': consignment_call_count})
     else:
         return render(request, 'redirect_page.html')
-
 
 
 def save_movement_permit_application(request):
@@ -3598,40 +3596,53 @@ def delete_observation(request):
     if service_type == 'ILP':
         details = t_livestock_import_permit_product_inspection_t3.objects.filter(Record_Id=Record_Id)
         details.delete()
-        decision_details = t_livestock_import_permit_product_inspection_t3.objects.filter(Application_No=Application_No)
+        decision_details = t_livestock_import_permit_product_inspection_t3.objects.filter(Application_No=Application_No)\
+            .order_by('Record_Id')
         return render(request, 'Livestock_Import/decision_details.html', {'decision_details': decision_details})
     elif service_type == 'IAF':
         details = t_livestock_import_permit_animal_inspection_t3.objects.filter(Record_Id=Record_Id)
         details.delete()
-        decision_details = t_livestock_import_permit_animal_inspection_t3.objects.filter(Application_No=Application_No)
+        decision_details = t_livestock_import_permit_animal_inspection_t3.objects.filter(Application_No=Application_No)\
+            .order_by('Record_Id')
         return render(request, 'Animal_Fish_Import/decision_details.html', {'decision_details': decision_details})
     elif service_type == 'LMP':
         details = t_livestock_movement_permit_t3.objects.filter(Record_Id=Record_Id)
         details.delete()
-        observation_details = t_livestock_movement_permit_t3.objects.filter(Application_No=Application_No)
+        observation_details = t_livestock_movement_permit_t3.objects.filter(Application_No=Application_No).order_by(
+            'Record_Id')
         return render(request, 'Movement_Permit_Livestock/observation_details.html',
                       {'observation_details': observation_details})
     elif service_type == 'FIP':
         details = t_food_import_permit_inspection_t3.objects.filter(Record_Id=Record_Id)
         details.delete()
-        observation_details = t_food_import_permit_inspection_t3.objects.filter(Application_No=Application_No)
+        observation_details = t_food_import_permit_inspection_t3.objects.filter(Application_No=Application_No).order_by(
+            'Record_Id')
         return render(request, 'import_certificate_food/observation_details.html',
                       {'observation': observation_details})
     elif service_type == 'RNS':
         details = t_plant_clearence_nursery_seed_grower_t3.objects.filter(Record_Id=Record_Id)
         details.delete()
-        details_statement = t_plant_clearence_nursery_seed_grower_t3.objects.filter(Application_No=Application_No)
+        details_statement = t_plant_clearence_nursery_seed_grower_t3.objects.filter(Application_No=Application_No).order_by(
+            'Record_Id')
         return render(request, 'nursery_registration/add_decision_details.html', {'decision': details_statement})
     elif service_type == 'RSC':
         details = t_plant_seed_certification_t3.objects.filter(Record_Id=Record_Id)
         details.delete()
-        details_statement = t_plant_seed_certification_t3.objects.filter(Application_No=Application_No)
+        details_statement = t_plant_seed_certification_t3.objects.filter(Application_No=Application_No).order_by(
+            'Record_Id')
         return render(request, 'seed_certification/add_decision_details.html', {'decision': details_statement})
     elif service_type == 'MPP':
         details = t_plant_movement_permit_t3.objects.filter(Record_Id=Record_Id)
         details.delete()
-        details_statement = t_plant_movement_permit_t3.objects.filter(Application_No=Application_No)
+        details_statement = t_plant_movement_permit_t3.objects.filter(Application_No=Application_No).order_by(
+            'Record_Id')
         return render(request, 'movement_permit/add_application_details.html', {'movement_permit': details_statement})
+    elif service_type == 'IPP':
+        details = t_plant_import_permit_inspection_t3.objects.filter(Record_Id=Record_Id)
+        details.delete()
+        decision_details = t_plant_import_permit_inspection_t3.objects.filter(Application_No=Application_No).order_by(
+            'Record_Id')
+        return render(request, 'import_permit/add_import_details.html', {'import_permit': decision_details})
 
 
 def update_decision(request):
@@ -3676,12 +3687,20 @@ def update_decision(request):
     elif service_type == 'RNS':
         details = t_plant_clearence_nursery_seed_grower_t3.objects.filter(Record_Id=Record_Id)
         details.update(Observation=currentObservation, Action=decisionConform)
-        details_statement = t_plant_clearence_nursery_seed_grower_t3.objects.filter(Application_No=Application_No).order_by(
+        details_statement = t_plant_clearence_nursery_seed_grower_t3.objects.filter(
+            Application_No=Application_No).order_by(
             'Record_Id')
-        return render(request, 'nursery_registration/add_decision_details.html', {'decision_details': details_statement})
+        return render(request, 'nursery_registration/add_decision_details.html',
+                      {'decision_details': details_statement})
     elif service_type == 'MPP':
         details = t_plant_movement_permit_t3.objects.filter(Record_Id=Record_Id)
         details.update(Current_Observation=currentObservation, Decision_Conformity=decisionConform)
         decision_details = t_plant_movement_permit_t3.objects.filter(Application_No=Application_No).order_by(
             'Record_Id')
         return render(request, 'movement_permit/add_application_details.html', {'movement_permit': decision_details})
+    elif service_type == 'IPP':
+        details = t_plant_import_permit_inspection_t3.objects.filter(Record_Id=Record_Id)
+        details.update(Current_Observation=currentObservation, Decision_Conformity=decisionConform)
+        decision_details = t_plant_import_permit_inspection_t3.objects.filter(Application_No=Application_No).order_by(
+            'Record_Id')
+        return render(request, 'import_permit/add_import_details.html', {'import_permit': decision_details})

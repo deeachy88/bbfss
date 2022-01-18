@@ -11,9 +11,9 @@ color: black !important;
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <strong class="card-title">Unit Master</strong>
+                    <strong class="card-title">Food Product Category Master</strong>
                     <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#food_category_modal">
-                        Add Unit
+                        Add
                     </button>
                 </div>
                 <div class="card-body">
@@ -67,7 +67,7 @@ color: black !important;
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label class="form-label">>Food Product Category Name <font color="red">*</font></label>
+                        <label class="form-label">Food Product Category Name <font color="red">*</font></label>
                         <input type="text" class="form-control" name="food_product_category_name" id="food_product_category_name">
                     </div>
                     <div class="alert alert-danger" id="food_product_category_nameErrorMsg" style="display:none"></div>
@@ -84,7 +84,7 @@ color: black !important;
 </form>
 
 <form id="edit_food_product_category_form" method="post" class="form-horizontal form-label-left">
-    <div class="modal fade" id="edit_food_category_madal">
+    <div class="modal fade" id="edit_food_category_modal">
         <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -132,9 +132,9 @@ color: black !important;
                 data : $('#add_food_product_category_form').serialize(),
                 success : function(responseText)
                 {
-                    $("#unitModal").modal("hide");
+                    $("#food_category_modal").modal("hide");
                     $("#list_of_units").html(responseText);
-                    $('.modal-backdrop').remove();
+                    location.reload()
                     $("#unit_add_form")[0].reset();
                 }
             });
@@ -145,7 +145,7 @@ color: black !important;
     {
         $('#food_product_category_id').val(Food_Product_Category_Id)
         $('#edit_Food_Product_Category_Name').val(Food_Product_Category_Name)
-        $("#edit_food_category_madal").modal("show");
+        $("#edit_food_category_modal").modal("show");
     }
 
     function update_food_product_category()
@@ -168,15 +168,15 @@ color: black !important;
                 dataType : "html",
                 success : function(response)
                 {
-                    $("#edit_unit_modal").modal("hide");
-                    $("#unit_details").html(response);
+                    $("#edit_food_category_modal").modal("hide");
+                    $("#list_of_units").html(response);
                     location.reload()
                 }
             });
         }
     }
 
-    function delete_unit(record_id)
+    function delete_food_product_category(record_id)
     {
         $.ajax({
             type : "GET",
@@ -184,7 +184,7 @@ color: black !important;
             data : {'record_id':record_id},
             success : function(response)
             {
-                $("#unit_details").html(response);
+                $("#list_of_units").html(response);
                 location.reload()
             }
         });

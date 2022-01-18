@@ -512,7 +512,7 @@ form, input, select, textarea{
                             </div>
                         </div>
                         <div class="card-body">
-                            <div id="Details">
+                            <div id="Plant_Details">
                                 {% include 'import_permit/import_page_plant.html' %}
                             </div>
                         </div>
@@ -1538,7 +1538,7 @@ form, input, select, textarea{
                     data : $('#save_plant_form').serialize(),
                     success : function(responseText) {
                        $('#add_plant_details').modal('hide');
-                       $('#Details').html(responseText);
+                       $('#Plant_Details').html(responseText);
                        $('#import-profile-tab').tab('show');
                        $('.modal-backdrop').remove();
                        $('#save_plant_form')[0].reset();
@@ -1615,10 +1615,12 @@ form, input, select, textarea{
         }
         else
         {
+            var appNo = $('#applicationNo').val();
             var fileName = document.getElementById('plant_document').files[0].name;
             var fd = new FormData();
             var file = document.getElementById('plant_document').files[0];
             fd.append('plant_document', file);
+            fd.append('appNo', appNo);
             token_value=$("input[name=csrfmiddlewaretoken]").val();
             $.ajaxSetup
             ({
@@ -1981,8 +1983,9 @@ function loadDetails()
         {
             if(import_type == 'P')
             {
+                alert(import_type);
                 $('#plant-card').show();
-                $('#Details').html(response);
+                $('#Plant_Details').html(response);
             }
             else
             {
