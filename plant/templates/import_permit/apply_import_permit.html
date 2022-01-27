@@ -163,7 +163,7 @@ form, input, select, textarea{
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Means of Conveyance <font color="red">*</font></label>
-                                    <select class="form-control form-control" id="com_conveyanceMeans" name="com_conveyanceMeans">
+                                    <select class="form-control form-control" id="com_conveyanceMeans" name="com_conveyanceMeans" onchange="get_com_field_office(this.value)">
                                         <option value="">-SELECT-</option>
                                         <option value="By Air">By Air</option>
                                         <option value="By Road">By Road</option>
@@ -303,7 +303,7 @@ form, input, select, textarea{
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Means of Conveyance <font color="red">*</font></label>
-                                    <select class="form-control form-control" id="conveyanceMeans" name="conveyanceMeans">
+                                    <select class="form-control form-control" id="conveyanceMeans" name="conveyanceMeans" onchange="get_field_office(this.value)">
                                         <option value="">-SELECT-</option>
                                         <option value="By Air">By Air</option>
                                         <option value="By Road">By Road</option>
@@ -434,7 +434,7 @@ form, input, select, textarea{
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Means of Conveyance <font color="red">*</font></label>
-                                    <select class="form-control form-control" id="p_conveyanceMeans" name="p_conveyanceMeans">
+                                    <select class="form-control form-control" id="p_conveyanceMeans" name="p_conveyanceMeans" onchange="get_p_field_office(this.value)">
                                         <option value="">-SELECT-</option>
                                         <option value="By Air">By Air</option>
                                         <option value="By Road">By Road</option>
@@ -2067,6 +2067,90 @@ function check_edit_qty(qty)
     else
     {
         $('#edit_qtyErrorMsg').hide();
+    }
+}
+
+function get_field_office(conveyance)
+{
+    if(conveyance == "By Air")
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_field_office' %}",
+            data :{'conveyance':conveyance},
+            success : function(data)
+            {
+                $('#entry_point').html(data);
+            }
+        });
+    }
+    else
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_field_office' %}",
+            data :{'conveyance':conveyance},
+            success : function(data)
+            {
+                $('#entry_point').html(data);
+            }
+        });
+    }
+}
+
+function get_com_field_office(conveyance)
+{
+    if(conveyance == "By Air")
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_field_office' %}",
+            data :{'conveyance':conveyance},
+            success : function(data)
+            {
+                $('#com_entry_point').html(data);
+            }
+        });
+    }
+    else
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_field_office' %}",
+            data :{'conveyance':conveyance},
+            success : function(data)
+            {
+                $('#com_entry_point').html(data);
+            }
+        });
+    }
+}
+
+function get_p_field_office(conveyance)
+{
+    if(conveyance == "By Air")
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_field_office' %}",
+            data :{'conveyance':conveyance},
+            success : function(data)
+            {
+                $('#p_entry_point').html(data);
+            }
+        });
+    }
+    else
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'load_field_office' %}",
+            data :{'conveyance':conveyance},
+            success : function(data)
+            {
+                $('#p_entry_point').html(data);
+            }
+        });
     }
 }
 </script>

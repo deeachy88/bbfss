@@ -233,30 +233,32 @@ def meat_shop_registration_application_no(service_code):
 def meat_shop_file(request):
     data = dict()
     myFile = request.FILES['document']
+    app_no = request.POST.get('appNo')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + myFile.name
     fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/livestock/meat_shop_licensing")
-    if fs.exists(myFile.name):
+    if fs.exists(file_name):
         data['form_is_valid'] = False
     else:
-        fs.save(myFile.name, myFile)
-        file_url = "attachments" + "/" + str(
-            timezone.now().year) + "/livestock/meat_shop_licensing" + "/" + myFile.name
+        fs.save(file_name, myFile)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/livestock/meat_shop_licensing" + "/" + file_name
         data['form_is_valid'] = True
         data['file_url'] = file_url
+        data['file_name'] = file_name
     return JsonResponse(data)
 
 
 def meat_shop_file_name(request):
     if request.method == 'POST':
-        Application_No = request.POST.get('appNo')
+        app_no = request.POST.get('appNo')
         fileName = request.POST.get('filename')
         Applicant_Id = request.session['email']
         file_url = request.POST.get('file_url')
+        file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + fileName
+        t_file_attachment.objects.create(Application_No=app_no, Applicant_Id=Applicant_Id,
+                                         Role_Id=None, File_Path=file_url,
+                                         Attachment=file_name)
 
-        t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
-                                         File_Path=file_url, Role_Id=None,
-                                         Attachment=fileName)
-
-        file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+        file_attach = t_file_attachment.objects.filter(Application_No=app_no)
     return render(request, 'meat_shop_registration/file_attachment.html', {'file_attach': file_attach})
 
 
@@ -350,7 +352,8 @@ def meat_shop_inspection_team_details(request):
                                                       Meeting_Type=meeting_type,
                                                       Name=name, Designation=designation)
     application_details = t_livestock_clearance_meat_shop_t6.objects.filter(Application_No=application_id,
-                                                                            Meeting_Type=meeting_type)
+                                                                            Meeting_Type=meeting_type)\
+        .order_by('Record_Id')
     return render(request, 'meat_shop_registration/inspection_team_details.html',
                   {'application_details': application_details})
 
@@ -364,7 +367,8 @@ def update_meat_shop_inspection_team_details(request):
     details = t_livestock_clearance_meat_shop_t6.objects.filter(Record_Id=record_id)
     details.update(Name=name, Designation=designation)
     application_details = t_livestock_clearance_meat_shop_t6.objects.filter(Application_No=application_id,
-                                                                            Meeting_Type='Feasibility Inspection')
+                                                                            Meeting_Type='Feasibility Inspection')\
+        .order_by('Record_Id')
     return render(request, 'meat_shop_registration/inspection_team_details.html',
                   {'application_details': application_details})
 
@@ -378,18 +382,20 @@ def update_meat_shop_factory_inspection_team_details(request):
     details = t_livestock_clearance_meat_shop_t6.objects.filter(Record_Id=record_id)
     details.update(Name=name, Designation=designation)
     application_details = t_livestock_clearance_meat_shop_t6.objects.filter(Application_No=application_id,
-                                                                            Meeting_Type='Factory Inspection')
+                                                                            Meeting_Type='Factory Inspection')\
+        .order_by('Record_Id')
     return render(request, 'meat_shop_registration/inspection_team_details.html',
                   {'application_details': application_details})
 
 
 def delete_fi_inspection_team_details(request):
-    application_id = request.GET.get('application_id')
-    record_id = request.GET.get('record_id')
+    application_id = request.GET.get('Application_No')
+    record_id = request.GET.get('Record_Id')
     details = t_livestock_clearance_meat_shop_t6.objects.filter(Record_Id=record_id)
     details.delete()
     application_details = t_livestock_clearance_meat_shop_t6.objects.filter(Application_No=application_id,
-                                                                            Meeting_Type='Feasibility Inspection')
+                                                                            Meeting_Type='Feasibility Inspection')\
+        .order_by('Record_Id')
     return render(request, 'meat_shop_registration/inspection_team_details.html',
                   {'application_details': application_details})
 
@@ -400,7 +406,8 @@ def delete_factory_inspection_team_details(request):
     details = t_livestock_clearance_meat_shop_t6.objects.filter(Record_Id=record_id)
     details.delete()
     application_details = t_livestock_clearance_meat_shop_t6.objects.filter(Application_No=application_id,
-                                                                            Meeting_Type='Factory Inspection')
+                                                                            Meeting_Type='Factory Inspection')\
+        .order_by('Record_Id')
     return render(request, 'meat_shop_registration/inspection_team_details.html',
                   {'application_details': application_details})
 
@@ -409,15 +416,16 @@ def meat_shop_team_details_feasibility_ins(request):
     application_id = request.GET.get('application_id')
     name = request.GET.get('name')
     designation = request.GET.get('designation')
-    date_open = request.GET.get('opening_date')
-    date_close = request.GET.get('closing_date')
+    meeting_date = request.GET.get('meeting_date')
+    meeting_type_val = request.GET.get('meeting_type')
     t_livestock_clearance_meat_shop_t4.objects.create(Application_No=application_id,
                                                       Meeting_Type='Feasibility Inspection',
                                                       Name=name, Designation=designation,
-                                                      Open_Meeting_Date=date_open,
-                                                      Closing_Meeting_Date=date_close)
+                                                      Meeting_Date=meeting_date,
+                                                      Type=meeting_type_val)
     application_details = t_livestock_clearance_meat_shop_t4.objects.filter(Application_No=application_id,
-                                                                            Meeting_Type='Feasibility Inspection')
+                                                                            Meeting_Type='Feasibility Inspection')\
+        .order_by('Record_Id')
     return render(request, 'meat_shop_registration/team_details.html', {'application_details': application_details})
 
 
@@ -425,13 +433,14 @@ def update_meat_shop_team_details_feasibility_ins(request):
     application_id = request.GET.get('application_id')
     name = request.GET.get('name')
     designation = request.GET.get('designation')
-    date_open = request.GET.get('opening_date')
-    date_close = request.GET.get('closing_date')
+    meeting_date = request.GET.get('meeting_date')
+    meeting_type_val = request.GET.get('meeting_type')
     record_id = request.GET.get('record_id')
     details = t_livestock_clearance_meat_shop_t4.objects.filter(Record_Id=record_id)
-    details.update(Name=name, Designation=designation, Open_Meeting_Date=date_open, Closing_Meeting_Date=date_close)
+    details.update(Name=name, Designation=designation, Meeting_Date=meeting_date, Type=meeting_type_val)
     application_details = t_livestock_clearance_meat_shop_t4.objects.filter(Application_No=application_id,
-                                                                            Meeting_Type='Feasibility Inspection')
+                                                                            Meeting_Type='Feasibility Inspection')\
+        .order_by('Record_Id')
     return render(request, 'meat_shop_registration/team_details.html', {'application_details': application_details})
 
 
@@ -439,13 +448,14 @@ def update_meat_shop_team_details_factory_ins(request):
     application_id = request.GET.get('application_id')
     name = request.GET.get('name')
     designation = request.GET.get('designation')
-    date_open = request.GET.get('opening_date')
-    date_close = request.GET.get('closing_date')
+    meeting_date = request.GET.get('meeting_date')
+    meeting_type_val = request.GET.get('meeting_type')
     record_id = request.GET.get('record_id')
     details = t_livestock_clearance_meat_shop_t4.objects.filter(Record_Id=record_id)
-    details.update(Name=name, Designation=designation, Open_Meeting_Date=date_open, Closing_Meeting_Date=date_close)
+    details.update(Name=name, Designation=designation, Meeting_Date=meeting_date, Type=meeting_type_val)
     application_details = t_livestock_clearance_meat_shop_t4.objects.filter(Application_No=application_id,
-                                                                            Meeting_Type='Factory Inspection')
+                                                                            Meeting_Type='Factory Inspection')\
+        .order_by('Record_Id')
     return render(request, 'meat_shop_registration/team_details.html', {'application_details': application_details})
 
 
@@ -455,7 +465,8 @@ def delete_fi_team_details(request):
     details = t_livestock_clearance_meat_shop_t4.objects.filter(Record_Id=record_id)
     details.delete()
     application_details = t_livestock_clearance_meat_shop_t4.objects.filter(Application_No=application_id,
-                                                                            Meeting_Type='Feasibility Inspection')
+                                                                            Meeting_Type='Feasibility Inspection')\
+        .order_by('Record_Id')
     return render(request, 'meat_shop_registration/team_details.html', {'application_details': application_details})
 
 
@@ -465,7 +476,8 @@ def delete_factory_team_details(request):
     details = t_livestock_clearance_meat_shop_t4.objects.filter(Record_Id=record_id)
     details.delete()
     application_details = t_livestock_clearance_meat_shop_t4.objects.filter(Application_No=application_id,
-                                                                            Meeting_Type='Factory Inspection')
+                                                                            Meeting_Type='Factory Inspection')\
+        .order_by('Record_Id')
     return render(request, 'meat_shop_registration/team_details.html', {'application_details': application_details})
 
 
@@ -483,7 +495,8 @@ def meat_shop_concern_details_feasibility_ins(request):
                                                       Clause_No=Clause_No, Date=date.today(), Concern=Concern,
                                                       FBO_Response=FBO_Response)
     application_details = t_livestock_clearance_meat_shop_t5.objects.filter(Application_No=application_id,
-                                                                            Inspection_Type='Feasibility Inspection')
+                                                                            Inspection_Type='Feasibility Inspection')\
+        .order_by('Record_Id')
     message_count = t_livestock_clearance_meat_shop_t5.objects.filter(Concern='Yes',
                                                                       Inspection_Type='Feasibility Inspection').count()
     return render(request, 'meat_shop_registration/concern_details.html', {'inspection_details': application_details,
@@ -610,13 +623,13 @@ def meat_shop_team_details_factory_ins(request):
     application_id = request.GET.get('application_id')
     name = request.GET.get('name')
     designation = request.GET.get('designation')
-    date_open = request.GET.get('opening_date')
-    date_close = request.GET.get('closing_date')
+    meeting_date = request.GET.get('meeting_date')
+    meeting_type_value = request.GET.get('meeting_type')
     t_livestock_clearance_meat_shop_t4.objects.create(Application_No=application_id,
                                                       Meeting_Type='Factory Inspection',
                                                       Name=name, Designation=designation,
-                                                      Open_Meeting_Date=date_open,
-                                                      Closing_Meeting_Date=date_close)
+                                                      Meeting_Date=meeting_date,
+                                                      Type=meeting_type_value)
     application_details = t_livestock_clearance_meat_shop_t4.objects.filter(Application_No=application_id,
                                                                             Meeting_Type='Factory Inspection')
     return render(request, 'meat_shop_registration/team_details.html', {'application_details': application_details})
@@ -636,7 +649,8 @@ def meat_shop_concern_details_factory_ins(request):
                                                       Clause_No=Clause_No, Date=date.today(), Concern=None,
                                                       FBO_Response=None, NC=Concern, NC_Category=NC_Category)
     application_details = t_livestock_clearance_meat_shop_t5.objects.filter(Application_No=application_id,
-                                                                            Inspection_Type='Factory Inspection')
+                                                                            Inspection_Type='Factory Inspection')\
+        .order_by('Record_Id')
     message_count = t_livestock_clearance_meat_shop_t5.objects.filter(NC='Yes',
                                                                       Inspection_Type='Factory Inspection').count()
     return render(request, 'meat_shop_registration/nc_details.html', {'application_details': application_details,
@@ -796,7 +810,8 @@ def edit_meat_shop_feasibility_details(request):
     else:
         app_details.update(FBO_Response=None)
     application_details = t_livestock_clearance_meat_shop_t5.objects.filter(Application_No=application_id,
-                                                                            Inspection_Type='Feasibility Inspection')
+                                                                            Inspection_Type='Feasibility Inspection')\
+        .order_by('Record_Id')
     message_count = t_livestock_clearance_meat_shop_t5.objects.filter(Concern='Yes').count()
     return render(request, 'meat_shop_registration/concern_details.html', {'inspection_details': application_details,
                                                                            'message_count': message_count})
@@ -815,7 +830,8 @@ def edit_meat_shop_factory_details(request):
     else:
         app_details.update(FBO_Response=None)
     application_details = t_livestock_clearance_meat_shop_t5.objects.filter(Application_No=application_id,
-                                                                            Inspection_Type='Factory Inspection')
+                                                                            Inspection_Type='Factory Inspection')\
+        .order_by('Record_Id')
     message_count = t_livestock_clearance_meat_shop_t5.objects.filter(Concern='Yes').count()
     return render(request, 'meat_shop_registration/concern_details.html', {'inspection_details': application_details,
                                                                            'message_count': message_count})
@@ -1244,29 +1260,32 @@ def load_af_attachment(request):
 def add_la_permit_file(request):
     data = dict()
     myFile = request.FILES['document']
+    app_no = request.POST.get('appNo')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + myFile.name
     fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/livestock/livestock_import")
-    if fs.exists(myFile.name):
+    if fs.exists(file_name):
         data['form_is_valid'] = False
     else:
-        fs.save(myFile.name, myFile)
-        file_url = "attachments" + "/" + str(timezone.now().year) + "/livestock/livestock_import" + "/" + myFile.name
+        fs.save(file_name, myFile)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/livestock/livestock_import" + "/" + file_name
         data['form_is_valid'] = True
         data['file_url'] = file_url
+        data['file_name'] = file_name
     return JsonResponse(data)
 
 
 def add_la_file_name(request):
     if request.method == 'POST':
-        Application_No = request.POST.get('appNo')
+        app_no = request.POST.get('appNo')
         fileName = request.POST.get('filename')
         Applicant_Id = request.session['email']
         file_url = request.POST.get('file_url')
+        file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + fileName
+        t_file_attachment.objects.create(Application_No=app_no, Applicant_Id=Applicant_Id,
+                                         Role_Id=None, File_Path=file_url,
+                                         Attachment=file_name)
 
-        t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
-                                         File_Path=file_url, Role_Id=None,
-                                         Attachment=fileName)
-
-        file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+        file_attach = t_file_attachment.objects.filter(Application_No=app_no)
         return render(request, 'Animal_Fish_Import/file_attachment.html', {'file_attach': file_attach})
 
 
@@ -1837,30 +1856,32 @@ def load_lec_species(request):
 def add_livestock_product_file(request):
     data = dict()
     myFile = request.FILES['document']
+    app_no = request.POST.get('appNo')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + myFile.name
     fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/livestock/livestock_product_import")
-    if fs.exists(myFile.name):
+    if fs.exists(file_name):
         data['form_is_valid'] = False
     else:
-        fs.save(myFile.name, myFile)
-        file_url = "attachments" + "/" + str(
-            timezone.now().year) + "/livestock/livestock_product_import" + "/" + myFile.name
+        fs.save(file_name, myFile)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/livestock/livestock_product_import" + "/" + file_name
         data['form_is_valid'] = True
         data['file_url'] = file_url
+        data['file_name'] = file_name
     return JsonResponse(data)
 
 
 def add_livestock_product_name(request):
     if request.method == 'POST':
-        Application_No = request.POST.get('appNo')
+        app_no = request.POST.get('appNo')
         fileName = request.POST.get('filename')
         Applicant_Id = request.session['email']
         file_url = request.POST.get('file_url')
+        file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + fileName
+        t_file_attachment.objects.create(Application_No=app_no, Applicant_Id=Applicant_Id,
+                                         Role_Id=None, File_Path=file_url,
+                                         Attachment=file_name)
 
-        t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
-                                         File_Path=file_url, Role_Id=None,
-                                         Attachment=fileName)
-
-        file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+        file_attach = t_file_attachment.objects.filter(Application_No=app_no)
         return render(request, 'Livestock_Import/file_attachment.html', {'file_attach': file_attach})
 
 
@@ -2460,29 +2481,32 @@ def livestock_attachment_details(request):
 def add_liv_export_file(request):
     data = dict()
     myFile = request.FILES['document']
+    app_no = request.POST.get('appNo')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + myFile.name
     fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/livestock/export_certificate")
-    if fs.exists(myFile.name):
+    if fs.exists(file_name):
         data['form_is_valid'] = False
     else:
-        fs.save(myFile.name, myFile)
-        file_url = "attachments" + "/" + str(timezone.now().year) + "/livestock/export_certificate" + "/" + myFile.name
+        fs.save(file_name, myFile)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/livestock/export_certificate" + "/" + file_name
         data['form_is_valid'] = True
         data['file_url'] = file_url
+        data['file_name'] = file_name
     return JsonResponse(data)
 
 
 def add_ec_file_name(request):
     if request.method == 'POST':
-        Application_No = request.POST.get('appNo')
+        app_no = request.POST.get('appNo')
         fileName = request.POST.get('filename')
         Applicant_Id = request.session['email']
         file_url = request.POST.get('file_url')
+        file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + fileName
+        t_file_attachment.objects.create(Application_No=app_no, Applicant_Id=Applicant_Id,
+                                         Role_Id=None, File_Path=file_url,
+                                         Attachment=file_name)
 
-        t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
-                                         File_Path=file_url, Role_Id=None,
-                                         Attachment=fileName)
-
-        file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+        file_attach = t_file_attachment.objects.filter(Application_No=app_no)
         return render(request, 'Export_Certificate/EC_file_attachment.html', {'file_attach': file_attach})
 
 
@@ -2967,29 +2991,32 @@ def liv_mov_attachment(request):
 def add_lmp_file(request):
     data = dict()
     myFile = request.FILES['document']
+    app_no = request.POST.get('appNo')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + myFile.name
     fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/livestock/movement_permit")
-    if fs.exists(myFile.name):
+    if fs.exists(file_name):
         data['form_is_valid'] = False
     else:
-        fs.save(myFile.name, myFile)
-        file_url = "attachments" + "/" + str(timezone.now().year) + "/livestock/movement_permit" + "/" + myFile.name
+        fs.save(file_name, myFile)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/livestock/movement_permit" + "/" + file_name
         data['form_is_valid'] = True
         data['file_url'] = file_url
+        data['file_name'] = file_name
     return JsonResponse(data)
 
 
 def add_lmp_file_name(request):
     if request.method == 'POST':
-        Application_No = request.POST.get('appNo')
+        app_no = request.POST.get('appNo')
         fileName = request.POST.get('filename')
         Applicant_Id = request.session['email']
         file_url = request.POST.get('file_url')
+        file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + fileName
+        t_file_attachment.objects.create(Application_No=app_no, Applicant_Id=Applicant_Id,
+                                         Role_Id=None, File_Path=file_url,
+                                         Attachment=file_name)
 
-        t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
-                                         File_Path=file_url, Role_Id=None,
-                                         Attachment=fileName)
-
-        file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+        file_attach = t_file_attachment.objects.filter(Application_No=app_no)
         return render(request, 'Movement_Permit_Livestock/file_attachment.html', {'file_attach': file_attach})
 
 
@@ -3352,29 +3379,32 @@ def ante_post_mortem_details(request):
 def add_mortem_file(request):
     data = dict()
     myFile = request.FILES['document']
+    app_no = request.POST.get('appNo')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + myFile.name
     fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/livestock/ante_post_mortem")
-    if fs.exists(myFile.name):
+    if fs.exists(file_name):
         data['form_is_valid'] = False
     else:
-        fs.save(myFile.name, myFile)
-        file_url = "attachments" + "/" + str(timezone.now().year) + "/livestock/ante_post_mortem" + "/" + myFile.name
+        fs.save(file_name, myFile)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/livestock/ante_post_mortem" + "/" + file_name
         data['form_is_valid'] = True
         data['file_url'] = file_url
+        data['file_name'] = file_name
     return JsonResponse(data)
 
 
 def add_mortem_file_name(request):
     if request.method == 'POST':
-        Application_No = request.POST.get('appNo')
+        app_no = request.POST.get('appNo')
         fileName = request.POST.get('filename')
         Applicant_Id = request.session['email']
         file_url = request.POST.get('file_url')
+        file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + fileName
+        t_file_attachment.objects.create(Application_No=app_no, Applicant_Id=Applicant_Id,
+                                         Role_Id=None, File_Path=file_url,
+                                         Attachment=file_name)
 
-        t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
-                                         File_Path=file_url, Role_Id=None,
-                                         Attachment=fileName)
-
-        file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+        file_attach = t_file_attachment.objects.filter(Application_No=app_no)
         return render(request, 'ante_post_mortem/file_attachment.html', {'file_attach': file_attach})
 
 

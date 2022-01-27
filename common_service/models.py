@@ -31,6 +31,7 @@ class t_common_complaint_t1(models.Model):
     Acknowledge_Remarks = models.TextField(default=None, null=True)
     Acknowledge_Date = models.DateField(default=None, null=True)
 
+
 # Establishment Inspection
 class t_inspection_monitoring_t1(models.Model):
     Record_Id = models.AutoField(primary_key=True)
@@ -119,6 +120,7 @@ class t_commodity_inspection_t1(models.Model):
     Created_By = models.IntegerField(blank=True, null=True)
     Created_Date = models.DateField(blank=True, null=True)
 
+
 class t_commodity_inspection_t2(models.Model):
     Record_Id = models.AutoField(primary_key=True)
     Reference_No = models.CharField(max_length=100, blank=True, null=True)
@@ -129,6 +131,7 @@ class t_commodity_inspection_t2(models.Model):
     Qty_Cleared = models.IntegerField(blank=True, null=True)
     Qty_Rejected = models.IntegerField(blank=True, null=True)
     Reason_For_Rejection = models.CharField(max_length=250, blank=True, null=True)
+
 
 # FEEDBACK
 class t_feebback(models.Model):
@@ -142,3 +145,5 @@ class t_feebback(models.Model):
     Feedback = models.TextField(blank=True, null=True)
     Created_By = models.CharField(max_length=100, blank=True, null=True)
     Created_Date = models.DateField(blank=True, null=True)
+    Service = models.CharField(max_length=100, blank=True, null=True)
+    Service_Code = models.CharField(max_length=3, blank=True, null=True)

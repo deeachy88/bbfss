@@ -96,7 +96,7 @@ class t_food_import_permit_t1(models.Model):
     Present_Address = models.CharField(max_length=250, blank=True, null=True)
     Contact_No = models.IntegerField(blank=True, null=True)
     Email = models.EmailField(blank=True, null=True)
-    Operation_Type = models.CharField(max_length=100,blank=True, null=True)
+    Operation_Type = models.CharField(max_length=100, blank=True, null=True)
     Origin_Country_Food = models.CharField(max_length=250, blank=True, null=True)
     Transit_Country = models.CharField(max_length=5)
     Country_Of_Transit = models.CharField(max_length=100)
@@ -165,7 +165,6 @@ class t_food_import_permit_inspection_t1(models.Model):
     Inspection_Remarks = models.TextField(blank=True, null=True)
     Applicant_Id = models.CharField(max_length=100, default=None, blank=True, null=True)
     Terms = models.TextField(blank=True, null=True)
-
 
 
 class t_food_import_permit_inspection_t2(models.Model):
@@ -250,6 +249,8 @@ class t_food_business_registration_licensing_t1(models.Model):
     Gewog_Code = models.IntegerField(default=None, blank=True, null=True)
     Village_Code = models.IntegerField(default=None, blank=True, null=True)
     FO_Remarks = models.TextField(blank=True, null=True)
+    Process_Flow_Technology = models.TextField(blank=True, null=True)
+    Quality_Assurance_System = models.TextField(blank=True, null=True)
 
 
 class t_food_business_registration_licensing_t2(models.Model):
@@ -274,8 +275,8 @@ class t_food_business_registration_licensing_t4(models.Model):
     Meeting_Type = models.CharField(max_length=100)
     Name = models.CharField(max_length=30)
     Designation = models.CharField(max_length=30)
-    Open_Meeting_Date = models.DateField()
-    Closing_Meeting_Date = models.DateField()
+    Meeting_Date = models.DateField()
+    Type = models.CharField(max_length=100, default=None, blank=True, null=True)
 
 
 class t_food_business_registration_licensing_t5(models.Model):
@@ -298,3 +299,17 @@ class t_food_business_registration_licensing_t6(models.Model):
     Meeting_Type = models.CharField(max_length=100)
     Name = models.CharField(max_length=30)
     Designation = models.CharField(max_length=30)
+
+
+class t_food_business_registration_licensing_t7(models.Model):
+    Record_Id = models.AutoField(primary_key=True)
+    Application_No = models.CharField(max_length=30)
+    Name = models.CharField(max_length=100)
+    Source_Country = models.CharField(max_length=30)
+
+
+class t_food_business_registration_licensing_t8(models.Model):
+    Record_Id = models.AutoField(primary_key=True)
+    Application_No = models.CharField(max_length=30)
+    Name = models.CharField(max_length=100)
+    Source_Country = models.CharField(max_length=30)

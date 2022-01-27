@@ -23,11 +23,13 @@ from food.models import t_food_export_certificate_t1, t_food_licensing_food_hand
     t_food_import_permit_inspection_t3, t_food_business_registration_licensing_t1, \
     t_food_business_registration_licensing_t3, t_food_business_registration_licensing_t2, \
     t_food_business_registration_licensing_t4, t_food_business_registration_licensing_t5, \
-    t_food_business_registration_licensing_t6
+    t_food_business_registration_licensing_t6, t_food_business_registration_licensing_t7, \
+    t_food_business_registration_licensing_t8
 from livestock.models import t_livestock_clearance_meat_shop_t2, t_livestock_clearance_meat_shop_t1, \
     t_livestock_clearance_meat_shop_t5, t_livestock_clearance_meat_shop_t4, t_livestock_clearance_meat_shop_t6
 from plant.models import t_workflow_details, t_file_attachment, t_payment_details
 from plant.views import inspector_application, resubmit_application, focal_officer_application, oic_application
+
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def food_business_registration_licensing(request):
@@ -40,6 +42,7 @@ def food_business_registration_licensing(request):
         dzongkhag = t_dzongkhag_master.objects.all()
         gewog = t_gewog_master.objects.all()
         village = t_village_master.objects.all()
+        country = t_country_master.objects.all()
         food_product_category = t_food_product_category_master.objects.all()
         message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
                          | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
@@ -55,7 +58,7 @@ def food_business_registration_licensing(request):
         return render(request, 'registration_licensing/registration_application.html',
                       {'unit': unit, 'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village, 'count': message_count,
                        'count_call': inspection_call_count, 'consignment_call_count': consignment_call_count,
-                       'food_product_category': food_product_category})
+                       'food_product_category': food_product_category, 'country': country})
     else:
         return render(request, 'redirect_page.html')
 
@@ -96,6 +99,9 @@ def save_food_business_registration(request):
     dzongkhag = request.POST.get('dzongkhag')
     gewog = request.POST.get('gewog')
     village = request.POST.get('village')
+    process_flow = request.POST.get('process_flow')
+    quality_assurance = request.POST.get('quality_assurance')
+
     t_food_business_registration_licensing_t1.objects.create(
         Application_No=new_food_business_registration_application,
         Application_Date=date.today(),
@@ -139,7 +145,9 @@ def save_food_business_registration(request):
         FR_Inspection_Team=None,
         Dzongkhag_Code=dzongkhag,
         Gewog_Code=gewog,
-        Village_Code=village
+        Village_Code=village,
+        Process_Flow_Technology=process_flow,
+        Quality_Assurance_System=quality_assurance
     )
 
     t_workflow_details.objects.create(Application_No=new_food_business_registration_application,
@@ -267,31 +275,33 @@ def food_business_registration_application_no(service_code):
 def food_business_file(request):
     data = dict()
     myFile = request.FILES['document']
+    app_no = request.POST.get('appNo')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + myFile.name
     fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/food/food_business_registration")
-    if fs.exists(myFile.name):
+    if fs.exists(file_name):
         data['form_is_valid'] = False
     else:
-        fs.save(myFile.name, myFile)
-        file_url = "attachments" + "/" + str(
-            timezone.now().year) + "/food/food_business_registration" + "/" + myFile.name
+        fs.save(file_name, myFile)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/food/food_business_registration" + "/" + file_name
         data['form_is_valid'] = True
         data['file_url'] = file_url
+        data['file_name'] = file_name
     return JsonResponse(data)
 
 
 def food_business_file_name(request):
     if request.method == 'POST':
-        Application_No = request.POST.get('appNo')
+        app_no = request.POST.get('appNo')
         fileName = request.POST.get('filename')
         Applicant_Id = request.session['email']
         file_url = request.POST.get('file_url')
+        file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + fileName
+        t_file_attachment.objects.create(Application_No=app_no, Applicant_Id=Applicant_Id,
+                                         Role_Id=None, File_Path=file_url,
+                                         Attachment=file_name)
 
-        t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
-                                         File_Path=file_url, Role_Id=None,
-                                         Attachment=fileName)
-
-        file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
-    return render(request, 'registration_licensing/file_attachment.html', {'file_attach': file_attach})
+        file_attach = t_file_attachment.objects.filter(Application_No=app_no)
+        return render(request, 'registration_licensing/file_attachment.html', {'file_attach': file_attach})
 
 
 def delete_fbr_file(request):
@@ -439,13 +449,13 @@ def team_details_feasibility_ins(request):
     application_id = request.GET.get('application_id')
     name = request.GET.get('name')
     designation = request.GET.get('designation')
-    date_open = request.GET.get('opening_date')
-    date_close = request.GET.get('closing_date')
+    meeting_date = request.GET.get('meeting_date')
+    meeting_type_value = request.GET.get('meeting_type')
     t_food_business_registration_licensing_t4.objects.create(Application_No=application_id,
                                                              Meeting_Type='Feasibility Inspection',
                                                              Name=name, Designation=designation,
-                                                             Open_Meeting_Date=date_open,
-                                                             Closing_Meeting_Date=date_close)
+                                                             Meeting_Date=meeting_date,
+                                                             Type=meeting_type_value)
     application_details = t_food_business_registration_licensing_t4.objects.filter(
         Application_No=application_id, Meeting_Type='Feasibility Inspection')
     return render(request, 'registration_licensing/team_details.html', {'application_details': application_details})
@@ -465,7 +475,8 @@ def concern_details_feasibility_ins(request):
                                                              FBO_Response=response_fbo, NC=None, NC_Category=None)
     application_details = t_food_business_registration_licensing_t5.objects.filter(Application_No=application_id,
                                                                                    Inspection_Type='Feasibility '
-                                                                                                   'Inspection')
+                                                                                                   'Inspection')\
+        .order_by('Record_Id')
     message_count = t_food_business_registration_licensing_t5.objects.filter(
         Concern='Yes', Inspection_Type='Feasibility Inspection').count()
     return render(request, 'registration_licensing/concern_details.html', {'application_details': application_details,
@@ -589,13 +600,13 @@ def team_details_factory_ins(request):
     application_id = request.GET.get('application_id')
     name = request.GET.get('name')
     designation = request.GET.get('designation')
-    date_open = request.GET.get('opening_date')
-    date_close = request.GET.get('closing_date')
+    meeting_date = request.GET.get('meeting_date')
+    meeting_type_value = request.GET.get('meeting_type')
     t_food_business_registration_licensing_t4.objects.create(Application_No=application_id,
                                                              Meeting_Type='Factory Inspection',
                                                              Name=name, Designation=designation,
-                                                             Open_Meeting_Date=date_open,
-                                                             Closing_Meeting_Date=date_close)
+                                                             Meeting_Date=meeting_date,
+                                                             Type=meeting_type_value)
     application_details = t_food_business_registration_licensing_t4.objects.filter(Application_No=application_id,
                                                                                    Meeting_Type='Factory Inspection')
     return render(request, 'registration_licensing/team_details.html', {'application_details': application_details})
@@ -614,7 +625,8 @@ def concern_details_factory_ins(request):
                                                              Clause_No=Clause_No, Date=date.today(), Concern=None,
                                                              FBO_Response=None, NC=Concern, NC_Category=NC_Category)
     application_details = t_food_business_registration_licensing_t5.objects.filter(Application_No=application_id,
-                                                                                   Inspection_Type='Factory Inspection')
+                                                                                   Inspection_Type='Factory Inspection')\
+        .order_by('Record_Id')
     message_count = t_food_business_registration_licensing_t5.objects.filter(
         NC='Yes', Inspection_Type='Factory Inspection').count()
     return render(request, 'registration_licensing/nc_details.html', {'application_details': application_details,
@@ -630,7 +642,7 @@ def fbr_factory_team_details(request):
                                                              Meeting_Type='Factory Inspection',
                                                              Name=name, Designation=designation)
     application_details = t_food_business_registration_licensing_t6.objects.filter(
-        Application_No=application_id, Meeting_Type='Factory Inspection')
+        Application_No=application_id, Meeting_Type='Factory Inspection').order_by('Record_Id')
     return render(request, 'registration_licensing/inspection_team_details.html',
                   {'application_details': application_details})
 
@@ -774,7 +786,8 @@ def edit_fbr_feasibility_details(request):
     else:
         app_details.update(FBO_Response=None)
     application_details = t_food_business_registration_licensing_t5.objects.filter(Application_No=application_id,
-                                                                                   Inspection_Type='Feasibility Inspection')
+                                                                                   Inspection_Type='Feasibility Inspection')\
+        .order_by('Record_Id')
     message_count = t_food_business_registration_licensing_t5.objects.filter(
         Concern='Yes', Inspection_Type='Feasibility Inspection').count()
     return render(request, 'registration_licensing/concern_details.html', {'application_details': application_details,
@@ -801,7 +814,8 @@ def edit_fbr_factory_details(request):
     else:
         app_details.update(NC_Category=None)
     application_details = t_food_business_registration_licensing_t5.objects.filter(Application_No=application_id,
-                                                                                   Inspection_Type='Factory Inspection')
+                                                                                   Inspection_Type='Factory Inspection')\
+        .order_by('Record_Id')
     message_count = t_food_business_registration_licensing_t5.objects.filter(
         NC='Yes', Inspection_Type='Factory Inspection').count()
     return render(request, 'registration_licensing/nc_details.html', {'application_details': application_details,
@@ -854,11 +868,18 @@ def view_factory_inspection_application(request):
             inspection_team_details = t_food_business_registration_licensing_t6.objects.filter(
                 Application_No=application_id)
             oic_list = t_field_office_master.objects.filter()
+            raw_materials = t_food_business_registration_licensing_t7.objects.filter(Application_No=application_id)
+            packaging_material = t_food_business_registration_licensing_t8.objects.filter(Application_No=application_id)
+            dzongkhag = t_dzongkhag_master.objects.all()
+            gewog = t_gewog_master.objects.all()
+            village = t_village_master.objects.all()
             return render(request, 'registration_licensing/client_factory_inspect.html',
                           {'application_details': application_details, 'details': details, 'file': file,
                            'oic_list': oic_list, 'unit': unit, 'inspection_details': inspection_details,
                            'team_details': team_details, 'inspection_team_details': inspection_team_details,
-                           'fh_details': fh_details})
+                           'fh_details': fh_details, 'raw_materials': raw_materials,
+                           'packaging_material': packaging_material, 'dzongkhag': dzongkhag, 'village': village,
+                           'gewog': gewog})
 
 
 def forward_factory_application(request):
@@ -882,13 +903,14 @@ def update_fbr_team_details_feasibility_ins(request):
     application_id = request.GET.get('application_id')
     name = request.GET.get('name')
     designation = request.GET.get('designation')
-    date_open = request.GET.get('opening_date')
-    date_close = request.GET.get('closing_date')
+    meeting_date = request.GET.get('meeting_date')
+    meeting_type_value = request.GET.get('meeting_type')
     record_id = request.GET.get('record_id')
     details = t_food_business_registration_licensing_t4.objects.filter(Record_Id=record_id)
-    details.update(Name=name, Designation=designation, Open_Meeting_Date=date_open, Closing_Meeting_Date=date_close)
+    details.update(Name=name, Designation=designation, Meeting_Date=meeting_date, Type=meeting_type_value)
     application_details = t_food_business_registration_licensing_t4.objects.filter(Application_No=application_id,
-                                                                                   Meeting_Type='Feasibility Inspection')
+                                                                                   Meeting_Type='Feasibility Inspection') \
+        .order_by('Record_Id')
     return render(request, 'registration_licensing/team_details.html', {'application_details': application_details})
 
 
@@ -901,29 +923,32 @@ def update_fbr_inspection_team_details(request):
     details = t_food_business_registration_licensing_t6.objects.filter(Record_Id=record_id)
     details.update(Name=name, Designation=designation)
     application_details = t_food_business_registration_licensing_t6.objects.filter(Application_No=application_id,
-                                                                                   Meeting_Type='Feasibility Inspection')
+                                                                                   Meeting_Type='Feasibility Inspection') \
+        .order_by('Record_Id')
     return render(request, 'registration_licensing/inspection_team_details.html',
                   {'application_details': application_details})
 
 
 def delete_fbr_fi_inspection_team_details(request):
-    application_id = request.GET.get('application_id')
-    record_id = request.GET.get('record_id')
+    application_id = request.GET.get('Application_No')
+    record_id = request.GET.get('Record_Id')
     details = t_food_business_registration_licensing_t6.objects.filter(Record_Id=record_id)
     details.delete()
     application_details = t_food_business_registration_licensing_t6.objects.filter(Application_No=application_id,
-                                                                                   Meeting_Type='Feasibility Inspection')
+                                                                                   Meeting_Type='Feasibility Inspection') \
+        .order_by('Record_Id')
     return render(request, 'registration_licensing/inspection_team_details.html',
                   {'application_details': application_details})
 
 
 def delete_fbr_fi_team_details(request):
-    application_id = request.GET.get('application_id')
-    record_id = request.GET.get('record_id')
+    application_id = request.GET.get('Application_No')
+    record_id = request.GET.get('Record_Id')
     details = t_food_business_registration_licensing_t4.objects.filter(Record_Id=record_id)
     details.delete()
     application_details = t_food_business_registration_licensing_t4.objects.filter(Application_No=application_id,
-                                                                                   Meeting_Type='Feasibility Inspection')
+                                                                                   Meeting_Type='Feasibility Inspection') \
+        .order_by('Record_Id')
     return render(request, 'registration_licensing/team_details.html', {'application_details': application_details})
 
 
@@ -931,13 +956,14 @@ def update_fbr_team_details_factory_ins(request):
     application_id = request.GET.get('application_id')
     name = request.GET.get('name')
     designation = request.GET.get('designation')
-    date_open = request.GET.get('opening_date')
-    date_close = request.GET.get('closing_date')
+    meeting_date = request.GET.get('meeting_date')
+    meeting_type_value = request.GET.get('meeting_type')
     record_id = request.GET.get('record_id')
     details = t_food_business_registration_licensing_t4.objects.filter(Record_Id=record_id)
-    details.update(Name=name, Designation=designation, Open_Meeting_Date=date_open, Closing_Meeting_Date=date_close)
+    details.update(Name=name, Designation=designation, Meeting_Date=meeting_date, Type=meeting_type_value)
     application_details = t_food_business_registration_licensing_t4.objects.filter(Application_No=application_id,
-                                                                                   Meeting_Type='Factory Inspection')
+                                                                                   Meeting_Type='Factory Inspection') \
+        .order_by('Record_Id')
     return render(request, 'registration_licensing/team_details.html', {'application_details': application_details})
 
 
@@ -950,7 +976,8 @@ def update_fbr_factory_inspection_team_details(request):
     details = t_food_business_registration_licensing_t6.objects.filter(Record_Id=record_id)
     details.update(Name=name, Designation=designation)
     application_details = t_food_business_registration_licensing_t6.objects.filter(Application_No=application_id,
-                                                                                   Meeting_Type='Factory Inspection')
+                                                                                   Meeting_Type='Factory Inspection') \
+        .order_by('Record_Id')
     return render(request, 'registration_licensing/inspection_team_details.html',
                   {'application_details': application_details})
 
@@ -958,11 +985,12 @@ def update_fbr_factory_inspection_team_details(request):
 def delete_fbr_factory_inspection_team_details(request):
     application_id = request.GET.get('application_id')
     record_id = request.GET.get('record_id')
-    details = t_livestock_clearance_meat_shop_t6.objects.filter(Record_Id=record_id)
+    details = t_food_business_registration_licensing_t4.objects.filter(Record_Id=record_id)
     details.delete()
-    application_details = t_livestock_clearance_meat_shop_t6.objects.filter(Application_No=application_id,
-                                                                            Meeting_Type='Factory Inspection')
-    return render(request, 'meat_shop_registration/inspection_team_details.html',
+    application_details = t_food_business_registration_licensing_t4.objects.filter(Application_No=application_id,
+                                                                                   Meeting_Type='Factory Inspection') \
+        .order_by('Record_Id')
+    return render(request, 'registration_licensing/inspection_team_details.html',
                   {'application_details': application_details})
 
 
@@ -972,8 +1000,35 @@ def delete_fbr_factory_team_details(request):
     details = t_food_business_registration_licensing_t4.objects.filter(Record_Id=record_id)
     details.delete()
     application_details = t_food_business_registration_licensing_t4.objects.filter(Application_No=application_id,
-                                                                                   Meeting_Type='Factory Inspection')
-    return render(request, 'meat_shop_registration/team_details.html', {'application_details': application_details})
+                                                                                   Meeting_Type='Factory Inspection') \
+        .order_by('Record_Id')
+    return render(request, 'registration_licensing/team_details.html', {'application_details': application_details})
+
+
+def save_raw_materials_details(request):
+    application_no = request.POST.get('application_no')
+    name = request.POST.get('raw_material_name')
+    source_country = request.POST.get('source_country')
+    t_food_business_registration_licensing_t7.objects.create(Application_No=application_no, Name=name,
+                                                             Source_Country=source_country)
+    raw_materials = t_food_business_registration_licensing_t7.objects.filter(Application_No=application_no) \
+        .order_by('Record_Id')
+    raw_count = t_food_business_registration_licensing_t7.objects.filter(Application_No=application_no).count()
+    return render(request, 'registration_licensing/raw_material_details.html', {'raw_materials': raw_materials,
+                                                                                'raw_count': raw_count})
+
+
+def save_packaging_materials_details(request):
+    application_no = request.POST.get('application_no')
+    name = request.POST.get('packaging_name')
+    source_country = request.POST.get('packaging_source_country')
+    t_food_business_registration_licensing_t8.objects.create(Application_No=application_no, Name=name,
+                                                             Source_Country=source_country)
+    packaging_material = t_food_business_registration_licensing_t8.objects.filter(Application_No=application_no) \
+        .order_by('Record_Id')
+    packaging_count = t_food_business_registration_licensing_t8.objects.filter(Application_No=application_no).count()
+    return render(request, 'registration_licensing/packaging_material_details.html',
+                  {'packaging_material': packaging_material, 'packaging_count': packaging_count})
 
 
 # Export OF Food
@@ -1180,30 +1235,33 @@ def update_food_export_details(request):
 def food_export_file(request):
     data = dict()
     myFile = request.FILES['document']
+    app_no = request.POST.get('appNo')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + myFile.name
     fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/food/export_certificate")
-    if fs.exists(myFile.name):
+    if fs.exists(file_name):
         data['form_is_valid'] = False
     else:
-        fs.save(myFile.name, myFile)
-        file_url = "attachments" + "/" + str(timezone.now().year) + "/food/export_certificate" + "/" + myFile.name
+        fs.save(file_name, myFile)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/food/export_certificate" + "/" + file_name
         data['form_is_valid'] = True
         data['file_url'] = file_url
+        data['file_name'] = file_name
     return JsonResponse(data)
 
 
 def food_export_file_name(request):
     if request.method == 'POST':
-        Application_No = request.POST.get('appNo')
+        app_no = request.POST.get('appNo')
         fileName = request.POST.get('filename')
         Applicant_Id = request.session['email']
         file_url = request.POST.get('file_url')
+        file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + fileName
+        t_file_attachment.objects.create(Application_No=app_no, Applicant_Id=Applicant_Id,
+                                         Role_Id=None, File_Path=file_url,
+                                         Attachment=file_name)
 
-        t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
-                                         File_Path=file_url, Role_Id=None,
-                                         Attachment=fileName)
-
-        file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
-    return render(request, 'export_certificate_food/file_attachment.html', {'file_attach': file_attach})
+        file_attach = t_file_attachment.objects.filter(Application_No=app_no)
+        return render(request, 'export_certificate_food/file_attachment.html', {'file_attach': file_attach})
 
 
 def delete_export_file(request):
@@ -1556,30 +1614,33 @@ def food_handler_application_no(service_code):
 def food_handler_file(request):
     data = dict()
     myFile = request.FILES['document']
+    app_no = request.POST.get('appNo')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + myFile.name
     fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/food/food_handler_certificate")
-    if fs.exists(myFile.name):
+    if fs.exists(file_name):
         data['form_is_valid'] = False
     else:
-        fs.save(myFile.name, myFile)
-        file_url = "attachments" + "/" + str(timezone.now().year) + "/food/food_handler_certificate" + "/" + myFile.name
+        fs.save(file_name, myFile)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/food/food_handler_certificate" + "/" + file_name
         data['form_is_valid'] = True
         data['file_url'] = file_url
+        data['file_name'] = file_name
     return JsonResponse(data)
 
 
 def food_handler_file_name(request):
     if request.method == 'POST':
-        Application_No = request.POST.get('appNo')
+        app_no = request.POST.get('appNo')
         fileName = request.POST.get('filename')
         Applicant_Id = request.session['email']
         file_url = request.POST.get('file_url')
+        file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + fileName
+        t_file_attachment.objects.create(Application_No=app_no, Applicant_Id=Applicant_Id,
+                                         Role_Id=None, File_Path=file_url,
+                                         Attachment=file_name)
 
-        t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
-                                         File_Path=file_url, Role_Id=None,
-                                         Attachment=fileName)
-
-        file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
-    return render(request, 'food_handler/file_attachment.html', {'file_attach': file_attach})
+        file_attach = t_file_attachment.objects.filter(Application_No=app_no)
+        return render(request, 'food_handler/file_attachment.html', {'file_attach': file_attach})
 
 
 def delete_fh_file(request):
@@ -1749,32 +1810,36 @@ def send_reject_mail(remarks, Email):
 def food_handler_image(request):
     data = dict()
     myFile = request.FILES['document']
+    app_no = request.POST.get('appNo')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + myFile.name
     fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/food/food_handlers")
-    if fs.exists(myFile.name):
+    if fs.exists(file_name):
         data['form_is_valid'] = False
     else:
-        fs.save(myFile.name, myFile)
-        file_url = "attachments" + "/" + str(timezone.now().year) + "/food/food_handlers" + "/" + myFile.name
+        fs.save(file_name, myFile)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/food/food_handlers" + "/" + file_name
         data['form_is_valid'] = True
         data['file_url'] = file_url
+        data['file_name'] = file_name
     return JsonResponse(data)
 
 
 def food_handler_image_name(request):
     if request.method == 'POST':
-        Application_No = request.POST.get('appNo')
+        app_no = request.POST.get('appNo')
         fileName = request.POST.get('filename')
         Applicant_Id = request.session['email']
         file_url = request.POST.get('file_url')
         batch_no = request.POST.get('batch_No')
         score = request.POST.get('score')
         attendance = request.POST.get('attendance')
-        t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
+        file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + fileName
+        t_file_attachment.objects.create(Application_No=app_no, Applicant_Id=Applicant_Id,
                                          File_Path=file_url, Role_Id=None,
-                                         Attachment=fileName)
+                                         Attachment=file_name, Attachment_Type='FH')
 
-        file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
-        details = t_food_licensing_food_handler_t1.objects.filter(Application_No=Application_No)
+        file_attach = t_file_attachment.objects.filter(Application_No=app_no)
+        details = t_food_licensing_food_handler_t1.objects.filter(Application_No=app_no, Attachment_Type='FH')
         details.update(Attendance=attendance)
         details.update(Assessment_Score=score)
         app_details = t_food_licensing_food_handler_t1.objects.filter(Training_Batch_No=batch_no)
@@ -1785,28 +1850,32 @@ def food_handler_image_name(request):
 def food_handler_image_update(request):
     data = dict()
     myFile = request.FILES['image']
+    app_no = request.POST.get('appNo')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + myFile.name
     fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/food/food_handlers")
-    if fs.exists(myFile.name):
+    if fs.exists(file_name):
         data['form_is_valid'] = False
     else:
-        fs.save(myFile.name, myFile)
-        file_url = "attachments" + "/" + str(timezone.now().year) + "/food/food_handlers" + "/" + myFile.name
+        fs.save(file_name, myFile)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/food/food_handlers" + "/" + file_name
         data['form_is_valid'] = True
         data['file_url'] = file_url
+        data['file_name'] = file_name
     return JsonResponse(data)
 
 
 def food_handler_image_name_update(request):
-    Application_No = request.GET.get('Application_No')
+    app_no = request.GET.get('Application_No')
     fileName = request.GET.get('filename')
     Applicant_Id = request.session['email']
     file_url = request.GET.get('file_url')
     batch_no = request.GET.get('batch_No')
     score = request.GET.get('score')
     attendance = request.GET.get('attendance')
-    t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
-                                     File_Path=file_url, Role_Id=None, Attachment=fileName, Attachment_Type='FH')
-    details = t_food_licensing_food_handler_t1.objects.filter(Application_No=Application_No)
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + fileName
+    t_file_attachment.objects.create(Application_No=app_no, Applicant_Id=Applicant_Id,
+                                     File_Path=file_url, Role_Id=None, Attachment=file_name, Attachment_Type='FH')
+    details = t_food_licensing_food_handler_t1.objects.filter(Application_No=app_no)
     details.update(Attendance=attendance)
     details.update(Assessment_Score=score)
     result_details = t_food_licensing_food_handler_t1.objects.filter(Training_Batch_No=batch_no)
@@ -1859,10 +1928,11 @@ def food_handler_application(request):
                                                        Action_Date__isnull=False, Service_Code='FHC') |
                      t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='A',
                                                        Action_Date__isnull=False, Service_Code='FHC')).count()
-        return render(request, 'food_handler_list.html', {'application_details': application_details, 'details': details,
-                                                          'count': message_count, 'count_call': inspection_call_count,
-                                                          'consignment_call_count': consignment_call_count,
-                                                          'fhc_count': fhc_count})
+        return render(request, 'food_handler_list.html',
+                      {'application_details': application_details, 'details': details,
+                       'count': message_count, 'count_call': inspection_call_count,
+                       'consignment_call_count': consignment_call_count,
+                       'fhc_count': fhc_count})
     else:
         return render(request, 'redirect_page.html')
 
@@ -2227,30 +2297,33 @@ def load_fip_attachment(request):
 def food_import_file(request):
     data = dict()
     myFile = request.FILES['document']
+    app_no = request.POST.get('appNo')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + myFile.name
     fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/food/import_permit")
-    if fs.exists(myFile.name):
+    if fs.exists(file_name):
         data['form_is_valid'] = False
     else:
-        fs.save(myFile.name, myFile)
-        file_url = "attachments" + "/" + str(timezone.now().year) + "/food/import_permit" + "/" + myFile.name
+        fs.save(file_name, myFile)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/food/import_permit" + "/" + file_name
         data['form_is_valid'] = True
         data['file_url'] = file_url
+        data['file_name'] = file_name
     return JsonResponse(data)
 
 
 def food_import_file_name(request):
     if request.method == 'POST':
-        Application_No = request.POST.get('appNo')
+        app_no = request.POST.get('appNo')
         fileName = request.POST.get('filename')
         Applicant_Id = request.session['email']
         file_url = request.POST.get('file_url')
+        file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + fileName
+        t_file_attachment.objects.create(Application_No=app_no, Applicant_Id=Applicant_Id,
+                                         Role_Id=None, File_Path=file_url,
+                                         Attachment=file_name)
 
-        t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
-                                         File_Path=file_url, Role_Id=None,
-                                         Attachment=fileName)
-
-        file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
-    return render(request, 'import_certificate_food/file_attachment.html', {'file_attach': file_attach})
+        file_attach = t_file_attachment.objects.filter(Application_No=app_no)
+        return render(request, 'import_certificate_food/file_attachment.html', {'file_attach': file_attach})
 
 
 def delete_import_file(request):
@@ -2501,6 +2574,7 @@ def fip_clearance_no(request):
         newPermitNo = Field_Code + "/" + "IAF" + "/" + str(year) + "/" + AppNo
     return newPermitNo
 
+
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def factory_inspection_list(request):
     try:
@@ -2524,7 +2598,8 @@ def factory_inspection_list(request):
             .count()
         payment_details = t_payment_details.objects.all()
         return render(request, 'factory_inspection_list.html',
-                      {'service_details': service_details, 'application_details': new_import_app, 'count': message_count,
+                      {'service_details': service_details, 'application_details': new_import_app,
+                       'count': message_count,
                        'count_call': inspection_call_count, 'payment_details': payment_details,
                        'consignment_call_count': consignment_call_count})
     else:
@@ -2622,7 +2697,7 @@ def update_food_handler_status(request):
         update_details.update(Approved_Date=date.today())
         update_payment(app_no, food_handler_license_no, 'FHL', validity_date, 'Final')
         details = t_workflow_details.objects.filter(Application_No=app_no)
-        details.update(Application_Staus='FHC') # food handler license complete
+        details.update(Application_Staus='FHC')  # food handler license complete
     return redirect(update_list)
 
 

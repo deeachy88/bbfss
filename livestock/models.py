@@ -63,8 +63,8 @@ class t_livestock_clearance_meat_shop_t4(models.Model):
     Meeting_Type = models.CharField(max_length=100)
     Name = models.CharField(max_length=30)
     Designation = models.CharField(max_length=30)
-    Open_Meeting_Date = models.DateField()
-    Closing_Meeting_Date = models.DateField()
+    Meeting_Date = models.DateField(default=None)
+    Type = models.CharField(max_length=100, default=None)
 
 
 class t_livestock_clearance_meat_shop_t5(models.Model):

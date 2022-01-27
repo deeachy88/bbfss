@@ -1508,10 +1508,12 @@ function save_gap_attachment()
     }
     else
     {
+        var appNo = $('#applicationNo').val();
         var fileName = document.getElementById('document').files[0].name;
         var fd = new FormData();
         var file = document.getElementById('document').files[0];
         fd.append('document', file);
+        fd.append('appNo', appNo);
         token_value=$("input[name=csrfmiddlewaretoken]").val();
         $.ajaxSetup
         ({
@@ -1532,7 +1534,7 @@ function save_gap_attachment()
             if (data.form_is_valid)
             {
                 var file_url = data.file_url
-                var appNo = $('#attachment_appNo').val();
+                var appNo = $('#applicationNo').val();
                 $.ajax
                 ({
                     type : "POST",

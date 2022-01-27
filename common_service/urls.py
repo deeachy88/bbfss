@@ -36,7 +36,7 @@ urlpatterns = [
     path('add_investigation_file_name', views.add_investigation_file_name, name='add_investigation_file_name'),
     path('delete_investigation_file', views.delete_investigation_file, name='delete_investigation_file'),
 
-# Establishment Inspection and Monitoring
+    # Establishment Inspection and Monitoring
     path('establishment_inspection_form', views.establishment_inspection_form,
          name='establishment_inspection_form'),
     path('save_monitoring_form', views.save_monitoring_form, name='save_monitoring_form'),
@@ -70,13 +70,14 @@ urlpatterns = [
     path('view_establishment_inspection_details', views.view_establishment_inspection_details,
          name='view_establishment_inspection_details'),
 
-# Commodity Inspection and Monitoring
+    # Commodity Inspection and Monitoring
     path('commodity_inspection_form', views.commodity_inspection_form,
          name='commodity_inspection_form'),
     path('save_inspection_report_application', views.save_inspection_report_application,
          name='save_inspection_report_application'),
     path('save_commodity_details', views.save_commodity_details, name='save_commodity_details'),
-    path('submit_commodity_inspection_form', views.submit_commodity_inspection_form, name='submit_commodity_inspection_form'),
+    path('submit_commodity_inspection_form', views.submit_commodity_inspection_form,
+         name='submit_commodity_inspection_form'),
     path('load_commodity_application', views.load_commodity_application, name='load_commodity_application'),
     path('load_commodity_application_details', views.load_commodity_application_details,
          name='load_commodity_application_details'),
@@ -102,7 +103,7 @@ urlpatterns = [
     path('view_FHC_inspection_details', views.view_FHC_inspection_details,
          name='view_FHC_inspection_details'),
 
-# Commodity Inspection and Monitoring
+    # Commodity Inspection and Monitoring
     path('submit_feedback_form', views.submit_feedback_form, name='submit_feedback_form'),
     path('submit_feedback', views.submit_feedback, name='submit_feedback'),
     path('feedback_list', views.feedback_list, name='feedback_list'),

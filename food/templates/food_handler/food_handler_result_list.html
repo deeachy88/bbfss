@@ -239,55 +239,67 @@ form, input, select, textarea{
 
     function save_details()
     {
-        var fileName = document.getElementById('document').files[0].name;
-        var fd = new FormData();
-        var file = document.getElementById('document').files[0];
-        fd.append('document', file);
-        token_value=$("input[name=csrfmiddlewaretoken]").val();
-        $.ajaxSetup
-        ({
-            beforeSend: function(xhr, settings)
+        var file_length = document.getElementById("document");
+        if(file_length.value.length < 1)
+        {
+            $('#fileErrorMsg').html("Please Choose A File");
+            $('#fileErrorMsg').show();
+            $('#fileErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            var appNo = $('#Application_No').val();
+            var fileName = document.getElementById('document').files[0].name;
+            var fd = new FormData();
+            var file = document.getElementById('document').files[0];
+            fd.append('document', file);
+            fd.append('appNo', appNo);
+            token_value=$("input[name=csrfmiddlewaretoken]").val();
+            $.ajaxSetup
+            ({
+                beforeSend: function(xhr, settings)
             {
                 xhr.setRequestHeader("X-CSRFToken", token_value);
             }
-        });
-        $.ajax({
-        type : "POST",
-        url : "{% url 'food_handler_image' %}",
-        data : fd,
-        dataType: 'json',
-        contentType: false,
-        processData: false,
-        success : function(data)
-        {
-            if (data.form_is_valid)
-            {
-                var file_url = data.file_url
-                var appNo = $('#Application_No').val();
-                var batch_No = $('#batch_No').val();
-                var score = $('#score').val();
-                var attendance = $('input[name="Attendance"]:checked').val();
-                $.ajax
-                ({
-                    type : "POST",
-                    url : "{% url 'food_handler_image_name' %}",
-                    data : {'appNo':appNo ,'filename':fileName, 'file_url':file_url, 'batch_No':batch_No , 'score':score, 'attendance':attendance},
-                    success : function(responseText)
-                    {
-                        $('#details_Modal').modal('hide');
-                        $('#AppDetails').html(responseText);
-                        $('.modal-backdrop').remove();
-                    }
-                });
+            });
+                $.ajax({
+                type : "POST",
+                url : "{% url 'food_handler_image' %}",
+                data : fd,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success : function(data)
+                {
+                if (data.form_is_valid)
+                {
+                    var file_url = data.file_url
+                    var appNo = $('#Application_No').val();
+                    var batch_No = $('#batch_No').val();
+                    var score = $('#score').val();
+                    var attendance = $('input[name="Attendance"]:checked').val();
+                    $.ajax
+                    ({
+                        type : "POST",
+                        url : "{% url 'food_handler_image_name' %}",
+                        data : {'appNo':appNo ,'filename':fileName, 'file_url':file_url, 'batch_No':batch_No , 'score':score, 'attendance':attendance},
+                        success : function(responseText)
+                        {
+                            $('#details_Modal').modal('hide');
+                            $('#AppDetails').html(responseText);
+                            $('.modal-backdrop').remove();
+                        }
+                    });
+                }
+                else
+                {
+                        $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                        $('#fileErrorMsg').show();
+                        $('#fileErrorMsg').delay(2000).fadeOut('slow');
+                }
             }
-            else
-            {
-                $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-                $('#fileErrorMsg').show();
-                $('#fileErrorMsg').delay(2000).fadeOut('slow');
-            }
+            });
         }
-        });
     }
 
     function checkThis(value)
@@ -387,10 +399,12 @@ form, input, select, textarea{
                     }
                     else
                     {
+                        var Application_No = $('#edit_application_no').val();
                         var fileName = document.getElementById('image').files[0].name;
                         var fd = new FormData();
                         var file = document.getElementById('image').files[0];
                         fd.append('image', file);
+                        fd.append('appNo', appNo);
                         token_value=$("input[name=csrfmiddlewaretoken]").val();
                         $.ajaxSetup
                         ({

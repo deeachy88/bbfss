@@ -70,12 +70,8 @@ form, input, select, textarea{
                             <div class="form-group">
                                 <label class="form-label">Licensing Criteria <font color="red">*</font></label>
                                 <select class="form-control" disabled>
-                                    {% if application_details.License_Criteria == 'BAFRA GHP' %}
-                                    <option selected>BAFRA GHP</option>
-                                    <option>BAFRA GMP</option>
-                                    {% else %}
-                                    <option>BAFRA GHP</option>
-                                    <option selected>BAFRA GMP</option>
+                                    {% if application_details.License_Criteria == 'BAFRA GHP/GMP' %}
+                                        <option selected>BAFRA GHP/GMP</option>
                                     {% endif %}
                                 </select>
                             </div>
@@ -238,8 +234,8 @@ form, input, select, textarea{
                             <th scope="col">#</th>
                             <th scope="col">Name Of Key Personal</th>
                             <th scope="col">Designation of Key Personal</th>
-                            <th scope="col">Opening Meeting (Date)</th>
-                            <th scope="col">Closing Meeting (Date)</th>
+                            <th scope="col">Meeting (Date)</th>
+                            <th scope="col">Meeting Type</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -248,8 +244,8 @@ form, input, select, textarea{
                                 <td>{{ forloop.counter }}</td>
                                 <td>{{import.Name}}</td>
                                 <td>{{import.Designation}}</td>
-                                <td>{{import.Open_Meeting_Date|date:"d-m-Y"}}</td>
-                                <td>{{import.Closing_Meeting_Date|date:"d-m-Y"}}</td>
+                                <td>{{import.Meeting_Date|date:"d-m-Y"}}</td>
+                                <td>{{import.Type}}</td>
                             </tr>
                             {% empty %}
                             <tr>

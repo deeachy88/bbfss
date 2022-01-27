@@ -331,6 +331,10 @@
                     $("#fpc_file-attach").prop('disabled', true);
                     $("#no_tab").prop('disabled', true);
                     $("#item-details").prop('disabled', true);
+
+                    $("#pills-raw-materials").prop('disabled', true);
+                    $("#pills-packaging-materials").prop('disabled', true);
+
                 }
                 if($("#referenceNo").val() == "")
                 {
@@ -589,6 +593,14 @@
                         else if(identification_type =='OC-PU')
                         {
                             $('#processing_details').html(responseText);
+                        }
+                        else if(identification_type =='FBR-RM')
+                        {
+                            $('#raw_material_details').html(responseText);
+                        }
+                        else if(identification_type =='FBR-PM')
+                        {
+                            $('#packaging_material_details').html(responseText);
                         }
                     }
                 });
@@ -2174,6 +2186,72 @@
                             success : function(response) {
                                  $('#processing_details').html(response);
                                  $('#edit_processing_model').modal('hide');
+                                 $('.modal-backdrop').remove();
+                            }
+                        });
+                    }
+                }
+                else if(identifier == 'FBR-RM')
+                {
+                    var edit_raw_material_name = $('#edit_raw_material_name').val();
+                    var edit_source_country = $('#edit_source_country').val();
+
+                    if(edit_raw_material_name == "")
+                    {
+                        $('#edit_raw_material_nameErrorMsg').html("Enter Raw Material Name.");
+                        $('#edit_raw_material_nameErrorMsg').show();
+                        $('#edit_raw_material_nameErrorMsg').delay(2000).fadeOut('slow');
+                        $("#edit_raw_material_name").focus();
+                    }
+                    else if(edit_source_country == "")
+                    {
+                        $('#edit_source_countryErrorMsg').html("Select Source Country.");
+                        $('#edit_source_countryErrorMsg').show();
+                        $('#edit_source_countryErrorMsg').delay(2000).fadeOut('slow');
+                        $("#edit_source_country").focus();
+                    }
+                    else
+                    {
+                        $.ajax({
+                            type : "POST",
+                            url : "{% url 'update_edit_details' %}",
+                            data : $('#edit_raw_materials_form').serialize(),
+                            success : function(response) {
+                                 $('#raw_material_details').html(response);
+                                 $('#edit_raw_material_modal').modal('hide');
+                                 $('.modal-backdrop').remove();
+                            }
+                        });
+                    }
+                }
+                else if(identifier == 'FBR-PM')
+                {
+                    var edit_packaging_name = $('#edit_packaging_name').val();
+                    var edit_packaging_source_country = $('#edit_packaging_source_country').val();
+
+                    if(edit_packaging_name == "")
+                    {
+                        $('#edit_packaging_nameErrorMsg').html("Enter Raw Material Name.");
+                        $('#edit_packaging_nameErrorMsg').show();
+                        $('#edit_packaging_nameErrorMsg').delay(2000).fadeOut('slow');
+                        $("#edit_packaging_name").focus();
+                    }
+                    else if(edit_packaging_source_country == "")
+                    {
+                        $('#edit_packaging_source_countryErrorMsg').html("Select Source Country.");
+                        $('#edit_packaging_source_countryErrorMsg').show();
+                        $('#edit_packaging_source_countryErrorMsg').delay(2000).fadeOut('slow');
+                        $("#edit_packaging_source_country").focus();
+                    }
+                    else
+                    {
+                        $.ajax({
+                            type : "POST",
+                            url : "{% url 'update_edit_details' %}",
+                            data : $('#edit_packaging_materials_form').serialize(),
+                            success : function(response) {
+                                 $('#packaging_material_details').html(response);
+                                 $('#edit_packaging_modal').modal('hide');
                                  $('.modal-backdrop').remove();
                             }
                         });

@@ -554,10 +554,12 @@ function save_commodity_attachment()
     }
     else
     {
+        var appNo = $('#referenceNo').val();
         var fileName = document.getElementById('document').files[0].name;
         var fd = new FormData();
         var file = document.getElementById('document').files[0];
         fd.append('document', file);
+        fd.append('appNo', appNo);
         token_value=$("input[name=csrfmiddlewaretoken]").val();
         $.ajaxSetup
         ({
@@ -577,7 +579,7 @@ function save_commodity_attachment()
             {
                 if (data.form_is_valid)
                 {
-                    var refNo = $('#attachment_refNo').val();
+                    var refNo = $('#referenceNo').val();
                     var file_url = data.file_url
                     $.ajax
                     ({

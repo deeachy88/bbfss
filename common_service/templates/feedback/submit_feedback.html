@@ -53,13 +53,25 @@ form, input, select, textarea{
                     <div class="col-md-6">
                          <div class="form-group">
                             <label class="form-label">Feedback Category <font color="red">*</font></label>
-                            <select class="form-control form-control" id="feedbackCategory" name="feedbackCategory">
+                            <select class="form-control form-control" id="feedbackCategory" name="feedbackCategory" onchange="check_category(this.value)">
                                 <option value="">-SELECT-</option>
                                 <option value="General">General</option>
                                 <option value="Service Related">Service Related</option>
                             </select>
                         </div>
                         <div class="alert alert-danger" id="feedbackCategoryErrorMsg" style="display:none"></div>
+                    </div>
+                    <div class="col-md-6" id="service_div" style="display:none;">
+                        <div class="form-group">
+                            <label class="form-label">Service <font color="red">*</font></label>
+                            <select class="form-control form-control" id="service" name="service">
+                                <option value="">-SELECT-</option>
+                                {% for service in service %}
+                                    <option value="{{ service.Service_Code }}">{{ service.Service_Name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="alert alert-danger" id="serviceErrorMsg" style="display:none"></div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
@@ -89,6 +101,7 @@ function Submit_form(form)
         var feedbackCategory = $('#feedbackCategory').val();
         var feedback = $('#feedback').val();
         var number_count = $('#contactNumber').val().length;
+        var service = $('#service').val();
 
         if(name == "")
         {
@@ -119,6 +132,12 @@ function Submit_form(form)
             $('#feedbackCategoryErrorMsg').html("Select Feedback Category.");
             $('#feedbackCategoryErrorMsg').show();
             $('#feedbackCategoryErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else if(feedbackCategory == "Service Related" && service == "")
+        {
+            $('#serviceErrorMsg').html("Select Service.");
+            $('#serviceErrorMsg').show();
+            $('#serviceErrorMsg').delay(2000).fadeOut('slow');
         }
         else if(feedback == "")
         {
@@ -198,5 +217,16 @@ function checkContact(value)
 
 }
 
+function check_category(category)
+{
+    if(category == "General")
+    {
+        $('#service_div').hide();
+    }
+    else
+    {
+        $('#service_div').show();
+    }
+}
 </script>
 {% endblock %}

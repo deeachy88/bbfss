@@ -178,12 +178,20 @@ class t_field_office_master(models.Model):
         (Y, 'Y'),
         (N, 'N'),
     ]
+    R = 'By Road'
+    A = 'By Air'
+
+    CONVEYANCE_MEANS = [
+        (R, 'By Road'),
+        (A, 'By Air'),
+    ]
 
     Field_Office_Id = models.AutoField(primary_key=True)
     Field_Office_Code = models.CharField(max_length=3, default=None)
     Field_Office = models.CharField(max_length=100)
     Is_Entry_Point = models.CharField(max_length=1, choices=ENTRY_POINT, default=None, blank=True, null=True)
     Dzongkhag_Code = models.ForeignKey(t_dzongkhag_master, on_delete=models.CASCADE, null=True, blank=True)
+    Conveyance_Means = models.CharField(max_length=20, choices=CONVEYANCE_MEANS, default=None, blank=True, null=True)
     Remarks = models.CharField(max_length=250)
 
     def __str__(self):

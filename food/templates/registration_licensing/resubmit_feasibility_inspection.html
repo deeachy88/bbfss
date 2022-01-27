@@ -226,12 +226,14 @@ a {
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Legal Entity Status</label>
                                         <select class="form-control" disabled>
-                                             {% if application_details.Legal_Entity == "Private Ltd" %}
-                                                <option value="Private Ltd" selected>Private Ltd</option>
-                                             {% elif application_details.Legal_Entity == "Public Ltd" %}
-                                                <option value="Public Ltd" selected>Public Ltd</option>
+                                             {% if application_details.Legal_Entity == "Sole Proprietorship" %}
+                                                <option value="Private Ltd" selected>Sole Proprietorship</option>
+                                             {% elif application_details.Legal_Entity == "Partnership" %}
+                                                <option value="Public Ltd" selected>Partnership</option>
+                                             {% elif application_details.Legal_Entity == "Company" %}
+                                                <option value="Company" selected>Company</option>
                                              {% else %}
-                                                <option value="Government undertaking" selected>Government undertaking (Pull from master table)</option>
+                                                <option value="Others" selected>Others(Government undertaking..)</option>
                                              {% endif %}
                                         </select>
                                         <div class="alert alert-danger" id="legal_statusErrorMsg" style="display:none"></div>
@@ -430,6 +432,20 @@ a {
                                                     {% endif %}
                                                 </div>
                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Process Flow & Technology </label><br>
+                                            <textarea class="form-control" disabled>{{application_details.Process_Flow_Technology}}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Quality Assurance System</label><br>
+                                            <textarea class="form-control" disabled>{{application_details.Quality_Assurance_System}}</textarea>
                                         </div>
                                     </div>
                                 </div>

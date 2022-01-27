@@ -1,0 +1,49 @@
+{% load static %}
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Source Country</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for packaging_material in packaging_material %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{packaging_material.Name}}</td>
+                <td>{{packaging_material.Source_Country}}</td>
+                <td>
+                    <button type="button" class="btn btn-primary btn-sm"
+                    onclick="delete_details('{{packaging_material.Record_Id}}','{{packaging_material.Application_No}}', 'FBR-PM')">
+                    <i class="zmdi zmdi-delete"></i>
+                    </button>
+                    <button  type="button" class="btn btn-info btn-sm" data-toggle="tooltip" title="Edit"
+                     onclick="packaging_material_details('{{ packaging_material.Record_Id }}', '{{packaging_material.Name}}',
+                     '{{packaging_material.Source_Country}}', '{{packaging_material.Application_No}}')">
+                    <i class="fa fa-edit"></i>
+                    </button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="6" class="text-center">No Data</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<input type="hidden" value="{{packaging_count}}" id="packaging_count">
+<script>
+    $(document).ready(function()
+     {
+        if($('#packaging_count').val() > 0)
+        {
+            $('#packaging_material_button').show();
+        }
+        else
+        {
+            $('#packaging_material_button').hide();
+        }
+     });
+</script>

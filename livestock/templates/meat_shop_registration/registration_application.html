@@ -91,8 +91,7 @@ form, input, select, textarea{
                                     <label class="form-label">Licensing Criteria <font color="red">*</font></label>
                                     <select class="form-control" name="license_criteria"  id="license_criteria">
                                         <option value="">--SELECT--</option>
-                                        <option value="BAFRA GHP">BAFRA GHP</option>
-                                        <option value="BAFRA GMP">BAFRA GMP</option>
+                                        <option value="BAFRA GHP/GMP">BAFRA GHP/GMP</option>
                                     </select>
                                 </div>
                                 <div class="alert alert-danger" id="license_criteriaErrorMsg" style="display:none"></div>
@@ -489,10 +488,12 @@ function save_meat_attachment()
     }
     else
     {
+        var appNo = $('#applicationNo').val();
         var fileName = document.getElementById('document').files[0].name;
         var fd = new FormData();
         var file = document.getElementById('document').files[0];
         fd.append('document', file);
+        fd.append('appNo', appNo);
         token_value=$("input[name=csrfmiddlewaretoken]").val();
         $.ajaxSetup
         ({
@@ -501,42 +502,41 @@ function save_meat_attachment()
                 xhr.setRequestHeader("X-CSRFToken", token_value);
             }
         });
-        $.ajax({
-        type : "POST",
-        url : "{% url 'meat_shop_file' %}",
-        data : fd,
-        dataType: 'json',
-        contentType: false,
-        processData: false,
-        success : function(data)
-        {
-            if (data.form_is_valid)
+            $.ajax({
+            type : "POST",
+            url : "{% url 'meat_shop_file' %}",
+            data : fd,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            success : function(data)
             {
-                var file_url = data.file_url
-                var appNo = $('#attachment_appNo').val();
-                $.ajax
-                ({
-                    type : "POST",
-                    url : "{% url 'meat_shop_file_name' %}",
-                    data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
-                    success : function(responseText)
-                    {
-                        $('#attachmentModal').modal('hide');
-                        $('#file-attachment-mortem').html(responseText);
-                        $('.modal-backdrop').remove();
-                        $('#attachment_form')[0].reset();
-                    }
-                });
+                if (data.form_is_valid)
+                {
+                    var appNo = $('#applicationNo').val();
+                    var file_url = data.file_url
+                    $.ajax
+                    ({
+                        type : "POST",
+                        url : "{% url 'meat_shop_file_name' %}",
+                        data : {'appNo':appNo , 'filename':fileName, 'file_url':file_url},
+                        success : function(responseText)
+                        {
+                            $('#attachmentModal').modal('hide');
+                            $('#file-attachment-mortem').html(responseText);
+                            $('.modal-backdrop').remove();
+                            $('#attachment_form')[0].reset();
+                        }
+                    });
+                }else
+                {
+                    $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
+                    $('#fileErrorMsg').show();
+                    $('#fileErrorMsg').delay(2000).fadeOut('slow');
+                }
             }
-            else
-            {
-                $('#fileErrorMsg').html("File Already Exists With Same Name. Please Upload Another File");
-                $('#fileErrorMsg').show();
-                $('#fileErrorMsg').delay(2000).fadeOut('slow');
-            }
-        }
         });
-    }
+   }
 
 }
 

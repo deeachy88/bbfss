@@ -79,13 +79,9 @@ form, input, select, textarea{
                                  <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Licensing Criteria <font color="red">*</font></label>
-                                        <select class="form-control">
-                                            {% if application_details.License_Criteria == 'BAFRA GHP' %}
-                                            <option selected>BAFRA GHP</option>
-                                            <option>BAFRA GMP</option>
-                                            {% else %}
-                                            <option>BAFRA GHP</option>
-                                            <option selected>BAFRA GMP</option>
+                                        <select class="form-control" disabled>
+                                            {% if application_details.License_Criteria == 'BAFRA GHP/GMP' %}
+                                                <option selected>BAFRA GHP/GMP</option>
                                             {% endif %}
                                         </select>
                                     </div>
@@ -278,8 +274,8 @@ form, input, select, textarea{
                                     <th scope="col">#</th>
                                     <th scope="col">Name Of Key Personal</th>
                                     <th scope="col">Designation of Key Personal</th>
-                                    <th scope="col">Opening Meeting (Date)</th>
-                                    <th scope="col">Closing Meeting (Date)</th>
+                                    <th scope="col">Meeting (Date)</th>
+                                    <th scope="col">Meeting Type</th>
                                     <th scope="col"></th>
                                 </tr>
                             </thead>
@@ -289,8 +285,8 @@ form, input, select, textarea{
                                         <td>{{ forloop.counter }}</td>
                                         <td>{{import.Name}}</td>
                                         <td>{{import.Designation}}</td>
-                                        <td>{{import.Open_Meeting_Date|date:"d-m-Y"}}</td>
-                                        <td>{{import.Closing_Meeting_Date|date:"d-m-Y"}}</td>
+                                        <td>{{import.Meeting_Date|date:"d-m-Y"}}</td>
+                                        <td>{{import.Type }}</td>
                                         <td>
                                             <button type="button" class="btn btn-primary btn-sm"
                                             onclick="delete_fi_team_details('{{import.Record_Id}}','{{import.Application_No}}')">
@@ -298,7 +294,7 @@ form, input, select, textarea{
                                             </button>
                                             <button  type="button" class="btn btn-info btn-sm" data-toggle="tooltip" title="Edit"
                                                  onclick="fi_team_details('{{ import.Record_Id }}', '{{import.Name}}','{{import.Designation}}',
-                                                 '{{import.Open_Meeting_Date|date:'Y-m-d'}}', '{{import.Closing_Meeting_Date|date:'Y-m-d'}}',
+                                                 '{{import.Meeting_Date|date:'Y-m-d'}}', '{{import.Type }}',
                                                   '{{import.Application_No}}')">
                                                 <i class="fa fa-edit"></i>
                                             </button>
@@ -594,17 +590,24 @@ form, input, select, textarea{
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Opening Meeting(Date) <font color="red">*</font></label>
-                                    <input type="date" class="form-control" name="opening_date" id="opening_date">
+                                    <label class="form-label">Meeting(Date) <font color="red">*</font></label>
+                                    <input type="date" class="form-control" name="meeting_date" id="meeting_date">
                                 </div>
-                                <div class="alert alert-danger" id="opening_dateErrorMsg" style="display:none"></div>
+                                <div class="alert alert-danger" id="meeting_dateErrorMsg" style="display:none"></div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">Closing Meeting(Date) <font color="red">*</font></label>
-                                    <input type="date" class="form-control" name="closing_date" id="closing_date" onchange="check_date()">
-                                </div>
-                                <div class="alert alert-danger" id="closing_dateErrorMsg" style="display:none"></div>
+                            <div class="col-sm-6 justify-content-center" style="margin-top: 24px;">
+                                <label class="form-label">Meeting Type <font color="red">*</font></label>
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" name="Meeting_Type" class="custom-control-input" value="Opening">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Opening</span>
+                                </label>
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" name="Meeting_Type" class="custom-control-input" value="Closing">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Closing</span>
+                                </label>
+                                <div class="alert alert-danger" id="meeting_typeErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                     </div>
@@ -696,17 +699,24 @@ form, input, select, textarea{
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label">Opening Meeting(Date) <font color="red">*</font></label>
-                                    <input type="date" class="form-control" name="edit_opening_date" id="edit_opening_date">
+                                    <label class="form-label">Meeting(Date) <font color="red">*</font></label>
+                                    <input type="date" class="form-control" name="edit_meeting_date" id="edit_meeting_date">
                                 </div>
-                                <div class="alert alert-danger" id="edit_opening_dateErrorMsg" style="display:none"></div>
+                                <div class="alert alert-danger" id="edit_meeting_dateErrorMsg" style="display:none"></div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">Closing Meeting(Date) <font color="red">*</font></label>
-                                    <input type="date" class="form-control" name="edit_closing_date" id="edit_closing_date" onchange="check_edit_date()">
-                                </div>
-                                <div class="alert alert-danger" id="edit_closing_dateErrorMsg" style="display:none"></div>
+                            <div class="col-sm-6 justify-content-center" style="margin-top: 24px;">
+                                <label class="form-label">Meeting Type <font color="red">*</font></label>
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" name="Edit_Meeting_Type" class="custom-control-input" value="Opening" id="opening">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Opening</span>
+                                </label>
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" name="Edit_Meeting_Type" class="custom-control-input" value="Closing" id="closing">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Closing</span>
+                                </label>
+                                <div class="alert alert-danger" id="edit_meeting_typeErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                     </div>
@@ -941,9 +951,9 @@ function add_team_details(application_id)
 {
     var name = $('#name').val();
     var designation = $('#designation').val();
-    var opening_date = $('#opening_date').val();
-    var closing_date = $('#closing_date').val();
-
+    var meeting_date = $('#meeting_date').val();
+    var meeting_type = $("input[name=Meeting_Type]:checked").length;
+    var meeting_type_value = $("input[name=Meeting_Type]:checked").val();
     if(name == "")
     {
         $('#nameErrorMsg').html("Enter Name.");
@@ -958,34 +968,34 @@ function add_team_details(application_id)
         $('#designationErrorMsg').delay(2000).fadeOut('slow');
         $("#designation").focus();
     }
-    else if(opening_date == "")
+    else if(meeting_date == "")
     {
-        $('#opening_dateErrorMsg').html("Select Openeing Date.");
-        $('#opening_dateErrorMsg').show();
-        $('#opening_dateErrorMsg').delay(2000).fadeOut('slow');
-        $("#opening_date").focus();
+        $('#meeting_dateErrorMsg').html("Select Meeting Date.");
+        $('#meeting_dateErrorMsg').show();
+        $('#meeting_dateErrorMsg').delay(2000).fadeOut('slow');
+        $("#meeting_date").focus();
     }
-    else if(closing_date == "")
+    else if(meeting_type < 0)
     {
-        $('#closing_dateErrorMsg').html("Select Closing Date.");
-        $('#closing_dateErrorMsg').show();
-        $('#closing_dateErrorMsg').delay(2000).fadeOut('slow');
-        $("#closing_date").focus();
+        $('#meeting_typeErrorMsg').html("Select Meeting Type.");
+        $('#meeting_typeErrorMsg').show();
+        $('#meeting_typeErrorMsg').delay(2000).fadeOut('slow');
+        $("input[name=Meeting_Type]").focus();
     }
     else
     {
         $.ajax({
             type : "GET",
             url : "{% url 'meat_shop_team_details_factory_ins' %}",
-            data :{'application_id':application_id,'name':name,'designation':designation,'opening_date':opening_date,'closing_date':closing_date},
+            data :{'application_id':application_id,'name':name,'designation':designation,'meeting_date':meeting_date,'meeting_type':meeting_type_value},
             success : function(data) {
                 $('#team_details').html(data);
                 $('#team_details').show();
                 $('#teamModal').modal('hide');
                 $('#name').val("");
                 $('#designation').val("");
-                $('#opening_date').val("");
-                $('#closing_date').val("");
+                $('#meeting_date').val("");
+                $("input[name=Meeting_Type]").val("");
             }
         });
     }
@@ -1285,13 +1295,21 @@ function inspection_team_details(Record_id, Name, Designation, Application_No)
     $('#edit_InspectionTeamModal').show();
 }
 
-function fi_team_details(Record_id, Name, Designation,Open_Meeting_Date,Closing_Meeting_Date, Application_No)
+function fi_team_details(Record_id, Name, Designation, Meeting_Date, Meeting_Type, Application_No)
 {
     $('#edit_record_id').val(Record_id);
     $('#edit_name').val(Name);
     $('#edit_designation').val(Designation);
-    $('#edit_opening_date').val(Open_Meeting_Date);
-    $('#edit_closing_date').val(Closing_Meeting_Date);
+    $('#edit_meeting_date').val(Meeting_Date);
+
+    if(Meeting_Type == "Opening")
+    {
+        $("#opening").prop("checked", true);
+    }
+    else
+    {
+        $("#closing").prop("checked", true);
+    }
     $('#edit_app_no').val(Application_No);
     $('#edit_teamModal').show();
 }
@@ -1339,8 +1357,9 @@ function edit_team_details()
     var edit_record_id = $('#edit_record_id').val();
     var edit_name = $('#edit_name').val();
     var edit_designation = $('#edit_designation').val();
-    var edit_opening_date = $('#edit_opening_date').val();
-    var edit_closing_date = $('#edit_closing_date').val();
+    var edit_meeting_date = $('#edit_meeting_date').val();
+    var edit_meeting_type = $("input[name=Edit_Meeting_Type]:checked").length;
+    var edit_meeting_type_value = $("input[name=Edit_Meeting_Type]:checked").val();
     var application_id = $('#edit_app_no').val();
 
     if(edit_name == "")
@@ -1357,26 +1376,26 @@ function edit_team_details()
         $('#edit_designationErrorMsg').delay(2000).fadeOut('slow');
         $("#edit_designation").focus();
     }
-    else if(edit_opening_date == "")
+    else if(edit_meeting_date == "")
     {
-        $('#edit_opening_dateErrorMsg').html("Select Opening Date.");
-        $('#edit_opening_dateErrorMsg').show();
-        $('#edit_opening_dateErrorMsg').delay(2000).fadeOut('slow');
-        $("#edit_opening_date").focus();
+        $('#edit_meeting_dateErrorMsg').html("Select Meeting Date.");
+        $('#edit_meeting_dateErrorMsg').show();
+        $('#edit_meeting_dateErrorMsg').delay(2000).fadeOut('slow');
+        $("#edit_meeting_date").focus();
     }
-    else if(edit_closing_date == "")
+    else if(edit_meeting_type == "")
     {
-        $('#edit_closing_dateErrorMsg').html("Select Closing Date.");
-        $('#edit_closing_dateErrorMsg').show();
-        $('#edit_closing_dateErrorMsg').delay(2000).fadeOut('slow');
-        $("#edit_closing_date").focus();
+        $('#edit_meeting_typeErrorMsg').html("Select Meeting Type.");
+        $('#edit_meeting_typeErrorMsg').show();
+        $('#edit_meeting_typeErrorMsg').delay(2000).fadeOut('slow');
+        $("input[name=Edit_Meeting_Type]").focus();
     }
     else
     {
         $.ajax({
             type : "GET",
             url : "{% url 'update_meat_shop_team_details_factory_ins' %}",
-            data :{'application_id':application_id,'name':edit_name,'designation':edit_designation,'opening_date':edit_opening_date,'closing_date':edit_closing_date, 'record_id': edit_record_id},
+            data :{'application_id':application_id,'name':edit_name,'designation':edit_designation,'meeting_date':edit_meeting_date,'meeting_type':edit_meeting_type_value, 'record_id': edit_record_id},
             success : function(responseText) {
                 $('#team_details').html(responseText);
                 $('#team_details').show();

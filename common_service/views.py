@@ -278,26 +278,31 @@ def load_complaint_attachment_details(request):
 def save_complaint_file(request):
     data = dict()
     myFile = request.FILES['document']
+    app_no = request.POST.get('appNo')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + myFile.name
     fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/common_service/complaint_handling")
-    if fs.exists(myFile.name):
+    if fs.exists(file_name):
         data['form_is_valid'] = False
     else:
-        fs.save(myFile.name, myFile)
+        fs.save(file_name, myFile)
+        file_url = "attachments" + "/" + str(
+            timezone.now().year) + "/common_service/complaint_handling" + "/" + file_name
         data['form_is_valid'] = True
+        data['file_url'] = file_url
+        data['file_name'] = file_name
     return JsonResponse(data)
 
 
 def add_complaint_file_name(request):
-    if request.method == 'POST':
-        Application_No = request.POST.get('appNo')
-        fileName = request.POST.get('filename')
-        Applicant_Id = request.POST.get('email')
-        fs = ("attachments" + "/" + str(timezone.now().year) + "/common_service/complaint_handling/" + fileName)
-        print(fs)
-        t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
-                                         Role_Id='8', File_Path=fs, Attachment=fileName)
-
-        complaint_file = t_file_attachment.objects.filter(Application_No=Application_No, Role_Id='8')
+    app_no = request.POST.get('appNo')
+    fileName = request.POST.get('filename')
+    Applicant_Id = request.session['email']
+    file_url = request.POST.get('file_url')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + fileName
+    t_file_attachment.objects.create(Application_No=app_no, Applicant_Id=Applicant_Id,
+                                     Role_Id=None, File_Path=file_url,
+                                     Attachment=file_name)
+    complaint_file = t_file_attachment.objects.filter(Application_No=app_no, Role_Id='8')
     return render(request, 'complaint_handling/complaint_file_attachment_page.html', {'complaint_file': complaint_file})
 
 
@@ -819,30 +824,32 @@ def save_sample_details(request):
 def inspection_file(request):
     data = dict()
     myFile = request.FILES['document']
+    app_no = request.POST.get('appNo')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + myFile.name
     fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/common_service/inspection_establishment")
-    if fs.exists(myFile.name):
+    if fs.exists(file_name):
         data['form_is_valid'] = False
     else:
-        fs.save(myFile.name, myFile)
-        file_url = "attachments" + "/" + str(timezone.now().year) + "/common_service/inspection_establishment" + "/" \
-                   + myFile.name
+        fs.save(file_name, myFile)
+        file_url = "attachments" + "/" + str(
+            timezone.now().year) + "/common_service/inspection_establishment" + "/" + file_name
         data['form_is_valid'] = True
         data['file_url'] = file_url
+        data['file_name'] = file_name
     return JsonResponse(data)
 
 
 def inspection_file_name(request):
-    if request.method == 'POST':
-        Application_No = request.POST.get('appNo')
-        fileName = request.POST.get('filename')
-        Applicant_Id = request.session['email']
-        file_url = request.POST.get('file_url')
+    app_no = request.POST.get('appNo')
+    fileName = request.POST.get('filename')
+    Applicant_Id = request.session['email']
+    file_url = request.POST.get('file_url')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + fileName
+    t_file_attachment.objects.create(Application_No=app_no, Applicant_Id=Applicant_Id,
+                                     Role_Id=None, File_Path=file_url,
+                                     Attachment=file_name)
 
-        t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
-                                         File_Path=file_url, Role_Id=None,
-                                         Attachment=fileName)
-
-        file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+    file_attach = t_file_attachment.objects.filter(Application_No=app_no)
     return render(request, 'inspection_establishment/file_attachment.html', {'file_attach': file_attach})
 
 
@@ -1204,26 +1211,32 @@ def load_commodity_attachment_details(request):
 def add_commodity_file(request):
     data = dict()
     myFile = request.FILES['document']
+    app_no = request.POST.get('appNo')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + myFile.name
     fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/common_service/inspection_commodity")
-    if fs.exists(myFile.name):
+    if fs.exists(file_name):
         data['form_is_valid'] = False
     else:
-        fs.save(myFile.name, myFile)
+        fs.save(file_name, myFile)
+        file_url = "attachments" + "/" + str(
+            timezone.now().year) + "/common_service/inspection_commodity" + "/" + file_name
         data['form_is_valid'] = True
+        data['file_url'] = file_url
+        data['file_name'] = file_name
     return JsonResponse(data)
 
 
 def add_commodity_file_name(request):
-    if request.method == 'POST':
-        Reference_No = request.POST.get('refNo')
-        fileName = request.POST.get('filename')
-        Applicant_Id = request.session['email']
-        Role_Id = request.session['Role_Id']
-        fs = ("attachments" + "/" + str(timezone.now().year) + "/common_service/complaint_handling/" + fileName)
-        t_file_attachment.objects.create(Application_No=Reference_No, Applicant_Id=Applicant_Id,
-                                         Role_Id=Role_Id, File_Path=fs, Attachment=fileName)
-        file_attach = t_file_attachment.objects.filter(Application_No=Reference_No)
-        return render(request, 'inspection_commodity/commodity_file_attachment.html', {'file_attach': file_attach})
+    app_no = request.POST.get('refNo')
+    fileName = request.POST.get('filename')
+    Applicant_Id = request.session['email']
+    file_url = request.POST.get('file_url')
+    Role_Id = request.session['Role_Id']
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + fileName
+    t_file_attachment.objects.create(Application_No=app_no, Applicant_Id=Applicant_Id,
+                                     Role_Id=Role_Id, File_Path=file_url, Attachment=fileName)
+    file_attach = t_file_attachment.objects.filter(Application_No=app_no)
+    return render(request, 'inspection_commodity/commodity_file_attachment.html', {'file_attach': file_attach})
 
 
 def delete_commodity_file(request):
@@ -1626,6 +1639,7 @@ def submit_feedback_form(request):
         login_id = None
     if login_id:
         login_type = request.session['Login_Type']
+        service = t_service_master.objects.all().order_by('Service_Id')
         if login_type == 'I':
             Role = request.session['role']
             Role_Id = request.session['Role_Id']
@@ -1645,31 +1659,37 @@ def submit_feedback_form(request):
                                          Assigned_Role_Id=Role_Id, Section=section_name,
                                          Action_Date__isnull=False, Application_Status='CA')
                                      ).count()
-                    return render(request, 'feedback/submit_feedback.html', {'count': message_count})
+                    return render(request, 'feedback/submit_feedback.html',
+                                  {'count': message_count, 'service': service})
             elif Role == 'OIC':
                 login_id = request.session['Login_Id']
                 Field_Office_Id = request.session['field_office_id']
-                message_count = (t_workflow_details.objects.filter(Assigned_Role_Id='4', Field_Office_Id=Field_Office_Id,
-                                                                   Action_Date__isnull=False) |
-                                 t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                                   Action_Date__isnull=False)).count()
+                message_count = (
+                        t_workflow_details.objects.filter(Assigned_Role_Id='4', Field_Office_Id=Field_Office_Id,
+                                                          Action_Date__isnull=False) |
+                        t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
+                                                          Action_Date__isnull=False)).count()
 
-                return render(request, 'feedback/submit_feedback.html', {'count': message_count})
+                return render(request, 'feedback/submit_feedback.html', {'count': message_count, 'service': service})
             elif Role == 'Inspector':
                 login_id = request.session['Login_Id']
                 Field_Office_Id = request.session['field_office_id']
                 message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
                                                                    Action_Date__isnull=False)
-                                 | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
+                                 | t_workflow_details.objects.filter(Assigned_To=login_id,
+                                                                     Field_Office_Id=Field_Office_Id,
                                                                      Application_Status='I',
                                                                      Action_Date__isnull=False)
-                                 | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
+                                 | t_workflow_details.objects.filter(Assigned_To=login_id,
+                                                                     Field_Office_Id=Field_Office_Id,
                                                                      Application_Status='FI',
                                                                      Action_Date__isnull=False)
-                                 | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
+                                 | t_workflow_details.objects.filter(Assigned_To=login_id,
+                                                                     Field_Office_Id=Field_Office_Id,
                                                                      Application_Status='FR',
                                                                      Action_Date__isnull=False)
-                                 | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
+                                 | t_workflow_details.objects.filter(Assigned_To=login_id,
+                                                                     Field_Office_Id=Field_Office_Id,
                                                                      Application_Status='P',
                                                                      Action_Date__isnull=False)
                                  | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APA',
@@ -1679,7 +1699,7 @@ def submit_feedback_form(request):
                 fhc_count = t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
                                                               Action_Date__isnull=False, Service_Code='FHC').count()
                 return render(request, 'feedback/submit_feedback.html',
-                              {'ins_count': message_count, 'fhc_count': fhc_count})
+                              {'ins_count': message_count, 'fhc_count': fhc_count, 'service': service})
             elif Role == 'Complain Officer':
                 login_id = request.session['Login_Id']
                 message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
@@ -1688,7 +1708,8 @@ def submit_feedback_form(request):
                                                                      Action_Date__isnull=False)
                                  | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
                                                                      Action_Date__isnull=False)).count()
-                return render(request, 'feedback/submit_feedback.html', {'complain_count': message_count})
+                return render(request, 'feedback/submit_feedback.html', {'complain_count': message_count,
+                                                                         'service': service})
             elif Role == 'Chief':
                 login_id = request.session['Login_Id']
                 message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
@@ -1697,23 +1718,26 @@ def submit_feedback_form(request):
                                                                      Action_Date__isnull=False)
                                  | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
                                                                      Action_Date__isnull=False)).count()
-                return render(request, 'feedback/submit_feedback.html', {'chief_count': message_count})
+                return render(request, 'feedback/submit_feedback.html', {'chief_count': message_count,
+                                                                         'service': service})
         else:
             login_id = request.session['Login_Id']
             message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
                              | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
                              | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
                              | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
+                             | t_workflow_details.objects.filter(Assigned_To=login_id,
+                                                                 Application_Status='NCR')).count()
 
             inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
                                                                       Action_Date__isnull=False).count()
             consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
-                                                                       Action_Date__isnull=False, Application_Status='P') \
+                                                                       Action_Date__isnull=False,
+                                                                       Application_Status='P') \
                 .count()
             return render(request, 'feedback/submit_feedback.html',
                           {'count': message_count, 'count_call': inspection_call_count,
-                           'consignment_call_count': consignment_call_count})
+                           'consignment_call_count': consignment_call_count, 'service': service})
     else:
         return render(request, 'redirect_page.html')
 
@@ -1729,24 +1753,80 @@ def submit_feedback(request):
     address = request.POST.get('address')
     feedbackCategory = request.POST.get('feedbackCategory')
     feedback = request.POST.get('feedback')
+    service = request.POST.get('service')
 
-    t_feebback.objects.create(
-        Reference_No=last_reference_no,
-        Created_By=applicant_Id,
-        Created_Date=date.today(),
-        Name=complainantName,
-        Contact_No=contact_number,
-        Email=email,
-        Address=address,
-        Feedback_Category=feedbackCategory,
-        Feedback=feedback
-    )
+    if feedbackCategory == 'General':
+        t_feebback.objects.create(
+            Reference_No=last_reference_no,
+            Created_By=applicant_Id,
+            Created_Date=date.today(),
+            Name=complainantName,
+            Contact_No=contact_number,
+            Email=email,
+            Address=address,
+            Feedback_Category=feedbackCategory,
+            Feedback=feedback
+        )
+    else:
+        service_details = t_service_master.objects.filter(Service_Code=service)
+        for service_name in service_details:
+            t_feebback.objects.create(
+                Reference_No=last_reference_no,
+                Created_By=applicant_Id,
+                Created_Date=date.today(),
+                Name=complainantName,
+                Contact_No=contact_number,
+                Email=email,
+                Address=address,
+                Feedback_Category=feedbackCategory,
+                Feedback=feedback,
+                Service=service_name.Service_Name,
+                Service_Code=service
+            )
     return render(request, 'feedback/submit_feedback.html')
 
 
 def feedback_list(request):
-    feedback_details = t_feebback.objects.all().order_by('Created_Date').reverse()
-    return render(request, 'feedback/feedback_list.html', {'feedback_details': feedback_details})
+    Role = request.session['role']
+    print(Role)
+    if Role == 'Complaint Handling Officer':
+        feedback_details = (t_feebback.objects.filter(Service_Code__in=['COM', 'IAM'])
+                            | t_feebback.objects.filter(Feedback_Category='General')) \
+            .order_by('Created_Date').reverse()
+        service_details = t_service_master.objects.all()
+        return render(request, 'feedback/feedback_list.html', {'feedback_details': feedback_details,
+                                                               'service_details': service_details})
+    else:
+        section = request.session['section']
+        section_details = t_section_master.objects.filter(Section_Id=section)
+        for id_section in section_details:
+            section_name = id_section.Section_Name
+
+            if section_name == 'Plant':
+                feedback_details = t_feebback.objects.filter(Service_Code__in=['MPP', 'IPP', 'EPP', 'RNS', 'RSC', ]) \
+                    .order_by('Created_Date').reverse()
+                service_details = t_service_master.objects.all()
+                return render(request, 'feedback/feedback_list.html', {'feedback_details': feedback_details,
+                                                                       'service_details': service_details})
+            elif section_name == 'Livestock':
+                feedback_details = t_feebback.objects.filter(
+                    Service_Code__in=['CMS', 'APM', 'LMP', 'ILP', 'IAF', 'LEC']) \
+                    .order_by('Created_Date').reverse()
+                service_details = t_service_master.objects.all()
+                return render(request, 'feedback/feedback_list.html', {'feedback_details': feedback_details,
+                                                                       'service_details': service_details})
+            elif section_name == 'Food':
+                feedback_details = t_feebback.objects.filter(Service_Code__in=['FPC', 'OC', 'GAP']) \
+                    .order_by('Created_Date').reverse()
+                service_details = t_service_master.objects.all()
+                return render(request, 'feedback/feedback_list.html', {'feedback_details': feedback_details,
+                                                                       'service_details': service_details})
+            else:
+                feedback_details = t_feebback.objects.filter(Service_Code__in=['FEC', 'FHL', 'FIP', 'FBR']) \
+                    .order_by('Created_Date').reverse()
+                service_details = t_service_master.objects.all()
+                return render(request, 'feedback/feedback_list.html', {'feedback_details': feedback_details,
+                                                                       'service_details': service_details})
 
 
 def get_feedback_reference_no(request, service_code):

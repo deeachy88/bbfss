@@ -213,12 +213,14 @@
                                     <div class="form-group col-md-4">
                                         <label class="form-label">Legal Entity Status</label>
                                         <select class="form-control" disabled>
-                                             {% if application_details.Legal_Entity == "Private Ltd" %}
-                                                <option value="Private Ltd" selected>Private Ltd</option>
-                                             {% elif application_details.Legal_Entity == "Public Ltd" %}
-                                                <option value="Public Ltd" selected>Public Ltd</option>
+                                             {% if application_details.Legal_Entity == "Sole Proprietorship" %}
+                                                <option value="Private Ltd" selected>Sole Proprietorship</option>
+                                             {% elif application_details.Legal_Entity == "Partnership" %}
+                                                <option value="Public Ltd" selected>Partnership</option>
+                                             {% elif application_details.Legal_Entity == "Company" %}
+                                                <option value="Company" selected>Company</option>
                                              {% else %}
-                                                <option value="Government undertaking" selected>Government undertaking (Pull from master table)</option>
+                                                <option value="Others" selected>Others(Government undertaking..)</option>
                                              {% endif %}
                                         </select>
                                         <div class="alert alert-danger" id="legal_statusErrorMsg" style="display:none"></div>
@@ -420,6 +422,20 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Process Flow & Technology </label><br>
+                                            <textarea class="form-control" disabled>{{application_details.Process_Flow_Technology}}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Quality Assurance System</label><br>
+                                            <textarea class="form-control" disabled>{{application_details.Quality_Assurance_System}}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             {% if application_details.Process_Outsource == 'Yes' %}
                                 <br>
@@ -483,6 +499,64 @@
                                     {% empty %}
                                     <tr>
                                       <td colspan="5" class="text-center">No Data</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <br>
+                        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">Raw </span>
+                                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Materials</span>
+                            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                        </div>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Source Country</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for raw_materials in raw_materials %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{raw_materials.Name}}</td>
+                                        <td>{{raw_materials.Source_Country}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="3" class="text-center">No Data</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <br>
+                        <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                            <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                                <span class="px-2 small text-muted font-weight-bold text-muted form-label">Packaging </span>
+                                <span class="px-1 small text-muted font-weight-bold text-muted form-label">Materials</span>
+                            <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                        </div>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Source Country</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for packaging_material in packaging_material %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{packaging_material.Name}}</td>
+                                        <td>{{packaging_material.Source_Country}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="3" class="text-center">No Data</td>
                                     </tr>
                                 {% endfor %}
                             </tbody>

@@ -26,6 +26,7 @@ import pandas as pd
 from plant.views import focal_officer_application, inspector_application, resubmit_application, oic_application, \
     complain_officer_application, chief_application
 
+
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def organic_certificate(request):
     try:
@@ -194,30 +195,32 @@ def get_organic_certificate_app_no(request, service_code):
 def organic_certificate_file(request):
     data = dict()
     myFile = request.FILES['document']
+    app_no = request.POST.get('appNo')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + myFile.name
     fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/certification/organic_certificate")
-    if fs.exists(myFile.name):
+    if fs.exists(file_name):
         data['form_is_valid'] = False
     else:
-        fs.save(myFile.name, myFile)
+        fs.save(file_name, myFile)
         file_url = "attachments" + "/" + str(
-            timezone.now().year) + "/certification/organic_certificate" + "/" + myFile.name
+            timezone.now().year) + "/certification/organic_certificate" + "/" + file_name
         data['form_is_valid'] = True
         data['file_url'] = file_url
+        data['file_name'] = file_name
     return JsonResponse(data)
 
 
 def organic_certificate_file_name(request):
-    if request.method == 'POST':
-        Application_No = request.POST.get('appNo')
-        fileName = request.POST.get('filename')
-        Applicant_Id = request.session['email']
-        file_url = request.POST.get('file_url')
+    app_no = request.POST.get('appNo')
+    fileName = request.POST.get('filename')
+    Applicant_Id = request.session['email']
+    file_url = request.POST.get('file_url')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + fileName
+    t_file_attachment.objects.create(Application_No=app_no, Applicant_Id=Applicant_Id,
+                                     Role_Id=None, File_Path=file_url,
+                                     Attachment=file_name)
 
-        t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
-                                         File_Path=file_url, Role_Id=None,
-                                         Attachment=fileName)
-
-        file_attach = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type__isnull=True)
+    file_attach = t_file_attachment.objects.filter(Application_No=app_no)
     return render(request, 'organic_certification/file_attachment.html', {'file_attach': file_attach})
 
 
@@ -829,32 +832,32 @@ def oc_application_team_leader(request):
 def save_oc_audit_plan(request):
     data = dict()
     myFile = request.FILES['document']
-    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/organic_certificate/audit_plan")
-    if fs.exists(myFile.name):
+    app_no = request.POST.get('appNo')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + myFile.name
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "organic_certificate/audit_plan")
+    if fs.exists(file_name):
         data['form_is_valid'] = False
     else:
-        fs.save(myFile.name, myFile)
-        file_url = "attachments" + "/" + str(
-            timezone.now().year) + "/organic_certificate/audit_plan" + "/" + myFile.name
+        fs.save(file_name, myFile)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "organic_certificate/audit_plan" + "/" + file_name
         data['form_is_valid'] = True
         data['file_url'] = file_url
+        data['file_name'] = file_name
     return JsonResponse(data)
 
 
 def save_oc_audit_plan_name(request):
-    if request.method == 'POST':
-        Application_No = request.POST.get('application_no')
-        fileName = request.POST.get('filename')
-        Applicant_Id = request.session['email']
-        file_url = request.POST.get('file_url')
+    app_no = request.POST.get('application_no')
+    fileName = request.POST.get('filename')
+    Applicant_Id = request.session['email']
+    file_url = request.POST.get('file_url')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + fileName
+    t_file_attachment.objects.create(Application_No=app_no, Applicant_Id=Applicant_Id,
+                                     Role_Id=None, File_Path=file_url,
+                                     Attachment=file_name, Attachment_Type='AP')
 
-        t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
-                                         File_Path=file_url, Role_Id=None,
-                                         Attachment=fileName, Attachment_Type='AP')
-
-        file_attach = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='AP')
-        file_attach_count = t_file_attachment.objects.filter(Application_No=Application_No,
-                                                             Attachment_Type='AP').count()
+    file_attach = t_file_attachment.objects.filter(Application_No=app_no)
+    file_attach_count = t_file_attachment.objects.filter(Application_No=app_no, Attachment_Type='AP').count()
     return render(request, 'organic_certification/audit_plan_details.html', {'file_attach': file_attach,
                                                                              'file_attach_count': file_attach_count})
 
@@ -1120,28 +1123,31 @@ def save_gap_certificate(request):
 def gap_certificate_file(request):
     data = dict()
     myFile = request.FILES['document']
+    app_no = request.POST.get('appNo')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + myFile.name
     fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/certification/gap_certificate")
-    if fs.exists(myFile.name):
+    if fs.exists(file_name):
         data['form_is_valid'] = False
     else:
-        fs.save(myFile.name, myFile)
-        file_url = "attachments" + "/" + str(timezone.now().year) + "/certification/gap_certificate" + "/" + myFile.name
+        fs.save(file_name, myFile)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/certification/gap_certificate" + "/" + file_name
         data['form_is_valid'] = True
         data['file_url'] = file_url
+        data['file_name'] = file_name
     return JsonResponse(data)
 
 
 def gap_certificate_file_name(request):
-    Application_No = request.POST.get('appNo')
+    app_no = request.POST.get('appNo')
     fileName = request.POST.get('filename')
     Applicant_Id = request.session['email']
     file_url = request.POST.get('file_url')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + fileName
+    t_file_attachment.objects.create(Application_No=app_no, Applicant_Id=Applicant_Id,
+                                     Role_Id=None, File_Path=file_url,
+                                     Attachment=file_name)
 
-    t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
-                                     File_Path=file_url, Role_Id=None,
-                                     Attachment=fileName)
-
-    file_attach = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type__isnull=True)
+    file_attach = t_file_attachment.objects.filter(Application_No=app_no)
     return render(request, 'GAP_Certification/file_attachment.html', {'file_attach': file_attach})
 
 
@@ -1174,35 +1180,38 @@ def delete_gap_ap(request):
     file_attach = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='AP')
     file_attach_count = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='AP').count()
     return render(request, 'GAP_Certification/audit_plan_details.html', {'file_attach': file_attach,
-                                                                         'file_attach_count':file_attach_count})
+                                                                         'file_attach_count': file_attach_count})
 
 
 def save_gap_audit_plan(request):
     data = dict()
     myFile = request.FILES['document']
+    app_no = request.POST.get('appNo')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + myFile.name
     fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/gap_certificate/audit_plan")
-    if fs.exists(myFile.name):
+    if fs.exists(file_name):
         data['form_is_valid'] = False
     else:
-        fs.save(myFile.name, myFile)
-        file_url = "attachments" + "/" + str(timezone.now().year) + "/gap_certificate/audit_plan" + "/" + myFile.name
+        fs.save(file_name, myFile)
+        file_url = "attachments" + "/" + str(timezone.now().year) + "/gap_certificate/audit_plan" + "/" + file_name
         data['form_is_valid'] = True
         data['file_url'] = file_url
+        data['file_name'] = file_name
     return JsonResponse(data)
 
 
 def save_gap_audit_plan_name(request):
-    Application_No = request.POST.get('appNo')
+    app_no = request.POST.get('appNo')
     fileName = request.POST.get('filename')
     Applicant_Id = request.session['email']
     file_url = request.POST.get('file_url')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + fileName
+    t_file_attachment.objects.create(Application_No=app_no, Applicant_Id=Applicant_Id,
+                                     Role_Id=None, File_Path=file_url,
+                                     Attachment=file_name, Attachment_Type='AP')
 
-    t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
-                                     File_Path=file_url, Role_Id=None,
-                                     Attachment=fileName, Attachment_Type='AP')
-
-    file_attach = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='AP')
-    file_attach_count = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='AP').count()
+    file_attach = t_file_attachment.objects.filter(Application_No=app_no)
+    file_attach_count = t_file_attachment.objects.filter(Application_No=app_no, Attachment_Type='AP').count()
     return render(request, 'GAP_Certification/audit_plan_details.html', {'file_attach': file_attach,
                                                                          'file_attach_count': file_attach_count})
 
@@ -1808,7 +1817,6 @@ def food_product_certificate(request):
         return render(request, 'redirect_page.html')
 
 
-
 def save_food_product_certificate(request):
     data = dict()
     service_code = "FPC"
@@ -1991,29 +1999,32 @@ def food_product_application_no(request, service_code):
 def food_product_certificate_file(request):
     data = dict()
     myFile = request.FILES['document']
+    app_no = request.POST.get('appNo')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + myFile.name
     fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/certification/food_product_certificate")
-    if fs.exists(myFile.name):
+    if fs.exists(file_name):
         data['form_is_valid'] = False
     else:
-        fs.save(myFile.name, myFile)
+        fs.save(file_name, myFile)
         file_url = "attachments" + "/" + str(
-            timezone.now().year) + "/certification/food_product_certificate" + "/" + myFile.name
+            timezone.now().year) + "/certification/food_product_certificate" + "/" + file_name
         data['form_is_valid'] = True
         data['file_url'] = file_url
+        data['file_name'] = file_name
     return JsonResponse(data)
 
 
 def food_product_certificate_file_name(request):
-    Application_No = request.POST.get('appNo')
+    app_no = request.POST.get('appNo')
     fileName = request.POST.get('filename')
     Applicant_Id = request.session['email']
     file_url = request.POST.get('file_url')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + fileName
+    t_file_attachment.objects.create(Application_No=app_no, Applicant_Id=Applicant_Id,
+                                     Role_Id=None, File_Path=file_url,
+                                     Attachment=file_name)
 
-    t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
-                                     File_Path=file_url, Role_Id=None,
-                                     Attachment=fileName)
-
-    file_attach = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type__isnull=True)
+    file_attach = t_file_attachment.objects.filter(Application_No=app_no)
     return render(request, 'food_product_certification/file_attachment.html', {'file_attach': file_attach})
 
 
@@ -2278,35 +2289,36 @@ def fpc_certificate_no(request):
 def save_fpc_audit_plan(request):
     data = dict()
     myFile = request.FILES['document']
-    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/food_product_certificate/audit_plan")
-    if fs.exists(myFile.name):
+    app_no = request.POST.get('appNo')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + myFile.name
+    fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "food_product_certificate/audit_plan")
+    if fs.exists(file_name):
         data['form_is_valid'] = False
     else:
-        fs.save(myFile.name, myFile)
+        fs.save(file_name, myFile)
         file_url = "attachments" + "/" + str(
-            timezone.now().year) + "/food_product_certificate/audit_plan" + "/" + myFile.name
+            timezone.now().year) + "food_product_certificate/audit_plan" + "/" + file_name
         data['form_is_valid'] = True
         data['file_url'] = file_url
+        data['file_name'] = file_name
     return JsonResponse(data)
 
 
 def save_fpc_audit_plan_name(request):
-    if request.method == 'POST':
-        Application_No = request.POST.get('appNo')
-        fileName = request.POST.get('filename')
-        Applicant_Id = request.session['email']
-        file_url = request.POST.get('file_url')
+    app_no = request.POST.get('appNo')
+    fileName = request.POST.get('filename')
+    Applicant_Id = request.session['email']
+    file_url = request.POST.get('file_url')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + fileName
+    t_file_attachment.objects.create(Application_No=app_no, Applicant_Id=Applicant_Id,
+                                     Role_Id=None, File_Path=file_url,
+                                     Attachment=file_name, Attachment_Type='AP')
 
-        t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
-                                         File_Path=file_url, Role_Id=None,
-                                         Attachment=fileName, Attachment_Type='AP')
-
-        file_attach = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='AP')
-        file_attach_count = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='AP')\
-            .count()
-        return render(request, 'food_product_certification/audit_plan_details.html', {'file_attach': file_attach,
-                                                                                      'file_attach_count':
-                                                                                          file_attach_count})
+    file_attach = t_file_attachment.objects.filter(Application_No=app_no)
+    file_attach_count = t_file_attachment.objects.filter(Application_No=app_no, Attachment_Type='AP').count()
+    return render(request, 'food_product_certification/audit_plan_details.html', {'file_attach': file_attach,
+                                                                                  'file_attach_count':
+                                                                                      file_attach_count})
 
 
 def resubmit_fpc_nc_details(request):
@@ -2452,7 +2464,8 @@ def certificate_pending_list(request):
                                                                    Action_Date__isnull=False, Application_Status='P') \
             .count()
         return render(request, 'certification_draft_list.html', {'application_details': application_details,
-                                                                 'service_details': service_details, 'count': message_count,
+                                                                 'service_details': service_details,
+                                                                 'count': message_count,
                                                                  'count_call': inspection_call_count,
                                                                  'consignment_call_count': consignment_call_count})
     else:

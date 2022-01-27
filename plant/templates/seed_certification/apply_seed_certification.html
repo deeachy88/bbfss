@@ -453,10 +453,12 @@
         }
         else
         {
+            var appNo = $('#applicationNo').val();
             var fileName = document.getElementById('document').files[0].name;
             var fd = new FormData();
             var file = document.getElementById('document').files[0];
             fd.append('document', file);
+            fd.append('appNo', appNo);
             token_value=$("input[name=csrfmiddlewaretoken]").val();
             $.ajaxSetup
             ({
@@ -486,9 +488,9 @@
                             success : function(responseText)
                             {
                                 $('#attachmentModal').modal('hide');
-                                $('#seedCertificationAttach').html(responseText);
+                                $('#fileAttach').html(responseText);
                                 $('.modal-backdrop').remove();
-                                $('#attachmentModal')[0].reset();
+                                $('#attachment_form')[0].reset();
                             }
                         });
                     }else
@@ -499,7 +501,7 @@
                     }
                 }
             });
-        }
+       }
     }
 
     function save_certificate_details()

@@ -136,5 +136,6 @@ EMAIL_HOST_PASSWORD = 'sparkle@2021!'
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
+
 MEDIA_URL = '/attachments/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'attachments')

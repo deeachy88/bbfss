@@ -1077,10 +1077,10 @@ def field_office_page_manage(request):
         form = FieldOfficeForm(request.POST)
         if form.is_valid():
             form.save()
-            field_office = t_field_office_master.objects.all()
+            field_office = t_field_office_master.objects.all().order_by('Field_Office_Id')
             return render(request, 'field_office.html', {'form': form, 'field_office': field_office})
     else:
-        field_office = t_field_office_master.objects.all()
+        field_office = t_field_office_master.objects.all().order_by('Field_Office_Id')
         form = FieldOfficeForm()
         return render(request, 'field_office.html', {'form': form, 'field_office': field_office})
 
@@ -1100,7 +1100,7 @@ def save_field_office_form(request, form, template_name):
         if form.is_valid():
             form.save()
             data['form_is_valid'] = True
-            field_office = t_field_office_master.objects.all()
+            field_office = t_field_office_master.objects.all().order_by('Field_Office_Id')
             data['html_book_list'] = render_to_string('field_office.html', {
                 'fodder_office': field_office
             })

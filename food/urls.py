@@ -66,6 +66,9 @@ urlpatterns = [
          name='delete_fbr_factory_inspection_team_details'),
     path('delete_fbr_factory_team_details', views.delete_fbr_factory_team_details,
          name='delete_fbr_factory_team_details'),
+    path('save_raw_materials_details', views.save_raw_materials_details, name='save_raw_materials_details'),
+    path('save_packaging_materials_details', views.save_packaging_materials_details,
+         name='save_packaging_materials_details'),
 
 
     # Export Of Food

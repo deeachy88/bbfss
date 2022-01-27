@@ -36,6 +36,12 @@ form, input, select, textarea{
                         <a class="nav-link" id="pills-food-handler" data-toggle="pill" href="#food-handler" role="tab" aria-controls="pills-food-handler" aria-selected="false" onclick="food_handler_details()">Food Handlers</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" id="pills-raw-materials" data-toggle="pill" href="#raw-materials" role="tab" aria-controls="pills-raw-materials" aria-selected="false" onclick="raw_materials_details()">Raw Materials</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="pills-packaging-materials" data-toggle="pill" href="#packaging-materials" role="tab" aria-controls="pills-packaging-materials" aria-selected="false" onclick="packaging_materials_details()">Packaging Materials</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" id="fbr-file-attach" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_fbr_attachment()">File Attachment</a>
                     </li>
                 </ul>
@@ -256,9 +262,10 @@ form, input, select, textarea{
                                 <label class="form-label">Legal Entity Status <font color="red">*</font></label>
                                 <select class="form-control" name="legal_status"  id="legal_status">
                                     <option value="">--SELECT--</option>
-                                    <option value="Private Ltd">Private Ltd</option>
-                                    <option value="Public Ltd">Public Ltd</option>
-                                    <option value="Government undertaking">Government undertaking</option>
+                                    <option value="Sole Proprietorship">Sole Proprietorship</option>
+                                    <option value="Partnership">Partnership</option>
+                                    <option value="Company">Company</option>
+                                    <option value="Others">Others(Government undertaking..)</option>
                                 </select>
                                 <div class="alert alert-danger" id="legal_statusErrorMsg" style="display:none"></div>
                             </div>
@@ -404,6 +411,22 @@ form, input, select, textarea{
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Process Flow & Technology </label><br>
+                                    <textarea class="form-control" id="process_flow" name="process_flow"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="process_flowErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Quality Assurance System </label><br>
+                                    <textarea class="form-control" id="quality_assurance" name="quality_assurance"></textarea>
+                                </div>
+                                <div class="alert alert-danger" id="quality_assuranceErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
                     </div>
                     <div id="submitMsg" class="alert alert-info" role="alert" style="display:none;">
                         Save Successful
@@ -449,6 +472,44 @@ form, input, select, textarea{
                 </div>
                 <div class="card-action">
                     <button type="button" class="btn btn-success" id="fh_button" onclick="save_food_handler_details()" style="display:none">Save</button>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="raw-materials" role="tabpanel" aria-labelledby="pills-raw-materials">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-head-row">
+                            <div class="card-tools pull-right">
+                                <button type="button" class="btn btn-light" onclick="raw_materials_modal()">Add Details</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="raw_material_details">
+                            {% include 'registration_licensing/raw_material_details.html' %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-action">
+                    <button type="button" class="btn btn-success" id="raw_material_button" onclick="save_raw_material_details()" style="display:none">Save</button>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="packaging-materials" role="tabpanel" aria-labelledby="pills-packaging-materials">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-head-row">
+                            <div class="card-tools pull-right">
+                                <button type="button" class="btn btn-light" onclick="packaging_modal()">Add Details</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="packaging_material_details">
+                            {% include 'registration_licensing/packaging_material_details.html' %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-action">
+                    <button type="button" class="btn btn-success" id="packaging_material_button" onclick="save_packaging_material_details()" style="display:none">Save</button>
                 </div>
             </div>
             <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="mortem-file-attach">
@@ -521,7 +582,7 @@ form, input, select, textarea{
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" >Edit Details</h5>
+                    <h5 class="modal-title" >Add Details</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -549,6 +610,96 @@ form, input, select, textarea{
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary" onclick="save_fh_details()">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form method="post" id="raw_materials_form">
+    {% csrf_token %}
+    <div class="modal fade" id="raw_material_modal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" >Add Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Name <font color="red">*</font></label>
+                                        <input type="text" name="raw_material_name" class="form-control" id="raw_material_name" required>
+                                        <div class="alert alert-danger" id="raw_material_nameErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Source Country <font color="red">*</font></label>
+                                        <select class="form-control" name="source_country"  id="source_country">
+                                            <option value="">--SELECT--</option>
+                                            {% for country in country %}
+                                                <option value="{{ country.Country_Name }}">{{ country.Country_Name }}</option>
+                                            {% endfor %}
+                                         </select>
+                                        <div class="alert alert-danger" id="source_countryErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="save_raw_materials_details()">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form method="post" id="packaging_materials_form">
+    {% csrf_token %}
+    <div class="modal fade" id="packaging_modal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" >Add Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Name <font color="red">*</font></label>
+                                        <input type="text" name="packaging_name" class="form-control" id="packaging_name" required>
+                                        <div class="alert alert-danger" id="packaging_nameErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Source Country <font color="red">*</font></label>
+                                        <select class="form-control" name="packaging_source_country"  id="packaging_source_country">
+                                            <option value="">--SELECT--</option>
+                                            {% for country in country %}
+                                                <option value="{{ country.Country_Name }}">{{ country.Country_Name }}</option>
+                                            {% endfor %}
+                                         </select>
+                                        <div class="alert alert-danger" id="packaging_source_countryErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="save_packaging_materials_details()">Add</button>
                 </div>
             </div>
         </div>
@@ -590,6 +741,8 @@ form, input, select, textarea{
         </div>
     </div>
 </form>
+
+
 
 <form method="post" id="edit_fh_form">
     {% csrf_token %}
@@ -683,6 +836,102 @@ form, input, select, textarea{
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary" onclick="update_edit_details('FBR-OP')">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form method="post" id="edit_raw_materials_form">
+    {% csrf_token %}
+    <div class="modal fade" id="edit_raw_material_modal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" >Edit Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" name="raw_record_id" id="raw_record_id" style="display:none"/>
+                    <input type="hidden" name="edit_raw_application_no" id="edit_raw_application_no"/>
+                    <input type="hidden" name="identifier" value="FBR-RM"/>
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Name <font color="red">*</font></label>
+                                        <input type="text" name="edit_raw_material_name" class="form-control" id="edit_raw_material_name" required>
+                                        <div class="alert alert-danger" id="edit_raw_material_nameErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Source Country <font color="red">*</font></label>
+                                        <select class="form-control" name="edit_source_country"  id="edit_source_country">
+                                            <option value="">--SELECT--</option>
+                                            {% for country in country %}
+                                                <option value="{{ country.Country_Name }}">{{ country.Country_Name }}</option>
+                                            {% endfor %}
+                                         </select>
+                                        <div class="alert alert-danger" id="edit_source_countryErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="update_edit_details('FBR-RM')">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form method="post" id="edit_packaging_materials_form">
+    {% csrf_token %}
+    <div class="modal fade" id="edit_packaging_modal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" >Edit Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" name="packaging_record_id" id="packaging_record_id" style="display:none"/>
+                    <input type="hidden" name="edit_packaging_application_no" id="edit_packaging_application_no"/>
+                    <input type="hidden" name="identifier" value="FBR-PM"/>
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Name <font color="red">*</font></label>
+                                        <input type="text" name="edit_packaging_name" class="form-control" id="edit_packaging_name" required>
+                                        <div class="alert alert-danger" id="edit_packaging_nameErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="form-label">Source Country <font color="red">*</font></label>
+                                        <select class="form-control" name="edit_packaging_source_country"  id="edit_packaging_source_country">
+                                            <option value="">--SELECT--</option>
+                                            {% for country in country %}
+                                                <option value="{{ country.Country_Name }}">{{ country.Country_Name }}</option>
+                                            {% endfor %}
+                                         </select>
+                                        <div class="alert alert-danger" id="edit_packaging_source_countryErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="update_edit_details('FBR-PM')">Update</button>
                 </div>
             </div>
         </div>
@@ -1042,10 +1291,12 @@ function save_fbr_attachment()
     }
     else
     {
+        var appNo = $('#applicationNo').val();
         var fileName = document.getElementById('document').files[0].name;
         var fd = new FormData();
         var file = document.getElementById('document').files[0];
         fd.append('document', file);
+        fd.append('appNo', appNo);
         token_value=$("input[name=csrfmiddlewaretoken]").val();
         $.ajaxSetup
         ({
@@ -1066,7 +1317,7 @@ function save_fbr_attachment()
             if (data.form_is_valid)
             {
                 var file_url = data.file_url
-                var appNo = $('#attachment_appNo').val();
+                var appNo = $('#applicationNo').val();
                 $.ajax
                 ({
                     type : "POST",
@@ -1099,6 +1350,16 @@ function show_fbr_modal()
 function show_fh_modal()
 {
     $('#add_fh_details').modal('show');
+}
+
+function raw_materials_modal()
+{
+    $('#raw_material_modal').modal('show');
+}
+
+function packaging_modal()
+{
+    $('#packaging_modal').modal('show');
 }
 
 function show_fbr_attach_model()
@@ -1257,7 +1518,17 @@ function checkEditContact(value)
 
 function save_food_handler_details()
 {
+    $('#pills-raw-materials').tab('show');
+}
+
+function save_packaging_material_details()
+{
     $('#fbr-file-attach').tab('show');
+}
+
+function save_raw_material_details()
+{
+    $('#pills-packaging-materials').tab('show');
 }
 
 function save_fbr_details()
@@ -1345,11 +1616,81 @@ function save_fh_details()
                 success : function(responseText) {
                    $('#add_fh_details').modal('hide');
                    $('#food_handler_details').html(responseText);
-                   $('#pills-file').tab('show');
+                   $('#pills-food-handler').tab('show');
                    $('.modal-backdrop').remove();
                    $('#fh_form')[0].reset();
                 }
             });
+    }
+}
+
+function save_raw_materials_details()
+{
+    var application_no = $('#applicationNo').val();
+    var raw_material_name = $('#raw_material_name').val();
+    var source_country = $('#source_country').val();
+
+    if(raw_material_name == "")
+    {
+        $('#raw_material_nameErrorMsg').html("Enter Raw Material Name.");
+        $('#raw_material_nameErrorMsg').show();
+        $('#raw_material_nameErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(source_country == "")
+    {
+        $('#source_countryErrorMsg').html("Select Source Country.");
+        $('#source_countryErrorMsg').show();
+        $('#source_countryErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'save_raw_materials_details' %}",
+            data : {'application_no': application_no,'raw_material_name':raw_material_name, 'source_country':source_country, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success : function(responseText) {
+               $('#raw_material_modal').modal('hide');
+               $('#raw_material_details').html(responseText);
+               $('#pills-raw-materials').tab('show');
+               $('.modal-backdrop').remove();
+               $('#raw_materials_form')[0].reset();
+            }
+        });
+    }
+}
+
+function save_packaging_materials_details()
+{
+    var application_no = $('#applicationNo').val();
+    var packaging_name = $('#packaging_name').val();
+    var packaging_source_country = $('#packaging_source_country').val();
+
+    if(packaging_name == "")
+    {
+        $('#packaging_nameErrorMsg').html("Enter Packagin Material Name.");
+        $('#fh_nameErrorMsg').show();
+        $('#fh_nameErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(packaging_source_country == "")
+    {
+        $('#packaging_source_countryErrorMsg').html("Select Source Country.");
+        $('#packaging_source_countryErrorMsg').show();
+        $('#packaging_source_countryErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else
+    {
+        $.ajax({
+            type : "POST",
+            url : "{% url 'save_packaging_materials_details' %}",
+            data : {'application_no': application_no,'packaging_name':packaging_name, 'packaging_source_country':packaging_source_country, csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success : function(responseText) {
+               $('#packaging_modal').modal('hide');
+               $('#packaging_material_details').html(responseText);
+               $('#pills-packaging-materials').tab('show');
+               $('.modal-backdrop').remove();
+               $('#packaging_materials_form')[0].reset();
+            }
+        });
     }
 }
 
@@ -1461,6 +1802,24 @@ function populateDetails(Record_Id,BP_Outsourced_To,Address,Contact_No,BAFRA_Lic
     $('#edit_bafra_license_no').val(BAFRA_License_No);
     $('#edit_op_application_no').val(Application_No);
     $('#edit_op_model').modal('show');
+}
+
+function raw_material_details(Record_Id,Name,Source, Application_No)
+{
+    $('#raw_record_id').val(Record_Id);
+    $('#edit_raw_material_name').val(Name);
+    $('#edit_source_country').val(Source);
+    $('#edit_raw_application_no').val(Application_No);
+    $('#edit_raw_material_modal').modal('show');
+}
+
+function packaging_material_details(Record_Id,Name,Source, Application_No)
+{
+    $('#packaging_record_id').val(Record_Id);
+    $('#edit_packaging_name').val(FH_Name);
+    $('#edit_packaging_source_country').val(FH_License_No);
+    $('#edit_packaging_application_no').val(Application_No);
+    $('#edit_packaging_modal').modal('show');
 }
 
 function check_fbr_details()
