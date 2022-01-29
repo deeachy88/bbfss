@@ -166,7 +166,7 @@ class t_plant_import_permit_inspection_t1(models.Model):
     Application_No = models.CharField(max_length=30, primary_key=True)
     Import_Type = models.CharField(max_length=1, default=None)
     Application_Type = models.CharField(max_length=10, default=None)
-    Nationality_Type = models.CharField(max_length=20, default=None)
+    Nationality_Type = models.CharField(max_length=20, default=None, blank=True, null=True)
     License_No = models.CharField(max_length=100, blank=True, null=True)
     Business_Name = models.CharField(max_length=100, blank=True, null=True)
     CID = models.BigIntegerField(blank=True, null=True)

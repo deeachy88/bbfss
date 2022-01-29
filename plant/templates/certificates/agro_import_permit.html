@@ -76,7 +76,7 @@
                                         <td>{{ forloop.counter }}</td>
                                         {% for pesticide in pesticide %}
                                             {% if pesticide.Pesticide_Id == import.Pesticide_Id %}
-                                            <td>{{import.Pesticide_Name}}</td>
+                                            <td>{{pesticide.Pesticide_Name}}</td>
                                             {% endif %}
                                         {% endfor %}
                                         <td>{{import.Quantity}}</td>
@@ -110,7 +110,14 @@
                         <p>(ii)&nbsp;Accompanied by Import Permit</p>
                     </div>
                     <div class="row">
-                        <p><b>Special Entry Conditions/ Additional Declaration: NA</b></p>
+                        <p><font color='black'><b>Special Entry Conditions/ Additional Declaration :
+                                    {% if certificate_details.Additional_Declaration %}
+                                        {{ certificate_details.Additional_Declaration }}
+                                    {% else %}
+                                        NA
+                                    {% endif %}
+                                </b></font>
+                        </p>
                     </div>
                     <div class="row">
                         <p>This permit shall be valid for seven (7) month after date of issue.</p>

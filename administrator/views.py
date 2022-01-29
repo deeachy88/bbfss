@@ -282,26 +282,29 @@ def sendmail(request, name, email, password):
     subject = 'USER CREATED'
     message = "Dear " + name + " Login Id has been created for Bhutan Bio-Food Security System. Your Login Id is " \
               + email + " And Password is " + password + ""
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [email]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def accept_mail(request, Name, Email_Id, password):
     subject = 'USER CREATED'
     message = "Dear " + Name + " Your Registration for Bhutan Bio-Food Security System Is Accepted. Your Login Id is " \
               + Email_Id + " And Password is " + password + ""
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email_Id]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def reject_mail(request, Name, Email_Id):
     subject = 'USER REJECTED'
     message = "Dear " + Name + " Your Registration for Bhutan Bio-Food Security System Is Rejected ."
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email_Id]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -1874,9 +1877,10 @@ def send_reset_pass_mail(name, email, password):
     subject = 'PASSWORD_RESET'
     message = "Dear " + name + " Your password has been reset for Bhutan Bio-Food Security System. Your Login Id is " \
               + email + " And Password is " + password + ""
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [email]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def assign_revoke_officiating(request):
@@ -1938,9 +1942,10 @@ def user_password_reset_mail(Name, Email_Id, password):
     subject = 'PASSWORD RESET'
     message = "Dear " + Name + " Your Password Has Been Reset for Bhutan Bio-Food Security System. Your Login Id is " \
               + Email_Id + " And Password is " + password + ""
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email_Id]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def check_cid_exists(request):

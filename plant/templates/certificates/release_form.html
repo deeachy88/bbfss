@@ -41,32 +41,63 @@ table, th, td {
             </div>
             {% endfor %}
             <div class="row">
-                <table  class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th scope="col">Sl.No</th>
-                            <th scope="col">Product(s)</th>
-                            <th scope="col">Quantity (MT/KG)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                       {% for release_form in release_form %}
-                            <tr>
-                                <td>{{ forloop.counter }}</td>
-                                {% for crop in crop %}
-                                    {% if release_form.Crop_Id == crop.Crop_Id %}
-                                        <td>{{ crop.Crop_Common_Name }}</td>
-                                    {% endif %}
-                                {% endfor %}
-                                <td>{{release_form.Quantity_Released}}</td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                              <td colspan="4" class="text-center">No Data</td>
-                            </tr>
-                       {% endfor %}
-                    </tbody>
-                </table>
+                {% for certificate_details in certificate_details %}
+                    {% if certificate_details.Import_Type == 'P' %}
+                        <table  class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Sl.No</th>
+                                    <th scope="col">Product(s)</th>
+                                    <th scope="col">Quantity (MT/KG)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               {% for release_form in release_form %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        {% for crop in crop %}
+                                            {% if release_form.Crop_Id == crop.Crop_Id %}
+                                                <td>{{ crop.Crop_Common_Name }}</td>
+                                            {% endif %}
+                                        {% endfor %}
+                                        <td>{{release_form.Quantity_Released}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="4" class="text-center">No Data</td>
+                                    </tr>
+                               {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <table  class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Sl.No</th>
+                                    <th scope="col">Product(s)</th>
+                                    <th scope="col">Quantity (MT/KG)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               {% for release_form in release_form %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        {% for pesticide in pesticide %}
+                                            {% if release_form.Pesticide_Id == pesticide.Pesticide_Id %}
+                                                <td>{{ pesticide.Pesticide_Name }}</td>
+                                            {% endif %}
+                                        {% endfor %}
+                                        <td>{{release_form.Quantity_Released}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="4" class="text-center">No Data</td>
+                                    </tr>
+                               {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+                {% endfor %}
             </div>
             <div class="row">
                 {% for release_form in certificate_details %}

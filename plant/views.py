@@ -1403,13 +1403,13 @@ def save_import_permit(request):
     Nationality = request.POST.get('Nationality_Type')
     if Applicant_Type == "Commercial":
         regNo = request.POST.get('regNo')
-        business_name = request.POST.get('business_name')
+        business_name = request.POST.get('p_businessName')
         commercial_presentAddress = request.POST.get('commercial_presentAddress')
         com_contactNumber = request.POST.get('com_contactNumber')
         com_email = request.POST.get('com_email')
-        com_supplier = request.POST.get('com_email')
+        com_supplier = request.POST.get('com_supplier')
         Com_Country_Of_Origin = request.POST.get('Com_Country_Of_Origin')
-        com_conveyanceMeans = request.POST.get('Com_Country_Of_Origin')
+        com_conveyanceMeans = request.POST.get('com_conveyanceMeans')
         com_entry_point = request.POST.get('com_entry_point')
         com_movementPurpose = request.POST.get('com_movementPurpose')
         com_final_Destination = request.POST.get('com_final_Destination')
@@ -1666,7 +1666,7 @@ def fo_app_details(request):
         new_import_app = t_plant_import_permit_t1.objects.filter(Application_No=Application_No)
         details = t_plant_import_permit_t2.objects.filter(Application_No=Application_No)
         file = t_file_attachment.objects.filter(Application_No=Application_No)
-        location_mapping = t_field_office_master.objects.filter(Is_Entry_Point="Y")
+        location_mapping = t_field_office_master.objects.all()
         country = t_country_master.objects.all()
         crop = t_plant_crop_master.objects.all()
         pesticide = t_plant_pesticide_master.objects.all()
@@ -2264,7 +2264,7 @@ def view_oic_details(request):
         new_import_app = t_plant_import_permit_inspection_t1.objects.filter(Application_No=application_no)
         details = t_plant_import_permit_inspection_t2.objects.filter(Application_No=application_no)
         file = t_file_attachment.objects.filter(Application_No=application_no)
-        location_mapping = t_field_office_master.objects.filter(Is_Entry_Point="Y")
+        location_mapping = t_field_office_master.objects.filter()
         country = t_country_master.objects.all()
         crop = t_plant_crop_master.objects.all()
         pesticide = t_plant_pesticide_master.objects.all()
@@ -2415,11 +2415,13 @@ def view_oic_details(request):
         user_role_list = t_user_master.objects.filter(Field_Office_Id_id=Field_Office)
         location_details = t_field_office_master.objects.all()
         location_mapping = t_field_office_master.objects.filter(Is_Entry_Point="Y")
+        species = t_livestock_species_master.objects.all()
+        breed = t_livestock_species_breed_master.objects.all()
         return render(request, 'Animal_Fish_Import/oic_details.html',
                       {'application_details': application_details, 'file': file, 'dzongkhag': dzongkhag,
                        'village': village, 'location': location, 'import': details,
                        'inspector_list': user_role_list, 'location_details': location_details,
-                       'location_mapping': location_mapping})
+                       'location_mapping': location_mapping, 'species': species, 'breed': breed})
     elif service_code == 'ILP':
         dzongkhag = t_dzongkhag_master.objects.all()
         village = t_village_master.objects.all()
@@ -3674,7 +3676,7 @@ def update_details_agro(request):
     import_det.update(Quantity_Balance=agro_qty_balance)
     for import_IPP in import_det:
         Product_Record_Id = import_IPP.Product_Record_Id
-        balance = int(import_IPP.Quantity_Balance) - int(import_IPP.Quantity_Released)
+        balance = int(import_IPP.Quantity_Balance_1) - int(import_IPP.Quantity_Released)
         product_details = t_plant_import_permit_t2.objects.filter(pk=Product_Record_Id)
         product_details.update(Quantity_Balance=balance)
         if balance == 0:
@@ -6612,9 +6614,10 @@ def get_certificate_details(request, t_livestock_import_permit_product_inspectio
         details_permit = t_plant_import_permit_inspection_t2.objects.filter(Application_No=application_No)
         country = t_country_master.objects.all()
         crop = t_plant_crop_master.objects.all()
+        pesticide = t_plant_pesticide_master.objects.all()
         return render(request, 'certificates/release_form.html',
                       {'certificate_details': details, 'release_form': details_permit,
-                       'country': country, 'crop': crop})
+                       'country': country, 'crop': crop, 'pesticide': pesticide})
     elif service_code == 'APM':
         details = t_livestock_ante_post_mortem_t1.objects.filter(Application_No=application_No)
         details_permit = t_livestock_ante_post_mortem_t2.objects.filter(Application_No=application_No)
@@ -7362,7 +7365,9 @@ def delete_details(request):
         import_details = t_livestock_import_permit_animal_t2.objects.filter(Application_No=application_no) \
             .order_by('Record_Id')
         count = t_livestock_import_permit_animal_t2.objects.filter(Application_No=application_no).count()
-        return render(request, 'Animal_Fish_Import/animal_details.html', {'import': import_details, 'count': count})
+        species = t_livestock_species_master.objects.all()
+        return render(request, 'Animal_Fish_Import/animal_details.html', {'import': import_details, 'count': count,
+                                                                          'species': species})
     elif identification_type == 'APM':
         application_no = request.GET.get('Application_No')
         record_id = request.GET.get('Record_Id')

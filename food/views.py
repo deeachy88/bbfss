@@ -415,9 +415,10 @@ def send_fbr_approve_email(new_import_permit, Email):
               "Your Application for Food Business Registration Has Been Approved. Your " \
               "Registration No is:" + new_import_permit + \
               " Please Make Payment To Download The Certificate. Visit The Nearest Bafra Office For Payment."
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def send_fbr_reject_email(Email, remarks):
@@ -426,9 +427,10 @@ def send_fbr_reject_email(Email, remarks):
               "" \
               "Your Application for Food Business Registration Has Been Rejected." \
               " Because: " + remarks + ""
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def inspection_team_details(request):
@@ -546,9 +548,10 @@ def send_feasibility_approve_email(Clearance_No, Email):
               "Food Business Registration And Licensing Has Been Approved. Your " \
               "Clearance No is :" + Clearance_No + "Please Make Payment To Download The Clearance." \
                                                    " Visit The Nearest Bafra Office For Payment."
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def send_feasibility_reject_email(remarks, Email):
@@ -556,9 +559,10 @@ def send_feasibility_reject_email(remarks, Email):
     message = "Dear " + "Sir" + " Your Feasibility Inspection of Food Business Registration " \
                                 "And Licensing " \
                                 "Has Been Rejected Because" + remarks + ""
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def reject_feasibility_inspection(request):
@@ -721,18 +725,20 @@ def send_factory_approve_email(Email):
     subject = 'APPLICATION APPROVED'
     message = "Dear Sir, Your Factory Inspection of " \
               "Food Business Registration And Licensing Has Been Approved. "
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def send_factory_reject_email(remarks, Email):
     subject = 'APPLICATION REJECTED'
     message = "Dear " + "Sir" + " Your Factory Inspection of Food Business Registration And Licensing " \
                                 "Has Been Rejected Because" + remarks + ""
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def reject_factory_inspection(request):
@@ -1396,18 +1402,20 @@ def send_fec_approve_email(Export_Permit_No, Email, validity_date):
               "Your " \
               "Registration No is:" + Export_Permit_No + " And is Valid Till " + str(valid_till) + \
               "." + " Please Make Payment Before Validity Expires. Visit The Nearest Bafra Office For Payment."
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def send_fec_reject_email(remarks, Email):
     subject = 'APPLICATION REJECTED'
     message = "Dear " + "Sir" + "Your Application for Export Certificate for Food Products Has" \
                                 " Been Rejected Because" + remarks + ""
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 # Licensing of Food Handler
@@ -1748,63 +1756,70 @@ def send_fbr_acknowledgement_mail(Email):
     subject = 'APPLICATION ACKNOWLEDGED'
     message = "Dear Sir/Madam, Your Application for Food Business Registration And Licensing Has Been Accepted. " \
               "You will Be Informed About The Inspection Later."
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def send_cms_acknowledgement_mail(Email):
     subject = 'APPLICATION ACKNOWLEDGED'
     message = "Dear Sir/Madam, Your Application for Meat ShopLicensing Has Been Accepted. " \
               "You will Be Informed About The Inspection Later."
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def send_gap_acknowledgement_mail(Email):
     subject = 'APPLICATION ACKNOWLEDGED'
     message = "Dear Sir/Madam, Your Application for GAP Certification Has Been Accepted. " \
               "You will Be Informed About The Inspection Later."
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def send_fpc_acknowledgement_mail(Email):
     subject = 'APPLICATION ACKNOWLEDGED'
     message = "Dear Sir/Madam, Your Application for Food Product Certification Has Been Accepted. " \
               "You will Be Informed About The Inspection Later."
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def send_oc_acknowledgement_mail(Email):
     subject = 'APPLICATION ACKNOWLEDGED'
     message = "Dear Sir/Madam, Your Application for Organic Certification Has Been Accepted. " \
               "You will Be Informed About The Inspection Later."
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def send_acknowledgement_mail(Email):
     subject = 'APPLICATION ACKNOWLEDGED'
     message = "Dear Sir/Madam, Your Application for Food Handler Certificate Has Been Accepted. " \
               "You will Be Informed About The Training Programme Later."
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def send_reject_mail(remarks, Email):
     subject = 'APPLICATION REJECTED'
     message = "Dear " + "Sir/Madam" + "Your Application for Food Handler Certificate Has" \
                                       " Been Rejected Because" + remarks + ""
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def food_handler_image(request):
@@ -1968,9 +1983,10 @@ def send_batch_mail(batchNo, from_training_Date, to_training_Date, remarks, Emai
                                       " Been Accepted. You Are Requested To Attend The Following Training" \
                                       " Training Batch No: " + batchNo + " Training From" + from_training_Date + \
               " To " + to_training_Date + "." + remarks + ""
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def result_update_list(request):
@@ -2404,9 +2420,10 @@ def send_fip_approve_email(new_import_permit, Email, validity_date):
               "Your Application for Import Permit for Food Products Has Been Approved. Your " \
               "Import Permit No is:" + new_import_permit + " And is Valid TIll " + str(validity_date) + \
               " Please Make Payment Before Validity Expires. Visit The Nearest Bafra Office For Payment."
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def send_fip_reject_email(Email, remarks):
@@ -2415,9 +2432,10 @@ def send_fip_reject_email(Email, remarks):
               "" \
               "Your Application for Import Permit for Food Products Has Been Rejected." \
               " Reason: " + remarks + ""
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def get_fip_permit_no(service_code):

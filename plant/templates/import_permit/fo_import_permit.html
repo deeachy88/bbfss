@@ -175,10 +175,10 @@ form, input, select, textarea{
                                             <div class="form-group">
                                                 <label class="form-label">Means of Conveyance <font color="red">*</font></label>
                                                 <select class="form-control form-control" disabled>
-                                                    {% if application_details.Means_of_Conveyance == 'Air' %}
-                                                        <option value="Air" selected>Air</option>
+                                                    {% if application_details.Means_of_Conveyance == 'By Air' %}
+                                                        <option value="By Air" selected>By Air</option>
                                                     {% else %}
-                                                        <option value="Vehicular" selected>Vehicular</option>
+                                                        <option value="By Road" selected>By Road</option>
                                                     {% endif %}
                                                 </select>
                                             </div>
@@ -292,10 +292,10 @@ form, input, select, textarea{
                                     <div class="form-group">
                                         <label class="form-label">Means of Conveyance <font color="red">*</font></label>
                                         <select class="form-control form-control" disabled>
-                                            {% if application_details.Means_of_Conveyance == 'Air' %}
-                                                <option value="Air" selected>Air</option>
+                                            {% if application_details.Means_of_Conveyance == 'By Air' %}
+                                                <option value="By Air" selected>By Air</option>
                                             {% else %}
-                                                <option value="Vehicular" selected>Vehicular</option>
+                                                <option value="By Road" selected>By Road</option>
                                             {% endif %}
                                         </select>
                                     </div>
@@ -405,10 +405,10 @@ form, input, select, textarea{
                                         <div class="form-group">
                                             <label class="form-label">Means of Conveyance <font color="red">*</font></label>
                                             <select class="form-control form-control" disabled>
-                                                {% if application_details.Means_of_Conveyance == 'Air' %}
-                                                    <option value="Air" selected>Air</option>
+                                                {% if application_details.Means_of_Conveyance == 'By Air' %}
+                                                    <option value="By Air" selected>By Air</option>
                                                 {% else %}
-                                                    <option value="Vehicular" selected>Vehicular</option>
+                                                    <option value="By Road" selected>By Road</option>
                                                 {% endif %}
                                             </select>
                                         </div>
@@ -499,13 +499,13 @@ form, input, select, textarea{
                                             </tr>
                                         </thead>
                                         <tbody>
-                                           {% for import in import %}
+                                           {% for import in details %}
                                                     <tr>
                                                         <td>{{ forloop.counter }}</td>
                                                         <td>{{import.Import_Category}}</td>
                                                         {% for pesticide in pesticide %}
                                                             {% if pesticide.Pesticide_Id == import.Pesticide_Id %}
-                                                            <td>{{import.Pesticide_Name}}</td>
+                                                            <td>{{pesticide.Pesticide_Name}}</td>
                                                             {% endif %}
                                                         {% endfor %}
                                                         <td>{{import.Description}}</td>

@@ -479,21 +479,25 @@ form, input, select, textarea{
                                         <th scope="col">Age</th>
                                         <th scope="col">Sex</th>
                                         <th scope="col">Description</th>
-                                        <th scope="col">Number</th>
-                                        <th scope="col">Remarks</th>
+                                        <th scope="col">Approved Number</th>
+                                        <th scope="col">Balance</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% for import in import %}
                                         <tr>
                                             <td>{{ forloop.counter }}</td>
-                                            <td>{{import.Species}}</td>
+                                            {% for species in species %}
+                                                {% if species.Species_Id == import.Species %}
+                                                    <td>{{species.Species_Name}}</td>
+                                                {% endif %}
+                                            {% endfor %}
                                             <td>{{import.Breed}}</td>
                                             <td>{{import.Age}}</td>
                                             <td>{{import.Sex}}</td>
                                             <td>{{import.Description}}</td>
                                             <td>{{import.Quantity}}</td>
-                                            <td>{{import.Remarks}}</td>
+                                            <td>{{import.Quantity_Balance}}</td>
                                         </tr>
                                         {% empty %}
                                         <tr>

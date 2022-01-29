@@ -464,33 +464,71 @@ form, input, select, textarea{
                                 </div>
                             {% endif %}
                     {% endfor %}
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label class="form-label">Actual Point Of Entry <font color="red">*</font></label>
-                                            <select class="form-control" name="entry_point"  id="entryPlace">
-                                                <option value="">--SELECT--</option>
-                                                {% for location in location_mapping %}
-                                                        <option value="{{ location.Field_Office_Id }}">{{ location.Field_Office }}</option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                        <div class="alert alert-danger" id="entry_pointErrorMsg" style="display:none"></div>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <div class="form-group">
-                                            <label class="form-label">Date For Inspection <font color="red">*</font></label>
-                                            <input type="date" name="date" id="date" class="form-control">
-                                        </div>
-                                        <div class="alert alert-danger" id="dateErrorMsg" style="display:none"></div>
-                                    </div>
-                                     <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label class="form-label">Remarks</label>
-                                            <textarea class="form-control" rows="3" id="remarks" name="remarks"></textarea>
-                                        </div>
-                                    </div>
-                                 </div>
+                    <br>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Species</th>
+                                    <th scope="col">Breed</th>
+                                    <th scope="col">Age</th>
+                                    <th scope="col">Sex</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Approved Number</th>
+                                    <th scope="col">Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for import in details %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        {% for species in species %}
+                                            {% if species.Species_Id == import.Species %}
+                                                <td>{{species.Species_Name}}</td>
+                                            {% endif %}
+                                        {% endfor %}
+                                        <td>{{import.Breed}}</td>
+                                        <td>{{import.Age}}</td>
+                                        <td>{{import.Sex}}</td>
+                                        <td>{{import.Description}}</td>
+                                        <td>{{import.Quantity}}</td>
+                                        <td>{{import.Quantity_Balance}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="8" class="text-center">No Data</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    <br>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Actual Point Of Entry <font color="red">*</font></label>
+                                    <select class="form-control" name="entry_point"  id="entryPlace">
+                                        <option value="">--SELECT--</option>
+                                        {% for location in location_mapping %}
+                                                <option value="{{ location.Field_Office_Id }}">{{ location.Field_Office }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="alert alert-danger" id="entry_pointErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="form-label">Date For Inspection <font color="red">*</font></label>
+                                    <input type="date" name="date" id="date" class="form-control">
+                                </div>
+                                <div class="alert alert-danger" id="dateErrorMsg" style="display:none"></div>
+                            </div>
+                             <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Remarks</label>
+                                    <textarea class="form-control" rows="3" id="remarks" name="remarks"></textarea>
+                                </div>
+                            </div>
+                         </div>
                         <div id="messageDiv" class="alert alert-info" role="alert" style="display:none;">
                             Application Submitted
                         </div>

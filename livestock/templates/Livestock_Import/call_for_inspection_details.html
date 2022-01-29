@@ -395,6 +395,38 @@ form, input, select, textarea{
                             </div>
                         {% endif %}
                     {% endfor %}
+                        <br>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Particulars</th>
+                                    <th scope="col">Company Name</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Quantity Approved</th>
+                                    <th scope="col">Quantity Balance</th>
+                                    <th scope="col">Unit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for import in details %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{import.Particulars}}</td>
+                                        <td>{{import.Company_Name}}</td>
+                                        <td>{{import.Description}}</td>
+                                        <td>{{import.Quantity}}</td>
+                                        <td>{{import.Quantity_Balance}}</td>
+                                        <td>{{import.Unit}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="7" class="text-center">No Data</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <br>
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">

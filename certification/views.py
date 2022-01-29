@@ -792,9 +792,10 @@ def send_oc_approve_email(Export_Permit_No, Email, validity_date):
               "Your " \
               "Certificate No is:" + Export_Permit_No + " And is Valid Till " + str(valid_till) + \
               "."
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def oc_certificate_no(request):
@@ -1761,9 +1762,10 @@ def send_gap_approve_email(Export_Permit_No, Email, validity_date):
               "Your " \
               "Certificate No is:" + Export_Permit_No + " And is Valid Till " + str(valid_till) + \
               "."
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def gap_certificate_no(request):
@@ -2266,9 +2268,10 @@ def send_fpc_approve_email(Export_Permit_No, Email, validity_date):
               "Your " \
               "Certificate No is:" + Export_Permit_No + " And is Valid Till " + str(valid_till) + \
               "."
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def fpc_certificate_no(request):

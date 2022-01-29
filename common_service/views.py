@@ -488,9 +488,10 @@ def send_acknowledge_email(app_no, app_date, ack_remarks, email_id):
     subject = 'COMPLAINT APPLICATION ACCEPTED'
     message = "Dear Sir/Madam, This has reference to your application number " + app_no + " dated: " + str(
         app_date) + ", regarding your complaint on " + ack_remarks + ". Kindly quote this complaint registration number in all your future correspondence. We will inform you of the outcome of the complaint as soon as investigation is over."
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [email_id]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def send_close_email(app_no, app_date, close_remarks, email_id, in_report, in_date):
@@ -499,9 +500,10 @@ def send_close_email(app_no, app_date, close_remarks, email_id, in_report, in_da
                         "" + app_no + " dated " + str(app_date) + ". Please find below our decision or findings here :" \
                                                                   "" + close_remarks + ".Thank You"
 
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [email_id]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def get_complaint_application_no(request, service_code):
