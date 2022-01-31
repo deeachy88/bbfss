@@ -31,13 +31,16 @@ from certification.models import t_certification_gap_t1, t_certification_gap_t2,
     t_certification_organic_t10, t_certification_organic_t11
 from administrator.models import t_service_master
 
+
 def certificate_report_form(request):
     field_office = t_field_office_master.objects.all()
     return render(request, 'certificate_report_form.html')
 
+
 def permit_report_form(request):
     field_office = t_field_office_master.objects.all()
     return render(request, 'permit_report_form.html')
+
 
 def view_certificate_list(request):
     fromDate = request.GET.get('from_date')
@@ -45,13 +48,18 @@ def view_certificate_list(request):
     serviceId = request.GET.get('service_id')
     service_name = t_service_master.objects.filter(Service_Id=serviceId)
     if serviceId == '16':
-        certificate_details = t_certification_gap_t1.objects.filter(Approve_Date__gte=fromDate, Approve_Date__lte=toDate)
+        certificate_details = t_certification_gap_t1.objects.filter(Approve_Date__gte=fromDate,
+                                                                    Approve_Date__lte=toDate)
     elif serviceId == '17':
-        certificate_details = t_certification_organic_t1.objects.filter(Approve_Date__gte=fromDate, Approve_Date__lte=toDate)
+        certificate_details = t_certification_organic_t1.objects.filter(Approve_Date__gte=fromDate,
+                                                                        Approve_Date__lte=toDate)
     elif serviceId == '18':
-        certificate_details = t_certification_food_t1.objects.filter(Approve_Date__gte=fromDate, Approve_Date__lte=toDate)
+        certificate_details = t_certification_food_t1.objects.filter(Approve_Date__gte=fromDate,
+                                                                     Approve_Date__lte=toDate)
 
-    return render(request, 'certificate_list.html', {'certificate_details': certificate_details, 'service_name': service_name})
+    return render(request, 'certificate_list.html',
+                  {'certificate_details': certificate_details, 'service_name': service_name})
+
 
 def view_permit_list(request):
     fromDate = request.GET.get('from_date')
@@ -61,36 +69,75 @@ def view_permit_list(request):
     dzongkhag = t_dzongkhag_master.objects.all()
     location = t_location_field_office_mapping.objects.all()
     field_office = t_field_office_master.objects.all()
-    if serviceId == '1':    # List of Movement Permit For Plant And Products Issued
-        permit_details = t_plant_movement_permit_t1.objects.filter(Approved_Date__gte=fromDate, Approved_Date__lte=toDate)
+    if serviceId == '1':  # List of Movement Permit For Plant And Products Issued
+        permit_details = t_plant_movement_permit_t1.objects.filter(Approved_Date__gte=fromDate,
+                                                                   Approved_Date__lte=toDate)
     elif serviceId == '2':  # List of Import Permit For Plant And Plant Products Issued
         permit_details = t_plant_import_permit_t1.objects.filter(Approved_Date__gte=fromDate, Approved_Date__lte=toDate)
     elif serviceId == '3':  # List of Export Permit For Plant And Plant Products Issued
-        permit_details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(Approved_Date__gte=fromDate, Approved_Date__lte=toDate)
+        permit_details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(Approved_Date__gte=fromDate,
+                                                                                           Approved_Date__lte=toDate)
     elif serviceId == '4':  # List of Nurseries/Seed Growers Registered
-        permit_details = t_plant_clearence_nursery_seed_grower_t1.objects.filter(Approved_Date__gte=fromDate, Approved_Date__lte=toDate)
+        permit_details = t_plant_clearence_nursery_seed_grower_t1.objects.filter(Approved_Date__gte=fromDate,
+                                                                                 Approved_Date__lte=toDate)
     elif serviceId == '5':  # List of Seed Certification Issued
-        permit_details = t_plant_seed_certification_t1.objects.filter(Approved_Date__gte=fromDate, Approved_Date__lte=toDate)
+        permit_details = t_plant_seed_certification_t1.objects.filter(Approved_Date__gte=fromDate,
+                                                                      Approved_Date__lte=toDate)
     elif serviceId == '6':  # List of Meat Shop License Issued
-        permit_details = t_livestock_clearance_meat_shop_t1.objects.filter(Approve_Date__gte=fromDate, Approve_Date__lte=toDate)
+        permit_details = t_livestock_clearance_meat_shop_t1.objects.filter(Approve_Date__gte=fromDate,
+                                                                           Approve_Date__lte=toDate)
     elif serviceId == '7':  # List of Ante Mortem And Post Mortem Certificate Issued
-        permit_details = t_livestock_ante_post_mortem_t1.objects.filter(Approved_Date__gte=fromDate, Approved_Date__lte=toDate)
+        permit_details = t_livestock_ante_post_mortem_t1.objects.filter(Approved_Date__gte=fromDate,
+                                                                        Approved_Date__lte=toDate)
     elif serviceId == '8':  # List of Movement Permit For Livestock Issued
-        permit_details = t_livestock_movement_permit_t1.objects.filter(Approved_Date__gte=fromDate, Approved_Date__lte=toDate)
+        permit_details = t_livestock_movement_permit_t1.objects.filter(Approved_Date__gte=fromDate,
+                                                                       Approved_Date__lte=toDate)
     elif serviceId == '9':  # List of Import Permit for Livestock Products Issued
-        permit_details = t_livestock_import_permit_product_t1.objects.filter(Approve_Date__gte=fromDate, Approve_Date__lte=toDate)
-    elif serviceId == '10':     # List of Import Permit For Live Animal And Fish Issued
-        permit_details = t_livestock_import_permit_animal_t1.objects.filter(Approve_Date__gte=fromDate, Approve_Date__lte=toDate)
-    elif serviceId == '11':     # List of Export Certificate for Animal and Animal Products Issued
-        permit_details = t_livestock_export_certificate_t1.objects.filter(Approve_Date__gte=fromDate, Approve_Date__lte=toDate)
-    elif serviceId == '12':     # List of Export Certificate for Food Products Issued
-        permit_details = t_food_export_certificate_t1.objects.filter(Approved_Date__gte=fromDate, Approved_Date__lte=toDate)
-    elif serviceId == '13':     # List of Food Handler Certificate Issued
-        permit_details = t_food_licensing_food_handler_t1.objects.filter(Approved_Date__gte=fromDate, Approved_Date__lte=toDate)
-    elif serviceId == '14':     # List of Import Permit for Food Products Issued
+        permit_details = t_livestock_import_permit_product_t1.objects.filter(Approve_Date__gte=fromDate,
+                                                                             Approve_Date__lte=toDate)
+    elif serviceId == '10':  # List of Import Permit For Live Animal And Fish Issued
+        permit_details = t_livestock_import_permit_animal_t1.objects.filter(Approve_Date__gte=fromDate,
+                                                                            Approve_Date__lte=toDate)
+    elif serviceId == '11':  # List of Export Certificate for Animal and Animal Products Issued
+        permit_details = t_livestock_export_certificate_t1.objects.filter(Approve_Date__gte=fromDate,
+                                                                          Approve_Date__lte=toDate)
+    elif serviceId == '12':  # List of Export Certificate for Food Products Issued
+        permit_details = t_food_export_certificate_t1.objects.filter(Approved_Date__gte=fromDate,
+                                                                     Approved_Date__lte=toDate)
+    elif serviceId == '13':  # List of Food Handler Certificate Issued
+        permit_details = t_food_licensing_food_handler_t1.objects.filter(Approved_Date__gte=fromDate,
+                                                                         Approved_Date__lte=toDate)
+    elif serviceId == '14':  # List of Import Permit for Food Products Issued
         permit_details = t_food_import_permit_t1.objects.filter(Approve_Date__gte=fromDate, Approve_Date__lte=toDate)
-    elif serviceId == '15':     # List of Food Business Registered And License Issued
-        permit_details = t_food_business_registration_licensing_t1.objects.filter(Approve_Date__gte=fromDate, Approve_Date__lte=toDate)
+    elif serviceId == '15':  # List of Food Business Registered And License Issued
+        permit_details = t_food_business_registration_licensing_t1.objects.filter(Approve_Date__gte=fromDate,
+                                                                                  Approve_Date__lte=toDate)
 
     return render(request, 'permit_list.html', {'permit_details': permit_details, 'service_name': service_name,
-                                                'location':location, 'field_office':field_office})
+                                                'location': location, 'field_office': field_office})
+
+
+def revenue_report_form(request):
+    return render(request, 'revenue_report_form.html')
+
+
+def view_revenue_list(request):
+    fromDate = request.GET.get('from_date')
+    toDate = request.GET.get('to_date')
+    payment_type = request.GET.get('payment_type')
+
+    service_details = t_service_master.objects.all()
+    workflow_details = t_workflow_details.objects.all()
+
+    if payment_type == 'ALL':
+        revenue_details = t_payment_details.objects.filter(Receipt_Date__gte=fromDate, Receipt_Date__lte=toDate,
+                                                           Receipt_No__isnull=False)
+        return render(request, 'revenue_report.html', {'revenue_details': revenue_details,
+                                                       'service_details': service_details,
+                                                       'workflow_details': workflow_details})
+    else:
+        revenue_details = t_payment_details.objects.filter(Receipt_Date__gte=fromDate, Receipt_Date__lte=toDate,
+                                                           Payment_Type=payment_type, Receipt_No__isnull=False)
+        return render(request, 'revenue_report.html', {'revenue_details': revenue_details,
+                                                       'service_details': service_details,
+                                                       'workflow_details': workflow_details})
