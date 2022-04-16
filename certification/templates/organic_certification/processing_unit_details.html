@@ -1,63 +1,75 @@
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Name</th>
-            <th scope="col">Address</th>
-            <th scope="col">Type Of Processing</th>
-            <th scope="col">For the previous year(From date)</th>
-            <th scope="col">For the previous year(To date)</th>
-            <th scope="col">Production</th>
-            <th scope="col">Production Unit</th>
-            <th scope="col">Sold</th>
-            <th scope="col">Balance Stock</th>
-            <th scope="col">For the current year(From date)</th>
-            <th scope="col">For the current year(To date)</th>
-            <th scope="col">Production</th>
-            <th scope="col">Production Unit</th>
-            <th scope="col">Sold</th>
-            <th scope="col">Balance Stock</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for processing in processing_details %}
+{% load static %}
+<div class="table-responsive">
+    <table class="table table-bordered" id="oc_processing_unit">
+        <thead>
             <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{processing.Production_House_Name}}</td>
-                <td>{{processing.Production_House_Address}}</td>
-                <td>{{processing.Processing_Type}}</td>
-                <td>{{processing.P_From_Date|date:'d-m-Y' }}</td>
-                <td>{{processing.P_To_Date|date:'d-m-Y' }}</td>
-                <td>{{processing.P_Production}}</td>
-                <td>{{processing.P_Production_Unit}}</td>
-                <td>{{processing.P_Sold}}</td>
-                <td>{{processing.P_Balance_Stock}}</td>
-                <td>{{processing.C_From_Date|date:'d-m-Y' }}</td>
-                <td>{{processing.C_To_Date|date:'d-m-Y' }}</td>
-                <td>{{processing.C_Production}}</td>
-                <td>{{processing.C_Production_Unit}}</td>
-                <td>{{processing.C_Sold}}</td>
-                <td>{{processing.C_Balance_Stock}}</td>
-                <td>
-                    <button type="button" class="btn btn-primary btn-sm"
-                    onclick="delete_details('{{processing.Record_Id}}','{{processing.Application_No}}', 'OC-PU')">
-                    <i class="zmdi zmdi-delete"></i>
-                    </button>
-                    <button  type="button" class="btn btn-info btn-sm" data-toggle="tooltip" title="Edit"
-                     onclick="populate_process_details('{{ processing.Record_Id }}', '{{processing.Production_House_Name}}',
-                     '{{processing.Production_House_Address}}','{{processing.Processing_Type}}','{{processing.P_From_Date|date:'d-m-Y' }}',
-                     '{{processing.P_To_Date|date:'d-m-Y' }}','{{processing.P_Production}}','{{processing.P_Production_Unit}}',
-                     '{{processing.P_Sold}}','{{processing.P_Balance_Stock}}','{{processing.C_From_Date|date:'d-m-Y' }}',
-                     '{{processing.C_To_Date|date:'d-m-Y' }}','{{processing.C_Production}}','{{processing.C_Production_Unit}}',
-                     '{{processing.C_Sold}}','{{processing.C_Balance_Stock}}','{{processing.Application_No}}')">
-                    <i class="fa fa-edit"></i>
-                    </button>
-                </td>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Address</th>
+                <th scope="col">Type Of Processing</th>
+                <th scope="col">For the previous year(From date)</th>
+                <th scope="col">For the previous year(To date)</th>
+                <th scope="col">Production</th>
+                <th scope="col">Production Unit</th>
+                <th scope="col">Sold</th>
+                <th scope="col">Balance Stock</th>
+                <th scope="col">For the current year(From date)</th>
+                <th scope="col">For the current year(To date)</th>
+                <th scope="col">Production</th>
+                <th scope="col">Production Unit</th>
+                <th scope="col">Sold</th>
+                <th scope="col">Balance Stock</th>
             </tr>
-            {% empty %}
-            <tr>
-              <td colspan="16" class="text-center">No Data</td>
-            </tr>
-       {% endfor %}
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            {% for processing in processing_details %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{processing.Production_House_Name}}</td>
+                    <td>{{processing.Production_House_Address}}</td>
+                    <td>{{processing.Processing_Type}}</td>
+                    <td>{{processing.P_From_Date|date:'d-m-Y' }}</td>
+                    <td>{{processing.P_To_Date|date:'d-m-Y' }}</td>
+                    <td>{{processing.P_Production}}</td>
+                    <td>{{processing.P_Production_Unit}}</td>
+                    <td>{{processing.P_Sold}}</td>
+                    <td>{{processing.P_Balance_Stock}}</td>
+                    <td>{{processing.C_From_Date|date:'d-m-Y' }}</td>
+                    <td>{{processing.C_To_Date|date:'d-m-Y' }}</td>
+                    <td>{{processing.C_Production}}</td>
+                    <td>{{processing.C_Production_Unit}}</td>
+                    <td>{{processing.C_Sold}}</td>
+                    <td>{{processing.C_Balance_Stock}}</td>
+                    <td>
+                        <button type="button" class="btn btn-primary btn-sm"
+                        onclick="delete_details('{{processing.Record_Id}}','{{processing.Application_No}}', 'OC-PU')">
+                        <i class="zmdi zmdi-delete"></i>
+                        </button>
+                        <button  type="button" class="btn btn-info btn-sm" data-toggle="tooltip" title="Edit"
+                         onclick="populate_process_details('{{ processing.Record_Id }}', '{{processing.Production_House_Name}}',
+                         '{{processing.Production_House_Address}}','{{processing.Processing_Type}}','{{processing.P_From_Date|date:'d-m-Y' }}',
+                         '{{processing.P_To_Date|date:'d-m-Y' }}','{{processing.P_Production}}','{{processing.P_Production_Unit}}',
+                         '{{processing.P_Sold}}','{{processing.P_Balance_Stock}}','{{processing.C_From_Date|date:'d-m-Y' }}',
+                         '{{processing.C_To_Date|date:'d-m-Y' }}','{{processing.C_Production}}','{{processing.C_Production_Unit}}',
+                         '{{processing.C_Sold}}','{{processing.C_Balance_Stock}}','{{processing.Application_No}}')">
+                        <i class="fa fa-edit"></i>
+                        </button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="16" class="text-center">No Data</td>
+                </tr>
+           {% endfor %}
+        </tbody>
+    </table>
+</div>
+<script src="{% static 'assets/bower_components/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'styles/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script>
+    $(function ()
+    {
+        $("#oc_processing_unit").DataTable();
+
+    });
+</script>

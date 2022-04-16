@@ -16,19 +16,19 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Name of the Meat Shop <font color="red">*</font></label>
-                                            <input type="text" class="form-control" value="{{application_details.Meat_Shop_Name}}" disabled>
+                                            <input type="text" class="form-control" value="{{application_details.meat_shop_name}}" disabled>
                                         </div>
                                     </div>
                                      <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">CID of the Owner <font color="red">*</font></label>
-                                            <input type="number"  class="form-control" value="{{application_details.CID}}" disabled>
+                                            <input type="number"  class="form-control" value="{{application_details.cid}}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Name of the applicant/Owner <font color="red">*</font></label>
-                                            <input type="text" class="form-control" value="{{application_details.Name_Owner}}" disabled>
+                                            <input type="text" class="form-control" value="{{application_details.name_owner}}" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -36,13 +36,13 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Email <font color="red">*</font></label>
-                                            <input type="email" class="form-control" value="{{application_details.Email}}" disabled>
+                                            <input type="email" class="form-control" value="{{application_details.email}}" disabled>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Contact Number <font color="red">*</font></label>
-                                            <input type="number" class="form-control" value="{{application_details.Contact_No}}" disabled>
+                                            <input type="number" class="form-control" value="{{application_details.contact_no}}" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -51,7 +51,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Meat Shop Representative <font color="red">*</font></label>
-                                            <input type="text" class="form-control" value="{{application_details.Representative}}" disabled>
+                                            <input type="text" class="form-control" value="{{application_details.representative}}" disabled>
                                         </div>
                                         <div class="alert alert-danger" id="name_managerErrorMsg" style="display:none"></div>
                                     </div>
@@ -59,7 +59,7 @@
                                         <div class="form-group">
                                             <label class="form-label">Licensing Criteria <font color="red">*</font></label>
                                             <select class="form-control" disabled>
-                                                {% if application_details.License_Criteria == 'BAFRA GHP/GMP' %}
+                                                {% if application_details.license_criteria == 'BAFRA GHP/GMP' %}
                                                     <option selected>BAFRA GHP/GMP</option>
                                                 {% endif %}
                                             </select>
@@ -68,7 +68,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="form-label">Meat Shop Address <font color="red">*</font></label>
-                                            <textarea class="form-control" disabled>{{application_details.Address}}</textarea>
+                                            <textarea class="form-control" disabled>{{application_details.address}}</textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -78,7 +78,7 @@
                                             <label class="form-label">Dzongkhag</label>
                                             <select class="form-control" disabled>
                                                 {% for dzongkhag in dzongkhag %}
-                                                    <option value="{{dzongkhag.Dzongkhag_Code}}"{% if application_details.Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>
+                                                    <option value="{{dzongkhag.Dzongkhag_Code}}"{% if application_details.dzongkhag_code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>
                                                         {{ dzongkhag.Dzongkhag_Name }}
                                                     </option>
                                                 {% endfor %}
@@ -90,7 +90,7 @@
                                             <label class="form-label">Gewog</label>
                                             <select class="form-control" disabled>
                                                 {% for gewog in gewog %}
-                                                    <option value="{{ gewog.Gewog_Code }}"{% if application_details.Gewog_Code == gewog.Gewog_Code %}selected{% endif %}>{{ gewog.Gewog_Name }}</option>
+                                                    <option value="{{ gewog.Gewog_Code }}"{% if application_details.gewog_code == gewog.Gewog_Code %}selected{% endif %}>{{ gewog.Gewog_Name }}</option>
                                                 {% endfor %}
                                             </select>
                                         </div>
@@ -100,7 +100,7 @@
                                             <label class="form-label">Village</label>
                                              <select class="form-control" disabled>
                                                 {% for village in village %}
-                                                    <option value="{{ village.Village_Code }}" {% if application_details.Village_Code == village.Village_Code %}selected{% endif %}>{{ village.Village_Name }}</option>
+                                                    <option value="{{ village.Village_Code }}" {% if application_details.village_code == village.Village_Code %}selected{% endif %}>{{ village.Village_Name }}</option>
                                                 {% endfor %}
                                              </select>
                                         </div>
@@ -126,7 +126,7 @@
                                {% for Meat_Item in details %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td>{{Meat_Item.Meat_Item}}</td>
+                                        <td>{{Meat_Item.meat_item}}</td>
                                     </tr>
                                     {% empty %}
                                     <tr>
@@ -153,7 +153,7 @@
                                {% for file_attach in file %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td><a href='{{file_attach.File_Path}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                                        <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
                                     </tr>
                                     {% empty %}
                                     <tr>
@@ -176,14 +176,14 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-label">Desired Factory Inspection Date</label>
-                                        <input type="text" class="form-control" value="{{ application_details.Desired_FR_Inspection_Date }}" readonly="readonly">
+                                        <input type="text" class="form-control" value="{{ application_details.fr_inspection_date }}" readonly="readonly">
                                     </div>
                                 </div>
                                 {% if application_details.FR_Response %}
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-label">Response From Client</label>
-                                        <input type="text" class="form-control" value="{{ application_details.FR_Response }}" readonly="readonly">
+                                        <input type="text" class="form-control" value="{{ application_details.fr_response }}" readonly="readonly">
                                     </div>
                                 </div>
                                 {% endif %}
@@ -199,13 +199,13 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-label">Desired Feasibility Inspection Date</label>
-                                        <input type="text" class="form-control" value="{{ application_details.Desired_FI_Inspection_Date }}" readonly="readonly">
+                                        <input type="text" class="form-control" value="{{ application_details.desired_fi_inspection_date }}" readonly="readonly">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-label">Response From Client</label>
-                                        <input type="text" class="form-control" value="{{ application_details.FI_Response }}" readonly="readonly">
+                                        <input type="text" class="form-control" value="{{ application_details.fi_response }}" readonly="readonly">
                                     </div>
                                 </div>
                             </div>
@@ -220,7 +220,7 @@
                                 {% endfor %}
                             </select>
                             {% for application_details in application_details %}
-                                <button type="button" class="btn btn-success" onclick="forwardFBRApplication('{{ application_details.Application_No }}')"><i class="ace-icon fas fa-arrow-right"></i>&nbsp;&nbsp;Forward</button>
+                                <button type="button" class="btn btn-success" onclick="forwardFBRApplication('{{ application_details.application_no }}')"><i class="ace-icon fas fa-arrow-right"></i>&nbsp;&nbsp;Forward</button>
                             {% endfor %}
                             <button class="btn btn-flat btn-danger" data-dismiss="modal">
                                 <i class="ace-icon fa fa-times"></i>

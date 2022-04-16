@@ -1,5 +1,314 @@
 {% extends 'common_dashboard.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+{% load static %}
+<input type="hidden" value="{{ request.session.section }}" id="section">
+{% if request.session.role == 'Focal Officer' and request.session.section == 1 %}
+    <input type="hidden" value="{{ ipp_count }}" id="ipp_count">
+    <input type="hidden" value="{{ rns_count }}" id="rns_count">
+    <input type="hidden" value="{{ rsc_count }}" id="rsc_count">
+    <input type="hidden" value="{{ mpp_count }}" id="mpp_count">
+    <input type="hidden" value="{{ epp_count }}" id="epp_count">
 
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                        <canvas id="bar-chart" width="800" height="450"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+{% elif request.session.role == 'Focal Officer' and request.session.section == 2 %}
+    <input type="hidden" value="{{ lec_count }}" id="lec_count">
+    <input type="hidden" value="{{ cms_count }}" id="cms_count">
+    <input type="hidden" value="{{ lip_count }}" id="lip_count">
+    <input type="hidden" value="{{ aip_count }}" id="aip_count">
+    <input type="hidden" value="{{ apm_count }}" id="apm_count">
+    <input type="hidden" value="{{ lmp_count }}" id="lmp_count">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <canvas id="livestock-chart" width="800" height="450"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+{% elif request.session.role == 'Focal Officer' and request.session.section == 3 %}
+    <input type="hidden" value="{{ fbr_count }}" id="fbr_count">
+    <input type="hidden" value="{{ fip_count }}" id="fip_count">
+    <input type="hidden" value="{{ fec_count }}" id="fec_count">
+    <input type="hidden" value="{{ fhc_count }}" id="fhc_count">
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <canvas id="food-chart" width="800" height="450"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+{% elif request.session.role == 'Focal Officer' and request.session.section == 5 %}
+    <input type="hidden" value="{{ gap_count }}" id="gap_count">
+    <input type="hidden" value="{{ oc_count }}" id="oc_count">
+    <input type="hidden" value="{{ fpc_count }}" id="fpc_count">
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <canvas id="certification-chart" width="800" height="450"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+<script src="{% static 'assets/bower_components/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'assets/js/chart.min.js' %}"></script>
+<script>
+    $(document).ready(function()
+     {
+        var section = $("#section").val();
+        if(section == '1')
+        {
+            var ipp_count = $("#ipp_count").val();
+            var rns_count = $("#rns_count").val();
+            var rsc_count = $("#rsc_count").val();
+            var mpp_count = $("#mpp_count").val();
+            var epp_count = $("#epp_count").val();
+
+            new Chart(document.getElementById("bar-chart"), {
+            type: 'bar',
+            data: {
+                labels: ["IPP","RNS", "RSC",  "MPP", "MPP"],
+                datasets: [
+                {
+                    label: "Service Code",
+                    backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+                    data: [ipp_count,rns_count,rsc_count,mpp_count,epp_count]
+                }
+                ]
+            },
+            options: {
+                legend: {
+                    labels: {
+                       boxWidth: 0,
+                       fontColor: '#169a06e3',
+                       fontStyle: 'Bold',
+                       fontSize: 12
+                     },
+                    position : 'bottom'
+                },
+                title: {
+                    display: true,
+                    fontColor: '#169a06e3',
+                    fontStyle: 'Bold',
+                    fontSize: 14,
+                    hidden: 'Graph For Approved Applications For Each Service'
+                },
+                responsive: true,
+                scales: {
+                    yAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            fontColor: '#169a06e3',
+                            fontStyle: 'Bold',
+                            fontSize: 12,
+                            labelString: "No of Approved Applications  - Service Wise"
+                          },
+                        ticks: {
+                            stepSize: 10,
+                            min: 0,
+                            max: 100,
+                        },
+                    }],
+                    xAxes: [{
+                        barPercentage: 0.4
+                    }]
+                }
+            }
+            });
+        }
+        else if(section == '2')
+        {
+            var lec_count = $("#ipp_count").val();
+            var cms_count = $("#rns_count").val();
+            var lip_count = $("#rsc_count").val();
+            var aip_count = $("#mpp_count").val();
+            var apm_count = $("#epp_count").val();
+            var lmp_count = $("#ipp_count").val();
+
+            new Chart(document.getElementById("livestock-chart"), {
+            type: 'bar',
+            data: {
+                labels: ["CMS","LEC", "LIP",  "AIP", "APM", "LMP"],
+                datasets: [
+                {
+                    label: "Service Code",
+                    backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850", "#c45850"],
+                    data: [cms_count,lec_count,lip_count,aip_count,apm_count,lmp_count]
+                }
+                ]
+            },
+            options: {
+                legend: {
+                    labels: {
+                       boxWidth: 0,
+                       fontColor: '#169a06e3',
+                       fontStyle: 'Bold',
+                       fontSize: 12
+                     },
+                    position : 'bottom'
+                },
+                title: {
+                    display: true,
+                    fontColor: '#169a06e3',
+                    fontStyle: 'Bold',
+                    fontSize: 14,
+                    hidden: 'Graph For Approved Applications For Each Service'
+                },
+                responsive: true,
+                scales: {
+                    yAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            fontColor: '#169a06e3',
+                            fontStyle: 'Bold',
+                            fontSize: 12,
+                            labelString: "No of Approved Applications  - Service Wise"
+                          },
+                        ticks: {
+                            stepSize: 10,
+                            min: 0,
+                            max: 100,
+                        },
+                    }],
+                    xAxes: [{
+                        barPercentage: 0.4
+                    }]
+                }
+            }
+            });
+        }
+        else if(section == '3')
+        {
+            var fec_count = $("#ipp_count").val();
+            var fip_count = $("#rns_count").val();
+            var fhc_count = $("#rsc_count").val();
+            var fbr_count = $("#mpp_count").val();
+
+            new Chart(document.getElementById("food-chart"), {
+            type: 'bar',
+            data: {
+                labels: ["FBR","FIP", "FEC", "FHL"],
+                datasets: [
+                {
+                    label: "Service Code",
+                    backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+                    data: [fbr_count,fip_count,fec_count,fhc_count]
+                }
+                ]
+            },
+            options: {
+                legend: {
+                    labels: {
+                       boxWidth: 0,
+                       fontColor: '#169a06e3',
+                       fontStyle: 'Bold',
+                       fontSize: 12
+                     },
+                    position : 'bottom'
+                },
+                title: {
+                    display: true,
+                    fontColor: '#169a06e3',
+                    fontStyle: 'Bold',
+                    fontSize: 14,
+                    hidden: 'Graph For Approved Applications For Each Service'
+                },
+                responsive: true,
+                scales: {
+                    yAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            fontColor: '#169a06e3',
+                            fontStyle: 'Bold',
+                            fontSize: 12,
+                            labelString: "No of Approved Applications  - Service Wise"
+                          },
+                        ticks: {
+                            stepSize: 10,
+                            min: 0,
+                            max: 100,
+                        },
+                    }],
+                    xAxes: [{
+                        barPercentage: 0.4
+                    }]
+                }
+            }
+            });
+        }
+        else if(section == '5')
+        {
+            var gap_count = $("#gap_count").val();
+            var oc_count = $("#oc_count").val();
+            var fpc_count = $("#fpc_count").val();
+
+            new Chart(document.getElementById("certification-chart"), {
+            type: 'bar',
+            data: {
+                labels: ["GAP","OC", "FPC"],
+                datasets: [
+                {
+                    label: "Service Code",
+                    backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f"],
+                    data: [gap_count,oc_count,fpc_count]
+                }
+                ]
+            },
+            options: {
+                legend: {
+                    labels: {
+                       boxWidth: 0,
+                       fontColor: '#169a06e3',
+                       fontStyle: 'Bold',
+                       fontSize: 12
+                     },
+                    position : 'bottom'
+                },
+                title: {
+                    display: true,
+                    fontColor: '#169a06e3',
+                    fontStyle: 'Bold',
+                    fontSize: 14,
+                    hidden: 'Graph For Approved Applications For Each Service'
+                },
+                responsive: true,
+                scales: {
+                    yAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            fontColor: '#169a06e3',
+                            fontStyle: 'Bold',
+                            fontSize: 12,
+                            labelString: "No of Approved Applications  - Service Wise"
+                          },
+                        ticks: {
+                            stepSize: 10,
+                            min: 0,
+                            max: 100,
+                        },
+                    }],
+                    xAxes: [{
+                        barPercentage: 0.4
+                    }]
+                }
+            }
+            });
+        }
+    });
+</script>
 {% endblock %}

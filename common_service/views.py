@@ -21,17 +21,17 @@ from plant.views import inspector_application
 
 
 def co_complaint_list(request):
-    complaint_details = t_workflow_details.objects.filter(Application_Status='P', Assigned_Role_Id='3',
-                                                          Action_Date__isnull=False).order_by(
+    complaint_details = t_workflow_details.objects.filter(application_status='P', assigned_role_id='3',
+                                                          action_date__isnull=False).order_by(
         'Application_No').reverse() | \
-                        t_workflow_details.objects.filter(Application_Status='A', Assigned_Role_Id='3',
-                                                          Action_Date__isnull=False).order_by(
+                        t_workflow_details.objects.filter(application_status='A', assigned_role_id='3',
+                                                          action_date__isnull=False).order_by(
                             'Application_No').reverse()
     return render(request, 'complaint_officer_pending_list.html', {'complaint_details': complaint_details})
 
 
 def investigation_report_list(request):  # list of investigation report submitted to the Complaint Officer
-    complaint_details = t_workflow_details.objects.filter(Application_Status='IR', Assigned_Role_Id='3')
+    complaint_details = t_workflow_details.objects.filter(application_status='IR', assigned_role_id='3')
     return render(request, 'complaint_officer_investigation_report_list.html', {'complaint_details': complaint_details})
 
 
@@ -41,8 +41,8 @@ def investigation_report_details(request):
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
     details = t_common_complaint_t1.objects.filter(Application_No=Application_No)
-    complaint_file = t_file_attachment.objects.filter(Application_No=Application_No, Role_Id='8')
-    investigation_file = t_file_attachment.objects.filter(Application_No=Application_No, Role_Id='5')
+    complaint_file = t_file_attachment.objects.filter(application_no=Application_No, role_id='8')
+    investigation_file = t_file_attachment.objects.filter(application_no=Application_No, role_id='5')
     for userId in details:
         user_id = userId.Assign_To
         user_details = t_user_master.objects.filter(Login_Id=user_id)
@@ -53,7 +53,7 @@ def investigation_report_details(request):
 
 
 def complaint_closed_list(request):
-    complaint_closed_details = t_workflow_details.objects.filter(Application_Status='C', Assigned_Role_Id='3')
+    complaint_closed_details = t_workflow_details.objects.filter(application_status='C', assigned_role_id='3')
     return render(request, 'complaint_closed_list.html', {'complaint_details': complaint_closed_details})
 
 
@@ -63,7 +63,7 @@ def complaint_closed_details(request):
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
     details = t_common_complaint_t1.objects.filter(Application_No=Application_No)
-    file = t_file_attachment.objects.filter(Application_No=Application_No)
+    file = t_file_attachment.objects.filter(application_no=Application_No)
     for userId in details:
         user_id = userId.Assign_To
         user_details = t_user_master.objects.filter(Login_Id=user_id)
@@ -76,8 +76,8 @@ def complaint_closed_details(request):
 def investigation_complaint_list(request):
     Login_Id = request.session['Login_Id']
     # Role_Id = request.session['Role_Id']
-    in_complaint_list = t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='A',
-                                                          Service_Code='COM')
+    in_complaint_list = t_workflow_details.objects.filter(assigned_to=Login_Id, application_status='A',
+                                                          service_code='COM')
 
     Role = request.session['role']
     Role_Id = request.session['Role_Id']
@@ -87,71 +87,71 @@ def investigation_complaint_list(request):
         for id_section in section_details:
             section_name = id_section.Section_Name
             message_count = (t_workflow_details.objects.filter(
-                Assigned_Role_Id=Role_Id, Section=section_name,
-                Action_Date__isnull=False, Application_Status='P') | t_workflow_details.objects.filter(
-                Assigned_Role_Id=Role_Id, Section=section_name,
-                Action_Date__isnull=False, Application_Status='ATA') | t_workflow_details.objects.filter(
-                Assigned_Role_Id=Role_Id, Section=section_name,
-                Action_Date__isnull=False, Application_Status='FRA') |
+                assigned_role_id=Role_Id, section=section_name,
+                action_date__isnull=False, application_status='P') | t_workflow_details.objects.filter(
+                assigned_role_id=Role_Id, section=section_name,
+                action_date__isnull=False, application_status='ATA') | t_workflow_details.objects.filter(
+                assigned_role_id=Role_Id, section=section_name,
+                action_date__isnull=False, application_status='FRA') |
                              t_workflow_details.objects.filter(
-                                 Assigned_Role_Id=Role_Id, Section=section_name,
-                                 Action_Date__isnull=False, Application_Status='CA')
+                                 assigned_role_id=Role_Id, section=section_name,
+                                 action_date__isnull=False, application_status='CA')
                              ).count()
             return render(request, 'complaint_investigation_pending_list.html',
                           {'count': message_count, 'in_complaint_list': in_complaint_list})
     elif Role == 'OIC':
         login_id = request.session['Login_Id']
         Field_Office_Id = request.session['field_office_id']
-        message_count = (t_workflow_details.objects.filter(Assigned_Role_Id='4', Field_Office_Id=Field_Office_Id,
-                                                           Action_Date__isnull=False) |
-                         t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                           Action_Date__isnull=False)).count()
+        message_count = (t_workflow_details.objects.filter(assigned_role_id='4', field_office_id=Field_Office_Id,
+                                                           action_date__isnull=False) |
+                         t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCF',
+                                                           action_date__isnull=False)).count()
 
         return render(request, 'complaint_investigation_pending_list.html',
                       {'count': message_count, 'in_complaint_list': in_complaint_list})
     elif Role == 'Inspector':
         login_id = request.session['Login_Id']
         Field_Office_Id = request.session['field_office_id']
-        message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                           Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                             Application_Status='I',
-                                                             Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                             Application_Status='FI',
-                                                             Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                             Application_Status='FR',
-                                                             Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                             Application_Status='P',
-                                                             Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APA',
-                                                             Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                             Action_Date__isnull=False)).count()
-        fhc_count = t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                      Action_Date__isnull=False, Service_Code='FHC').count()
+        message_count = (t_workflow_details.objects.filter(assigned_to=login_id, application_status='AP',
+                                                           action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, field_office_id=Field_Office_Id,
+                                                             application_status='I',
+                                                             action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, field_office_id=Field_Office_Id,
+                                                             application_status='FI',
+                                                             action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, field_office_id=Field_Office_Id,
+                                                             application_status='FR',
+                                                             action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, field_office_id=Field_Office_Id,
+                                                             application_status='P',
+                                                             action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='APA',
+                                                             action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCF',
+                                                             action_date__isnull=False)).count()
+        fhc_count = t_workflow_details.objects.filter(assigned_to=login_id, application_status='AP',
+                                                      action_date__isnull=False, service_code='FHC').count()
         return render(request, 'complaint_investigation_pending_list.html',
                       {'ins_count': message_count, 'in_complaint_list': in_complaint_list, 'fhc_count': fhc_count})
     elif Role == 'Complaint Officer':
         login_id = request.session['Login_Id']
-        message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                           Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APA',
-                                                             Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                             Action_Date__isnull=False)).count()
+        message_count = (t_workflow_details.objects.filter(assigned_to=login_id, application_status='AP',
+                                                           action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='APA',
+                                                             action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCF',
+                                                             action_date__isnull=False)).count()
         return render(request, 'complaint_investigation_pending_list.html',
                       {'complain_count': message_count, 'in_complaint_list': in_complaint_list})
     elif Role == 'Chief':
         login_id = request.session['Login_Id']
-        message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                           Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APA',
-                                                             Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                             Action_Date__isnull=False)).count()
+        message_count = (t_workflow_details.objects.filter(assigned_to=login_id, application_status='AP',
+                                                           action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='APA',
+                                                             action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCF',
+                                                             action_date__isnull=False)).count()
         return render(request, 'complaint_investigation_pending_list.html',
                       {'chief_count': message_count, 'in_complaint_list': in_complaint_list})
 
@@ -163,7 +163,7 @@ def co_complaint_details(request):
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
     details = t_common_complaint_t1.objects.filter(Application_No=Application_No)
-    file = t_file_attachment.objects.filter(Application_No=Application_No)
+    file = t_file_attachment.objects.filter(application_No=application_No)
     inspector_list = t_user_master.objects.filter(Role_Id__in=['2', '3', '4', '5', '6', ])
 
     return render(request, 'complaint_handling/complaint_officer_complaint_forward.html', {'complaint_details': details,
@@ -180,8 +180,8 @@ def investigation_complaint_details(request):
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
     details = t_common_complaint_t1.objects.filter(Application_No=application_no)
-    complaint_file = t_file_attachment.objects.filter(Application_No=application_no, Role_Id='8')
-    investigation_file = t_file_attachment.objects.filter(Application_No=application_no, Role_Id='5')
+    complaint_file = t_file_attachment.objects.filter(application_no=application_no, role_id='8')
+    investigation_file = t_file_attachment.objects.filter(application_no=application_no, role_id='5')
 
     return render(request, 'complaint_handling/investigation_complaint_update.html', {'complaint_details': details,
                                                                                       'dzongkhag': dzongkhag,
@@ -229,10 +229,10 @@ def save_complaint(request):
         Application_Status='P'
     )
 
-    t_workflow_details.objects.create(Application_No=last_application_no, Applicant_Id=email,
-                                      Assigned_To=None, Field_Office_Id=None, Section='Complaint',
-                                      Assigned_Role_Id='3', Action_Date=None, Application_Status='P',
-                                      Service_Code=service_code)
+    t_workflow_details.objects.create(application_no=last_application_no, applicant_id=email,
+                                      assigned_to=None, field_office_id=None, section='Complaint',
+                                      assigned_role_id='3', action_date=None, application_status='P',
+                                      service_code=service_code)
     data['applNo'] = last_application_no
     data['email'] = email
     return JsonResponse(data)
@@ -270,7 +270,7 @@ def update_complaint_application(request):
 
 def load_complaint_attachment_details(request):
     application_id = request.GET.get('application_id')
-    attachment_details = t_file_attachment.objects.filter(Application_No=application_id, Role_Id='8')
+    attachment_details = t_file_attachment.objects.filter(application_no=application_id, role_id='8')
     return render(request, 'complaint_handling/complaint_file_attachment_page.html',
                   {'file_attach': attachment_details})
 
@@ -296,13 +296,12 @@ def save_complaint_file(request):
 def add_complaint_file_name(request):
     app_no = request.POST.get('appNo')
     fileName = request.POST.get('filename')
-    Applicant_Id = request.session['email']
     file_url = request.POST.get('file_url')
     file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + fileName
-    t_file_attachment.objects.create(Application_No=app_no, Applicant_Id=Applicant_Id,
-                                     Role_Id=None, File_Path=file_url,
-                                     Attachment=file_name)
-    complaint_file = t_file_attachment.objects.filter(Application_No=app_no, Role_Id='8')
+    t_file_attachment.objects.create(application_no=app_no, applicant_id=None,
+                                     role_id=None, file_path=file_url,
+                                     attachment=file_name)
+    complaint_file = t_file_attachment.objects.filter(application_no=app_no)
     return render(request, 'complaint_handling/complaint_file_attachment_page.html', {'complaint_file': complaint_file})
 
 
@@ -316,13 +315,13 @@ def delete_complaint_file(request):
         fs.delete(str(fileName))
     file.delete()
 
-    complaint_file = t_file_attachment.objects.filter(Application_No=Application_No, Role_Id='8')
+    complaint_file = t_file_attachment.objects.filter(application_no=Application_No, role_id='8')
     return render(request, 'complaint_handling/complaint_file_attachment_page.html', {'complaint_file': complaint_file})
 
 
 def load_investigation_attachment_details(request):
     application_id = request.GET.get('application_id')
-    attachment_details = t_file_attachment.objects.filter(Application_No=application_id, Role_Id='5')
+    attachment_details = t_file_attachment.objects.filter(application_no=application_id, role_id='5')
     return render(request, 'complaint_handling/investigation_file_attachment_page.html',
                   {'file_attach': attachment_details})
 
@@ -345,9 +344,9 @@ def add_investigation_file_name(request):
         fileName = request.POST.get('filename')
         Applicant_Id = request.session['email']
         fs = ("attachments" + "/" + str(timezone.now().year) + "/common_service/complaint_handling/" + fileName)
-        t_file_attachment.objects.create(Application_No=Application_No, Applicant_Id=Applicant_Id,
-                                         Role_Id='5', File_Path=fs, Attachment=fileName)
-        investigation_file = t_file_attachment.objects.filter(Application_No=Application_No, Role_Id='5')
+        t_file_attachment.objects.create(application_no=Application_No, applicant_id=Applicant_Id,
+                                         role_id='5', file_path=fs, attachment=fileName)
+        investigation_file = t_file_attachment.objects.filter(application_no=Application_No, role_id='5')
     return render(request, 'complaint_handling/investigation_file_attachment_page.html',
                   {'investigation_file': investigation_file})
 
@@ -361,16 +360,15 @@ def delete_investigation_file(request):
         fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/common_service/complaint_handling")
         fs.delete(str(fileName))
     file.delete()
-    investigation_file = t_file_attachment.objects.filter(Application_No=Application_No, Role_Id='5')
+    investigation_file = t_file_attachment.objects.filter(application_no=Application_No, role_id='5')
     return render(request, 'complaint_handling/investigation_file_attachment_page.html',
                   {'investigation_file': investigation_file})
 
 
 def submit_complaint(request):
     application_no = request.GET.get('appNo')
-    workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
-    workflow_details.update(Application_Date=date.today())
-    workflow_details.update(Action_Date=date.today())
+    workflow_details = t_workflow_details.objects.filter(application_no=application_no)
+    workflow_details.update(action_date=date.today())
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
@@ -386,7 +384,7 @@ def complaint_details(request):
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
     complaint_details = t_common_complaint_t1.objects.filter(Application_No=Application_No)
-    file = t_file_attachment.objects.filter(Application_No=Application_No)
+    file = t_file_attachment.objects.filter(application_no=Application_No)
 
     inspector_list = t_user_master.objects.filter(Role_Id__in=['2', '3', '4', '5', '6'])
 
@@ -415,7 +413,7 @@ def acknowledge_complaint(request):
         email = email_id.Email
         application_date = email_id.Application_Date
 
-    workflow_details = t_workflow_details.objects.filter(Application_No=app_no)
+    workflow_details = t_workflow_details.objects.filter(application_no=app_no)
     c_details.update(Acknowledge='Y')
     c_details.update(Acknowledge_Remarks=remarks)
     c_details.update(Acknowledge_Date=date.today())
@@ -436,10 +434,10 @@ def forward_complaint_by_co(request):
     forward_details.update(Assign_Remarks=remarks)
     forward_details.update(Assign_Date=date.today())
 
-    application_details = t_workflow_details.objects.filter(Application_No=app_no)
-    application_details.update(Action_Date=date.today())
-    application_details.update(Assigned_To=forward_to)
-    application_details.update(Assigned_Role_Id=None)
+    application_details = t_workflow_details.objects.filter(application_no=app_no)
+    application_details.update(action_date=date.today())
+    application_details.update(assigned_to=forward_to)
+    application_details.update(assigned_role_id=None)
     return redirect(co_complaint_list)
 
 
@@ -453,11 +451,11 @@ def forward_complaint_to_co(request):
     forward_details.update(Investigation_Date=investigation_date)
     forward_details.update(Application_Status='IR')
 
-    application_details = t_workflow_details.objects.filter(Application_No=app_no)
-    application_details.update(Action_Date=date.today())
-    application_details.update(Assigned_To=None)
-    application_details.update(Assigned_Role_Id='3')
-    application_details.update(Application_Status='IR')  # IR - Investigation Report complete
+    application_details = t_workflow_details.objects.filter(application_no=app_no)
+    application_details.update(action_date=date.today())
+    application_details.update(assigned_to=None)
+    application_details.update(assigned_role_id='3')
+    application_details.update(application_status='IR')  # IR - Investigation Report complete
     return redirect(investigation_complaint_list)
 
 
@@ -475,11 +473,11 @@ def close_complaint(request):
     c_details.update(Closure_Date=date.today())
     c_details.update(Application_Status='C')
 
-    application_details = t_workflow_details.objects.filter(Application_No=app_no)
-    application_details.update(Action_Date=date.today())
-    application_details.update(Assigned_To=None)
+    application_details = t_workflow_details.objects.filter(application_no=app_no)
+    application_details.update(action_date=date.today())
+    application_details.update(assigned_to=None)
     # application_details.update(Assigned_Role_Id=None)
-    application_details.update(Application_Status='C')
+    application_details.update(application_status='C')
     send_close_email(app_no, application_date, closure_remarks, email, investigation_report, investigation_date)
     return redirect(investigation_report_list)
 
@@ -541,15 +539,15 @@ def establishment_inspection_form(request):
             for id_section in section_details:
                 section_name = id_section.Section_Name
                 message_count = (t_workflow_details.objects.filter(
-                    Assigned_Role_Id=Role_Id, Section=section_name,
-                    Action_Date__isnull=False, Application_Status='P') | t_workflow_details.objects.filter(
-                    Assigned_Role_Id=Role_Id, Section=section_name,
-                    Action_Date__isnull=False, Application_Status='ATA') | t_workflow_details.objects.filter(
-                    Assigned_Role_Id=Role_Id, Section=section_name,
-                    Action_Date__isnull=False, Application_Status='FRA') |
+                    assigned_role_id=Role_Id, section=section_name,
+                    action_date__isnull=False, application_status='P') | t_workflow_details.objects.filter(
+                    assigned_role_id=Role_Id, section=section_name,
+                    action_date__isnull=False, application_status='ATA') | t_workflow_details.objects.filter(
+                    assigned_role_id=Role_Id, section=section_name,
+                    action_date__isnull=False, application_status='FRA') |
                                  t_workflow_details.objects.filter(
-                                     Assigned_Role_Id=Role_Id, Section=section_name,
-                                     Action_Date__isnull=False, Application_Status='CA')
+                                     assigned_role_id=Role_Id, section=section_name,
+                                     action_date__isnull=False, application_status='CA')
                                  ).count()
                 return render(request, 'inspection_establishment/application_form.html',
                               {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village,
@@ -557,10 +555,10 @@ def establishment_inspection_form(request):
         elif Role == 'OIC':
             login_id = request.session['Login_Id']
             Field_Office_Id = request.session['field_office_id']
-            message_count = (t_workflow_details.objects.filter(Assigned_Role_Id='4', Field_Office_Id=Field_Office_Id,
-                                                               Action_Date__isnull=False) |
-                             t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                               Action_Date__isnull=False)).count()
+            message_count = (t_workflow_details.objects.filter(assigned_role_id='4', field_office_id=Field_Office_Id,
+                                                               action_date__isnull=False) |
+                             t_workflow_details.objects.filter(Assigned_To=login_id, application_status='NCF',
+                                                               action_date__isnull=False)).count()
 
             return render(request, 'inspection_establishment/application_form.html',
                           {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village,
@@ -568,48 +566,48 @@ def establishment_inspection_form(request):
         elif Role == 'Inspector':
             login_id = request.session['Login_Id']
             Field_Office_Id = request.session['field_office_id']
-            message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                               Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                                 Application_Status='I',
-                                                                 Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                                 Application_Status='FI',
-                                                                 Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                                 Application_Status='FR',
-                                                                 Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                                 Application_Status='P',
-                                                                 Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APA',
-                                                                 Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                                 Action_Date__isnull=False)).count()
-            fhc_count = t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                          Action_Date__isnull=False, Service_Code='FHC').count()
+            message_count = (t_workflow_details.objects.filter(assigned_to=login_id, application_status='AP',
+                                                               action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, field_office_id=Field_Office_Id,
+                                                                 application_status='I',
+                                                                 action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, field_office_id=Field_Office_Id,
+                                                                 application_status='FI',
+                                                                 action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, field_office_id=Field_Office_Id,
+                                                                 application_status='FR',
+                                                                 action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, field_office_id=Field_Office_Id,
+                                                                 application_status='P',
+                                                                 action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, application_status='APA',
+                                                                 action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCF',
+                                                                 action_date__isnull=False)).count()
+            fhc_count = t_workflow_details.objects.filter(assigned_to=login_id, application_status='AP',
+                                                          action_date__isnull=False, service_code='FHC').count()
             return render(request, 'inspection_establishment/application_form.html',
                           {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village,
                            'ins_count': message_count, 'unit': unit, 'fhc_count': fhc_count})
         elif Role == 'Complain Officer':
             login_id = request.session['Login_Id']
-            message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                               Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APA',
-                                                                 Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                                 Action_Date__isnull=False)).count()
+            message_count = (t_workflow_details.objects.filter(assigned_to=login_id, application_status='AP',
+                                                               action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, application_status='APA',
+                                                                 action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCF',
+                                                                 action_date__isnull=False)).count()
             return render(request, 'inspection_establishment/application_form.html',
                           {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village,
                            'complain_count': message_count, 'unit': unit})
         elif Role == 'Chief':
             login_id = request.session['Login_Id']
-            message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                               Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APA',
-                                                                 Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                                 Action_Date__isnull=False)).count()
+            message_count = (t_workflow_details.objects.filter(assigned_to=login_id, application_status='AP',
+                                                               action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, application_status='APA',
+                                                                 action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCF',
+                                                                 action_date__isnull=False)).count()
             return render(request, 'inspection_establishment/application_form.html',
                           {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village,
                            'chief_count': message_count, 'unit': unit})
@@ -847,11 +845,11 @@ def inspection_file_name(request):
     Applicant_Id = request.session['email']
     file_url = request.POST.get('file_url')
     file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + fileName
-    t_file_attachment.objects.create(Application_No=app_no, Applicant_Id=Applicant_Id,
-                                     Role_Id=None, File_Path=file_url,
-                                     Attachment=file_name)
+    t_file_attachment.objects.create(application_no=app_no, applicant_id=Applicant_Id,
+                                     role_id=None, file_path=file_url,
+                                     attachment=file_name)
 
-    file_attach = t_file_attachment.objects.filter(Application_No=app_no)
+    file_attach = t_file_attachment.objects.filter(application_no=app_no)
     return render(request, 'inspection_establishment/file_attachment.html', {'file_attach': file_attach})
 
 
@@ -880,7 +878,7 @@ def view_draft_details(request):
     details = t_inspection_monitoring_t2.objects.filter(Reference_No=reference_no)
     t3_details = t_inspection_monitoring_t3.objects.filter(Reference_No=reference_no)
     t4_details = t_inspection_monitoring_t4.objects.filter(Reference_No=reference_no)
-    file_attach = t_file_attachment.objects.filter(Application_No=reference_no)
+    file_attach = t_file_attachment.objects.filter(application_no=reference_no)
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
@@ -954,7 +952,7 @@ def load_establishment_sample_details(request):
 
 def load_establishment_attachment_details(request):
     referenceNo = request.GET.get('refNo')
-    attachment_details = t_file_attachment.objects.filter(Application_No=referenceNo)
+    attachment_details = t_file_attachment.objects.filter(application_no=referenceNo)
     return render(request, 'inspection_commodity/file_attachment.html',
                   {'file_attach': attachment_details})
 
@@ -969,7 +967,7 @@ def delete_establishment_file(request):
             "attachments" + "/" + str(timezone.now().year) + "/common_service/inspection_establishment")
         fs.delete(str(fileName))
     file.delete()
-    file_attach = t_file_attachment.objects.filter(Application_No=referenceNo)
+    file_attach = t_file_attachment.objects.filter(application_no=referenceNo)
     return render(request, 'inspection_establishment/file_attachment.html', {'file_attach': file_attach})
 
 
@@ -1014,71 +1012,71 @@ def view_establishment_inspection_list(request):
         for id_section in section_details:
             section_name = id_section.Section_Name
             message_count = (t_workflow_details.objects.filter(
-                Assigned_Role_Id=Role_Id, Section=section_name,
-                Action_Date__isnull=False, Application_Status='P') | t_workflow_details.objects.filter(
-                Assigned_Role_Id=Role_Id, Section=section_name,
-                Action_Date__isnull=False, Application_Status='ATA') | t_workflow_details.objects.filter(
-                Assigned_Role_Id=Role_Id, Section=section_name,
-                Action_Date__isnull=False, Application_Status='FRA') |
+                assigned_role_id=Role_Id, section=section_name,
+                action_date__isnull=False, application_status='P') | t_workflow_details.objects.filter(
+                assigned_role_id=Role_Id, section=section_name,
+                action_date__isnull=False, application_status='ATA') | t_workflow_details.objects.filter(
+                assigned_role_id=Role_Id, section=section_name,
+                action_date__isnull=False, application_status='FRA') |
                              t_workflow_details.objects.filter(
-                                 Assigned_Role_Id=Role_Id, Section=section_name,
-                                 Action_Date__isnull=False, Application_Status='CA')
+                                 assigned_role_id=Role_Id, section=section_name,
+                                 action_date__isnull=False, application_status='CA')
                              ).count()
             return render(request, 'inspection_establishment/establishment_inspection_list.html',
                           {'count': message_count, 'application_details': application_details})
     elif Role == 'OIC':
         login_id = request.session['Login_Id']
         Field_Office_Id = request.session['field_office_id']
-        message_count = (t_workflow_details.objects.filter(Assigned_Role_Id='4', Field_Office_Id=Field_Office_Id,
-                                                           Action_Date__isnull=False) |
-                         t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                           Action_Date__isnull=False)).count()
+        message_count = (t_workflow_details.objects.filter(assigned_role_id='4', field_office_id=Field_Office_Id,
+                                                           action_date__isnull=False) |
+                         t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCF',
+                                                           action_date__isnull=False)).count()
 
         return render(request, 'inspection_establishment/establishment_inspection_list.html',
                       {'count': message_count, 'application_details': application_details})
     elif Role == 'Inspector':
         login_id = request.session['Login_Id']
         Field_Office_Id = request.session['field_office_id']
-        message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                           Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                             Application_Status='I',
-                                                             Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                             Application_Status='FI',
-                                                             Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                             Application_Status='FR',
-                                                             Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                             Application_Status='P',
-                                                             Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APA',
-                                                             Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                             Action_Date__isnull=False)).count()
-        fhc_count = t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                      Action_Date__isnull=False, Service_Code='FHC').count()
+        message_count = (t_workflow_details.objects.filter(assigned_to=login_id, application_status='AP',
+                                                           action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, field_office_id=Field_Office_Id,
+                                                             application_status='I',
+                                                             action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, field_office_id=Field_Office_Id,
+                                                             application_status='FI',
+                                                             action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, field_office_id=Field_Office_Id,
+                                                             application_status='FR',
+                                                             action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, field_office_id=Field_Office_Id,
+                                                             application_status='P',
+                                                             action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='APA',
+                                                             action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCF',
+                                                             action_date__isnull=False)).count()
+        fhc_count = t_workflow_details.objects.filter(assigned_to=login_id, application_status='AP',
+                                                      action_date__isnull=False, service_code='FHC').count()
         return render(request, 'inspection_establishment/establishment_inspection_list.html',
                       {'ins_count': message_count, 'application_details': application_details, 'fhc_count': fhc_count})
     elif Role == 'Complain Officer':
         login_id = request.session['Login_Id']
-        message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                           Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APA',
-                                                             Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                             Action_Date__isnull=False)).count()
+        message_count = (t_workflow_details.objects.filter(assigned_to=login_id, application_status='AP',
+                                                           action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='APA',
+                                                             action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCF',
+                                                             action_date__isnull=False)).count()
         return render(request, 'inspection_establishment/establishment_inspection_list.html',
                       {'complain_count': message_count, 'application_details': application_details})
     elif Role == 'Chief':
         login_id = request.session['Login_Id']
-        message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                           Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APA',
-                                                             Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                             Action_Date__isnull=False)).count()
+        message_count = (t_workflow_details.objects.filter(assigned_to=login_id, application_status='AP',
+                                                           action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='APA',
+                                                             action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCF',
+                                                             action_date__isnull=False)).count()
         return render(request, 'inspection_establishment/establishment_inspection_list.html',
                       {'chief_count': message_count, 'application_details': application_details})
 
@@ -1089,7 +1087,7 @@ def view_establishment_inspection_details(request):
     details = t_inspection_monitoring_t2.objects.filter(Reference_No=reference_no)
     seized_details = t_inspection_monitoring_t3.objects.filter(Reference_No=reference_no)
     sample_details = t_inspection_monitoring_t4.objects.filter(Reference_No=reference_no)
-    file_attach = t_file_attachment.objects.filter(Application_No=reference_no)
+    file_attach = t_file_attachment.objects.filter(application_no=reference_no)
     for dzoCode in application_details:
         dzo_code = dzoCode.Dzongkhag_Code
     for gewogCode in application_details:
@@ -1126,15 +1124,15 @@ def commodity_inspection_form(request):
             for id_section in section_details:
                 section_name = id_section.Section_Name
                 message_count = (t_workflow_details.objects.filter(
-                    Assigned_Role_Id=Role_Id, Section=section_name,
-                    Action_Date__isnull=False, Application_Status='P') | t_workflow_details.objects.filter(
-                    Assigned_Role_Id=Role_Id, Section=section_name,
-                    Action_Date__isnull=False, Application_Status='ATA') | t_workflow_details.objects.filter(
-                    Assigned_Role_Id=Role_Id, Section=section_name,
-                    Action_Date__isnull=False, Application_Status='FRA') |
+                    assigned_role_id=Role_Id, section=section_name,
+                    action_date__isnull=False, application_status='P') | t_workflow_details.objects.filter(
+                    assigned_role_id=Role_Id, section=section_name,
+                    action_date__isnull=False, application_status='ATA') | t_workflow_details.objects.filter(
+                    assigned_role_id=Role_Id, section=section_name,
+                    action_date__isnull=False, application_status='FRA') |
                                  t_workflow_details.objects.filter(
-                                     Assigned_Role_Id=Role_Id, Section=section_name,
-                                     Action_Date__isnull=False, Application_Status='CA')
+                                     assigned_role_id=Role_Id, section=section_name,
+                                     action_date__isnull=False, application_status='CA')
                                  ).count()
                 return render(request, 'inspection_commodity/application_commodity.html',
                               {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village,
@@ -1142,10 +1140,10 @@ def commodity_inspection_form(request):
         elif Role == 'OIC':
             login_id = request.session['Login_Id']
             Field_Office_Id = request.session['field_office_id']
-            message_count = (t_workflow_details.objects.filter(Assigned_Role_Id='4', Field_Office_Id=Field_Office_Id,
-                                                               Action_Date__isnull=False) |
-                             t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                               Action_Date__isnull=False)).count()
+            message_count = (t_workflow_details.objects.filter(assigned_role_id='4', field_office_id=Field_Office_Id,
+                                                               action_date__isnull=False) |
+                             t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCF',
+                                                               action_date__isnull=False)).count()
 
             return render(request, 'inspection_commodity/application_commodity.html',
                           {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village,
@@ -1153,49 +1151,49 @@ def commodity_inspection_form(request):
         elif Role == 'Inspector':
             login_id = request.session['Login_Id']
             Field_Office_Id = request.session['field_office_id']
-            message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                               Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                                 Application_Status='I',
-                                                                 Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                                 Application_Status='FI',
-                                                                 Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                                 Application_Status='FR',
-                                                                 Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                                 Application_Status='P',
-                                                                 Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APA',
-                                                                 Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                                 Action_Date__isnull=False)).count()
-            fhc_count = t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                          Action_Date__isnull=False, Service_Code='FHC').count()
+            message_count = (t_workflow_details.objects.filter(assigned_to=login_id, application_status='AP',
+                                                               action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, field_office_id=Field_Office_Id,
+                                                                 application_status='I',
+                                                                 action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, field_office_id=Field_Office_Id,
+                                                                 application_status='FI',
+                                                                 action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, field_office_id=Field_Office_Id,
+                                                                 application_status='FR',
+                                                                 action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, field_office_id=Field_Office_Id,
+                                                                 application_status='P',
+                                                                 action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, application_status='APA',
+                                                                 action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCF',
+                                                                 action_date__isnull=False)).count()
+            fhc_count = t_workflow_details.objects.filter(assigned_to=login_id, application_status='AP',
+                                                          action_date__isnull=False, service_code='FHC').count()
             return render(request, 'inspection_commodity/application_commodity.html',
                           {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village,
                            'ins_count': message_count, 'inspector_list': inspector_list, 'unit': unit,
                            'fhc_count': fhc_count})
         elif Role == 'Complain Officer':
             login_id = request.session['Login_Id']
-            message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                               Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APA',
-                                                                 Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                                 Action_Date__isnull=False)).count()
+            message_count = (t_workflow_details.objects.filter(assigned_to=login_id, application_status='AP',
+                                                               action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, application_status='APA',
+                                                                 action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCF',
+                                                                 action_date__isnull=False)).count()
             return render(request, 'inspection_commodity/application_commodity.html',
                           {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village,
                            'complain_count': message_count, 'inspector_list': inspector_list, 'unit': unit})
         elif Role == 'Chief':
             login_id = request.session['Login_Id']
-            message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                               Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APA',
-                                                                 Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                                 Action_Date__isnull=False)).count()
+            message_count = (t_workflow_details.objects.filter(assigned_to=login_id, application_status='AP',
+                                                               action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, application_status='APA',
+                                                                 action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCF',
+                                                                 action_date__isnull=False)).count()
             return render(request, 'inspection_commodity/application_commodity.html',
                           {'dzongkhag': dzongkhag, 'gewog': gewog, 'village': village,
                            'chief_count': message_count, 'inspector_list': inspector_list, 'unit': unit})
@@ -1205,7 +1203,7 @@ def commodity_inspection_form(request):
 
 def load_commodity_attachment_details(request):
     application_id = request.GET.get('application_id')
-    attachment_details = t_file_attachment.objects.filter(Application_No=application_id, Role_Id='5')
+    attachment_details = t_file_attachment.objects.filter(application_no=application_id, role_id='5')
     return render(request, 'complaint_handling/investigation_file_attachment_page.html',
                   {'file_attach': attachment_details})
 
@@ -1235,9 +1233,9 @@ def add_commodity_file_name(request):
     file_url = request.POST.get('file_url')
     Role_Id = request.session['Role_Id']
     file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + fileName
-    t_file_attachment.objects.create(Application_No=app_no, Applicant_Id=Applicant_Id,
-                                     Role_Id=Role_Id, File_Path=file_url, Attachment=fileName)
-    file_attach = t_file_attachment.objects.filter(Application_No=app_no)
+    t_file_attachment.objects.create(application_no=app_no, applicant_id=Applicant_Id,
+                                     role_id=Role_Id, file_path=file_url, attachment=fileName)
+    file_attach = t_file_attachment.objects.filter(application_no=app_no)
     return render(request, 'inspection_commodity/commodity_file_attachment.html', {'file_attach': file_attach})
 
 
@@ -1250,7 +1248,7 @@ def delete_commodity_file(request):
         fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/common_service/inspection_commodity")
         fs.delete(str(fileName))
     file.delete()
-    file_attach = t_file_attachment.objects.filter(Application_No=referenceNo)
+    file_attach = t_file_attachment.objects.filter(application_no=referenceNo)
     return render(request, 'inspection_commodity/commodity_file_attachment.html', {'file_attach': file_attach})
 
 
@@ -1266,7 +1264,7 @@ def delete_commodity_details(request):
 
 def load_commodity_attachment_details(request):
     referenceNo = request.GET.get('refNo')
-    attachment_details = t_file_attachment.objects.filter(Application_No=referenceNo)
+    attachment_details = t_file_attachment.objects.filter(application_no=referenceNo)
     return render(request, 'inspection_commodity/commodity_file_attachment.html',
                   {'file_attach': attachment_details})
 
@@ -1408,7 +1406,7 @@ def view_draft_commodity_inspection_details(request):
     reference_no = request.GET.get('reference_no')
     application_details = t_commodity_inspection_t1.objects.filter(Reference_No=reference_no)
     details = t_commodity_inspection_t2.objects.filter(Reference_No=reference_no)
-    file_attach = t_file_attachment.objects.filter(Application_No=reference_no)
+    file_attach = t_file_attachment.objects.filter(application_no=reference_no)
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
@@ -1502,71 +1500,71 @@ def view_commodity_inspection_list(request):
         for id_section in section_details:
             section_name = id_section.Section_Name
             message_count = (t_workflow_details.objects.filter(
-                Assigned_Role_Id=Role_Id, Section=section_name,
-                Action_Date__isnull=False, Application_Status='P') | t_workflow_details.objects.filter(
-                Assigned_Role_Id=Role_Id, Section=section_name,
-                Action_Date__isnull=False, Application_Status='ATA') | t_workflow_details.objects.filter(
-                Assigned_Role_Id=Role_Id, Section=section_name,
-                Action_Date__isnull=False, Application_Status='FRA') |
+                assigned_role_id=Role_Id, section=section_name,
+                action_date__isnull=False, application_status='P') | t_workflow_details.objects.filter(
+                assigned_role_id=Role_Id, section=section_name,
+                action_date__isnull=False, application_status='ATA') | t_workflow_details.objects.filter(
+                assigned_role_id=Role_Id, section=section_name,
+                action_date__isnull=False, application_status='FRA') |
                              t_workflow_details.objects.filter(
-                                 Assigned_Role_Id=Role_Id, Section=section_name,
-                                 Action_Date__isnull=False, Application_Status='CA')
+                                 assigned_role_id=Role_Id, section=section_name,
+                                 action_date__isnull=False, application_status='CA')
                              ).count()
             return render(request, 'inspection_commodity/commodity_inspection_list.html',
                           {'count': message_count, 'application_details': application_details})
     elif Role == 'OIC':
         login_id = request.session['Login_Id']
         Field_Office_Id = request.session['field_office_id']
-        message_count = (t_workflow_details.objects.filter(Assigned_Role_Id='4', Field_Office_Id=Field_Office_Id,
-                                                           Action_Date__isnull=False) |
-                         t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                           Action_Date__isnull=False)).count()
+        message_count = (t_workflow_details.objects.filter(assigned_role_id='4', field_office_id=Field_Office_Id,
+                                                           action_date__isnull=False) |
+                         t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCF',
+                                                           action_date__isnull=False)).count()
 
         return render(request, 'inspection_commodity/commodity_inspection_list.html',
                       {'count': message_count, 'application_details': application_details})
     elif Role == 'Inspector':
         login_id = request.session['Login_Id']
         Field_Office_Id = request.session['field_office_id']
-        message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                           Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                             Application_Status='I',
-                                                             Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                             Application_Status='FI',
-                                                             Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                             Application_Status='FR',
-                                                             Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                             Application_Status='P',
-                                                             Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APA',
-                                                             Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                             Action_Date__isnull=False)).count()
-        fhc_count = t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                      Action_Date__isnull=False, Service_Code='FHC').count()
+        message_count = (t_workflow_details.objects.filter(assigned_to=login_id, application_status='AP',
+                                                           action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, field_office_id=Field_Office_Id,
+                                                             application_status='I',
+                                                             action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, field_office_id=Field_Office_Id,
+                                                             application_status='FI',
+                                                             action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, field_office_id=Field_Office_Id,
+                                                             application_status='FR',
+                                                             action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, field_office_id=Field_Office_Id,
+                                                             application_status='P',
+                                                             action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='APA',
+                                                             action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCF',
+                                                             action_date__isnull=False)).count()
+        fhc_count = t_workflow_details.objects.filter(assigned_to=login_id, application_status='AP',
+                                                      action_date__isnull=False, service_code='FHC').count()
         return render(request, 'inspection_commodity/commodity_inspection_list.html',
                       {'ins_count': message_count, 'application_details': application_details, 'fhc_count': fhc_count})
     elif Role == 'Complain Officer':
         login_id = request.session['Login_Id']
-        message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                           Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APA',
-                                                             Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                             Action_Date__isnull=False)).count()
+        message_count = (t_workflow_details.objects.filter(assigned_to=login_id, application_status='AP',
+                                                           action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='APA',
+                                                             action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCF',
+                                                             action_date__isnull=False)).count()
         return render(request, 'inspection_commodity/commodity_inspection_list.html',
                       {'complain_count': message_count, 'application_details': application_details})
     elif Role == 'Chief':
         login_id = request.session['Login_Id']
-        message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                           Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APA',
-                                                             Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                             Action_Date__isnull=False)).count()
+        message_count = (t_workflow_details.objects.filter(assigned_to=login_id, application_status='AP',
+                                                           action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='APA',
+                                                             action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCF',
+                                                             action_date__isnull=False)).count()
         return render(request, 'inspection_commodity/commodity_inspection_list.html',
                       {'chief_count': message_count, 'application_details': application_details})
 
@@ -1575,7 +1573,7 @@ def view_commodity_inspection_details(request):
     reference_no = request.GET.get('reference_no')
     application_details = t_commodity_inspection_t1.objects.filter(Reference_No=reference_no)
     details = t_commodity_inspection_t2.objects.filter(Reference_No=reference_no)
-    file_attach = t_file_attachment.objects.filter(Application_No=reference_no)
+    file_attach = t_file_attachment.objects.filter(application_no=reference_no)
     dzongkhag = t_dzongkhag_master.objects.all()
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
@@ -1591,7 +1589,7 @@ def view_commodity_inspection_details(request):
     reference_no = request.GET.get('reference_no')
     application_details = t_commodity_inspection_t1.objects.filter(Reference_No=reference_no)
     details = t_commodity_inspection_t2.objects.filter(Reference_No=reference_no)
-    file_attach = t_file_attachment.objects.filter(Application_No=reference_no)
+    file_attach = t_file_attachment.objects.filter(application_no=reference_no)
     for dzoCode in application_details:
         dzo_code = dzoCode.Dzongkhag_Code
     for gewogCode in application_details:
@@ -1613,7 +1611,7 @@ def view_FHC_inspection_details(request):
     reference_no = request.GET.get('reference_no')
     application_details = t_commodity_inspection_t1.objects.filter(Reference_No=reference_no)
     details = t_commodity_inspection_t2.objects.filter(Reference_No=reference_no)
-    file_attach = t_file_attachment.objects.filter(Application_No=reference_no)
+    file_attach = t_file_attachment.objects.filter(application_no=reference_no)
     for dzoCode in application_details:
         dzo_code = dzoCode.Dzongkhag_Code
     for gewogCode in application_details:
@@ -1651,15 +1649,15 @@ def submit_feedback_form(request):
                 for id_section in section_details:
                     section_name = id_section.Section_Name
                     message_count = (t_workflow_details.objects.filter(
-                        Assigned_Role_Id=Role_Id, Section=section_name,
-                        Action_Date__isnull=False, Application_Status='P') | t_workflow_details.objects.filter(
-                        Assigned_Role_Id=Role_Id, Section=section_name,
-                        Action_Date__isnull=False, Application_Status='ATA') | t_workflow_details.objects.filter(
-                        Assigned_Role_Id=Role_Id, Section=section_name,
-                        Action_Date__isnull=False, Application_Status='FRA') |
+                        assigned_role_id=Role_Id, section=section_name,
+                        action_date__isnull=False, application_status='P') | t_workflow_details.objects.filter(
+                        assigned_role_id=Role_Id, section=section_name,
+                        action_date__isnull=False, application_status='ATA') | t_workflow_details.objects.filter(
+                        assigned_role_id=Role_Id, section=section_name,
+                        action_date__isnull=False, application_status='FRA') |
                                      t_workflow_details.objects.filter(
-                                         Assigned_Role_Id=Role_Id, Section=section_name,
-                                         Action_Date__isnull=False, Application_Status='CA')
+                                         assigned_role_id=Role_Id, section=section_name,
+                                         action_date__isnull=False, application_status='CA')
                                      ).count()
                     return render(request, 'feedback/submit_feedback.html',
                                   {'count': message_count, 'service': service})
@@ -1667,75 +1665,75 @@ def submit_feedback_form(request):
                 login_id = request.session['Login_Id']
                 Field_Office_Id = request.session['field_office_id']
                 message_count = (
-                        t_workflow_details.objects.filter(Assigned_Role_Id='4', Field_Office_Id=Field_Office_Id,
-                                                          Action_Date__isnull=False) |
-                        t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                          Action_Date__isnull=False)).count()
+                        t_workflow_details.objects.filter(assigned_role_id='4', field_office_id=Field_Office_Id,
+                                                          action_date__isnull=False) |
+                        t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCF',
+                                                          action_date__isnull=False)).count()
 
                 return render(request, 'feedback/submit_feedback.html', {'count': message_count, 'service': service})
             elif Role == 'Inspector':
                 login_id = request.session['Login_Id']
                 Field_Office_Id = request.session['field_office_id']
-                message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                                   Action_Date__isnull=False)
-                                 | t_workflow_details.objects.filter(Assigned_To=login_id,
-                                                                     Field_Office_Id=Field_Office_Id,
-                                                                     Application_Status='I',
-                                                                     Action_Date__isnull=False)
-                                 | t_workflow_details.objects.filter(Assigned_To=login_id,
-                                                                     Field_Office_Id=Field_Office_Id,
-                                                                     Application_Status='FI',
-                                                                     Action_Date__isnull=False)
-                                 | t_workflow_details.objects.filter(Assigned_To=login_id,
-                                                                     Field_Office_Id=Field_Office_Id,
-                                                                     Application_Status='FR',
-                                                                     Action_Date__isnull=False)
-                                 | t_workflow_details.objects.filter(Assigned_To=login_id,
-                                                                     Field_Office_Id=Field_Office_Id,
-                                                                     Application_Status='P',
-                                                                     Action_Date__isnull=False)
-                                 | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APA',
-                                                                     Action_Date__isnull=False)
-                                 | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                                     Action_Date__isnull=False)).count()
-                fhc_count = t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                              Action_Date__isnull=False, Service_Code='FHC').count()
+                message_count = (t_workflow_details.objects.filter(assigned_to=login_id, application_status='AP',
+                                                                   action_date__isnull=False)
+                                 | t_workflow_details.objects.filter(assigned_to=login_id,
+                                                                     field_office_id=Field_Office_Id,
+                                                                     application_status='I',
+                                                                     action_date__isnull=False)
+                                 | t_workflow_details.objects.filter(assigned_to=login_id,
+                                                                     field_office_id=Field_Office_Id,
+                                                                     application_status='FI',
+                                                                     action_date__isnull=False)
+                                 | t_workflow_details.objects.filter(assigned_to=login_id,
+                                                                     field_office_id=Field_Office_Id,
+                                                                     application_status='FR',
+                                                                     action_date__isnull=False)
+                                 | t_workflow_details.objects.filter(assigned_to=login_id,
+                                                                     field_office_id=Field_Office_Id,
+                                                                     application_status='P',
+                                                                     action_date__isnull=False)
+                                 | t_workflow_details.objects.filter(assigned_to=login_id, application_status='APA',
+                                                                     action_date__isnull=False)
+                                 | t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCF',
+                                                                     action_date__isnull=False)).count()
+                fhc_count = t_workflow_details.objects.filter(assigned_to=login_id, application_status='AP',
+                                                              action_date__isnull=False, service_code='FHC').count()
                 return render(request, 'feedback/submit_feedback.html',
                               {'ins_count': message_count, 'fhc_count': fhc_count, 'service': service})
             elif Role == 'Complain Officer':
                 login_id = request.session['Login_Id']
-                message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                                   Action_Date__isnull=False)
-                                 | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APA',
-                                                                     Action_Date__isnull=False)
-                                 | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                                     Action_Date__isnull=False)).count()
+                message_count = (t_workflow_details.objects.filter(assigned_to=login_id, application_status='AP',
+                                                                   action_date__isnull=False)
+                                 | t_workflow_details.objects.filter(assigned_to=login_id, application_status='APA',
+                                                                     action_date__isnull=False)
+                                 | t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCF',
+                                                                     action_date__isnull=False)).count()
                 return render(request, 'feedback/submit_feedback.html', {'complain_count': message_count,
                                                                          'service': service})
             elif Role == 'Chief':
                 login_id = request.session['Login_Id']
-                message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                                   Action_Date__isnull=False)
-                                 | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APA',
-                                                                     Action_Date__isnull=False)
-                                 | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                                     Action_Date__isnull=False)).count()
+                message_count = (t_workflow_details.objects.filter(assigned_to=login_id, application_status='AP',
+                                                                   action_date__isnull=False)
+                                 | t_workflow_details.objects.filter(assigned_to=login_id, application_status='APA',
+                                                                     action_date__isnull=False)
+                                 | t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCF',
+                                                                     action_date__isnull=False)).count()
                 return render(request, 'feedback/submit_feedback.html', {'chief_count': message_count,
                                                                          'service': service})
         else:
             login_id = request.session['Login_Id']
-            message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
-                             | t_workflow_details.objects.filter(Assigned_To=login_id,
-                                                                 Application_Status='NCR')).count()
+            message_count = (t_workflow_details.objects.filter(assigned_to=login_id, application_status='RS')
+                             | t_workflow_details.objects.filter(assigned_to=login_id, application_status='IRS')
+                             | t_workflow_details.objects.filter(assigned_to=login_id, application_status='ATR')
+                             | t_workflow_details.objects.filter(assigned_to=login_id, application_status='APR')
+                             | t_workflow_details.objects.filter(assigned_to=login_id,
+                                                                 application_status='NCR')).count()
 
-            inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
-                                                                      Action_Date__isnull=False).count()
-            consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
-                                                                       Action_Date__isnull=False,
-                                                                       Application_Status='P') \
+            inspection_call_count = t_workflow_details.objects.filter(application_status='FR', assigned_to=login_id,
+                                                                      action_date__isnull=False).count()
+            consignment_call_count = t_workflow_details.objects.filter(assigned_to=login_id,
+                                                                       action_date__isnull=False,
+                                                                       application_status='P') \
                 .count()
             return render(request, 'feedback/submit_feedback.html',
                           {'count': message_count, 'count_call': inspection_call_count,

@@ -18,7 +18,7 @@
     <div class="card-body">
         <form method="post" id="exportCertificateForm">
             <input type="hidden" name="application_no" id="applicationNo">
-        {% csrf_token %}
+            {% csrf_token %}
             <div class="row justify-content-left">
                 <ul class="nav nav-pills nav-secondary" id="pills-tab" role="tablist">
                     <li class="nav-item">
@@ -33,9 +33,28 @@
                 <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
                     <div id="applicant_details">
                         <div class="row">
+                            <div class="col-sm-3">
+                                <label class="form-label">Application Type <font color="red">*</font></label>
+                            </div>
+                            <div class="col-sm-8 justify-content-center">
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" name="Application_Type" class="custom-control-input" value="I" onclick="change_selection(this.value)">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Individual</span>
+                                </label>
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" name="Application_Type" class="custom-control-input" value="C" onclick="change_selection(this.value)">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Commercial</span>
+                                </label>
+                                <div class="alert alert-danger" id="Application_TypeErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="form-label">Trade License No <font color="red">*</font></label>
+                                    <label class="form-label">Trade License No <font id="license_no_mark" color="red">*</font></label>
                                     <input type="text"  class="form-control" id="license_no" name="license_no">
                                 </div>
                                 <div class="alert alert-danger" id="license_noErrorMsg" style="display:none"></div>
@@ -328,6 +347,8 @@ $(function()
 function save_food_export()
 {
     var applicationNo = $('#applicationNo').val();
+    var Application_Type = $("input[name=Application_Type]:checked").length;
+    var app_type = $('input[name="Application_Type"]:checked').val();
     var license_no = $('#license_no').val();
     var cid = $('#cid').val();
     var name = $('#name').val();
@@ -355,7 +376,14 @@ function save_food_export()
     var cidCount = $('#cid').val().length;
     var number_count = $('#contactNumber').val().length;
 
-    if(license_no == "")
+    if(Application_Type < 1)
+    {
+        $('#Application_TypeErrorMsg').html("Please Check One Application Type.");
+        $('#Application_TypeErrorMsg').show();
+        $('#Application_TypeErrorMsg').delay(2000).fadeOut('slow');
+        $("input[name=Application_Type]").focus();
+    }
+    else if(app_type == "C" && license_no == "")
     {
         $('#license_noErrorMsg').html("Enter Trade License No.");
         $('#license_noErrorMsg').show();
@@ -856,5 +884,19 @@ function check_expected_date()
         $('#Export_Expected_DateErrorMsg').hide();
     }
 }
+
+function change_selection(exportType)
+    {
+        if(exportType == "I")
+        {
+           $("#license_no").attr("disabled", "disabled");
+           $('#license_no_mark').hide();
+        }
+        else
+        {
+            $("#license_no").removeAttr("disabled");
+            $('#license_no_mark').show();
+        }
+    }
 </script>
 {% endblock %}

@@ -24,10 +24,10 @@
                    {% for complaint_file in complaint_file %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-                                <td><a href='{{complaint_file.File_Path}}' target="_blank">{{complaint_file.Attachment}}</a></td>
+                                <td><a href='{{complaint_file.file_path}}' target="_blank">{{complaint_file.attachment}}</a></td>
                                 <td>
                                     <button type="button"
-									    class="btn btn-danger btn-sm" onclick="delete_attachment('{{ complaint_file.File_Id }}')">
+									    class="btn btn-danger btn-sm" onclick="delete_attachment('{{ complaint_file.file_id }}')">
 									    <i class="fa fa-trash"></i>
 								    </button>
                                 </td>
@@ -41,9 +41,9 @@
             </table>
         </div>
 </div>
-<p class="signin button text-center" style="margin-bottom: -29px;">
-    <input type="button" class="signin button" value="Submit Complaint" onclick="submit_complaint()">
-</p>
+<div class="card-action text-center">
+    <button type="button" id="submit_button_attach" onclick="submit_complaint()">Submit Complaint</button>
+</div>
 <script>
 function submit_complaint()
 {

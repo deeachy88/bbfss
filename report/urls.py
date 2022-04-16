@@ -10,8 +10,6 @@ urlpatterns = [
     path('view_permit_list', views.view_permit_list, name='view_permit_list'),
     path('revenue_report_form', views.revenue_report_form, name='revenue_report_form'),
     path('view_revenue_list', views.view_revenue_list, name='view_revenue_list'),
-
-
 ]
 
 if settings.DEBUG:

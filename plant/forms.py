@@ -31,4 +31,4 @@ class ImportFormThree(forms.ModelForm):
 class FileAttachmentForm(forms.ModelForm):
     class Meta:
         model = t_file_attachment
-        fields = ['Attachment']
+        fields = ['attachment']

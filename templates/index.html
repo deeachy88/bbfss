@@ -18,11 +18,75 @@
         <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="{% static 'assets/css/owl.carousel.min.css' %}">
         <link rel="stylesheet" href="{% static 'assets/css/bootstrap1.min.css' %}">
-        <link rel="stylesheet" href="{% static 'css/style2.css' %}">
         <link rel="stylesheet" href="{% static 'css/style3.css' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'css/animate-custom.css' %}" />
         <link rel="stylesheet" type="text/css" href="{% static 'css/demo.css' %}" />
         <link href="{% static 'styles/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+        <style>
+            h4 {
+                font-size: 18px;
+                color: rgb(6, 106, 117);
+                padding: 2px 0 10px 0;
+                font-family: 'Georgia';
+                font-weight: bold;
+                text-align: center;
+                padding-bottom: 0px;
+            }
+            h4:after {
+                content: ' ';
+                display: block;
+                width: 100%;
+                height: 2px;
+                margin-top: 10px;
+                background: -moz-linear-gradient(left, rgba(147,184,189,0) 0%, rgba(147,184,189,0.8) 20%, rgba(147,184,189,1) 53%, rgba(147,184,189,0.8) 79%, rgba(147,184,189,0) 100%);
+                background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(147,184,189,0)), color-stop(20%,rgba(147,184,189,0.8)), color-stop(53%,rgba(147,184,189,1)), color-stop(79%,rgba(147,184,189,0.8)), color-stop(100%,rgba(147,184,189,0)));
+                background: -webkit-linear-gradient(left, rgba(147,184,189,0) 0%,rgba(147,184,189,0.8) 20%,rgba(147,184,189,1) 53%,rgba(147,184,189,0.8) 79%,rgba(147,184,189,0) 100%);
+                background: -o-linear-gradient(left, rgba(147,184,189,0) 0%,rgba(147,184,189,0.8) 20%,rgba(147,184,189,1) 53%,rgba(147,184,189,0.8) 79%,rgba(147,184,189,0) 100%);
+                background: -ms-linear-gradient(left, rgba(147,184,189,0) 0%,rgba(147,184,189,0.8) 20%,rgba(147,184,189,1) 53%,rgba(147,184,189,0.8) 79%,rgba(147,184,189,0) 100%);
+                background: linear-gradient(left, rgba(147,184,189,0) 0%,rgba(147,184,189,0.8) 20%,rgba(147,184,189,1) 53%,rgba(147,184,189,0.8) 79%,rgba(147,184,189,0) 100%);
+            }
+            a {
+                display: inline-block;
+                font-weight: bold;
+                background: rgb(247, 248, 241);
+                padding: 0px 6px;
+                color: rgb(29, 162, 193);
+                margin-left: 10px;
+                text-decoration: none;
+                -webkit-border-radius: 4px;
+                -moz-border-radius: 4px;
+                border-radius: 4px;
+                border: 1px solid rgb(203, 213, 214);
+                -webkit-transition: all 0.4s linear;
+                -moz-transition: all 0.4s linear;
+                -o-transition: all 0.4s linear;
+                -ms-transition: all 0.4s linear;
+                transition: all 0.4s linear;
+                font-family: 'Georgia';
+            }
+            p.button input{
+                width: 30%;
+                cursor: pointer;
+                background: rgb(61, 157, 179);
+                padding: 2px 0px;
+                font-family: 'Georgia';
+                color: #fff;
+                font-size: 15px;
+                border: 1px solid rgb(28, 108, 122);
+                margin-bottom: 10px;
+                text-shadow: 0 1px 1px rgb(0 0 0 / 50%);
+                -webkit-border-radius: 3px;
+                -moz-border-radius: 3px;
+                border-radius: 3px;
+                -webkit-box-shadow: 0px 1px 6px 4px rgb(0 0 0 / 7%) inset, 0px 0px 0px 3px rgb(254 254 254), 0px 5px 3px 3px rgb(210 210 210);
+                -moz-box-shadow: 0px 1px 6px 4px rgba(0, 0, 0, 0.07) inset, 0px 0px 0px 3px rgb(254, 254, 254), 0px 5px 3px 3px rgb(210, 210, 210);
+                box-shadow: 0px 1px 6px 4px rgb(0 0 0 / 7%) inset, 0px 0px 0px 3px rgb(254 254 254), 0px 5px 3px 3px rgb(210 210 210);
+                -webkit-transition: all 0.2s linear;
+                -moz-transition: all 0.2s linear;
+                -o-transition: all 0.2s linear;
+                transition: all 0.2s linear;
+            }
+        </style>
     </head>
     <body>
     <header>
@@ -40,91 +104,114 @@
     </header>
     <br>
     <hr>
-        <div class="content">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-7">
-                        <img src="{% static 'assets/img/background1.jpg' %}" alt="Image" class="img-fluid">
-                    </div>
-                    <div class="col-md-5 contents">
-                        <div class="row justify-content-center">
-                            <div class="col-md-9">
-                                <section>
-                                    <div id="container_demo">
-                                        <!-- hidden anchor to stop jump http://www.css3create.com/Astuce-Empecher-le-scroll-avec-l-utilisation-de-target#wrap4  -->
-                                        <a class="hiddenanchor" id="toregister"></a>
-                                        <a class="hiddenanchor" id="tologin"></a>
-                                        <div id="wrapper">
-                                            <div id="login" class="animate form">
-                                                <form action="{% url 'login' %}" id="loginForm" method="post">
-                                                    {% csrf_token %}
-                                                    <h1>Log in</h1>
-                                                    {% if message %}
-                                                        <div class="alert alert-danger" id="login_error">{{ message }}</div>
-                                                    {% endif %}
-                                                    <div class="form-group">
-                                                        <input id="emailsignup" name="username" required="required" type="email" placeholder="Your Email" autocomplete="off">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <input id="password" name="password" required="required" type="password" placeholder="Your Password" autocomplete="off"/>
-                                                    </div>
-                                                    <p class="login button">
-                                                        <input type="submit" value="Login" />
-                                                    </p>
-                                                    <p class="change_link">
-                                                        <a href="{% url 'register' %}" class="to_register">Client Register</a>
-                                                        <a href="#toregister" class="to_register">Forgot Password ?</a>
-                                                    </p>
-                                                </form>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-7">
+                <img src="{% static 'assets/img/background1.jpg' %}" alt="Image" class="img-fluid">
+            </div>
+            <div class="col-md-5  mt-2">
+                <div class="row justify-content-center">
+                    <div class="card" style="width: 30rem;">
+                        <div class="card-body">
+                            <div id="to_login" class="animate form">
+                                <form action="{% url 'login' %}" id="loginForm" method="post">
+                                    {% csrf_token %}
+                                    <h4>Login</h4>
+                                    {% if message %}
+                                        <div class="alert alert-danger" id="login_error">{{ message }}</div>
+                                    {% endif %}
+                                    <div class="col-md-12">
+                                        <div class="row mt-2">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <input type="email" class="form-control" id="username" name="username" placeholder="Your Email" autocomplete="off" required="required">
+                                                </div>
                                             </div>
-                                            <div id="register" class="animate form">
-                                                <form method="post" id="forgot_password_form">
-                                                    {% csrf_token %}
-                                                    <h1> Forgot Password </h1>
-                                                        <div class="form-group">
-                                                            <input name="email" id="email" required="required" placeholder="Your Email" type="text" onchange="validateemailId(this.value)" onblur="getSecurityQuestion(this.value)"/>
-                                                        </div>
-                                                        <div class="alert" id="emailErrorMsg" style="display:none"></div>
-                                                        <div class="form-group">
-                                                            <select name="security" id="security" onchange="getAnswer(this.value)">
-                                                                <option value="">SELECT SECURITY QUESTION</option>
-                                                                {% for security in security %}
-                                                                    <option value="{{ security.Question_Id }}">{{ security.Question }}</option>
-                                                                {% endfor %}
-                                                            </select>
-                                                        </div>
-                                                        <div class="alert" id="securityErrorMsg" style="display:none"></div>
-                                                        <div class="form-group">
-                                                            <input id="answer" name="answer" required="required"  placeholder="Security Answer" type="text" />
-                                                            <input type="hidden" class="form-control form-control-md" id="securityAnswer">
-                                                        </div>
-                                                        <div class="alert" id="AnswerErrorMsg" style="display:none"></div>
-                                                    <div id="sucessMsg" class="alert alert-info" role="alert" style="display:none;">
-                                                        Your password was successfully reset..Please Check Your Email
-                                                    </div>
-                                                    <p class="signin button">
-                                                        <input type="button" id="submit_button" value="Submit"  onclick="update_password()"/>
-                                                    </p>
-                                                    <p class="change_link">
-                                                        Already a member ?
-                                                        <a href="#tologin" class="to_register"> Go and log in </a>
-                                                    </p>
-                                                </form>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <input type="password" class="form-control" id="password" name="password"  placeholder="Your Password" autocomplete="off" required="required">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-action">
+                                            <p class="login button">
+                                                <input type="submit" value="Login">
+                                            </p>
+                                            <hr>
+                                            <div class="row float-right">
+                                                <a href="{% url 'register' %}" class="to_register">Client Register</a>&nbsp;&nbsp;
+                                                <a href="#" class="to_register" onclick="to_register_div()">Forgot Password ?</a>
                                             </div>
                                         </div>
                                     </div>
-                                </section>
+                                </form>
                             </div>
+                            <div id="to_register" class="animate form" style="display:none">
+                                <form action="{% url 'login' %}" id="forgot_password_form" method="post">
+                                    {% csrf_token %}
+                                    <h4>Forgot Password</h4>
+
+                                    <div class="col-md-12">
+                                        <div class="row mt-2">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <input type="email" name="email" class="form-control" id="email" required="required" placeholder="Your Email"  onchange="validateemailId(this.value)" onblur="getSecurityQuestion(this.value)"/>
+                                                </div>
+                                                <div class="alert" id="emailErrorMsg" style="display:none"></div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <select class="form-control" name="security" id="security" onchange="getAnswer(this.value)">
+                                                        <option value="">SELECT SECURITY QUESTION</option>
+                                                        {% for security in security %}
+                                                            <option value="{{ security.Question_Id }}">{{ security.Question }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div class="alert" id="securityErrorMsg" style="display:none"></div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <input id="answer" name="answer"  class="form-control" required="required"  placeholder="Security Answer" type="text" />
+                                                    <input type="hidden" class="form-control form-control-md" id="securityAnswer">
+                                                </div>
+                                                <div class="alert" id="AnswerErrorMsg" style="display:none"></div>
+                                            </div>
+                                        </div>
+                                        <div id="sucessMsg" class="alert alert-success" role="alert" style="display:none;">
+                                            Your password was successfully reset..Please Check Your Email
+                                        </div>
+                                        <div class="card-action">
+                                            <p class="signin button">
+                                                <input type="button" id="submit_button" value="Submit"  onclick="update_password()"/>
+                                            </p>
+                                            <hr>
+                                            <div class="row float-right">
+                                                Already a member ?
+                                                <a href="#" class="to_register" onclick="to_login_div()"> Go and log in </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
                         </div>
                     </div>
                 </div>
             </div>
-            <div clas="row">
-                <div class="text-center">
-                  <p class="footer">©  BAFRA- Bhutan Biosecurity and Food Safety System (BBFSS), 2021. All Rights Reserved.</p>
-                </div>
-            </div>
         </div>
+    </div>
+    <div clas="row">
+        <div class="text-center">
+          <p class="footer">©  BAFRA- Bhutan Biosecurity and Food Safety System (BBFSS), 2021. All Rights Reserved.</p>
+        </div>
+    </div>
 
     </body>
 </html>
@@ -283,5 +370,17 @@ function update_password()
                 $('#securityAnswer').val(data.answer);
             }
         });
+    }
+
+    function to_register_div()
+    {
+        $('#to_register').show();
+        $('#to_login').hide();
+    }
+
+    function to_login_div()
+    {
+        $('#to_register').hide();
+        $('#to_login').show();
     }
 </script>

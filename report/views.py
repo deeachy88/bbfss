@@ -141,3 +141,4 @@ def view_revenue_list(request):
         return render(request, 'revenue_report.html', {'revenue_details': revenue_details,
                                                        'service_details': service_details,
                                                        'workflow_details': workflow_details})
+

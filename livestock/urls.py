@@ -159,7 +159,7 @@ urlpatterns = [
 
     # Common
     path('delete_observation', views.delete_observation, name='delete_observation'),
-    path('update_decision', views.update_decision, name='update_decision')
+    path('update_decision', views.update_decision, name='update_decision'),
 
 ]
 if settings.DEBUG:

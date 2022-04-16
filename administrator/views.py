@@ -28,6 +28,7 @@ from administrator.models import t_user_master, t_security_question_master, t_ro
     t_livestock_species_breed_master, t_livestock_product_master, t_unit_master, t_food_product_category_master
 
 from bbfss import settings
+from food.models import t_food_licensing_food_handler_t1
 from plant.models import t_payment_details, t_workflow_details, t_file_attachment
 from random import randint
 
@@ -53,108 +54,145 @@ def dashboard(request):
             for id_section in section_details:
                 section_name = id_section.Section_Name
                 message_count = (t_workflow_details.objects.filter(
-                    Assigned_Role_Id=Role_Id, Section=section_name,
-                    Action_Date__isnull=False, Application_Status='P') | t_workflow_details.objects.filter(
-                    Assigned_Role_Id=Role_Id, Section=section_name,
-                    Action_Date__isnull=False, Application_Status='ATA') | t_workflow_details.objects.filter(
-                    Assigned_Role_Id=Role_Id, Section=section_name,
-                    Action_Date__isnull=False, Application_Status='FRA') |
+                    assigned_role_id=Role_Id, section=section_name,
+                    action_date__isnull=False, application_status='P') | t_workflow_details.objects.filter(
+                    assigned_role_id=Role_Id, section=section_name,
+                    action_date__isnull=False, application_status='ATA') | t_workflow_details.objects.filter(
+                    assigned_role_id=Role_Id, section=section_name,
+                    action_date__isnull=False, application_status='FRA') |
                                  t_workflow_details.objects.filter(
-                                     Assigned_Role_Id=Role_Id, Section=section_name,
-                                     Action_Date__isnull=False, Application_Status='CA')
-                                 | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='P',
-                                                                     Action_Date__isnull=False)
-                                 | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='A',
-                                                                     Service_Code='COM')
-                                 | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP')
+                                     assigned_role_id=Role_Id, section=section_name,
+                                     action_date__isnull=False, application_status='CA')
+                                 | t_workflow_details.objects.filter(assigned_to=login_id, application_status='P',
+                                                                     action_date__isnull=False)
+                                 | t_workflow_details.objects.filter(assigned_to=login_id, application_status='A',
+                                                                     service_code='COM')
+                                 | t_workflow_details.objects.filter(assigned_to=login_id, application_status='AP')
                                  ).count()
-                return render(request, 'dashboard.html', {'count': message_count})
+                if section_name == 'Plant':
+                    # Plant Section
+                    ipp_count = t_workflow_details.objects.filter(application_status='C', service_code='IPP').count()
+                    rns_count = t_workflow_details.objects.filter(application_status='A', service_code='RNS').count()
+                    rsc_count = t_workflow_details.objects.filter(application_status='A', service_code='RSC').count()
+                    mpp_count = t_workflow_details.objects.filter(application_status='A', service_code='MPP').count()
+                    epp_count = t_workflow_details.objects.filter(application_status='A', service_code='EPP').count()
+                    return render(request, 'dashboard.html', {'count': message_count, 'ipp_count': ipp_count,
+                                                              'rns_count': rns_count, 'rsc_count': rsc_count,
+                                                              'mpp_count': mpp_count, 'epp_count': epp_count})
+                elif section_name == 'Livestock':
+                    # Livestoc Section
+                    lec_count = t_workflow_details.objects.filter(application_status='A', service_code='LEC').count()
+                    cms_count = t_workflow_details.objects.filter(application_status='A', service_code='CMS').count()
+                    lip_count = t_workflow_details.objects.filter(application_status='C', service_code='LIP').count()
+                    aip_count = t_workflow_details.objects.filter(application_status='C', service_code='AIP').count()
+                    apm_count = t_workflow_details.objects.filter(application_status='A', service_code='APM').count()
+                    lmp_count = t_workflow_details.objects.filter(application_status='A', service_code='LMP').count()
+                    return render(request, 'dashboard.html', {'count': message_count, 'lec_count': lec_count,
+                                                              'cms_count': cms_count, 'lip_count': lip_count,
+                                                              'aip_count': aip_count, 'apm_count': apm_count,
+                                                              'lmp_count': lmp_count})
+                elif section_name == 'Food':
+                    # Food Section
+                    fec_count = t_workflow_details.objects.filter(application_status='A', service_code='FEC').count()
+                    fip_count = t_workflow_details.objects.filter(application_status='C', service_code='FIP').count()
+                    fhc_count = t_food_licensing_food_handler_t1.objects.filter(fh_license_no__isnull=False).count()
+                    fbr_count = t_workflow_details.objects.filter(application_status='A', service_code='FBR').count()
+                    return render(request, 'dashboard.html', {'count': message_count, 'fec_count': fec_count,
+                                                              'fip_count': fip_count, 'fhc_count': fhc_count,
+                                                              'fbr_count': fbr_count})
+                else:
+                    # Certification Count
+                    oc_count = t_workflow_details.objects.filter(application_status='A', service_code='OC').count()
+                    gap_count = t_workflow_details.objects.filter(application_status='A', service_code='GAP').count()
+                    fpc_count = t_workflow_details.objects.filter(application_status='A', service_code='FPC').count()
+                    return render(request, 'dashboard.html', {'count': message_count, 'oc_count': oc_count,
+                                                              'gap_count': gap_count, 'fpc_count': fpc_count})
         elif Role == 'OIC':
             login_id = request.session['Login_Id']
             Field_Office_Id = request.session['field_office_id']
-            message_count = (t_workflow_details.objects.filter(Assigned_Role_Id='4', Field_Office_Id=Field_Office_Id,
-                                                               Action_Date__isnull=False) |
-                             t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                               Action_Date__isnull=False) |
-                             t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                               Action_Date__isnull=False)).count()
-            oic_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                           Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                             Application_Status='I',
-                                                             Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                             Application_Status='FI',
-                                                             Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                             Application_Status='FR',
-                                                             Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                             Application_Status='P',
-                                                             Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APA',
-                                                             Action_Date__isnull=False)
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                             Action_Date__isnull=False)).count()
-            return render(request, 'dashboard.html', {'count': message_count, 'oic_count':oic_count})
+            message_count = (t_workflow_details.objects.filter(assigned_role_id='4', field_office_id=Field_Office_Id,
+                                                               action_date__isnull=False) |
+                             t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCF',
+                                                               action_date__isnull=False) |
+                             t_workflow_details.objects.filter(assigned_to=login_id, application_status='AP',
+                                                               action_date__isnull=False)).count()
+            oic_count = (t_workflow_details.objects.filter(assigned_to=login_id, application_status='AP',
+                                                           action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, field_office_id=Field_Office_Id,
+                                                             application_status='I',
+                                                             action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, field_office_id=Field_Office_Id,
+                                                             application_status='FI',
+                                                             action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, field_office_id=Field_Office_Id,
+                                                             application_status='FR',
+                                                             action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, field_office_id=Field_Office_Id,
+                                                             application_status='P',
+                                                             action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='APA',
+                                                             action_date__isnull=False)
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCF',
+                                                             action_date__isnull=False)).count()
+            return render(request, 'dashboard.html', {'count': message_count, 'oic_count': oic_count})
         elif Role == 'Inspector':
             login_id = request.session['Login_Id']
             Field_Office_Id = request.session['field_office_id']
-            message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                               Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                                 Application_Status='I',
-                                                                 Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                                 Application_Status='FI',
-                                                                 Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                                 Application_Status='FR',
-                                                                 Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                                 Application_Status='P',
-                                                                 Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APA',
-                                                                 Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                                 Action_Date__isnull=False)).count()
-            fhc_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='B',
-                                                           Action_Date__isnull=False, Service_Code='FHC') |
-                         t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='A',
-                                                           Action_Date__isnull=False, Service_Code='FHC')).count()
+            message_count = (t_workflow_details.objects.filter(assigned_to=login_id, application_status='AP',
+                                                               action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, field_office_id=Field_Office_Id,
+                                                                 application_status='I',
+                                                                 action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, field_office_id=Field_Office_Id,
+                                                                 application_status='FI',
+                                                                 action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, field_office_id=Field_Office_Id,
+                                                                 application_status='FR',
+                                                                 action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, field_office_id=Field_Office_Id,
+                                                                 application_status='P',
+                                                                 action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, application_status='APA',
+                                                                 action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCF',
+                                                                 action_date__isnull=False)).count()
+            fhc_count = (t_workflow_details.objects.filter(assigned_to=login_id, application_status='B',
+                                                           action_date__isnull=False, service_code='FHC') |
+                         t_workflow_details.objects.filter(assigned_to=login_id, application_status='A',
+                                                           action_date__isnull=False, service_code='FHC')).count()
             return render(request, 'dashboard.html', {'ins_count': message_count, 'fhc_count': fhc_count})
         elif Role == 'Complain Officer':
             login_id = request.session['Login_Id']
-            message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                               Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APA',
-                                                                 Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                                 Action_Date__isnull=False)).count()
+            message_count = (t_workflow_details.objects.filter(assigned_to=login_id, application_status='AP',
+                                                               action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, application_status='APA',
+                                                                 action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCF',
+                                                                 action_date__isnull=False)).count()
             return render(request, 'dashboard.html', {'complain_count': message_count})
         elif Role == 'Chief':
             login_id = request.session['Login_Id']
-            message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                               Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APA',
-                                                                 Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                                 Action_Date__isnull=False)).count()
+            message_count = (t_workflow_details.objects.filter(assigned_to=login_id, application_status='AP',
+                                                               action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, application_status='APA',
+                                                                 action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCF',
+                                                                 action_date__isnull=False)).count()
             return render(request, 'dashboard.html', {'chief_count': message_count})
         else:
             return render(request, 'dashboard.html')
     elif login_type == 'C':
         login_id = request.session['Login_Id']
-        message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
+        message_count = (t_workflow_details.objects.filter(assigned_to=login_id, application_status='RS')
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='IRS')
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='ATR')
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='APR')
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCR')).count()
 
-        inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
-                                                                  Action_Date__isnull=False).count()
-        consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
-                                                                   Action_Date__isnull=False, Application_Status='P') \
+        inspection_call_count = t_workflow_details.objects.filter(application_status='FR', assigned_to=login_id,
+                                                                  action_date__isnull=False).count()
+        consignment_call_count = t_workflow_details.objects.filter(assigned_to=login_id,
+                                                                   action_date__isnull=False, application_status='P') \
             .count()
         return render(request, 'dashboard.html', {'count': message_count, 'count_call': inspection_call_count,
                                                   'consignment_call_count': consignment_call_count})
@@ -1557,17 +1595,17 @@ def payment_list(request):
             for id_section in section_details:
                 section_name = id_section.Section_Name
                 message_count = (t_workflow_details.objects.filter(
-                    Assigned_Role_Id=Role_Id, Section=section_name,
-                    Action_Date__isnull=False, Application_Status='P') | t_workflow_details.objects.filter(
-                    Assigned_Role_Id=Role_Id, Section=section_name,
-                    Action_Date__isnull=False, Application_Status='ATA') | t_workflow_details.objects.filter(
-                    Assigned_Role_Id=Role_Id, Section=section_name,
-                    Action_Date__isnull=False, Application_Status='FRA') |
+                    assigned_role_id=Role_Id, section=section_name,
+                    action_date__isnull=False, application_status='P') | t_workflow_details.objects.filter(
+                    assigned_role_id=Role_Id, section=section_name,
+                    action_date__isnull=False, application_status='ATA') | t_workflow_details.objects.filter(
+                    assigned_role_id=Role_Id, section=section_name,
+                    action_date__isnull=False, application_status='FRA') |
                                  t_workflow_details.objects.filter(
-                                     Assigned_Role_Id=Role_Id, Section=section_name,
-                                     Action_Date__isnull=False, Application_Status='CA')
+                                     assigned_role_id=Role_Id, section=section_name,
+                                     action_date__isnull=False, application_status='CA')
                                  ).count()
-                application_details = t_payment_details.objects.filter(Receipt_No__isnull=True)
+                application_details = t_payment_details.objects.filter(receipt_no__isnull=True)
                 service_details = t_service_master.objects.all()
                 return render(request, 'payment_details_list.html', {'application_details': application_details,
                                                                      'service_details': service_details,
@@ -1575,11 +1613,11 @@ def payment_list(request):
         elif Role == 'OIC':
             login_id = request.session['Login_Id']
             Field_Office_Id = request.session['field_office_id']
-            message_count = (t_workflow_details.objects.filter(Assigned_Role_Id='4', Field_Office_Id=Field_Office_Id,
-                                                               Action_Date__isnull=False) |
-                             t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                               Action_Date__isnull=False)).count()
-            application_details = t_payment_details.objects.filter(Receipt_No__isnull=True)
+            message_count = (t_workflow_details.objects.filter(assigned_role_id='4', field_office_id=Field_Office_Id,
+                                                               action_date__isnull=False) |
+                             t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCF',
+                                                               action_date__isnull=False)).count()
+            application_details = t_payment_details.objects.filter(receipt_no__isnull=True)
             service_details = t_service_master.objects.all()
             return render(request, 'payment_details_list.html', {'application_details': application_details,
                                                                  'service_details': service_details,
@@ -1587,27 +1625,27 @@ def payment_list(request):
         elif Role == 'Inspector':
             login_id = request.session['Login_Id']
             Field_Office_Id = request.session['field_office_id']
-            message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                               Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                                 Application_Status='I',
-                                                                 Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                                 Application_Status='FI',
-                                                                 Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                                 Application_Status='FR',
-                                                                 Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Field_Office_Id=Field_Office_Id,
-                                                                 Application_Status='P',
-                                                                 Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APA',
-                                                                 Action_Date__isnull=False)
-                             | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCF',
-                                                                 Action_Date__isnull=False)).count()
-            fhc_count = t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='AP',
-                                                          Action_Date__isnull=False, Service_Code='FHC').count()
-            application_details = t_payment_details.objects.filter(Receipt_No__isnull=True)
+            message_count = (t_workflow_details.objects.filter(assigned_to=login_id, application_status='AP',
+                                                               action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, field_office_id=Field_Office_Id,
+                                                                 application_status='I',
+                                                                 action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, field_office_id=Field_Office_Id,
+                                                                 application_status='FI',
+                                                                 action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, field_office_id=Field_Office_Id,
+                                                                 application_status='FR',
+                                                                 action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, field_office_id=Field_Office_Id,
+                                                                 application_status='P',
+                                                                 action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, application_status='APA',
+                                                                 action_date__isnull=False)
+                             | t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCF',
+                                                                 action_date__isnull=False)).count()
+            fhc_count = t_workflow_details.objects.filter(assigned_to=login_id, application_status='AP',
+                                                          action_date__isnull=False, service_code='FHC').count()
+            application_details = t_payment_details.objects.filter(receipt_no__isnull=True)
             service_details = t_service_master.objects.all()
             return render(request, 'payment_details_list.html', {'application_details': application_details,
                                                                  'service_details': service_details,
@@ -1623,10 +1661,10 @@ def update_payment_details(request):
     Amount = request.POST.get('Amount')
     Receipt_No = request.POST.get('Receipt_No')
     Receipt_Date = request.POST.get('Receipt_Date')
-    application_details = t_payment_details.objects.filter(Application_No=Application_No)
-    application_details.update(Payment_Type=Payment_Type, Instrument_No=Instrument_No, Amount=Amount,
-                               Receipt_No=Receipt_No, Receipt_Date=Receipt_Date,
-                               Updated_By=request.session['email'], Updated_On=date.today())
+    application_details = t_payment_details.objects.filter(application_no=Application_No)
+    application_details.update(payment_type=Payment_Type, instrument_no=Instrument_No, amount=Amount,
+                               receipt_no=Receipt_No, receipt_date=Receipt_Date,
+                               updated_by=request.session['email'], updated_on=date.today())
     return redirect(payment_list)
 
 
@@ -1952,21 +1990,42 @@ def check_cid_exists(request):
     data = dict()
     cid = request.GET.get('cidNo')
     message_count = t_user_master.objects.filter(CID=cid, Login_Type='C').count()
-    data['count'] = message_count
-    header = {'Authorization': 'Bearer 18b1d996-102a-31e6-92f7-5d86debb33ee'}
-    url = 'https://staging-datahub-apim.dit.gov.bt/dcrc_citizen_details_api/1.0.0/citizendetails/' + cid
-    # params = {'cid': cid}
-    response = requests.get(url, headers=header, verify=False)
-    print(response)
-    data['response'] = response.json()
+    if message_count > 0:
+        data['count'] = message_count
+    else:
+        BASE_URL = 'https://datahub-apim.dit.gov.bt/dcrc_citizen_details_api/1.0.0/citizendetails/' + cid
+        token = get_auth_token()
+
+        headers = {'Authorization': "Bearer {}".format(token)}
+        response = requests.get(BASE_URL, headers=headers, verify=False)
+
+        data['response'] = response.json()
     return JsonResponse(data)
+
+
+def get_auth_token():
+    """
+    get an auth token
+    """
+    credentials = {'client_id': 'GJ3SJ3TIgnPGRc3YhsFG8KDlWw4a',
+                   'client_secret': 'P2Rvmzw23o37CTOfkwXQufAcCu0a',
+                   'grant_type': 'client_credentials'}
+
+    headers = {'Accept': 'application/json'}
+
+    res = requests.post('https://datahub-apim.dit.gov.bt/token', params=credentials,
+                        headers=headers, verify=False)
+
+    json = res.json()
+    return json["access_token"]
 
 
 def add_food_product_category(request):
     food_product_category_name = request.GET.get('food_product_category_name')
     t_food_product_category_master.objects.create(Food_Product_Category_Name=food_product_category_name)
     food_product_category_list = t_food_product_category_master.objects.all().order_by('Food_Product_Category_Id')
-    return render(request,'food_product_category_master.html', {'food_product_category_list': food_product_category_list})
+    return render(request, 'food_product_category_master.html',
+                  {'food_product_category_list': food_product_category_list})
 
 
 def update_food_product_category(request):
@@ -1976,7 +2035,8 @@ def update_food_product_category(request):
         Food_Product_Category_Id=food_product_category_id)
     food_product_category_list.update(Food_Product_Category_Name=edit_food_product_category_name)
     food_product_category_list = t_food_product_category_master.objects.all().order_by('Food_Product_Category_Id')
-    return render(request,'food_product_category_master.html', {'food_product_category_list': food_product_category_list})
+    return render(request, 'food_product_category_master.html',
+                  {'food_product_category_list': food_product_category_list})
 
 
 def delete_food_product_category(request):
@@ -1985,9 +2045,11 @@ def delete_food_product_category(request):
         Food_Product_Category_Id=food_product_category_id)
     food_product_category_list.delete()
     food_product_category_list = t_food_product_category_master.objects.all().order_by('Food_Product_Category_Id')
-    return render(request,'food_product_category_master.html', {'food_product_category_list': food_product_category_list})
+    return render(request, 'food_product_category_master.html',
+                  {'food_product_category_list': food_product_category_list})
 
 
 def food_product_category_master(request):
     food_product_category_list = t_food_product_category_master.objects.all().order_by('Food_Product_Category_Id')
-    return render(request,'food_product_category_master.html', {'food_product_category_list': food_product_category_list})
+    return render(request, 'food_product_category_master.html',
+                  {'food_product_category_list': food_product_category_list})

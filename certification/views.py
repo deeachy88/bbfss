@@ -41,16 +41,16 @@ def organic_certificate(request):
         field_office = t_field_office_master.objects.all()
         location = t_location_field_office_mapping.objects.all()
         unit = t_unit_master.objects.filter(Unit_Type='S')
-        message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
+        message_count = (t_workflow_details.objects.filter(assigned_to=login_id, application_status='RS')
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='IRS')
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='ATR')
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='APR')
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCR')).count()
 
-        inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
-                                                                  Action_Date__isnull=False).count()
-        consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
-                                                                   Action_Date__isnull=False, Application_Status='P') \
+        inspection_call_count = t_workflow_details.objects.filter(application_status='FR', assigned_to=login_id,
+                                                                  action_date__isnull=False).count()
+        consignment_call_count = t_workflow_details.objects.filter(assigned_to=login_id,
+                                                                   action_date__isnull=False, application_status='P') \
             .count()
         return render(request, 'organic_certification/apply_organic_certification.html',
                       {'dzongkhag': dzongkhag, 'village': village,
@@ -167,11 +167,11 @@ def save_organic_certificate(request):
         Manager_In_Charge=management_in_charge
     )
 
-    t_workflow_details.objects.create(Application_No=organic_certificate_app_no,
-                                      Applicant_Id=request.session['email'],
-                                      Assigned_To=None, Field_Office_Id=None, Section='Certification',
-                                      Assigned_Role_Id='2', Action_Date=None, Application_Status='P',
-                                      Service_Code=service_code)
+    t_workflow_details.objects.create(application_no=organic_certificate_app_no,
+                                      applicant_id=request.session['email'],
+                                      assigned_to=None, field_office_id=None, section='Certification',
+                                      assigned_role_id='2', action_date=None, application_status='P',
+                                      service_code=service_code)
     data['Applicant_Type'] = Applicant_Type
     data['applNo'] = organic_certificate_app_no
     return JsonResponse(data)
@@ -525,9 +525,9 @@ def submit_organic_certificate(request):
         app_details.update(Others_Standards=Others_Standards)
     else:
         app_details.update(Others_Standards=None)
-    workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
-    workflow_details.update(Application_Date=date.today())
-    workflow_details.update(Action_Date=date.today())
+    workflow_details = t_workflow_details.objects.filter(application_no=application_no)
+    workflow_details.update(application_date=date.today())
+    workflow_details.update(action_date=date.today())
     return redirect(organic_certificate)
 
 
@@ -562,9 +562,9 @@ def send_for_acceptance(request):
     app_details.update(Audit_Team_Leader=audit_team_leader)
     app_details.update(Audit_Date=audit_date)
     app_details.update(Audit_Plan_Type=audit_type)
-    workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
-    workflow_details.update(Assigned_Role_Id=None)
-    workflow_details.update(Application_Status='ATR')
+    workflow_details = t_workflow_details.objects.filter(application_no=application_no)
+    workflow_details.update(assigned_role_id=None)
+    workflow_details.update(application_status='ATR')
     for email_id in workflow_details:
         email = email_id.Applicant_Id
         user_details = t_user_master.objects.filter(Email_Id=email)
@@ -581,18 +581,18 @@ def accept_reject_audit_team(request):
     app_details = t_certification_organic_t1.objects.filter(Application_No=application_no)
     app_details.update(Audit_Team_Acceptance=acceptance)
     app_details.update(Audit_Team_Acceptance_Remarks=remarks)
-    workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
-    workflow_details.update(Assigned_Role_Id='2')
-    workflow_details.update(Action_Date=date.today())
+    workflow_details = t_workflow_details.objects.filter(application_no=application_no)
+    workflow_details.update(assigned_role_id='2')
+    workflow_details.update(action_date=date.today())
 
 
 def forward_application_team_leader(request):
     application_no = request.GET.get('application_id')
     remarks = request.GET.get('remarks')
     team_leader = request.GET.get('audit_team_leader')
-    workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
-    workflow_details.update(Application_Status='AP')
-    workflow_details.update(Assigned_Role_Id=None)
+    workflow_details = t_workflow_details.objects.filter(application_no=application_no)
+    workflow_details.update(application_status='AP')
+    workflow_details.update(assigned_role_id=None)
     app_details = t_certification_organic_t1.objects.filter(Application_No=application_no)
     app_details.update(FO_Remarks=remarks)
     workflow_details.update(Assigned_To=team_leader)
@@ -604,10 +604,10 @@ def approve_application(request):
     remarks = request.POST.get('remarks')
     app_details = t_certification_organic_t1.objects.filter(Application_No=application_no)
     app_details.update(FO_Remarks=remarks)
-    workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
-    workflow_details.update(Assigned_Role_Id='2')
-    workflow_details.update(Application_Status='FP')
-    workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
+    workflow_details = t_workflow_details.objects.filter(application_no=application_no)
+    workflow_details.update(assigned_role_id='2')
+    workflow_details.update(application_status='FP')
+    workflow_details = t_workflow_details.objects.filter(application_no=application_no)
     return render(request, 'inspector_pending_list.html', {'application_details': workflow_details})
 
 
@@ -661,9 +661,9 @@ def approve_leader_application(request):
     app_details.update(Audit_Findings_Others=Audit_Findings_Others)
     app_details.update(Audit_Type=Audit_Type)
     app_details.update(Audit_Date=Audit_Date)
-    workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
-    workflow_details.update(Assigned_Role_Id=None)
-    workflow_details.update(Application_Status='AA')
+    workflow_details = t_workflow_details.objects.filter(application_no=application_no)
+    workflow_details.update(assigned_role_id=None)
+    workflow_details.update(application_status='AA')
     for email_id in workflow_details:
         email = email_id.Applicant_Id
         user_details = t_user_master.objects.filter(Email_Id=email)
@@ -677,9 +677,9 @@ def approve_leader_application(request):
 def send_audit_plan_acceptance(request):
     application_no = request.GET.get('application_no')
 
-    workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
-    workflow_details.update(Assigned_Role_Id=None)
-    workflow_details.update(Application_Status='AA')
+    workflow_details = t_workflow_details.objects.filter(application_no=application_no)
+    workflow_details.update(assigned_role_id=None)
+    workflow_details.update(application_status='AA')
     for email_id in workflow_details:
         email = email_id.Applicant_Id
         user_details = t_user_master.objects.filter(Email_Id=email)
@@ -693,9 +693,9 @@ def send_audit_plan_resubmit(request):
     application_no = request.GET.get('application_no')
     app_details = t_certification_organic_t1.objects.filter(Application_No=application_no)
     app_details.update(Audit_Plan_Acceptance='A')
-    workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
-    workflow_details.update(Assigned_Role_Id=None)
-    workflow_details.update(Application_Status='APA')
+    workflow_details = t_workflow_details.objects.filter(application_no=application_no)
+    workflow_details.update(assigned_role_id=None)
+    workflow_details.update(application_status='APA')
     if Role_Id == '2':
         return redirect(focal_officer_application)
     if Role_Id == '3':
@@ -751,10 +751,10 @@ def audit_team_accept(request):
     details = t_certification_organic_t1.objects.filter(Application_No=application_no)
     details.update(Audit_Team_Acceptance_Remarks=remarks)
     details.update(Audit_Team_Acceptance=acceptance)
-    workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
-    workflow_details.update(Assigned_To=None)
-    workflow_details.update(Assigned_Role_Id='2')
-    workflow_details.update(Application_Status='ATA')
+    workflow_details = t_workflow_details.objects.filter(application_no=application_no)
+    workflow_details.update(assigned_to=None)
+    workflow_details.update(assigned_role_id='2')
+    workflow_details.update(application_status='ATA')
     return redirect(resubmit_application)
 
 
@@ -774,9 +774,9 @@ def approve_oc_application(request):
     d = timedelta(days=int(validity))
     validity_date = date.today() + d
     details.update(Validity=validity_date)
-    application_details = t_workflow_details.objects.filter(Application_No=application_id)
-    application_details.update(Action_Date=date.today())
-    application_details.update(Application_Status='A')
+    application_details = t_workflow_details.objects.filter(application_no=application_id)
+    application_details.update(action_date=date.today())
+    application_details.update(application_status='A')
     # update_payment(application_id, Certificate_No, 'OC', validity_date)
     for email_id in details:
         emailId = email_id.Email
@@ -822,11 +822,11 @@ def oc_application_team_leader(request):
     details = t_certification_organic_t1.objects.filter(Application_No=application_no)
     details.update(Audit_Plan_Acceptance_Remarks=remarks)
     details.update(Audit_Plan_Acceptance=acceptance)
-    workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
-    workflow_details.update(Assigned_To=team_leader)
-    workflow_details.update(Assigned_Role_Id=None)
-    workflow_details.update(Application_Status='APA')
-    workflow_details.update(Action_Date=date.today())
+    workflow_details = t_workflow_details.objects.filter(application_no=application_no)
+    workflow_details.update(assigned_to=team_leader)
+    workflow_details.update(assigned_role_id=None)
+    workflow_details.update(application_status='APA')
+    workflow_details.update(action_date=date.today())
     return redirect(resubmit_application)
 
 
@@ -921,9 +921,9 @@ def resubmit_oc_nc_details(request):
     app_details.update(Audit_Findings_Group_Requirement_Observations=Audit_Findings_Group_Requirement_O)
     app_details.update(Audit_Findings_Others_Observations=Audit_Findings_Others_O)
 
-    workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
-    workflow_details.update(Assigned_Role_Id=None)
-    workflow_details.update(Application_Status='NCR')
+    workflow_details = t_workflow_details.objects.filter(application_no=application_no)
+    workflow_details.update(assigned_role_id=None)
+    workflow_details.update(application_status='NCR')
     for email_id in workflow_details:
         email = email_id.Applicant_Id
         user_details = t_user_master.objects.filter(Email_Id=email)
@@ -974,10 +974,10 @@ def oc_nc_response(request):
     nc_details = t_certification_organic_t1.objects.filter(Application_No=application_no)
     nc_details.update(Corrective_Action_Taken_Auditee=action_taken)
     nc_details.update(Corrective_Action_Date=Corrective_Action_Date)
-    details = t_workflow_details.objects.filter(Application_No=application_no)
-    details.update(Assigned_To=Team_Leader)
-    details.update(Action_Date=date.today())
-    details.update(Application_Status='NCF')
+    details = t_workflow_details.objects.filter(application_no=application_no)
+    details.update(assigned_to=Team_Leader)
+    details.update(action_date=date.today())
+    details.update(application_status='NCF')
     return redirect(resubmit_application)
 
 
@@ -996,16 +996,16 @@ def gap_certificate(request):
         field_office = t_field_office_master.objects.all()
         location = t_location_field_office_mapping.objects.all()
         unit = t_unit_master.objects.filter(Unit_Type='S')
-        message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
+        message_count = (t_workflow_details.objects.filter(assigned_to=login_id, application_status='RS')
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='IRS')
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='ATR')
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='APR')
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCR')).count()
 
-        inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
-                                                                  Action_Date__isnull=False).count()
-        consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
-                                                                   Action_Date__isnull=False, Application_Status='P') \
+        inspection_call_count = t_workflow_details.objects.filter(application_status='FR', assigned_to=login_id,
+                                                                  action_date__isnull=False).count()
+        consignment_call_count = t_workflow_details.objects.filter(assigned_to=login_id,
+                                                                   action_date__isnull=False, application_status='P') \
             .count()
         return render(request, 'GAP_Certification/apply_gap_certification.html',
                       {'dzongkhag': dzongkhag, 'village': village,
@@ -1111,11 +1111,11 @@ def save_gap_certificate(request):
         Others_Standards=None,
         Terms_Standards=None
     )
-    t_workflow_details.objects.create(Application_No=gap_certificate_app_no,
-                                      Applicant_Id=request.session['email'],
-                                      Assigned_To=None, Field_Office_Id=None, Section='Certification',
-                                      Assigned_Role_Id='2', Action_Date=None, Application_Status='P',
-                                      Service_Code=service_code)
+    t_workflow_details.objects.create(application_no=gap_certificate_app_no,
+                                      applicant_id=request.session['email'],
+                                      assigned_to=None, field_office_id=None, section='Certification',
+                                      assigned_role_id='2', action_date=None, application_status='P',
+                                      service_code=service_code)
     data['Applicant_Type'] = Applicant_Type
     data['applNo'] = gap_certificate_app_no
     return JsonResponse(data)
@@ -1400,9 +1400,9 @@ def submit_gap_certificate(request):
         app_details.update(Others_Standards=Others_Standards)
     else:
         app_details.update(Others_Standards=None)
-    workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
-    workflow_details.update(Application_Date=date.today())
-    workflow_details.update(Action_Date=date.today())
+    workflow_details = t_workflow_details.objects.filter(application_no=application_no)
+    app_details.update(Application_Date=date.today())
+    workflow_details.update(action_date=date.today())
     return redirect(gap_certificate)
 
 
@@ -1418,9 +1418,9 @@ def gap_for_acceptance(request):
     app_details.update(Audit_Team_Leader=audit_team_leader)
     app_details.update(Audit_Date=audit_date)
     app_details.update(Audit_Plan_Type=audit_type)
-    workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
-    workflow_details.update(Assigned_Role_Id=None)
-    workflow_details.update(Application_Status='ATR')
+    workflow_details = t_workflow_details.objects.filter(application_no=application_no)
+    workflow_details.update(assigned_role_id=None)
+    workflow_details.update(application_status='ATR')
     for email_id in workflow_details:
         email = email_id.Applicant_Id
         user_details = t_user_master.objects.filter(Email_Id=email)
@@ -1434,9 +1434,9 @@ def gap_application_team_leader(request):
     application_no = request.GET.get('application_id')
     remarks = request.GET.get('remarks')
     team_leader = request.GET.get('audit_team_leader')
-    workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
-    workflow_details.update(Application_Status='AP')
-    workflow_details.update(Assigned_Role_Id=None)
+    workflow_details = t_workflow_details.objects.filter(application_no=application_no)
+    workflow_details.update(application_status='AP')
+    workflow_details.update(assigned_role_id=None)
     app_details = t_certification_gap_t1.objects.filter(Application_No=application_no)
     app_details.update(FO_Remarks=remarks)
     workflow_details.update(Assigned_To=team_leader)
@@ -1451,11 +1451,11 @@ def gap_audit_team_accept(request):
     details = t_certification_gap_t1.objects.filter(Application_No=application_no)
     details.update(Audit_Team_Acceptance_Remarks=remarks)
     details.update(Audit_Team_Acceptance=acceptance)
-    workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
-    workflow_details.update(Assigned_To=None)
-    workflow_details.update(Assigned_Role_Id='2')
-    workflow_details.update(Application_Status='ATA')
-    workflow_details.update(Action_Date=date.today())
+    workflow_details = t_workflow_details.objects.filter(application_no=application_no)
+    workflow_details.update(assigned_to=None)
+    workflow_details.update(assigned_role_id='2')
+    workflow_details.update(application_status='ATA')
+    workflow_details.update(action_date=date.today())
     return redirect(resubmit_application)
 
 
@@ -1481,11 +1481,11 @@ def gap_audit_plan_acceptance(request):
     details = t_certification_gap_t1.objects.filter(Application_No=application_no)
     details.update(Audit_Plan_Acceptance_Remarks=remarks)
     details.update(Audit_Plan_Acceptance=acceptance)
-    workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
-    workflow_details.update(Assigned_To=team_leader)
-    workflow_details.update(Assigned_Role_Id=None)
-    workflow_details.update(Application_Status='APA')
-    workflow_details.update(Action_Date=date.today())
+    workflow_details = t_workflow_details.objects.filter(application_no=application_no)
+    workflow_details.update(assigned_to=team_leader)
+    workflow_details.update(assigned_role_id=None)
+    workflow_details.update(application_status='APA')
+    workflow_details.update(action_date=date.today())
     return redirect(resubmit_application)
 
 
@@ -1494,8 +1494,8 @@ def gap_audit_plan_resubmit(request):
     application_no = request.GET.get('application_no')
     app_details = t_certification_gap_t1.objects.filter(Application_No=application_no)
     app_details.update(Audit_Plan_Acceptance='A')
-    workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
-    workflow_details.update(Application_Status='APA')
+    workflow_details = t_workflow_details.objects.filter(application_no=application_no)
+    workflow_details.update(application_status='APA')
     if Role_Id == '2':
         return redirect(focal_officer_application)
     if Role_Id == '3':
@@ -1569,9 +1569,9 @@ def resubmit_nc_details(request):
     app_details.update(Audit_Findings_Others_Observations=Audit_Findings_Others_O)
     app_details.update(Audit_Type=Audit_Type)
     app_details.update(Audit_Date=audit_date)
-    workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
-    workflow_details.update(Assigned_Role_Id=None)
-    workflow_details.update(Application_Status='NCR')
+    workflow_details = t_workflow_details.objects.filter(application_no=application_no)
+    workflow_details.update(assigned_role_id=None)
+    workflow_details.update(application_status='NCR')
     for email_id in workflow_details:
         email = email_id.Applicant_Id
         user_details = t_user_master.objects.filter(Email_Id=email)
@@ -1694,11 +1694,11 @@ def forward_application_head_office(request):
     app_details.update(Audit_Findings_Worker_Health_Observations=Audit_Findings_Worker_Health_O)
     app_details.update(Audit_Findings_Group_Requirement_Observations=Audit_Findings_Group_Requirement_O)
     app_details.update(Audit_Findings_Others_Observations=Audit_Findings_Others_O)
-    details = t_workflow_details.objects.filter(Application_No=application_no)
-    details.update(Assigned_To=None)
-    details.update(Assigned_Role_Id='2')
-    details.update(Action_Date=date.today())
-    details.update(Application_Status='CA')
+    details = t_workflow_details.objects.filter(application_no=application_no)
+    details.update(assigned_to=None)
+    details.update(assigned_role_id='2')
+    details.update(action_date=date.today())
+    details.update(application_status='CA')
     if Role_Id == '2':
         return redirect(focal_officer_application)
     if Role_Id == '3':
@@ -1719,10 +1719,10 @@ def gap_nc_response(request):
     nc_details = t_certification_gap_t1.objects.filter(Application_No=application_no)
     nc_details.update(Corrective_Action_Taken_Auditee=action_taken)
     nc_details.update(Corrective_Action_Date=date_action)
-    details = t_workflow_details.objects.filter(Application_No=application_no)
-    details.update(Assigned_To=Team_Leader)
-    details.update(Action_Date=date.today())
-    details.update(Application_Status='NCF')
+    details = t_workflow_details.objects.filter(application_no=application_no)
+    details.update(assigned_to=Team_Leader)
+    details.update(action_date=date.today())
+    details.update(application_status='NCF')
     return redirect(resubmit_application)
 
 
@@ -1744,9 +1744,9 @@ def approve_gap_application(request):
     d = timedelta(days=int(validity))
     validity_date = date.today() + d
     details.update(Validity=validity_date)
-    application_details = t_workflow_details.objects.filter(Application_No=application_id)
-    application_details.update(Action_Date=date.today())
-    application_details.update(Application_Status='A')
+    application_details = t_workflow_details.objects.filter(application_no=application_id)
+    application_details.update(action_date=date.today())
+    application_details.update(application_status='A')
     # update_payment(application_id, certificate_no, 'GAP', validity_date)
     for email_id in details:
         emailId = email_id.Email
@@ -1798,16 +1798,16 @@ def food_product_certificate(request):
         field_office = t_field_office_master.objects.all()
         location = t_location_field_office_mapping.objects.all()
         unit = t_unit_master.objects.filter(Unit_Type='S')
-        message_count = (t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='RS')
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='IRS')
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='ATR')
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='APR')
-                         | t_workflow_details.objects.filter(Assigned_To=login_id, Application_Status='NCR')).count()
+        message_count = (t_workflow_details.objects.filter(assigned_to=login_id, application_status='RS')
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='IRS')
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='ATR')
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='APR')
+                         | t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCR')).count()
 
-        inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=login_id,
-                                                                  Action_Date__isnull=False).count()
-        consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
-                                                                   Action_Date__isnull=False, Application_Status='P') \
+        inspection_call_count = t_workflow_details.objects.filter(application_status='FR', assigned_to=login_id,
+                                                                  action_date__isnull=False).count()
+        consignment_call_count = t_workflow_details.objects.filter(assigned_to=login_id,
+                                                                   action_date__isnull=False, application_status='P') \
             .count()
         return render(request, 'food_product_certification/apply_food_product_certification.html',
                       {'dzongkhag': dzongkhag, 'village': village,
@@ -1973,11 +1973,11 @@ def save_food_product_certificate(request):
         Gewog_Code=gewog,
         Village_Code=village
     )
-    t_workflow_details.objects.create(Application_No=food_product_certificate_app_no,
-                                      Applicant_Id=request.session['email'],
-                                      Assigned_To=None, Field_Office_Id=None, Section='Certification',
-                                      Assigned_Role_Id='2', Action_Date=None, Application_Status='P',
-                                      Service_Code=service_code)
+    t_workflow_details.objects.create(application_no=food_product_certificate_app_no,
+                                      applicant_id=request.session['email'],
+                                      assigned_to=None, field_office_id=None, section='Certification',
+                                      assigned_role_id='2', action_date=None, application_status='P',
+                                      service_code=service_code)
 
     data['applNo'] = food_product_certificate_app_no
     return JsonResponse(data)
@@ -2078,21 +2078,19 @@ def submit_food_product_certificate(request):
     Standards = request.POST.get('Standard')
     Others_Standards = request.POST.get('other_standard')
 
-    workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
-    workflow_details.update(Action_Date=date.today())
+    workflow_details = t_workflow_details.objects.filter(application_no=application_no)
+    workflow_details.update(action_date=date.today())
     app_details = t_certification_organic_t1.objects.filter(Application_No=application_no)
     app_details.update(Terms_Bafra_Certification=Terms_Bafra_Certification)
     app_details.update(Terms_Change_Willingness=Terms_Change_Willingness)
     app_details.update(Terms_Abide=Terms_Abide)
     app_details.update(Terms_Agreement=Terms_Agreement)
     app_details.update(Terms_Standards=Standards)
+    app_details.update(Application_Date=date.today())
     if Others_Standards is not None:
         app_details.update(Others_Standards=Others_Standards)
     else:
         app_details.update(Others_Standards=None)
-    workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
-    workflow_details.update(Application_Date=date.today())
-    workflow_details.update(Action_Date=date.today())
     return redirect(food_product_certificate)
 
 
@@ -2123,15 +2121,15 @@ def fpc_for_acceptance(request):
     app_details.update(Audit_Team_Leader=audit_team_leader)
     app_details.update(Audit_Date=audit_date)
     app_details.update(Audit_Plan_Type=audit_type)
-    workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
-    workflow_details.update(Assigned_Role_Id=None)
-    workflow_details.update(Application_Status='ATR')
+    workflow_details = t_workflow_details.objects.filter(application_no=application_no)
+    workflow_details.update(assigned_role_id=None)
+    workflow_details.update(application_status='ATR')
     for email_id in workflow_details:
         email = email_id.Applicant_Id
         user_details = t_user_master.objects.filter(Email_Id=email)
         for user in user_details:
             login = user.Login_Id
-            workflow_details.update(Assigned_To=login)
+            workflow_details.update(assigned_to=login)
     return redirect(focal_officer_application)
 
 
@@ -2139,12 +2137,12 @@ def fpc_application_team_leader(request):
     application_no = request.GET.get('application_id')
     remarks = request.GET.get('remarks')
     team_leader = request.GET.get('audit_team_leader')
-    workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
-    workflow_details.update(Application_Status='AP')
-    workflow_details.update(Assigned_Role_Id=None)
+    workflow_details = t_workflow_details.objects.filter(application_no=application_no)
+    workflow_details.update(application_status='AP')
+    workflow_details.update(assigned_role_id=None)
     app_details = t_certification_food_t1.objects.filter(Application_No=application_no)
     app_details.update(FO_Remarks=remarks)
-    workflow_details.update(Assigned_To=team_leader)
+    workflow_details.update(assigned_to=team_leader)
     return redirect(focal_officer_application)
 
 
@@ -2156,10 +2154,10 @@ def fpc_audit_team_accept(request):
     details = t_certification_food_t1.objects.filter(Application_No=application_no)
     details.update(Audit_Team_Acceptance_Remarks=remarks)
     details.update(Audit_Team_Acceptance=acceptance)
-    workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
-    workflow_details.update(Assigned_To=None)
-    workflow_details.update(Assigned_Role_Id='2')
-    workflow_details.update(Application_Status='ATA')
+    workflow_details = t_workflow_details.objects.filter(application_no=application_no)
+    workflow_details.update(assigned_to=None)
+    workflow_details.update(assigned_role_id='2')
+    workflow_details.update(application_status='ATA')
     return redirect(dashboard)
 
 
@@ -2185,11 +2183,11 @@ def fpc_audit_plan_acceptance(request):
     details = t_certification_food_t1.objects.filter(Application_No=application_no)
     details.update(Audit_Plan_Acceptance_Remarks=remarks)
     details.update(Audit_Plan_Acceptance=acceptance)
-    workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
-    workflow_details.update(Assigned_To=team_leader)
-    workflow_details.update(Assigned_Role_Id=None)
-    workflow_details.update(Application_Status='APA')
-    workflow_details.update(Action_Date=date.today())
+    workflow_details = t_workflow_details.objects.filter(application_no=application_no)
+    workflow_details.update(assigned_to=team_leader)
+    workflow_details.update(assigned_role_id=None)
+    workflow_details.update(application_status='APA')
+    workflow_details.update(action_date=date.today())
     return redirect(resubmit_application)
 
 
@@ -2198,8 +2196,8 @@ def fpc_audit_plan_resubmit(request):
     application_no = request.GET.get('audit_date_application_no')
     app_details = t_certification_food_t1.objects.filter(Application_No=application_no)
     app_details.update(Audit_Plan_Acceptance='A')
-    workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
-    workflow_details.update(Application_Status='APA')
+    workflow_details = t_workflow_details.objects.filter(application_no=application_no)
+    workflow_details.update(application_status='APA')
     if Role_Id == '2':
         return redirect(focal_officer_application)
     if Role_Id == '3':
@@ -2250,9 +2248,9 @@ def approve_fpc_application(request):
     d = timedelta(days=int(validity))
     validity_date = date.today() + d
     details.update(Validity=validity_date)
-    application_details = t_workflow_details.objects.filter(Application_No=application_id)
-    application_details.update(Action_Date=date.today())
-    application_details.update(Application_Status='A')
+    application_details = t_workflow_details.objects.filter(application_no=application_id)
+    application_details.update(action_date=date.today())
+    application_details.update(application_status='A')
     # update_payment(application_id, Export_Permit_No, 'GAP', validity_date)
     for email_id in details:
         emailId = email_id.Firm_Email
@@ -2380,15 +2378,15 @@ def resubmit_fpc_nc_details(request):
     app_details.update(Audit_Findings_Worker_Health_Observations=Audit_Findings_Worker_Health_O)
     app_details.update(Audit_Findings_Group_Requirement_Observations=Audit_Findings_Group_Requirement_O)
     app_details.update(Audit_Findings_Others_Observations=Audit_Findings_Others_O)
-    workflow_details = t_workflow_details.objects.filter(Application_No=application_no)
-    workflow_details.update(Assigned_Role_Id=None)
-    workflow_details.update(Application_Status='NCR')
+    workflow_details = t_workflow_details.objects.filter(application_no=application_no)
+    workflow_details.update(assigned_role_id=None)
+    workflow_details.update(application_status='NCR')
     for email_id in workflow_details:
         email = email_id.Applicant_Id
         user_details = t_user_master.objects.filter(Email_Id=email)
         for user in user_details:
             login = user.Login_Id
-            workflow_details.update(Assigned_To=login)
+            workflow_details.update(assigned_to=login)
     if Role_Id == '2':
         return redirect(focal_officer_application)
     if Role_Id == '3':
@@ -2433,10 +2431,10 @@ def fpc_nc_response(request):
     nc_details = t_certification_food_t1.objects.filter(Application_No=application_no)
     nc_details.update(Corrective_Action_Taken_Auditee=action_taken)
     nc_details.update(Corrective_Action_Date=Corrective_Action_Date)
-    details = t_workflow_details.objects.filter(Application_No=application_no)
-    details.update(Assigned_To=Team_Leader)
-    details.update(Action_Date=date.today())
-    details.update(Application_Status='NCF')
+    details = t_workflow_details.objects.filter(application_no=application_no)
+    details.update(assigned_to=Team_Leader)
+    details.update(action_date=date.today())
+    details.update(application_status='NCF')
     return redirect(resubmit_application)
 
 
@@ -2448,23 +2446,23 @@ def certificate_pending_list(request):
     except:
         Login_Id = None
     if Login_Id:
-        application_details = t_workflow_details.objects.filter(Applicant_Id=Login_Id, Service_Code='OC',
-                                                                Action_Date__isnull=True) \
-                              | t_workflow_details.objects.filter(Applicant_Id=Login_Id, Service_Code='FPC',
-                                                                  Action_Date__isnull=True) \
-                              | t_workflow_details.objects.filter(Applicant_Id=Login_Id, Service_Code='GAP',
-                                                                  Action_Date__isnull=True)
+        application_details = t_workflow_details.objects.filter(applicant_id=Login_Id, service_code='OC',
+                                                                action_date__isnull=True) \
+                              | t_workflow_details.objects.filter(applicant_id=Login_Id, service_code='FPC',
+                                                                  action_date__isnull=True) \
+                              | t_workflow_details.objects.filter(applicant_id=Login_Id, service_code='GAP',
+                                                                  action_date__isnull=True)
         service_details = t_service_master.objects.all()
-        message_count = (t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='RS')
-                         | t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='IRS')
-                         | t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='ATR')
-                         | t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='APR')
-                         | t_workflow_details.objects.filter(Assigned_To=Login_Id, Application_Status='NCR')).count()
+        message_count = (t_workflow_details.objects.filter(assigned_to=Login_Id, application_status='RS')
+                         | t_workflow_details.objects.filter(assigned_to=Login_Id, application_status='IRS')
+                         | t_workflow_details.objects.filter(assigned_to=Login_Id, application_status='ATR')
+                         | t_workflow_details.objects.filter(assigned_to=Login_Id, application_status='APR')
+                         | t_workflow_details.objects.filter(assigned_to=Login_Id, application_status='NCR')).count()
 
-        inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', Assigned_To=Login_Id,
-                                                                  Action_Date__isnull=False).count()
-        consignment_call_count = t_workflow_details.objects.filter(Assigned_To=Login_Id,
-                                                                   Action_Date__isnull=False, Application_Status='P') \
+        inspection_call_count = t_workflow_details.objects.filter(application_status='FR', assigned_to=Login_Id,
+                                                                  action_date__isnull=False).count()
+        consignment_call_count = t_workflow_details.objects.filter(assigned_to=Login_Id,
+                                                                   action_date__isnull=False, application_status='P') \
             .count()
         return render(request, 'certification_draft_list.html', {'application_details': application_details,
                                                                  'service_details': service_details,
@@ -2865,18 +2863,18 @@ def update_gap_form(request):
 
 
 def update_payment(application_no, permit_no, service_code, validity_date):
-    t_payment_details.objects.create(Application_No=application_no,
-                                     Application_Date=date.today(),
-                                     Permit_No=permit_no,
-                                     Service_Id=service_code,
-                                     Validity=validity_date,
-                                     Payment_Type=None,
-                                     Instrument_No=None,
-                                     Amount=None,
-                                     Receipt_No=None,
-                                     Receipt_Date=None,
-                                     Updated_By=None,
-                                     Updated_On=None)
+    t_payment_details.objects.create(application_no=application_no,
+                                     application_date=date.today(),
+                                     permit_no=permit_no,
+                                     service_id=service_code,
+                                     validity=validity_date,
+                                     payment_type=None,
+                                     instrument_no=None,
+                                     amount=None,
+                                     receipt_no=None,
+                                     receipt_date=None,
+                                     updated_by=None,
+                                     updated_on=None)
 
 
 def get_prev_crop_mont(request):

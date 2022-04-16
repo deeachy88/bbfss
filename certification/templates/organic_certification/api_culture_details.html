@@ -1,44 +1,56 @@
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Common Name</th>
-            <th scope="col">Botanical Name</th>
-            <th scope="col">Estimated Harvest Yield</th>
-            <th scope="col">Estimated Harvest Yield Unit</th>
-            <th scope="col">Harvest Acreage</th>
-            <th scope="col">Unit</th>
-            <th scope="col"></th>
-        </tr>
-    </thead>
-    <tbody>
-       {% for aqua in apiculture_details %}
+{% load static %}
+<div class="table-responsive">
+    <table class="table table-bordered" id="oc_api_table">
+        <thead>
             <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{aqua.Common_Name}}</td>
-                <td>{{aqua.Botanical_Name}}</td>
-                <td>{{aqua.Estimated_Harvest}}</td>
-                <td>{{aqua.Harvest_Unit}}</td>
-                <td>{{aqua.Harvest_Acreage}}</td>
-                <td>{{aqua.Acreage_Unit}}</td>
-                <td>
-                    <button type="button" class="btn btn-primary btn-sm"
-                    onclick="delete_details('{{aqua.Record_Id}}','{{aqua.Application_No}}', 'OC-API')">
-                    <i class="zmdi zmdi-delete"></i>
-                    </button>
-                    <button  type="button" class="btn btn-info btn-sm" data-toggle="tooltip" title="Edit"
-                     onclick="populate_api_details('{{ aqua.Record_Id }}', '{{aqua.Common_Name}}',
-                     '{{aqua.Botanical_Name}}','{{aqua.Estimated_Harvest}}','{{aqua.Harvest_Unit}}',
-                     '{{aqua.Harvest_Acreage}}','{{aqua.Acreage_Unit}}','{{aqua.Application_No}}')">
-                    <i class="fa fa-edit"></i>
-                    </button>
-                </td>
+                <th scope="col">#</th>
+                <th scope="col">Common Name</th>
+                <th scope="col">Botanical Name</th>
+                <th scope="col">Estimated Harvest Yield</th>
+                <th scope="col">Estimated Harvest Yield Unit</th>
+                <th scope="col">Harvest Acreage</th>
+                <th scope="col">Unit</th>
+                <th scope="col"></th>
             </tr>
-            {% empty %}
-            <tr>
-              <td colspan="7" class="text-center">No Data</td>
-            </tr>
-       {% endfor %}
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+           {% for aqua in apiculture_details %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{aqua.Common_Name}}</td>
+                    <td>{{aqua.Botanical_Name}}</td>
+                    <td>{{aqua.Estimated_Harvest}}</td>
+                    <td>{{aqua.Harvest_Unit}}</td>
+                    <td>{{aqua.Harvest_Acreage}}</td>
+                    <td>{{aqua.Acreage_Unit}}</td>
+                    <td>
+                        <button type="button" class="btn btn-primary btn-sm"
+                        onclick="delete_details('{{aqua.Record_Id}}','{{aqua.Application_No}}', 'OC-API')">
+                        <i class="zmdi zmdi-delete"></i>
+                        </button>
+                        <button  type="button" class="btn btn-info btn-sm" data-toggle="tooltip" title="Edit"
+                         onclick="populate_api_details('{{ aqua.Record_Id }}', '{{aqua.Common_Name}}',
+                         '{{aqua.Botanical_Name}}','{{aqua.Estimated_Harvest}}','{{aqua.Harvest_Unit}}',
+                         '{{aqua.Harvest_Acreage}}','{{aqua.Acreage_Unit}}','{{aqua.Application_No}}')">
+                        <i class="fa fa-edit"></i>
+                        </button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="7" class="text-center">No Data</td>
+                </tr>
+           {% endfor %}
+        </tbody>
+    </table>
+</div>
+<script src="{% static 'assets/bower_components/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'styles/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script>
+    $(function ()
+    {
+        $("#oc_api_table").DataTable();
+
+    });
+</script>
 
