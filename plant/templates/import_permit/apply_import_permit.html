@@ -34,7 +34,7 @@ form, input, select, textarea{
                         <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="checkDetails()">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="import-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="loadDetails()">Import Details</a>
+                        <a class="nav-link" id="import-profile-tab" data-toggle="pill" href="#import_details" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_plant_import_details()">Import Details</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="pills-import-file" data-toggle="pill" href="#file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_attachment_details()">Attach File</a>
@@ -502,8 +502,8 @@ form, input, select, textarea{
                         <button type="button" class="btn btn-primary" id="save_details_button" onclick="import_save()">Save</button>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="import-profile-tab">
-                    <div class="card" id="plant-card" style="display:none">
+                <div class="tab-pane fade" id="import_details" role="tabpanel" aria-labelledby="import-profile-tab">
+                    <div class="card" id="plant_card">
                         <div class="card-header">
                             <div class="card-head-row">
                                 <div class="card-tools pull-right">
@@ -512,7 +512,7 @@ form, input, select, textarea{
                             </div>
                         </div>
                         <div class="card-body">
-                            <div id="Plant_Details">
+                            <div id="plant_details">
                                 {% include 'import_permit/import_page_plant.html' %}
                             </div>
                         </div>
@@ -520,7 +520,7 @@ form, input, select, textarea{
                             <button type="button" class="btn btn-success" id="plant_import_button" onclick="plant_import_save()" style="display:none">Save</button>
                         </div>
                     </div>
-                    <div class="card" id="agro-card" style="display:none">
+                    <div class="card" id="agro_card">
                         <div class="card-header">
                             <div class="card-head-row">
                                 <div class="card-tools pull-right">
@@ -529,7 +529,7 @@ form, input, select, textarea{
                             </div>
                         </div>
                         <div class="card-body">
-                            <div id="AgroDetails">
+                            <div id="agro_details">
                                 {% include 'import_permit/import_page_agro.html' %}
                             </div>
                         </div>
@@ -1411,12 +1411,14 @@ form, input, select, textarea{
                     if(data.importType == "P")
                     {
                         $('#import-profile-tab').tab('show');
-                        $('#plant-card').show();
+                        $('#plant_card').show();
+                        $('#agro_card').hide();
                     }
                     else
                     {
                          $('#import-profile-tab').tab('show');
-                         $('#agro-card').show();
+                         $('#agro_card').show();
+                         $('#plant_card').hide();
                     }
                     $("#save_details_button").html('Update');
                 }
@@ -1538,7 +1540,7 @@ form, input, select, textarea{
                     data : $('#save_plant_form').serialize(),
                     success : function(responseText) {
                        $('#add_plant_details').modal('hide');
-                       $('#Plant_Details').html(responseText);
+                       $('#plant_details').html(responseText);
                        $('#import-profile-tab').tab('show');
                        $('.modal-backdrop').remove();
                        $('#save_plant_form')[0].reset();
@@ -1594,11 +1596,11 @@ form, input, select, textarea{
                 data : $('#save_agro_form').serialize(),
                 success : function(responseText) {
                    $('#add_agro_details').modal('hide');
-                   $('#AgroDetails').html(responseText);
+                   $('#agro_details').html(responseText);
                    $('#agro-profile-tab').tab('show');
                    $('.modal-backdrop').remove();
                    $('#save_agro_form')[0].reset();
-                   $("#import-profile-tab").prop('disabled', false);
+
                 }
             });
         }
@@ -1970,7 +1972,7 @@ function populateAgroDetails(Record_Id, Import_Category, Pesticide_Id, Descripti
 }
 
 
-function loadDetails()
+function load_plant_import_details()
 {
     var appNo = $('#applicationNo').val();
     var import_type = $("input[name=Import_Type]:checked").val();
@@ -1979,15 +1981,17 @@ function loadDetails()
         type : "GET",
         url : "{% url 'load_plant_import_details' %}",
         data :{'appNo':appNo, 'import_type': import_type},
-        success : function(responseText)
+        success : function(response)
         {
             if(import_type == 'P')
             {
-                $('#plant-card').show();
+                 $('#plant_card').show();
+                 $('#plant_details').html(response);
             }
             else
             {
-                $('#agro-card').show();
+                $('#agro_card').show();
+                $('#agro_details').html(response);
             }
         }
     });

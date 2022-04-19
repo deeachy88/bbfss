@@ -355,13 +355,16 @@ def save_fh_details(request):
 def load_outsourced_details(request):
     Application_No = request.GET.get('appNo')
     fh_details = t_food_business_registration_licensing_t2.objects.filter(application_no=Application_No)
-    return render(request, 'registration_licensing/details.html', {'fh_details': fh_details})
+    count = t_food_business_registration_licensing_t2.objects.filter(application_no=Application_No).count()
+    return render(request, 'registration_licensing/details.html', {'fh_details': fh_details, 'count': count})
 
 
 def food_handler_details(request):
     Application_No = request.GET.get('appNo')
     fh_details = t_food_business_registration_licensing_t3.objects.filter(application_no=Application_No)
-    return render(request, 'registration_licensing/food_handler_details.html', {'fh_details': fh_details})
+    fh_details_count = t_food_business_registration_licensing_t3.objects.filter(application_no=Application_No).count()
+    return render(request, 'registration_licensing/food_handler_details.html', {'fh_details': fh_details,
+                                                                                'fh_details_count': fh_details_count})
 
 
 def load_fbr_attachment(request):
@@ -1188,8 +1191,6 @@ def update_food_export_details(request):
     Consignment_Location_Dzongkhag = request.POST.get('consignment_location_dzongkhag')
     Consignment_Location_Gewog = request.POST.get('consignment_location_gewog')
     Consignment_Location = request.POST.get('consignment_location')
-    date_format_ins = datetime.strptime(Proposed_Inspection_Date, '%d-%m-%Y').date()
-    date_of_export = datetime.strptime(Export_Expected_Date, '%d-%m-%Y').date()
     additional_info = request.POST.get('additional_info')
 
     food_export_details = t_food_export_certificate_t1.objects.filter(Application_No=food_export_application)
@@ -1213,8 +1214,8 @@ def update_food_export_details(request):
         Quantity=Quantity,
         Unit=Unit,
         Declared_Point_of_Exit=Declared_Point_of_Exit,
-        Export_Expected_Date=date_of_export,
-        Proposed_Inspection_Date=date_format_ins,
+        Export_Expected_Date=Export_Expected_Date,
+        Proposed_Inspection_Date=Proposed_Inspection_Date,
         Purpose_Of_Export=Purpose_Of_Export,
         Consignment_Location_Dzongkhag=Consignment_Location_Dzongkhag,
         Consignment_Location_Gewog=Consignment_Location_Gewog,
@@ -1564,11 +1565,10 @@ def update_food_handler_details(request):
     Preferred_Place = request.POST.get('preferred_place')
     Proposed_Inspection_Date = request.POST.get('preferred_Date')
     Associated_Food_Establishment = request.POST.get('associated_establishment')
-    date_format_ins = datetime.strptime(Proposed_Inspection_Date, '%d-%m-%Y').date()
 
-    food_handler_details = t_food_licensing_food_handler_t1.objects.filter(Application_No=application_no)
+    food_det = t_food_licensing_food_handler_t1.objects.filter(Application_No=application_no)
 
-    food_handler_details.update(
+    food_det.update(
         Application_Date=None,
         Nationality=Nationality,
         CID=CID,
@@ -1582,7 +1582,7 @@ def update_food_handler_details(request):
         Email=Email,
         Training_Request=Training_Request,
         Preferred_Inspection_Place=Preferred_Place,
-        Proposed_Inspection_Date=date_format_ins,
+        Proposed_Inspection_Date=Proposed_Inspection_Date,
         Associated_Food_Establishment=Associated_Food_Establishment,
         Training_Batch_No=None,
         Training_From_Date=None,
@@ -2267,6 +2267,12 @@ def update_food_import(request):
                         assigned_role_id='2', action_date=None, application_status='P',
                         service_code=service_code)
     data['applNo'] = application_no
+    food_import_details = t_food_import_permit_t2.objects.filter(Application_No=application_no)
+    if food_import_details.exists():
+        count = t_food_import_permit_t2.objects.filter(Application_No=application_no).count()
+    else:
+        count = 0
+    data['count'] = count
     return JsonResponse(data)
 
 
@@ -2308,7 +2314,9 @@ def save_food_import_details(request):
 def load_fip_details(request):
     application_no = request.GET.get('appNo')
     import_details = t_food_import_permit_t2.objects.filter(Application_No=application_no)
-    return render(request, 'import_certificate_food/food_permit_details.html', {'import': import_details})
+    count = t_food_import_permit_t2.objects.filter(Application_No=application_no).count()
+    return render(request, 'import_certificate_food/food_permit_details.html', {'import': import_details,
+                                                                                'count': count})
 
 
 def load_fip_attachment(request):

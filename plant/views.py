@@ -1283,7 +1283,8 @@ def update_movement_permit(request):
 def load_plant_import_details(request):
     application_no = request.GET.get('appNo')
     import_type = request.GET.get('import_type')
-
+    print(application_no)
+    print(import_type)
     if import_type == 'P':
         count = t_plant_import_permit_t2.objects.filter(Application_No=application_no).count()
         import_details = t_plant_import_permit_t2.objects.filter(Application_No=application_no)
@@ -2279,7 +2280,7 @@ def view_oic_details(request):
         return render(request, 'import_permit/oic_import_application.html',
                       {'application_details': new_import_app, 'details': details, 'file': file, 'dzongkhag': dzongkhag,
                        'village': village, 'location': location_mapping, 'country': country,
-                       'crop': crop, 'pesticide': pesticide, 'variety': variety,'gewog': gewog,
+                       'crop': crop, 'pesticide': pesticide, 'variety': variety, 'gewog': gewog,
                        'inspector_list': user_role_list})
 
     elif service_code == 'EPP':
@@ -3706,7 +3707,7 @@ def update_details_agro(request):
 def update_import_permit(request):
     data = dict()
     service_code = "IPP"
-    last_application_no = request.POST.get('applicationNo')
+    application_no = request.POST.get('applicationNo')
 
     Applicant_Id = request.session['email']
     importType = request.POST.get('Import_Type')
@@ -3726,7 +3727,7 @@ def update_import_permit(request):
         com_final_Destination = request.POST.get('com_final_Destination')
         com_expected_arrival_date = request.POST.get('com_expected_arrival_date')
 
-        import_details = t_plant_import_permit_t1.objects.filter(Application_No=last_application_no)
+        import_details = t_plant_import_permit_t1.objects.filter(Application_No=application_no)
         import_details.update(
             Import_Type=importType,
             License_No=regNo,
@@ -3786,9 +3787,8 @@ def update_import_permit(request):
             B_finalDestination = request.POST.get('B_final_Destination')
             B_expectedDate = request.POST.get('date_expected')
 
-            import_details = t_plant_import_permit_t1.objects.filter(Application_No=last_application_no)
+            import_details = t_plant_import_permit_t1.objects.filter(Application_No=application_no)
             import_details.update(
-                Application_No=last_application_no,
                 Import_Type=importType,
                 License_No=None,
                 Business_Name=None,
@@ -3845,9 +3845,8 @@ def update_import_permit(request):
             passport = request.POST.get('passport')
             nationality = request.POST.get('nationality')
 
-            import_details = t_plant_import_permit_t1.objects.filter(Application_No=last_application_no)
+            import_details = t_plant_import_permit_t1.objects.filter(Application_No=application_no)
             import_details.update(
-                Application_No=last_application_no,
                 Import_Type=importType,
                 License_No=None,
                 Business_Name=None,
@@ -3889,14 +3888,19 @@ def update_import_permit(request):
                 Village=None,
                 Passport_Number=passport
             )
-    t_workflow_details.objects.create(application_no=last_application_no, applicant_id=request.session['email'],
-                                      assigned_to=None, field_office_id=None, section='Plant',
-                                      assigned_role_id='2', action_date=None, application_status='P',
-                                      service_code=service_code)
-    count = t_plant_import_permit_t2.objects.filter(application_no=last_application_no).count()
-    data['applNo'] = last_application_no
+    work_flow_details = t_workflow_details.objects.filter(application_no=application_no)
+    work_flow_details.update(applicant_id=request.session['email'],
+                             assigned_to=None, field_office_id=None, section='Plant',
+                             assigned_role_id='2', action_date=None, application_status='P',
+                             service_code=service_code)
+    plant_details = t_plant_import_permit_t2.objects.filter(Application_No=application_no)
+    if plant_details.exists():
+        count = t_plant_import_permit_t2.objects.filter(Application_No=application_no).count()
+        data['count'] = count
+    else:
+        data['count'] = 0
+    data['applNo'] = application_no
     data['importType'] = importType
-    data['count'] = count
     return JsonResponse(data)
 
 
@@ -4604,7 +4608,9 @@ def update_export(request):
             Applicant_Id=Applicant_Id,
             Common_Name=common_name
         )
-        field_office_id = Entry_Point
+        field_id = t_location_field_office_mapping.objects.filter(pk=Locatipn_Code)
+        for field_office in field_id:
+            field_office_id = field_office.Field_Office_Id_id
     else:
         if Applicant_Type == "":
             export_details = t_plant_export_certificate_plant_plant_products_t1.objects.filter(
@@ -5055,7 +5061,7 @@ def registration_application(request):
 
         inspection_call_count = t_workflow_details.objects.filter(application_status='FR', assigned_to=login_id,
                                                                   action_date__isnull=False).count()
-        consignment_call_count = t_workflow_details.objects.filter(Assigned_To=login_id,
+        consignment_call_count = t_workflow_details.objects.filter(assigned_to=login_id,
                                                                    action_date__isnull=False, application_status='P') \
             .count()
         return render(request, 'nursery_registration/apply_nursery_registration.html',
@@ -5527,7 +5533,9 @@ def get_nursery_clearnace_no(request):
 def load_nursery_details(request):
     Application_No = request.GET.get('appNo')
     seed_details = t_plant_clearence_nursery_seed_grower_t2.objects.filter(Application_No=Application_No)
-    return render(request, 'nursery_registration/seed_details_page.html', {'seed_details': seed_details})
+    seed_details_count = t_plant_clearence_nursery_seed_grower_t2.objects.filter(Application_No=Application_No).count()
+    return render(request, 'nursery_registration/seed_details_page.html', {'seed_details': seed_details,
+                                                                           'seed_details_count': seed_details_count})
 
 
 def load_nursery_attachment(request):
@@ -7679,7 +7687,7 @@ def update_edit_details(request):
         details.update(meat_item=meat_name)
 
         meat_details = t_livestock_clearance_meat_shop_t2.objects.filter(application_no=application_no).order_by(
-            'Record_Id')
+            'record_id')
         count = t_livestock_clearance_meat_shop_t2.objects.filter(application_no=application_no).count()
         return render(request, 'meat_shop_registration/details.html', {'meat_details': meat_details,
                                                                        'count': count})
@@ -7858,7 +7866,7 @@ def update_edit_details(request):
         details.update(bp_outsourced_to=BP_Outsourced_To, contact_no=Contact_No,
                        address=Address, bafra_license_no=BAFRA_License_No)
         fh_details = t_food_business_registration_licensing_t2.objects.filter(application_no=application_no).order_by(
-            'Record_Id')
+            'record_id')
         count = t_food_business_registration_licensing_t2.objects.filter(application_no=application_no).count()
         return render(request, 'registration_licensing/details.html', {'fh_details': fh_details,
                                                                        'count': count})
@@ -7872,7 +7880,7 @@ def update_edit_details(request):
         details.update(fh_name=fh_name, fh_license_no=fh_license)
 
         fh_details = t_food_business_registration_licensing_t3.objects.filter(application_no=application_no).order_by(
-            'Record_Id')
+            'record_id')
         count = t_food_business_registration_licensing_t3.objects.filter(application_no=application_no).count()
         return render(request, 'registration_licensing/food_handler_details.html', {'fh_details': fh_details,
                                                                                     'count': count})

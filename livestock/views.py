@@ -2150,7 +2150,7 @@ def export_certificate_application(request):
                          | t_workflow_details.objects.filter(assigned_to=login_id, application_status='APR')
                          | t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCR')).count()
 
-        inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', assigned_to=login_id,
+        inspection_call_count = t_workflow_details.objects.filter(application_status='FR', assigned_to=login_id,
                                                                   action_date__isnull=False).count()
         consignment_call_count = t_workflow_details.objects.filter(assigned_to=login_id,
                                                                    action_date__isnull=False, application_status='P') \
@@ -3249,8 +3249,8 @@ def update_application_form(request):
     exact_location = request.POST.get('exact_location')
     date_format_ins = request.POST.get('inspectionDate')
 
-    t_livestock_ante_post_mortem_t1.objects.create(
-        Application_No=application_no,
+    application_details = t_livestock_ante_post_mortem_t1.objects.filter(Application_No=application_no)
+    application_details.update(
         Inspection_Type=Inspection_Type,
         CID=CID,
         Applicant_Name=Name,
