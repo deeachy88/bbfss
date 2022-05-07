@@ -182,13 +182,13 @@ def get_organic_certificate_app_no(request, service_code):
     lastAppNo = last_application_no['Application_No__max']
     if not lastAppNo:
         year = timezone.now().year
-        newAppNo = service_code + "/" + str(year) + "/" + "0001"
+        newAppNo = service_code + "-" + str(year) + "-" + "0001"
     else:
         substring = str(lastAppNo)[9:13]
         substring = int(substring) + 1
         AppNo = str(substring).zfill(4)
         year = timezone.now().year
-        newAppNo = service_code + "/" + str(year) + "/" + AppNo
+        newAppNo = service_code + "-" + str(year) + "-" + AppNo
     return newAppNo
 
 
@@ -803,13 +803,13 @@ def oc_certificate_no(request):
     lastAppNo = last_application_no['Certificate_No__max']
     if not lastAppNo:
         year = timezone.now().year
-        newAppNo = "BOCL" + "/" + str(year) + "/" + "0001"
+        newAppNo = "BOCL" + "-" + str(year) + "-" + "0001"
     else:
         substring = str(lastAppNo)[11:14]
         substring = int(substring) + 1
         AppNo = str(substring).zfill(4)
         year = timezone.now().year
-        newAppNo = "BOCL" + "/" + str(year) + "/" + AppNo
+        newAppNo = "BOCL" + "-" + str(year) + "-" + AppNo
     return newAppNo
 
 
@@ -1277,13 +1277,13 @@ def get_gap_certificate_app_no(request, service_code):
     lastAppNo = last_application_no['Application_No__max']
     if not lastAppNo:
         year = timezone.now().year
-        newAppNo = service_code + "/" + str(year) + "/" + "0001"
+        newAppNo = service_code + "-" + str(year) + "-" + "0001"
     else:
         substring = str(lastAppNo)[9:13]
         substring = int(substring) + 1
         AppNo = str(substring).zfill(4)
         year = timezone.now().year
-        newAppNo = service_code + "/" + str(year) + "/" + AppNo
+        newAppNo = service_code + "-" + str(year) + "-" + AppNo
     return newAppNo
 
 
@@ -1988,13 +1988,13 @@ def food_product_application_no(request, service_code):
     lastAppNo = last_application_no['Application_No__max']
     if not lastAppNo:
         year = timezone.now().year
-        newAppNo = service_code + "/" + str(year) + "/" + "0001"
+        newAppNo = service_code + "-" + str(year) + "-" + "0001"
     else:
         substring = str(lastAppNo)[9:13]
         substring = int(substring) + 1
         AppNo = str(substring).zfill(4)
         year = timezone.now().year
-        newAppNo = service_code + "/" + str(year) + "/" + AppNo
+        newAppNo = service_code + "-" + str(year) + "-" + AppNo
     return newAppNo
 
 
@@ -2277,13 +2277,13 @@ def fpc_certificate_no(request):
     lastAppNo = last_application_no['Certificate_No__max']
     if not lastAppNo:
         year = timezone.now().year
-        newAppNo = "BCL" + "/" + str(year) + "/" + "0001"
+        newAppNo = "BCL" + "-" + str(year) + "-" + "0001"
     else:
         substring = str(lastAppNo)[14:17]
         substring = int(substring) + 1
         AppNo = str(substring).zfill(4)
         year = timezone.now().year
-        newAppNo = "BCL" + "/" + str(year) + "/" + AppNo
+        newAppNo = "BCL" + "-" + str(year) + "-" + AppNo
     return newAppNo
 
 
@@ -2893,7 +2893,7 @@ def date_month(request):
     date2 = request.GET.get('to_date')
     d1 = datetime.strptime(date1, "%d-%m-%Y").date()
     d2 = datetime.strptime(date2, "%d-%m-%Y").date()
-    month_list = [i.strftime("%B") for i in pd.date_range(start=d1, end=d2, freq='MS')]
+    month_list = [i.strftime("%B") for i in pd.date_range(start=d1, end=d2, freq='M')]
     return render(request, 'GAP_Certification/month_list.html', {'month_list': month_list})
 
 

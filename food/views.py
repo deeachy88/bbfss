@@ -1,5 +1,5 @@
 from datetime import date, datetime, timedelta
-
+import requests
 from django.core.files.storage import FileSystemStorage
 from django.core.mail import send_mail
 from django.db.models import Max, F
@@ -27,7 +27,7 @@ from food.models import t_food_export_certificate_t1, t_food_licensing_food_hand
     t_food_business_registration_licensing_t8
 from livestock.models import t_livestock_clearance_meat_shop_t2, t_livestock_clearance_meat_shop_t1, \
     t_livestock_clearance_meat_shop_t5, t_livestock_clearance_meat_shop_t4, t_livestock_clearance_meat_shop_t6
-from plant.models import t_workflow_details, t_file_attachment, t_payment_details
+from plant.models import t_workflow_details, t_file_attachment, t_payment_details, t_payment_details_master
 from plant.views import inspector_application, resubmit_application, focal_officer_application, oic_application
 
 
@@ -266,13 +266,13 @@ def food_business_registration_application_no(service_code):
     lastAppNo = last_application_no['application_no__max']
     if not lastAppNo:
         year = timezone.now().year
-        newAppNo = service_code + "/" + str(year) + "/" + "0001"
+        newAppNo = service_code + "-" + str(year) + "-" + "0001"
     else:
         substring = str(lastAppNo)[9:13]
         substring = int(substring) + 1
         AppNo = str(substring).zfill(4)
         year = timezone.now().year
-        newAppNo = service_code + "/" + str(year) + "/" + AppNo
+        newAppNo = service_code + "-" + str(year) + "-" + AppNo
     return newAppNo
 
 
@@ -422,7 +422,8 @@ def send_fbr_approve_email(new_import_permit, Email):
               "" \
               "Your Application for Food Business Registration Has Been Approved. Your " \
               "Registration No is:" + new_import_permit + \
-              " Please Make Payment To Download The Certificate. Visit The Nearest Bafra Office For Payment."
+              " Please Make Payment To Download The Certificate. Visit The Nearest Bafra Office For Payment" \
+              "or Pay Online at https://tinyurl.com/y3m7wa3c Thank you!"
     recipient_list = [Email]
     send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
               auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
@@ -540,13 +541,13 @@ def feasibility_clearance_no(request):
     lastAppNo = last_application_no['Conditional_Clearance_No__max']
     if not lastAppNo:
         year = timezone.now().year
-        newAppNo = Field_Code + "-" + "FBR" + "-" + str(year) + "-" + "0001"
+        newAppNo = Field_Code + "-" + "FBR-CLR" + "-" + str(year) + "-" + "0001"
     else:
         substring = str(lastAppNo)[14:17]
         substring = int(substring) + 1
         AppNo = str(substring).zfill(4)
         year = timezone.now().year
-        newAppNo = Field_Code + "-" + "FBR" + "-" + str(year) + "-" + AppNo
+        newAppNo = Field_Code + "-" + "FBR-CLR" + "-" + str(year) + "-" + AppNo
     return newAppNo
 
 
@@ -700,7 +701,7 @@ def fbr_submit(request):
     application_details = t_workflow_details.objects.filter(application_no=application_id)
     application_details.update(action_date=date.today())
     application_details.update(application_status='A')
-    update_payment(application_id, clearance, 'FBR', None, 'Final')
+    update_payment(application_id, clearance, 'FBR', None, 'Final','account_head_name')
     for email_id in details:
         emailId = email_id.email
         send_fbr_approve_email(clearance, emailId)
@@ -719,13 +720,13 @@ def factory_clearance_no(request, application_id):
             lastAppNo = last_application_no['fb_license_no__max']
             if not lastAppNo:
                 year = timezone.now().year
-                newAppNo = Field_Code + "/" + "FBR" + "/" + str(year) + "/" + "0001"
+                newAppNo = Field_Code + "-" + "FBR" + "-" + str(year) + "-" + "0001"
             else:
                 substring = str(lastAppNo)[14:17]
                 substring = int(substring) + 1
                 AppNo = str(substring).zfill(4)
                 year = timezone.now().year
-                newAppNo = Field_Code + "/" + "FBR" + "/" + str(year) + "/" + AppNo
+                newAppNo = Field_Code + "-" + "FBR" + "-" + str(year) + "-" + AppNo
             return newAppNo
 
 
@@ -1313,13 +1314,13 @@ def food_export_application_no(service_code):
     lastAppNo = last_application_no['Application_No__max']
     if not lastAppNo:
         year = timezone.now().year
-        newAppNo = service_code + "/" + str(year) + "/" + "0001"
+        newAppNo = service_code + "-" + str(year) + "-" + "0001"
     else:
         substring = str(lastAppNo)[9:13]
         substring = int(substring) + 1
         AppNo = str(substring).zfill(4)
         year = timezone.now().year
-        newAppNo = service_code + "/" + str(year) + "/" + AppNo
+        newAppNo = service_code + "-" + str(year) + "-" + AppNo
     return newAppNo
 
 
@@ -1360,7 +1361,7 @@ def approve_food_export(request):
     application_details = t_workflow_details.objects.filter(application_no=application_id)
     application_details.update(action_date=date.today())
     application_details.update(application_status='A')
-    update_payment(application_id, Export_Permit_No, 'FEC', validity_date, 'Final')
+    update_payment(application_id, Export_Permit_No, 'FEC', validity_date, 'Final','account_head_name')
     for email_id in details:
         emailId = email_id.Email
         send_fec_approve_email(Export_Permit_No, emailId, validity_date)
@@ -1378,13 +1379,13 @@ def food_export_permit_no(request):
     lastAppNo = last_application_no['Export_Permit_No__max']
     if not lastAppNo:
         year = timezone.now().year
-        newAppNo = Field_Code + "/" + "FEC" + "/" + str(year) + "/" + "0001"
+        newAppNo = Field_Code + "-" + "FEC" + "-" + str(year) + "-" + "0001"
     else:
         substring = str(lastAppNo)[14:17]
         substring = int(substring) + 1
         AppNo = str(substring).zfill(4)
         year = timezone.now().year
-        newAppNo = Field_Code + "/" + "FEC" + "/" + str(year) + "/" + AppNo
+        newAppNo = Field_Code + "-" + "FEC" + "-" + str(year) + "-" + AppNo
     return newAppNo
 
 
@@ -1410,7 +1411,8 @@ def send_fec_approve_email(Export_Permit_No, Email, validity_date):
     message = "Dear Sir, Your Application for Export Certificate for Food Products Has Been Approved. " \
               "Your " \
               "Registration No is:" + Export_Permit_No + " And is Valid Till " + str(valid_till) + \
-              "." + " Please Make Payment Before Validity Expires. Visit The Nearest Bafra Office For Payment."
+              "." + " Please Make Payment Before Validity Expires. Visit The Nearest Bafra Office For Payment" \
+                    "or Pay Online at https://tinyurl.com/y3m7wa3c Thank you!"
     recipient_list = [Email]
     send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
               auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
@@ -1617,13 +1619,13 @@ def food_handler_application_no(service_code):
     lastAppNo = last_application_no['Application_No__max']
     if not lastAppNo:
         year = timezone.now().year
-        newAppNo = service_code + "/" + str(year) + "/" + "0001"
+        newAppNo = service_code + "-" + str(year) + "-" + "0001"
     else:
         substring = str(lastAppNo)[9:13]
         substring = int(substring) + 1
         AppNo = str(substring).zfill(4)
         year = timezone.now().year
-        newAppNo = service_code + "/" + str(year) + "/" + AppNo
+        newAppNo = service_code + "-" + str(year) + "-" + AppNo
     return newAppNo
 
 
@@ -2039,13 +2041,13 @@ def generate_fh_license_no(request):
     lastAppNo = last_application_no['FH_License_No__max']
     if not lastAppNo:
         year = timezone.now().year
-        newAppNo = "FHC" + "/" + str(year) + "/" + "0001"
+        newAppNo = "FHC" + "-" + str(year) + "-" + "0001"
     else:
         substring = str(lastAppNo)[9:13]
         substring = int(substring) + 1
         AppNo = str(substring).zfill(4)
         year = timezone.now().year
-        newAppNo = "FHC" + "/" + str(year) + "/" + AppNo
+        newAppNo = "FHC" + "-" + str(year) + "-" + AppNo
     return newAppNo
 
 
@@ -2281,13 +2283,13 @@ def generate_food_import_app_no(service_code):
     lastAppNo = last_application_no['Application_No__max']
     if not lastAppNo:
         year = timezone.now().year
-        newAppNo = service_code + "/" + str(year) + "/" + "0001"
+        newAppNo = service_code + "-" + str(year) + "-" + "0001"
     else:
         substring = str(lastAppNo)[9:13]
         substring = int(substring) + 1
         AppNo = str(substring).zfill(4)
         year = timezone.now().year
-        newAppNo = service_code + "/" + str(year) + "/" + AppNo
+        newAppNo = service_code + "-" + str(year) + "-" + AppNo
     return newAppNo
 
 
@@ -2409,7 +2411,7 @@ def approve_fo_fip_import(request):
     d = timedelta(days=int(validity))
     validity_date = date.today() + d
     details.update(Validity=validity_date)
-    update_payment(application_no, permit_no, 'FIP', validity_date, 'Final')
+    update_payment(application_no, permit_no, 'FIP', validity_date, 'Final','account_head_name')
     for email_id in details:
         email = email_id.Email
         send_fip_approve_email(permit_no, email, validity_date)
@@ -2435,7 +2437,8 @@ def send_fip_approve_email(new_import_permit, Email, validity_date):
               "" \
               "Your Application for Import Permit for Food Products Has Been Approved. Your " \
               "Import Permit No is:" + new_import_permit + " And is Valid TIll " + str(validity_date) + \
-              " Please Make Payment Before Validity Expires. Visit The Nearest Bafra Office For Payment."
+              " Please Make Payment Before Validity Expires. Visit The Nearest Bafra Office For Payment" \
+              "or Pay Online at https://tinyurl.com/y3m7wa3c Thank you!"
     recipient_list = [Email]
     send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
               auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
@@ -2459,13 +2462,13 @@ def get_fip_permit_no(service_code):
     last_permit_no = last_import_permit_no['Import_Permit_No__max']
     if not last_permit_no:
         year = timezone.now().year
-        newPermitNo = service_code + "/" + str(year) + "/" + "0001"
+        newPermitNo = service_code + "-" + str(year) + "-" + "0001"
     else:
         substring = str(last_permit_no)[9:13]
         substring = int(substring) + 1
         AppNo = str(substring).zfill(4)
         year = timezone.now().year
-        newPermitNo = service_code + "/" + str(year) + "/" + AppNo
+        newPermitNo = service_code + "-" + str(year) + "-" + AppNo
     return newPermitNo
 
 
@@ -2640,7 +2643,8 @@ def factory_inspection_list(request):
         return render(request, 'redirect_page.html')
 
 
-def update_payment(application_no, permit_no, service_code, validity_date, Permit_Type):
+def update_payment(application_no, permit_no, service_code, validity_date, Permit_Type, account_head_name):
+    account_details = t_payment_details_master.objects.filter(account_head_name=account_head_name)
     t_payment_details.objects.create(application_no=application_no,
                                      application_date=date.today(),
                                      permit_no=permit_no,
@@ -2648,13 +2652,18 @@ def update_payment(application_no, permit_no, service_code, validity_date, Permi
                                      validity=validity_date,
                                      payment_type=None,
                                      instrument_no=None,
-                                     amount=None,
+                                     amount=account_details.service_fee,
                                      receipt_no=None,
                                      receipt_date=None,
                                      updated_by=None,
                                      updated_on=None,
-                                     permit_type=Permit_Type)
+                                     permit_type=Permit_Type,
+                                     account_head_code=account_details.account_head_code)
 
+    post_data = {'Application Number': application_no, 'Agency Code': "BAFRA", 'Service Name': "Service_Name",
+                 'Service fee': account_details.service_fee, 'Account head code': account_details.account_head_code}
+    requests.post('https://www.citizenservices.gov.bt/G2CPaymentAggregator/services/G2CPaymentInitiatorBusiness',
+                  data=post_data)
 
 def food_handler_application_details(request):
     app_id = request.GET.get('application_id')

@@ -206,9 +206,9 @@ def login(request):
     if request.method == 'POST':
         _username = request.POST['username']
         _password = request.POST['password']
-        user = t_user_master.objects.filter(Email_Id=_username)
-        if user is not None:
-            for user in user:
+        use_det = t_user_master.objects.filter(Email_Id=_username)
+        if use_det is not None:
+            for user in use_det:
                 check_pass = check_password(_password, user.Password)
                 if check_pass:
                     if user.Is_Active:

@@ -509,13 +509,13 @@ def get_complaint_application_no(request, service_code):
     lastAppNo = last_application_no['Application_No__max']
     if not lastAppNo:
         year = timezone.now().year
-        newAppNo = service_code + "/" + str(year) + "/" + "0001"
+        newAppNo = service_code + "-" + str(year) + "-" + "0001"
     else:
         substring = str(lastAppNo)[9:13]
         substring = int(substring) + 1
         AppNo = str(substring).zfill(4)
         year = timezone.now().year
-        newAppNo = service_code + "/" + str(year) + "/" + AppNo
+        newAppNo = service_code + "-" + str(year) + "-" + AppNo
     return newAppNo
 
 
@@ -663,13 +663,13 @@ def get_monitoring_ref_no(service_code):
     lastAppNo = last_application_no['Reference_No__max']
     if not lastAppNo:
         year = timezone.now().year
-        newAppNo = service_code + "/" + str(year) + "/" + "0001"
+        newAppNo = service_code + "-" + str(year) + "-" + "0001"
     else:
         substring = str(lastAppNo)[9:13]
         substring = int(substring) + 1
         AppNo = str(substring).zfill(4)
         year = timezone.now().year
-        newAppNo = service_code + "/" + str(year) + "/" + AppNo
+        newAppNo = service_code + "-" + str(year) + "-" + AppNo
     return newAppNo
 
 
@@ -1348,13 +1348,13 @@ def get_commodity_Inspection_ref_no(request, service_code):
     lastRefNo = last_reference_no['Reference_No__max']
     if not lastRefNo:
         year = timezone.now().year
-        newRefNo = service_code + "/" + str(year) + "/" + "0001"
+        newRefNo = service_code + "-" + str(year) + "-" + "0001"
     else:
         substring = str(lastRefNo)[9:13]
         substring = int(substring) + 1
         RefNo = str(substring).zfill(4)
         year = timezone.now().year
-        newRefNo = service_code + "/" + str(year) + "/" + RefNo
+        newRefNo = service_code + "-" + str(year) + "-" + RefNo
     return newRefNo
 
 
@@ -1834,11 +1834,11 @@ def get_feedback_reference_no(request, service_code):
     lastRefNo = last_reference_no['Reference_No__max']
     if not lastRefNo:
         year = timezone.now().year
-        newRefNo = service_code + "/" + str(year) + "/" + "0001"
+        newRefNo = service_code + "-" + str(year) + "-" + "0001"
     else:
         substring = str(lastRefNo)[9:13]
         substring = int(substring) + 1
         RefNo = str(substring).zfill(4)
         year = timezone.now().year
-        newRefNo = service_code + "/" + str(year) + "/" + RefNo
+        newRefNo = service_code + "-" + str(year) + "-" + RefNo
     return newRefNo
