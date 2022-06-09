@@ -47,9 +47,9 @@ form, input, select, textarea{
                                                     <input type="hidden" id="checkedVals" name="checkedVals"/>
                                                 </label>
                                             </td>
-                                            <td><button type="button" class="btn btn-primary btn-link" onclick="viewApplicationDetails('{{application_details.Application_No}}')">{{application_details.Application_No}}</button></td>
+                                            <td><button type="button" class="btn btn-primary btn-link" onclick="viewApplicationDetails('{{application_details.application_no}}')">{{application_details.application_no}}</button></td>
                                             {% for details in details %}
-                                                {% if application_details.Application_No == details.Application_No %}
+                                                {% if application_details.application_no == details.Application_No %}
                                                     <td>{{details.Application_Date|date:"d-m-Y"}}</td>
                                                     <td>{{details.Applicant_Name}}</td>
                                                     <td>{{details.Contact_No}}</td>
@@ -57,7 +57,7 @@ form, input, select, textarea{
                                             {% endfor %}
 
                                             <input type="hidden" value="{{application_details.Email}}" id="email_{{ forloop.counter }}">
-                                            <input type="hidden" value="{{application_details.Application_No}}" id="applicationNo_{{ forloop.counter }}">
+                                            <input type="hidden" value="{{application_details.application_no}}" id="applicationNo_{{ forloop.counter }}">
                                         </tr>
                                     {% empty %}
                                         <tr>

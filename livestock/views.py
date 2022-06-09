@@ -9,6 +9,8 @@ from django.template.loader import render_to_string
 from django.utils import timezone
 from django.views.decorators.cache import cache_control
 import requests
+from zeep import Client
+
 from administrator.models import t_dzongkhag_master, t_gewog_master, t_village_master, t_location_field_office_mapping, \
     t_user_master, t_field_office_master, t_unit_master, t_service_master, t_livestock_species_master, \
     t_livestock_species_breed_master, t_meat_item_master
@@ -714,26 +716,31 @@ def meat_shop_submit(request):
     application_details = t_workflow_details.objects.filter(application_no=application_id)
     application_details.update(action_date=date.today())
     application_details.update(application_status='A')
-    account_details = t_payment_details_master.objects.filter(account_head_name='account_head_name')
-    t_payment_details.objects.create(application_no=application_id,
-                                     application_date=date.today(),
-                                     permit_no=clearance,
-                                     service_id='CMS',
-                                     validity=validity_date,
-                                     payment_type=None,
-                                     instrument_no=None,
-                                     amount=account_details.service_fee,
-                                     receipt_no=None,
-                                     receipt_date=None,
-                                     updated_by=None,
-                                     updated_on=None,
-                                     permit_type='Final',
-                                     account_head_code=account_details.account_head_code)
-
-    post_data = {'Application Number': application_id, 'Agency Code': "BAFRA", 'Service Name': "Service_Name",
-                 'Service fee': account_details.service_fee, 'Account head code': account_details.account_head_code}
-    requests.post('https://www.citizenservices.gov.bt/G2CPaymentAggregator/services/G2CPaymentInitiatorBusiness',
-                  data=post_data)
+    account_details = t_payment_details_master.objects.filter(account_head_code='131110040')
+    for pay_details in account_details:
+        fees = pay_details.service_fee
+        service_name = pay_details.service_name
+        t_payment_details.objects.create(application_no=application_id,
+                                         application_date=date.today(),
+                                         permit_no=clearance,
+                                         service_id='CMS',
+                                         validity=validity_date,
+                                         payment_type=None,
+                                         instrument_no=None,
+                                         amount=fees,
+                                         receipt_no=None,
+                                         receipt_date=None,
+                                         updated_by=None,
+                                         updated_on=None,
+                                         permit_type='Final',
+                                         account_head_code='account_head_code')
+        cl = Client('https://www.citizenservices.gov.bt/G2CPaymentAggregator/services/G2CPaymentInitiatorBusiness?wsdl')
+        order_type = cl.get_type('ns1:PaymentDTO')
+        paymentList = order_type(accountHeadId='account_head_code', serviceFee=fees)
+        post_data = {'agencyCode': "BAFRA", 'applicationNo': application_id,
+                     'serviceName': service_name,
+                     'paymentList': paymentList}
+        cl.service.insertPaymentDetailsOnApproval(post_data)
     for email_id in details:
         emailId = email_id.Email
         send_meat_shop_approve_email(clearance, emailId, validity_date)
@@ -1379,25 +1386,31 @@ def approve_fo_la_import(request):
     for email_id in details:
         email = email_id.Email
         send_la_approve_email(permit_no, email, validity_date)
-    account_details = t_payment_details_master.objects.filter(account_head_name='account_head_name')
-    t_payment_details.objects.create(Application_No=application_no,
-                                     Application_Date=date.today(),
-                                     Permit_No=permit_no,
-                                     Service_Id='IAF',
-                                     Validity=validity_date,
-                                     Payment_Type=None,
-                                     Instrument_No=None,
-                                     Amount=account_details.service_fee,
-                                     Receipt_No=None,
-                                     Receipt_Date=None,
-                                     Updated_By=None,
-                                     Updated_On=None,
-                                     Permit_Type='Final',
-                                     account_head_code=account_details.account_head_code)
-    post_data = {'Application Number': application_no, 'Agency Code': "BAFRA", 'Service Name': "Service_Name",
-                 'Service fee': account_details.service_fee, 'Account head code': account_details.account_head_code}
-    requests.post('https://www.citizenservices.gov.bt/G2CPaymentAggregator/services/G2CPaymentInitiatorBusiness',
-                  data=post_data)
+    account_details = t_payment_details_master.objects.filter(account_head_code='131110101')
+    for pay_details in account_details:
+        fees = pay_details.service_fee
+        service_name = pay_details.service_name
+        t_payment_details.objects.create(application_no=application_no,
+                                         application_date=date.today(),
+                                         permit_no=permit_no,
+                                         service_id='IAF',
+                                         validity=validity_date,
+                                         payment_type=None,
+                                         instrument_no=None,
+                                         amount=fees,
+                                         receipt_no=None,
+                                         receipt_date=None,
+                                         updated_by=None,
+                                         updated_on=None,
+                                         permit_type='Final',
+                                         account_head_code='account_head_code')
+        cl = Client('https://www.citizenservices.gov.bt/G2CPaymentAggregator/services/G2CPaymentInitiatorBusiness?wsdl')
+        order_type = cl.get_type('ns1:PaymentDTO')
+        paymentList = order_type(accountHeadId='account_head_code', serviceFee=fees)
+        post_data = {'agencyCode': "BAFRA", 'applicationNo': application_no,
+                     'serviceName': service_name,
+                     'paymentList': paymentList}
+        cl.service.insertPaymentDetailsOnApproval(post_data)
     return redirect(focal_officer_application)
 
 
@@ -1983,25 +1996,31 @@ def approve_fo_lp_import(request):
     for email_id in details:
         email = email_id.Email
         send_lp_approve_email(permit_no, email, validity_date)
-    account_details = t_payment_details_master.objects.filter(account_head_code='account_head_code')
-    t_payment_details.objects.create(Application_No=application_no,
-                                     Application_Date=date.today(),
-                                     Permit_No=permit_no,
-                                     Service_Id='ILP',
-                                     Validity=validity_date,
-                                     Payment_Type=None,
-                                     Instrument_No=None,
-                                     Amount=account_details.service_fee,
-                                     Receipt_No=None,
-                                     Receipt_Date=None,
-                                     Updated_By=None,
-                                     Updated_On=None,
-                                     Permit_Type='Final',
-                                     account_head_code=account_details.account_head_code)
-    post_data = {'Application Number': application_no, 'Agency Code': "BAFRA", 'Service Name': "Service_Name",
-                 'Service fee': account_details.service_fee, 'Account head code': account_details.account_head_code}
-    requests.post('https://www.citizenservices.gov.bt/G2CPaymentAggregator/services/G2CPaymentInitiatorBusiness',
-                  data=post_data)
+    account_details = t_payment_details_master.objects.filter(account_head_code='131110011')
+    for pay_details in account_details:
+        fees = pay_details.service_fee
+        service_name = pay_details.service_name
+        t_payment_details.objects.create(application_no=application_no,
+                                         application_date=date.today(),
+                                         permit_no=permit_no,
+                                         service_id='ILP',
+                                         validity=validity_date,
+                                         payment_type=None,
+                                         instrument_no=None,
+                                         amount=fees,
+                                         receipt_no=None,
+                                         receipt_date=None,
+                                         updated_by=None,
+                                         updated_on=None,
+                                         permit_type='Final',
+                                         account_head_code='account_head_code')
+        cl = Client('https://www.citizenservices.gov.bt/G2CPaymentAggregator/services/G2CPaymentInitiatorBusiness?wsdl')
+        order_type = cl.get_type('ns1:PaymentDTO')
+        paymentList = order_type(accountHeadId='account_head_code', serviceFee=fees)
+        post_data = {'agencyCode': "BAFRA", 'applicationNo': application_no,
+                     'serviceName': service_name,
+                     'paymentList': paymentList}
+        cl.service.insertPaymentDetailsOnApproval(post_data)
     return render(request, 'focal_officer_pending_list.html')
 
 
@@ -2603,25 +2622,37 @@ def approve_application_export(request):
     application_details = t_workflow_details.objects.filter(application_no=application_id)
     application_details.update(action_date=date.today())
     application_details.update(application_status='A')
-    account_details = t_payment_details_master.objects.filter(account_head_code='account_head_code')
-    t_payment_details.objects.create(application_no=application_id,
-                                     application_date=date.today(),
-                                     permit_no=Export_Permit_No,
-                                     service_id='LEC',
-                                     validity=validity_date,
-                                     payment_type=None,
-                                     instrument_no=None,
-                                     amount=account_details.service_fee,
-                                     receipt_no=None,
-                                     receipt_date=None,
-                                     updated_by=None,
-                                     updated_on=None,
-                                     permit_type='Final',
-                                     account_head_code=account_details.account_head_code)
-    post_data = {'Application Number': application_id, 'Agency Code': "BAFRA", 'Service Name': "Service_Name",
-                 'Service fee': account_details.service_fee, 'Account head code': account_details.account_head_code}
-    requests.post('https://www.citizenservices.gov.bt/G2CPaymentAggregator/services/G2CPaymentInitiatorBusiness',
-                  data=post_data)
+    for app_details in details:
+        app_type = app_details.Application_Type
+        if app_type == 'P':
+            account_details = t_payment_details_master.objects.filter(account_head_code='131110103')
+        else:
+            account_details = t_payment_details_master.objects.filter(account_head_code='131110103')
+        for pay_details in account_details:
+            fees = pay_details.service_fee
+            service_name = pay_details.service_name
+            t_payment_details.objects.create(application_no=application_id,
+                                             application_date=date.today(),
+                                             permit_no=Export_Permit_No,
+                                             service_id='LEC',
+                                             validity=validity_date,
+                                             payment_type=None,
+                                             instrument_no=None,
+                                             amount=fees,
+                                             receipt_no=None,
+                                             receipt_date=None,
+                                             updated_by=None,
+                                             updated_on=None,
+                                             permit_type='Final',
+                                             account_head_code='account_head_code')
+            cl = Client('https://www.citizenservices.gov.bt/G2CPaymentAggregator/services/G2CPaymentInitiatorBusiness'
+                        '?wsdl')
+            order_type = cl.get_type('ns1:PaymentDTO')
+            paymentList = order_type(accountHeadId='account_head_code', serviceFee=fees)
+            post_data = {'agencyCode': "BAFRA", 'applicationNo': application_id,
+                         'serviceName': service_name,
+                         'paymentList': paymentList}
+            cl.service.insertPaymentDetailsOnApproval(post_data)
     for email_id in details:
         emailId = email_id.Email
         send_lec_approve_email(Export_Permit_No, emailId, validity_date)
@@ -3133,25 +3164,31 @@ def approve_application_lmp(request):
     application_details = t_workflow_details.objects.filter(application_no=application_id)
     application_details.update(action_date=date.today())
     application_details.update(application_status='A')
-    account_details = t_payment_details_master.objects.filter(account_head_code='account_head_code')
-    t_payment_details.objects.create(application_no=application_id,
-                                     application_date=date.today(),
-                                     permit_no=Movement_Permit_No,
-                                     service_id='LMP',
-                                     validity=validity_date,
-                                     payment_type=None,
-                                     instrument_no=None,
-                                     amount=account_details.service_fee,
-                                     receipt_no=None,
-                                     receipt_date=None,
-                                     updated_by=None,
-                                     updated_on=None,
-                                     permit_type='Final',
-                                     account_head_code=account_details.account_head_code)
-    post_data = {'Application Number': application_id, 'Agency Code': "BAFRA", 'Service Name': "Service_Name",
-                 'Service fee': account_details.service_fee, 'Account head code': account_details.account_head_code}
-    requests.post('https://www.citizenservices.gov.bt/G2CPaymentAggregator/services/G2CPaymentInitiatorBusiness',
-                  data=post_data)
+    account_details = t_payment_details_master.objects.filter(account_head_code='1')
+    for pay_details in account_details:
+        fees = pay_details.service_fee
+        service_name = pay_details.service_name
+        t_payment_details.objects.create(application_no=application_id,
+                                         application_date=date.today(),
+                                         permit_no=Movement_Permit_No,
+                                         service_id='LMP',
+                                         validity=validity_date,
+                                         payment_type=None,
+                                         instrument_no=None,
+                                         amount=fees,
+                                         receipt_no=None,
+                                         receipt_date=None,
+                                         updated_by=None,
+                                         updated_on=None,
+                                         permit_type='Final',
+                                         account_head_code='account_head_code')
+        cl = Client('https://www.citizenservices.gov.bt/G2CPaymentAggregator/services/G2CPaymentInitiatorBusiness?wsdl')
+        order_type = cl.get_type('ns1:PaymentDTO')
+        paymentList = order_type(accountHeadId='account_head_code', serviceFee=fees)
+        post_data = {'agencyCode': "BAFRA", 'applicationNo': application_id,
+                     'serviceName': service_name,
+                     'paymentList': paymentList}
+        cl.service.insertPaymentDetailsOnApproval(post_data)
     for email_id in details:
         emailId = email_id.Email
         send_lms_approve_email(Movement_Permit_No, emailId, validity_date)
@@ -3578,26 +3615,37 @@ def approve_application_apm(request):
     for email_id in details:
         emailId = email_id.Email
         send_apm_approve_email(Clearance_No, emailId, validity_date)
-    account_details = t_payment_details_master.objects.filter(account_head_name='account_head_code')
-    t_payment_details.objects.create(application_no=application_id,
-                                     application_date=date.today(),
-                                     permit_no=Clearance_No,
-                                     service_id='APM',
-                                     validity=validity_date,
-                                     payment_type=None,
-                                     instrument_no=None,
-                                     amount=account_details.service_fee,
-                                     receipt_no=None,
-                                     receipt_date=None,
-                                     updated_by=None,
-                                     updated_on=None,
-                                     permit_type='Final',
-                                     account_head_code=account_details.account_head_code)
-
-    post_data = {'Application Number': application_id, 'Agency Code': "BAFRA", 'Service Name': "Service_Name",
-                 'Service fee': account_details.service_fee, 'Account head code': account_details.account_head_code}
-    requests.post('https://www.citizenservices.gov.bt/G2CPaymentAggregator/services/G2CPaymentInitiatorBusiness',
-                  data=post_data)
+    for app_details in details:
+        app_type = app_details.Inspection_Type
+        if app_type == 'A':
+            account_details = t_payment_details_master.objects.filter(account_head_code='131110008')
+        else:
+            account_details = t_payment_details_master.objects.filter(account_head_code='131110009')
+        for pay_details in account_details:
+            fees = pay_details.service_fee
+            service_name = pay_details.service_name
+            t_payment_details.objects.create(application_no=application_id,
+                                             application_date=date.today(),
+                                             permit_no=Clearance_No,
+                                             service_id='APM',
+                                             validity=validity_date,
+                                             payment_type=None,
+                                             instrument_no=None,
+                                             amount=fees,
+                                             receipt_no=None,
+                                             receipt_date=None,
+                                             updated_by=None,
+                                             updated_on=None,
+                                             permit_type='Final',
+                                             account_head_code='account_head_code')
+            cl = Client('https://www.citizenservices.gov.bt/G2CPaymentAggregator/services/G2CPaymentInitiatorBusiness'
+                        '?wsdl')
+            order_type = cl.get_type('ns1:PaymentDTO')
+            paymentList = order_type(accountHeadId='account_head_code', serviceFee=fees)
+            post_data = {'agencyCode': "BAFRA", 'applicationNo': application_id,
+                         'serviceName': service_name,
+                         'paymentList': paymentList}
+            cl.service.insertPaymentDetailsOnApproval(post_data)
     return redirect(inspector_application)
 
 

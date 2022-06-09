@@ -3,13 +3,15 @@ from datetime import date, datetime, timedelta
 from django.core.files.storage import FileSystemStorage
 from django.core.mail import send_mail
 from django.db.models import Max, Sum
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.utils import timezone
 import requests
+import numpy as np
 from django.views.decorators.cache import cache_control
-
+from django.views.decorators.csrf import csrf_exempt
+from zeep import Client
 from administrator.models import t_dzongkhag_master, t_gewog_master, t_village_master, t_location_field_office_mapping, \
     t_user_master, t_field_office_master, t_plant_crop_master, t_plant_pesticide_master, t_plant_crop_variety_master, \
     t_service_master, t_country_master, t_plant_crop_category_master, t_unit_master, t_section_master, \
@@ -1023,12 +1025,12 @@ def view_application_details(request):
 
 
 def approve_application(request):
-    application_id = request.POST.get('application_id')
-    Inspection_Leader = request.POST.get('Inspection_Leader')
-    Inspection_Team = request.POST.get('Inspection_Team')
-    remarks = request.POST.get('remarks')
-    dateOfInspection = request.POST.get('dateOfInspection')
-    validity_period = request.POST.get('validity_period')
+    application_id = request.GET.get('application_id')
+    Inspection_Leader = request.GET.get('Inspection_Leader')
+    Inspection_Team = request.GET.get('Inspection_Team')
+    remarks = request.GET.get('remarks')
+    dateOfInspection = request.GET.get('dateOfInspection')
+    validity_period = request.GET.get('validity_period')
     permit_no = get_permit_no(request)
     details = t_plant_movement_permit_t1.objects.filter(Application_No=application_id)
     if remarks is not None:
@@ -1048,7 +1050,7 @@ def approve_application(request):
     application_details = t_workflow_details.objects.filter(application_no=application_id)
     application_details.update(action_date=date.today())
     application_details.update(application_status='A')
-    update_payment_details(application_id, permit_no, 'MPP', validity_date, 'Final', 'account_head_name')
+    update_payment_details(application_id, permit_no, 'MPP', validity_date, 'Final', '131110007')
     for email_id in details:
         emailId = email_id.Email
         send_mpp_approve_email(permit_no, emailId, validity_date)
@@ -1063,9 +1065,10 @@ def send_mpp_approve_email(permit_no, Email, validity_date):
               "Movement Permit No is:" + permit_no + " And is Valid Till " + " " + str(validity_date) + \
               " Please Make Payment Before Validity Expires. Visit The Nearest Bafra Office For Payment " \
               "or Pay Online at https://tinyurl.com/y3m7wa3c Thank you! "
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def reject_application(request):
@@ -2707,7 +2710,7 @@ def approve_import_application(request):
     application_details = t_workflow_details.objects.filter(application_no=application_id)
     application_details.update(action_date=date.today())
     application_details.update(application_status='A')
-    update_payment_details(application_id, permit_no, 'IPP', validity_date, 'Final', 'account_head_name')
+    update_payment_details(application_id, permit_no, 'IPP', validity_date, 'Final', 'null')
     for email_id in application_details:
         emailId = email_id.Email
         send_ipp_approve_email(permit_no, emailId, validity_date)
@@ -2719,12 +2722,13 @@ def send_ipp_approve_email(permit_no, Email, validity_date):
     message = "Dear Sir," \
               "" \
               "Your Application for Import Permit for Plant And Plant Products Has Been Approved. Your " \
-              "Movement Permit No is:" + permit_no + " And is Valid Till " + " " + str(validity_date) + \
+              "Import Permit No is:" + permit_no + " And is Valid Till " + " " + str(validity_date) + \
               " Please Make Payment Before Validity Expires. Visit The Nearest Bafra Office For Payment " \
               "or Pay Online at https://tinyurl.com/y3m7wa3c Thank you! "
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def send_ipp_reject_email(Email):
@@ -3266,17 +3270,19 @@ def fo_reject(request):
 def send_import_reject_email(remarks, Email):
     subject = 'APPLICATION REJECTED'
     message = "Dear " + "Sir" + " Your Application for Import Of Plant And Plant Products Has Been Rejected Because " + remarks + ""
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def send_movement_reject_email(remarks, Email):
     subject = 'APPLICATION REJECTED'
     message = "Dear " + "Sir" + " Your Application for Movement Permit For Plant And Plant Products Has Been Rejected Because " + remarks + ""
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def fo_approve(request):
@@ -3309,7 +3315,12 @@ def fo_approve(request):
     for email_id in details:
         email = email_id.Email
         send_import_approve_email(new_import_permit, email, validity_date)
-    update_payment_details(appId, new_import_permit, 'IPP', validity_date, 'Final', 'account_head_name')
+    for application_details in details:
+        app_type = application_details.Import_Type
+        if app_type == 'P':
+            update_payment_details(appId, new_import_permit, 'IPP', validity_date, 'Final', '131110102')
+        else:
+            update_payment_details(appId, new_import_permit, 'IPP', validity_date, 'Final', '131110016')
     return redirect(dashboard)
 
 
@@ -3321,9 +3332,10 @@ def send_import_approve_email(new_import_permit, Email, validity_date):
               "Import Permit No is:" + new_import_permit + " And is Valid TIll " + str(validity_date) + \
               " Please Make Payment Before Validity Expires. Visit The Nearest Bafra Office For Payment" \
               " or Pay Online at https://tinyurl.com/y3m7wa3c Thank you! "
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def get_import_permit_no():
@@ -3482,9 +3494,10 @@ def send_clearance_approve_email(clearance_ref_No, Email):
               "" \
               "Your Application for Release Form Has Been Approved. Your " \
               "Clearance Reference No is:" + clearance_ref_No + " . "
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def load_import_details(request):
@@ -4960,7 +4973,7 @@ def export_complete(request):
     work_details = t_workflow_details.objects.filter(application_no=Application_No)
     work_details.update(action_date=date.today())
     work_details.update(application_status='A')
-    update_payment_details(Application_No, export_permit, 'EPP', None, 'Final', 'account_head_name')
+    update_payment_details(Application_No, export_permit, 'EPP', None, 'Final', '131110018')
     for email_id in application_details:
         emailId = email_id.Email
         send_export_approve_email(export_permit, emailId)
@@ -4975,9 +4988,10 @@ def send_export_approve_email(export_permit, Email):
               "Export Permit No is:" + export_permit + ". Please Make Payment To Download The Permit." \
                                                        " Visit The Nearest Bafra Office For Payment or Pay Online " \
                                                        "at https://tinyurl.com/y3m7wa3c Thank you! "
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def permit_plant_details(request):
@@ -5381,7 +5395,9 @@ def send_nursery_approve_email(clearance_ref_no, Email):
               "Registration No is:" + clearance_ref_no + "."
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def send_nursery_reject_email(remarks, email):
@@ -5390,9 +5406,10 @@ def send_nursery_reject_email(remarks, email):
               "" \
               "Your Application for Nursery/Seed Growers Registration Has Been Rejected." \
               "Because :" + remarks + "."
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [email]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def reject_nursery_application(request):
@@ -5894,7 +5911,7 @@ def approve_certificate_application(request):
     application_details = t_workflow_details.objects.filter(application_no=application_id)
     application_details.update(action_date=date.today())
     application_details.update(application_status='A')
-    update_payment_details(application_id, certificate_no, 'RSC', validity_date, 'Final', 'account_head_name')
+    update_payment_details(application_id, certificate_no, 'RSC', validity_date, 'Final', '131110002')
     for email_id in details:
         emailId = email_id.Email
         send_seed_approve_email(certificate_no, emailId, validity_date)
@@ -5909,9 +5926,10 @@ def send_seed_approve_email(clearance_ref_no, Email, validity_date):
               "Seed Certificate No is:" + clearance_ref_no + " And is Valid Till " + " " + str(validity_date) + \
               " Please Make Payment Before Validity Expires.Visit The Nearest Bafra Office For" \
               " Payment or Pay Online at https://tinyurl.com/y3m7wa3c Thank you! "
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def reject_certificate_application(request):
@@ -5938,9 +5956,10 @@ def send_seed_reject_email(Email):
     message = "Dear Sir," \
               "" \
               "Your Application for Seed Certification Has Been Rejected. "
-    email_from = settings.EMAIL_HOST_USER
     recipient_list = [Email]
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
+              auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
+              connection=None, html_message=None)
 
 
 def resubmit_seed_application(request):
@@ -7246,7 +7265,6 @@ def validate_receipt_no(request):
 
 
 def get_citizen_details(request):
-
     data = dict()
     cid = request.GET.get('cidNo')
     BASE_URL = 'https://datahub-apim.dit.gov.bt/dcrc_citizen_details_api/1.0.0/citizendetails/' + cid
@@ -7257,7 +7275,7 @@ def get_citizen_details(request):
 
     data['response'] = response.json()
     return JsonResponse(data)
-   
+
 
 def get_auth_token():
     """
@@ -7278,24 +7296,30 @@ def get_auth_token():
 
 def update_payment_details(application_no, permit_no, service_code, validity_date, Permit_Type, account_head_code):
     account_details = t_payment_details_master.objects.filter(account_head_code=account_head_code)
-    t_payment_details.objects.create(application_no=application_no,
-                                     application_date=date.today(),
-                                     permit_no=permit_no,
-                                     service_id=service_code,
-                                     validity=validity_date,
-                                     payment_type=None,
-                                     instrument_no=None,
-                                     amount=account_details.service_fee,
-                                     receipt_no=None,
-                                     receipt_date=None,
-                                     updated_by=None,
-                                     updated_on=None,
-                                     permit_type=Permit_Type,
-                                     account_head_code=account_details.account_head_code)
-    post_data = {'applicationNo': application_no, 'agencyCode': "BAFRA", 'serviceName': "Service_Name",
-                 'serviceFee': account_details.service_fee, 'accountHeadId': account_details.account_head_code}
-    requests.post('https://www.citizenservices.gov.bt/G2CPaymentAggregator/services/G2CPaymentInitiatorBusiness',
-                  data=post_data)
+    for pay_details in account_details:
+        fees = pay_details.service_fee
+        service_name = pay_details.service_name
+        t_payment_details.objects.create(application_no=application_no,
+                                         application_date=date.today(),
+                                         permit_no=permit_no,
+                                         service_id=service_code,
+                                         validity=validity_date,
+                                         payment_type=None,
+                                         instrument_no=None,
+                                         amount=fees,
+                                         receipt_no=None,
+                                         receipt_date=None,
+                                         updated_by=None,
+                                         updated_on=None,
+                                         permit_type=Permit_Type,
+                                         account_head_code=account_head_code)
+        cl = Client('https://www.citizenservices.gov.bt/G2CPaymentAggregator/services/G2CPaymentInitiatorBusiness?wsdl')
+        order_type = cl.get_type('ns1:PaymentDTO')
+        paymentList = order_type(accountHeadId=account_head_code, serviceFee=fees)
+        post_data = {'agencyCode': "BAFRA", 'applicationNo': application_no,
+                     'serviceName': service_name,
+                     'paymentList': paymentList}
+        cl.service.insertPaymentDetailsOnApproval(post_data)
 
 
 def delete_details(request):
@@ -8661,22 +8685,16 @@ def load_field_office(request):
         return render(request, 'import_permit/field_office_list.html', {'location': location})
 
 
+@csrf_exempt
 def bbfss_payment_update(request):
     applicationNo = request.GET.get("applicationNo")
     paymentDate = request.GET.get("paymentDate")
     txnId = request.GET.get("txnId")
-    txnAmount = request.GET.get("txnAmount")
     paymentStatus = request.GET.get("paymentStatus")
-
-    details_pay = t_payment_details.ojects.filter(application_no=applicationNo)
-    account_head = t_payment_details_master.ojects.filter(account_head_code=details_pay.account_head_code)
+    
     if paymentStatus == 'PAID':
+        details_pay = t_payment_details.objects.filter(application_no=applicationNo)
         details_pay.update(receipt_no=txnId)
         details_pay.update(receipt_date=paymentDate)
-        details_pay.update(amount=txnAmount)
-        if account_head == 'CMS':
-            post_data = {'Status': "Approved"}
-            requests.post('IBLS_URL',data=post_data)
-        elif account_head == 'FBR':
-            post_data = {'Status': "Approved"}
-            requests.post('IBLS_URL', data=post_data)
+        details_pay.update(payment_type='Online')
+    return HttpResponse('<h1>Ok/h1>')

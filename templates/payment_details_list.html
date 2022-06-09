@@ -28,15 +28,15 @@
                                 {% for application_details in application_details %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td><button class="btn btn-primary btn-link"  onclick="populate_payment_modal('{{application_details.Application_No}}')">{{application_details.Application_No}}</button></td>
+                                        <td><button class="btn btn-primary btn-link"  onclick="populate_payment_modal('{{application_details.application_no}}')">{{application_details.application_no}}</button></td>
                                         {% for service_details in service_details %}
-                                            {% if application_details.Service_Id == service_details.Service_Code %}
+                                            {% if application_details.service_id == service_details.Service_Code %}
                                                 <td>{{service_details.Service_Name}}</td>
                                             {% endif %}
                                         {% endfor %}
-                                        <td>{{application_details.Application_Date|date:"d-m-Y"}}</td>
-                                        {% if application_details.Validity %}
-                                            <td>{{application_details.Validity|date:"d-m-Y"}}</td>
+                                        <td>{{application_details.application_date|date:"d-m-Y"}}</td>
+                                        {% if application_details.validity %}
+                                            <td>{{application_details.validity|date:"d-m-Y"}}</td>
                                         {% else %}
                                             <td>None</td>
                                         {% endif %}

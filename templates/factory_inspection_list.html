@@ -25,21 +25,21 @@
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
                                         {% for payment_details in payment_details%}
-                                            {% if application_details.Application_No == payment_details.Application_No %}
+                                            {% if application_details.application_no == payment_details.Application_No %}
                                                 {% if payment_details.Receipt_Date %}
-                                                    <td><button class="btn btn-primary btn-link" onclick="factory_inspection_application_details('{{application_details.Application_No}}')">{{application_details.Application_No}}</button></td>
+                                                    <td><button class="btn btn-primary btn-link" onclick="factory_inspection_application_details('{{application_details.application_no}}')">{{application_details.application_no}}</button></td>
                                                 {% else %}
-                                                    <td>{{application_details.Application_No}}</td>
+                                                    <td>{{application_details.application_no}}</td>
                                                 {% endif %}
                                             {% endif %}
                                         {% endfor %}
                                         {% for service_details in service_details %}
-                                            {% if application_details.Service_Code == service_details.Service_Code %}
+                                            {% if application_details.service_code == service_details.Service_Code %}
                                                 <td>{{service_details.Service_Name}}</td>
                                             {% endif %}
                                         {% endfor %}
-                                        <td>{{application_details.Applicant_Id}}</td>
-                                        <td>{{application_details.Application_Date|date:"d-m-Y"}}</td>
+                                        <td>{{application_details.applicant_id}}</td>
+                                        <td>{{application_details.action_date|date:"d-m-Y"}}</td>
                                     </tr>
                                     {% empty %}
                                     <tr>

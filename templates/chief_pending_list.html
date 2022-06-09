@@ -24,14 +24,14 @@
                                 {% for application_details in application_details %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td><button class="btn btn-primary btn-link" onclick="viewApplicationDetails('{{application_details.Application_No}}','{{application_details.Service_Code}}')">{{application_details.Application_No}}</button></td>
+                                        <td><button class="btn btn-primary btn-link" onclick="viewApplicationDetails('{{application_details.application_no}}','{{application_details.service_code}}')">{{application_details.application_no}}</button></td>
                                         {% for service_details in service_details %}
-                                            {% if application_details.Service_Code == service_details.Service_Code %}
+                                            {% if application_details.service_code == service_details.Service_Code %}
                                                 <td>{{service_details.Service_Name}}</td>
                                             {% endif %}
                                         {% endfor %}
-                                        <td>{{application_details.Applicant_Id}}</td>
-                                        <td>{{application_details.Application_Date|date:"d-m-Y"}}</td>
+                                        <td>{{application_details.applicant_id}}</td>
+                                        <td>{{application_details.action_date|date:"d-m-Y"}}</td>
                                     </tr>
                                     {% empty %}
                                     <tr>

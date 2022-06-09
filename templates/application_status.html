@@ -24,18 +24,18 @@
                                 {% for application_details in application_details %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td>{{application_details.Application_No}}</td>
+                                        <td>{{application_details.application_no}}</td>
                                         {% for service_details in service_details %}
-                                            {% if application_details.Service_Code == service_details.Service_Code %}
+                                            {% if application_details.service_code == service_details.Service_Code %}
                                                 <td>{{service_details.Service_Name}}</td>
                                             {% endif %}
                                         {% endfor %}
-                                        <td>{{application_details.Application_Date|date:"d-m-Y"}}</td>
-                                        {% if application_details.Application_Status == 'A' or application_details.Application_Status == 'C'%}
+                                        <td>{{application_details.action_date|date:"d-m-Y"}}</td>
+                                        {% if application_details.application_status == 'A' or application_details.application_status == 'C'%}
                                             <td>Approved</td>
-                                        {% elif application_details.Application_Status == 'RS' %}
+                                        {% elif application_details.application_status == 'RS' %}
                                             <td>Resubmit</td>
-                                        {% elif application_details.Application_Status == 'R' %}
+                                        {% elif application_details.application_status == 'R' %}
                                             <td>Rejected</td>
                                         {% else %}
                                             <td>Pending</td>

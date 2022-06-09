@@ -170,7 +170,8 @@ urlpatterns = [
     path('member_audit_plan', views.member_audit_plan, name='member_audit_plan'),
     path('client_audit_plan', views.client_audit_plan, name='client_audit_plan'),
     path('view_audit_plan', views.view_audit_plan, name='view_audit_plan'),
-    path('load_field_office', views.load_field_office, name='load_field_office')
+    path('load_field_office', views.load_field_office, name='load_field_office'),
+    path('bbfss_payment_update', views.bbfss_payment_update, name='bbfss_payment_update')
 
 ]
 if settings.DEBUG:

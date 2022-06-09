@@ -468,6 +468,6 @@ class t_payment_details(models.Model):
 
 class t_payment_details_master(models.Model):
     record_id = models.AutoField(primary_key=True)
-    account_head_name = models.CharField(max_length=100, default=None, blank=True, null=True)
+    account_head_name = models.CharField(max_length=250, default=None, blank=True, null=True)
     account_head_code = models.BigIntegerField(default=None, blank=True, null=True)
     service_fee = models.IntegerField(default=None, blank=True, null=True)

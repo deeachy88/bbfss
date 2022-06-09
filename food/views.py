@@ -10,6 +10,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.views.decorators.cache import cache_control
+from zeep import Client
 
 from administrator.models import t_village_master, t_gewog_master, t_dzongkhag_master, t_country_master, \
     t_field_office_master, t_location_field_office_mapping, t_unit_master, t_service_master, t_user_master, \
@@ -486,7 +487,7 @@ def concern_details_feasibility_ins(request):
                                                              fbo_response=response_fbo, nc=None, nc_category=None)
     application_details = t_food_business_registration_licensing_t5.objects.filter(application_no=application_id,
                                                                                    inspection_type='Feasibility '
-                                                                                                   'Inspection')\
+                                                                                                   'Inspection') \
         .order_by('record_id')
     message_count = t_food_business_registration_licensing_t5.objects.filter(
         concern='Yes', inspection_type='Feasibility Inspection').count()
@@ -526,7 +527,7 @@ def approve_feasibility_inspection(request):
     for email_id in details:
         emailId = email_id.email
         send_feasibility_approve_email(Clearance_No, emailId)
-    update_payment(application_id, Clearance_No, 'FBR', None, 'Feasibility')
+    update_payment(application_id, Clearance_No, 'FBR', None, 'Feasibility', '131110039')
     return redirect(inspector_application)
 
 
@@ -638,7 +639,7 @@ def concern_details_factory_ins(request):
                                                              clause_no=Clause_No, date=date.today(), concern=None,
                                                              fbo_response=None, nc=Concern, nc_category=NC_Category)
     application_details = t_food_business_registration_licensing_t5.objects.filter(application_no=application_id,
-                                                                                   inspection_type='Factory Inspection')\
+                                                                                   inspection_type='Factory Inspection') \
         .order_by('record_id')
     message_count = t_food_business_registration_licensing_t5.objects.filter(
         nc='Yes', inspection_type='Factory Inspection').count()
@@ -701,7 +702,7 @@ def fbr_submit(request):
     application_details = t_workflow_details.objects.filter(application_no=application_id)
     application_details.update(action_date=date.today())
     application_details.update(application_status='A')
-    update_payment(application_id, clearance, 'FBR', None, 'Final','account_head_name')
+    update_payment(application_id, clearance, 'FBR', None, 'Final', '131110038')
     for email_id in details:
         emailId = email_id.email
         send_fbr_approve_email(clearance, emailId)
@@ -801,7 +802,7 @@ def edit_fbr_feasibility_details(request):
     else:
         app_details.update(fbo_response=None)
     application_details = t_food_business_registration_licensing_t5.objects.filter(application_no=application_id,
-                                                                                   inspection_type='Feasibility Inspection')\
+                                                                                   inspection_type='Feasibility Inspection') \
         .order_by('record_id')
     message_count = t_food_business_registration_licensing_t5.objects.filter(
         concern='Yes', inspection_type='Feasibility Inspection').count()
@@ -829,7 +830,7 @@ def edit_fbr_factory_details(request):
     else:
         app_details.update(nc_category=None)
     application_details = t_food_business_registration_licensing_t5.objects.filter(application_no=application_id,
-                                                                                   inspection_type='Factory Inspection')\
+                                                                                   inspection_type='Factory Inspection') \
         .order_by('record_id')
     message_count = t_food_business_registration_licensing_t5.objects.filter(
         nc='Yes', inspection_type='Factory Inspection').count()
@@ -1361,7 +1362,7 @@ def approve_food_export(request):
     application_details = t_workflow_details.objects.filter(application_no=application_id)
     application_details.update(action_date=date.today())
     application_details.update(application_status='A')
-    update_payment(application_id, Export_Permit_No, 'FEC', validity_date, 'Final','account_head_name')
+    update_payment(application_id, Export_Permit_No, 'FEC', validity_date, 'Final', '131110049')
     for email_id in details:
         emailId = email_id.Email
         send_fec_approve_email(Export_Permit_No, emailId, validity_date)
@@ -2411,7 +2412,12 @@ def approve_fo_fip_import(request):
     d = timedelta(days=int(validity))
     validity_date = date.today() + d
     details.update(Validity=validity_date)
-    update_payment(application_no, permit_no, 'FIP', validity_date, 'Final','account_head_name')
+    for ap_details in details:
+        import_type = ap_details.Import_Type
+        if import_type == 'P':
+            update_payment(application_no, permit_no, 'FIP', validity_date, 'Final', 'account_head_name')
+        else:
+            update_payment(application_no, permit_no, 'FIP', validity_date, 'Final', '131110011')
     for email_id in details:
         email = email_id.Email
         send_fip_approve_email(permit_no, email, validity_date)
@@ -2643,27 +2649,33 @@ def factory_inspection_list(request):
         return render(request, 'redirect_page.html')
 
 
-def update_payment(application_no, permit_no, service_code, validity_date, Permit_Type, account_head_name):
-    account_details = t_payment_details_master.objects.filter(account_head_name=account_head_name)
-    t_payment_details.objects.create(application_no=application_no,
-                                     application_date=date.today(),
-                                     permit_no=permit_no,
-                                     service_id=service_code,
-                                     validity=validity_date,
-                                     payment_type=None,
-                                     instrument_no=None,
-                                     amount=account_details.service_fee,
-                                     receipt_no=None,
-                                     receipt_date=None,
-                                     updated_by=None,
-                                     updated_on=None,
-                                     permit_type=Permit_Type,
-                                     account_head_code=account_details.account_head_code)
+def update_payment(application_no, permit_no, service_code, validity_date, Permit_Type, account_head_code):
+    account_details = t_payment_details_master.objects.filter(account_head_code=account_head_code)
+    for pay_details in account_details:
+        fees = pay_details.service_fee
+        service_name = pay_details.service_name
+        t_payment_details.objects.create(application_no=application_no,
+                                         application_date=date.today(),
+                                         permit_no=permit_no,
+                                         service_id=service_code,
+                                         validity=validity_date,
+                                         payment_type=None,
+                                         instrument_no=None,
+                                         amount=fees,
+                                         receipt_no=None,
+                                         receipt_date=None,
+                                         updated_by=None,
+                                         updated_on=None,
+                                         permit_type=Permit_Type,
+                                         account_head_code=account_head_code)
+        cl = Client('https://www.citizenservices.gov.bt/G2CPaymentAggregator/services/G2CPaymentInitiatorBusiness?wsdl')
+        order_type = cl.get_type('ns1:PaymentDTO')
+        paymentList = order_type(accountHeadId=account_head_code, serviceFee=fees)
+        post_data = {'agencyCode': "BAFRA", 'applicationNo': application_no,
+                     'serviceName': service_name,
+                     'paymentList': paymentList}
+        cl.service.insertPaymentDetailsOnApproval(post_data)
 
-    post_data = {'Application Number': application_no, 'Agency Code': "BAFRA", 'Service Name': "Service_Name",
-                 'Service fee': account_details.service_fee, 'Account head code': account_details.account_head_code}
-    requests.post('https://www.citizenservices.gov.bt/G2CPaymentAggregator/services/G2CPaymentInitiatorBusiness',
-                  data=post_data)
 
 def food_handler_application_details(request):
     app_id = request.GET.get('application_id')
@@ -2738,7 +2750,7 @@ def update_food_handler_status(request):
         update_details.update(FH_License_Validity_Period=int(730))
         update_details.update(FH_License_Validity=validity_date)
         update_details.update(Approved_Date=date.today())
-        update_payment(app_no, food_handler_license_no, 'FHL', validity_date, 'Final')
+        update_payment(app_no, food_handler_license_no, 'FHL', validity_date, 'Final', '131110021')
         details = t_workflow_details.objects.filter(application_no=app_no)
         details.update(application_status='FHC')  # food handler license complete
     return redirect(update_list)
