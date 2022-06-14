@@ -29,7 +29,7 @@ from administrator.models import t_user_master, t_security_question_master, t_ro
 
 from bbfss import settings
 from food.models import t_food_licensing_food_handler_t1
-from plant.models import t_payment_details, t_workflow_details, t_file_attachment
+from plant.models import t_payment_details, t_workflow_details, t_file_attachment, t_payment_details_master
 from random import randint
 
 
@@ -2053,3 +2053,17 @@ def food_product_category_master(request):
     food_product_category_list = t_food_product_category_master.objects.all().order_by('Food_Product_Category_Id')
     return render(request, 'food_product_category_master.html',
                   {'food_product_category_list': food_product_category_list})
+
+
+def payment_details_master(request):
+    payment_details = t_payment_details_master.objects.all().order_by('record_id')
+    return render(request, 'payment_details_master.html',
+                  {'payment_details': payment_details})
+
+
+def update_payment_details_master(request):
+    record_id = request.GET.get('record_id')
+    service_fee = request.GET.get('fees')
+    payment_details = t_payment_details_master.objects.filter(record_id=record_id)
+    payment_details.update(service_fee=service_fee)
+    return redirect(payment_details_master)

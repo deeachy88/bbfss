@@ -38,7 +38,19 @@
                 Citizen ID No {{certificate_details.CID}} of village: {{ certificate_details.Village}} under Gewog: {{ certificate_details.Gewog }}
                 Dzongkhag: {{ certificate_details.Dzongkhag }}, M/S {{certificate_details.Nursery_Name}}
                 to move following Plants and Plant Products
-                from {{ From_Dzongkhag }} Dzongkhag to {{ To_Dzongkhag }} Dzongkhag:
+                from
+                {% for dzongkhag in dzongkhag %}
+                    {% if dzongkhag.Dzongkhag_Code == certificate_details.From_Dzongkhag_Code %}
+                        {{ dzongkhag.Dzongkhag_Name }}
+                    {% endif %}
+                {% endfor %}
+                 Dzongkhag to
+                 {% for dzongkhag in dzongkhag %}
+                    {% if dzongkhag.Dzongkhag_Code == certificate_details.To_Dzongkhag_Code %}
+                        {{ dzongkhag.Dzongkhag_Name }}
+                    {% endif %}
+                {% endfor %}
+                Dzongkhag:
                 </p>
             {% endfor %}
         </div>
@@ -106,7 +118,19 @@
                 Citizen ID No {{certificate_details.CID}} of village: {{ certificate_details.Village}} under Gewog: {{ certificate_details.Gewog }}
                 Dzongkhag: {{ certificate_details.Dzongkhag }}, M/S {{certificate_details.Nursery_Name}}
                 to move following Plants and Plant Products
-                from {{ From_Dzongkhag }} Dzongkhag to {{ To_Dzongkhag }} Dzongkhag:
+                from
+                {% for dzongkhag in dzongkhag %}
+                    {% if dzongkhag.Dzongkhag_Code == certificate_details.From_Dzongkhag_Code %}
+                        {{ dzongkhag.Dzongkhag_Name }}
+                    {% endif %}
+                {% endfor %}
+                 Dzongkhag to
+                 {% for dzongkhag in dzongkhag %}
+                    {% if dzongkhag.Dzongkhag_Code == certificate_details.To_Dzongkhag_Code %}
+                        {{ dzongkhag.Dzongkhag_Name }}
+                    {% endif %}
+                {% endfor %}
+                Dzongkhag:
                 </p>
             {% endfor %}
         </div>

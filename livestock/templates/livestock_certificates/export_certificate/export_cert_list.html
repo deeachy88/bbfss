@@ -11,10 +11,10 @@
         </thead>
         <tbody>
             {% now "Y-m-d" as todays_date %}
-                {% for payment_details in payment_details %}
-                    {% for application_details in application_details %}
-                        {% if application_details.Application_No == payment_details.Application_No %}
-                            {% if todays_date < application_details.Validity or payment_details.Receipt_No == None %}
+                {% for application_details in application_details %}
+                    {% for payment_details in payment_details %}
+                        {% if application_details.Application_No == payment_details.application_no %}
+                            {% if todays_date < application_details.Validity or payment_details.receipt_no == None %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
                                     <td>{{application_details.Export_Permit_No}}</td>

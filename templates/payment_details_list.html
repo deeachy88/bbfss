@@ -28,7 +28,7 @@
                                 {% for application_details in application_details %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td><button class="btn btn-primary btn-link"  onclick="populate_payment_modal('{{application_details.application_no}}')">{{application_details.application_no}}</button></td>
+                                        <td><button class="btn btn-primary btn-link"  onclick="populate_payment_modal('{{application_details.application_no}}','{{application_details.amount}}')">{{application_details.application_no}}</button></td>
                                         {% for service_details in service_details %}
                                             {% if application_details.service_id == service_details.Service_Code %}
                                                 <td>{{service_details.Service_Name}}</td>
@@ -86,7 +86,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Amount <font color="red">*</font></label>
-                                <input type="text" class="form-control" name="Amount" id="Amount" onkeypress="return isNumberKey(event)">
+                                <input type="text" class="form-control" name="Amount" id="Amount" onkeypress="return isNumberKey(event)" readonly="readonly">
                             </div>
                             <div class="alert alert-danger" id="AmountErrorMsg" style="display:none"></div>
                         </div>
@@ -241,9 +241,10 @@
         }
     }
 
-    function populate_payment_modal(application_no)
+    function populate_payment_modal(application_no,amount)
     {
         $('#application_no').val(application_no);
+        $('#Amount').val(amount);
         $("#payment-modal").modal('show')
     }
 </script>

@@ -1,6 +1,7 @@
 {% extends 'common_dashboard.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+{% load static %}
 <style>
     option
     {
@@ -19,7 +20,7 @@ form, input, select, textarea{
         <h4 class="card-title">Meat Shop Licensing</h4>
     </div>
     <div class="card-body">
-        <form method="post" id="FBR_form">
+        <form method="post" id="meat_shop_form">
         {% csrf_token %}
             <input type="hidden" name="application_no" id="applicationNo">
             <div class="row justify-content-left">
@@ -72,7 +73,7 @@ form, input, select, textarea{
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Contact Number <font color="red">*</font></label>
-                                    <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contactNumber" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
+                                    <input type="number" class="form-control" id="contactNumber" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"  name="contact_number" maxlength="8" onkeypress="return isNumberKey(event)" onchange="checkContact(this.value)">
                                 </div>
                                 <div class="alert alert-danger" id="contactNumberErrorMsg" style="display:none"></div>
                             </div>
@@ -159,7 +160,7 @@ form, input, select, textarea{
                         Save Successful
                     </div>
                     <div class="card-action">
-                        <button type="button" class="btn btn-primary" id="fbr_button" onclick="save_fbr_form()">Save</button>
+                        <button type="button" class="btn btn-primary" id="fbr_button" onclick="save_meat_shop_form()">Save</button>
                     </div>
                 </div>
             <div class="tab-pane fade" id="meat_details" role="tabpanel" aria-labelledby="pills-details">
@@ -232,7 +233,7 @@ form, input, select, textarea{
     </div>
 </form>
 
-<form method="post" id="attachment_form" enctype="multipart/form-data">
+<form method="post" id="meat_attachment_form" enctype="multipart/form-data">
 {% csrf_token %}
     <input type="hidden" name="attachment_appNo" id="attachment_appNo">
     <div class="modal fade" id="attachmentModal" tabindex="-1">
@@ -310,6 +311,7 @@ form, input, select, textarea{
         </div>
     </div>
 </form>
+<script src="{% static 'assets/bower_components/jquery/dist/jquery.min.js' %}"></script>
 <script>
 function isNumberKey(evt)
 {
@@ -319,7 +321,7 @@ function isNumberKey(evt)
 
  return true;
 }
-function save_fbr_form()
+function save_meat_shop_form()
 {
     var applicationNo = $('#applicationNo').val();
     var Business_Name = $('#Business_Name').val();
@@ -432,9 +434,9 @@ function save_fbr_form()
     else if(applicationNo == "")
     {
         $.ajax({
-        type : "POST",
+        type : "GET",
         url : "{% url 'save_meat_shop_registration' %}",
-        data : $('#FBR_form').serialize(),
+        data : $('#meat_shop_form').serialize(),
         success : function(data)
         {
             $('#applicationNo').val(data.applNo);
@@ -456,7 +458,7 @@ function save_fbr_form()
         $.ajax({
         type : "POST",
         url : "{% url 'update_meat_shop_registration' %}",
-        data : $('#FBR_form').serialize(),
+        data : $('#meat_shop_form').serialize(),
         success : function(data)
         {
             $('#applicationNo').val(data.applNo);

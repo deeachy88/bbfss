@@ -34,19 +34,19 @@ form, input, select, textarea{
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Name of the Meat Shop <font color="red">*</font></label>
-                                        <input type="text" class="form-control" value="{{application_details.Meat_Shop_Name}}" disabled>
+                                        <input type="text" class="form-control" value="{{application_details.meat_shop_name}}" disabled>
                                     </div>
                                 </div>
                                  <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">CID of the Owner <font color="red">*</font></label>
-                                        <input type="number"  class="form-control" value="{{application_details.CID}}" disabled>
+                                        <input type="number"  class="form-control" value="{{application_details.cid}}" disabled>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Name of the applicant/Owner <font color="red">*</font></label>
-                                        <input type="text" class="form-control" value="{{application_details.Name_Owner}}" disabled>
+                                        <input type="text" class="form-control" value="{{application_details.name_owner}}" disabled>
                                     </div>
                                 </div>
                             </div>
@@ -54,13 +54,13 @@ form, input, select, textarea{
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Email <font color="red">*</font></label>
-                                        <input type="email" class="form-control" value="{{application_details.Email}}" disabled>
+                                        <input type="email" class="form-control" value="{{application_details.email}}" disabled>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Contact Number <font color="red">*</font></label>
-                                        <input type="number" class="form-control" value="{{application_details.Contact_No}}" disabled>
+                                        <input type="number" class="form-control" value="{{application_details.contact_no}}" disabled>
                                     </div>
                                 </div>
                             </div>
@@ -69,7 +69,7 @@ form, input, select, textarea{
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Meat Shop Representative <font color="red">*</font></label>
-                                        <input type="text" class="form-control" value="{{application_details.Representative}}" disabled>
+                                        <input type="text" class="form-control" value="{{application_details.representative}}" disabled>
                                     </div>
                                     <div class="alert alert-danger" id="name_managerErrorMsg" style="display:none"></div>
                                 </div>
@@ -77,7 +77,7 @@ form, input, select, textarea{
                                     <div class="form-group">
                                         <label class="form-label">Licensing Criteria <font color="red">*</font></label>
                                         <select class="form-control" disabled>
-                                            {% if application_details.License_Criteria == 'BAFRA GHP/GMP' %}
+                                            {% if application_details.license_criteria == 'BAFRA GHP/GMP' %}
                                                 <option selected>BAFRA GHP/GMP</option>
                                             {% endif %}
                                         </select>
@@ -86,7 +86,7 @@ form, input, select, textarea{
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Meat Shop Address <font color="red">*</font></label>
-                                        <textarea class="form-control" disabled>{{application_details.Address}}</textarea>
+                                        <textarea class="form-control" disabled>{{application_details.address}}</textarea>
                                     </div>
                                 </div>
                             </div>
@@ -96,7 +96,7 @@ form, input, select, textarea{
                                         <label class="form-label">Dzongkhag</label>
                                         <select class="form-control" disabled>
                                             {% for dzongkhag in dzongkhag %}
-                                                <option value="{{dzongkhag.Dzongkhag_Code}}"{% if application_details.Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>
+                                                <option value="{{dzongkhag.Dzongkhag_Code}}"{% if application_details.dzongkhag_code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>
                                                     {{ dzongkhag.Dzongkhag_Name }}
                                                 </option>
                                             {% endfor %}
@@ -108,7 +108,7 @@ form, input, select, textarea{
                                         <label class="form-label">Gewog</label>
                                         <select class="form-control" disabled>
                                             {% for gewog in gewog %}
-                                                <option value="{{ gewog.Gewog_Code }}"{% if application_details.Gewog_Code == gewog.Gewog_Code %}selected{% endif %}>{{ gewog.Gewog_Name }}</option>
+                                                <option value="{{ gewog.Gewog_Code }}"{% if application_details.Gewog_Code == gewog.gewog_code %}selected{% endif %}>{{ gewog.Gewog_Name }}</option>
                                             {% endfor %}
                                         </select>
                                     </div>
@@ -118,7 +118,7 @@ form, input, select, textarea{
                                         <label class="form-label">Village</label>
                                          <select class="form-control" disabled>
                                             {% for village in village %}
-                                                <option value="{{ village.Village_Code }}" {% if application_details.Village_Code == village.Village_Code %}selected{% endif %}>{{ village.Village_Name }}</option>
+                                                <option value="{{ village.Village_Code }}" {% if application_details.village_code == village.Village_Code %}selected{% endif %}>{{ village.Village_Name }}</option>
                                             {% endfor %}
                                          </select>
                                     </div>
@@ -148,7 +148,7 @@ form, input, select, textarea{
                            {% for Meat_Item in details %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td>{{Meat_Item.Meat_Item}}</td>
+                                    <td>{{Meat_Item.meat_item}}</td>
                                 </tr>
                                 {% empty %}
                                 <tr>
@@ -179,7 +179,7 @@ form, input, select, textarea{
                            {% for file_attach in file %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td><a href='{{file_attach.File_Path}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                                    <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
                                 </tr>
                                 {% empty %}
                                 <tr>
@@ -222,16 +222,16 @@ form, input, select, textarea{
                                 {% for import in inspection_team_details %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td>{{import.Name}}</td>
-                                        <td>{{import.Designation}}</td>
+                                        <td>{{import.name}}</td>
+                                        <td>{{import.designation}}</td>
                                         <td>
                                             <button type="button" class="btn btn-primary btn-sm"
-                                            onclick="delete_fi_inspection_team_details('{{import.Record_Id}}','{{import.Application_No}}')">
+                                            onclick="delete_fi_inspection_team_details('{{import.record_id}}','{{import.application_no}}')">
                                             <i class="zmdi zmdi-delete"></i>
                                             </button>
                                             <button  type="button" class="btn btn-info btn-sm" data-toggle="tooltip" title="Edit"
-                                                 onclick="inspection_team_details('{{ import.Record_Id }}', '{{import.Name}}',
-                                                  '{{import.Designation}}', '{{import.Application_No}}')">
+                                                 onclick="inspection_team_details('{{ import.record_id }}', '{{import.name}}',
+                                                  '{{import.designation}}', '{{import.application_no}}')">
                                                 <i class="fa fa-edit"></i>
                                             </button>
                                         </td>
@@ -280,19 +280,19 @@ form, input, select, textarea{
                                 {% for import in team_details %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td>{{import.Name}}</td>
-                                        <td>{{import.Designation}}</td>
-                                        <td>{{import.Meeting_Date|date:"d-m-Y"}}</td>
-                                        <td>{{import.Type }}</td>
+                                        <td>{{import.name}}</td>
+                                        <td>{{import.designation}}</td>
+                                        <td>{{import.meeting_date|date:"d-m-Y"}}</td>
+                                        <td>{{import.type }}</td>
                                         <td>
                                             <button type="button" class="btn btn-primary btn-sm"
-                                            onclick="delete_fi_team_details('{{import.Record_Id}}','{{import.Application_No}}')">
+                                            onclick="delete_fi_team_details('{{import.record_id}}','{{import.application_no}}')">
                                             <i class="zmdi zmdi-delete"></i>
                                             </button>
                                             <button  type="button" class="btn btn-info btn-sm" data-toggle="tooltip" title="Edit"
-                                                 onclick="fi_team_details('{{ import.Record_Id }}', '{{import.Name}}','{{import.Designation}}',
-                                                 '{{import.Meeting_Date|date:'Y-m-d'}}', '{{import.Type }}',
-                                                  '{{import.Application_No}}')">
+                                                 onclick="fi_team_details('{{ import.record_id }}', '{{import.name}}','{{import.designation}}',
+                                                 '{{import.meeting_date|date:'Y-m-d'}}', '{{import.type }}',
+                                                  '{{import.application_no}}')">
                                                 <i class="fa fa-edit"></i>
                                             </button>
                                         </td>
@@ -345,15 +345,15 @@ form, input, select, textarea{
                                 {% for import in inspection_details %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td>{{import.Requirement}}</td>
-                                        <td>{{import.Clause_No}}</td>
-                                        <td id="my_cell">{{import.Concern}}</td>
-                                        <td>{{import.Date|date:"d-m-Y"}}</td>
-                                        <td>{{import.Observation}}</td>
-                                        <td>{{import.FBO_Response}}</td>
+                                        <td>{{import.requirement}}</td>
+                                        <td>{{import.clause_no}}</td>
+                                        <td id="my_cell">{{import.concern}}</td>
+                                        <td>{{import.date|date:"d-m-Y"}}</td>
+                                        <td>{{import.observation}}</td>
+                                        <td>{{import.fbo_response}}</td>
                                         <td>
-                                            <button type="button" class="btn btn-primary btn--icon btn-sm" onclick="populateForm('{{import.Record_Id}}','{{import.Requirement}}',
-                                            '{{import.Clause_No}}','{{import.Concern}}', '{{import.Observation}}', '{{import.FBO_Response}}', '{{import.Application_No}}')">
+                                            <button type="button" class="btn btn-primary btn--icon btn-sm" onclick="populateForm('{{import.record_id}}','{{import.requirement}}',
+                                            '{{import.clause_no}}','{{import.concern}}', '{{import.observation}}', '{{import.fbo_response}}', '{{import.application_no}}')">
                                             <i class="zmdi zmdi-edit"></i>
                                             </button>
                                         </td>
@@ -368,7 +368,7 @@ form, input, select, textarea{
                     </div>
                     <br>
                      {% for application_details in application_details %}
-                        {% if application_details.FI_Response %}
+                        {% if application_details.fi_response %}
                         <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
                             <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
                                 <span class="px-2 small text-muted font-weight-bold text-muted form-label" style="margin-right: -11px;">Client </span>&nbsp;&nbsp;&nbsp;
@@ -379,13 +379,13 @@ form, input, select, textarea{
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Desired Inspection Date</label>
-                                    <input type="text" class="form-control" value="{{ application_details.Desired_FI_Inspection_Date }}" readonly="readonly">
+                                    <input type="text" class="form-control" value="{{ application_details.desired_fi_inspection_date }}" readonly="readonly">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Response From Client</label>
-                                    <input type="text" class="form-control" value="{{ application_details.FI_Response }}" readonly="readonly">
+                                    <input type="text" class="form-control" value="{{ application_details.fi_response }}" readonly="readonly">
                                 </div>
                             </div>
                         </div>
@@ -449,11 +449,11 @@ form, input, select, textarea{
                     <input type="hidden" id="yes_count" value="{{yes_count}}">
                     {% for application_details in application_details %}
                         <div class="card-action text-center">
-                            <button type="button" id="approve_button" class="btn btn-flat btn-primary" onclick="approve_feasibility_inspection('{{application_details.Application_No}}')">
+                            <button type="button" id="approve_button" class="btn btn-flat btn-primary" onclick="approve_feasibility_inspection('{{application_details.application_no}}')">
                                 <i class="ace-icon fa fa-check"></i>
                                 &nbsp;&nbsp;Approve
                             </button>
-                            <button type="button" id="resubmit-btn" class="btn btn-flat btn-primary" onclick="reject_feasibility_inspection('{{application_details.Application_No}}')">
+                            <button type="button" id="resubmit-btn" class="btn btn-flat btn-primary" onclick="reject_feasibility_inspection('{{application_details.application_no}}')">
                                 <i class="ace-icon fa fa-reply-all"></i>
                                 &nbsp;&nbsp;Resubmit
                             </button>
@@ -530,7 +530,7 @@ form, input, select, textarea{
 
                     <div class="modal-footer">
                         {% for application_details in application_details %}
-                        <button type="button" class="btn btn-flat btn-primary" onclick="add_details_ins('{{ application_details.Application_No }}')">
+                        <button type="button" class="btn btn-flat btn-primary" onclick="add_details_ins('{{ application_details.application_no }}')">
                             <i class="ace-icon fa fa-check"></i>
                             &nbsp;&nbsp;Add
                         </button>
@@ -595,7 +595,7 @@ form, input, select, textarea{
 
                     <div class="modal-footer">
                         {% for application_details in application_details %}
-                        <button type="button" class="btn btn-flat btn-primary" onclick="add_team_details('{{ application_details.Application_No }}')">
+                        <button type="button" class="btn btn-flat btn-primary" onclick="add_team_details('{{ application_details.application_no }}')">
                             <i class="ace-icon fa fa-check"></i>
                             &nbsp;&nbsp;Add
                         </button>
@@ -703,7 +703,7 @@ form, input, select, textarea{
 
                     <div class="modal-footer">
                         {% for application_details in application_details %}
-                        <button type="button" class="btn btn-flat btn-primary" onclick="add_inspection_team_details('{{ application_details.Application_No }}')">
+                        <button type="button" class="btn btn-flat btn-primary" onclick="add_inspection_team_details('{{ application_details.application_no }}')">
                             <i class="ace-icon fa fa-check"></i>
                             &nbsp;&nbsp;Add
                         </button>

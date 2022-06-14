@@ -108,6 +108,8 @@ urlpatterns = [
     path('delete_food_product_category', views.delete_food_product_category, name='delete_food_product_category'),
     path('add_signature', views.add_signature, name='add_signature'),
     path('add_signature_name', views.add_signature_name, name='add_signature_name'),
-    path('delete_signature', views.delete_signature, name='delete_signature')
+    path('delete_signature', views.delete_signature, name='delete_signature'),
+    path('payment_details_master',views.payment_details_master, name='payment_details_master'),
+    path('update_payment_details_master', views.update_payment_details_master, name='update_payment_details_master')
 
 ]

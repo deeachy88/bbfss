@@ -1,0 +1,161 @@
+{% extends 'common_dashboard.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<style>
+form, input, select, textarea{
+color: black !important;
+}
+</style>
+<div class="animated fadeIn">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <strong class="card-title">Payment Details Master</strong>
+                </div>
+                <div class="card-body">
+                        <table id="payment_master_table" class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Account Head Code</th>
+                                    <th>Account Head</th>
+                                    <th>Service Name</th>
+                                    <th>Fees</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for details in payment_details %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{details.account_head_code}}</td>
+                                    <td>{{details.account_head_name}}</td>
+                                    <td>{{details.service_name}}</td>
+                                    <td>{{details.service_fee}}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-warning" onclick="populatePaymentDetails('{{details.record_id}}','{{details.account_head_code}}', '{{details.account_head_name}}', '{{details.service_name}}', '{{details.service_fee}}')">
+                                              <i class="zmdi zmdi-edit"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                  <td colspan="4" class="text-center">No Unit</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form id="payment_details_form" method="post" class="form-horizontal form-label-left">
+    <div class="modal fade" id="payment_details_modal">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Edit Payment Details Master</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+                <div class="row">
+                    <input type="hidden" class="form-control" name="record_id" id="record_id">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Account Head Code<font color="red">*</font></label>
+                            <input type="text" class="form-control" name="account_head_code" id="account_head_code" disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Account Head <font color="red">*</font></label>
+                            <input type="text" class="form-control" name="account_head" id="account_head" disabled>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Service Name<font color="red">*</font></label>
+                            <input type="text" class="form-control" name="service_name" id="service_name" disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Fees <font color="red">*</font></label>
+                            <input type="text" class="form-control" name="fees" id="fees" onkeypress="return isNumberKey(event)">
+                        </div>
+                        <div class="alert alert-danger" id="feesErrorMsg" style="display:none"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="successMsg" class="alert alert-success" role="alert" style="display: none;"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="update_payment_details()">Update</button>
+            </div>
+        </div>
+        </div>
+    </div>
+</form>
+<script>
+    function isNumberKey(evt)
+    {
+     var charCode = (evt.which) ? evt.which : event.keyCode
+     if (charCode > 31 && (charCode < 48 || charCode > 57))
+        return false;
+
+     return true;
+    }
+
+    function populatePaymentDetails(Record_Id, account_head_code, account_head, service_name, fees)
+    {
+        $('#record_id').val(Record_Id);
+        $('#account_head_code').val(account_head_code);
+        $('#account_head').val(account_head);
+        $('#service_name').val(service_name)
+        $('#fees').val(fees)
+        $("#payment_details_modal").modal("show");
+    }
+
+    function update_payment_details()
+    {
+        var fees = $('#fees').val();
+
+        if(fees == "")
+        {
+            $('#edit_unitErrorMsg').html("Enter Unit.");
+            $('#edit_unitErrorMsg').show();
+            $('#edit_unitErrorMsg').delay(2000).fadeOut('slow');
+        }
+        else
+        {
+            $.ajax({
+                type : "GET",
+                url : "{% url 'update_payment_details_master' %}",
+                data : $('#payment_details_form').serialize(),
+                dataType : "html",
+                success : function(response)
+                {
+                    $('#successMsg').html("Update Successful.");
+                    $('#successMsg').show();
+                    setTimeout(function() {
+                        $('#successMsg').delay(2000).fadeOut('slow');
+                    }, 2000);
+                    setTimeout(function() {
+                        $('#payment_details_modal').modal('hide');
+                    }, 2000);
+                    setTimeout(function() {
+                        location.reload();
+                    }, 3000);
+                }
+            });
+        }
+    }
+</script>
+{% endblock %}

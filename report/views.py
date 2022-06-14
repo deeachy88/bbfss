@@ -130,14 +130,14 @@ def view_revenue_list(request):
     workflow_details = t_workflow_details.objects.all()
 
     if payment_type == 'ALL':
-        revenue_details = t_payment_details.objects.filter(Receipt_Date__gte=fromDate, Receipt_Date__lte=toDate,
-                                                           Receipt_No__isnull=False)
+        revenue_details = t_payment_details.objects.filter(receipt_date__gte=fromDate, receipt_date__lte=toDate,
+                                                           receipt_no__isnull=False)
         return render(request, 'revenue_report.html', {'revenue_details': revenue_details,
                                                        'service_details': service_details,
                                                        'workflow_details': workflow_details})
     else:
-        revenue_details = t_payment_details.objects.filter(Receipt_Date__gte=fromDate, Receipt_Date__lte=toDate,
-                                                           Payment_Type=payment_type, Receipt_No__isnull=False)
+        revenue_details = t_payment_details.objects.filter(receipt_date__gte=fromDate, receipt_date__lte=toDate,
+                                                           payment_type=payment_type, receipt_no__isnull=False)
         return render(request, 'revenue_report.html', {'revenue_details': revenue_details,
                                                        'service_details': service_details,
                                                        'workflow_details': workflow_details})

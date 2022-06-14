@@ -63,7 +63,7 @@ def complaint_closed_details(request):
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
     details = t_common_complaint_t1.objects.filter(Application_No=Application_No)
-    file = t_file_attachment.objects.filter(application_no=Application_No)
+    file = t_file_attachment.objects.filter(application_no=application_no)
     for userId in details:
         user_id = userId.Assign_To
         user_details = t_user_master.objects.filter(Login_Id=user_id)
@@ -419,7 +419,7 @@ def acknowledge_complaint(request):
     c_details.update(Acknowledge_Date=date.today())
     c_details.update(Application_Status='A')
 
-    workflow_details.update(Application_Status='A')
+    workflow_details.update(application_status='A')
     send_acknowledge_email(app_no, application_date, remarks, email)
     return redirect(co_complaint_list)
 

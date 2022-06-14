@@ -2,7 +2,7 @@ import os
 from datetime import date, datetime, timedelta
 from django.core.files.storage import FileSystemStorage
 from django.core.mail import send_mail
-from django.db.models import Max
+from django.db.models import Max, Sum
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
@@ -508,7 +508,7 @@ def meat_shop_concern_details_feasibility_ins(request):
                                                       fbo_response=FBO_Response)
     application_details = t_livestock_clearance_meat_shop_t5.objects.filter(application_no=application_id,
                                                                             inspection_type='Feasibility Inspection') \
-        .order_by('Record_Id')
+        .order_by('record_id')
     message_count = t_livestock_clearance_meat_shop_t5.objects.filter(concern='Yes',
                                                                       inspection_type='Feasibility Inspection').count()
     return render(request, 'meat_shop_registration/concern_details.html', {'inspection_details': application_details,
@@ -545,9 +545,9 @@ def approve_meat_shop_feasibility_inspection(request):
             id = login_id.Login_Id
             application_details.update(assigned_to=id)
     for email_id in details:
-        emailId = email_id.Email
+        emailId = email_id.email
         send_feasibility_approve_email(Clearance_No, emailId)
-    update_payment(application_id, Clearance_No, 'CMS', None, 'Feasibility')
+    update_payment(application_id, Clearance_No, 'CMS', None, 'Feasibility','131110040')
     return redirect(inspector_application)
 
 
@@ -742,7 +742,7 @@ def meat_shop_submit(request):
                      'paymentList': paymentList}
         cl.service.insertPaymentDetailsOnApproval(post_data)
     for email_id in details:
-        emailId = email_id.Email
+        emailId = email_id.email
         send_meat_shop_approve_email(clearance, emailId, validity_date)
     return redirect(focal_officer_application)
 
@@ -814,8 +814,11 @@ def resubmit_meat_shop_factory_inspection(request):
     remarks = request.GET.get('remarks')
     date_format_ins = request.GET.get('dateOfInspection')
     details = t_livestock_clearance_meat_shop_t1.objects.filter(application_no=application_id)
+    if remarks is not None:
+        details.update(fr_response=remarks)
+    else:
+        details.update(fr_response=None)
 
-    details.update(fr_Response=remarks)
     details.update(desired_fr_inspection_date=date_format_ins)
     application_details = t_workflow_details.objects.filter(application_no=application_id)
     application_details.update(action_date=date.today())
@@ -1567,25 +1570,29 @@ def update_details_la(request):
         balance = int(import_ILA.Quantity_Balance_1) - int(import_ILA.Quantity_Released)
         product_details = t_livestock_import_permit_animal_t2.objects.filter(pk=Product_Record_Id)
         product_details.update(Quantity_Balance=balance)
-        if balance == 0:
-            import_details = t_livestock_import_permit_animal_inspection_t1.objects.filter(
-                Application_No=application_no)
-            for import_det in import_details:
-                la_details = t_livestock_import_permit_animal_t1.objects.filter(
-                    Import_Permit_No=import_det.Import_Permit_No)
-                for la in la_details:
-                    work_details = t_workflow_details.objects.filter(application_no=la.Application_No)
-                    work_details.update(application_status='C')
-        else:
-            import_details = t_livestock_import_permit_animal_inspection_t1.objects.filter(
-                Application_No=application_no)
-            for import_det in import_details:
-                la_details = t_livestock_import_permit_animal_t1.objects.filter(
-                    Import_Permit_No=import_det.Import_Permit_No)
-                for la in la_details:
-                    work_details = t_workflow_details.objects.filter(application_no=la.Application_No)
-                    work_details.update(application_status='P')
-    application_details = t_livestock_import_permit_animal_inspection_t2.objects.filter(Application_No=application_no)
+
+    import_details_sum = t_livestock_import_permit_animal_inspection_t2.objects.filter(
+        Application_No=application_no).aggregate(Sum('Quantity_Balance'))
+
+    if import_details_sum == 0:
+        import_details = t_livestock_import_permit_animal_inspection_t1.objects.filter(
+            Application_No=application_no)
+        for import_det in import_details:
+            la_details = t_livestock_import_permit_animal_t1.objects.filter(
+                Import_Permit_No=import_det.Import_Permit_No)
+            for la in la_details:
+                work_details = t_workflow_details.objects.filter(application_no=la.Application_No)
+                work_details.update(application_status='C')
+    else:
+        import_details = t_livestock_import_permit_animal_inspection_t1.objects.filter(
+            Application_No=application_no)
+        for import_det in import_details:
+            la_details = t_livestock_import_permit_animal_t1.objects.filter(
+                Import_Permit_No=import_det.Import_Permit_No)
+            for la in la_details:
+                work_details = t_workflow_details.objects.filter(application_no=la.Application_No)
+                work_details.update(application_status='P')
+    application_details = t_livestock_import_permit_animal_inspection_t2.objects.filter(Application_No=application_no).order_by('Record_Id')
     return render(request, 'Animal_Fish_Import/animal_import_details.html', {'import': application_details})
 
 
@@ -1969,9 +1976,9 @@ def af_import_observation(request):
 def approve_fo_lp_import(request):
     service_code = "ILP"
     permit_no = get_lp_permit_no(service_code)
-    application_no = request.POST.get('application_id')
-    remarks = request.POST.get('remarks')
-    validity = request.POST.get('validity')
+    application_no = request.GET.get('application_id')
+    remarks = request.GET.get('remarks')
+    validity = request.GET.get('validity')
     workflow_details = t_workflow_details.objects.filter(application_no=application_no)
     for app in workflow_details:
         client_login_id = app.applicant_id
@@ -2013,10 +2020,10 @@ def approve_fo_lp_import(request):
                                          updated_by=None,
                                          updated_on=None,
                                          permit_type='Final',
-                                         account_head_code='account_head_code')
+                                         account_head_code='131110011')
         cl = Client('https://www.citizenservices.gov.bt/G2CPaymentAggregator/services/G2CPaymentInitiatorBusiness?wsdl')
         order_type = cl.get_type('ns1:PaymentDTO')
-        paymentList = order_type(accountHeadId='account_head_code', serviceFee=fees)
+        paymentList = order_type(accountHeadId='131110011', serviceFee=fees)
         post_data = {'agencyCode': "BAFRA", 'applicationNo': application_no,
                      'serviceName': service_name,
                      'paymentList': paymentList}
@@ -2148,25 +2155,29 @@ def update_details_lp(request):
         print(balance)
         product_details = t_livestock_import_permit_product_t2.objects.filter(pk=Product_Record_Id)
         product_details.update(Quantity_Balance=balance)
-        if balance == 0:
-            import_details = t_livestock_import_permit_product_inspection_t1.objects.filter(
-                Application_No=application_no)
-            for import_det in import_details:
-                la_details = t_livestock_import_permit_product_t1.objects.filter(
-                    Import_Permit_No=import_det.Import_Permit_No)
-                for la in la_details:
-                    work_details = t_workflow_details.objects.filter(application_no=la.Application_No)
-                    work_details.update(application_status='C')
-        else:
-            import_details = t_livestock_import_permit_product_inspection_t1.objects.filter(
-                Application_No=application_no)
-            for import_det in import_details:
-                la_details = t_livestock_import_permit_product_t1.objects.filter(
-                    Import_Permit_No=import_det.Import_Permit_No)
-                for la in la_details:
-                    work_details = t_workflow_details.objects.filter(application_no=la.Application_No)
-                    work_details.update(application_status='P')
-    application_details = t_livestock_import_permit_product_inspection_t2.objects.filter(Application_No=application_no)
+
+    import_details_sum = t_livestock_import_permit_product_inspection_t2.objects.filter(
+        Application_No=application_no).aggregate(Sum('Quantity_Balance'))
+
+    if import_details_sum == 0:
+        import_details = t_livestock_import_permit_product_inspection_t1.objects.filter(
+            Application_No=application_no)
+        for import_det in import_details:
+            la_details = t_livestock_import_permit_product_t1.objects.filter(
+                Import_Permit_No=import_det.Import_Permit_No)
+            for la in la_details:
+                work_details = t_workflow_details.objects.filter(application_no=la.Application_No)
+                work_details.update(application_status='C')
+    else:
+        import_details = t_livestock_import_permit_product_inspection_t1.objects.filter(
+            Application_No=application_no)
+        for import_det in import_details:
+            la_details = t_livestock_import_permit_product_t1.objects.filter(
+                Import_Permit_No=import_det.Import_Permit_No)
+            for la in la_details:
+                work_details = t_workflow_details.objects.filter(application_no=la.Application_No)
+                work_details.update(application_status='P')
+    application_details = t_livestock_import_permit_product_inspection_t2.objects.filter(Application_No=application_no).order_by('Record_Id')
     return render(request, 'Livestock_Import/livestock_import_details.html', {'import': application_details})
 
 

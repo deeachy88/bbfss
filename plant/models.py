@@ -471,3 +471,4 @@ class t_payment_details_master(models.Model):
     account_head_name = models.CharField(max_length=250, default=None, blank=True, null=True)
     account_head_code = models.BigIntegerField(default=None, blank=True, null=True)
     service_fee = models.IntegerField(default=None, blank=True, null=True)
+    service_name = models.CharField(max_length=250, default=None, blank=True, null=True)

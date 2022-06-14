@@ -855,13 +855,13 @@ def view_factory_inspection_application(request):
     for app_status in work_details:
         service_code = app_status.service_code
         if service_code == 'CMS':
-            application_details = t_livestock_clearance_meat_shop_t1.objects.filter(Application_No=application_id)
-            details = t_livestock_clearance_meat_shop_t2.objects.filter(Application_No=application_id)
+            application_details = t_livestock_clearance_meat_shop_t1.objects.filter(application_no=application_id)
+            details = t_livestock_clearance_meat_shop_t2.objects.filter(application_no=application_id)
             file = t_file_attachment.objects.filter(application_no=application_id)
             unit = t_unit_master.objects.all()
-            inspection_details = t_livestock_clearance_meat_shop_t5.objects.filter(Application_No=application_id)
-            team_details = t_livestock_clearance_meat_shop_t4.objects.filter(Application_No=application_id)
-            inspection_team_details = t_livestock_clearance_meat_shop_t6.objects.filter(Application_No=application_id)
+            inspection_details = t_livestock_clearance_meat_shop_t5.objects.filter(application_no=application_id)
+            team_details = t_livestock_clearance_meat_shop_t4.objects.filter(application_no=application_id)
+            inspection_team_details = t_livestock_clearance_meat_shop_t6.objects.filter(application_no=application_id)
             oic_list = t_field_office_master.objects.filter()
             dzongkhag = t_dzongkhag_master.objects.all()
             gewog = t_gewog_master.objects.all()
@@ -2634,7 +2634,7 @@ def factory_inspection_list(request):
                          | t_workflow_details.objects.filter(assigned_to=Login_Id, application_status='APR')
                          | t_workflow_details.objects.filter(assigned_to=Login_Id, application_status='NCR')).count()
 
-        inspection_call_count = t_workflow_details.objects.filter(Application_Status='FR', assigned_to=Login_Id,
+        inspection_call_count = t_workflow_details.objects.filter(application_status='FR', assigned_to=Login_Id,
                                                                   action_date__isnull=False).count()
         consignment_call_count = t_workflow_details.objects.filter(assigned_to=Login_Id,
                                                                    action_date__isnull=False, application_status='P') \

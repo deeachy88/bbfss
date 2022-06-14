@@ -564,8 +564,8 @@ form, input, select, textarea{
                     </div>
                     {% for application_details in application_details %}
                         <div class="text-center">
-                            <button type="button" class="btn btn-primary" onclick="fo_approve('{{ application_details.Application_No }}')"> Approve </button>
-                            <button type="button" class="btn btn-danger" onclick="fo_reject('{{ application_details.Application_No }}')"> Reject </button>
+                            <button type="button" class="btn btn-primary" onclick="fo_approve_AF('{{ application_details.Application_No }}')"> Approve </button>
+                            <button type="button" class="btn btn-danger" onclick="fo_reject_AF('{{ application_details.Application_No }}')"> Reject </button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         </div>
                     {% endfor %}
@@ -586,11 +586,11 @@ form, input, select, textarea{
      return true;
     }
 
-    function fo_approve(application_id)
+    function fo_approve_AF(application_id)
         {
 
             remarks = $('#remarks').val();
-            validity = $('#validity').val();
+            validity_af = $('#validity').val();
             if(validity == "")
             {
                 $('#validityErrorMsg').html("Enter Validity Period.");
@@ -601,9 +601,9 @@ form, input, select, textarea{
             {
                 $(".spinner-border").show();
                 $.ajax({
-                    type : "POST",
+                    type : "GET",
                     url : "{% url 'approve_fo_la_import' %}",
-                    data :{'application_id':application_id ,'remarks':remarks,'validity':validity, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                    data :{'application_id':application_id ,'remarks':remarks,'validity_af':validity_af, csrfmiddlewaretoken: '{{ csrf_token }}'},
                     success : function(data) {
                         $(".spinner-border").hide();
                         $('#submitMsg').show();
@@ -623,7 +623,7 @@ form, input, select, textarea{
                 });
             }
         }
-    function fo_reject(application_id)
+    function fo_reject_AF(application_id)
     {
 
         remarks = $('#remarks').val();
@@ -638,7 +638,7 @@ form, input, select, textarea{
         {
             $(".spinner-border").show();
             $.ajax({
-                type : "POST",
+                type : "GET",
                 url : "{% url 'reject_fo_la_import' %}",
                 data :{'application_id':application_id ,'remarks':remarks, csrfmiddlewaretoken: '{{ csrf_token }}'},
                 success : function(data) {

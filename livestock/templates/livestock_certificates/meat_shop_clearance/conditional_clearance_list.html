@@ -12,22 +12,22 @@
         <tbody>
             {% for payment_details in payment_details %}
                 {% for application_details in application_details %}
-                    {% if application_details.Application_No == payment_details.Application_No %}
-                        {% if todays_date < application_details.Validity or payment_details.Receipt_No == None %}
+                    {% if application_details.application_no == payment_details.application_no %}
+                        {% if todays_date < application_details.validity or payment_details.receipt_no == None %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-                                <td>{{application_details.Conditional_Clearance_No}}</td>
-                                <td>{{application_details.Application_No}}</td>
-                                <td>{{application_details.Clearance_Approve_Date|date:"d-m-Y"}}</td>
+                                <td>{{application_details.conditional_clearance_no}}</td>
+                                <td>{{application_details.application_no}}</td>
+                                <td>{{application_details.clearance_approve_date|date:"d-m-Y"}}</td>
                                 <td>Invalid</td>
                             </tr>
                         {% else %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-                                <td>{{application_details.Conditional_Clearance_No}}</td>
-                                <td>{{application_details.Application_No}}</td>
-                                <td>{{application_details.Clearance_Approve_Date|date:"d-m-Y"}}</td>
-                                <td><button  class="btn btn-default btn-border" type="button" onclick="print_certificate('CCMS','{{application_details.Application_No}}')"><i class="zmdi zmdi-print"></i></button></td>
+                                <td>{{application_details.conditional_clearance_no}}</td>
+                                <td>{{application_details.application_no}}</td>
+                                <td>{{application_details.clearance_approve_date|date:"d-m-Y"}}</td>
+                                <td><button  class="btn btn-default btn-border" type="button" onclick="print_certificate('CCMS','{{application_details.application_no}}')"><i class="zmdi zmdi-print"></i></button></td>
                             </tr>
                         {% endif %}
                     {% endif %}
