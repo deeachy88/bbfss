@@ -443,14 +443,21 @@ form, input, select, textarea{
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Quantity</label>
-                                <input type="number" class="form-control" id="quantity" name="quantity" disabled>
+                                <input type="number" class="form-control" id="quantity" name="quantity" onkeypress="return isNumberKey(event)" onchange="check_quantity">
                             </div>
+                            <div class="alert alert-danger" id="quantity_ErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">Unit</label>
-                                <input type="text" class="form-control" id="unit" name="unit" disabled>
+                                <select class="form-control" id="unit" name="unit">
+                                    <option value="">--SELECT--</option>
+                                    {% for unit in unit %}
+                                            <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
+                            <div class="alert alert-danger" id="unit_ErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
@@ -799,8 +806,25 @@ function resubmit_application()
 }
 
 
+function check_quantity(quantity)
+{
+    if(quantity < 0)
+    {
+        $('#quantity_ErrorMsg').html("Must Be Greater Than Zero.");
+        $('#quantity_ErrorMsg').show();
+        $('#quantity_ErrorMsg').delay(2000).fadeOut('slow');
+        $('#quantity').focus();
+    }
+    else
+    {
+        $('#quantity_ErrorMsg').hide();
+    }
+}
+
 function add_recommend_details()
 {
+    var quantity = $('#quantity').val();
+    var unit = $('#unit').val();
     var quantity_certified = $('#quantity_certified').val();
     var unit_certified = $('#unit_certified').val();
     var value_certified = $('#value_certified').val();
@@ -808,6 +832,27 @@ function add_recommend_details()
     var unit_rejected = $('#unit_rejected').val();
     var value_rejected = $('#value_rejected').val();
 
+    if(quantity == "")
+    {
+        $('#quantity_ErrorMsg').html("Enter Quantity.");
+        $('#quantity_ErrorMsg').show();
+        $('#quantity_ErrorMsg').delay(2000).fadeOut('slow');
+        $('#quantity').focus();
+    }
+    if(quantity < 0)
+    {
+        $('#quantity_ErrorMsg').html("Must Be Greater Than Zero.");
+        $('#quantity_ErrorMsg').show();
+        $('#quantity_ErrorMsg').delay(2000).fadeOut('slow');
+        $('#quantity').focus();
+    }
+    else if(unit == "")
+    {
+        $('#unit_ErrorMsg').html("Select Unit.");
+        $('#unit_ErrorMsg').show();
+        $('#unit_ErrorMsg').delay(2000).fadeOut('slow');
+        $('#unit').focus();
+    }
     if(quantity_certified == "")
     {
         $('#quantity_certifiedErrorMsg').html("Enter Quantity Certified.");

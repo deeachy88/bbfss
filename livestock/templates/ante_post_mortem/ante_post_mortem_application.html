@@ -233,7 +233,8 @@ form, input, select, textarea{
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-6">
-                                        <label class="form-label">Quantity of Carcass (Kg) <font color="red">*</font></label>
+                                        <label class="form-label" id="carcass_label">Quantity of Carcass (Kg) <font color="red">*</font></label>
+                                        <label class="form-label" id="qty_label" style="display:none;">Quantity<font color="red">*</font></label>
                                         <input type="text" name="qty" class="form-control" id="qty" onkeypress="return isNumberKey(event)" onchange="check_qty(this.value)">
                                         <div class="alert alert-danger" id="qtyErrorMsg" style="display:none"></div>
                                     </div>
@@ -474,6 +475,16 @@ function save_mortem_form()
                 $('#attachment_appNo').val(data.applNo);
                 $('#submitMsg').show();
                 $('#submitMsg').delay(2000).fadeOut('slow');
+                if(data.Inspection_Type == 'A')
+                {
+                    $('#carcass_label').hide();
+                    $('#qty_label').show();
+                }
+                else
+                {
+                    $('#carcass_label').show();
+                    $('#qty_label').hide();
+                }
                 setTimeout(function() {
                     $('#pills-details').tab('show');
                 }, 3000);
@@ -493,6 +504,16 @@ function save_mortem_form()
                 $('#application_no_details').val(data.applNo);
                 $('#attachment_appNo').val(data.applNo);
                 $('#submitMsg').show();
+                if(data.Inspection_Type == 'A')
+                {
+                    $('#carcass_label').hide();
+                    $('#qty_label').show();
+                }
+                else
+                {
+                    $('#carcass_label').show();
+                    $('#qty_label').hide();
+                }
                 setTimeout(function() {
                     $("#submitMsg").hide('blind', {}, 500)
                 }, 2000);

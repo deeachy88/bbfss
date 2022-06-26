@@ -67,17 +67,19 @@ table, th, td {
                             </div>
                             {% for food_handler_details in food_handler_details %}
                                 <div class="desc">
-                                    <p><b>LICENCE NO &nbsp;:&nbsp;{{food_handler_details.FH_License_No}}</b></p>
+                                    <p><b>LICENCE NO &nbsp;:&nbsp;{{food_handler_details.Applicant_Name}}</b></p>
                                     <p><b>Name &nbsp;:&nbsp;{{food_handler_details.FH_License_No}}</b></p>
                                     <p><b>CID No &nbsp;:&nbsp;{{food_handler_details.CID}}</b></p>
                                 </div>
                             {% endfor %}
 
                         </div>
-                        <div class="profile-row" style="margin-left: 290px;margin-bottom: -30px;">
+                        <div class="profile-row" style="margin-left: 290px;margin-bottom: -40px;">
                             <div class="form-group col-md-4">
                                 <label><b>Date of Issue:</b></label>
-                                <b>13/09/2021</b>
+                                {% for food_handler_details in food_handler_details %}
+                                    <b>{{food_handler_details.Approved_Date}}</b>
+                                {% endfor %}
                             </div>
                             <div class="form-group col-md-4">
                                 <label>Director General</label>
@@ -86,7 +88,9 @@ table, th, td {
                         <div class="profile-row" style="margin-left: 290px;">
                             <div class="form-group col-md-4">
                                 <label><b>Validity:</b></label>
-                                <b>13/09/2026</b>
+                                {% for food_handler_details in food_handler_details %}
+                                    <b>{{food_handler_details.FH_License_Validity}}</b>
+                                {% endfor %}
                             </div>
                             <div class="form-group col-md-4">
                                 <label>Issuing Authority</label>
@@ -128,7 +132,7 @@ table, th, td {
                                   {% endfor %}
                                   {% for food_handler_details in food_handler_details %}
                                 <th class="align-left">LICENCE NO </th>
-                                <th class="tg-0lax">{{food_handler_details.FH_License_No}}</th>
+                                <th class="tg-0lax">{{food_handler_details.Applicant_Name}}</th>
                               </tr>
                               <tr>
                                 <td class="tg-0lax">Name</td>

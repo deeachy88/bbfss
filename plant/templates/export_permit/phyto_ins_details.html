@@ -1,0 +1,40 @@
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Botanical Name</th>
+            <th scope="col">Common Name</th>
+            <th scope="col">Description</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Unit</th>
+            <th scope="col">Gross Weight</th>
+            <th scope="col">Net Weight</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+       {% for export_details in export_details %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{export_details.Botanical_Name}}</td>
+                <td>{{export_details.Common_Name}}</td>
+                <td>{{export_details.Description}}</td>
+                <td>{{export_details.Quantity}}</td>
+                <td>{{export_details.Unit}}</td>
+                <td>{{export_details.Gross_Weight}}</td>
+                <td>{{export_details.Net_Weight}}</td>
+                <td>
+                    <button type="button" class="btn btn-info btn-sm"
+                    onclick="populate_export_details('{{ export_details.Record_Id }}','{{export_details.Application_No}}', '{{export_details.Botanical_Name}}', '{{export_details.Common_Name}}',
+                    '{{export_details.Description}}', '{{export_details.Quantity}}', '{{export_details.Unit}}','{{export_details.Gross_Weight}}','{{export_details.Net_Weight}}')">
+                    <i class="zmdi zmdi-edit"></i>
+                    </button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="6" class="text-center">No Data</td>
+            </tr>
+       {% endfor %}
+    </tbody>
+</table>

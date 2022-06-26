@@ -6,11 +6,10 @@
 </style>
 <div class="col-md-12">
     <div class="card">
-        <div class="card">
         <div class="card-header header-card">
             <div class="card-head-row float-right">
                 <div class="card-tools">
-                    <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Test Report';printClientTable()">
+                    <a href="#" class="btn btn-border btn-round btn-md" onclick="document.title='Export Certificate';printTable()">
                         <span class="btn-label">
                             <i class="zmdi zmdi-print"></i>
                         </span>
@@ -92,7 +91,101 @@
                 {% endfor %}
             </tbody>
         </table>
-
+        <div class="col-md-6">
+                <div class="form-group">
+                    <img class="img-responsive" src="{% static 'assets/img/OFFICE_SEAL.jpg' %}" style="width:20%;"/>
+                </div>
+            </div>
     </div>
 </div>
+<div class="col-md-12" style="display:none;" id="print">
+    <div class="card">
+        <div class="card-header header-card">
+            <div class="card-title text-center">
+                <a href="index.html"><img class="img-responsive" src="{% static 'assets/img/certificate-header.png' %}" style="width:90%;"/></a>
+            </div>
+            <h6 class="text-center"><font color='black'><b>INTERNATIONAL VETERINARY CERTIFICATE</b></font></h6>
+        </div>
+        {% for certificate_details in certificate_details %}
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <td rowspan="3">To: {{certificate_details.Applicant_Name}}<br>
+                            &nbsp;CID / Passport: {{certificate_details.CID}}/ {{certificate_details.Passport_No}}
+                        </td>
+                        <td>Certificate No: {{certificate_details.Export_Permit_No}}</td>
+                    </tr>
+                    <tr>
+                        <td>Place of Issue: {{ certificate_details.Dzongkhag_Code }}</td>
+                    </tr>
+                    <tr>
+                        <td>Date of Issue: {{ certificate_details.Approve_Date }} </td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2">Name and Address of the Exporter {{certificate_details.Applicant_Name}}&nbsp;&nbsp;{{certificate_details.Present_Address}}</td>
+                        <td>Country of origin: Bhutan</td>
+                    </tr>
+                    <tr>
+                        <td>Place of origin: &nbsp;{{certificate_details.Origin_Source_Products}}</td>
+                        <td>Date of shipment:&nbsp;{{certificate_details.Export_Expected_Date}}</td>
+                        <td>Declared Point of Exit:&nbsp;{% for location in location %}
+                            {% if certificate_details.Place_of_Exit == location.Field_Office_Code %}
+                                {{ location.Field_Office }}
+                            {% endif %}
+                        {% endfor %}</td>
+                    </tr>
+                    <tr>
+                        <td>Name & Address of consignee  {{certificate_details.Importer_Name_Address}}</td>
+                        <td>Country of Destination: {{certificate_details.Final_Destination}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        {% endfor %}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Species</th>
+                    <th scope="col">Breed</th>
+                    <th scope="col">Age</th>
+                    <th scope="col">Sex</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Unit</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for import in export_details %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{import.Species}}</td>
+                        <td>{{import.Breed}}</td>
+                        <td>{{import.Age}}</td>
+                        <td>{{import.Sex}}</td>
+                        <td>{{import.Description}}</td>
+                        <td>{{import.Quantity}}</td>
+                        <td>{{import.Unit}}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                      <td colspan="8" class="text-center">No Data</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="col-md-6">
+            <div class="form-group">
+                <img class="img-responsive" src="{% static 'assets/img/OFFICE_SEAL.jpg' %}" style="width:20%;"/>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function printTable()
+    {
+        $("#print").show();
+	    jQuery('#print').print();
+	    $("#print").hide();
+    }
 
+</script>

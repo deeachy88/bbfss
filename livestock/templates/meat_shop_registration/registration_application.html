@@ -1,6 +1,7 @@
 {% extends 'common_dashboard.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+{% load static %}
 <style>
     option
     {
@@ -182,7 +183,7 @@ form, input, select, textarea{
                 </div>
             </div>
             <div class="tab-pane fade" id="file-attachment" role="tabpanel" aria-labelledby="mortem-file-attach">
-                <div id="file-attachment-mortem">
+                <div id="file-attachment-meat-shop">
                     {% include 'meat_shop_registration/file_attachment.html' %}
                 </div>
             </div>
@@ -310,6 +311,7 @@ form, input, select, textarea{
         </div>
     </div>
 </form>
+<script src="{% static 'assets/bower_components/jquery/dist/jquery.min.js' %}"></script>
 <script>
 function isNumberKey(evt)
 {
@@ -523,7 +525,7 @@ function save_meat_attachment()
                         success : function(responseText)
                         {
                             $('#attachmentModal').modal('hide');
-                            $('#file-attachment-mortem').html(responseText);
+                            $('#file-attachment-meat-shop').html(responseText);
                             $('.modal-backdrop').remove();
                             $('#attachment_form')[0].reset();
                         }
@@ -763,7 +765,7 @@ function load_meat_attachment()
         data :{'appNo':appNo},
         success : function(response)
         {
-            $('#file-attachment-mortem').html(response);
+            $('#file-attachment-meat-shop').html(response);
         }
     });
 }

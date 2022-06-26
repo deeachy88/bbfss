@@ -156,8 +156,8 @@ class t_plant_import_permit_t2(models.Model):
     Variety_Id = models.IntegerField(blank=True, null=True)
     Unit = models.CharField(max_length=10)
     Quantity = models.IntegerField()
-    Quantity_Released = models.CharField(max_length=10, blank=True, null=True)
-    Quantity_Rejected = models.CharField(max_length=10, blank=True, null=True)
+    Quantity_Released = models.IntegerField(blank=True, null=True)
+    Quantity_Rejected = models.IntegerField(blank=True, null=True)
     Remarks = models.TextField(blank=True, null=True)
     Quantity_Balance = models.IntegerField(blank=True, null=True)
 
@@ -216,8 +216,8 @@ class t_plant_import_permit_inspection_t2(models.Model):
     Variety_Id = models.IntegerField(blank=True, null=True)
     Unit = models.CharField(max_length=10)
     Quantity = models.IntegerField()
-    Quantity_Released = models.CharField(max_length=10, blank=True, null=True)
-    Quantity_Rejected = models.CharField(max_length=10, blank=True, null=True)
+    Quantity_Released = models.IntegerField(blank=True, null=True)
+    Quantity_Rejected = models.IntegerField(blank=True, null=True)
     Remarks = models.TextField(blank=True, null=True)
     Quantity_Balance = models.IntegerField(blank=True, null=True)
     Quantity_Balance_1 = models.IntegerField(blank=True, null=True)
@@ -245,9 +245,6 @@ class t_plant_export_certificate_plant_plant_products_t1(models.Model):
     Dzongkhag_Code = models.IntegerField(blank=True, null=True)
     Locatipn_Code = models.IntegerField(blank=True, null=True)
     Consingee_Name_Address = models.TextField(blank=True, null=True)
-    Botanical_Name = models.CharField(max_length=250, blank=True, null=True)
-    Common_Name = models.CharField(max_length=250, blank=True, null=True)
-    Description = models.TextField(blank=True, null=True)
     Qty_Gross = models.CharField(max_length=100, blank=True, null=True)
     Unit_Gross = models.CharField(max_length=10, blank=True, null=True)
     Pieces_Gross = models.CharField(max_length=100, default=None, blank=True, null=True)
@@ -331,6 +328,18 @@ class t_plant_export_certificate_plant_plant_products_t1(models.Model):
     Approved_Date = models.DateField(default=None, blank=True, null=True)
     Validity_Period = models.CharField(default=None, max_length=100, blank=True, null=True)
     Validity = models.DateField(default=None, blank=True, null=True)
+
+
+class t_plant_export_certificate_plant_plant_products_t2(models.Model):
+    Record_Id = models.AutoField(primary_key=True, default=None)
+    Application_No = models.CharField(max_length=30, default=None)
+    Botanical_Name = models.CharField(max_length=250, blank=True, null=True)
+    Common_Name = models.CharField(max_length=250, blank=True, null=True)
+    Description = models.TextField(blank=True, null=True)
+    Quantity = models.CharField(max_length=100, blank=True, null=True)
+    Unit = models.CharField(max_length=10, blank=True, null=True)
+    Gross_Weight = models.CharField(max_length=100, blank=True, null=True)
+    Net_Weight = models.CharField(max_length=10, blank=True, null=True)
 
 
 class t_plant_clearence_nursery_seed_grower_t1(models.Model):

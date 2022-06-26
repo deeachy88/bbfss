@@ -583,22 +583,20 @@ a {
                                 </tr>
                             </thead>
                             <tbody>
-                               <tbody>
-                                    {% for import in inspection_details %}
-                                        <tr>
-                                            <td>{{ forloop.counter }}</td>
-                                            <td>{{import.requirement}}</td>
-                                            <td>{{import.clause_no}}</td>
-                                            <td class="MyClass">{{import.concern}}</td>
-                                            <td>{{import.date|date:"d-m-Y"}}</td>
-                                            <td>{{import.observation}}</td>
-                                        </tr>
-                                        {% empty %}
-                                        <tr>
-                                          <td colspan="6" class="text-center">No Data</td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
+                                {% for import in inspection_details %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{import.requirement}}</td>
+                                        <td>{{import.clause_no}}</td>
+                                        <td class="MyClass">{{import.concern}}</td>
+                                        <td>{{import.date|date:"d-m-Y"}}</td>
+                                        <td>{{import.observation}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                      <td colspan="6" class="text-center">No Data</td>
+                                    </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>

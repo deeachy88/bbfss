@@ -718,7 +718,11 @@ form, input, select, textarea{
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
                                         <td>{{import.Clause_Number}}</td>
-                                        <td>{{import.Non_Conformity}}</td>
+                                        {% if import.Non_Conformity == 'Yes' %}
+                                        <td>Open</td>
+                                        {% else %}
+                                        <td>Close</td>
+                                        {% endif %}
                                         <td>{{import.Non_Conformity_Category}}</td>
                                         <td>{{import.Non_Conformity_Description}}</td>
                                         <td>{{import.Corrective_Action_Proposed_Auditee}}</td>

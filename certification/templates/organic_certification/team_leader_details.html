@@ -607,7 +607,7 @@ form, input, select, textarea{
                                     </tr>
                                 </thead>
                                 <tbody>
-                                   {% for file_attach in audit_plan %}
+                                   {% for file_attach in file_attach %}
                                         <tr>
                                             <td>{{ forloop.counter }}</td>
                                             <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
@@ -1158,7 +1158,7 @@ form, input, select, textarea{
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label">Nonconformity Category</label>
-                                <select class="form-control" name="Non_Conformity_Category">
+                                <select class="form-control" name="Non_Conformity_Category" id="Non_Conformity_Category">
                                     <option value="">-SELECT-</option>
                                     <option value="Critical">Critical</option>
                                     <option value="Major">Major</option>
@@ -1169,7 +1169,7 @@ form, input, select, textarea{
                         <div class="row">
                             <div class="col-md-4">
                                 <label class="form-label">Description of nonconformity</label>
-                                <textarea class="form-control" name="Non_Conformity_Description"></textarea>
+                                <textarea class="form-control" id="Non_Conformity_Description" name="Non_Conformity_Description"></textarea>
                             </div>
                         </div>
                     </div>
@@ -1369,10 +1369,14 @@ function Check_Accept(value)
 {
     if(value == 'Yes')
     {
+        $("#Non_Conformity_Category").removeAttr("disabled");
+        $("#Non_Conformity_Description").removeAttr('readonly');
         $("#Corrective_Action_Proposed_Auditee").removeAttr("disabled");
     }
     else
     {
+        $("#Non_Conformity_Category").attr("disabled", "disabled");
+        $("#Non_Conformity_Description").prop("readonly", true);
         $("#Corrective_Action_Proposed_Auditee").attr("disabled", "disabled");
     }
 }

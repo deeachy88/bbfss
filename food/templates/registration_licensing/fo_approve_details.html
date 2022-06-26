@@ -462,45 +462,47 @@ a {
         </div>
     </div>
 </div>
-{% if application_details.Process_Outsource == 'Yes' %}
-    <div class="card">
-        <div class="card-header" role="tab" id="outsourced_process_details">
-            <a class="collapsed" data-toggle="collapse" href="#outsourced_process_collapse" aria-expanded="false" aria-controls="collapseTwo">
-                Outsourced Process Details
-            </a>
-        </div>
-        <div id="outsourced_process_collapse" class="collapse" role="tabpanel" aria-labelledby="headingItems" data-parent="#accordion" style="">
-            <div class="card-body">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Address Details</th>
-                            <th scope="col">Contact</th>
-                            <th scope="col">BAFRA License Number</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for import in fh_details %}
+{% for application_details in application_details %}
+    {% if application_details.process_outsource == 'Yes' %}
+        <div class="card">
+            <div class="card-header" role="tab" id="outsourced_process_details">
+                <a class="collapsed" data-toggle="collapse" href="#outsourced_process_collapse" aria-expanded="false" aria-controls="collapseTwo">
+                    Outsourced Process Details
+                </a>
+            </div>
+            <div id="outsourced_process_collapse" class="collapse" role="tabpanel" aria-labelledby="headingItems" data-parent="#accordion" style="">
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
                             <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td>{{import.name}}</td>
-                                <td>{{import.address}}</td>
-                                <td>{{import.contact}}</td>
-                                <td>{{import.Liciense_Number}}</td>
+                                <th scope="col">#</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Address Details</th>
+                                <th scope="col">Contact</th>
+                                <th scope="col">BAFRA License Number</th>
                             </tr>
-                            {% empty %}
-                            <tr>
-                              <td colspan="5" class="text-center">No Data</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {% for import in details %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{import.bp_outsourced_to}}</td>
+                                    <td>{{import.address}}</td>
+                                    <td>{{import.contact_no}}</td>
+                                    <td>{{import.bafra_license_no}}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                  <td colspan="5" class="text-center">No Data</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
-{% endif %}
+    {% endif %}
+{% endfor %}
 <div class="card">
     <div class="card-header" role="tab" id="headingItems">
         <a class="collapsed" data-toggle="collapse" href="#meatItems" aria-expanded="false" aria-controls="collapseTwo">
@@ -521,8 +523,8 @@ a {
                 {% for import in food_handler %}
                     <tr>
                         <td>{{ forloop.counter }}</td>
-                        <td>{{import.FH_Name}}</td>
-                        <td>{{import.FH_License_No}}</td>
+                        <td>{{import.fh_name}}</td>
+                        <td>{{import.fh_license_no}}</td>
                     </tr>
                     {% empty %}
                     <tr>
@@ -554,8 +556,8 @@ a {
                     {% for raw_materials in raw_materials %}
                         <tr>
                             <td>{{ forloop.counter }}</td>
-                            <td>{{raw_materials.Name}}</td>
-                            <td>{{raw_materials.Source_Country}}</td>
+                            <td>{{raw_materials.name}}</td>
+                            <td>{{raw_materials.source_country}}</td>
                         </tr>
                         {% empty %}
                         <tr>
@@ -587,8 +589,8 @@ a {
                     {% for packaging_material in packaging_material %}
                         <tr>
                             <td>{{ forloop.counter }}</td>
-                            <td>{{packaging_material.Name}}</td>
-                            <td>{{packaging_material.Source_Country}}</td>
+                            <td>{{packaging_material.name}}</td>
+                            <td>{{packaging_material.source_country}}</td>
                         </tr>
                         {% empty %}
                         <tr>
@@ -619,7 +621,7 @@ a {
                    {% for file_attach in file %}
                         <tr>
                             <td>{{ forloop.counter }}</td>
-                            <td><a href='{{file_attach.File_Path}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                            <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
                         </tr>
                         {% empty %}
                         <tr>
@@ -651,8 +653,8 @@ a {
                     {% for import in inspection_team_details %}
                         <tr>
                             <td>{{ forloop.counter }}</td>
-                            <td>{{import.Name}}</td>
-                            <td>{{import.Designation}}</td>
+                            <td>{{import.name}}</td>
+                            <td>{{import.designation}}</td>
                         </tr>
                         {% empty %}
                         <tr>
@@ -686,10 +688,10 @@ a {
                     {% for import in team_details %}
                         <tr>
                             <td>{{ forloop.counter }}</td>
-                            <td>{{import.Name}}</td>
-                            <td>{{import.Designation}}</td>
-                            <td>{{import.Open_Meeting_Date|date:"d-m-Y"}}</td>
-                            <td>{{import.Closing_Meeting_Date|date:"d-m-Y"}}</td>
+                            <td>{{import.name}}</td>
+                            <td>{{import.designation}}</td>
+                            <td>{{import.open_meeting_date|date:"d-m-Y"}}</td>
+                            <td>{{import.closing_Meeting_date|date:"d-m-Y"}}</td>
                         </tr>
                         {% empty %}
                         <tr>
@@ -725,12 +727,12 @@ a {
                     {% for import in inspection_details %}
                         <tr>
                             <td>{{ forloop.counter }}</td>
-                            <td>{{import.Requirement}}</td>
-                            <td>{{import.Clause_No}}</td>
-                            <td id="my_cell">{{import.Concern}}</td>
-                            <td>{{import.Date|date:"d-m-Y"}}</td>
-                            <td>{{import.Observation}}</td>
-                            <th scope="col">{{import.FBO_Response}}</th>
+                            <td>{{import.requirement}}</td>
+                            <td>{{import.clause_no}}</td>
+                            <td id="my_cell">{{import.concern}}</td>
+                            <td>{{import.date|date:"d-m-Y"}}</td>
+                            <td>{{import.observation}}</td>
+                            <th scope="col">{{import.fbo_response}}</th>
                         </tr>
                         {% empty %}
                         <tr>
@@ -762,8 +764,8 @@ a {
                     {% for import in factory_inspection_team_details %}
                         <tr>
                             <td>{{ forloop.counter }}</td>
-                            <td>{{import.Name}}</td>
-                            <td>{{import.Designation}}</td>
+                            <td>{{import.name}}</td>
+                            <td>{{import.designation}}</td>
                         </tr>
                         {% empty %}
                         <tr>
@@ -797,10 +799,10 @@ a {
                     {% for import in factory_team_details %}
                         <tr>
                             <td>{{ forloop.counter }}</td>
-                            <td>{{import.Name}}</td>
-                            <td>{{import.Designation}}</td>
-                            <td>{{import.Open_Meeting_Date|date:"d-m-Y"}}</td>
-                            <td>{{import.Closing_Meeting_Date|date:"d-m-Y"}}</td>
+                            <td>{{import.name}}</td>
+                            <td>{{import.designation}}</td>
+                            <td>{{import.open_meeting_date|date:"d-m-Y"}}</td>
+                            <td>{{import.closing_meeting_date|date:"d-m-Y"}}</td>
                         </tr>
                         {% empty %}
                         <tr>
@@ -836,12 +838,12 @@ a {
                     {% for import in factory_inspection_details %}
                         <tr>
                             <td>{{ forloop.counter }}</td>
-                            <td>{{import.Requirement}}</td>
-                            <td>{{import.Clause_No}}</td>
-                            <td>{{import.NC}}</td>
-                            <td>{{import.Date|date:"d-m-Y"}}</td>
-                            <td>{{import.Observation}}</td>
-                            <th scope="col">{{import.FBO_Response}}</th>
+                            <td>{{import.requirement}}</td>
+                            <td>{{import.clause_no}}</td>
+                            <td>{{import.nc}}</td>
+                            <td>{{import.date|date:"d-m-Y"}}</td>
+                            <td>{{import.observation}}</td>
+                            <th scope="col">{{import.fbo_response}}</th>
                         </tr>
                         {% empty %}
                         <tr>
@@ -873,13 +875,13 @@ a {
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="form-label">Clients Desired Inspection Date</label>
-                            <input type="text" class="form-control" value="{{ application_details.Desired_FI_Inspection_Date }}" readonly="readonly">
+                            <input type="text" class="form-control" value="{{ application_details.desired_fi_inspection_date }}" readonly="readonly">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="form-label">Response From Client</label>
-                            <input type="text" class="form-control" value="{{ application_details.FI_Response }}" readonly="readonly">
+                            <input type="text" class="form-control" value="{{ application_details.fi_response }}" readonly="readonly">
                         </div>
                     </div>
                 </div>
@@ -889,7 +891,7 @@ a {
                             <label class="form-label">Inspection Team Leader</label>
                             <select class="form-control" disabled>
                                 {% for inspector_list in inspector_list %}
-                                        <option value="{{ inspector_list.Login_Id }}" {% if application_details.FI_Inspection_Leader == inspector_list.Login_Id %}selected{% endif %}>{{ inspector_list.Name }}</option>
+                                        <option value="{{ inspector_list.Login_Id }}" {% if application_details.fi_inspection_leader == inspector_list.Login_Id %}selected{% endif %}>{{ inspector_list.Name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -897,7 +899,7 @@ a {
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="form-label">Inspection Team </label>
-                            <textarea class="form-control" disabled rows="2">{{ application_details.FI_Inspection_Team }}</textarea>
+                            <textarea class="form-control" disabled rows="2">{{ application_details.fi_inspection_team }}</textarea>
                         </div>
                     </div>
                 </div>
@@ -905,13 +907,13 @@ a {
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="form-label">Date Of Inspection</label>
-                            <input type="text" class="form-control" value="{{application_details.FI_Inspection_Date}}" readonly="readonly">
+                            <input type="text" class="form-control" value="{{application_details.fi_inspection_date}}" readonly="readonly">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="form-label">Recommendation</label>
-                            <textarea class="form-control" disabled rows="2">{{application_details.FI_Recommendation}}</textarea>
+                            <textarea class="form-control" disabled rows="2">{{application_details.fi_recommendation}}</textarea>
                         </div>
                     </div>
                 </div>
@@ -928,13 +930,13 @@ a {
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="form-label">Clients Desired Inspection Date</label>
-                            <input type="text" class="form-control" value="{{ application_details.Desired_FR_Inspection_Date }}" readonly="readonly">
+                            <input type="text" class="form-control" value="{{ application_details.desired_fr_inspection_date }}" readonly="readonly">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="form-label">Response From Client</label>
-                            <input type="text" class="form-control" value="{{ application_details.FR_Response }}" readonly="readonly">
+                            <input type="text" class="form-control" value="{{ application_details.fr_response }}" readonly="readonly">
                         </div>
                     </div>
                 </div>
@@ -944,7 +946,7 @@ a {
                             <label class="form-label">Inspection Team Leader</label>
                             <select class="form-control" disabled>
                                 {% for inspector_list in inspector_list %}
-                                    <option value="{{ inspector_list.Login_Id }}" {% if application_details.FR_Inspection_Leader == inspector_list.Login_Id %}selected{% endif %}>{{ inspector_list.Name }}</option>
+                                    <option value="{{ inspector_list.Login_Id }}" {% if application_details.fr_inspection_leader == inspector_list.Login_Id %}selected{% endif %}>{{ inspector_list.Name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -952,7 +954,7 @@ a {
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="form-label">Inspection Team </label>
-                            <textarea class="form-control" disabled rows="2">{{ application_details.FR_Inspection_Team }}</textarea>
+                            <textarea class="form-control" disabled rows="2">{{ application_details.fr_inspection_team }}</textarea>
                         </div>
                     </div>
                 </div>
@@ -960,14 +962,14 @@ a {
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="form-label">Date Of Inspection</label>
-                            <input type="text" class="form-control" id="dateOfInspection" value="{{application_details.FR_Inspection_Date}}" readonly="readonly">
+                            <input type="text" class="form-control" id="dateOfInspection" value="{{application_details.fr_inspection_date}}" readonly="readonly">
                         </div>
 
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="form-label">Recommendation</label>
-                            <textarea class="form-control" disabled rows="2">{{application_details.FR_Recommendation}}</textarea>
+                            <textarea class="form-control" disabled rows="2">{{application_details.fr_recommendation}}</textarea>
                         </div>
                     </div>
                 </div>
@@ -996,7 +998,7 @@ a {
             </div>
             <div class="modal-footer justify-content-center">
                 {% for application_details in application_details %}
-                    <button type="button" class="btn btn-primary" onclick="fbr_submit('{{ application_details.Application_No }}')">
+                    <button type="button" class="btn btn-primary" onclick="fbr_submit('{{ application_details.application_no }}')">
                         <i class="ace-icon fa fa-check"></i>
                         &nbsp;&nbsp;Approve
                     </button>

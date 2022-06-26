@@ -1,25 +1,43 @@
-{% for import in audit_observation %}
-    <tr>
-        <td>{{ forloop.counter }}</td>
-        <td>{{import.Clause_Number}}</td>
-        <td>{{import.Non_Conformity}}</td>
-        <td>{{import.Non_Conformity_Category}}</td>
-        <td>{{import.Non_Conformity_Description}}</td>
-        <td>{{import.Corrective_Action_Proposed_Auditee}}</td>
-        <td>{{import.Corrective_Action_Verified_Auditor}}</td>
-        <td>
-            <button type="button"
-            class="btn btn-primary btn-sm js-edit-details"
-            data-url="{% url 'edit_oc_nc_details' import.Record_Id %}">
-            <i class="zmdi zmdi-edit"></i>
-            </button>
-        </td>
-    </tr>
-    {% empty %}
-    <tr>
-      <td colspan="6" class="text-center">No Data</td>
-    </tr>
-{% endfor %}
+<table class="table table-bordered" id="details-table">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Clause Number</th>
+            <th scope="col">Non Conformity</th>
+            <th scope="col">Non Conformity Category</th>
+            <th scope="col">Description of nonconformity</th>
+            <th scope="col">Response To NC</th>
+            <th scope="col">Auditors Remarks</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for import in conform_details %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{import.Clause_Number}}</td>
+                <td>{{import.Non_Conformity}}</td>
+                <td>{{import.Non_Conformity_Category}}</td>
+                <td>{{import.Non_Conformity_Description}}</td>
+                <td>{{import.Corrective_Action_Proposed_Auditee}}</td>
+                <td>{{import.Corrective_Action_Verified_Auditor}}</td>
+                <td>
+                    <button type="button"
+                    class="btn btn-primary btn-sm" onclick="populate_nc_details('{{import.Record_Id}}','{{import.Application_No}}',
+                    '{{import.Clause_Number}}','{{import.Non_Conformity}}','{{import.Non_Conformity_Category}}',
+                    '{{import.Non_Conformity_Description}}','{{import.Corrective_Action_Proposed_Auditee}}',
+                    '{{import.Corrective_Action_Verified_Auditor}}')">
+                    <i class="zmdi zmdi-edit"></i>
+                    </button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="6" class="text-center">No Data</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
 <input type="hidden" id="count" value="{{message_count}}">
 <script>
     $(document).ready(function()

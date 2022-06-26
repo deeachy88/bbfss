@@ -9,6 +9,7 @@ from django.template.loader import render_to_string
 from django.utils import timezone
 from django.views.decorators.cache import cache_control
 import requests
+from django.views.decorators.csrf import csrf_exempt
 from zeep import Client
 
 from administrator.models import t_dzongkhag_master, t_gewog_master, t_village_master, t_location_field_office_mapping, \
@@ -94,6 +95,7 @@ def meat_shop_registration_licensing(request):
         return render(request, 'redirect_page.html')
 
 
+@csrf_exempt
 def save_meat_shop_registration(request):
     data = dict()
     service_code = "CMS"
@@ -159,6 +161,7 @@ def save_meat_shop_registration(request):
     return JsonResponse(data)
 
 
+@csrf_exempt
 def update_meat_shop_registration(request):
     data = dict()
     service_code = "CMS"
@@ -224,7 +227,8 @@ def update_meat_shop_registration(request):
 
 
 def meat_shop_registration_application_no(service_code):
-    last_application_no = t_livestock_clearance_meat_shop_t1.objects.aggregate(Max('application_no'))
+    last_application_no = t_livestock_clearance_meat_shop_t1.objects.filter(application_source__isnull=True) \
+        .aggregate(Max('application_no'))
     lastAppNo = last_application_no['application_no__max']
     if not lastAppNo:
         year = timezone.now().year
@@ -238,6 +242,7 @@ def meat_shop_registration_application_no(service_code):
     return newAppNo
 
 
+@csrf_exempt
 def meat_shop_file(request):
     data = dict()
     myFile = request.FILES['document']
@@ -255,18 +260,18 @@ def meat_shop_file(request):
     return JsonResponse(data)
 
 
+@csrf_exempt
 def meat_shop_file_name(request):
-    if request.method == 'POST':
-        app_no = request.POST.get('appNo')
-        fileName = request.POST.get('filename')
-        Applicant_Id = request.session['email']
-        file_url = request.POST.get('file_url')
-        file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + fileName
-        t_file_attachment.objects.create(application_no=app_no, applicant_id=Applicant_Id,
-                                         role_id=None, file_path=file_url,
-                                         attachment=file_name)
+    app_no = request.POST.get('appNo')
+    fileName = request.POST.get('filename')
+    Applicant_Id = request.session['email']
+    file_url = request.POST.get('file_url')
+    file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + fileName
+    t_file_attachment.objects.create(application_no=app_no, applicant_id=Applicant_Id,
+                                     role_id=None, file_path=file_url,
+                                     attachment=file_name)
 
-        file_attach = t_file_attachment.objects.filter(application_no=app_no)
+    file_attach = t_file_attachment.objects.filter(application_no=app_no)
     return render(request, 'meat_shop_registration/file_attachment.html', {'file_attach': file_attach})
 
 
@@ -285,6 +290,7 @@ def delete_meat_shop_fh_file(request):
     return render(request, 'meat_shop_registration/file_attachment.html', {'file_attach': file_attach})
 
 
+@csrf_exempt
 def submit_meat_shop_application(request):
     application_no = request.POST.get('application_no')
     workflow_details = t_workflow_details.objects.filter(application_no=application_no)
@@ -328,12 +334,12 @@ def meat_shop_fo_reject(request):
     return redirect(dashboard)
 
 
-def send_meat_shop_approve_email(new_import_permit, Email, validity_date):
+def send_meat_shop_approve_email(new_import_permit, Email, validity_date, application_id):
     subject = 'APPLICATION APPROVED'
     message = "Dear Sir," \
               "" \
-              "Your Application for Meat Shop Licensing Has Been Approved. Your " \
-              "Registration No is:" + new_import_permit + " And is Valid TIll " + str(validity_date) + \
+              "Your Application for Meat Shop Licensing Has Been Approved.Your Application No is " + application_id + \
+              "Your Registration No is : " + new_import_permit + " And is Valid TIll " + str(validity_date) + \
               " Please Make Payment Before Validity Expires.  Visit The Nearest Bafra Office For Payment" \
               "or Pay Online at https://tinyurl.com/y3m7wa3c Thank you!"
     recipient_list = [Email]
@@ -546,8 +552,8 @@ def approve_meat_shop_feasibility_inspection(request):
             application_details.update(assigned_to=id)
     for email_id in details:
         emailId = email_id.email
-        send_feasibility_approve_email(Clearance_No, emailId)
-    update_payment(application_id, Clearance_No, 'CMS', None, 'Feasibility','131110040')
+        send_feasibility_approve_email(Clearance_No, emailId,application_id)
+    update_payment(application_id, Clearance_No, 'CMS', None, 'Feasibility', '131110040')
     return redirect(inspector_application)
 
 
@@ -572,11 +578,14 @@ def feasibility_clearance_no(request):
     return newAppNo
 
 
-def send_feasibility_approve_email(Clearance_No, Email):
+def send_feasibility_approve_email(Clearance_No, Email, application_id):
     subject = 'APPLICATION APPROVED'
     message = "Dear Sir, Your  Feasibility Inspection of " \
-              "Meat Shop Licensing  Has Been Approved. Your " \
-              "Clearance No is:" + Clearance_No + " ."
+              "Meat Shop Licensing  Has Been Approved. Your  Application No is" + application_id + " ."\
+              "And Clearance No is:" + Clearance_No + " ."\
+              " Please Make Payment Before Validity Expires.  Visit The Nearest Bafra Office For Payment" \
+              "or Pay Online at https://tinyurl.com/y3m7wa3c Thank you!"
+
     recipient_list = [Email]
     send_mail(subject, message, 'bafrabbfss@moaf.gov.bt', recipient_list, fail_silently=False,
               auth_user='systems@moaf.gov.bt', auth_password='hchqbgeeqvawkceg',
@@ -692,7 +701,7 @@ def approve_meat_shop_factory_inspection(request):
     application_details.update(application_status='FRA')
     application_details.update(assigned_role_id='2')
     for email_id in details:
-        emailId = email_id.Email
+        emailId = email_id.email
         send_factory_approve_email(emailId)
     return redirect(inspector_application)
 
@@ -733,17 +742,17 @@ def meat_shop_submit(request):
                                          updated_by=None,
                                          updated_on=None,
                                          permit_type='Final',
-                                         account_head_code='account_head_code')
+                                         account_head_code='131110040')
         cl = Client('https://www.citizenservices.gov.bt/G2CPaymentAggregator/services/G2CPaymentInitiatorBusiness?wsdl')
         order_type = cl.get_type('ns1:PaymentDTO')
-        paymentList = order_type(accountHeadId='account_head_code', serviceFee=fees)
+        paymentList = order_type(accountHeadId='131110040', serviceFee=fees)
         post_data = {'agencyCode': "BAFRA", 'applicationNo': application_id,
                      'serviceName': service_name,
                      'paymentList': paymentList}
         cl.service.insertPaymentDetailsOnApproval(post_data)
     for email_id in details:
         emailId = email_id.email
-        send_meat_shop_approve_email(clearance, emailId, validity_date)
+        send_meat_shop_approve_email(clearance, emailId, validity_date, application_id)
     return redirect(focal_officer_application)
 
 
@@ -751,7 +760,7 @@ def factory_clearance_no(request, application_id):
     global Field_Code
     details = t_workflow_details.objects.filter(application_no=application_id)
     for details in details:
-        Field_office_Code = details.Field_Office_Id
+        Field_office_Code = details.field_office_id
         code = t_field_office_master.objects.filter(Field_Office_Id=Field_office_Code)
         for code in code:
             Field_Code = code.Field_Office_Code
@@ -843,7 +852,8 @@ def edit_meat_shop_feasibility_details(request):
     application_details = t_livestock_clearance_meat_shop_t5.objects.filter(application_no=application_id,
                                                                             inspection_type='Feasibility Inspection') \
         .order_by('record_id')
-    message_count = t_livestock_clearance_meat_shop_t5.objects.filter(concern='Yes').count()
+    message_count = t_livestock_clearance_meat_shop_t5.objects.filter(application_no=application_id,
+                                                                      concern='Yes').count()
     return render(request, 'meat_shop_registration/concern_details.html', {'inspection_details': application_details,
                                                                            'message_count': message_count})
 
@@ -863,7 +873,8 @@ def edit_meat_shop_factory_details(request):
     application_details = t_livestock_clearance_meat_shop_t5.objects.filter(application_no=application_id,
                                                                             inspection_type='Factory Inspection') \
         .order_by('record_id')
-    message_count = t_livestock_clearance_meat_shop_t5.objects.filter(concern='Yes').count()
+    message_count = t_livestock_clearance_meat_shop_t5.objects.filter(application_no=application_id,
+                                                                      concern='Yes').count()
     return render(request, 'meat_shop_registration/concern_details.html', {'inspection_details': application_details,
                                                                            'message_count': message_count})
 
@@ -915,6 +926,7 @@ def forward_meat_shop_factory_application(request):
     return redirect(factory_inspection_list)
 
 
+@csrf_exempt
 def save_meat_shop_details(request):
     Application_No = request.POST.get('fh_application_no')
     meat_name = request.POST.get('meat_name')
@@ -1364,9 +1376,9 @@ def live_animal_fish_application_no(service_code):
 def approve_fo_la_import(request):
     service_code = "IAF"
     permit_no = get_la_permit_no(service_code)
-    application_no = request.POST.get('application_id')
-    remarks = request.POST.get('remarks')
-    validity = request.POST.get('validity')
+    application_no = request.GET.get('application_id')
+    remarks = request.GET.get('remarks')
+    validity = request.GET.get('validity_af')
     workflow_details = t_workflow_details.objects.filter(application_no=application_no)
     for app in workflow_details:
         client_login_id = app.applicant_id
@@ -1386,9 +1398,6 @@ def approve_fo_la_import(request):
     details.update(Validity=validity_date)
     details.update(Import_Permit_No=permit_no)
     details.update(Approve_Date=date.today())
-    for email_id in details:
-        email = email_id.Email
-        send_la_approve_email(permit_no, email, validity_date)
     account_details = t_payment_details_master.objects.filter(account_head_code='131110101')
     for pay_details in account_details:
         fees = pay_details.service_fee
@@ -1406,20 +1415,23 @@ def approve_fo_la_import(request):
                                          updated_by=None,
                                          updated_on=None,
                                          permit_type='Final',
-                                         account_head_code='account_head_code')
+                                         account_head_code='131110101')
         cl = Client('https://www.citizenservices.gov.bt/G2CPaymentAggregator/services/G2CPaymentInitiatorBusiness?wsdl')
         order_type = cl.get_type('ns1:PaymentDTO')
-        paymentList = order_type(accountHeadId='account_head_code', serviceFee=fees)
+        paymentList = order_type(accountHeadId='131110101', serviceFee=fees)
         post_data = {'agencyCode': "BAFRA", 'applicationNo': application_no,
                      'serviceName': service_name,
                      'paymentList': paymentList}
         cl.service.insertPaymentDetailsOnApproval(post_data)
+    for email_id in details:
+        email = email_id.Email
+        send_la_approve_email(permit_no, email, validity_date, application_no)
     return redirect(focal_officer_application)
 
 
 def reject_fo_la_import(request):
-    application_no = request.POST.get('application_id')
-    remarks = request.POST.get('remarks')
+    application_no = request.GET.get('application_id')
+    remarks = request.GET.get('remarks')
     workflow_details = t_workflow_details.objects.filter(application_no=application_no)
     workflow_details.update(action_date=date.today())
     workflow_details.update(application_status='R')
@@ -1442,12 +1454,13 @@ def livestock_import_observation(request):
     return render(request, 'Livestock_Import/decision_details.html', {'decision_details': decision_details})
 
 
-def send_la_approve_email(new_import_permit, Email, validity_date):
+def send_la_approve_email(new_import_permit, Email, validity_date, application_no):
     subject = 'APPLICATION APPROVED'
     message = "Dear Sir," \
               "" \
-              "Your Application for Import Permit for Live Animal And Fish Has Been Approved. Your " \
-              "Import Permit No is:" + new_import_permit + " And is Valid TIll " + str(validity_date) + \
+              "Your Application for Import Permit for Live Animal And Fish Has Been Approved." \
+              " Your Application No is" + application_no +  \
+              " And Import Permit No is:" + new_import_permit + " And is Valid TIll " + str(validity_date) + \
               " Please Make Payment Before Validity Expires. Visit Nearest Bafra Office For Payment" \
               "or Pay Online at https://tinyurl.com/y3m7wa3c Thank you!"
     recipient_list = [Email]
@@ -1557,7 +1570,7 @@ def update_details_la(request):
     approved_quantity = request.POST.get('number_released')
     balance_number = request.POST.get('balance')
     remarks = request.POST.get('import_Remarks')
-
+    edit_no = request.POST.get('edit_no')  # Total Quantity Approved
     import_det = t_livestock_import_permit_animal_inspection_t2.objects.filter(pk=record_id)
     if remarks is not None:
         import_det.update(Remarks=remarks)
@@ -1571,28 +1584,30 @@ def update_details_la(request):
         product_details = t_livestock_import_permit_animal_t2.objects.filter(pk=Product_Record_Id)
         product_details.update(Quantity_Balance=balance)
 
-    import_details_sum = t_livestock_import_permit_animal_inspection_t2.objects.filter(
-        Application_No=application_no).aggregate(Sum('Quantity_Balance'))
+        import_details_sum = t_livestock_import_permit_animal_inspection_t2.objects.filter(
+            Product_Record_Id=import_ILA.Product_Record_Id).aggregate(Sum('Quantity_Released'))
 
-    if import_details_sum == 0:
-        import_details = t_livestock_import_permit_animal_inspection_t1.objects.filter(
-            Application_No=application_no)
-        for import_det in import_details:
-            la_details = t_livestock_import_permit_animal_t1.objects.filter(
-                Import_Permit_No=import_det.Import_Permit_No)
-            for la in la_details:
-                work_details = t_workflow_details.objects.filter(application_no=la.Application_No)
-                work_details.update(application_status='C')
-    else:
-        import_details = t_livestock_import_permit_animal_inspection_t1.objects.filter(
-            Application_No=application_no)
-        for import_det in import_details:
-            la_details = t_livestock_import_permit_animal_t1.objects.filter(
-                Import_Permit_No=import_det.Import_Permit_No)
-            for la in la_details:
-                work_details = t_workflow_details.objects.filter(application_no=la.Application_No)
-                work_details.update(application_status='P')
-    application_details = t_livestock_import_permit_animal_inspection_t2.objects.filter(Application_No=application_no).order_by('Record_Id')
+        sum_import = import_details_sum['Quantity_Released__sum']
+        if sum_import == int(edit_no):
+            import_details = t_livestock_import_permit_animal_inspection_t1.objects.filter(
+                Application_No=application_no)
+            for import_det in import_details:
+                la_details = t_livestock_import_permit_animal_t1.objects.filter(
+                    Import_Permit_No=import_det.Import_Permit_No)
+                for la in la_details:
+                    work_details = t_workflow_details.objects.filter(application_no=la.Application_No)
+                    work_details.update(application_status='C')
+        else:
+            import_details = t_livestock_import_permit_animal_inspection_t1.objects.filter(
+                Application_No=application_no)
+            for import_det in import_details:
+                la_details = t_livestock_import_permit_animal_t1.objects.filter(
+                    Import_Permit_No=import_det.Import_Permit_No)
+                for la in la_details:
+                    work_details = t_workflow_details.objects.filter(application_no=la.Application_No)
+                    work_details.update(application_status='P')
+        application_details = t_livestock_import_permit_animal_inspection_t2.objects.filter(
+            Application_No=application_no).order_by('Record_Id')
     return render(request, 'Animal_Fish_Import/animal_import_details.html', {'import': application_details})
 
 
@@ -2002,7 +2017,7 @@ def approve_fo_lp_import(request):
     details.update(Validity=validity_date)
     for email_id in details:
         email = email_id.Email
-        send_lp_approve_email(permit_no, email, validity_date)
+        send_lp_approve_email(permit_no, email, validity_date, application_no)
     account_details = t_payment_details_master.objects.filter(account_head_code='131110011')
     for pay_details in account_details:
         fees = pay_details.service_fee
@@ -2045,12 +2060,13 @@ def reject_fo_lp_import(request):
     return redirect(focal_officer_application)
 
 
-def send_lp_approve_email(new_import_permit, Email, validity_date):
+def send_lp_approve_email(new_import_permit, Email, validity_date, application_no):
     subject = 'APPLICATION APPROVED'
     message = "Dear Sir," \
               "" \
-              "Your Application for Import Permit for Livestock Product And Animal Feeds Has Been Approved. Your " \
-              "Import Permit No is:" + new_import_permit + " And is Valid TIll " + str(validity_date) + \
+              "Your Application for Import Permit for Livestock Product And Animal Feeds Has Been Approved." \
+              " Your Application No Is " + application_no + \
+              " And Import Permit No is:" + new_import_permit + " And is Valid TIll " + str(validity_date) + \
               " Please Make Payment Before Validity Expires. Visit Nearest Bafra Office For Payment" \
               "or Pay Online at https://tinyurl.com/y3m7wa3c Thank you!"
     recipient_list = [Email]
@@ -2141,7 +2157,7 @@ def update_details_lp(request):
     approved_quantity = request.POST.get('number_released')
     balance_number = request.POST.get('balance')
     remarks = request.POST.get('import_Remarks')
-
+    edit_no = request.POST.get('no')  # Total Quantity Approved
     import_det = t_livestock_import_permit_product_inspection_t2.objects.filter(pk=record_id)
     if remarks is not None:
         import_det.update(Remarks=remarks)
@@ -2156,28 +2172,31 @@ def update_details_lp(request):
         product_details = t_livestock_import_permit_product_t2.objects.filter(pk=Product_Record_Id)
         product_details.update(Quantity_Balance=balance)
 
-    import_details_sum = t_livestock_import_permit_product_inspection_t2.objects.filter(
-        Application_No=application_no).aggregate(Sum('Quantity_Balance'))
+        import_details_sum = t_livestock_import_permit_product_inspection_t2.objects.filter(
+            Product_Record_Id=import_ILA.Product_Record_Id).aggregate(Sum('Quantity_Released'))
 
-    if import_details_sum == 0:
-        import_details = t_livestock_import_permit_product_inspection_t1.objects.filter(
-            Application_No=application_no)
-        for import_det in import_details:
-            la_details = t_livestock_import_permit_product_t1.objects.filter(
-                Import_Permit_No=import_det.Import_Permit_No)
-            for la in la_details:
-                work_details = t_workflow_details.objects.filter(application_no=la.Application_No)
-                work_details.update(application_status='C')
-    else:
-        import_details = t_livestock_import_permit_product_inspection_t1.objects.filter(
-            Application_No=application_no)
-        for import_det in import_details:
-            la_details = t_livestock_import_permit_product_t1.objects.filter(
-                Import_Permit_No=import_det.Import_Permit_No)
-            for la in la_details:
-                work_details = t_workflow_details.objects.filter(application_no=la.Application_No)
-                work_details.update(application_status='P')
-    application_details = t_livestock_import_permit_product_inspection_t2.objects.filter(Application_No=application_no).order_by('Record_Id')
+        sum_import = import_details_sum['Quantity_Released__sum']
+
+        if sum_import == int(edit_no):
+            import_details = t_livestock_import_permit_product_inspection_t1.objects.filter(
+                Application_No=application_no)
+            for import_det in import_details:
+                la_details = t_livestock_import_permit_product_t1.objects.filter(
+                    Import_Permit_No=import_det.Import_Permit_No)
+                for la in la_details:
+                    work_details = t_workflow_details.objects.filter(application_no=la.Application_No)
+                    work_details.update(application_status='C')
+        else:
+            import_details = t_livestock_import_permit_product_inspection_t1.objects.filter(
+                Application_No=application_no)
+            for import_det in import_details:
+                la_details = t_livestock_import_permit_product_t1.objects.filter(
+                    Import_Permit_No=import_det.Import_Permit_No)
+                for la in la_details:
+                    work_details = t_workflow_details.objects.filter(application_no=la.Application_No)
+                    work_details.update(application_status='P')
+    application_details = t_livestock_import_permit_product_inspection_t2.objects.filter(Application_No=application_no) \
+        .order_by('Record_Id')
     return render(request, 'Livestock_Import/livestock_import_details.html', {'import': application_details})
 
 
@@ -2666,7 +2685,7 @@ def approve_application_export(request):
             cl.service.insertPaymentDetailsOnApproval(post_data)
     for email_id in details:
         emailId = email_id.Email
-        send_lec_approve_email(Export_Permit_No, emailId, validity_date)
+        send_lec_approve_email(Export_Permit_No, emailId, validity_date, application_id)
     return redirect(inspector_application)
 
 
@@ -2706,13 +2725,13 @@ def export_permit_no(request):
     return newAppNo
 
 
-def send_lec_approve_email(Export_Permit_No, Email, validity_date):
+def send_lec_approve_email(Export_Permit_No, Email, validity_date, application_no):
     valid_till = validity_date.strftime('%d-%m-%Y')
 
     subject = 'APPLICATION APPROVED'
     message = "Dear Sir, Your Application for Export Certificate of Animal and Animal Products Has Been Approved. " \
-              "Your " \
-              "Export Permit No is:" + Export_Permit_No + " And is Valid Till " + str(valid_till) + \
+              "Your Application No is " + application_no + \
+              " And Export Permit No is:" + Export_Permit_No + " And is Valid Till " + str(valid_till) + \
               "." + " Please Make Payment Before Validity Expires. Visit Nearest Bafra Office For Payment" \
                     "or Pay Online at https://tinyurl.com/y3m7wa3c Thank you!"
     recipient_list = [Email]
@@ -3175,7 +3194,7 @@ def approve_application_lmp(request):
     application_details = t_workflow_details.objects.filter(application_no=application_id)
     application_details.update(action_date=date.today())
     application_details.update(application_status='A')
-    account_details = t_payment_details_master.objects.filter(account_head_code='1')
+    account_details = t_payment_details_master.objects.filter(account_head_code='131110041')
     for pay_details in account_details:
         fees = pay_details.service_fee
         service_name = pay_details.service_name
@@ -3192,17 +3211,17 @@ def approve_application_lmp(request):
                                          updated_by=None,
                                          updated_on=None,
                                          permit_type='Final',
-                                         account_head_code='account_head_code')
+                                         account_head_code='131110041')
         cl = Client('https://www.citizenservices.gov.bt/G2CPaymentAggregator/services/G2CPaymentInitiatorBusiness?wsdl')
         order_type = cl.get_type('ns1:PaymentDTO')
-        paymentList = order_type(accountHeadId='account_head_code', serviceFee=fees)
+        paymentList = order_type(accountHeadId='131110041', serviceFee=fees)
         post_data = {'agencyCode': "BAFRA", 'applicationNo': application_id,
                      'serviceName': service_name,
                      'paymentList': paymentList}
         cl.service.insertPaymentDetailsOnApproval(post_data)
     for email_id in details:
         emailId = email_id.Email
-        send_lms_approve_email(Movement_Permit_No, emailId, validity_date)
+        send_lms_approve_email(Movement_Permit_No, emailId, validity_date, application_id)
     return redirect(inspector_application)
 
 
@@ -3259,13 +3278,13 @@ def movement_permit_no(request):
     return newAppNo
 
 
-def send_lms_approve_email(Movement_Permit_No, Email, validity_date):
+def send_lms_approve_email(Movement_Permit_No, Email, validity_date, application_no):
     valid_till = validity_date.strftime('%d-%m-%Y')
 
     subject = 'APPLICATION APPROVED'
     message = "Dear Sir, Your Application for Movement Permit Of Live Animal and Animal Products Has Been Approved. " \
-              "Your " \
-              "Movement Permit No is " + Movement_Permit_No + " And is Valid Till " + str(valid_till) + \
+              "Your Application No is " + application_no + \
+              " And Movement Permit No is " + Movement_Permit_No + " And is Valid Till " + str(valid_till) + \
               "." + " Please Make Payment Before Validity Expires. Visit Nearest Bafra Office For Payment" \
                     "or Pay Online at https://tinyurl.com/y3m7wa3c Thank you!"
     recipient_list = [Email]
@@ -3379,6 +3398,7 @@ def update_application_form(request):
                                       assigned_role_id='4', action_date=None, application_status='P',
                                       service_code=service_code)
     data['applNo'] = application_no
+    data['Inspection_Type']= Inspection_Type
     return JsonResponse(data)
 
 
@@ -3445,6 +3465,7 @@ def save_application_form(request):
                                           assigned_role_id='4', action_date=None, application_status='P',
                                           service_code=service_code)
     data['applNo'] = application_no
+    data['Inspection_Type'] = Inspection_Type
     return JsonResponse(data)
 
 
@@ -3635,6 +3656,7 @@ def approve_application_apm(request):
         for pay_details in account_details:
             fees = pay_details.service_fee
             service_name = pay_details.service_name
+            account_head = pay_details.account_head_code
             t_payment_details.objects.create(application_no=application_id,
                                              application_date=date.today(),
                                              permit_no=Clearance_No,
@@ -3648,11 +3670,11 @@ def approve_application_apm(request):
                                              updated_by=None,
                                              updated_on=None,
                                              permit_type='Final',
-                                             account_head_code='account_head_code')
+                                             account_head_code=account_head)
             cl = Client('https://www.citizenservices.gov.bt/G2CPaymentAggregator/services/G2CPaymentInitiatorBusiness'
                         '?wsdl')
             order_type = cl.get_type('ns1:PaymentDTO')
-            paymentList = order_type(accountHeadId='account_head_code', serviceFee=fees)
+            paymentList = order_type(accountHeadId=account_head, serviceFee=fees)
             post_data = {'agencyCode': "BAFRA", 'applicationNo': application_id,
                          'serviceName': service_name,
                          'paymentList': paymentList}

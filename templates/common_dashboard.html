@@ -334,6 +334,7 @@
 
                     $("#pills-raw-materials").prop('disabled', true);
                     $("#pills-packaging-materials").prop('disabled', true);
+                    $("#pills-phyto-details-tab").prop('disabled', true);
 
                 }
                 if($("#referenceNo").val() == "")
@@ -601,6 +602,10 @@
                         else if(identification_type =='FBR-PM')
                         {
                             $('#packaging_material_details').html(responseText);
+                        }
+                        else if(identification_type =='PEC')
+                        {
+                            $('#phyto_export_details').html(responseText);
                         }
                     }
                 });
@@ -2252,6 +2257,80 @@
                             success : function(response) {
                                  $('#packaging_material_details').html(response);
                                  $('#edit_packaging_modal').modal('hide');
+                                 $('.modal-backdrop').remove();
+                            }
+                        });
+                    }
+                }
+                else if(identifier =='PEC')
+                {
+                    var application_no = $('#edit_application_no').val();
+                    var p_Botanical_Name = $('#edit_p_Botanical_Name').val();
+                    var p_Common_Name = $('#edit_p_Common_Name').val();
+                    var p_Description = $('#edit_p_Description').val();
+                    var quantity = $('#edit_quantity').val();
+                    var unit = $("#edit_unit").val();
+                    var gross_weight = $('#edit_gross_weight').val();
+                    var net_weight = $('#edit_net_weight').val();
+
+                    if(p_Botanical_Name == "")
+                    {
+                        $('#p_Botanical_NameErrorMsg').html("Enter Botanical Name Of the Commodity.");
+                        $('#p_Botanical_NameErrorMsg').show();
+                        $('#p_Botanical_NameErrorMsg').delay(2000).fadeOut('slow');
+                        $('#p_Botanical_Name').focus();
+                    }
+                    else if(p_Common_Name == "")
+                    {
+                        $('#p_Common_NameErrorMsg').html("Enter Common Name Of the Commodity.");
+                        $('#p_Common_NameErrorMsg').show();
+                        $('#p_Common_NameErrorMsg').delay(2000).fadeOut('slow');
+                        $('#p_Common_Name').focus();
+                    }
+                    else if(p_Description == "")
+                    {
+                        $('#p_DescriptionErrorMsg').html("Description Of The Commodity.");
+                        $('#p_DescriptionErrorMsg').show();
+                        $('#p_DescriptionErrorMsg').delay(2000).fadeOut('slow');
+                        $('#p_Description').focus();
+                    }
+                    else if(quantity == "")
+                    {
+                        $('#quantityErrorMsg').html("Enter Quantity.");
+                        $('#quantityErrorMsg').show();
+                        $('#quantityErrorMsg').delay(2000).fadeOut('slow');
+                        $('#quantity').focus();
+                    }
+                    else if(unit == "")
+                    {
+                        $('#unitErrorMsg').html("Select Unit.");
+                        $('#unitErrorMsg').show();
+                        $('#unitErrorMsg').delay(2000).fadeOut('slow');
+                        $('#unit').focus();
+                    }
+                    else if(gross_weight == "")
+                    {
+                        $('#p_Qty_NetErrorMsg').html("Enter Gross Weight).");
+                        $('#p_Qty_NetErrorMsg').show();
+                        $('#p_Qty_NetErrorMsg').delay(2000).fadeOut('slow');
+                        $('#p_Qty_Net').focus();
+                    }
+                    else if(net_weight == "")
+                    {
+                        $('#net_weightErrorMsg').html("Enter Net Weight.");
+                        $('#net_weightErrorMsg').show();
+                        $('#net_weightErrorMsg').delay(2000).fadeOut('slow');
+                        $('#net_weight').focus();
+                    }
+                    else
+                    {
+                        $.ajax({
+                            type : "POST",
+                            url : "{% url 'update_edit_details' %}",
+                            data : $('#edit_export_details_form').serialize(),
+                            success : function(response) {
+                                 $('#phyto_export_details').html(response);
+                                 $('#edit_export_details').modal('hide');
                                  $('.modal-backdrop').remove();
                             }
                         });

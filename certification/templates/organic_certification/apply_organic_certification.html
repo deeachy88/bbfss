@@ -2940,21 +2940,21 @@ function  submit_organic_certificate()
 {
     var applicationNo = $('#applicationNo').val();
     $.ajax({
-                type : "POST",
-                url : "{% url 'submit_organic_certificate' %}",
-                data : $('#organic_certificate_form').serialize(),
-                success : function(responseText) {
-                    Swal.fire({
-                      text: "Application Submitted Successfully. Your Application No Is :" + applicationNo,
-                      confirmButtonText: 'Ok',
-                    }).then((result) => {
-                      /* Read more about isConfirmed, isDenied below */
-                      if (result.isConfirmed) {
-                        window.location.href = '{% url 'dashboard' %}';
-                      }
-                    })
-                }
-            });
+        type : "POST",
+        url : "{% url 'submit_organic_certificate' %}",
+        data : $('#organic_certificate_form').serialize(),
+        success : function(responseText) {
+            Swal.fire({
+              text: "Application Submitted Successfully. Your Application No Is :" + applicationNo,
+              confirmButtonText: 'Ok',
+            }).then((result) => {
+              /* Read more about isConfirmed, isDenied below */
+              if (result.isConfirmed) {
+                window.location.href = '{% url 'dashboard' %}';
+              }
+            })
+        }
+    });
 }
 function checkStandards(value)
 {
@@ -3203,21 +3203,7 @@ function getBalance()
     var yield = $('#yield').val();
     var sold = $('#sold').val();
 
-    if(yield == 0)
-    {
-        $('#yieldErrorMsg').html("Must Be More Than Zero");
-        $('#yieldErrorMsg').show();
-        $('#yieldErrorMsg').delay(2000).fadeOut('slow');
-        $('#yield').val("");
-    }
-    else if(sold == 0)
-    {
-        $('#soldErrorMsg').html("Must Be More Than Zero");
-        $('#soldErrorMsg').show();
-        $('#soldErrorMsg').delay(2000).fadeOut('slow');
-        $('#sold').val("");
-    }
-    else if(sold > yield)
+    if(sold > yield)
     {
         $('#soldErrorMsg').html("Cannot Be More Than Yield");
         $('#soldErrorMsg').show();
@@ -3272,21 +3258,7 @@ function getEditBalance()
     var yield = $('#edit_yield').val();
     var sold = $('#edit_sold').val();
 
-    if(yield == 0)
-    {
-        $('#edit_yieldErrorMsg').html("Must Be More Than Zero");
-        $('#edit_yieldErrorMsg').show();
-        $('#edit_yieldErrorMsg').delay(2000).fadeOut('slow');
-        $('#edit_yield').val("");
-    }
-    else if(sold == 0)
-    {
-        $('#edit_soldErrorMsg').html("Must Be More Than Zero");
-        $('#edit_soldErrorMsg').show();
-        $('#edit_soldErrorMsg').delay(2000).fadeOut('slow');
-        $('#edit_sold').val("");
-    }
-    else if(sold > yield)
+    if(sold > yield)
     {
         $('#edit_soldErrorMsg').html("Cannot Be More Than Yield");
         $('#edit_soldErrorMsg').show();
@@ -3307,21 +3279,7 @@ function getAquaBalanceStock()
     var production = $('#Aquaculture_Yield').val();
     var sold = $('#aqua_Sold').val();
 
-    if(production == 0)
-    {
-        $('#Aquaculture_YieldErrorMsg').html("Must Be More Than Zero.");
-        $('#Aquaculture_YieldErrorMsg').show();
-        $('#Aquaculture_YieldErrorMsg').delay(2000).fadeOut('slow');
-        $('#Aquaculture_Yield').val("");
-    }
-    else if(sold == 0)
-    {
-        $('#aqua_SoldErrorMsg').html("Must Be More Than Zero.");
-        $('#aqua_SoldErrorMsg').show();
-        $('#aqua_SoldErrorMsg').delay(2000).fadeOut('slow');
-        $('#aqua_Sold').val("");
-    }
-    else if(sold > production)
+    if(sold > production)
     {
         $('#aqua_SoldErrorMsg').html("Cannot Be More Than Yie;d.");
         $('#aqua_SoldErrorMsg').show();
@@ -3461,21 +3419,7 @@ function getBalanceProcessing()
     var production = $('#production').val();
     var value = $('#processing_Sold').val();
 
-    if(production == 0)
-    {
-        $('#productionErrorMsg').html("Must Be More Than Zero.");
-        $('#productionErrorMsg').show();
-        $('#productionErrorMsg').delay(2000).fadeOut('slow');
-        $('#production').val("");
-    }
-    else if(value == 0)
-    {
-        $('#processing_SoldErrorMsg').html("Must Be More Than Zero.");
-        $('#processing_SoldErrorMsg').show();
-        $('#processing_SoldErrorMsg').delay(2000).fadeOut('slow');
-        $('#processing_Sold').val("");
-    }
-    else if(value > production)
+    if(value > production)
     {
         $('#processing_SoldErrorMsg').html("Cannot Be More Than Production.");
         $('#processing_SoldErrorMsg').show();
@@ -3512,21 +3456,7 @@ function getCurrentBalanceProcessing()
     var production = $('#current_production').val();
     var value = $('#current_processing_Sold').val();
 
-    if(production == 0)
-    {
-        $('#current_productionErrorMsg').html("Must Be More Than Zero.");
-        $('#current_productionErrorMsg').show();
-        $('#current_productionErrorMsg').delay(2000).fadeOut('slow');
-        $('#current_production').val("");
-    }
-    else if(value == 0)
-    {
-        $('#current_processing_SoldErrorMsg').html("Must Be More Than Zero.");
-        $('#current_processing_SoldErrorMsg').show();
-        $('#current_processing_SoldErrorMsg').delay(2000).fadeOut('slow');
-        $('#current_processing_Sold').val("");
-    }
-    else if(value > production)
+    if(value > production)
     {
         $('#current_processing_SoldErrorMsg').html("Cannot Be More Than Production.");
         $('#current_processing_SoldErrorMsg').show();
@@ -3679,14 +3609,7 @@ function check_ah_sold(sold)
 {
     var production = $('#estimated_production').val();
 
-    if(sold == 0)
-    {
-        $('#product_soldErrorMsg').html("Must Be More Than Zero.");
-        $('#product_soldErrorMsg').show();
-        $('#product_soldErrorMsg').delay(2000).fadeOut('slow');
-        $('#product_sold').val("");
-    }
-    else if(sold > production)
+    if(sold > production)
     {
         $('#product_soldErrorMsg').html("Cannot Be More Than Production.");
         $('#product_soldErrorMsg').show();
@@ -3702,14 +3625,7 @@ function check_ah_sold(sold)
 function edit_check_ah_sold(sold)
 {
     var production = $('#edit_estimated_production').val();
-    if(sold == 0)
-    {
-        $('#edit_product_soldErrorMsg').html("Must Be More Than Zero.");
-        $('#edit_product_soldErrorMsg').show();
-        $('#edit_product_soldErrorMsg').delay(2000).fadeOut('slow');
-        $('#edit_product_sold').val("");
-    }
-    else if(sold > production)
+    if(sold > production)
     {
         $('#edit_product_soldErrorMsg').html("Cannot Be More Than Production.");
         $('#edit_product_soldErrorMsg').show();

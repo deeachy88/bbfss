@@ -33,7 +33,7 @@ a {
                 <div class="card-body">
                     {% for application_details in application_details %}
                         <div id="applicant_details">
-                            {% if application_details.Import_Type == "I" %}
+                            {% if application_details.Application_Type == "I" %}
                                 <div class="row">
                                     <div class="col-sm-3">
                                         <label class="form-label">Application Type <font color="red">*</font></label>
@@ -608,6 +608,29 @@ a {
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
+                                    <label class="form-label">Batch No</label>
+                                    <input type="text" class="form-control" id="batch_no" name="batch_no">
+                                </div>
+                                <div class="alert alert-danger" id="batch_noErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Manufacturing Date <font color="red" style="display:none">*</font></label>
+                                    <input type="date" class="form-control" id="mfd_date" name="mfd_date">
+                                </div>
+                                <div class="alert alert-danger" id="mfd_dateErrorMsg" style="display:none"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Expiry Date <font color="red" style="display:none">*</font></label>
+                                    <input type="date" class="form-control" id="exp_date" name="exp_date" onchange="check_exp_date()">
+                                </div>
+                                <div class="alert alert-danger" id="exp_dateErrorMsg" style="display:none"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
                                     <label class="form-label">Inspection Team Leader <font color="red">*</font></label>
                                     <select class="form-control" name="Inspection_Leader"  id="teamLeader">
                                         <option value="">--SELECT TEAM LEADER--</option>
@@ -695,6 +718,9 @@ function approve_details()
     var rejected_qty = $('#rejected_qty').val();
     var Unit_Rejected = $('#Unit_Rejected').val();
     var rejection_reason = $('#rejection_reason').val();
+    var batch_no = $('#batch_no').val();
+    var mfd_date = $('#mfd_date').val();
+    var exp_date = $('#exp_date').val();
     var Inspection_Leader = $('#teamLeader').val();
     var Inspection_Team = $('#insTeam').val();
     var dateOfInspection = $('#dateOfInspection').val();
@@ -728,6 +754,27 @@ function approve_details()
         $('#rejection_reasonErrorMsg').show();
         $('#rejection_reasonErrorMsg').delay(2000).fadeOut('slow');
         $('#rejection_reason').focus();
+    }
+    else if(batch_no == "")
+    {
+        $('#batch_noErrorMsg').html("Enter Batch No.");
+        $('#batch_noErrorMsg').show();
+        $('#batch_noErrorMsg').delay(2000).fadeOut('slow');
+        $('#batch_no').focus();
+    }
+    else if(mfd_date == "")
+    {
+        $('#mfd_dateErrorMsg').html("Select Date.");
+        $('#mfd_dateErrorMsg').show();
+        $('#mfd_dateErrorMsg').delay(2000).fadeOut('slow');
+        $('#mfd_date').focus();
+    }
+    else if(exp_date == "")
+    {
+        $('#exp_dateErrorMsg').html("Select Date.");
+        $('#exp_dateErrorMsg').show();
+        $('#exp_dateErrorMsg').delay(2000).fadeOut('slow');
+        $('#exp_date').focus();
     }
     else if(Inspection_Leader == "")
     {
@@ -852,6 +899,19 @@ function check_validity(validity)
     else
     {
         $('#validityErrorMsg').hide();
+    }
+}
+
+function check_exp_date()
+{
+    var mfd_date = $('#mfd_date').val();
+    var exp_date = $('#exp_date').val();
+
+    if(exp_date < mfd_date)
+    {
+        $('#exp_dateErrorMsg').html("Must Be Greater Than Manufacturing Date.");
+        $('#exp_dateErrorMsg').show();
+        $('#exp_dateErrorMsg').delay(2000).fadeOut('slow');
     }
 }
 </script>

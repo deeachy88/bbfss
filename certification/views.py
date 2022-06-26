@@ -216,11 +216,11 @@ def organic_certificate_file_name(request):
     Applicant_Id = request.session['email']
     file_url = request.POST.get('file_url')
     file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + fileName
-    t_file_attachment.objects.create(Application_No=app_no, Applicant_Id=Applicant_Id,
-                                     Role_Id=None, File_Path=file_url,
-                                     Attachment=file_name)
+    t_file_attachment.objects.create(application_no=app_no, applicant_id=Applicant_Id,
+                                     role_id=None, file_path=file_url,
+                                     attachment=file_name)
 
-    file_attach = t_file_attachment.objects.filter(Application_No=app_no)
+    file_attach = t_file_attachment.objects.filter(application_no=app_no)
     return render(request, 'organic_certification/file_attachment.html', {'file_attach': file_attach})
 
 
@@ -235,7 +235,7 @@ def delete_oc_file(request):
         fs.delete(str(fileName))
     file.delete()
 
-    file_attach = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type__isnull=True)
+    file_attach = t_file_attachment.objects.filter(application_no=Application_No, attachment_type__isnull=True)
     return render(request, 'organic_certification/file_attachment.html', {'file_attach': file_attach})
 
 
@@ -250,8 +250,8 @@ def delete_oc_ap(request):
         fs.delete(str(fileName))
     file.delete()
 
-    file_attach = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='AP')
-    file_attach_count = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='AP').count()
+    file_attach = t_file_attachment.objects.filter(application_no=Application_No, attachment_type='AP')
+    file_attach_count = t_file_attachment.objects.filter(application_no=Application_No, attachment_type='AP').count()
     return render(request, 'organic_certification/audit_plan_details.html', {'file_attach': file_attach,
                                                                              'file_attach_count': file_attach_count})
 
@@ -566,11 +566,11 @@ def send_for_acceptance(request):
     workflow_details.update(assigned_role_id=None)
     workflow_details.update(application_status='ATR')
     for email_id in workflow_details:
-        email = email_id.Applicant_Id
+        email = email_id.applicant_id
         user_details = t_user_master.objects.filter(Email_Id=email)
         for user in user_details:
             login = user.Login_Id
-            workflow_details.update(Assigned_To=login)
+            workflow_details.update(assigned_to=login)
     return redirect(focal_officer_application)
 
 
@@ -595,7 +595,7 @@ def forward_application_team_leader(request):
     workflow_details.update(assigned_role_id=None)
     app_details = t_certification_organic_t1.objects.filter(Application_No=application_no)
     app_details.update(FO_Remarks=remarks)
-    workflow_details.update(Assigned_To=team_leader)
+    workflow_details.update(assigned_to=team_leader)
     return redirect(focal_officer_application)
 
 
@@ -665,7 +665,7 @@ def approve_leader_application(request):
     workflow_details.update(assigned_role_id=None)
     workflow_details.update(application_status='AA')
     for email_id in workflow_details:
-        email = email_id.Applicant_Id
+        email = email_id.applicant_id
         user_details = t_user_master.objects.filter(Email_Id=email)
         for user in user_details:
             login = user.Login_Id
@@ -681,7 +681,7 @@ def send_audit_plan_acceptance(request):
     workflow_details.update(assigned_role_id=None)
     workflow_details.update(application_status='AA')
     for email_id in workflow_details:
-        email = email_id.Applicant_Id
+        email = email_id.applicant_id
         user_details = t_user_master.objects.filter(Email_Id=email)
         for user in user_details:
             login = user.Login_Id
@@ -760,7 +760,8 @@ def audit_team_accept(request):
 
 def approve_oc_application(request):
     application_id = request.GET.get('application_no')
-    validity = request.GET.get('validity')
+    issue_date = request.GET.get('issue_date')
+    expiry_date = request.GET.get('expiry_date')
     remarks = request.GET.get('remarks')
     Certificate_No = oc_certificate_no(request)
     details = t_certification_organic_t1.objects.filter(Application_No=application_id)
@@ -769,18 +770,16 @@ def approve_oc_application(request):
     else:
         details.update(FO_Remarks=None)
     details.update(Certificate_No=Certificate_No)
-    details.update(Validity_Period=validity)
+    details.update(Issue_Date=issue_date)
     details.update(Approve_Date=date.today())
-    d = timedelta(days=int(validity))
-    validity_date = date.today() + d
-    details.update(Validity=validity_date)
+    details.update(Expiry_date=expiry_date)
     application_details = t_workflow_details.objects.filter(application_no=application_id)
     application_details.update(action_date=date.today())
     application_details.update(application_status='A')
     # update_payment(application_id, Certificate_No, 'OC', validity_date)
     for email_id in details:
         emailId = email_id.Email
-        send_oc_approve_email(Certificate_No, emailId, validity_date)
+        send_oc_approve_email(Certificate_No, emailId, expiry_date)
     return redirect(focal_officer_application)
 
 
@@ -853,12 +852,12 @@ def save_oc_audit_plan_name(request):
     Applicant_Id = request.session['email']
     file_url = request.POST.get('file_url')
     file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + fileName
-    t_file_attachment.objects.create(Application_No=app_no, Applicant_Id=Applicant_Id,
-                                     Role_Id=None, File_Path=file_url,
-                                     Attachment=file_name, Attachment_Type='AP')
+    t_file_attachment.objects.create(application_no=app_no, applicant_id=Applicant_Id,
+                                     role_id=None, file_path=file_url,
+                                     attachment=file_name, attachment_type='AP')
 
-    file_attach = t_file_attachment.objects.filter(Application_No=app_no)
-    file_attach_count = t_file_attachment.objects.filter(Application_No=app_no, Attachment_Type='AP').count()
+    file_attach = t_file_attachment.objects.filter(application_no=app_no)
+    file_attach_count = t_file_attachment.objects.filter(application_no=app_no, attachment_type='AP').count()
     return render(request, 'organic_certification/audit_plan_details.html', {'file_attach': file_attach,
                                                                              'file_attach_count': file_attach_count})
 
@@ -925,11 +924,11 @@ def resubmit_oc_nc_details(request):
     workflow_details.update(assigned_role_id=None)
     workflow_details.update(application_status='NCR')
     for email_id in workflow_details:
-        email = email_id.Applicant_Id
+        email = email_id.applicant_id
         user_details = t_user_master.objects.filter(Email_Id=email)
         for user in user_details:
             login = user.Login_Id
-            workflow_details.update(Assigned_To=login)
+            workflow_details.update(assigned_to=login)
     if Role_Id == '2':
         return redirect(focal_officer_application)
     if Role_Id == '3':
@@ -943,27 +942,29 @@ def resubmit_oc_nc_details(request):
 
 
 def edit_oc_nc_details(request, Record_Id):
-    gap = get_object_or_404(t_certification_organic_t11, pk=Record_Id)
-    if request.method == 'POST':
-        form = OCForm(request.POST, instance=gap)
-    else:
-        form = OCForm(instance=gap)
-    return save_oc_nc_details(request, form, 'organic_certification/edit_oc_nc_details.html')
+    record_id = request.GET.get('record_id')
+    application_no = request.GET.get('edit_application_no')
+    Clause_Number = request.GET.get('clause_number')
+    Non_Conformity = request.GET.get('non_conformity')
+    Non_Conformity_Category = request.GET.get('non_conformity_category')
+    Non_Conformity_Description = request.GET.get('non_conformity_description')
+    Corrective_Action_Proposed_Auditee = request.GET.get('corrective_action_proposed_auditee')
+    corrective_action_verified_auditor = request.GET.get('corrective_action_verified_auditor')
+    nc_details = t_certification_organic_t11.objects.filter(Record_Id=record_id)
 
-
-def save_oc_nc_details(request, form, template_name):
-    data = dict()
-    if request.method == 'POST':
-        form.save()
-        data['form_is_valid'] = True
-        books = t_certification_organic_t11.objects.all().order_by('Record_Id')
-        message_count = t_certification_organic_t11.objects.filter(Non_Conformity='Yes').count()
-        data['html_book_list'] = render_to_string('organic_certification/nc_update_details.html', {
-            'audit_observation': books, 'message_count': message_count
-        })
-    context = {'form': form}
-    data['html_form'] = render_to_string(template_name, context, request=request)
-    return JsonResponse(data)
+    nc_details.update(
+        Clause_Number=Clause_Number,
+        Non_Conformity=Non_Conformity,
+        Non_Conformity_Category=Non_Conformity_Category,
+        Non_Conformity_Description=Non_Conformity_Description,
+        Corrective_Action_Proposed_Auditee=Corrective_Action_Proposed_Auditee,
+        Corrective_Action_Verified_Auditor=corrective_action_verified_auditor,
+        Non_Conformity_Closure=None
+    )
+    conform_details = t_certification_gap_t8.objects.filter(Application_No=application_no)
+    message_count = t_certification_gap_t8.objects.filter(Non_Conformity='Open').count()
+    return render(request, 'organic_certification/nc_update_details.html', {'conform_details': conform_details,
+                                                                            'message_count': message_count})
 
 
 def oc_nc_response(request):
@@ -1144,11 +1145,11 @@ def gap_certificate_file_name(request):
     Applicant_Id = request.session['email']
     file_url = request.POST.get('file_url')
     file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + fileName
-    t_file_attachment.objects.create(Application_No=app_no, Applicant_Id=Applicant_Id,
-                                     Role_Id=None, File_Path=file_url,
-                                     Attachment=file_name)
+    t_file_attachment.objects.create(application_no=app_no, applicant_id=Applicant_Id,
+                                     role_id=None, file_path=file_url,
+                                     attachment=file_name)
 
-    file_attach = t_file_attachment.objects.filter(Application_No=app_no)
+    file_attach = t_file_attachment.objects.filter(application_no=app_no)
     return render(request, 'GAP_Certification/file_attachment.html', {'file_attach': file_attach})
 
 
@@ -1163,7 +1164,7 @@ def delete_gap_file(request):
         fs.delete(str(fileName))
     file.delete()
 
-    file_attach = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type__isnull=True)
+    file_attach = t_file_attachment.objects.filter(application_no=Application_No, attachment_type__isnull=True)
     return render(request, 'GAP_Certification/file_attachment.html', {'file_attach': file_attach})
 
 
@@ -1171,15 +1172,15 @@ def delete_gap_ap(request):
     File_Id = request.GET.get('file_id')
     Application_No = request.GET.get('appNo')
 
-    file = t_file_attachment.objects.filter(pk=File_Id, Attachment_Type='AP')
+    file = t_file_attachment.objects.filter(pk=File_Id, attachment_type='AP')
     for file in file:
         fileName = file.Attachment
         fs = FileSystemStorage("attachments" + "/" + str(timezone.now().year) + "/gap_certificate/audit_plan")
         fs.delete(str(fileName))
     file.delete()
 
-    file_attach = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='AP')
-    file_attach_count = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='AP').count()
+    file_attach = t_file_attachment.objects.filter(Application_No=Application_No, attachment_type='AP')
+    file_attach_count = t_file_attachment.objects.filter(application_no=Application_No, attachment_type='AP').count()
     return render(request, 'GAP_Certification/audit_plan_details.html', {'file_attach': file_attach,
                                                                          'file_attach_count': file_attach_count})
 
@@ -1207,12 +1208,12 @@ def save_gap_audit_plan_name(request):
     Applicant_Id = request.session['email']
     file_url = request.POST.get('file_url')
     file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + fileName
-    t_file_attachment.objects.create(Application_No=app_no, Applicant_Id=Applicant_Id,
-                                     Role_Id=None, File_Path=file_url,
-                                     Attachment=file_name, Attachment_Type='AP')
+    t_file_attachment.objects.create(application_no=app_no, applicant_id=Applicant_Id,
+                                     role_id=None, file_path=file_url,
+                                     attachment=file_name, attachment_type='AP')
 
-    file_attach = t_file_attachment.objects.filter(Application_No=app_no)
-    file_attach_count = t_file_attachment.objects.filter(Application_No=app_no, Attachment_Type='AP').count()
+    file_attach = t_file_attachment.objects.filter(application_no=app_no)
+    file_attach_count = t_file_attachment.objects.filter(application_no=app_no, attachment_type='AP').count()
     return render(request, 'GAP_Certification/audit_plan_details.html', {'file_attach': file_attach,
                                                                          'file_attach_count': file_attach_count})
 
@@ -1422,11 +1423,11 @@ def gap_for_acceptance(request):
     workflow_details.update(assigned_role_id=None)
     workflow_details.update(application_status='ATR')
     for email_id in workflow_details:
-        email = email_id.Applicant_Id
+        email = email_id.applicant_id
         user_details = t_user_master.objects.filter(Email_Id=email)
         for user in user_details:
             login = user.Login_Id
-            workflow_details.update(Assigned_To=login)
+            workflow_details.update(assigned_to=login)
     return redirect(focal_officer_application)
 
 
@@ -1439,7 +1440,7 @@ def gap_application_team_leader(request):
     workflow_details.update(assigned_role_id=None)
     app_details = t_certification_gap_t1.objects.filter(Application_No=application_no)
     app_details.update(FO_Remarks=remarks)
-    workflow_details.update(Assigned_To=team_leader)
+    workflow_details.update(assigned_to=team_leader)
     return redirect(focal_officer_application)
 
 
@@ -1573,11 +1574,11 @@ def resubmit_nc_details(request):
     workflow_details.update(assigned_role_id=None)
     workflow_details.update(application_status='NCR')
     for email_id in workflow_details:
-        email = email_id.Applicant_Id
+        email = email_id.applicant_id
         user_details = t_user_master.objects.filter(Email_Id=email)
         for user in user_details:
             login = user.Login_Id
-            workflow_details.update(Assigned_To=login)
+            workflow_details.update(assigned_to=login)
     if Role_Id == '2':
         return redirect(focal_officer_application)
     if Role_Id == '3':
@@ -1590,28 +1591,30 @@ def resubmit_nc_details(request):
         return redirect(chief_application)
 
 
-def edit_nc_details(request, Record_Id):
-    gap = get_object_or_404(t_certification_gap_t8, pk=Record_Id)
-    if request.method == 'POST':
-        form = GapForm(request.POST, instance=gap)
-    else:
-        form = GapForm(instance=gap)
-    return save_nc_details(request, form, 'GAP_Certification/edit_gap_nc_details.html')
+def edit_nc_details(request):
+    record_id = request.GET.get('record_id')
+    application_no = request.GET.get('edit_application_no')
+    Clause_Number = request.GET.get('clause_number')
+    Non_Conformity = request.GET.get('non_conformity')
+    Non_Conformity_Category = request.GET.get('non_conformity_category')
+    Non_Conformity_Description = request.GET.get('non_conformity_description')
+    Corrective_Action_Proposed_Auditee = request.GET.get('corrective_action_proposed_auditee')
+    corrective_action_verified_auditor = request.GET.get('corrective_action_verified_auditor')
+    nc_details = t_certification_gap_t8.objects.filter(Record_Id=record_id)
 
-
-def save_nc_details(request, form, template_name):
-    data = dict()
-    if request.method == 'POST':
-        form.save()
-        data['form_is_valid'] = True
-        books = t_certification_gap_t8.objects.all().order_by('Record_Id')
-        message_count = t_certification_gap_t8.objects.filter(Non_Conformity='Yes').count()
-        data['html_book_list'] = render_to_string('GAP_Certification/nc_update_details.html', {
-            'audit_observation': books, 'message_count': message_count
-        })
-    context = {'form': form}
-    data['html_form'] = render_to_string(template_name, context, request=request)
-    return JsonResponse(data)
+    nc_details.update(
+        Clause_Number=Clause_Number,
+        Non_Conformity=Non_Conformity,
+        Non_Conformity_Category=Non_Conformity_Category,
+        Non_Conformity_Description=Non_Conformity_Description,
+        Corrective_Action_Proposed_Auditee=Corrective_Action_Proposed_Auditee,
+        Corrective_Action_Verified_Auditor=corrective_action_verified_auditor,
+        Non_Conformity_Closure=None
+    )
+    conform_details = t_certification_gap_t8.objects.filter(Application_No=application_no)
+    message_count = t_certification_gap_t8.objects.filter(Non_Conformity='Open').count()
+    return render(request, 'GAP_Certification/nc_update_details.html', {'conform_details': conform_details,
+                                                                        'message_count': message_count})
 
 
 def gap_conform_observation(request):
@@ -1632,7 +1635,7 @@ def gap_conform_observation(request):
         Non_Conformity_Closure=None
     )
     conform_details = t_certification_gap_t8.objects.filter(Application_No=application_no)
-    message_count = t_certification_gap_t8.objects.filter(Non_Conformity='Yes').count()
+    message_count = t_certification_gap_t8.objects.filter(Non_Conformity='Open').count()
     return render(request, 'GAP_Certification/non_conform_details.html', {'conform_details': conform_details,
                                                                           'message_count': message_count})
 
@@ -2022,17 +2025,17 @@ def food_product_certificate_file_name(request):
     Applicant_Id = request.session['email']
     file_url = request.POST.get('file_url')
     file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + fileName
-    t_file_attachment.objects.create(Application_No=app_no, Applicant_Id=Applicant_Id,
-                                     Role_Id=None, File_Path=file_url,
-                                     Attachment=file_name)
+    t_file_attachment.objects.create(application_no=app_no, applicant_id=Applicant_Id,
+                                     role_id=None, file_path=file_url,
+                                     attachment=file_name)
 
-    file_attach = t_file_attachment.objects.filter(Application_No=app_no)
+    file_attach = t_file_attachment.objects.filter(application_no=app_no)
     return render(request, 'food_product_certification/file_attachment.html', {'file_attach': file_attach})
 
 
 def fpc_attachment_details(request):
     Application_No = request.GET.get('appNo')
-    file_attach = t_file_attachment.objects.filter(Application_No=Application_No)
+    file_attach = t_file_attachment.objects.filter(application_no=Application_No)
     return render(request, 'food_product_certification/file_attachment.html', {'file_attach': file_attach})
 
 
@@ -2048,7 +2051,7 @@ def delete_fpc_file(request):
         fs.delete(str(fileName))
     file.delete()
 
-    file_attach = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type__isnull=True)
+    file_attach = t_file_attachment.objects.filter(application_no=Application_No, attachment_type__isnull=True)
     return render(request, 'food_product_certification/file_attachment.html', {'file_attach': file_attach})
 
 
@@ -2063,8 +2066,8 @@ def delete_fpc_ap(request):
         fs.delete(str(fileName))
     file.delete()
 
-    file_attach = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='AP')
-    file_attach_count = t_file_attachment.objects.filter(Application_No=Application_No, Attachment_Type='AP').count()
+    file_attach = t_file_attachment.objects.filter(application_no=Application_No, attachment_type='AP')
+    file_attach_count = t_file_attachment.objects.filter(application_no=Application_No, attachment_type='AP').count()
     return render(request, 'food_product_certification/audit_plan_details.html', {'file_attach': file_attach,
                                                                                   'file_attach_count': file_attach_count})
 
@@ -2125,7 +2128,7 @@ def fpc_for_acceptance(request):
     workflow_details.update(assigned_role_id=None)
     workflow_details.update(application_status='ATR')
     for email_id in workflow_details:
-        email = email_id.Applicant_Id
+        email = email_id.applicant_id
         user_details = t_user_master.objects.filter(Email_Id=email)
         for user in user_details:
             login = user.Login_Id
@@ -2279,7 +2282,7 @@ def fpc_certificate_no(request):
         year = timezone.now().year
         newAppNo = "BCL" + "-" + str(year) + "-" + "0001"
     else:
-        substring = str(lastAppNo)[14:17]
+        substring = str(lastAppNo)[10:13]
         substring = int(substring) + 1
         AppNo = str(substring).zfill(4)
         year = timezone.now().year
@@ -2311,12 +2314,12 @@ def save_fpc_audit_plan_name(request):
     Applicant_Id = request.session['email']
     file_url = request.POST.get('file_url')
     file_name = str(app_no)[0:3] + "_" + str(app_no)[4:8] + "_" + str(app_no)[9:13] + "_" + fileName
-    t_file_attachment.objects.create(Application_No=app_no, Applicant_Id=Applicant_Id,
-                                     Role_Id=None, File_Path=file_url,
-                                     Attachment=file_name, Attachment_Type='AP')
+    t_file_attachment.objects.create(application_no=app_no, applicant_id=Applicant_Id,
+                                     role_id=None, file_path=file_url,
+                                     attachment=file_name, attachment_type='AP')
 
-    file_attach = t_file_attachment.objects.filter(Application_No=app_no)
-    file_attach_count = t_file_attachment.objects.filter(Application_No=app_no, Attachment_Type='AP').count()
+    file_attach = t_file_attachment.objects.filter(application_no=app_no)
+    file_attach_count = t_file_attachment.objects.filter(application_no=app_no, attachment_type='AP').count()
     return render(request, 'food_product_certification/audit_plan_details.html', {'file_attach': file_attach,
                                                                                   'file_attach_count':
                                                                                       file_attach_count})
@@ -2382,7 +2385,7 @@ def resubmit_fpc_nc_details(request):
     workflow_details.update(assigned_role_id=None)
     workflow_details.update(application_status='NCR')
     for email_id in workflow_details:
-        email = email_id.Applicant_Id
+        email = email_id.applicant_id
         user_details = t_user_master.objects.filter(Email_Id=email)
         for user in user_details:
             login = user.Login_Id
@@ -2400,27 +2403,29 @@ def resubmit_fpc_nc_details(request):
 
 
 def edit_fpc_nc_details(request, Record_Id):
-    gap = get_object_or_404(t_certification_food_t5, pk=Record_Id)
-    if request.method == 'POST':
-        form = FpcForm(request.POST, instance=gap)
-    else:
-        form = FpcForm(instance=gap)
-    return save_fpc_nc_details(request, form, 'food_product_certification/edit_fpc_nc_details.html')
+    record_id = request.GET.get('record_id')
+    application_no = request.GET.get('edit_application_no')
+    Clause_Number = request.GET.get('clause_number')
+    Non_Conformity = request.GET.get('non_conformity')
+    Non_Conformity_Category = request.GET.get('non_conformity_category')
+    Non_Conformity_Description = request.GET.get('non_conformity_description')
+    Corrective_Action_Proposed_Auditee = request.GET.get('corrective_action_proposed_auditee')
+    corrective_action_verified_auditor = request.GET.get('corrective_action_verified_auditor')
+    nc_details = t_certification_organic_t11.objects.filter(Record_Id=record_id)
 
-
-def save_fpc_nc_details(request, form, template_name):
-    data = dict()
-    if request.method == 'POST':
-        form.save()
-        data['form_is_valid'] = True
-        books = t_certification_food_t5.objects.all().order_by('Record_Id')
-        message_count = t_certification_food_t5.objects.filter(Non_Conformity='Yes').count()
-        data['html_book_list'] = render_to_string('food_product_certification/nc_update_details.html', {
-            'audit_observation': books, 'message_count': message_count
-        })
-    context = {'form': form}
-    data['html_form'] = render_to_string(template_name, context, request=request)
-    return JsonResponse(data)
+    nc_details.update(
+        Clause_Number=Clause_Number,
+        Non_Conformity=Non_Conformity,
+        Non_Conformity_Category=Non_Conformity_Category,
+        Non_Conformity_Description=Non_Conformity_Description,
+        Corrective_Action_Proposed_Auditee=Corrective_Action_Proposed_Auditee,
+        Corrective_Action_Verified_Auditor=corrective_action_verified_auditor,
+        Non_Conformity_Closure=None
+    )
+    conform_details = t_certification_gap_t8.objects.filter(Application_No=application_no)
+    message_count = t_certification_gap_t8.objects.filter(Non_Conformity='Open').count()
+    return render(request, 'food_product_certification/nc_update_details.html', {'conform_details': conform_details,
+                                                                            'message_count': message_count})
 
 
 def fpc_nc_response(request):

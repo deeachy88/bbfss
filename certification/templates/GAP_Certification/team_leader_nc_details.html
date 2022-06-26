@@ -25,7 +25,7 @@ form, input, select, textarea{
         <div class="card">
             <div class="card-header" role="tab" id="headingOne">
                 <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed head">
-                    Application Details
+                    Applications Details
                 </a>
             </div>
 
@@ -583,7 +583,7 @@ form, input, select, textarea{
                             </div>
                         </div>
                     </div>
-                 {% endfor %}
+
                     <div class="row">
                         <div class="col-md-6 justify-content-center">
                             <div class="form-group">
@@ -595,13 +595,15 @@ form, input, select, textarea{
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Objective Evidence</label>
-                               <textarea  class="form-control">{{ application_details.Audit_Findings_Site_History}}</textarea>
+
+                                    <textarea type="text" class="form-control" disabled>{{ application_details.Audit_Findings_Site_History_OE}}</textarea>
+
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Findings/Observations </label>
-                               <textarea class="form-control">{{ application_details.Audit_Findings_Site_History_O}}</textarea>
+                               <textarea type="text" class="form-control" disabled>{{ application_details.Audit_Findings_Site_History_Observations}}</textarea>
                             </div>
                         </div>
                     </div>
@@ -616,28 +618,19 @@ form, input, select, textarea{
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Objective Evidence</label>
-                               <textarea type="text" class="form-control" id="Audit_Findings_Water_Source" name="Audit_Findings_Water_Source">{{ application_details.Audit_Findings_Site_History_O}}</textarea>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Water_Source" name="Audit_Findings_Water_Source" disabled>{{ application_details.Audit_Findings_Site_History_OE}}</textarea>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Findings/Observations  </label>
-                               <textarea type="text" class="form-control" id="Audit_Findings_Water_Source_O" name="Audit_Findings_Water_Source_O">{{ application_details.Audit_Findings_Site_History_O}}</textarea>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Water_Source_O" name="Audit_Findings_Water_Source_O" disabled>{{ application_details.Audit_Findings_Site_History_Observations}}</textarea>
                             </div>
                         </div>
                     </div>
                     <br>
                     <hr>
                     <label class="form-label">Farm inputs/raw materials and packaging materials</label>
-                        <div class="card-tools">
-                            <a href="#" class="btn btn-info btn-border btn-round btn-sm" onclick="openInputModal()">
-                                <span class="btn-label">
-                                    <i class="fa fa-print"></i>
-                                </span>
-                                Add
-                            </a>
-                        </div>
-                        <br>
                         <div id="farm_inputs_table">
                             <table class="table table-bordered" width="100%">
                                 <thead>
@@ -646,7 +639,6 @@ form, input, select, textarea{
                                         <th scope="col">Farm Inputs</th>
                                         <th scope="col">Name Of Supplier/Source</th>
                                         <th scope="col">Invoice/Certificate</th>
-                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -656,12 +648,6 @@ form, input, select, textarea{
                                             <td>{{farm_inputs.Audit_Findings_Farm_Inputs}}</td>
                                             <td>{{farm_inputs.Audit_Findings_Farm_Supplier}}</td>
                                             <td>{{farm_inputs.Audit_Findings_Farm_Invoice}}</td>
-                                            <td>
-                                                <button type="button" class="btn btn-danger btn-sm" onclick="Delete_Details('{{farm_inputs.Record_Id}}','{{farm_inputs.Application_No}}', 'GAP')">
-                                                    <i class="zmdi zmdi-delete"></i>
-                                                    &nbsp;&nbsp;Delete
-                                                </button>
-                                            </td>
                                         </tr>
                                         {% empty %}
                                         <tr>
@@ -682,13 +668,13 @@ form, input, select, textarea{
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Objective Evidence</label>
-                               <textarea type="text" class="form-control" id="Audit_Findings_Product_Quality" name="Audit_Findings_Product_Quality">{{ application_details.Audit_Findings_Product_Quality}}</textarea>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Product_Quality" name="Audit_Findings_Product_Quality" disabled>{{ application_details.Audit_Findings_Product_Quality_OE}}</textarea>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Findings/Observations  </label>
-                               <textarea type="text" class="form-control" id="Audit_Findings_Product_Quality_O" name="Audit_Findings_Product_Quality_O">{{ application_details.Audit_Findings_Product_Quality_O}}</textarea>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Product_Quality_O" name="Audit_Findings_Product_Quality_O" disabled>{{ application_details.Audit_Findings_Product_Quality_Observations}}</textarea>
                             </div>
                         </div>
                     </div>
@@ -703,13 +689,13 @@ form, input, select, textarea{
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Objective Evidence</label>
-                               <textarea type="text" class="form-control" id="Audit_Findings_Harvesting" name="Audit_Findings_Harvesting">{{ application_details.Audit_Findings_Harvesting}}</textarea>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Harvesting" name="Audit_Findings_Harvesting" disabled>{{ application_details.Audit_Findings_Harvesting_OE}}</textarea>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Findings/Observations  </label>
-                               <textarea type="text" class="form-control" id="Audit_Findings_Harvesting_O" name="Audit_Findings_Harvesting_O">{{ application_details.Audit_Findings_Harvesting_O}}</textarea>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Harvesting_O" name="Audit_Findings_Harvesting_O" disabled>{{ application_details.Audit_Findings_Harvesting_Observations}}</textarea>
                             </div>
                         </div>
                     </div>
@@ -724,13 +710,13 @@ form, input, select, textarea{
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Objective Evidence</label>
-                               <textarea type="text" class="form-control" id="Audit_Findings_Equipment" name="Audit_Findings_Equipment">{{ application_details.Audit_Findings_Equipment }}</textarea>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Equipment" name="Audit_Findings_Equipment" disabled>{{ application_details.Audit_Findings_Equipment_OE }}</textarea>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Findings/Observations  </label>
-                               <textarea type="text" class="form-control" id="Audit_Findings_Equipment_O" name="Audit_Findings_Equipment_O">{{ application_details.Audit_Findings_Equipment_O }}</textarea>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Equipment_O" name="Audit_Findings_Equipment_O" disabled>{{ application_details.Audit_Findings_Equipment_Observations }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -745,13 +731,13 @@ form, input, select, textarea{
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Objective Evidence</label>
-                               <textarea type="text" class="form-control" id="Audit_Findings_Manufacturing_Production" name="Audit_Findings_Manufacturing_Production">{{ application_details.Audit_Findings_Manufacturing_Production }}</textarea>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Manufacturing_Production" name="Audit_Findings_Manufacturing_Production" disabled>{{ application_details.Audit_Findings_Manufacturing_Production_OE }}</textarea>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Findings/Observations  </label>
-                               <textarea type="text" class="form-control" id="Audit_Findings_Manufacturing_Production_O" name="Audit_Findings_Manufacturing_Production_O">{{ application_details.Audit_Findings_Manufacturing_Production_O }}</textarea>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Manufacturing_Production_O" name="Audit_Findings_Manufacturing_Production_O" disabled>{{ application_details.Audit_Findings_Manufacturing_Production_Observations }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -766,13 +752,13 @@ form, input, select, textarea{
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Objective Evidence</label>
-                               <textarea type="text" class="form-control" id="Audit_Findings_Sampling_Testing" name="Audit_Findings_Sampling_Testing">{{ application_details.Audit_Findings_Sampling_Testing }}</textarea>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Sampling_Testing" name="Audit_Findings_Sampling_Testing" disabled>{{ application_details.Audit_Findings_Sampling_Testing_OE }}</textarea>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Findings/Observations  </label>
-                               <textarea type="text" class="form-control" id="Audit_Findings_Sampling_Testing_O" name="Audit_Findings_Sampling_Testing_O">{{ application_details.Audit_Findings_Sampling_Testing_O }}</textarea>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Sampling_Testing_O" name="Audit_Findings_Sampling_Testing_O" disabled>{{ application_details.Audit_Findings_Sampling_Testing_Observations }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -787,13 +773,13 @@ form, input, select, textarea{
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Objective Evidence</label>
-                               <textarea type="text" class="form-control" id="Audit_Findings_Packing_Marking" name="Audit_Findings_Packing_Marking">{{ application_details.Audit_Findings_Packing_Marking }}</textarea>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Packing_Marking" name="Audit_Findings_Packing_Marking" disabled>{{ application_details.Audit_Findings_Packing_Marking_OE }}</textarea>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Findings/Observations  </label>
-                               <textarea type="text" class="form-control" id="Audit_Findings_Packing_Marking_O" name="Audit_Findings_Packing_Marking_O">{{ application_details.Audit_Findings_Packing_Marking_O }}</textarea>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Packing_Marking_O" name="Audit_Findings_Packing_Marking_O" disabled>{{ application_details.Audit_Findings_Packing_Marking_Observations }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -808,13 +794,13 @@ form, input, select, textarea{
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Objective Evidence</label>
-                               <textarea type="text" class="form-control" id="Audit_Findings_Storage_Transport" name="Audit_Findings_Storage_Transport">{{ application_details.Audit_Findings_Storage_Transport }}</textarea>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Storage_Transport" name="Audit_Findings_Storage_Transport" disabled>{{ application_details.Audit_Findings_Storage_Transport_OE }}</textarea>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Findings/Observations  </label>
-                               <textarea type="text" class="form-control" id="Audit_Findings_Storage_Transport_O" name="Audit_Findings_Storage_Transport_O">{{ application_details.Audit_Findings_Storage_Transport_O }}</textarea>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Storage_Transport_O" name="Audit_Findings_Storage_Transport_O" disabled>{{ application_details.Audit_Findings_Storage_Transport_Observations }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -829,13 +815,13 @@ form, input, select, textarea{
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Objective Evidence</label>
-                               <textarea type="text" class="form-control" id="Audit_Findings_Traceability" name="Audit_Findings_Traceability">{{ application_details.Audit_Findings_Traceability }}</textarea>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Traceability" name="Audit_Findings_Traceability" disabled>{{ application_details.Audit_Findings_Traceability_OE }}</textarea>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Findings/Observations  </label>
-                               <textarea type="text" class="form-control" id="Audit_Findings_Traceability_O" name="Audit_Findings_Traceability_O">{{ application_details.Audit_Findings_Traceability_O }}</textarea>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Traceability_O" name="Audit_Findings_Traceability_O" disabled>{{ application_details.Audit_Findings_Traceability_Observations }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -850,13 +836,13 @@ form, input, select, textarea{
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Objective Evidence</label>
-                               <textarea type="text" class="form-control" id="Audit_Findings_Worker_Health" name="Audit_Findings_Worker_Health">{{ application_details.Audit_Findings_Worker_Health }}</textarea>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Worker_Health" name="Audit_Findings_Worker_Health" disabled>{{ application_details.Audit_Findings_Worker_Health_OE }}</textarea>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Findings/Observations  </label>
-                               <textarea type="text" class="form-control" id="Audit_Findings_Worker_Health_O" name="Audit_Findings_Worker_Health_O">{{ application_details.Audit_Findings_Worker_Health_O }}</textarea>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Worker_Health_O" name="Audit_Findings_Worker_Health_O" disabled>{{ application_details.Audit_Findings_Worker_Health_Observations }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -871,13 +857,13 @@ form, input, select, textarea{
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Objective Evidence</label>
-                               <textarea type="text" class="form-control" id="Audit_Findings_Group_Requirement" name="Audit_Findings_Group_Requirement">{{ application_details.Audit_Findings_Group_Requirement }}</textarea>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Group_Requirement" name="Audit_Findings_Group_Requirement" disabled>{{ application_details.Audit_Findings_Group_Requirement_OE }}</textarea>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Findings/Observations  </label>
-                               <textarea type="text" class="form-control" id="Audit_Findings_Group_Requirement_O" name="Audit_Findings_Group_Requirement_O">{{ application_details.Audit_Findings_Group_Requirement_O }}</textarea>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Group_Requirement_O" name="Audit_Findings_Group_Requirement_O" disabled>{{ application_details.Audit_Findings_Group_Requirement_Observations }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -892,18 +878,17 @@ form, input, select, textarea{
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Objective Evidence</label>
-                               <textarea type="text" class="form-control" id="Audit_Findings_Others" name="Audit_Findings_Others">{{ application_details.Audit_Findings_Others }}</textarea>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Others" name="Audit_Findings_Others" disabled>{{ application_details.Audit_Findings_Others_OE }}</textarea>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Findings/Observations  </label>
-                               <textarea type="text" class="form-control" id="Audit_Findings_Others_O" name="Audit_Findings_Others_O">{{ application_details.Audit_Findings_Others_O }}</textarea>
+                               <textarea type="text" class="form-control" id="Audit_Findings_Others_O" name="Audit_Findings_Others_O" disabled>{{ application_details.Audit_Findings_Others_Observations }}</textarea>
                             </div>
                         </div>
                     </div>
-
-
+                {% endfor %}
                 </div>
             </div>
         </div>
@@ -935,15 +920,21 @@ form, input, select, textarea{
                                         <tr>
                                             <td>{{ forloop.counter }}</td>
                                             <td>{{import.Clause_Number}}</td>
-                                            <td>{{import.Non_Conformity}}</td>
+                                            {% if import.Non_Conformity == 'Open' %}
+                                            <td>Open</td>
+                                            {% else %}
+                                            <td>Close</td>
+                                            {% endif %}
                                             <td>{{import.Non_Conformity_Category}}</td>
                                             <td>{{import.Non_Conformity_Description}}</td>
                                             <td>{{import.Corrective_Action_Proposed_Auditee}}</td>
                                             <td>{{import.Corrective_Action_Verified_Auditor}}</td>
                                             <td>
                                                 <button type="button"
-                                                class="btn btn-primary btn-sm js-edit-details"
-                                                data-url="{% url 'edit_nc_details' import.Record_Id %}">
+                                                class="btn btn-primary btn-sm" onclick="populate_nc_details('{{import.Record_Id}}','{{import.Application_No}}',
+                                                '{{import.Clause_Number}}','{{import.Non_Conformity}}','{{import.Non_Conformity_Category}}',
+                                                '{{import.Non_Conformity_Description}}','{{import.Corrective_Action_Proposed_Auditee}}',
+                                                '{{import.Corrective_Action_Verified_Auditor}}')">
                                                 <i class="zmdi zmdi-edit"></i>
                                                 </button>
                                             </td>
@@ -1057,8 +1048,81 @@ form, input, select, textarea{
           </div>
     </div>
 </div>
+
+<div id="edit_conformModal" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+
+            </div>
+            <form method="post" id="conform_form">
+            {% csrf_token %}
+            <div class="modal-body">
+                <input type="hidden" class="form-control" name="record_id" id="record_id">
+                <input type="hidden" class="form-control" name="edit_application_no" id="edit_application_no">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-label">Clause Number</label>
+                        <input type="text" class="form-control" name="clause_number" id="clause_number">
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Non-Conformity</label>&nbsp;
+                            <div class="justify-content-center">
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" name="Non_Conformity" id="nc_yes" class="custom-control-input" value="Open" onchange="Check_Accept(this.value)">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Open</span>
+                                </label>
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" name="Non_Conformity" id="nc_no" class="custom-control-input" value="Close" onchange="Check_Accept(this.value)">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Close</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Nonconformity Category</label>
+                        <select class="form-control" name="non_conformity_category" id="non_conformity_category">
+                            <option value="">-SELECT-</option>
+                            <option value="Critical">Critical</option>
+                            <option value="Major">Major</option>
+                            <option value="Minor">Minor</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-label">Description of nonconformity</label>
+                        <textarea class="form-control" id="non_conformity_description" name="non_conformity_description"></textarea>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Corrective Action Proposed Auditee</label>
+                        <textarea class="form-control" id="corrective_action_proposed_auditee" name="corrective_action_proposed_auditee"></textarea>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Corrective Action Verified Auditor</label>
+                        <textarea class="form-control" id="corrective_action_verified_auditor" name="corrective_action_verified_auditor"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-flat btn-primary" onclick="edit_nc_details()">
+                    <i class="ace-icon fa fa-check"></i>
+                    &nbsp;&nbsp;Update
+                </button>
+                <button type="button" class="btn btn-primary" onclick="close_nc_edit_modal()">Close</button>
+            </div>
+            </form>
+          </div>
+    </div>
+</div>
 <script src="{% static 'assets/js/app.min.js' %}"></script>
-<script src="{% static 'assets/js/nc.js' %}"></script>
 <script>
 $(function(){
     var dtToday = new Date();
@@ -1093,7 +1157,10 @@ function closeNonConfirmModal()
 {
     $('#conformModal').modal('show');
 }
-
+function close_nc_edit_modal()
+{
+    $('#edit_conformModal').modal('hide');
+}
 function Forward_details()
 {
     $.ajax({
@@ -1203,7 +1270,7 @@ function resubmit_nc_details()
 
 function Check_Accept(value)
 {
-    if(value == 'Yes')
+    if(value == 'Open')
     {
         $("#Corrective_Action_Proposed_Auditee").removeAttr("disabled");
     }
@@ -1242,4 +1309,67 @@ function Delete_Details(id,Application_No,identification_type)
         }
     });
 }
+
+function populate_nc_details(record_id, application_no, clause_number, non_conformity, non_conformity_category,non_conformity_description,corrective_action_proposed_auditee,corrective_action_verified_auditor)
+{
+    $('#record_id').val(record_id);
+    $('#edit_application_no').val(application_no);
+    $('#clause_number').val(clause_number);
+    if(non_conformity == 'Open')
+    {
+        $("#nc_yes").prop("checked", true);
+    }
+    else
+    {
+        $("#nc_no").prop("checked", true);
+    }
+    $('#non_conformity_category').val(non_conformity_category);
+    $('#non_conformity_description').val(non_conformity_description);
+    $('#corrective_action_proposed_auditee').val(corrective_action_proposed_auditee);
+    $('#corrective_action_verified_auditor').val(corrective_action_verified_auditor);
+    $('#edit_conformModal').modal('show');
+}
+
+function edit_nc_details()
+{
+    var record_id = $('#record_id').val();
+    var edit_application_no = $('#edit_application_no').val();
+    var clause_number = $('#clause_number').val();
+    var non_conformity = $("input[name=Non_Conformity]:checked").val();
+    var non_conformity_category = $('#non_conformity_category').val();
+    var non_conformity_description = $('#non_conformity_description').val();
+    var corrective_action_proposed_auditee = $('#corrective_action_proposed_auditee').val();
+    var corrective_action_verified_auditor = $('#corrective_action_verified_auditor').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'edit_nc_details' %}",
+        data :{'record_id':record_id,'edit_application_no':edit_application_no, 'clause_number':clause_number,'non_conformity':non_conformity, 'non_conformity_category':non_conformity_category, 'non_conformity_description':non_conformity_description,'corrective_action_proposed_auditee':corrective_action_proposed_auditee,'corrective_action_verified_auditor':corrective_action_verified_auditor},
+        success : function(responseText) {
+             $('#conform_details').html(responseText);
+             $('#edit_conformModal').modal('hide');
+             $('.modal-backdrop').remove();
+
+        }
+    });
+}
+
+function Check_Accept(value)
+{
+    if(value == 'Open')
+    {
+        $("#non_conformity_category").removeAttr("disabled");
+        $("#non_conformity_description").removeAttr('readonly');
+        $("#corrective_action_proposed_auditee").removeAttr("disabled");
+    }
+    else
+    {
+        $("#non_conformity_category").attr("disabled", "disabled");
+        $("#non_conformity_category").val("");
+        $("#non_conformity_description").prop("readonly", true);
+        $("#corrective_action_proposed_auditee").attr("disabled", "disabled");
+        $("#non_conformity_description").val("");
+        $("#corrective_action_proposed_auditee").val("");
+    }
+}
+
 </script>

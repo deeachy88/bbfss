@@ -1007,10 +1007,17 @@ form, input, select, textarea{
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label class="form-label">Validity of Certificate(No of Days) <font color="red">*</font></label>
-                                <input type="text" class="form-control" id="validity" name="validity" onkeypress="return isNumberKey(event)" onchange="check_validity(this.value)">
+                                <label class="form-label">Issue Date <font color="red">*</font></label>
+                                <input type="date" class="form-control" id="issue_date" name="issue_date">
                             </div>
-                            <div class="alert alert-danger" id="validityErrorMsg" style="display:none"></div>
+                            <div class="alert alert-danger" id="issue_dateErrorMsg" style="display:none"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Expiry Date <font color="red">*</font></label>
+                                <input type="date" class="form-control" id="expiry_date" name="expiry_date" onchange="check_expiry_date()">
+                            </div>
+                            <div class="alert alert-danger" id="expiry_dateErrorMsg" style="display:none"></div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
@@ -1030,7 +1037,9 @@ form, input, select, textarea{
                             </div>
                             <div class="alert alert-danger" id="Certificate_TypeErrorMsg" style="display:none"></div>
                         </div>
-                        <div class="col-md-4">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
                             <div class="form-group">
                                 <label class="form-label">Remarks</label>
                                 <textarea class="form-control" id="remarks" name="remarks" rows="2"></textarea>
@@ -1069,14 +1078,23 @@ function approve_oc_application(application_id)
 {
 
     var remarks = $('#remarks').val();
-    var validity = $('#validity').val();
+    var issue_date = $('#issue_date').val();
+    var expiry_date = $('#expiry_date').val();
     var Certificate_Type = $("input[name=Certificate_Type]:checked").length;
-    if(validity == "")
+
+    if(issue_date == "")
     {
-        $('#validityErrorMsg').html("Enter Validity.");
-        $('#validityErrorMsg').show();
-        $('#validityErrorMsg').delay(2000).fadeOut('slow');
-        $("#validity").focus();
+        $('#issue_dateErrorMsg').html("Select Issue Date.");
+        $('#issue_dateErrorMsg').show();
+        $('#issue_dateErrorMsg').delay(2000).fadeOut('slow');
+        $("#issue_date").focus();
+    }
+    else if(expiry_date == "")
+    {
+        $('#expiry_dateErrorMsg').html("Select Expiry Date.");
+        $('#expiry_dateErrorMsg').show();
+        $('#expiry_dateErrorMsg').delay(2000).fadeOut('slow');
+        $("#expiry_date").focus();
     }
     else if(Certificate_Type < 1)
     {
@@ -1091,7 +1109,7 @@ function approve_oc_application(application_id)
         $.ajax({
             type : "GET",
             url : "{% url 'approve_oc_application' %}",
-            data :{'application_no':application_id , 'remarks':remarks ,'validity':validity},
+            data :{'application_no':application_id , 'remarks':remarks ,'issue_date':issue_date,'expiry_date':expiry_date},
             success : function(data) {
                 $("#pageloader").hide();
                 $('#submitMsg').html("Application Approved.");
@@ -1113,18 +1131,19 @@ function approve_oc_application(application_id)
     }
 }
 
-function check_validity(validity)
+function check_expiry_date()
 {
-    if(validity == 0)
+    var issue_date = $('#issue_date').val();
+    var expiry_date = $('#expiry_date').val();
+    if(expiry_date < issue_date)
     {
-        $('#validityErrorMsg').html("Must Be Greater Than Zero.");
-        $('#validityErrorMsg').show();
-        $('#validityErrorMsg').delay(2000).fadeOut('slow');
-        $('#validity').val("");
+        $('#expiry_dateErrorMsg').html("Must Be Greater Than Issue Date.");
+        $('#expiry_dateErrorMsg').show();
+        $('#expiry_dateErrorMsg').delay(2000).fadeOut('slow');
     }
     else
     {
-        $('#validityErrorMsg').hide();
+        $('#expiry_dateErrorMsg').hide();
     }
 }
 </script>

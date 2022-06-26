@@ -347,10 +347,9 @@ def save_fh_details(request):
 
     t_food_business_registration_licensing_t3.objects.create(application_no=Application_No, fh_name=fh_name,
                                                              fh_license_no=fh_license)
-    fh_details = t_food_business_registration_licensing_t3.objects.filter(application_no=Application_No)
-    fh_details_count = t_food_business_registration_licensing_t3.objects.filter(application_no=Application_No).count()
-    return render(request, 'registration_licensing/food_handler_details.html', {'fh_details': fh_details,
-                                                                                'count': fh_details_count})
+    fh_details = t_food_business_registration_licensing_t3.objects.filter(application_no=Application_No).order_by(
+            'record_id')
+    return render(request, 'registration_licensing/food_handler_details.html', {'fh_details': fh_details})
 
 
 def load_outsourced_details(request):
@@ -539,12 +538,12 @@ def feasibility_clearance_no(request):
         Field_Code = code.Field_Office_Code
 
     last_application_no = t_food_business_registration_licensing_t1.objects.aggregate(Max('conditional_clearance_no'))
-    lastAppNo = last_application_no['Conditional_Clearance_No__max']
+    lastAppNo = last_application_no['conditional_clearance_no__max']
     if not lastAppNo:
         year = timezone.now().year
         newAppNo = Field_Code + "-" + "FBR-CLR" + "-" + str(year) + "-" + "0001"
     else:
-        substring = str(lastAppNo)[14:17]
+        substring = str(lastAppNo)[17:20]
         substring = int(substring) + 1
         AppNo = str(substring).zfill(4)
         year = timezone.now().year
@@ -656,7 +655,7 @@ def fbr_factory_team_details(request):
                                                              meeting_type='Factory Inspection',
                                                              name=name, designation=designation)
     application_details = t_food_business_registration_licensing_t6.objects.filter(
-        application_no=application_id, meeting_type='Factory Inspection').order_by('Record_Id')
+        application_no=application_id, meeting_type='Factory Inspection').order_by('record_id')
     return render(request, 'registration_licensing/inspection_team_details.html',
                   {'application_details': application_details})
 
@@ -713,7 +712,7 @@ def factory_clearance_no(request, application_id):
     global Field_Code
     details = t_workflow_details.objects.filter(application_no=application_id)
     for details in details:
-        Field_office_Code = details.Field_Office_Id
+        Field_office_Code = details.field_office_id
         code = t_field_office_master.objects.filter(Field_Office_Id=Field_office_Code)
         for code in code:
             Field_Code = code.Field_Office_Code
@@ -1336,6 +1335,9 @@ def approve_food_export(request):
     Unit_Rejected = request.POST.get('Unit_Rejected')
     validity = request.POST.get('validity')
     remarks = request.POST.get('remarks')
+    batch_no = request.POST.get('rejection_reason')
+    mfd_date = request.POST.get('mfd_date')
+    exp_date = request.POST.get('exp_date')
     rejection_reason = request.POST.get('rejection_reason')
     terms = request.POST.get('terms')
     Export_Permit_No = food_export_permit_no(request)
@@ -1343,7 +1345,8 @@ def approve_food_export(request):
     if remarks is not None:
         details.update(Inspection_Remarks=remarks)
     else:
-        details.update(Inspection_Remarks=None)
+        details.update(Inspection_Remarks=None
+                       )
     details.update(Inspection_Leader=Inspection_Leader)
     details.update(Inspection_Team=Inspection_Team)
     details.update(Inspection_Date=date_format_ins)
@@ -1356,6 +1359,9 @@ def approve_food_export(request):
     details.update(Unit_Rejected=Unit_Rejected)
     details.update(Rejection_Reason=rejection_reason)
     details.update(Terms=terms)
+    details.update(Batch_No=batch_no)
+    details.update(Mfd_Date=mfd_date)
+    details.update(Expiry_Date=exp_date)
     d = timedelta(days=int(validity))
     validity_date = date.today() + d
     details.update(Validity=validity_date)
@@ -1541,7 +1547,7 @@ def save_food_handler_details(request):
 
 def update_food_handler_details(request):
     data = dict()
-    service_code = "FHC"
+    service_code = "FHL"
     application_no = request.POST.get('application_no')
     Nationality = request.POST.get('Nationality')
     if Nationality == "Bhutanese":
@@ -1928,7 +1934,7 @@ def food_handler_update(request):
 # Common
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def food_handler_application(request):
-    service_code = "FHC"
+    service_code = "FHL"
     try:
         Login_Id = request.session['Login_Id']
     except:
@@ -1950,9 +1956,9 @@ def food_handler_application(request):
                                                                    action_date__isnull=False, application_status='P') \
             .count()
         fhc_count = (t_workflow_details.objects.filter(assigned_to=Login_Id, application_status='B',
-                                                       action_date__isnull=False, service_code='FHC') |
+                                                       action_date__isnull=False, service_code='FHL') |
                      t_workflow_details.objects.filter(assigned_to=Login_Id, application_status='A',
-                                                       action_date__isnull=False, service_code='FHC')).count()
+                                                       action_date__isnull=False, service_code='FHL')).count()
         return render(request, 'food_handler_list.html',
                       {'application_details': application_details, 'details': details,
                        'count': message_count, 'count_call': inspection_call_count,
@@ -2042,13 +2048,13 @@ def generate_fh_license_no(request):
     lastAppNo = last_application_no['FH_License_No__max']
     if not lastAppNo:
         year = timezone.now().year
-        newAppNo = "FHC" + "-" + str(year) + "-" + "0001"
+        newAppNo = "FHL" + "-" + str(year) + "-" + "0001"
     else:
         substring = str(lastAppNo)[9:13]
         substring = int(substring) + 1
         AppNo = str(substring).zfill(4)
         year = timezone.now().year
-        newAppNo = "FHC" + "-" + str(year) + "-" + AppNo
+        newAppNo = "FHL" + "-" + str(year) + "-" + AppNo
     return newAppNo
 
 
@@ -2397,9 +2403,9 @@ def approve_fo_fip_import(request):
         client_id = t_user_master.objects.filter(Email_Id=client_login_id)
         for client in client_id:
             login_id = client.Login_Id
-            workflow_details.update(Assigned_To=login_id)
-    workflow_details.update(Action_Date=date.today())
-    workflow_details.update(Assigned_Role_Id=None)
+            workflow_details.update(assigned_to=login_id)
+    workflow_details.update(action_date=date.today())
+    workflow_details.update(assigned_role_id=None)
     details = t_food_import_permit_t1.objects.filter(Application_No=application_no)
     if remarks is not None:
         details.update(FO_Remarks=remarks)
@@ -2415,7 +2421,7 @@ def approve_fo_fip_import(request):
     for ap_details in details:
         import_type = ap_details.Import_Type
         if import_type == 'P':
-            update_payment(application_no, permit_no, 'FIP', validity_date, 'Final', 'account_head_name')
+            update_payment(application_no, permit_no, 'FIP', validity_date, 'Final', '131110002')
         else:
             update_payment(application_no, permit_no, 'FIP', validity_date, 'Final', '131110011')
     for email_id in details:

@@ -28,7 +28,8 @@ from administrator.models import t_user_master, t_security_question_master, t_ro
     t_livestock_species_breed_master, t_livestock_product_master, t_unit_master, t_food_product_category_master
 
 from bbfss import settings
-from food.models import t_food_licensing_food_handler_t1
+from food.models import t_food_licensing_food_handler_t1, t_food_business_registration_licensing_t1
+from livestock.models import t_livestock_clearance_meat_shop_t1
 from plant.models import t_payment_details, t_workflow_details, t_file_attachment, t_payment_details_master
 from random import randint
 
@@ -95,7 +96,7 @@ def dashboard(request):
                     # Food Section
                     fec_count = t_workflow_details.objects.filter(application_status='A', service_code='FEC').count()
                     fip_count = t_workflow_details.objects.filter(application_status='C', service_code='FIP').count()
-                    fhc_count = t_food_licensing_food_handler_t1.objects.filter(fh_license_no__isnull=False).count()
+                    fhc_count = t_food_licensing_food_handler_t1.objects.filter(FH_License_No__isnull=False).count()
                     fbr_count = t_workflow_details.objects.filter(application_status='A', service_code='FBR').count()
                     return render(request, 'dashboard.html', {'count': message_count, 'fec_count': fec_count,
                                                               'fip_count': fip_count, 'fhc_count': fhc_count,
@@ -157,9 +158,9 @@ def dashboard(request):
                              | t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCF',
                                                                  action_date__isnull=False)).count()
             fhc_count = (t_workflow_details.objects.filter(assigned_to=login_id, application_status='B',
-                                                           action_date__isnull=False, service_code='FHC') |
+                                                           action_date__isnull=False, service_code='FHL') |
                          t_workflow_details.objects.filter(assigned_to=login_id, application_status='A',
-                                                           action_date__isnull=False, service_code='FHC')).count()
+                                                           action_date__isnull=False, service_code='FHL')).count()
             return render(request, 'dashboard.html', {'ins_count': message_count, 'fhc_count': fhc_count})
         elif Role == 'Complain Officer':
             login_id = request.session['Login_Id']
@@ -1644,7 +1645,7 @@ def payment_list(request):
                              | t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCF',
                                                                  action_date__isnull=False)).count()
             fhc_count = t_workflow_details.objects.filter(assigned_to=login_id, application_status='AP',
-                                                          action_date__isnull=False, service_code='FHC').count()
+                                                          action_date__isnull=False, service_code='FHL').count()
             application_details = t_payment_details.objects.filter(receipt_no__isnull=True)
             service_details = t_service_master.objects.all()
             return render(request, 'payment_details_list.html', {'application_details': application_details,
@@ -1665,6 +1666,36 @@ def update_payment_details(request):
     application_details.update(payment_type=Payment_Type, instrument_no=Instrument_No, amount=Amount,
                                receipt_no=Receipt_No, receipt_date=Receipt_Date,
                                updated_by=request.session['email'], updated_on=date.today())
+    for payment_details in application_details:
+        service_code = payment_details.service_id
+        if service_code == 'CMS':
+            meat_shop_details = t_livestock_clearance_meat_shop_t1.objects.filter(
+                application_no=Application_No,
+                conditional_clearance_no__isnull=False)
+            if meat_shop_details.exists():
+                for meat_details in meat_shop_details:
+                    post_data = {'applicationNo': Application_No,
+                                 'cleareanceNo': meat_details.conditional_clearance_no,
+                                 'status': "approved",
+                                 'message': "null", 'rejectionMessage': "null"}
+                    headers = {'Accept': 'application/json'}
+
+                    res = requests.post('https://bpa.test.bhutan.eregistrations.org/mule/api/action/bafra_update',
+                                        params=post_data, headers=headers, verify=False)
+        elif service_code == 'CMS':
+            food_business_details = t_food_business_registration_licensing_t1.objects.filter(
+                application_no=Application_No,
+                conditional_clearance_no__isnull=False)
+            if food_business_details.exists():
+                for meat_details in meat_shop_details:
+                    post_data = {'applicationNo': Application_No,
+                                 'cleareanceNo': food_business_details.conditional_clearance_no,
+                                 'status': True,
+                                 'message': "null", 'rejectionMessage': "null"}
+                    headers = {'Accept': 'application/json'}
+
+                    res = requests.post('https://bpa.test.bhutan.eregistrations.org/mule/api/action/bafra_update',
+                                        params=post_data, headers=headers, verify=False)
     return redirect(payment_list)
 
 

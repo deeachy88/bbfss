@@ -599,7 +599,7 @@ function approve_movement_permit(application_id)
     {
         $("#loader").show();
         $.ajax({
-            type : "POST",
+            type : "GET",
             url : "{% url 'approve_application' %}",
             data :{'application_id':application_id , 'Inspection_Leader':Inspection_Leader ,'Inspection_Team':Inspection_Team ,'remarks':remarks , 'dateOfInspection':dateOfInspection , 'validity_period':validity_period, csrfmiddlewaretoken: '{{ csrf_token }}'},
             success : function(data) {
@@ -631,7 +631,7 @@ function rejectMovementApplication(application_id)
     {
         $("#loader").show();
         $.ajax({
-            type : "POST",
+            type : "GET",
             url : "{% url 'reject_movement_application' %}",
             data :{'application_id':application_id ,'remarks':remarks ,csrfmiddlewaretoken: '{{ csrf_token }}'},
             success : function(data) {

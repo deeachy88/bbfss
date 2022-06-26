@@ -12,24 +12,33 @@
         </thead>
         <tbody>
             {% for application_details in application_details %}
-                <tr>
-                    <td>{{ forloop.counter }}</td>
-                    <td>{{application_details.FB_License_No}}</td>
-                    <td>{{application_details.Application_No}}</td>
-                    <td>{{application_details.Application_Date}}</td>
-                    <td>{{application_details.Validity}}</td>
-                    {% for payment_details in payment_details %}
-                        {% if payment_details.Application_No == application_details.application_no %}
-                            {% if payment_details.receipt_date %}
-                                <td><button  class="btn btn-default btn-border" type="button" onclick="print_certificate('FSL','{{application_details.Application_No}}')"><i class="zmdi zmdi-print"></i></button></td>
-                            {% endif %}
+                {% for payment_details in payment_details %}
+                    {% if payment_details.application_no == application_details.application_no %}
+                        {% if payment_details.receipt_date %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{application_details.fb_license_no}}</td>
+                                <td>{{application_details.application_no}}</td>
+                                <td>{{application_details.application_date}}</td>
+                                <td>{{application_details.validity}}</td>
+                                <td><button  class="btn btn-default btn-border" type="button" onclick="print_certificate('FSL','{{application_details.application_no}}')"><i class="zmdi zmdi-print"></i></button></td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{application_details.fb_license_no}}</td>
+                                <td>{{application_details.application_no}}</td>
+                                <td>{{application_details.application_date}}</td>
+                                <td>{{application_details.validity}}</td>
+                                <td>Invalid</td>
+                            </tr>
                         {% endif %}
-                    {% endfor %}
-                </tr>
+                     {% endif %}
                 {% empty %}
                 <tr>
                   <td colspan="5" class="text-center">No Data</td>
                 </tr>
+            {% endfor %}
             {% endfor %}
         </tbody>
     </table>

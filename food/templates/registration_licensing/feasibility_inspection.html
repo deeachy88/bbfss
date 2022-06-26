@@ -15,7 +15,7 @@ form, input, select, textarea{
   position: absolute;
   top: 50%;
 }
-a {
+.attach {
     color: #e6e8ec;
     text-decoration: none;
     background-color: transparent;
@@ -24,7 +24,7 @@ a {
 </style>
         <div class="card">
             <div class="card-header" role="tab" id="headingOne">
-                <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed">
+                <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed attach">
                     Application Details
                 </a>
             </div>
@@ -464,10 +464,10 @@ a {
             </div>
         </div>
         {% for application_details in application_details %}
-            {% if application_details.Process_Outsource == 'Yes' %}
+            {% if application_details.process_outsource == 'Yes' %}
                 <div class="card">
                     <div class="card-header" role="tab" id="outsourced_process">
-                        <a class="collapsed" data-toggle="collapse" href="#outsourced_process_collapse" aria-expanded="false" aria-controls="collapseTwo">
+                        <a class="collapsed attach" data-toggle="collapse" href="#outsourced_process_collapse" aria-expanded="false" aria-controls="collapseTwo">
                             Outsourced Process
                         </a>
                     </div>
@@ -487,10 +487,10 @@ a {
                                     {% for import in details %}
                                         <tr>
                                             <td>{{ forloop.counter }}</td>
-                                            <td>{{import.BP_Outsourced_To}}</td>
-                                            <td>{{import.Address}}</td>
-                                            <td>{{import.Contact_No}}</td>
-                                            <td>{{import.BAFRA_License_No}}</td>
+                                            <td>{{import.bp_outsourced_to}}</td>
+                                            <td>{{import.address}}</td>
+                                            <td>{{import.contact_no}}</td>
+                                            <td>{{import.bafra_license_no}}</td>
                                         </tr>
                                         {% empty %}
                                         <tr>
@@ -506,7 +506,7 @@ a {
         {% endfor %}
         <div class="card">
             <div class="card-header" role="tab" id="food_handler">
-                <a class="collapsed" data-toggle="collapse" href="#food_handler_collapse" aria-expanded="false" aria-controls="collapseTwo">
+                <a class="collapsed attach" data-toggle="collapse" href="#food_handler_collapse" aria-expanded="false" aria-controls="collapseTwo">
                     Food Handlers
                 </a>
             </div>
@@ -524,8 +524,8 @@ a {
                             {% for import in food_handler %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td>{{import.FH_Name}}</td>
-                                    <td>{{import.FH_License_No}}</td>
+                                    <td>{{import.fh_name}}</td>
+                                    <td>{{import.fh_license_no}}</td>
                                 </tr>
                                 {% empty %}
                                 <tr>
@@ -539,7 +539,7 @@ a {
         </div>
         <div class="card">
             <div class="card-header" role="tab" id="headingRaw">
-                <a class="collapsed" data-toggle="collapse" href="#raw_materials" aria-expanded="false" aria-controls="collapseTwo">
+                <a class="collapsed attach" data-toggle="collapse" href="#raw_materials" aria-expanded="false" aria-controls="collapseTwo">
                     Raw Materials Details
                 </a>
             </div>
@@ -557,8 +557,8 @@ a {
                             {% for raw_materials in raw_materials %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td>{{raw_materials.Name}}</td>
-                                    <td>{{raw_materials.Source_Country}}</td>
+                                    <td>{{raw_materials.name}}</td>
+                                    <td>{{raw_materials.source_country}}</td>
                                 </tr>
                                 {% empty %}
                                 <tr>
@@ -572,8 +572,8 @@ a {
         </div>
         <div class="card">
             <div class="card-header" role="tab" id="headingPackaging">
-                <a class="collapsed" data-toggle="collapse" href="#packaging_materials" aria-expanded="false" aria-controls="collapseTwo">
-                    Packaging Materials Details Details
+                <a class="collapsed attach" data-toggle="collapse" href="#packaging_materials" aria-expanded="false" aria-controls="collapseTwo">
+                    Packaging Materials Details
                 </a>
             </div>
             <div id="packaging_materials" class="collapse" role="tabpanel" aria-labelledby="headingPackaging" data-parent="#accordion" style="">
@@ -590,8 +590,8 @@ a {
                             {% for packaging_material in packaging_material %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td>{{packaging_material.Name}}</td>
-                                    <td>{{packaging_material.Source_Country}}</td>
+                                    <td>{{packaging_material.name}}</td>
+                                    <td>{{packaging_material.source_country}}</td>
                                 </tr>
                                 {% empty %}
                                 <tr>
@@ -605,7 +605,7 @@ a {
         </div>
         <div class="card">
             <div class="card-header" role="tab" id="headingTwo">
-                <a class="collapsed" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                <a class="collapsed attach" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                     Attachments
                 </a>
             </div>
@@ -622,7 +622,7 @@ a {
                            {% for file_attach in file %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td><a href='{{file_attach.File_Path}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                                    <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
                                 </tr>
                                 {% empty %}
                                 <tr>
@@ -636,7 +636,7 @@ a {
         </div>
         <div class="card">
             <div class="card-header" role="tab" id="headingFive">
-                <a class="collapsed" data-toggle="collapse" href="#collapseFive" aria-expanded="false" aria-controls="collapseTwo">
+                <a class="collapsed attach" data-toggle="collapse" href="#collapseFive" aria-expanded="false" aria-controls="collapseTwo">
                     Inspection Team Details
                 </a>
             </div>
@@ -665,16 +665,16 @@ a {
                                 {% for import in inspection_team_details %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td>{{import.Name}}</td>
-                                        <td>{{import.Designation}}</td>
+                                        <td>{{import.name}}</td>
+                                        <td>{{import.designation}}</td>
                                         <td>
                                             <button type="button" class="btn btn-primary btn-sm"
-                                            onclick="delete_fi_inspection_team_details('{{import.Record_Id}}','{{import.Application_No}}')">
+                                            onclick="delete_fi_inspection_team_details('{{import.record_id}}','{{import.application_no}}')">
                                             <i class="zmdi zmdi-delete"></i>
                                             </button>
                                             <button  type="button" class="btn btn-info btn-sm" data-toggle="tooltip" title="Edit"
-                                                 onclick="inspection_team_details('{{ import.Record_Id }}', '{{import.Name}}',
-                                                  '{{import.Designation}}', '{{import.Application_No}}')">
+                                                 onclick="inspection_team_details('{{ import.record_id }}', '{{import.name}}',
+                                                  '{{import.designation}}', '{{import.application_no}}')">
                                                 <i class="fa fa-edit"></i>
                                             </button>
                                         </td>
@@ -692,7 +692,7 @@ a {
         </div>
         <div class="card">
             <div class="card-header" role="tab" id="headingFour">
-                <a class="collapsed" data-toggle="collapse" href="#collapseFour" aria-expanded="false" aria-controls="collapseTwo">
+                <a class="collapsed attach" data-toggle="collapse" href="#collapseFour" aria-expanded="false" aria-controls="collapseTwo">
                     Opening And Closing Meeting
                 </a>
             </div>
@@ -723,19 +723,19 @@ a {
                                 {% for import in team_details %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td>{{import.Name}}</td>
-                                        <td>{{import.Designation}}</td>
-                                        <td>{{import.Meeting_Date|date:"d-m-Y"}}</td>
-                                        <td>{{import.Type }}</td>
+                                        <td>{{import.name}}</td>
+                                        <td>{{import.designation}}</td>
+                                        <td>{{import.meeting_date|date:"d-m-Y"}}</td>
+                                        <td>{{import.type }}</td>
                                         <td>
                                             <button type="button" class="btn btn-primary btn-sm"
-                                            onclick="delete_fi_team_details('{{import.Record_Id}}','{{import.Application_No}}')">
+                                            onclick="delete_fi_team_details('{{import.record_id}}','{{import.application_no}}')">
                                             <i class="zmdi zmdi-delete"></i>
                                             </button>
                                             <button  type="button" class="btn btn-info btn-sm" data-toggle="tooltip" title="Edit"
-                                                 onclick="fi_team_details('{{ import.Record_Id }}', '{{import.Name}}','{{import.Designation}}',
-                                                 '{{import.Meeting_Date|date:'Y-m-d'}}', '{{import.Type }}',
-                                                  '{{import.Application_No}}')">
+                                                 onclick="fi_team_details('{{ import.record_id }}', '{{import.name}}','{{import.designation}}',
+                                                 '{{import.meeting_date|date:'Y-m-d'}}', '{{import.type }}',
+                                                  '{{import.application_no}}')">
                                                 <i class="fa fa-edit"></i>
                                             </button>
                                         </td>
@@ -753,7 +753,7 @@ a {
         </div>
         <div class="card">
             <div class="card-header" role="tab" id="detailsOfConcern">
-                <a class="collapsed" data-toggle="collapse" href="#detailsOfConcerncollapse" aria-expanded="false" aria-controls="collapseThree">
+                <a class="collapsed attach" data-toggle="collapse" href="#detailsOfConcerncollapse" aria-expanded="false" aria-controls="collapseThree">
                     Details Of Concerns
                 </a>
             </div>
@@ -787,14 +787,14 @@ a {
                                 {% for import in inspection_details %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td>{{import.Requirement}}</td>
-                                        <td>{{import.Clause_No}}</td>
-                                        <td>{{import.Concern}}</td>
-                                        <td>{{import.Date|date:"d-m-Y"}}</td>
-                                        <td>{{import.Observation}}</td>
+                                        <td>{{import.requirement}}</td>
+                                        <td>{{import.clause_no}}</td>
+                                        <td>{{import.concern}}</td>
+                                        <td>{{import.date|date:"d-m-Y"}}</td>
+                                        <td>{{import.observation}}</td>
                                         <td>
-                                            <button type="button" class="btn btn-primary btn--icon btn-sm" onclick="populateForm('{{import.Record_Id}}','{{import.Requirement}}',
-                                            '{{import.Clause_No}}','{{import.Concern}}', '{{import.Observation}}', '{{import.FBO_Response}}', '{{import.Application_No}}')">
+                                            <button type="button" class="btn btn-primary btn--icon btn-sm" onclick="populateForm('{{import.record_id}}','{{import.requirement}}',
+                                            '{{import.clause_no}}','{{import.concern}}', '{{import.observation}}', '{{import.fbo_response}}', '{{import.application_no}}')">
                                             <i class="zmdi zmdi-edit"></i>
                                             </button>
                                         </td>
@@ -812,7 +812,7 @@ a {
         </div>
         <div class="card">
             <div class="card-header" role="tab" id="headingThree">
-                <a class="collapsed" data-toggle="collapse" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                <a class="collapsed attach" data-toggle="collapse" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                     Details Of Inspection
                 </a>
             </div>
@@ -830,13 +830,13 @@ a {
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-label">Desired Inspection Date</label>
-                                        <input type="text" class="form-control" value="{{ application_details.Desired_FI_Inspection_Date }}" readonly="readonly">
+                                        <input type="text" class="form-control" value="{{ application_details.desired_fi_inspection_date }}" readonly="readonly">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-label">Response From Client</label>
-                                        <input type="text" class="form-control" value="{{ application_details.FI_Response }}" readonly="readonly">
+                                        <input type="text" class="form-control" value="{{ application_details.fi_response }}" readonly="readonly">
                                     </div>
                                 </div>
                             </div>
@@ -891,11 +891,11 @@ a {
                     <hr>
                     {% for application_details in application_details %}
                         <div class="card-action text-center">
-                            <button type="button" id="approve_button" class="btn btn-flat btn-primary" onclick="approve_feasibility_inspection('{{application_details.Application_No}}')">
+                            <button type="button" id="approve_button" class="btn btn-flat btn-primary" onclick="approve_feasibility_inspection('{{application_details.application_no}}')">
                                 <i class="ace-icon fa fa-check"></i>
                                 &nbsp;&nbsp;Approve
                             </button>
-                            <button type="button" id="resubmit-btn" class="btn btn-flat btn-primary" onclick="reject_feasibility_inspection('{{application_details.Application_No}}')">
+                            <button type="button" id="resubmit-btn" class="btn btn-flat btn-primary" onclick="reject_feasibility_inspection('{{application_details.application_no}}')">
                                 <i class="ace-icon fa fa-reply-all"></i>
                                 &nbsp;&nbsp;Resubmit
                             </button>
@@ -970,7 +970,7 @@ a {
                     </div>
                     <div class="modal-footer">
                         {% for application_details in application_details %}
-                        <button type="button" class="btn btn-flat btn-primary" onclick="add_details_ins('{{ application_details.Application_No }}')">
+                        <button type="button" class="btn btn-flat btn-primary" onclick="add_details_ins('{{ application_details.application_no }}')">
                             <i class="ace-icon fa fa-check"></i>
                             &nbsp;&nbsp;Add
                         </button>
@@ -1035,7 +1035,7 @@ a {
 
                     <div class="modal-footer">
                         {% for application_details in application_details %}
-                        <button type="button" class="btn btn-flat btn-primary" onclick="add_team_details('{{ application_details.Application_No }}')">
+                        <button type="button" class="btn btn-flat btn-primary" onclick="add_team_details('{{ application_details.application_no }}')">
                             <i class="ace-icon fa fa-check"></i>
                             &nbsp;&nbsp;Add
                         </button>
@@ -1141,7 +1141,7 @@ a {
 
                     <div class="modal-footer">
                         {% for application_details in application_details %}
-                        <button type="button" class="btn btn-flat btn-primary" onclick="add_inspection_team_details('{{ application_details.Application_No }}')">
+                        <button type="button" class="btn btn-flat btn-primary" onclick="add_inspection_team_details('{{ application_details.application_no }}')">
                             <i class="ace-icon fa fa-check"></i>
                             &nbsp;&nbsp;Add
                         </button>

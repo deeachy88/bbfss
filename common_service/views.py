@@ -63,7 +63,7 @@ def complaint_closed_details(request):
     gewog = t_gewog_master.objects.all()
     village = t_village_master.objects.all()
     details = t_common_complaint_t1.objects.filter(Application_No=Application_No)
-    file = t_file_attachment.objects.filter(application_no=application_no)
+    file = t_file_attachment.objects.filter(application_no=Application_No)
     for userId in details:
         user_id = userId.Assign_To
         user_details = t_user_master.objects.filter(Login_Id=user_id)
@@ -557,7 +557,7 @@ def establishment_inspection_form(request):
             Field_Office_Id = request.session['field_office_id']
             message_count = (t_workflow_details.objects.filter(assigned_role_id='4', field_office_id=Field_Office_Id,
                                                                action_date__isnull=False) |
-                             t_workflow_details.objects.filter(Assigned_To=login_id, application_status='NCF',
+                             t_workflow_details.objects.filter(assigned_to=login_id, application_status='NCF',
                                                                action_date__isnull=False)).count()
 
             return render(request, 'inspection_establishment/application_form.html',
@@ -1816,13 +1816,13 @@ def feedback_list(request):
                 return render(request, 'feedback/feedback_list.html', {'feedback_details': feedback_details,
                                                                        'service_details': service_details})
             elif section_name == 'Food':
-                feedback_details = t_feebback.objects.filter(Service_Code__in=['FPC', 'OC', 'GAP']) \
+                feedback_details = t_feebback.objects.filter(Service_Code__in=['FEC', 'FHL', 'FIP', 'FBR']) \
                     .order_by('Created_Date').reverse()
                 service_details = t_service_master.objects.all()
                 return render(request, 'feedback/feedback_list.html', {'feedback_details': feedback_details,
                                                                        'service_details': service_details})
             else:
-                feedback_details = t_feebback.objects.filter(Service_Code__in=['FEC', 'FHL', 'FIP', 'FBR']) \
+                feedback_details = t_feebback.objects.filter(Service_Code__in=['FPC', 'OC', 'GAP']) \
                     .order_by('Created_Date').reverse()
                 service_details = t_service_master.objects.all()
                 return render(request, 'feedback/feedback_list.html', {'feedback_details': feedback_details,

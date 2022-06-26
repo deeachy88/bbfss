@@ -30,10 +30,32 @@ color: black !important;
         <form method="post" id="permitForm">
         {% csrf_token %}
             <input type="hidden" id="applicationNo" name="applicationNo">
+            <div class="row" id="Certificate_Type">
+                <div class="col-sm-3">
+                    <label class="form-label">Certificate Type <font color="red">*</font></label>
+                </div>
+                <div class="col-sm-8 justify-content-center">
+                    <label class="custom-control custom-radio">
+                        <input type="radio" class="custom-control-input" name="Certificate_Type" id="phytoRadio" value="P" checked onchange="changeExportType(this.value)">
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">Phytosanitary Certificate</span>
+                    </label>
+                    <label class="custom-control custom-radio">
+                        <input type="radio" class="custom-control-input" name="Certificate_Type" id="cordycepRadio" value="C" onchange="changeExportType(this.value)">
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">Export Certificate</span>
+                    </label>
+                </div>
+                <div class="alert alert-danger" id="Certificate_TypeErrorMsg" style="display:none"></div>
+            </div>
+            <br>
             <div class="row justify-content-left">
                 <ul class="nav nav-pills nav-secondary" id="pills-tab-phyto" role="tablist">
                     <li class="nav-item">
                         <a class="nav-link active" id="pills-phyto-tab" data-toggle="pill" href="#phyto-home" role="tab" aria-controls="pills-home" aria-selected="true" onclick="load_details()">Home</a>
+                    </li>
+                    <li class="nav-item" id="nav-phyto-details">
+                        <a class="nav-link" id="pills-phyto-details-tab" data-toggle="pill" href="#phyto-details" role="tab" aria-controls="pills-phyto-details" aria-selected="true" onclick="load_export_details()">Details</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="pills-phyto-file" data-toggle="pill" href="#phyto-file-attachment" role="tab" aria-controls="pills-profile" aria-selected="false" onclick="load_plant_attachment()">Attach File</a>
@@ -42,25 +64,6 @@ color: black !important;
             </div>
             <div class="tab-content mt-2 mb-3" id="pills-tab-phyto-tabContent">
                 <div class="tab-pane fade show active" id="phyto-home" role="tabpanel" aria-labelledby="pills-phyto-tab">
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <label class="form-label">Certificate Type <font color="red">*</font></label>
-                        </div>
-                        <div class="col-sm-8 justify-content-center">
-                            <label class="custom-control custom-radio">
-                                <input type="radio" class="custom-control-input" name="Import_Type" id="phytoRadio" value="P" checked onchange="changeExportType(this.value)">
-                                <span class="custom-control-indicator"></span>
-                                <span class="custom-control-description">Phytosanitary Certificate</span>
-                            </label>
-                            <label class="custom-control custom-radio">
-                                <input type="radio" class="custom-control-input" name="Import_Type" id="cordycepRadio" value="C" onchange="changeExportType(this.value)">
-                                <span class="custom-control-indicator"></span>
-                                <span class="custom-control-description">Export Certificate</span>
-                            </label>
-                        </div>
-                        <div class="alert alert-danger" id="Certificate_TypeErrorMsg" style="display:none"></div>
-                    </div>
-                    <br>
                     <div id='Phytosanitary'>
                         <div class="row">
                             <div class="col-sm-4">
@@ -105,7 +108,7 @@ color: black !important;
                                     <label class="form-label">Email <font color="red">*</font></label>
                                     <input type="email" class="form-control" id="p_Email" name="p_Email" onchange="validateemailId(this.value)">
                                 </div>
-                                <div class="alert alert-danger" id="emailErrorMsg" style="display:none"></div>
+                                <div class="alert alert-danger" id="p_EmailErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                         <div class="row">
@@ -139,92 +142,6 @@ color: black !important;
                                     <textarea class="form-control" id="p_Name_Address" name="p_Name_Address" rows="3"></textarea>
                                 </div>
                                 <div class="alert alert-danger" id="p_Name_AddressErrorMsg" style="display:none"></div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-4">
-                                <div class="form-group">
-                                    <label class="form-label">Botanical name of the commodity <font color="red">*</font></label>
-                                    <input type="text" class="form-control" id="p_Botanical_Name" name="p_Botanical_Name">
-                                </div>
-                                <div class="alert alert-danger" id="p_Botanical_NameErrorMsg" style="display:none"></div>
-                            </div>
-                            <div class="col-sm-4">
-                                <div class="form-group">
-                                    <label class="form-label">Common name of the commodity <font color="red">*</font></label>
-                                    <input type="text" class="form-control" id="p_Common_Name" name="p_Botanical_Name">
-                                </div>
-                                <div class="alert alert-danger" id="p_Common_NameErrorMsg" style="display:none"></div>
-                            </div>
-                            <div class="col-sm-4">
-                                <div class="form-group">
-                                    <label class="form-label">Description of the Commodity <font color="red">*</font></label>
-                                    <textarea class="form-control" id="p_Description" name="p_Description" rows="3"></textarea>
-                                </div>
-                                <div class="alert alert-danger" id="p_DescriptionErrorMsg" style="display:none"></div>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="form-label">Quantity (Gross Weight) <font color="red">*</font></label>
-                                    <input type="text" class="form-control" id="p_Qty_Gross" name="p_Qty_Gross" onkeypress="return isNumberKey(event)">
-                                </div>
-                                <div class="alert alert-danger" id="p_Qty_GrossErrorMsg" style="display:none"></div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="clearfix mb-4" style="margin-bottom: 2.5rem!important;"></div>
-                                <div class="form-check text-center">
-                                    <label class="form-radio-label">
-                                        <input class="form-radio-input" type="radio" name="p_Unit_Gross"  value="MT(s)" >
-                                        <span class="form-radio-sign">MT(s)</span>
-                                    </label>
-                                    <label class="form-radio-label ml-3">
-                                        <input class="form-radio-input" type="radio" name="p_Unit_Gross" value="Kg(s)">
-                                        <span class="form-radio-sign">Kg(s)</span>
-                                    </label>
-                                    <label class="form-radio-label ml-3">
-                                        <input class="form-radio-input" type="radio" name="p_Unit_Gross" value="Gram(s)">
-                                        <span class="form-radio-sign">Gram(s)</span>
-                                    </label>
-                                    <!--<label class="form-radio-label ml-3">
-                                        <input class="form-radio-input" type="radio" name="p_Unit_Gross" value="Unit(s)">
-                                        <span class="form-radio-sign">Unit(s)</span>
-                                    </label>-->
-                                </div>
-                                <div class="alert alert-danger" id="p_Unit_GrossErrorMsg" style="display:none"></div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="form-label">Quantity (Net Weight) <font color="red">*</font></label>
-                                    <input type="text" class="form-control" id="p_Qty_Net" name="p_Qty_Net" onkeypress="return isNumberKey(event)" onchange="checkWeight()">
-                                </div>
-                                <div class="alert alert-danger" id="p_Qty_NetErrorMsg" style="display:none"></div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="clearfix mb-4" style="margin-bottom: 2.5rem!important;"></div>
-                                <div class="form-check text-center">
-                                    <label class="form-radio-label">
-                                        <input class="form-radio-input" type="radio" name="p_Unit_Net"  value="MT(s)" >
-                                        <span class="form-radio-sign">MT(s)</span>
-                                    </label>
-                                    <label class="form-radio-label ml-3">
-                                        <input class="form-radio-input" type="radio" name="p_Unit_Net" value="Kg(s)">
-                                        <span class="form-radio-sign">Kg(s)</span>
-                                    </label>
-                                    <label class="form-radio-label ml-3">
-                                        <input class="form-radio-input" type="radio" name="p_Unit_Net" value="Gram(s)">
-                                        <span class="form-radio-sign">Gram(s)</span>
-                                    </label>
-                                    <!--<label class="form-radio-label ml-3">
-                                        <input class="form-radio-input" type="radio" name="p_Unit_Net" value="Unit(s)">
-                                        <span class="form-radio-sign">Unit(s)</span>
-                                    </label>-->
-                                </div>
-                                <div class="alert alert-danger" id="p_Unit_NetErrorMsg" style="display:none"></div>
                             </div>
                         </div>
                         <div class="row">
@@ -649,6 +566,25 @@ color: black !important;
                         <button type="button" class="btn btn-primary" id="plant_export" onclick="save_export_permit()">Save</button>
                     </div>
                 </div>
+                <div class="tab-pane fade" id="phyto-details" role="tabpanel" aria-labelledby="pills-phyto-details">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-head-row">
+                                <div class="card-tools pull-right">
+                                    <button type="button" class="btn btn-light" onclick="show_details_modal()">Add</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="phyto_export_details">
+                                {% include 'export_permit/phyto_details_page.html' %}
+                            </div>
+                        </div>
+                        <div class="card-action">
+                            <button type="button" class="btn btn-success" id="phyto_export_button" onclick="details_export_save()" style="display:none">Save</button>
+                        </div>
+                    </div>
+                </div>
                 <div class="tab-pane fade" id="phyto-file-attachment" role="tabpanel" aria-labelledby="pills-phyto-file">
                     <div id="phytoAttach">
                         {% include 'export_permit/phyto_file_attachment_page.html' %}
@@ -729,6 +665,189 @@ color: black !important;
     </div>
 </form>
 
+<form method="post" id="export_details_form">
+    {% csrf_token %}
+    <div class="modal fade" id="add_export_details" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Botanical name of the commodity <font color="red">*</font></label>
+                                            <input type="text" class="form-control" id="p_Botanical_Name" name="p_Botanical_Name">
+                                        </div>
+                                        <div class="alert alert-danger" id="p_Botanical_NameErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Common name of the commodity <font color="red">*</font></label>
+                                            <input type="text" class="form-control" id="p_Common_Name" name="p_Common_Name">
+                                        </div>
+                                        <div class="alert alert-danger" id="p_Common_NameErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Description of the Commodity <font color="red">*</font></label>
+                                            <textarea class="form-control" id="p_Description" name="p_Description" rows="3"></textarea>
+                                        </div>
+                                        <div class="alert alert-danger" id="p_DescriptionErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Quantity<font color="red">*</font></label>
+                                            <input type="text" class="form-control" id="quantity" name="quantity" onkeypress="return isNumberKey(event)">
+                                        </div>
+                                        <div class="alert alert-danger" id="quantityErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Unit <font color="red">*</font></label>
+                                            <select class="form-control" name="unit"  id="unit">
+                                                <option value="">--SELECT--</option>
+                                                {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                                {% endfor %}
+                                             </select>
+                                        </div>
+                                        <div class="alert alert-danger" id="unitErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Gross Weight<font color="red">*</font></label>
+                                            <input type="text" class="form-control" id="gross_weight" name="gross_weight" onkeypress="return isNumberKey(event)" onchange="checkWeight()">
+                                        </div>
+                                        <div class="alert alert-danger" id="gross_weightErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Net Weight<font color="red">*</font></label>
+                                            <input type="text" class="form-control" id="net_weight" name="net_weight" onkeypress="return isNumberKey(event)" onchange="checkWeight()">
+                                        </div>
+                                        <div class="alert alert-danger" id="net_weightErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="save_details_export()">Add</button>
+            </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form method="post" id="edit_export_details_form">
+    {% csrf_token %}
+    <div class="modal fade" id="edit_export_details" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="edit_exampleModalLabel">Edit Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <input type="hidden" name="identifier" value="PEC"/>
+                                <input type="hidden" class="form-control" id="record_id" name="record_id">
+                                <input type="hidden" class="form-control" id="edit_application_no" name="edit_application_no">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Botanical name of the commodity <font color="red">*</font></label>
+                                            <input type="text" class="form-control" id="edit_p_Botanical_Name" name="edit_p_Botanical_Name">
+                                        </div>
+                                        <div class="alert alert-danger" id="edit_p_Botanical_NameErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Common name of the commodity <font color="red">*</font></label>
+                                            <input type="text" class="form-control" id="edit_p_Common_Name" name="edit_p_Common_Name">
+                                        </div>
+                                        <div class="alert alert-danger" id="edit_p_Common_NameErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Description of the Commodity <font color="red">*</font></label>
+                                            <textarea class="form-control" id="edit_p_Description" name="edit_p_Description" rows="3"></textarea>
+                                        </div>
+                                        <div class="alert alert-danger" id="edit_p_DescriptionErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Quantity<font color="red">*</font></label>
+                                            <input type="text" class="form-control" id="edit_quantity" name="edit_quantity" onkeypress="return isNumberKey(event)">
+                                        </div>
+                                        <div class="alert alert-danger" id="edit_quantityErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Unit <font color="red">*</font></label>
+                                            <select class="form-control" name="edit_unit"  id="edit_unit">
+                                                <option value="">--SELECT--</option>
+                                                {% for unit in unit %}
+                                                    <option value="{{ unit.Unit }}">{{ unit.Unit }}</option>
+                                                {% endfor %}
+                                             </select>
+                                        </div>
+                                        <div class="alert alert-danger" id="edit_unitErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Gross Weight<font color="red">*</font></label>
+                                            <input type="text" class="form-control" id="edit_gross_weight" name="edit_gross_weight" onkeypress="return isNumberKey(event)" onchange="checkWeight()">
+                                        </div>
+                                        <div class="alert alert-danger" id="edit_gross_weightErrorMsg" style="display:none"></div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Net Weight<font color="red">*</font></label>
+                                            <input type="text" class="form-control" id="edit_net_weight" name="edit_net_weight" onkeypress="return isNumberKey(event)" onchange="checkWeight()">
+                                        </div>
+                                        <div class="alert alert-danger" id="edit_net_weightErrorMsg" style="display:none"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="update_edit_details('PEC')">Update</button>
+            </div>
+            </div>
+        </div>
+    </div>
+</form>
+
 <script>1
 function isNumberKey(evt)
 {
@@ -772,12 +891,14 @@ function isNumberKey(evt)
             $("#Phytosanitary").show();
             $("#Cordyceps").hide();
             $("#pills-phyto-file").prop('disabled', true);
+            $("#nav-phyto-details").show();
         }
         else
         {
             $("#Cordyceps").show();
             $("#Phytosanitary").hide();
             $("#pills-cordyceps-file").prop('disabled', true);
+            $("#nav-phyto-details").hide();
         }
     }
 
@@ -803,6 +924,11 @@ function isNumberKey(evt)
         }
     }
 
+    function details_export_save()
+    {
+        $('#pills-tab-phyto a:last').tab('show');
+    }
+
     function save_export_permit()
     {
         if($('#phytoRadio').prop('checked'))
@@ -816,15 +942,9 @@ function isNumberKey(evt)
             var p_Dzongkhag_Code = $('#p_Dzongkhag_Code').val();
             var p_Location_Code = $('#p_Location_Code').val();
             var p_Name_Address = $('#p_Name_Address').val();
-            var p_Botanical_Name = $('#p_Botanical_Name').val();
-            var p_Common_Name = $('#p_Common_Name').val();
-            var p_Description = $('#p_Description').val();
-            var p_Qty_Gross = $('#p_Qty_Gross').val();
-            var p_Unit_Gross = $("input[name=p_Unit_Gross]:checked").length;
-            var p_Qty_Net = $('#p_Qty_Net').val();
-            var p_Unit_Net = $("input[name=p_Unit_Net]:checked").length;
             var p_Country_Code = $('#p_Country_Code').val();
             var p_Entry_Point = $('#p_Entry_Point').val();
+            var p_Exit_Point = $('#p_Exit_Point').val();
             var p_Package_number = $('#p_Package_number').val();
             var p_Package_description = $('#p_Package_description').val();
             var p_Distinguish_Marks = $('#p_Distinguish_Marks').val();
@@ -889,55 +1009,6 @@ function isNumberKey(evt)
                 $('#p_Name_AddressErrorMsg').delay(2000).fadeOut('slow');
                 $('#p_Name_Address').focus();
             }
-            else if(p_Botanical_Name == "")
-            {
-                $('#p_Botanical_NameErrorMsg').html("Enter Botanical Name Of the Commodity.");
-                $('#p_Botanical_NameErrorMsg').show();
-                $('#p_Botanical_NameErrorMsg').delay(2000).fadeOut('slow');
-                $('#p_Botanical_Name').focus();
-            }
-            else if(p_Common_Name == "")
-            {
-                $('#p_Common_NameErrorMsg').html("Enter Common Name Of the Commodity.");
-                $('#p_Common_NameErrorMsg').show();
-                $('#p_Common_NameErrorMsg').delay(2000).fadeOut('slow');
-                $('#p_Common_Name').focus();
-            }
-            else if(p_Description == "")
-            {
-                $('#p_DescriptionErrorMsg').html("Description Of The Commodity.");
-                $('#p_DescriptionErrorMsg').show();
-                $('#p_DescriptionErrorMsg').delay(2000).fadeOut('slow');
-                $('#p_Description').focus();
-            }
-            else if(p_Qty_Gross == "")
-            {
-                $('#p_Qty_GrossErrorMsg').html("Enter Quantity (Gross Weight).");
-                $('#p_Qty_GrossErrorMsg').show();
-                $('#p_Qty_GrossErrorMsg').delay(2000).fadeOut('slow');
-                $('#p_Qty_Gross').focus();
-            }
-            else if(p_Unit_Gross < 1)
-            {
-                $('#p_Unit_GrossErrorMsg').html("Select One Unit.");
-                $('#p_Unit_GrossErrorMsg').show();
-                $('#p_Unit_GrossErrorMsg').delay(2000).fadeOut('slow');
-                $('#p_Unit_Gross').focus();
-            }
-            else if(p_Qty_Net == "")
-            {
-                $('#p_Qty_NetErrorMsg').html("Enter Quantity (Net Weight).");
-                $('#p_Qty_NetErrorMsg').show();
-                $('#p_Qty_NetErrorMsg').delay(2000).fadeOut('slow');
-                $('#p_Qty_Net').focus();
-            }
-            else if(p_Unit_Net < 1)
-            {
-                $('#p_Unit_NetErrorMsg').html("Select One Unit.");
-                $('#p_Unit_NetErrorMsg').show();
-                $('#p_Unit_NetErrorMsg').delay(2000).fadeOut('slow');
-                $('#p_Unit_Net').focus();
-            }
             else if(p_Country_Code == "")
             {
                 $('#p_Country_CodeErrorMsg').html("Select Importing Country.");
@@ -951,6 +1022,13 @@ function isNumberKey(evt)
                 $('#p_Entry_PointErrorMsg').show();
                 $('#p_Entry_PointErrorMsg').delay(2000).fadeOut('slow');
                 $('#p_Entry_Point').focus();
+            }
+            else if(p_Exit_Point == "")
+            {
+                $('#p_Exit_PointErrorMsg').html("Select Exit Point.");
+                $('#p_Exit_PointErrorMsg').show();
+                $('#p_Exit_PointErrorMsg').delay(2000).fadeOut('slow');
+                $('#p_Exit_Point').focus();
             }
             else if(p_Package_number == "")
             {
@@ -992,8 +1070,9 @@ function isNumberKey(evt)
                     data : $('#permitForm').serialize(),
                     success : function(data)
                     {
+                        $("#Certificate_Type").hide();
                         $('#applicationNo').val(data.applicationNo);
-                        $('#pills-tab-phyto a:last').tab('show');
+                        $('#pills-phyto-details-tab').tab('show');
                         $("#plant_export").html('Update');
                     }
                 });
@@ -1006,8 +1085,9 @@ function isNumberKey(evt)
                     data : $('#permitForm').serialize(),
                     success : function(data)
                     {
+                        $("#Certificate_Type").hide();
                         $('#applicationNo').val(data.applicationNo);
-                        $('#pills-tab-phyto a:last').tab('show');
+                        $('#pills-phyto-details-tab').tab('show');
                     }
                 });
             }
@@ -1307,6 +1387,7 @@ function isNumberKey(evt)
                         data : $('#permitForm').serialize(),
                         success : function(data)
                         {
+                            $("#Certificate_Type").hide();
                             $('#applicationNo').val(data.applicationNo);
                             $('#pills-tab-phyto a:last').tab('show');
                         }
@@ -1320,6 +1401,7 @@ function isNumberKey(evt)
                         data : $('#permitForm').serialize(),
                         success : function(data)
                         {
+                            $("#Certificate_Type").hide();
                             $('#applicationNo').val(data.applicationNo);
                             $('#pills-tab-phyto a:last').tab('show');
                         }
@@ -1730,6 +1812,102 @@ function checkComContact(value)
             $('#direct_net_weight_gmsErrorMsg').delay(2000).fadeOut('slow');
             $('#net_weight_gms').val("");
         }
+    }
+
+    function save_details_export()
+    {
+        var application_no = $('#applicationNo').val();
+        var p_Botanical_Name = $('#p_Botanical_Name').val();
+        var p_Common_Name = $('#p_Common_Name').val();
+        var p_Description = $('#p_Description').val();
+        var quantity = $('#quantity').val();
+        var unit = $("#unit").val();
+        var gross_weight = $('#gross_weight').val();
+        var net_weight = $('#net_weight').val();
+
+        if(p_Botanical_Name == "")
+        {
+            $('#p_Botanical_NameErrorMsg').html("Enter Botanical Name Of the Commodity.");
+            $('#p_Botanical_NameErrorMsg').show();
+            $('#p_Botanical_NameErrorMsg').delay(2000).fadeOut('slow');
+            $('#p_Botanical_Name').focus();
+        }
+        else if(p_Common_Name == "")
+        {
+            $('#p_Common_NameErrorMsg').html("Enter Common Name Of the Commodity.");
+            $('#p_Common_NameErrorMsg').show();
+            $('#p_Common_NameErrorMsg').delay(2000).fadeOut('slow');
+            $('#p_Common_Name').focus();
+        }
+        else if(p_Description == "")
+        {
+            $('#p_DescriptionErrorMsg').html("Description Of The Commodity.");
+            $('#p_DescriptionErrorMsg').show();
+            $('#p_DescriptionErrorMsg').delay(2000).fadeOut('slow');
+            $('#p_Description').focus();
+        }
+        else if(quantity == "")
+        {
+            $('#quantityErrorMsg').html("Enter Quantity.");
+            $('#quantityErrorMsg').show();
+            $('#quantityErrorMsg').delay(2000).fadeOut('slow');
+            $('#quantity').focus();
+        }
+        else if(unit == "")
+        {
+            $('#unitErrorMsg').html("Select Unit.");
+            $('#unitErrorMsg').show();
+            $('#unitErrorMsg').delay(2000).fadeOut('slow');
+            $('#unit').focus();
+        }
+        else if(gross_weight == "")
+        {
+            $('#p_Qty_NetErrorMsg').html("Enter Gross Weight).");
+            $('#p_Qty_NetErrorMsg').show();
+            $('#p_Qty_NetErrorMsg').delay(2000).fadeOut('slow');
+            $('#p_Qty_Net').focus();
+        }
+        else if(net_weight == "")
+        {
+            $('#net_weightErrorMsg').html("Enter Net Weight.");
+            $('#net_weightErrorMsg').show();
+            $('#net_weightErrorMsg').delay(2000).fadeOut('slow');
+            $('#net_weight').focus();
+        }
+        else
+        {
+            $.ajax({
+                type : "GET",
+                url : "{% url 'save_phyto_export_details' %}",
+                data : {'application_no':application_no,'p_Botanical_Name':p_Botanical_Name,'p_Common_Name':p_Common_Name, 'p_Description':p_Description, 'quantity':quantity, 'unit':unit, 'gross_weight':gross_weight, 'net_weight':net_weight},
+                success : function(responseText) {
+                   $('#phyto_export_details').html(responseText);
+                   $('#add_export_details').modal('hide');
+                   $('#pills-phyto-details-tab').tab('show');
+                   $('.modal-backdrop').remove();
+                   $('#export_details_form')[0].reset();
+                }
+            });
+        }
+    }
+
+    function show_details_modal()
+    {
+        $('#add_export_details').modal('show');
+    }
+
+    function populate_export_details(record_id, application_no, botanical_name, common_name, description, quantity, unit, gross_wt,net_wt)
+    {
+        $('#record_id').val(record_id);
+        $('#edit_application_no').val(application_no);
+        $('#edit_p_Botanical_Name').val(botanical_name);
+        $('#edit_p_Common_Name').val(common_name);
+        $('#edit_p_Description').val(description);
+        $('#edit_quantity').val(quantity);
+        $('#edit_unit').val(unit);
+        $('#edit_gross_weight').val(gross_wt);
+        $('#edit_net_weight').val(net_wt);
+        $('#edit_export_details').modal('show');
     }
 </script>
 {% endblock %}

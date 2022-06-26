@@ -46,6 +46,9 @@ class t_food_export_certificate_t1(models.Model):
     Applicant_Id = models.CharField(max_length=100, default=None, blank=True, null=True)
     Rejection_Reason = models.TextField(blank=True, null=True)
     Terms = models.TextField(blank=True, null=True)
+    Batch_No = models.CharField(max_length=100, default=None, blank=True, null=True)
+    Mfd_Date = models.DateField(blank=True, null=True)
+    Expiry_Date = models.DateField(blank=True, null=True)
 
 
 class t_food_licensing_food_handler_t1(models.Model):

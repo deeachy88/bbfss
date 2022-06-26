@@ -597,7 +597,7 @@ form, input, select, textarea{
                            {% for file_attach in file %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td><a href='{{file_attach.File_Path}}/{{file_attach.Attachment}}' target="_blank">{{file_attach.Attachment}}</a></td>
+                                    <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
                                 </tr>
                                 {% empty %}
                                 <tr>
@@ -1009,8 +1009,10 @@ form, input, select, textarea{
                                             <td>{{import.Corrective_Action_Verified_Auditor}}</td>
                                             <td>
                                                 <button type="button"
-                                                class="btn btn-primary btn-sm js-edit-details"
-                                                data-url="{% url 'edit_oc_nc_details' import.Record_Id %}">
+                                                class="btn btn-primary btn-sm" onclick="populate_nc_details('{{import.Record_Id}}','{{import.Application_No}}',
+                                                '{{import.Clause_Number}}','{{import.Non_Conformity}}','{{import.Non_Conformity_Category}}',
+                                                '{{import.Non_Conformity_Description}}','{{import.Corrective_Action_Proposed_Auditee}}',
+                                                '{{import.Corrective_Action_Verified_Auditor}}')">
                                                 <i class="zmdi zmdi-edit"></i>
                                                 </button>
                                             </td>
@@ -1173,15 +1175,79 @@ form, input, select, textarea{
                   </div>
             </div>
         </div>
-        <div class="modal fade" id="modal-book">
+        <div id="edit_conformModal" class="modal" tabindex="-1">
             <div class="modal-dialog modal-lg">
-              <div class="modal-content edit">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"></h5>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
 
-              </div>
+                    </div>
+                    <form method="post" id="edit_conform_form">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <input type="hidden" class="form-control" name="record_id" id="record_id">
+                        <input type="hidden" class="form-control" name="edit_application_no" id="edit_application_no">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label">Clause Number</label>
+                                <input type="text" class="form-control" name="edit_clause_number" id="edit_clause_number">
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Non-Conformity</label>&nbsp;
+                                    <div class="justify-content-center">
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Non_Conformity" id="nc_yes" class="custom-control-input" value="Open" onchange="Check_Accept(this.value)">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Open</span>
+                                        </label>
+                                        <label class="custom-control custom-radio">
+                                            <input type="radio" name="Non_Conformity" id="nc_no" class="custom-control-input" value="Close" onchange="Check_Accept(this.value)">
+                                            <span class="custom-control-indicator"></span>
+                                            <span class="custom-control-description">Close</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Nonconformity Category</label>
+                                <select class="form-control" name="non_conformity_category" id="non_conformity_category">
+                                    <option value="">-SELECT-</option>
+                                    <option value="Critical">Critical</option>
+                                    <option value="Major">Major</option>
+                                    <option value="Minor">Minor</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label">Description of nonconformity</label>
+                                <textarea class="form-control" id="non_conformity_description" name="non_conformity_description"></textarea>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Corrective Action Proposed Auditee</label>
+                                <textarea class="form-control" id="corrective_action_proposed_auditee" name="corrective_action_proposed_auditee"></textarea>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Corrective Action Verified Auditor</label>
+                                <textarea class="form-control" id="corrective_action_verified_auditor" name="corrective_action_verified_auditor"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-flat btn-primary" onclick="edit_nc_details()">
+                            <i class="ace-icon fa fa-check"></i>
+                            &nbsp;&nbsp;Update
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="close_nc_edit_modal()">Close</button>
+                    </div>
+                    </form>
+                  </div>
             </div>
         </div>
-        <script src="{% static 'assets/js/app.min.js' %}"></script>
-        <script src="{% static 'assets/js/nc.js' %}"></script>
 <script>
 function openInputModal()
 {
@@ -1258,6 +1324,68 @@ function resubmit_details()
             location.reload();
         }
     });
+}
+
+function populate_nc_details(record_id, application_no, clause_number, non_conformity, non_conformity_category,non_conformity_description,corrective_action_proposed_auditee,corrective_action_verified_auditor)
+{
+    $('#record_id').val(record_id);
+    $('#edit_application_no').val(application_no);
+    $('#edit_clause_number').val(clause_number);
+    if(non_conformity == 'Open')
+    {
+        $("#nc_yes").prop("checked", true);
+    }
+    else
+    {
+        $("#nc_no").prop("checked", true);
+    }
+    $('#non_conformity_category').val(non_conformity_category);
+    $('#non_conformity_description').val(non_conformity_description);
+    $('#corrective_action_proposed_auditee').val(corrective_action_proposed_auditee);
+    $('#corrective_action_verified_auditor').val(corrective_action_verified_auditor);
+    $('#edit_conformModal').modal('show');
+}
+
+function edit_nc_details()
+{
+    var record_id = $('#record_id').val();
+    var edit_application_no = $('#edit_application_no').val();
+    var clause_number = $('#edit_clause_number').val();
+    var non_conformity = $("input[name=Non_Conformity]:checked").val();
+    var non_conformity_category = $('#non_conformity_category').val();
+    var non_conformity_description = $('#non_conformity_description').val();
+    var corrective_action_proposed_auditee = $('#corrective_action_proposed_auditee').val();
+    var corrective_action_verified_auditor = $('#corrective_action_verified_auditor').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'edit_oc_nc_details' %}",
+        data :{'record_id':record_id,'edit_application_no':edit_application_no, 'clause_number':clause_number,'non_conformity':non_conformity, 'non_conformity_category':non_conformity_category, 'non_conformity_description':non_conformity_description,'corrective_action_proposed_auditee':corrective_action_proposed_auditee,'corrective_action_verified_auditor':corrective_action_verified_auditor},
+        success : function(responseText) {
+             $('#conform_details').html(responseText);
+             $('#edit_conformModal').modal('hide');
+             $('.modal-backdrop').remove();
+
+        }
+    });
+}
+
+function Check_Accept(value)
+{
+    if(value == 'Open')
+    {
+        $("#non_conformity_category").removeAttr("disabled");
+        $("#non_conformity_description").removeAttr('readonly');
+        $("#corrective_action_proposed_auditee").removeAttr("disabled");
+    }
+    else
+    {
+        $("#non_conformity_category").attr("disabled", "disabled");
+        $("#non_conformity_category").val("");
+        $("#non_conformity_description").prop("readonly", true);
+        $("#corrective_action_proposed_auditee").attr("disabled", "disabled");
+        $("#non_conformity_description").val("");
+        $("#corrective_action_proposed_auditee").val("");
+    }
 }
 
 </script>

@@ -234,7 +234,7 @@ class t_certification_organic_t1(models.Model):  # Organic Certification main ta
     Audit_Findings_Others_Observations = models.TextField(blank=True, null=True)
     Approve_Date = models.DateField(blank=True, null=True)
     Certificate_No = models.CharField(max_length=100, blank=True, null=True)
-    Validity_Period = models.IntegerField(blank=True, null=True)
+    Issue_Date = models.DateField(blank=True, null=True)
     Validity = models.DateField(blank=True, null=True)
     Farm_Location = models.CharField(max_length=250, default=None, blank=True, null=True)
     Farm_Name = models.CharField(max_length=250, blank=True, null=True)

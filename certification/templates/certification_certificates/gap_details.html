@@ -1,0 +1,1004 @@
+{% load static %}
+<style>
+    .card {
+    margin-bottom: 0rem;
+    box-shadow: 0 1px 5px rgb(0 0 0 / 10%);
+}
+form, input, select, textarea{
+        color: black !important;
+    }
+.head {
+    color: #f3f5f8;
+    text-decoration: none;
+    background-color: transparent;
+    -webkit-text-decoration-skip: objects;
+}
+.box-body
+{
+    margin-left: -30px;
+    margin-right: -30px;
+}
+</style>
+<div class="card">
+    <div class="card-header" role="tab" id="headingOne">
+        <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed head">
+            Application Details
+        </a>
+    </div>
+
+    <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion" style="">
+        <div class="card-body">
+            {% for application_details in application_details %}
+                <div class="row">
+                    <div class="col-sm-2">
+                        <label class="form-label">Applicant Type</label>
+                    </div>
+                    {% if application_details.Application_Type == 'I' %}
+                        <div class="col-sm-4 justify-content-center">
+                            <label class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" checked>
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Individual</span>
+                            </label>
+                            <label class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" disabled>
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Farmers Group</span>
+                            </label>
+                        </div>
+                    {% else %}
+                        <div class="col-sm-4 justify-content-center">
+                            <label class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" disabled>
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Individual</span>
+                            </label>
+                            <label class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" checked>
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Farmers Group</span>
+                            </label>
+                        </div>
+                    {% endif %}
+                </div><br>
+                {% if application_details.Application_Type == 'I' %}
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Applicant CID</label>
+                                <input type="text" class="form-control" value="{{application_details.CID}}" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Name</label>
+                                <input type="text" class="form-control" value="{{application_details.Applicant_Name}}" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Dzongkhag</label>
+                                <select class="form-control" disabled>
+                                    {% for dzongkhag in dzongkhag %}
+                                        <option value="{{dzongkhag.Dzongkhag_Code}}"{% if application_details.Dzongkhag_Code == dzongkhag.Dzongkhag_Code %}selected{% endif %}>
+                                            {{ dzongkhag.Dzongkhag_Name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Gewog</label>
+                                <select class="form-control" disabled>
+                                    {% for gewog in gewog %}
+                                            <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Village</label>
+                                 <select class="form-control" disabled>
+                                    {% for village in village %}
+                                            <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
+                                    {% endfor %}
+                                 </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Address</label>
+                                <textarea class="form-control" disabled>{{application_details.Present_Address}}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Farm Name</label>
+                                <textarea class="form-control" disabled>{{application_details.Farm_Name}}</textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Farm Location</label>
+                                <textarea class="form-control" disabled>{{application_details.Farm_Location}}</textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" value="{{application_details.Email}}" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Contact Number</label>
+                                <input type="number" class="form-control" value="{{application_details.Contact_No}}" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Business License Number (if applicable)</label>
+                                 <input type="text" class="form-control" value="{{application_details.License_Number}}" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Name of the Technical Incharge(if different from the owner)</label>
+                                 <input type="text" class="form-control" value="{{application_details.Technical_In_Charge}}" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Name of the Management Incharge (if different from the owner)</label>
+                                 <input type="text" class="form-control" value="{{application_details.Manager_In_Charge}}" disabled>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Name of Farmers Group</label>
+                                <input type="text" class="form-control" value="{{application_details.Farmer_Group_Name}}" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Farmers Group Number</label>
+                                <input type="text" class="form-control" value="{{application_details.Farmer_Group_No}}" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Dzongkhag</label>
+                                <select class="form-control" disabled>
+                                    {% for dzongkhag in dzongkhag %}
+                                            <option value="{{ dzongkhag.Dzongkhag_Code }}">{{ dzongkhag.Dzongkhag_Name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Gewog</label>
+                                <select class="form-control" disabled>
+                                    {% for gewog in gewog %}
+                                            <option value="{{ gewog.Gewog_Code }}">{{ gewog.Gewog_Name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Village</label>
+                                 <select class="form-control" disabled>
+                                    {% for village in village %}
+                                            <option value="{{ village.Village_Code }}">{{ village.Village_Name }}</option>
+                                    {% endfor %}
+                                 </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Address</label>
+                                <textarea class="form-control" disabled>{{application_details.Present_Address}}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Farm Name</label>
+                                <textarea class="form-control" disabled>{{application_details.Farm_Name}}</textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Farm Location</label>
+                                <textarea class="form-control" disabled>{{application_details.Farm_Location}}</textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" value="{{application_details.Email}}" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Contact Number</label>
+                                <input type="number" class="form-control" value="{{application_details.Contact_No}}" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Business License Number (if applicable)</label>
+                                 <input type="text" class="form-control" value="{{application_details.License_Number}}" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Name of the Technical Incharge(if different from the owner)</label>
+                                 <input type="text" class="form-control" value="{{application_details.Technical_In_Charge}}" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Name of the Management Incharge (if different from the owner)</label>
+                                 <input type="text" class="form-control" value="{{application_details.Manager_In_Charge}}" disabled>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+             <br><br>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-header" role="tab" id="farmer_group_details">
+        <a class="collapsed head" data-toggle="collapse" href="#collapse_farmer_group" aria-expanded="false" aria-controls="collapse_farmer_group">
+            Farmer Group Details
+        </a>
+    </div>
+    <div id="collapse_farmer_group" class="collapse" role="tabpanel" aria-labelledby="collapse_farmer_group" data-parent="#accordion" style="">
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">CID</th>
+                        <th scope="col">Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                   {% for farmer_group in farmer_group %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{farmer_group.CID}}</td>
+                            <td>{{farmer_group.Name}}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                          <td colspan="3" class="text-center">No Data</td>
+                        </tr>
+                   {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-header" role="tab" id="crop_details">
+        <a class="collapsed head" data-toggle="collapse" href="#collapseCrop" aria-expanded="false" aria-controls="collapseCrop">
+            Crop Production Details
+        </a>
+    </div>
+    <div id="collapseCrop" class="collapse" role="tabpanel" aria-labelledby="collapseCrop" data-parent="#accordion" style="">
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Crop Name</th>
+                        <th scope="col">Cultivated Area</th>
+                        <th scope="col">Area Unit</th>
+                        <th scope="col">For the previous year(From date)</th>
+                        <th scope="col">For the previous year(To date)</th>
+                        <th scope="col">Yield</th>
+                        <th scope="col">Yield Unit</th>
+                        <th scope="col">Harvest Month</th>
+                        <th scope="col">Sold</th>
+                        <th scope="col">Balance Stock</th>
+                        <th scope="col">For the current year(From date)</th>
+                        <th scope="col">For the current year(To date)</th>
+                        <th scope="col">Estimated Yield</th>
+                        <th scope="col">Yield Unit</th>
+                        <th scope="col">Harvest Month</th>
+                    </tr>
+                </thead>
+                <tbody>
+                   {% for crop in crop_production %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{crop.Crop_Name}}</td>
+                            <td>{{crop.Area_Cultivated}}</td>
+                            <td>{{crop.Unit}}</td>
+                            <td>{{crop.P_From_Date}}</td>
+                            <td>{{crop.P_To_Date}}</td>
+                            <td>{{crop.P_Yield}}</td>
+                            <td>{{crop.P_Yield_Unit}}</td>
+                            <td>{{crop.P_Harvest_Month}}</td>
+                            <td>{{crop.P_Sold}}</td>
+                            <td>{{crop.P_Balance_Stock}}</td>
+                            <td>{{crop.C_From_Date}}</td>
+                            <td>{{crop.C_To_Date}}</td>
+                            <td>{{crop.C_Estimated_Yield}}</td>
+                            <td>{{crop.C_Yield_Unit}}</td>
+                            <td>{{crop.C_Harvest_Month}}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                          <td colspan="16" class="text-center">No Data</td>
+                        </tr>
+                   {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-header" role="tab" id="wild_collection_details">
+        <a class="collapsed head" data-toggle="collapse" href="#collapse_wild_collection" aria-expanded="false" aria-controls="collapse_wild_collection">
+            Pack House Details
+        </a>
+    </div>
+    <div id="collapse_wild_collection" class="collapse" role="tabpanel" aria-labelledby="collapse_wild_collection" data-parent="#accordion" style="">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col" rowspan="2">#</th>
+                            <th scope="col" rowspan="2">Pack House Name</th>
+                            <th scope="col" rowspan="2">Address of the pack house</th>
+                            <th scope="col" colspan="8">For The Previous Year</th>
+                            <th scope="col" colspan="8">For The Current Year</th>
+                        </tr>
+                        <tr>
+                            <th scope="col">From Date</th>
+                            <th scope="col">To Date</th>
+                            <th scope="col">Production</th>
+                            <th scope="col">Production  Unit</th>
+                            <th scope="col">Sold</th>
+                            <th scope="col">Sold Unit</th>
+                            <th scope="col">Balance Stock</th>
+                            <th scope="col">Balance Stock Unit</th>
+                            <th scope="col">From Date</th>
+                            <th scope="col">To Date</th>
+                            <th scope="col">Production</th>
+                            <th scope="col">Production Unit</th>
+                            <th scope="col">Sold</th>
+                            <th scope="col">Sold Unit</th>
+                            <th scope="col">Balance Stock</th>
+                            <th scope="col">Balance Stock Unit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for crop in pack_house_details %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{crop.Pack_House_Name}}</td>
+                            <td>{{crop.Pack_House_Address}}</td>
+                            <td>{{crop.P_From_Date|date:'d-m-Y' }}</td>
+                            <td>{{crop.P_To_Date|date:'d-m-Y' }}</td>
+                            <td>{{crop.P_Production}}</td>
+                            <td>{{crop.P_Production_Unit}}</td>
+                            <td>{{crop.P_Sold}}</td>
+                            <td>{{crop.P_Sold_Unit}}</td>
+                            <td>{{crop.P_Balance_Stock}}</td>
+                            <td>{{crop.P_Balance_Stock_Unit}}</td>
+                            <td>{{crop.C_From_Date|date:'d-m-Y' }}</td>
+                            <td>{{crop.C_To_Date|date:'d-m-Y' }}</td>
+                            <td>{{crop.C_Production}}</td>
+                            <td>{{crop.C_Production_Unit}}</td>
+                            <td>{{crop.C_Sold}}</td>
+                            <td>{{crop.C_Sold_Unit}}</td>
+                            <td>{{crop.C_Balance_Stock}}</td>
+                            <td>{{crop.C_Balance_Stock_Unit}}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="17" class="text-center">No Data</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-header" role="tab" id="headingTwo">
+        <a class="collapsed head" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+            Attachments
+        </a>
+    </div>
+    <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">File</th>
+                    </tr>
+                </thead>
+                <tbody>
+                   {% for file_attach in file %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                          <td colspan="3" class="text-center">No Data</td>
+                        </tr>
+                   {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-header" role="tab" id="observations">
+        <a class="collapsed head" data-toggle="collapse" href="#observations_tab" aria-expanded="false" aria-controls="collapseTwo">
+            Audit Plan Details
+        </a>
+    </div>
+    <div id="observations_tab" class="collapse" role="tabpanel" aria-labelledby="observations_tab" data-parent="#observations_tab" style="">
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">File</th>
+                    </tr>
+                </thead>
+                <tbody>
+                   {% for file_attach in audit_plan %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td><a href='{{file_attach.file_path}}' target="_blank">{{file_attach.attachment}}</a></td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                          <td colspan="3" class="text-center">No Data</td>
+                        </tr>
+                   {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% for application_details in application_details %}
+<div class="card">
+    <div class="card-header" role="tab" id="audit_findings">
+        <a class="collapsed head" data-toggle="collapse" href="#audit_findings_tab" aria-expanded="false" aria-controls="collapseTwo">
+            Audit Findings
+        </a>
+    </div>
+    <div id="audit_findings_tab" class="collapse" role="tabpanel" aria-labelledby="observations_tab" data-parent="#observations_tab" style="">
+
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Audit Date </label>
+                       <input type="date" class="form-control" name="audit_date" id="Audit_Date" value="{{application_details.Audit_Date|date:'Y-m-d'}}" disabled>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Nature Of Audit</label>
+                       <select class="form-control" name="Audit_Type" disabled>
+                            {% if application_details.Audit_Type == "Preliminary visit" %}
+                            <option value="Preliminary visit" selected>Preliminary visit</option>
+                            <option value="Factory audit">Factory audit</option>
+                            <option value="Surveillance audit">Surveillance audit</option>
+                            <option value="Recertification audit">Recertification audit</option>
+                            <option value="Others">Others</option>
+                           {% elif application_details.Audit_Type == "Factory audit" %}
+                            <option value="Preliminary visit" selected>Preliminary visit</option>
+                            <option value="Factory audit" selected>Factory audit</option>
+                            <option value="Surveillance audit">Surveillance audit</option>
+                            <option value="Recertification audit">Recertification audit</option>
+                            <option value="Others">Others</option>
+                           {% elif application_details.Audit_Type == "Surveillance audit" %}
+                            <option value="Preliminary visit" selected>Preliminary visit</option>
+                            <option value="Factory audit">Factory audit</option>
+                            <option value="Surveillance audit" selected>Surveillance audit</option>
+                            <option value="Recertification audit">Recertification audit</option>
+                            <option value="Others">Others</option>
+                           {% elif application_details.Audit_Type == "Recertification audit" %}
+                            <option value="Preliminary visit" selected>Preliminary visit</option>
+                            <option value="Factory audit">Factory audit</option>
+                            <option value="Surveillance audit">Surveillance audit</option>
+                            <option value="Recertification audit" selected>Recertification audit</option>
+                            <option value="Others">Others</option>
+                           {% else %}
+                            <option value="Preliminary visit" selected>Preliminary visit</option>
+                            <option value="Factory audit">Factory audit</option>
+                            <option value="Surveillance audit">Surveillance audit</option>
+                            <option value="Recertification audit">Recertification audit</option>
+                            <option value="Others" selected>Others</option>
+                           {% endif %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 justify-content-center">
+                    <div class="form-group">
+                        <label class="form-label">Site History And Management </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Objective Evidence</label>
+                       <textarea type="text" class="form-control" disabled>{{ application_details.Audit_Findings_Site_History}}</textarea>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Findings/Observations </label>
+                       <textarea type="text" class="form-control" disabled>{{ application_details.Audit_Findings_Site_History_O}}</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 justify-content-center">
+                    <div class="form-group">
+                        <label class="form-label">Water source, reservoirs and holding tanks</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Objective Evidence</label>
+                       <textarea type="text" class="form-control" id="Audit_Findings_Water_Source" name="Audit_Findings_Water_Source">{{ application_details.Audit_Findings_Site_History_O}}</textarea>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Findings/Observations  </label>
+                       <textarea type="text" class="form-control" id="Audit_Findings_Water_Source_O" name="Audit_Findings_Water_Source_O">{{ application_details.Audit_Findings_Site_History_O}}</textarea>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <hr>
+            <label class="form-label">Farm inputs/raw materials and packaging materials</label>
+                <div id="farm_inputs_table">
+                    <table class="table table-bordered" width="100%">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Farm Inputs</th>
+                                <th scope="col">Name Of Supplier/Source</th>
+                                <th scope="col">Invoice/Certificate</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           {% for farm_inputs in farm_inputs %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{farm_inputs.Audit_Findings_Farm_Inputs}}</td>
+                                    <td>{{farm_inputs.Audit_Findings_Farm_Supplier}}</td>
+                                    <td>{{farm_inputs.Audit_Findings_Farm_Invoice}}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                  <td colspan="4" class="text-center">No Data</td>
+                                </tr>
+                           {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            <div class="row">
+                <div class="col-md-6 justify-content-center">
+                    <div class="form-group">
+                        <label class="form-label">Produce Quality</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Objective Evidence</label>
+                       <textarea type="text" class="form-control" id="Audit_Findings_Product_Quality" name="Audit_Findings_Product_Quality">{{ application_details.Audit_Findings_Product_Quality}}</textarea>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Findings/Observations  </label>
+                       <textarea type="text" class="form-control" id="Audit_Findings_Product_Quality_O" name="Audit_Findings_Product_Quality_O">{{ application_details.Audit_Findings_Product_Quality_O}}</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 justify-content-center">
+                    <div class="form-group">
+                        <label class="form-label">Harvesting and Handling of produces</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Objective Evidence</label>
+                       <textarea type="text" class="form-control" id="Audit_Findings_Harvesting" name="Audit_Findings_Harvesting">{{ application_details.Audit_Findings_Harvesting}}</textarea>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Findings/Observations  </label>
+                       <textarea type="text" class="form-control" id="Audit_Findings_Harvesting_O" name="Audit_Findings_Harvesting_O">{{ application_details.Audit_Findings_Harvesting_O}}</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 justify-content-center">
+                    <div class="form-group">
+                        <label class="form-label">Farm Equipment/Machinery</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Objective Evidence</label>
+                       <textarea type="text" class="form-control" id="Audit_Findings_Equipment" name="Audit_Findings_Equipment">{{ application_details.Audit_Findings_Equipment }}</textarea>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Findings/Observations  </label>
+                       <textarea type="text" class="form-control" id="Audit_Findings_Equipment_O" name="Audit_Findings_Equipment_O">{{ application_details.Audit_Findings_Equipment_O }}</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 justify-content-center">
+                    <div class="form-group">
+                        <label class="form-label">Manufacture/Production</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Objective Evidence</label>
+                       <textarea type="text" class="form-control" id="Audit_Findings_Manufacturing_Production" name="Audit_Findings_Manufacturing_Production">{{ application_details.Audit_Findings_Manufacturing_Production }}</textarea>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Findings/Observations  </label>
+                       <textarea type="text" class="form-control" id="Audit_Findings_Manufacturing_Production_O" name="Audit_Findings_Manufacturing_Production_O">{{ application_details.Audit_Findings_Manufacturing_Production_O }}</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 justify-content-center">
+                    <div class="form-group">
+                        <label class="form-label">Sampling And Testing</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Objective Evidence</label>
+                       <textarea type="text" class="form-control" id="Audit_Findings_Sampling_Testing" name="Audit_Findings_Sampling_Testing">{{ application_details.Audit_Findings_Sampling_Testing }}</textarea>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Findings/Observations  </label>
+                       <textarea type="text" class="form-control" id="Audit_Findings_Sampling_Testing_O" name="Audit_Findings_Sampling_Testing_O">{{ application_details.Audit_Findings_Sampling_Testing_O }}</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 justify-content-center">
+                    <div class="form-group">
+                        <label class="form-label">Packing And Marking</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Objective Evidence</label>
+                       <textarea type="text" class="form-control" id="Audit_Findings_Packing_Marking" name="Audit_Findings_Packing_Marking">{{ application_details.Audit_Findings_Packing_Marking }}</textarea>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Findings/Observations  </label>
+                       <textarea type="text" class="form-control" id="Audit_Findings_Packing_Marking_O" name="Audit_Findings_Packing_Marking_O">{{ application_details.Audit_Findings_Packing_Marking_O }}</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 justify-content-center">
+                    <div class="form-group">
+                        <label class="form-label">Storage and Transport</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Objective Evidence</label>
+                       <textarea type="text" class="form-control" id="Audit_Findings_Storage_Transport" name="Audit_Findings_Storage_Transport">{{ application_details.Audit_Findings_Storage_Transport }}</textarea>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Findings/Observations  </label>
+                       <textarea type="text" class="form-control" id="Audit_Findings_Storage_Transport_O" name="Audit_Findings_Storage_Transport_O">{{ application_details.Audit_Findings_Storage_Transport_O }}</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 justify-content-center">
+                    <div class="form-group">
+                        <label class="form-label">Traceability, recall and complaint handling</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Objective Evidence</label>
+                       <textarea type="text" class="form-control" id="Audit_Findings_Traceability" name="Audit_Findings_Traceability">{{ application_details.Audit_Findings_Traceability }}</textarea>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Findings/Observations  </label>
+                       <textarea type="text" class="form-control" id="Audit_Findings_Traceability_O" name="Audit_Findings_Traceability_O">{{ application_details.Audit_Findings_Traceability_O }}</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 justify-content-center">
+                    <div class="form-group">
+                        <label class="form-label">Worker Health, Safety & Welfare</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Objective Evidence</label>
+                       <textarea type="text" class="form-control" id="Audit_Findings_Worker_Health" name="Audit_Findings_Worker_Health">{{ application_details.Audit_Findings_Worker_Health }}</textarea>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Findings/Observations  </label>
+                       <textarea type="text" class="form-control" id="Audit_Findings_Worker_Health_O" name="Audit_Findings_Worker_Health_O">{{ application_details.Audit_Findings_Worker_Health_O }}</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 justify-content-center">
+                    <div class="form-group">
+                        <label class="form-label">Group requirements (if applicable)</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Objective Evidence</label>
+                       <textarea type="text" class="form-control" id="Audit_Findings_Group_Requirement" name="Audit_Findings_Group_Requirement">{{ application_details.Audit_Findings_Group_Requirement }}</textarea>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Findings/Observations  </label>
+                       <textarea type="text" class="form-control" id="Audit_Findings_Group_Requirement_O" name="Audit_Findings_Group_Requirement_O">{{ application_details.Audit_Findings_Group_Requirement_O }}</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 justify-content-center">
+                    <div class="form-group">
+                        <label class="form-label">Others</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Objective Evidence</label>
+                       <textarea type="text" class="form-control" id="Audit_Findings_Others" name="Audit_Findings_Others">{{ application_details.Audit_Findings_Others }}</textarea>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Findings/Observations  </label>
+                       <textarea type="text" class="form-control" id="Audit_Findings_Others_O" name="Audit_Findings_Others_O">{{ application_details.Audit_Findings_Others_O }}</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Audit Date </label>
+                       <input type="text" class="form-control" value="{{application_details.Audit_Date}}" disabled>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Nature Of Audit</label>
+                       <select class="form-control" name="Audit_Type" disabled>
+                            <option value="Preliminary visit">Preliminary visit</option>
+                            <option value="Factory audit">Factory audit</option>
+                            <option value="Surveillance audit">Surveillance audit</option>
+                            <option value="Recertification audit">Recertification audit</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+<div class="card">
+    <div class="card-header" role="tab" id="headingFour">
+        <a class="collapsed head" data-toggle="collapse" href="#collapseFour" aria-expanded="false" aria-controls="collapseTwo">
+            Audit Team Details
+        </a>
+    </div>
+    <div id="collapseFour" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Role</th>
+                    </tr>
+                </thead>
+                <tbody>
+                   {% for audit in audit_team %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{audit.Name}}</td>
+                            <td>{{audit.Role}}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                          <td colspan="3" class="text-center">No Data</td>
+                        </tr>
+                   {% endfor %}
+                </tbody>
+            </table>
+            <br>
+            {% for application_details in application_details %}
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Audit Team Leader</label>
+                            <input type="hidden" class="form-control" id="team_leader" name="team_leader" value="{{application_details.Audit_Team_Leader}}" disabled>
+                            <select class="form-control" disabled>
+                            {% for user_details in user_details %}
+                                <option value="{{user_details.Login_Id}}"{% if application_details.Audit_Team_Leader == user_details.Login_Id %}selected{% endif %}>
+                                    {{ user_details.Name }}
+                                </option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-header" role="tab">
+        <a class="collapsed head" data-toggle="collapse" href="#non_conform_tab" aria-expanded="false" aria-controls="collapseTwo">
+            NONCONFORMITY REPORT
+        </a>
+    </div>
+    <div id="non_conform_tab" class="collapse" role="tabpanel" aria-labelledby="observations_tab" data-parent="#observations_tab" style="">
+        <div class="card-body">
+            <div class="card-body">
+                <div id="conform_details">
+                    <table class="table table-bordered" id="details-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Clause Number</th>
+                                <th scope="col">Non Conformity</th>
+                                <th scope="col">Non Conformity Category</th>
+                                <th scope="col">Description of nonconformity</th>
+                                <th scope="col">Auditors Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for import in audit_observation %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{import.Clause_Number}}</td>
+                                    {% if conform_details.Non_Conformity == 'Yes' %}
+                                    <td>Open</td>
+                                    {% else %}
+                                    <td>Close</td>
+                                    {% endif %}
+                                    <td>{{import.Non_Conformity_Category}}</td>
+                                    <td>{{import.Non_Conformity_Description}}</td>
+                                    <td>{{import.Corrective_Action_Verified_Auditor}}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                  <td colspan="6" class="text-center">No Data</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <br>
+                <div class="form-group col-lg-12 mx-auto d-flex align-items-center my-4">
+                    <div class="border-bottom w-100 ml-5" style="border: 1px solid#888;"></div>
+                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">Remarks</span>
+                        <span class="px-2 small text-muted font-weight-bold text-muted form-label">From</span>
+                        <span class="px-1 small text-muted font-weight-bold text-muted form-label">Client</span>
+                    <div class="border-bottom w-100 mr-5" style="border: 1px solid#888;"></div>
+                </div>
+
+                {% for application_details in application_details%}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Corrective Action Date </label>
+                                <input type="text" class="form-control" value="{{ application_details.Corrective_Action_Date }}" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Corrective Action Taken </label>
+                                <textarea type="text" class="form-control" disabled>{{ application_details.Corrective_Action_Taken_Auditee }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+

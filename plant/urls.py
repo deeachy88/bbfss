@@ -106,6 +106,8 @@ urlpatterns = [
     path('delete_file_export', views.delete_file_export, name='delete_file_export'),
     path('delete_file_phyto', views.delete_file_phyto, name='delete_file_phyto'),
     path('update_export', views.update_export, name='update_export'),
+    path('save_phyto_export_details', views.save_phyto_export_details, name='save_phyto_export_details'),
+    path('update_pec_details', views.update_pec_details, name='update_pec_details'),
 
     # Registration Of Nursery/Seed Growers
     path('registration_application', views.registration_application, name='registration_application'),
