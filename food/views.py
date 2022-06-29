@@ -2555,9 +2555,33 @@ def submit_fip_application(request):
         update_details.update(Inspection_Remarks=remarks)
     else:
         update_details.update(Inspection_Remarks=None)
-    application_details = t_workflow_details.objects.filter(application_no=application_no)
-    application_details.update(action_date=date.today())
-    application_details.update(application_status='C')
+    imp_update_details = t_food_import_permit_inspection_t2.objects.filter(Application_No=application_no)
+    for import_IPP in imp_update_details:
+        import_details_sum = t_food_import_permit_inspection_t2.objects.filter(
+            Product_Record_Id=import_IPP.Product_Record_Id).aggregate(Sum('Quantity_Released'))
+
+        sum_import = import_details_sum['Quantity_Released__sum']
+        import_det = t_food_import_permit_inspection_t2.objects.filter(pk=import_IPP.Record_Id)
+
+        for import_details in import_det:
+            if sum_import == int(import_details.Quantity):
+                import_details = t_food_import_permit_inspection_t1.objects.filter(
+                    Application_No=application_no)
+                for import_det in import_details:
+                    la_details = t_food_import_permit_t1.objects.filter(
+                        Import_Permit_No=import_det.Import_Permit_No)
+                    for la in la_details:
+                        work_details = t_workflow_details.objects.filter(application_no=la.Application_No)
+                        work_details.update(application_status='C')
+            else:
+                import_details = t_food_import_permit_inspection_t1.objects.filter(
+                    Application_No=application_no)
+                for import_det in import_details:
+                    la_details = t_food_import_permit_t1.objects.filter(
+                        Import_Permit_No=import_det.Import_Permit_No)
+                    for la in la_details:
+                        work_details = t_workflow_details.objects.filter(application_no=la.Application_No)
+                        work_details.update(application_status='P')
     return redirect(inspector_application)
 
 
@@ -2581,24 +2605,6 @@ def update_import_details_food(request):
         balance = int(import_IPP.Quantity_Balance) - int(import_IPP.Quantity_Released)
         product_details = t_food_import_permit_t2.objects.filter(pk=Product_Record_Id)
         product_details.update(Quantity_Balance=balance)
-        if balance == 0:
-            import_details = t_food_import_permit_inspection_t1.objects.filter(
-                Application_No=application_no)
-            for import_det in import_details:
-                la_details = t_food_import_permit_t1.objects.filter(
-                    Import_Permit_No=import_det.Import_Permit_No)
-                for la in la_details:
-                    work_details = t_workflow_details.objects.filter(application_no=la.Application_No)
-                    work_details.update(application_status='C')
-        else:
-            import_details = t_food_import_permit_inspection_t1.objects.filter(
-                Application_No=application_no)
-            for import_det in import_details:
-                la_details = t_food_import_permit_t1.objects.filter(
-                    Import_Permit_No=import_det.Import_Permit_No)
-                for la in la_details:
-                    work_details = t_workflow_details.objects.filter(application_no=la.Application_No)
-                    work_details.update(application_status='P')
     application_details = t_food_import_permit_inspection_t2.objects.filter(Application_No=application_no)
     return render(request, 'import_certificate_food/import_details.html', {'import': application_details})
 

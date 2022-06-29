@@ -73,6 +73,7 @@ class t_workflow_details(models.Model):
     application_status = models.CharField(max_length=3, default=None, blank=True, null=True)
     application_date = models.DateField(default=None, blank=True, null=True)
     applicant_name = models.CharField(max_length=100, default=None, blank=True, null=True)
+    application_source = models.CharField(max_length=100, default='BBFSS', blank=True, null=True)
 
 
 class t_workflow_details_audit(models.Model):

@@ -573,8 +573,7 @@ def view_application_details(request):
     elif service_code == 'IPP':
         application_details = t_plant_import_permit_inspection_t1.objects.filter(Application_No=application_id)
         location = t_field_office_master.objects.all()
-        details_list = t_plant_import_permit_inspection_t2.objects.filter(Application_No=application_id,
-                                                                          Quantity_Balance__gt=0)
+        details_list = t_plant_import_permit_inspection_t2.objects.filter(Application_No=application_id)
         file = t_file_attachment.objects.filter(application_no=application_id)
         workflow_details = t_workflow_details.objects.filter(application_no=application_id)
         for application in workflow_details:
@@ -760,8 +759,7 @@ def view_application_details(request):
         location_details = t_field_office_master.objects.all()
         application_details = t_livestock_import_permit_product_inspection_t1.objects.filter(
             Application_No=application_id)
-        details = t_livestock_import_permit_product_inspection_t2.objects.filter(Application_No=application_id,
-                                                                                 Quantity_Balance__gt=0)
+        details = t_livestock_import_permit_product_inspection_t2.objects.filter(Application_No=application_id)
         file = t_file_attachment.objects.filter(application_no=application_id)
         workflow_details = t_workflow_details.objects.filter(application_no=application_id)
         observation_details = t_livestock_import_permit_product_inspection_t3.objects.filter(
@@ -781,8 +779,7 @@ def view_application_details(request):
         location_details = t_field_office_master.objects.all()
         application_details = t_livestock_import_permit_animal_inspection_t1.objects.filter(
             Application_No=application_id)
-        details = t_livestock_import_permit_animal_inspection_t2.objects.filter(Application_No=application_id,
-                                                                                Quantity_Balance__gt=0)
+        details = t_livestock_import_permit_animal_inspection_t2.objects.filter(Application_No=application_id)
         observation_details = t_livestock_import_permit_animal_inspection_t3.objects.filter(
             Application_No=application_id)
         file = t_file_attachment.objects.filter(application_no=application_id)
@@ -827,8 +824,7 @@ def view_application_details(request):
         unit = t_unit_master.objects.all()
         application_details = t_food_import_permit_inspection_t1.objects.filter(
             Application_No=application_id)
-        details = t_food_import_permit_inspection_t2.objects.filter(Application_No=application_id,
-                                                                    Quantity_Balance__gt=0)
+        details = t_food_import_permit_inspection_t2.objects.filter(Application_No=application_id)
         file = t_file_attachment.objects.filter(application_no=application_id)
         workflow_details = t_workflow_details.objects.filter(application_no=application_id)
         observation = t_food_import_permit_inspection_t3.objects.filter(Application_No=application_id)
@@ -2858,22 +2854,23 @@ def update_inspection_call_details(request):
                 Passport_Number=details.Passport_Number
             )
             for import_details in import_app:
-                t_plant_import_permit_inspection_t2.objects.create(
-                    Application_No=new_import_application_no,
-                    Import_Category=import_details.Import_Category,
-                    Crop_Id=import_details.Crop_Id,
-                    Pesticide_Id=import_details.Pesticide_Id,
-                    Description=import_details.Description,
-                    Variety_Id=import_details.Variety_Id,
-                    Unit=import_details.Unit,
-                    Quantity=import_details.Quantity,
-                    Quantity_Released=0,
-                    Quantity_Rejected=0,
-                    Remarks=import_details.Remarks,
-                    Quantity_Balance=import_details.Quantity_Balance,
-                    Quantity_Balance_1=import_details.Quantity_Balance,
-                    Product_Record_Id=import_details.pk
-                )
+                if import_details.Quantity_Balance > 0:
+                    t_plant_import_permit_inspection_t2.objects.create(
+                        Application_No=new_import_application_no,
+                        Import_Category=import_details.Import_Category,
+                        Crop_Id=import_details.Crop_Id,
+                        Pesticide_Id=import_details.Pesticide_Id,
+                        Description=import_details.Description,
+                        Variety_Id=import_details.Variety_Id,
+                        Unit=import_details.Unit,
+                        Quantity=import_details.Quantity,
+                        Quantity_Released=0,
+                        Quantity_Rejected=0,
+                        Remarks=import_details.Remarks,
+                        Quantity_Balance=import_details.Quantity_Balance,
+                        Quantity_Balance_1=import_details.Quantity_Balance,
+                        Product_Record_Id=import_details.pk
+                    )
         field = t_location_field_office_mapping.objects.filter(Location_Code=entry_point)
         for field_office in field:
             field_office_id = field_office.Field_Office_Id_id
@@ -2934,20 +2931,21 @@ def update_inspection_call_details(request):
                 Passport_Number=details.Passport_Number
             )
         for import_details in import_app:
-            t_livestock_import_permit_animal_inspection_t2.objects.create(
-                Application_No=new_import_application_no,
-                Species=import_details.Species,
-                Breed=import_details.Breed,
-                Age=import_details.Age,
-                Sex=import_details.Sex,
-                Description=import_details.Description,
-                Quantity=import_details.Quantity,
-                Quantity_Released=0,
-                Remarks=import_details.Remarks,
-                Quantity_Balance=import_details.Quantity_Balance,
-                Quantity_Balance_1=import_details.Quantity_Balance,
-                Product_Record_Id=import_details.pk
-            )
+            if import_details.Quantity_Balance > 0:
+                t_livestock_import_permit_animal_inspection_t2.objects.create(
+                    Application_No=new_import_application_no,
+                    Species=import_details.Species,
+                    Breed=import_details.Breed,
+                    Age=import_details.Age,
+                    Sex=import_details.Sex,
+                    Description=import_details.Description,
+                    Quantity=import_details.Quantity,
+                    Quantity_Released=0,
+                    Remarks=import_details.Remarks,
+                    Quantity_Balance=import_details.Quantity_Balance,
+                    Quantity_Balance_1=import_details.Quantity_Balance,
+                    Product_Record_Id=import_details.pk
+                )
         field = t_location_field_office_mapping.objects.filter(Location_Code=entry_point)
         for field_office in field:
             field_office_id = field_office.Field_Office_Id_id
@@ -3008,19 +3006,20 @@ def update_inspection_call_details(request):
                 Passport_Number=details.Passport_Number
             )
         for import_details_ILP in import_details:
-            t_livestock_import_permit_product_inspection_t2.objects.create(
-                Application_No=new_import_application_no,
-                Particulars=import_details_ILP.Particulars,
-                Company_Name=import_details_ILP.Company_Name,
-                Description=import_details_ILP.Description,
-                Quantity=import_details_ILP.Quantity,
-                Unit=import_details_ILP.Unit,
-                Quantity_Released=0,
-                Remarks=import_details_ILP.Remarks,
-                Quantity_Balance=import_details_ILP.Quantity_Balance,
-                Quantity_Balance_1=import_details_ILP.Quantity_Balance,
-                Product_Record_Id=import_details_ILP.pk
-            )
+            if import_details.Quantity_Balance > 0:
+                t_livestock_import_permit_product_inspection_t2.objects.create(
+                    Application_No=new_import_application_no,
+                    Particulars=import_details_ILP.Particulars,
+                    Company_Name=import_details_ILP.Company_Name,
+                    Description=import_details_ILP.Description,
+                    Quantity=import_details_ILP.Quantity,
+                    Unit=import_details_ILP.Unit,
+                    Quantity_Released=0,
+                    Remarks=import_details_ILP.Remarks,
+                    Quantity_Balance=import_details_ILP.Quantity_Balance,
+                    Quantity_Balance_1=import_details_ILP.Quantity_Balance,
+                    Product_Record_Id=import_details_ILP.pk
+                )
 
         field = t_location_field_office_mapping.objects.filter(Location_Code=entry_point)
         for field_office in field:
@@ -3081,20 +3080,21 @@ def update_inspection_call_details(request):
             )
 
         for import_details in import_details:
-            t_food_import_permit_inspection_t2.objects.create(
-                Application_No=new_import_application_no,
-                Common_Name=import_details.Common_Name,
-                Product_Category=import_details.Product_Category,
-                Product_Characteristics=import_details.Product_Characteristics,
-                Quantity=import_details.Quantity,
-                Unit=import_details.Unit,
-                Exporter_Type=import_details.Exporter_Type,
-                Quantity_Released=0,
-                Remarks=import_details.Remarks,
-                Quantity_Balance=import_details.Quantity_Balance,
-                Quantity_Balance_1=import_details.Quantity_Balance,
-                Product_Record_Id=import_details.pk
-            )
+            if import_details.Quantity_Balance > 0:
+                t_food_import_permit_inspection_t2.objects.create(
+                    Application_No=new_import_application_no,
+                    Common_Name=import_details.Common_Name,
+                    Product_Category=import_details.Product_Category,
+                    Product_Characteristics=import_details.Product_Characteristics,
+                    Quantity=import_details.Quantity,
+                    Unit=import_details.Unit,
+                    Exporter_Type=import_details.Exporter_Type,
+                    Quantity_Released=0,
+                    Remarks=import_details.Remarks,
+                    Quantity_Balance=import_details.Quantity_Balance,
+                    Quantity_Balance_1=import_details.Quantity_Balance,
+                    Product_Record_Id=import_details.pk
+                )
 
         field = t_location_field_office_mapping.objects.filter(Location_Code=entry_point)
         for field_office in field:
@@ -3502,12 +3502,33 @@ def approve_clearance_application(request):
         update_details.update(Inspection_Remarks=remarks)
     else:
         update_details.update(Inspection_Remarks=None)
-    application_details = t_workflow_details.objects.filter(application_no=application_no)
-    application_details.update(action_date=date.today())
-    application_details.update(application_status='C')
-    for email_id in update_details:
-        emailId = email_id.Email
-        send_clearance_approve_email(clearnace_ref_no, emailId)
+    imp_update_details = t_plant_import_permit_inspection_t2.objects.filter(Application_No=application_no)
+    for import_IPP in imp_update_details:
+        import_details_sum = t_plant_import_permit_inspection_t2.objects.filter(
+            Product_Record_Id=import_IPP.Product_Record_Id).aggregate(Sum('Quantity_Released'))
+
+        sum_import = import_details_sum['Quantity_Released__sum']
+        import_det = t_plant_import_permit_inspection_t2.objects.filter(pk=import_IPP.Record_Id)
+
+        for import_details in import_det:
+            if sum_import == int(import_details.Quantity):
+                import_details = t_plant_import_permit_inspection_t1.objects.filter(
+                    Application_No=application_no)
+                for import_det in import_details:
+                    la_details = t_plant_import_permit_t1.objects.filter(
+                        Import_Permit_No=import_det.Import_Permit_No)
+                    for la in la_details:
+                        work_details = t_workflow_details.objects.filter(application_no=la.Application_No)
+                        work_details.update(application_status='C')
+            else:
+                import_details = t_plant_import_permit_inspection_t1.objects.filter(
+                    Application_No=application_no)
+                for import_det in import_details:
+                    la_details = t_plant_import_permit_t1.objects.filter(
+                        Import_Permit_No=import_det.Import_Permit_No)
+                    for la in la_details:
+                        work_details = t_workflow_details.objects.filter(application_no=la.Application_No)
+                        work_details.update(application_status='P')
     return redirect(inspector_application)
 
 
@@ -3696,35 +3717,12 @@ def update_details_plant(request):
         balance = int(import_IPP.Quantity_Balance_1) - int(import_IPP.Quantity_Released)
         product_details = t_plant_import_permit_t2.objects.filter(pk=Product_Record_Id)
         product_details.update(Quantity_Balance=balance)
-        import_details_sum = t_plant_import_permit_inspection_t2.objects.filter(
-            Product_Record_Id=import_IPP.Product_Record_Id).aggregate(Sum('Quantity_Released'))
-
-        sum_import = import_details_sum['Quantity_Released__sum']
-
-        if sum_import == int(edit_no):
-            import_details = t_plant_import_permit_inspection_t1.objects.filter(
-                Application_No=application_no)
-            for import_det in import_details:
-                la_details = t_plant_import_permit_t1.objects.filter(
-                    Import_Permit_No=import_det.Import_Permit_No)
-                for la in la_details:
-                    work_details = t_workflow_details.objects.filter(application_no=la.Application_No)
-                    work_details.update(application_status='C')
-        else:
-            import_details = t_plant_import_permit_inspection_t1.objects.filter(
-                Application_No=application_no)
-            for import_det in import_details:
-                la_details = t_plant_import_permit_t1.objects.filter(
-                    Import_Permit_No=import_det.Import_Permit_No)
-                for la in la_details:
-                    work_details = t_workflow_details.objects.filter(application_no=la.Application_No)
-                    work_details.update(application_status='P')
-        application_details = t_plant_import_permit_inspection_t2.objects.filter(Application_No=application_no) \
-            .order_by('Record_Id')
-        crop = t_plant_crop_master.objects.all()
-        variety = t_plant_crop_variety_master.objects.all()
-        return render(request, 'import_permit/plant_details.html', {'import': application_details,
-                                                                    'crop': crop, 'variety': variety})
+    application_details = t_plant_import_permit_inspection_t2.objects.filter(Application_No=application_no) \
+        .order_by('Record_Id')
+    crop = t_plant_crop_master.objects.all()
+    variety = t_plant_crop_variety_master.objects.all()
+    return render(request, 'import_permit/plant_details.html', {'import': application_details,
+                                                                'crop': crop, 'variety': variety})
 
 
 def update_details_agro(request):

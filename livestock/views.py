@@ -1515,10 +1515,33 @@ def submit_la_application(request):
         update_details.update(Inspection_Remarks=remarks)
     else:
         update_details.update(Inspection_Remarks=None)
-    application_details = t_workflow_details.objects.filter(application_no=application_no)
-    application_details.update(action_date=date.today())
-    application_details.update(application_status='C')
+    imp_update_details = t_livestock_import_permit_animal_inspection_t2.objects.filter(Application_No=application_no)
+    for import_IPP in imp_update_details:
+        import_details_sum = t_livestock_import_permit_animal_inspection_t2.objects.filter(
+            Product_Record_Id=import_IPP.Product_Record_Id).aggregate(Sum('Quantity_Released'))
 
+        sum_import = import_details_sum['Quantity_Released__sum']
+        import_det = t_livestock_import_permit_animal_inspection_t2.objects.filter(pk=import_IPP.Record_Id)
+
+        for import_details in import_det:
+            if sum_import == int(import_details.Quantity):
+                import_details = t_livestock_import_permit_animal_inspection_t1.objects.filter(
+                    Application_No=application_no)
+                for import_det in import_details:
+                    la_details = t_livestock_import_permit_animal_t1.objects.filter(
+                        Import_Permit_No=import_det.Import_Permit_No)
+                    for la in la_details:
+                        work_details = t_workflow_details.objects.filter(application_no=la.Application_No)
+                        work_details.update(application_status='C')
+            else:
+                import_details = t_livestock_import_permit_animal_inspection_t1.objects.filter(
+                    Application_No=application_no)
+                for import_det in import_details:
+                    la_details = t_livestock_import_permit_animal_t1.objects.filter(
+                        Import_Permit_No=import_det.Import_Permit_No)
+                    for la in la_details:
+                        work_details = t_workflow_details.objects.filter(application_no=la.Application_No)
+                        work_details.update(application_status='P')
     return redirect(inspector_application)
 
 
@@ -1578,35 +1601,8 @@ def update_details_la(request):
         import_det.update(Remarks=None)
     import_det.update(Quantity_Released=approved_quantity)
     import_det.update(Quantity_Balance=balance_number)
-    for import_ILA in import_det:
-        Product_Record_Id = import_ILA.Product_Record_Id
-        balance = int(import_ILA.Quantity_Balance_1) - int(import_ILA.Quantity_Released)
-        product_details = t_livestock_import_permit_animal_t2.objects.filter(pk=Product_Record_Id)
-        product_details.update(Quantity_Balance=balance)
 
-        import_details_sum = t_livestock_import_permit_animal_inspection_t2.objects.filter(
-            Product_Record_Id=import_ILA.Product_Record_Id).aggregate(Sum('Quantity_Released'))
-
-        sum_import = import_details_sum['Quantity_Released__sum']
-        if sum_import == int(edit_no):
-            import_details = t_livestock_import_permit_animal_inspection_t1.objects.filter(
-                Application_No=application_no)
-            for import_det in import_details:
-                la_details = t_livestock_import_permit_animal_t1.objects.filter(
-                    Import_Permit_No=import_det.Import_Permit_No)
-                for la in la_details:
-                    work_details = t_workflow_details.objects.filter(application_no=la.Application_No)
-                    work_details.update(application_status='C')
-        else:
-            import_details = t_livestock_import_permit_animal_inspection_t1.objects.filter(
-                Application_No=application_no)
-            for import_det in import_details:
-                la_details = t_livestock_import_permit_animal_t1.objects.filter(
-                    Import_Permit_No=import_det.Import_Permit_No)
-                for la in la_details:
-                    work_details = t_workflow_details.objects.filter(application_no=la.Application_No)
-                    work_details.update(application_status='P')
-        application_details = t_livestock_import_permit_animal_inspection_t2.objects.filter(
+    application_details = t_livestock_import_permit_animal_inspection_t2.objects.filter(
             Application_No=application_no).order_by('Record_Id')
     return render(request, 'Animal_Fish_Import/animal_import_details.html', {'import': application_details})
 
@@ -2122,10 +2118,33 @@ def submit_lp_application(request):
         update_details.update(Inspection_Remarks=remarks)
     else:
         update_details.update(Inspection_Remarks=None)
-    application_details = t_workflow_details.objects.filter(application_no=application_no)
-    application_details.update(action_date=date.today())
-    application_details.update(application_status='C')
+    imp_update_details = t_livestock_import_permit_product_inspection_t2.objects.filter(Application_No=application_no)
+    for import_IPP in imp_update_details:
+        import_details_sum = t_livestock_import_permit_product_inspection_t2.objects.filter(
+            Product_Record_Id=import_IPP.Product_Record_Id).aggregate(Sum('Quantity_Released'))
 
+        sum_import = import_details_sum['Quantity_Released__sum']
+        import_det = t_livestock_import_permit_product_inspection_t2.objects.filter(pk=import_IPP.Record_Id)
+
+        for import_details in import_det:
+            if sum_import == int(import_details.Quantity):
+                import_details = t_livestock_import_permit_product_inspection_t1.objects.filter(
+                    Application_No=application_no)
+                for import_det in import_details:
+                    la_details = t_livestock_import_permit_product_t1.objects.filter(
+                        Import_Permit_No=import_det.Import_Permit_No)
+                    for la in la_details:
+                        work_details = t_workflow_details.objects.filter(application_no=la.Application_No)
+                        work_details.update(application_status='C')
+            else:
+                import_details = t_livestock_import_permit_product_inspection_t1.objects.filter(
+                    Application_No=application_no)
+                for import_det in import_details:
+                    la_details = t_livestock_import_permit_product_t1.objects.filter(
+                        Import_Permit_No=import_det.Import_Permit_No)
+                    for la in la_details:
+                        work_details = t_workflow_details.objects.filter(application_no=la.Application_No)
+                        work_details.update(application_status='P')
     return redirect(inspector_application)
 
 

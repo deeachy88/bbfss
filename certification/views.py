@@ -154,7 +154,6 @@ def save_organic_certificate(request):
         Audit_Findings_Others_Observations=None,
         Approve_Date=None,
         Certificate_No=None,
-        Validity_Period=None,
         Validity=None,
         Farm_Location=farm_location,
         Applicant_Id=request.session['email'],
@@ -941,7 +940,7 @@ def resubmit_oc_nc_details(request):
         return redirect(chief_application)
 
 
-def edit_oc_nc_details(request, Record_Id):
+def edit_oc_nc_details(request):
     record_id = request.GET.get('record_id')
     application_no = request.GET.get('edit_application_no')
     Clause_Number = request.GET.get('clause_number')
@@ -961,8 +960,8 @@ def edit_oc_nc_details(request, Record_Id):
         Corrective_Action_Verified_Auditor=corrective_action_verified_auditor,
         Non_Conformity_Closure=None
     )
-    conform_details = t_certification_gap_t8.objects.filter(Application_No=application_no)
-    message_count = t_certification_gap_t8.objects.filter(Non_Conformity='Open').count()
+    conform_details = t_certification_organic_t11.objects.filter(Application_No=application_no)
+    message_count = t_certification_organic_t11.objects.filter(Non_Conformity='Open').count()
     return render(request, 'organic_certification/nc_update_details.html', {'conform_details': conform_details,
                                                                             'message_count': message_count})
 
@@ -2755,7 +2754,6 @@ def update_oc_form(request):
         Audit_Findings_Others_Observations=None,
         Approve_Date=None,
         Certificate_No=None,
-        Validity_Period=None,
         Validity=None,
         Farm_Location=farm_location,
         Applicant_Id=request.session['email'],

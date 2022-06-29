@@ -497,7 +497,7 @@ class t_certification_food_t5(models.Model):  # Food Product Observation.
     Record_Id = models.AutoField(primary_key=True)
     Application_No = models.CharField(max_length=30)
     Clause_Number = models.CharField(max_length=200, blank=True, null=True)
-    Non_Conformity = models.CharField(max_length=3, blank=True, null=True)
+    Non_Conformity = models.CharField(max_length=10, blank=True, null=True)
     Non_Conformity_Category = models.CharField(max_length=50, blank=True, null=True)
     Non_Conformity_Description = models.TextField(blank=True, null=True)
     Corrective_Action_Proposed_Auditee = models.TextField(blank=True, null=True)
