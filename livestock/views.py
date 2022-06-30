@@ -1,3 +1,4 @@
+import json
 import os
 from datetime import date, datetime, timedelta
 from django.core.files.storage import FileSystemStorage
@@ -610,16 +611,40 @@ def reject_meat_shop_feasibility_inspection(request):
         details.update(fi_recommendation=remarks)
     else:
         details.update(fi_recommendation=None)
-    application_details = t_workflow_details.objects.filter(application_no=application_id)
-    application_details.update(action_date=date.today())
-    application_details.update(application_status='IRS')
-    for email_id in application_details:
-        email = email_id.applicant_id
-        login_details = t_user_master.objects.filter(Email_Id=email)
-        for app_details in login_details:
-            login = app_details.Login_Id
-            application_details.update(assigned_to=login)
-            application_details.update(assigned_role_id=None)
+    workflow_details = t_workflow_details.objects.filter(application_no=application_id, application_source='IBLS')
+    if workflow_details.exists():
+        workflow_details.update(action_date=date.today())
+        workflow_details.update(application_status='IRS')
+        for email_id in workflow_details:
+            email = email_id.applicant_id
+            login_details = t_user_master.objects.filter(Email_Id=email)
+            for det_login in login_details:
+                login = det_login.Login_Id
+                workflow_details.update(assigned_to=login)
+                workflow_details.update(assigned_role_id=None)
+        x = {
+            "applicationNo": application_id,
+            "cleareanceNo": "null",
+            "status": True,
+            "message": "null",
+            "rejectionMessage": "remarks"
+        }
+        post_data = json.dumps(x)
+        headers = {'Accept': 'application/json'}
+        print(post_data)
+        res = requests.post('https://bpa.test.bhutan.eregistrations.org/mule/api/action/bafra_update',
+                            params=post_data, headers=headers, verify=False)
+    else:
+        application_details = t_workflow_details.objects.filter(application_no=application_id)
+        application_details.update(action_date=date.today())
+        application_details.update(application_status='IRS')
+        for email_id in application_details:
+            email = email_id.applicant_id
+            login_details = t_user_master.objects.filter(Email_Id=email)
+            for det_login in login_details:
+                login = det_login.Login_Id
+                application_details.update(assigned_to=login)
+                application_details.update(assigned_role_id=None)
     return redirect(inspector_application)
 
 

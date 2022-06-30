@@ -1099,6 +1099,72 @@ form, input, select, textarea{
             </div>
         </form>
 
+<div id="edit_nc_modal" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+
+            </div>
+            <form method="post" id="edit_conform_form">
+            {% csrf_token %}
+            <div class="modal-body">
+                <input type="hidden" class="form-control" name="edit_record_id" id="edit_record_id">
+                <input type="hidden" class="form-control" name="edit_application_no" id="edit_application_no">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-label">Clause Number</label>
+                        <input type="text" class="form-control" name="edit_clause_number" id="edit_clause_number">
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Non-Conformity</label>&nbsp;
+                            <div class="justify-content-center">
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" name="edit_Non_Conformity" id="edit_nc_yes" class="custom-control-input" value="Open" onchange="Check_Edit_Accept(this.value)">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Open</span>
+                                </label>
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" name="edit_Non_Conformity" id="edit_nc_no" class="custom-control-input" value="Close" onchange="Check_Edit_Accept(this.value)">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Close</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Nonconformity Category</label>
+                        <select class="form-control" name="edit_non_conformity_category" id="edit_non_conformity_category">
+                            <option value="">-SELECT-</option>
+                            <option value="Critical">Critical</option>
+                            <option value="Major">Major</option>
+                            <option value="Minor">Minor</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-label">Description of nonconformity</label>
+                        <textarea class="form-control" id="edit_non_conformity_description" name="edit_non_conformity_description"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-flat btn-primary" onclick="update_tl_nc_details()">
+                    <i class="ace-icon fa fa-check"></i>
+                    &nbsp;&nbsp;Update
+                </button>
+                <button type="button" class="btn btn-primary" onclick="close_edit_nc_modal()">Close</button>
+            </div>
+            </form>
+          </div>
+    </div>
+</div>
+
 <script>
 $(function(){
     var file_count = $('#file_count').val();
@@ -1167,16 +1233,52 @@ function approve_details()
 
 function conform_observation()
 {
-    $.ajax({
-        type : "GET",
-        url : "{% url 'gap_conform_observation' %}",
-        data :$('#conform_form').serialize(),
-        success : function(data) {
-            $('#conform_details').html(data);
-            $('#conformModal').modal('hide');
-            $("#conform_form")[0].reset();
-        }
-    });
+    var Clause_Number = $('#Clause_Number').val();
+    var Non_Conformity = $("input[name=Non_Conformity]:checked").length;
+    var Non_Conformity_Category = $('#Non_Conformity_Category').val();
+    var Non_Conformity_Description = $('#Non_Conformity_Description').val();
+
+    if(Clause_Number == "")
+    {
+        $('#Clause_NumberErrorMsg').html("Enter Clause Number.");
+        $('#Clause_NumberErrorMsg').show();
+        $('#Clause_NumberErrorMsg').delay(2000).fadeOut('slow');
+        $('#Clause_Number').focus();
+    }
+    else if(Non_Conformity < 1)
+    {
+        $('#Non_ConformityErrorMsg').html("Please Check One NC.");
+        $('#Non_ConformityErrorMsg').show();
+        $('#Non_ConformityErrorMsg').delay(2000).fadeOut('slow');
+    }
+    else if(Non_Conformity_Category == "")
+    {
+        $('#Non_Conformity_CategoryErrorMsg').html("Select Non Conformity Category.");
+        $('#Non_Conformity_CategoryErrorMsg').show();
+        $('#Non_Conformity_CategoryErrorMsg').delay(2000).fadeOut('slow');
+        $('#Non_Conformity_Category').focus();
+    }
+    else if(Non_Conformity_Description == "")
+    {
+        $('#Non_Conformity_DescriptionErrorMsg').html("Enter Non Conformity Description.");
+        $('#Non_Conformity_DescriptionErrorMsg').show();
+        $('#Non_Conformity_DescriptionErrorMsg').delay(2000).fadeOut('slow');
+        $('#Non_Conformity_Description').focus();
+    }
+
+    else
+    {
+        $.ajax({
+            type : "GET",
+            url : "{% url 'gap_conform_observation' %}",
+            data :$('#conform_form').serialize(),
+            success : function(data) {
+                $('#conform_details').html(data);
+                $('#conformModal').modal('hide');
+                $("#conform_form")[0].reset();
+            }
+        });
+    }
 }
 
 function resubmit_details(application_no)
@@ -1278,6 +1380,20 @@ function Check_Accept(value)
     }
 }
 
+function Check_Edit_Accept(value)
+{
+    if(value == 'Open')
+    {
+        $("#Non_Conformity_Category").removeAttr("disabled");
+        $("#Non_Conformity_Description").removeAttr('readonly');
+    }
+    else
+    {
+        $("#Non_Conformity_Category").attr("disabled", "disabled");
+        $("#Non_Conformity_Description").prop("readonly", true);
+    }
+}
+
 function audit_plan_modal()
 {
     $('#attachmentModal').modal('show');
@@ -1294,6 +1410,50 @@ function DeleteAttachment(id)
         success : function(responseText)
         {
             $('#file-attachment').html(responseText);
+        }
+    });
+}
+
+function populate_confirmatory_details(record_id, application_no,clause_number,non_conformity,non_conformity_category,non_conformity_description)
+{
+    $('#edit_record_id').val(record_id);
+    $('#edit_application_no').val(application_no);
+    $('#edit_clause_number').val(clause_number);
+    if(non_conformity == 'Open')
+    {
+        $("#edit_nc_yes").prop("checked", true);
+    }
+    else
+    {
+        $("#edit_nc_no").prop("checked", true);
+    }
+    $('#edit_non_conformity_category').val(non_conformity_category);
+    $('#edit_non_conformity_description').val(non_conformity_description);
+    $('#edit_nc_modal').modal('show');
+}
+
+function close_edit_nc_modal()
+{
+    $('#edit_nc_modal').modal('hide');
+}
+
+function update_tl_nc_details()
+{
+    var record_id = $('#edit_record_id').val();
+    var edit_application_no = $('#edit_application_no').val();
+    var clause_number = $('#edit_clause_number').val();
+    var non_conformity = $("input[name=edit_Non_Conformity]:checked").val();
+    var non_conformity_category = $('#edit_non_conformity_category').val();
+    var non_conformity_description = $('#edit_non_conformity_description').val();
+    $.ajax({
+        type : "GET",
+        url : "{% url 'update_tl_nc_details' %}",
+        data :{'record_id':record_id,'edit_application_no':edit_application_no, 'clause_number':clause_number,'non_conformity':non_conformity, 'non_conformity_category':non_conformity_category, 'non_conformity_description':non_conformity_description},
+        success : function(responseText) {
+             $('#conform_details').html(responseText);
+             $('#edit_conformModal').modal('hide');
+             $('.modal-backdrop').remove();
+
         }
     });
 }

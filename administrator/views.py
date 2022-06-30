@@ -1,4 +1,5 @@
 import hashlib
+import json
 import os
 import random
 import string
@@ -1668,37 +1669,44 @@ def update_payment_details(request):
                                updated_by=request.session['email'], updated_on=date.today())
     workflow_details = t_workflow_details.objects.filter(application_no=Application_No, application_source='IBLS')
     if workflow_details.exists():
-        for work_det in workflow_details:
-            for payment_details in application_details:
-                service_code = payment_details.service_id
-                if service_code == 'CMS':
-                    meat_shop_details = t_livestock_clearance_meat_shop_t1.objects.filter(
-                        application_no=Application_No,
-                        conditional_clearance_no__isnull=False)
-                    if meat_shop_details.exists():
-                        for meat_details in meat_shop_details:
-                            post_data = {'applicationNo': Application_No,
-                                         'cleareanceNo': meat_details.conditional_clearance_no,
-                                         'status': True,
-                                         'message': "null", 'rejectionMessage': "null"}
-                            headers = {'Accept': 'application/json'}
-                            print(post_data)
-                            res = requests.post('https://bpa.test.bhutan.eregistrations.org/mule/api/action/bafra_update',
-                                                params=post_data, headers=headers, verify=False)
-                elif service_code == 'FBR':
-                    food_business_details = t_food_business_registration_licensing_t1.objects.filter(
-                        application_no=Application_No,
-                        conditional_clearance_no__isnull=False)
-                    if food_business_details.exists():
-                        for meat_details in meat_shop_details:
-                            post_data = {'applicationNo': Application_No,
-                                         'cleareanceNo': food_business_details.conditional_clearance_no,
-                                         'status': True,
-                                         'message': "null", 'rejectionMessage': "null"}
-                            headers = {'Accept': 'application/json'}
+        for payment_details in application_details:
+            service_code = payment_details.service_id
+            if service_code == 'CMS':
+                meat_shop_details = t_livestock_clearance_meat_shop_t1.objects.filter(
+                    application_no=Application_No,
+                    conditional_clearance_no__isnull=False)
+                if meat_shop_details.exists():
+                    for meat_details in meat_shop_details:
+                        x = {
+                            "applicationNo": Application_No,
+                            "cleareanceNo": meat_details.conditional_clearance_no,
+                            "status": True,
+                            "message": "null",
+                            "rejectionMessage": "null"
+                        }
+                        post_data = json.dumps(x)
+                        headers = {'Accept': 'application/json'}
+                        print(post_data)
+                        res = requests.post('https://bpa.test.bhutan.eregistrations.org/mule/api/action/bafra_update',
+                                            params=post_data, headers=headers, verify=False)
+            elif service_code == 'FBR':
+                food_business_details = t_food_business_registration_licensing_t1.objects.filter(
+                    application_no=Application_No,
+                    conditional_clearance_no__isnull=False)
+                if food_business_details.exists():
+                    for food_business_details in food_business_details:
+                        x = {
+                            "applicationNo": Application_No,
+                            "cleareanceNo": food_business_details.conditional_clearance_no,
+                            "status": True,
+                            "message": "null",
+                            "rejectionMessage": "null"
+                        }
+                        post_data = json.dumps(x)
+                        headers = {'Accept': 'application/json'}
 
-                            res = requests.post('https://bpa.test.bhutan.eregistrations.org/mule/api/action/bafra_update',
-                                                params=post_data, headers=headers, verify=False)
+                        res = requests.post('https://bpa.test.bhutan.eregistrations.org/mule/api/action/bafra_update',
+                                            params=post_data, headers=headers, verify=False)
     return redirect(payment_list)
 
 

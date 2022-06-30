@@ -737,7 +737,7 @@ def conform_observation(request):
         Non_Conformity_Closure=None
     )
     conform_details = t_certification_organic_t11.objects.filter(Application_No=application_no)
-    message_count = t_certification_organic_t11.objects.filter(Non_Conformity='Yes').count()
+    message_count = t_certification_organic_t11.objects.filter(Non_Conformity='Open').count()
     return render(request, 'organic_certification/non_conform_details.html', {'conform_details': conform_details,
                                                                               'message_count': message_count})
 
@@ -959,6 +959,26 @@ def edit_oc_nc_details(request):
         Corrective_Action_Proposed_Auditee=Corrective_Action_Proposed_Auditee,
         Corrective_Action_Verified_Auditor=corrective_action_verified_auditor,
         Non_Conformity_Closure=None
+    )
+    conform_details = t_certification_organic_t11.objects.filter(Application_No=application_no)
+    message_count = t_certification_organic_t11.objects.filter(Non_Conformity='Open').count()
+    return render(request, 'organic_certification/nc_update_details.html', {'conform_details': conform_details,
+                                                                            'message_count': message_count})
+
+def oc_tl_nc_details(request):
+    record_id = request.GET.get('record_id')
+    application_no = request.GET.get('edit_application_no')
+    Clause_Number = request.GET.get('clause_number')
+    Non_Conformity = request.GET.get('non_conformity')
+    Non_Conformity_Category = request.GET.get('non_conformity_category')
+    Non_Conformity_Description = request.GET.get('non_conformity_description')
+    nc_details = t_certification_organic_t11.objects.filter(Record_Id=record_id)
+
+    nc_details.update(
+        Clause_Number=Clause_Number,
+        Non_Conformity=Non_Conformity,
+        Non_Conformity_Category=Non_Conformity_Category,
+        Non_Conformity_Description=Non_Conformity_Description,
     )
     conform_details = t_certification_organic_t11.objects.filter(Application_No=application_no)
     message_count = t_certification_organic_t11.objects.filter(Non_Conformity='Open').count()
@@ -1616,6 +1636,27 @@ def edit_nc_details(request):
                                                                         'message_count': message_count})
 
 
+def update_tl_nc_details(request):
+    record_id = request.GET.get('record_id')
+    application_no = request.GET.get('edit_application_no')
+    Clause_Number = request.GET.get('clause_number')
+    Non_Conformity = request.GET.get('non_conformity')
+    Non_Conformity_Category = request.GET.get('non_conformity_category')
+    Non_Conformity_Description = request.GET.get('non_conformity_description')
+    nc_details = t_certification_gap_t8.objects.filter(Record_Id=record_id)
+
+    nc_details.update(
+        Clause_Number=Clause_Number,
+        Non_Conformity=Non_Conformity,
+        Non_Conformity_Category=Non_Conformity_Category,
+        Non_Conformity_Description=Non_Conformity_Description,
+    )
+    conform_details = t_certification_gap_t8.objects.filter(Application_No=application_no)
+    message_count = t_certification_gap_t8.objects.filter(Non_Conformity='Open').count()
+    return render(request, 'GAP_Certification/non_conform_details.html', {'conform_details': conform_details,
+                                                                          'message_count': message_count})
+
+
 def gap_conform_observation(request):
     application_no = request.GET.get('appl_no')
     Clause_Number = request.GET.get('Clause_Number')
@@ -2228,7 +2269,7 @@ def fpc_conform_observation(request):
         Corrective_Action_Proposed_Auditee=Corrective_Action_Proposed_Auditee,
     )
     conform_details = t_certification_food_t5.objects.filter(Application_No=application_no)
-    message_count = t_certification_food_t5.objects.filter(Non_Conformity='Yes').count()
+    message_count = t_certification_food_t5.objects.filter(Non_Conformity='Open').count()
     return render(request, 'food_product_certification/non_conform_details.html',
                   {'conform_details': conform_details, 'message_count': message_count})
 
@@ -2401,7 +2442,7 @@ def resubmit_fpc_nc_details(request):
         return redirect(chief_application)
 
 
-def edit_fpc_nc_details(request, Record_Id):
+def edit_fpc_nc_details(request):
     record_id = request.GET.get('record_id')
     application_no = request.GET.get('edit_application_no')
     Clause_Number = request.GET.get('clause_number')
@@ -2424,7 +2465,28 @@ def edit_fpc_nc_details(request, Record_Id):
     conform_details = t_certification_gap_t8.objects.filter(Application_No=application_no)
     message_count = t_certification_gap_t8.objects.filter(Non_Conformity='Open').count()
     return render(request, 'food_product_certification/nc_update_details.html', {'conform_details': conform_details,
-                                                                            'message_count': message_count})
+                                                                                 'message_count': message_count})
+
+
+def fpc_tl_nc_details(request):
+    record_id = request.GET.get('record_id')
+    application_no = request.GET.get('edit_application_no')
+    Clause_Number = request.GET.get('clause_number')
+    Non_Conformity = request.GET.get('non_conformity')
+    Non_Conformity_Category = request.GET.get('non_conformity_category')
+    Non_Conformity_Description = request.GET.get('non_conformity_description')
+    nc_details = t_certification_organic_t11.objects.filter(Record_Id=record_id)
+
+    nc_details.update(
+        Clause_Number=Clause_Number,
+        Non_Conformity=Non_Conformity,
+        Non_Conformity_Category=Non_Conformity_Category,
+        Non_Conformity_Description=Non_Conformity_Description,
+    )
+    conform_details = t_certification_organic_t11.objects.filter(Application_No=application_no)
+    message_count = t_certification_organic_t11.objects.filter(Non_Conformity='Open').count()
+    return render(request, 'organic_certification/non_conform_details.html', {'conform_details': conform_details,
+                                                                              'message_count': message_count})
 
 
 def fpc_nc_response(request):

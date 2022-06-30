@@ -37,6 +37,7 @@ urlpatterns = [
     path('gap_attachment', views.gap_attachment, name='gap_attachment'),
     path('delete_gap_file', views.delete_gap_file, name='delete_gap_file'),
     path('delete_gap_ap', views.delete_gap_ap, name='delete_gap_ap'),
+    path('update_tl_nc_details', views.update_tl_nc_details, name='update_tl_nc_details'),
 
 
     # Organic certificate
@@ -80,6 +81,7 @@ urlpatterns = [
     path('oc_attachment_details', views.oc_attachment_details, name='oc_attachment_details'),
     path('delete_oc_file', views.delete_oc_file, name='delete_oc_file'),
     path('delete_oc_ap', views.delete_oc_ap, name='delete_oc_ap'),
+    path('oc_tl_nc_details', views.oc_tl_nc_details, name='oc_tl_nc_details'),
 
     # Food Product certificate
     path('food_product_certificate', views.food_product_certificate, name='food_product_certificate'),
@@ -108,6 +110,7 @@ urlpatterns = [
     path('fpc_attachment_details', views.fpc_attachment_details, name='fpc_attachment_details'),
     path('delete_fpc_file', views.delete_fpc_file, name='delete_fpc_file'),
     path('delete_fpc_ap', views.delete_fpc_ap, name='delete_fpc_ap'),
+    path('fpc_tl_nc_details', views.fpc_tl_nc_details, name='fpc_tl_nc_details'),
 
     # Common
     path('certificate_pending_list', views.certificate_pending_list, name='certificate_pending_list'),

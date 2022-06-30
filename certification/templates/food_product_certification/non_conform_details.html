@@ -6,6 +6,7 @@
             <th scope="col">Non Conformity</th>
             <th scope="col">Non Conformity Category</th>
             <th scope="col">Description of nonconformity</th>
+            <th scope="col"></th>
         </tr>
     </thead>
     <tbody>
@@ -13,13 +14,17 @@
             <tr>
                 <td>{{ forloop.counter }}</td>
                 <td>{{conform_details.Clause_Number}}</td>
-                {% if conform_details.Non_Conformity == 'Yes' %}
-                <td>Open</td>
-                {% else %}
-                <td>Close</td>
-                {% endif %}
+                <td>{{conform_details.Non_Conformity}}</td>
                 <td>{{conform_details.Non_Conformity_Category}}</td>
                 <td>{{conform_details.Non_Conformity_Description}}</td>
+                <td>
+                    <button type="button"
+                    class="btn btn-primary btn-sm" onclick="populate_fpc_confirmatory_details('{{conform_details.Record_Id}}','{{conform_details.Application_No}}',
+                    '{{conform_details.Clause_Number}}','{{conform_details.Non_Conformity}}','{{conform_details.Non_Conformity_Category}}',
+                    '{{conform_details.Non_Conformity_Description}}')">
+                    <i class="zmdi zmdi-edit"></i>
+                    </button>
+                </td>
             </tr>
             {% empty %}
             <tr>
