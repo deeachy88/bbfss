@@ -1,3 +1,4 @@
+import json
 from datetime import date, datetime, timedelta
 
 from django.core.files.storage import FileSystemStorage
@@ -6428,17 +6429,17 @@ def view_certificate_details(request):
             application_details = t_certification_food_t1.objects.filter(Certificate_No__isnull=False)
             return render(request, 'certification_certificates/food_certificate_list.html',
                           {'application_details': application_details})
-        elif service_code == 'GAP':  # GAP Certificate Details
+        elif service_code == 'GAP-DET':  # GAP Certificate Details
             application_details = t_certification_gap_t1.objects.filter(Certificate_No__isnull=False)
             return render(request, 'certification_certificates/gap_certificate_detail_list.html',
                           {'application_details': application_details})
 
-        elif service_code == 'ORC':  # Organic Certificate Details
+        elif service_code == 'ORC-DET':  # Organic Certificate Details
             application_details = t_certification_organic_t1.objects.filter(Certificate_No__isnull=False)
             return render(request, 'certification_certificates/organic_certificate_detail_list.html',
                           {'application_details': application_details})
 
-        elif service_code == 'FPC':  # Food Product Certificate Details
+        elif service_code == 'FPC-DET':  # Food Product Certificate Details
             application_details = t_certification_food_t1.objects.filter(Certificate_No__isnull=False)
             return render(request, 'certification_certificates/food_certificate_detail_list.html',
                           {'application_details': application_details})
@@ -6606,17 +6607,17 @@ def view_certificate_details(request):
                                                                          Certificate_No__isnull=False)
             return render(request, 'certification_certificates/food_certificate_list.html',
                           {'application_details': application_details})
-        elif service_code == 'GAP':  # GAP Certificate Details
+        elif service_code == 'GAP-DET':  # GAP Certificate Details
             application_details = t_certification_gap_t1.objects.filter(Certificate_No__isnull=False)
             return render(request, 'certification_certificates/gap_certificate_detail_list.html',
                           {'application_details': application_details})
 
-        elif service_code == 'ORC':  # Organic Certificate Details
+        elif service_code == 'ORC-DET':  # Organic Certificate Details
             application_details = t_certification_organic_t1.objects.filter(Certificate_No__isnull=False)
             return render(request, 'certification_certificates/organic_certificate_detail_list.html',
                           {'application_details': application_details})
 
-        elif service_code == 'FPC':  # Food Product Certificate Details
+        elif service_code == 'FPC-DET':  # Food Product Certificate Details
             application_details = t_certification_food_t1.objects.filter(Certificate_No__isnull=False)
             return render(request, 'certification_certificates/food_certificate_detail_list.html',
                           {'application_details': application_details})
@@ -8931,9 +8932,9 @@ def bbfss_payment_update(request):
                     application_no=applicationNo,
                     conditional_clearance_no__isnull=False)
                 if food_business_details.exists():
-                    for meat_details in meat_shop_details:
+                    for food_business_details in food_business_details:
                         x = {
-                            "applicationNo": Application_No,
+                            "applicationNo": applicationNo,
                             "cleareanceNo": food_business_details.conditional_clearance_no,
                             "status": True,
                             "message": "null",

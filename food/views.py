@@ -1740,9 +1740,6 @@ def food_handler_forward_application(request):
     for application in details:
         email = application.Email
         send_acknowledgement_mail(email)
-    Field_Office_Id = request.session['field_office_id']
-    Role_Id = request.session['Role_Id']
-    application_Lists = t_workflow_details.objects.filter(assigned_to=Role_Id, field_office_id=Field_Office_Id)
     return redirect(dashboard)
 
 
